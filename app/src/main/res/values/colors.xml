@@ -1,0 +1,24 @@
+<resources>
+
+    <color name="Red">#FF8080</color>
+    <color name="Green">#99FF80</color>
+    <color name="Yellow">#FBFF80</color>
+    <color name="Purple">#9580FF</color>
+    <color name="Pink">#FF80DB</color>
+    <color name="White">#FFFFFF</color>
+    <color name="Cyan">#80FFD4</color>
+    <color name="Black">#000</color>
+    <color name="Light_Blue">#c1e0ff</color>
+    <color name="Blue">#295d92</color>
+    <color name="Gray">#878787</color>
+    <color name="Dark_Gray">#494949</color>
+    <color name="Transparent">#00000000</color>
+    <color name="Light_Gray">#dddddd</color>
+    <color name="Medium_Gray">#727272</color>
+    <color name="Stage_Completed">#8ffe8f</color>
+    <color name="Stage_Incomplete">#fb6bfb</color>
+    <color name="Stage_Scheduled_in_future">#f9f95a</color>
+    <color name="Stage_Overdue">#fb4754</color>
+    <color name="Stage_Skipped">#bbbbbb</color>
+
+</resources>

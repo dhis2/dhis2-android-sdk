@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:minWidth="1000dp"  
+    android:minHeight="1000dp"
+    android:orientation="vertical" >
+
+    <RelativeLayout 
+    android:id="@+id/header"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="horizontal" >
+  
+    <Button
+        android:id="@+id/header_closebutton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_checkmark_holo_light"
+        android:text="" />
+	    
+    <TextView
+       android:id="@+id/header_selected"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_toLeftOf="@id/header_closebutton"
+       android:padding="5dp"
+       android:text="Please Select"
+       android:textAllCaps="true"
+       android:textColor="@color/Dark_Gray"
+       android:textStyle="bold" />
+
+    </RelativeLayout>
+    
+    <ScrollView 
+        android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+        <LinearLayout 
+        android:id="@+id/container_view"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:paddingLeft="-15dp"
+    	android:layout_gravity="left">
+        
+    	</LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

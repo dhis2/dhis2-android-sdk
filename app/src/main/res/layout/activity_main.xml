@@ -1,0 +1,44 @@
+<android.support.v4.widget.DrawerLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+
+    <FrameLayout
+        android:id="@+id/frame_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- The navigation drawer list -->
+
+    <LinearLayout
+        android:id="@+id/drawerLinear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/profileTextView"
+            android:layout_width="240dp"
+            android:layout_height="92dp"
+            android:background="@drawable/profile_cover"
+            android:gravity="bottom"
+            android:padding="16dp"
+            android:text="[current_username]"
+            android:textColor="#FFFFFF" />
+
+        <ListView
+            android:id="@+id/slider_list"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#ffffff"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp" />
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

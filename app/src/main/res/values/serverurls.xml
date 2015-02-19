@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="server_urls">
+        <item>https://apps.dhis2.org/demo</item>
+        <item>https://apps.dhis2.org/dev</item>
+        <item>@string/custom_url</item>
+    </string-array>
+
+</resources>

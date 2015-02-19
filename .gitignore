@@ -1,0 +1,25 @@
+#Eclipse
+.project
+.classpath
+.settings
+
+#IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+out
+
+#Ant
+build.xml
+local.properties
+proguard.cfg
+#Gradle
+.gradle
+build
+
+#OSX
+.DS_Store
+
+#Windows
+*.db

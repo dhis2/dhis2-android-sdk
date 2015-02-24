@@ -18,6 +18,7 @@ import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
 
 public final class HttpManager implements IHttpManager {
+    private static final String CLASS_TAG = HttpManager.class.getName();
     private static final String JSON_TYPE = "application/json";
     private static final String TEXT_TYPE = "text/plain";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
@@ -50,7 +51,7 @@ public final class HttpManager implements IHttpManager {
         String url = request.getUrl();
         RestMethod method = request.getMethod();
 
-        Log.e("ddd", "requestUrl: " + url);
+        Log.e(CLASS_TAG, "requestUrl: " + url);
 
         String body = new String();
         if (request.getBody() != null) {

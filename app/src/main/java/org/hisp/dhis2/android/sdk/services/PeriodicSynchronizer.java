@@ -13,9 +13,11 @@ import android.util.Log;
  */
 public class PeriodicSynchronizer extends BroadcastReceiver {
 
+    public static final String CLASS_TAG = "PeriodicSynchronizer";
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.e("ddd", " onReceive periodique ");
+		Log.e(CLASS_TAG, " onReceive periodique ");
 	}
 
 	/**
@@ -24,7 +26,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param minutes the time in minutes between each time the synchronizer runs.
 	 */
 	public void ActivatePeriodicSynchronizer(Context context, int minutes) {
-		Log.e("ddd", "activate periodic synchronizer");
+		Log.e(CLASS_TAG, "activate periodic synchronizer");
 		AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, PeriodicSynchronizer.class);
@@ -38,7 +40,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param context
 	 */
 	public void CancelPeriodicSynchronizer(Context context) {
-		Log.e("ddd", "cancel periodic synchronizer");
+		Log.e(CLASS_TAG, "cancel periodic synchronizer");
 		Intent intent = new Intent(context, PeriodicSynchronizer.class);
 		PendingIntent sender = PendingIntent
 				.getBroadcast(context, 0, intent, 0);

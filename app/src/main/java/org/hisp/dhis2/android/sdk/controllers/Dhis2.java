@@ -9,6 +9,7 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.hisp.dhis2.android.sdk.R;
+import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
@@ -104,10 +105,9 @@ public final class Dhis2 {
         // TODO first check if we already have User through persistence layer
         // TODO if yes, return it, if not call network
         final ResponseHolder<User> holder = new ResponseHolder<>();
-        NetworkManager.getInstance().authUser(new ApiRequestCallback<User>() {
+        new AuthUserTask(NetworkManager.getInstance(), new ApiRequestCallback<User>() {
             @Override
-            public void onSuccess(Response response, User data) {
-                holder.setItem(data);
+            public void onSuccess(Response response) {
                 holder.setResponse(response);
 
                 try {
@@ -129,7 +129,7 @@ public final class Dhis2 {
                 event.setResponseHolder(holder);
                 Dhis2Application.bus.post(event);
             }
-        }, username, password);
+        }, username, password).execute();
 
         /*if (holder.getApiException() != null) {
             throw holder.getApiException();

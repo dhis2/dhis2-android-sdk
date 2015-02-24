@@ -23,8 +23,6 @@ public class NetworkManager {
     private NetworkManager() {
         // no instances through
         // constructor for client code
-
-        ObjectMapper mapper = new ObjectMapper();
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.setFollowSslRedirects(true);
         okHttpClient.setConnectTimeout(HttpManager.TIME_OUT,
@@ -65,16 +63,5 @@ public class NetworkManager {
 
     public IHttpManager getHttpManager() {
         return httpManager;
-    }
-
-    public void authUser(ApiRequestCallback<User> callback,
-                         String username, String password) {
-        (new AuthUserTask(this, callback, username, password)).execute();
-    }
-
-
-    public void getOrganisationUnit(ApiRequestCallback<OrganisationUnit> callback,
-                                    String orgUnitId) {
-        (new GetOrganisationUnitTask(this, callback, orgUnitId)).execute();
     }
 }

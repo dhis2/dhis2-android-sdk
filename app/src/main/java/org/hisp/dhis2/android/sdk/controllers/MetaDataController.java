@@ -140,7 +140,7 @@ public class MetaDataController {
         LoadAssignedProgramsTask task = new LoadAssignedProgramsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OrganisationUnit>>() {
             @Override
-            public void onSuccess(Response response, List<OrganisationUnit> data) {
+            public void onSuccess(Response response) {
                 holder.setResponse(response);
 
                 try {
@@ -194,7 +194,7 @@ public class MetaDataController {
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Program>() {
                     @Override
-                    public void onSuccess(Response response, Program data) {
+                    public void onSuccess(Response response) {
                         holder.setResponse(response);
                         try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);
@@ -227,7 +227,7 @@ public class MetaDataController {
         LoadProgramStagesTask task = new LoadProgramStagesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<ProgramStage>>() {
                     @Override
-                    public void onSuccess(Response response, List<ProgramStage> data) {
+                    public void onSuccess(Response response) {
                         holder.setResponse(response);
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
@@ -276,7 +276,7 @@ public class MetaDataController {
         LoadSmallOptionSetsTask task = new LoadSmallOptionSetsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OptionSet>>() {
                     @Override
-                    public void onSuccess(Response response, List<OptionSet> data) {
+                    public void onSuccess(Response response) {
                         holder.setResponse(response);
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
@@ -320,7 +320,7 @@ public class MetaDataController {
         LoadDataElementsTask task = new LoadDataElementsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<DataElement>>() {
                     @Override
-                    public void onSuccess(Response response, List<DataElement> data) {
+                    public void onSuccess(Response response) {
                         holder.setResponse(response);
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().

@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class DataValueController {
 
+    private static final String CLASS_TAG = DataValueController.class.getName();
     private int sendCounter = -1;
 
     /**
@@ -50,12 +51,12 @@ public class DataValueController {
     private void sendEvent(Event event) {
         final ResponseHolder<Event> holder = new ResponseHolder<>();
         final ResponseEvent<Event> responseEvent = new
-                ResponseEvent<Event>(ResponseEvent.EventType.loadProgram);
+                ResponseEvent<Event>(ResponseEvent.EventType.sendEvent);
         responseEvent.setResponseHolder(holder);
         RegisterEventTask task = new RegisterEventTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response, Object object) {
+                    public void onSuccess(Response response) {
                         holder.setResponse(response);
                         /*try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);

@@ -7,33 +7,35 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class StartPeriodicSynchronizerService extends Service {
+
+    public static final String CLASS_TAG = "StartPeriodicSynchronizerService";
 	
 	int minutes = 1;
 
 	PeriodicSynchronizer periodicSynchronizer = new PeriodicSynchronizer();
     public void onCreate()
     {
-    	Log.e("ddd", "startperiodicsyncservice oncreate");
+    	Log.e(CLASS_TAG, "startperiodicsyncservice oncreate");
         super.onCreate();       
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) 
 	{
-    	Log.e("ddd", "startperiodicsyncservice onstartcommand");
+    	Log.e(CLASS_TAG, "startperiodicsyncservice onstartcommand");
          periodicSynchronizer.ActivatePeriodicSynchronizer(StartPeriodicSynchronizerService.this, minutes);
 	     return START_STICKY;
 	}
 
     public void onStart(Context context,Intent intent, int startId)
     {
-    	Log.e("ddd", "startperiodicsyncservice onstart");
+    	Log.e(CLASS_TAG, "startperiodicsyncservice onstart");
         periodicSynchronizer.ActivatePeriodicSynchronizer(context, minutes);
     }
 	
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.e("ddd", "startperiodicsyncservice onbind");
+		Log.e(CLASS_TAG, "startperiodicsyncservice onbind");
 		return null;
 	}
 }

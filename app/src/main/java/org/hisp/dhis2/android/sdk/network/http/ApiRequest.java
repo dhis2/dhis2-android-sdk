@@ -35,7 +35,6 @@ public final class ApiRequest<T> {
 
     public void request() {
         Response response = null;
-        T data = null;
 
         try {
             response = networkManager.request(request);
@@ -69,7 +68,7 @@ public final class ApiRequest<T> {
             return;
         }
 
-        taskCallback.onSuccess(response, data);
+        taskCallback.onSuccess(response);
     }
 
     public static class Builder<BuilderType> {

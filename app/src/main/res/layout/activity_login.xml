@@ -5,17 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:ignore="MergeRootFrame" >
-
-    <!--
-         <TextView
-        android:id="@+id/usernameTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/username"
-        android:textColor="#000000" />
-    -->
     
     <EditText
         android:id="@+id/usernameEditText"
@@ -30,17 +19,6 @@
 
         <requestFocus />
     </EditText>
-
-    <!--
-         <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/password"
-        android:textColor="#000000" />
-    -->
 
     <EditText
         android:id="@+id/passwordEditText"
@@ -62,17 +40,6 @@
         android:layout_marginTop="16dp"
         android:ems="10"
         android:text="Show password" />
-
-    <!--
-         <TextView
-        android:id="@+id/serverTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="@string/server_url"
-        android:textColor="#000000" />
-    -->
 
     <Spinner
         android:id="@+id/serverSpinner"

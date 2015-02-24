@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
-public class BaseDataModel extends BaseModel{
+public class BaseIdentifiableObject extends BaseModel{
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
@@ -27,11 +27,11 @@ public class BaseDataModel extends BaseModel{
 
     @JsonProperty("created")
     @Column
-    public Date created;
+    public String created;
 
     @JsonProperty("lastUpdated")
     @Column
-    public Date lastUpdated;
+    public String lastUpdated;
 
     public String getId() {
         return id;
@@ -49,19 +49,19 @@ public class BaseDataModel extends BaseModel{
         this.name = name;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
-    public Date getLastUpdated() {
+    public String getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(Date lastUpdated) {
+    public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 }

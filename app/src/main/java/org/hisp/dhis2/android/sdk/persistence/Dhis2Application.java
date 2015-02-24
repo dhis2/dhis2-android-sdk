@@ -1,5 +1,6 @@
 package org.hisp.dhis2.android.sdk.persistence;
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -9,7 +10,7 @@ import com.squareup.otto.ThreadEnforcer;
 /**
  *  Application for initiating the DbFlow Back end
  */
-public class Dhis2Application extends Application{
+public class Dhis2Application extends Application implements IDhis2Application {
 
     public static Bus bus = new Bus(ThreadEnforcer.ANY);
 
@@ -25,4 +26,8 @@ public class Dhis2Application extends Application{
         FlowManager.destroy();
     }
 
+    @Override
+    public Class<? extends Activity> getMainActivity() {
+        return null;
+    }
 }

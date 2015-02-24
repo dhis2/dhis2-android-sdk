@@ -32,8 +32,9 @@
         <item>No</item>
     </string-array>
 
-    <string name="select_org">Select Org Unit</string>
+    <string name="select_org">Select Organisation Unit</string>
     <string name="select_att">Select Attribute</string>
+    <string name="select_program">Select Program</string>
     <string name="enter_keyword">Enter keyword</string>
     <string name="find">Find</string>
 
@@ -201,4 +202,7 @@
     <string name="confirm_transfer_message">Are you sure you want to transfer this Tracked Entity Instance? If the Tracked Entity Instance is transferred to an Organization Unit outside your access privileges, you will be unable to access it.</string>
     <string name="confirm">Confirm</string>
     <string name="complete_stage">Complete Stage</string>
+
+    <string name="discard">Discard</string>
+    <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
 </resources>

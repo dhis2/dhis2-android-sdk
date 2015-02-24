@@ -23,12 +23,17 @@ import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.managers.Base64Manager;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.utils.APIException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -130,23 +135,44 @@ public class LoginActivity
     }
     
     public void login(String serverUrl, String username, String password) {
-        Dhis2.getInstance().setServer(serverUrl);
-        User user = null;
+        NetworkManager.getInstance().setServerUrl(serverUrl);
+        NetworkManager.getInstance().setCredentials(NetworkManager.getInstance().getBase64Manager()
+                .toBase64(username, password));
+        Dhis2.getInstance().saveCredentials(this, serverUrl, username, password);
         Dhis2.getInstance().login(username, password);
     }
 
     @Subscribe
-    public void onLogin(ResponseEvent event) {
+    public void onReceiveResponse(ResponseEvent event) {
         Log.e(CLASS_TAG, "on Login!");
 
         if (event.getResponseHolder().getItem() != null) {
-            //startActivity(new Intent(this, MenuActivity.class));
-            User user = (User) event.getResponseHolder().getItem();
-            Log.e(CLASS_TAG, user.getName());
+            if(event.eventType == ResponseEvent.EventType.onLogin) {
+                User user = (User) event.getResponseHolder().getItem();
+                Log.e(CLASS_TAG, user.getName());
+                user.save(false);
+                Dhis2.getInstance().getMetaDataController().loadMetaData(this);
+            }
         } else {
-            String message = "Failure";
             event.getResponseHolder().getApiException().printStackTrace();
         }
+    }
+
+    @Subscribe
+    public void onReceiveMessage(MessageEvent event) {
+        if(event.eventType == ResponseEvent.EventType.onLoadingMetaDataFinished) {
+            launchMainActivity();
+        }
+    }
+
+    public void launchMainActivity() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(LoginActivity.this, ((Dhis2Application) getApplication()).getMainActivity()));
+            }
+        });
+        this.finish();
     }
     
     @Override

@@ -1,5 +1,6 @@
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -13,6 +14,11 @@ import java.util.Map;
 @Table
 public class ProgramStageDataElement extends BaseModel {
 
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+        // do something: put to a Map; log a warning, whatever
+    }
+
     @JsonProperty("allowFutureDate")
     @Column
     public boolean allowFutureDate;
@@ -21,9 +27,13 @@ public class ProgramStageDataElement extends BaseModel {
     @Column
     public int sortOrder;
 
+    @JsonProperty("displayInReports")
+    @Column
+    public boolean displayInReports;
+
     @JsonProperty("allowProvidedElsewhere")
     @Column
-    public int allowProvidedElsewhere;
+    public boolean allowProvidedElsewhere;
 
     @JsonProperty("compulsory")
     @Column
@@ -61,11 +71,11 @@ public class ProgramStageDataElement extends BaseModel {
         this.sortOrder = sortOrder;
     }
 
-    public int getAllowProvidedElsewhere() {
+    public boolean getAllowProvidedElsewhere() {
         return allowProvidedElsewhere;
     }
 
-    public void setAllowProvidedElsewhere(int allowProvidedElsewhere) {
+    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
         this.allowProvidedElsewhere = allowProvidedElsewhere;
     }
 

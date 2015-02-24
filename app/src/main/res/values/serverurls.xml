@@ -2,8 +2,8 @@
 <resources>
 
     <string-array name="server_urls">
-        <item>https://apps.dhis2.org/demo</item>
         <item>https://apps.dhis2.org/dev</item>
+        <item>https://apps.dhis2.org/demo</item>
         <item>@string/custom_url</item>
     </string-array>
 

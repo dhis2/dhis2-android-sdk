@@ -16,7 +16,75 @@ import java.util.List;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class Program extends BaseDataModel {
+public class Program extends BaseIdentifiableObject {
+
+    @JsonProperty("type")
+    @Column
+    public int type;
+
+    @JsonProperty("kind")
+    @Column
+    public String kind;
+
+    @JsonProperty("version")
+    @Column
+    public int version;
+
+    @JsonProperty("dateOfEnrollmentDescription")
+    @Column
+    public String dateOfEnrollmentDescription;
+
+    @JsonProperty("description")
+    @Column
+    public String description;
+
+    @JsonProperty("onlyEnrollOnce")
+    @Column
+    public boolean onlyEnrollOnce;
+
+    @JsonProperty("externalAccess")
+    @Column
+    public boolean extenalAccess;
+
+    @JsonProperty("displayIncidentDate")
+    @Column
+    public boolean displayIncidentDate;
+
+    @JsonProperty("dateOfIncidentDateDescription")
+    @Column
+    public boolean dateOfIncidentDateDescription;
+
+    @JsonProperty("registration")
+    @Column
+    public boolean registration;
+
+    @JsonProperty("selectEnrollmentDatesInFuture")
+    @Column
+    public boolean selectEnrollmentDatesInFuture;
+
+    @JsonProperty("dataEntryMethod")
+    @Column
+    public boolean dataEntryMethod;
+
+    @JsonProperty("singleEvent")
+    @Column
+    public boolean singleEvent;
+
+    @JsonProperty("ignoreOverdueEvents")
+    @Column
+    public boolean ignoreOverdueEvents;
+
+    @JsonProperty("relationshipFromA")
+    @Column
+    public boolean relationshipFromA;
+
+    @JsonProperty("displayName")
+    @Column
+    public String displayName;
+
+    @JsonProperty("selectIncidentDatesInFuture")
+    @Column
+    public boolean selectIncidentDatesInFuture;
 
     @JsonProperty("trackedEntity")
     @Column(columnType = Column.FOREIGN_KEY,
@@ -24,8 +92,11 @@ public class Program extends BaseDataModel {
             columnType = String.class, foreignColumnName = "id")})
     public TrackedEntity trackedEntity;
 
-    @JsonProperty("programStages")
+    //@JsonProperty("programStages")
     private List<ProgramStage> programStages;
+
+    @JsonProperty("programTrackedEntityAttributes")
+    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
@@ -49,8 +120,18 @@ public class Program extends BaseDataModel {
     public List<ProgramStage> getProgramStages() {
         if(programStages == null) {
             programStages = Select.all(ProgramStage.class,
-                    Condition.column(ProgramStage$Table.PROGRAM_PROGRAM).is(id));
+                    Condition.column(ProgramStage$Table.PROGRAM).is(id));
         }
         return programStages;
     }
+
+    public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {
+        if(programTrackedEntityAttributes == null) {
+            programTrackedEntityAttributes = Select.all(ProgramTrackedEntityAttribute.class,
+                    Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(id));
+        }
+        return programTrackedEntityAttributes;
+    }
+
+
 }

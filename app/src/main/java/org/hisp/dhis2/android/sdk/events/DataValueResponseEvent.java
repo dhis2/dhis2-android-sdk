@@ -27,13 +27,13 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.network.managers;
+package org.hisp.dhis2.android.sdk.events;
 
-import com.squareup.okhttp.Credentials;
-
-public final class Base64Manager {
-
-    public static String toBase64(String username, String password) {
-        return Credentials.basic(username, password);
+/**
+ * @author Simen Skogly Russnes on 24.02.15.
+ */
+public class DataValueResponseEvent<T> extends ResponseEvent {
+    public DataValueResponseEvent(EventType eventType) {
+        super(eventType);
     }
 }

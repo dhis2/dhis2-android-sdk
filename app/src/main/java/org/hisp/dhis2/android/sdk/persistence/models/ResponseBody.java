@@ -27,13 +27,30 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.network.managers;
+package org.hisp.dhis2.android.sdk.persistence.models;
 
-import com.squareup.okhttp.Credentials;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class Base64Manager {
+import java.util.List;
 
-    public static String toBase64(String username, String password) {
-        return Credentials.basic(username, password);
+/**
+ * @author Simen Skogly Russnes on 24.02.15.
+ */
+public class ResponseBody {
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+        // do something: put to a Map; log a warning, whatever
     }
+
+    @JsonProperty("imported")
+    public int imported;
+
+    @JsonProperty("ignored")
+    public int ignored;
+
+    @JsonProperty("importSummaries")
+    public List<ImportSummary> importSummaries;
+
 }

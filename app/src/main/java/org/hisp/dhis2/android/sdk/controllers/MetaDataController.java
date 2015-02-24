@@ -1,3 +1,32 @@
+/*
+ *  Copyright (c) 2015, University of Oslo
+ *  * All rights reserved.
+ *  *
+ *  * Redistribution and use in source and binary forms, with or without
+ *  * modification, are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *  * list of conditions and the following disclaimer.
+ *  *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *  * this list of conditions and the following disclaimer in the documentation
+ *  * and/or other materials provided with the distribution.
+ *  * Neither the name of the HISP project nor the names of its contributors may
+ *  * be used to endorse or promote products derived from this software without
+ *  * specific prior written permission.
+ *  *
+ *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
 package org.hisp.dhis2.android.sdk.controllers;
 
 import android.content.Context;
@@ -19,7 +48,7 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSmallOptionSetsTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.MessageEvent;
-import org.hisp.dhis2.android.sdk.events.ResponseEvent;
+import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
@@ -64,17 +93,25 @@ public class MetaDataController {
     /**
      * Returns a list of programs assigned to the given organisation unit id
      * @param organisationUnitId
+     * @param kind set to null to get all programs. Else get kinds Strings from Program.
      * @return
      */
-    public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId) {
+    public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
+                                                               String kind) {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships =
+                organisationUnitProgramRelationships=
                 Select.all(OrganisationUnitProgramRelationship.class,
-                Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
-                        is(organisationUnitId));
+                        Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
+                                is(organisationUnitId));
+
+
+
         List<Program> programs = new ArrayList<Program>();
         for(OrganisationUnitProgramRelationship oupr: organisationUnitProgramRelationships ) {
-            List<Program> plist = Select.all(Program.class,
-                    Condition.column(Program$Table.ID).is(oupr.programId));
+            List<Condition> conditions = new ArrayList<Condition>();
+            conditions.add(Condition.column(Program$Table.ID).is(oupr.programId));
+            if(kind!=null) conditions.add(Condition.column(Program$Table.KIND).is(kind));
+            List<Program> plist = new Select().from(Program.class).where(conditions.toArray(new Condition[]{})).queryList();
             programs.addAll(plist); //will only be one but Idk how to query for one..
         }
         return programs;
@@ -134,8 +171,8 @@ public class MetaDataController {
      */
     private void loadAssignedPrograms() {
         final ResponseHolder<List<OrganisationUnit>> holder = new ResponseHolder<List<OrganisationUnit>>();
-        final ResponseEvent<List<OrganisationUnit>> event = new
-                ResponseEvent<List<OrganisationUnit>>(ResponseEvent.EventType.loadAssignedPrograms);
+        final MetaDataResponseEvent<List<OrganisationUnit>> event = new
+                MetaDataResponseEvent<List<OrganisationUnit>>(BaseEvent.EventType.loadAssignedPrograms);
         event.setResponseHolder(holder);
         LoadAssignedProgramsTask task = new LoadAssignedProgramsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OrganisationUnit>>() {
@@ -188,8 +225,8 @@ public class MetaDataController {
      */
     private void loadProgram(String id) {
         final ResponseHolder<Program> holder = new ResponseHolder<>();
-        final ResponseEvent<Program> event = new
-                ResponseEvent<Program>(ResponseEvent.EventType.loadProgram);
+        final MetaDataResponseEvent<Program> event = new
+                MetaDataResponseEvent<Program>(BaseEvent.EventType.loadProgram);
         event.setResponseHolder(holder);
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Program>() {
@@ -220,9 +257,9 @@ public class MetaDataController {
      */
     private void loadProgramStages() {
         final ResponseHolder<List<ProgramStage>> holder = new ResponseHolder<>();
-        final ResponseEvent<List<ProgramStage>> event = new
-                ResponseEvent<List<ProgramStage>>
-                (ResponseEvent.EventType.loadProgramStages);
+        final MetaDataResponseEvent<List<ProgramStage>> event = new
+                MetaDataResponseEvent<List<ProgramStage>>
+                (BaseEvent.EventType.loadProgramStages);
         event.setResponseHolder(holder);
         LoadProgramStagesTask task = new LoadProgramStagesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<ProgramStage>>() {
@@ -269,9 +306,9 @@ public class MetaDataController {
      */
     private void loadSmallOptionSets() {
         final ResponseHolder<List<OptionSet>> holder = new ResponseHolder<>();
-        final ResponseEvent<List<OptionSet>> event = new
-                ResponseEvent<List<OptionSet>>
-                (ResponseEvent.EventType.loadSmallOptionSet);
+        final MetaDataResponseEvent<List<OptionSet>> event = new
+                MetaDataResponseEvent<List<OptionSet>>
+                (BaseEvent.EventType.loadSmallOptionSet);
         event.setResponseHolder(holder);
         LoadSmallOptionSetsTask task = new LoadSmallOptionSetsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OptionSet>>() {
@@ -313,9 +350,9 @@ public class MetaDataController {
 
     private void loadDataElements() {
         final ResponseHolder<List<DataElement>> holder = new ResponseHolder<>();
-        final ResponseEvent<List<DataElement>> event = new
-                ResponseEvent<List<DataElement>>
-                (ResponseEvent.EventType.loadDataElements);
+        final MetaDataResponseEvent<List<DataElement>> event = new
+                MetaDataResponseEvent<List<DataElement>>
+                (BaseEvent.EventType.loadDataElements);
         event.setResponseHolder(holder);
         LoadDataElementsTask task = new LoadDataElementsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<DataElement>>() {
@@ -350,7 +387,7 @@ public class MetaDataController {
 
     private void finishLoading() {
 
-        MessageEvent event = new MessageEvent(ResponseEvent.EventType.onLoadingMetaDataFinished);
+        MessageEvent event = new MessageEvent(BaseEvent.EventType.onLoadingMetaDataFinished);
         Dhis2Application.bus.post(event);
     }
 
@@ -358,18 +395,16 @@ public class MetaDataController {
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         LocalDate localDate = new LocalDate();
-        Log.e("ddd", localDate.toString());
-        //dateTime.g
         editor.putString(LAST_UPDATED, localDate.toString());
         editor.commit();
         finishLoading();
     }
 
     @Subscribe
-    public void onResponse(ResponseEvent event) {
+    public void onResponse(MetaDataResponseEvent event) {
         Log.e(CLASS_TAG, "onResponse");
         if (event.getResponseHolder().getItem() != null) {
-            if (event.eventType == ResponseEvent.EventType.loadAssignedPrograms) {
+            if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
                 List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
                         event.getResponseHolder().getItem();
                 ArrayList<String> assignedPrograms = new ArrayList<String>();
@@ -389,7 +424,7 @@ public class MetaDataController {
 
 
                 loadPrograms(assignedPrograms);
-            } else if (event.eventType == ResponseEvent.EventType.loadProgram ) {
+            } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
 
                 //Have to set program reference in ptea manually because it is not referenced in
@@ -401,11 +436,11 @@ public class MetaDataController {
 
                 requestCounter--;
                 if(requestCounter>0) {
-                    loadProgram(assignedPrograms.get(requestCounter));
+                    loadProgram(assignedPrograms.get(requestCounter-1));
                 } else {
                     loadProgramStages();
                 }
-            } else if( event.eventType == ResponseEvent.EventType.loadProgramStages ) {
+            } else if( event.eventType == BaseEvent.EventType.loadProgramStages ) {
                 List<ProgramStage> programStages = ( List<ProgramStage> ) event.
                         getResponseHolder().getItem();
                 for(ProgramStage ps: programStages ) {
@@ -415,7 +450,7 @@ public class MetaDataController {
                     }
                 }
                 loadOptionSets();
-            } else if( event.eventType == ResponseEvent.EventType.loadSmallOptionSet ) {
+            } else if( event.eventType == BaseEvent.EventType.loadSmallOptionSet ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
                 for(OptionSet os: optionSets ) {
                     for( Option o: os.options ) {
@@ -425,7 +460,7 @@ public class MetaDataController {
                     os.save(false);
                 }
                 loadLargeOptionSets();
-            } else if( event.eventType == ResponseEvent.EventType.loadDataElements ) {
+            } else if( event.eventType == BaseEvent.EventType.loadDataElements ) {
                 List<DataElement> dataElements = ( List<DataElement> ) event.getResponseHolder().getItem();
                 for(DataElement de: dataElements ) {
                     de.save(false);
@@ -433,7 +468,8 @@ public class MetaDataController {
                 onFinishLoading();
             }
         } else {
-            event.getResponseHolder().getApiException().printStackTrace();
+            if(event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null)
+                event.getResponseHolder().getApiException().printStackTrace();
         }
     }
 }

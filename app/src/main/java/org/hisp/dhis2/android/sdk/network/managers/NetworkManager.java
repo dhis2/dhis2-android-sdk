@@ -77,7 +77,6 @@ public class NetworkManager {
     }
 
     public void setServerUrl(String serverUrl) {
-        Log.e("ddd", "setting serverUrl" + serverUrl);
         this.serverUrl = serverUrl;
     }
 

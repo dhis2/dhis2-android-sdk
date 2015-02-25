@@ -74,6 +74,7 @@ public class DataValueController {
      * Tries to send locally stored data to the server
      */
     public void sendLocalData() {
+        //String serverUrl = Dhis2.getInstance().getServer()
         if(sending) return;
         sending = true;
         sendEvents();
@@ -136,6 +137,14 @@ public class DataValueController {
                     Event event = localEvents.get(sendCounter-1);
                     event.delete(false);
                     localEvents.remove(sendCounter-1);
+                    sendCounter--;
+                    if(sendCounter > 0)
+                        sendEvent(localEvents.get(sendCounter-1));
+                    else
+                        onFinishSending();
+                } else {
+                    //TODO: do something to handle the failed items.
+
                     sendCounter--;
                     if(sendCounter > 0)
                         sendEvent(localEvents.get(sendCounter-1));

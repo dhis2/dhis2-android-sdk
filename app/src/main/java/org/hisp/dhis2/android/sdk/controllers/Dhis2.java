@@ -58,6 +58,7 @@ public final class Dhis2 {
     private final static String USERNAME = "username";
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
+    private final static String CREDENTIALS = "credentials";
     private static Dhis2 dhis2;
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
@@ -104,6 +105,8 @@ public final class Dhis2 {
         editor.putString(USERNAME, username);
         editor.putString(PASSWORD, password);
         editor.putString(SERVER, serverUrl);
+        editor.putString(CREDENTIALS, NetworkManager.getInstance().getBase64Manager()
+                .toBase64(username, password));
         editor.commit();
     }
 
@@ -123,6 +126,12 @@ public final class Dhis2 {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String server = prefs.getString(SERVER, null);
         return server;
+    }
+
+    public String getCredentials(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String credentials = prefs.getString(CREDENTIALS, null);
+        return credentials;
     }
 
     /**

@@ -37,6 +37,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 
 /**
  *	This class can be activated to periodically synchronize with a DHIS 2 server to fetch newly updated meta data and
@@ -49,7 +50,12 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.e(CLASS_TAG, " onReceive periodique ");
-        //Dhis2.getInstance().getDataValueController().sendLocalData();
+        String serverUrl = Dhis2.getInstance().getServer(context);
+        String credentials = Dhis2.getInstance().getCredentials(context);
+        if(serverUrl == null || credentials == null) return;
+        NetworkManager.getInstance().setServerUrl(serverUrl);
+        NetworkManager.getInstance().setCredentials(credentials);
+        Dhis2.getInstance().getDataValueController().sendLocalData();
 	}
 
 	/**

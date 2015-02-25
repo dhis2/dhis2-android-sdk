@@ -151,7 +151,7 @@ public class LoginActivity
         String serverFromET = serverEditText.getText().toString();
 
         String serverURL = serverFromSP;
-        if ( serverFromET != null && !serverFromET.equals( "" ) )
+        if ( serverFromET != null && !serverFromET.isEmpty() )
         {
             serverURL = serverFromET;
         }

@@ -30,6 +30,7 @@
 package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -41,6 +42,10 @@ import java.util.List;
  */
 @Table
 public class OptionSet extends BaseIdentifiableObject {
+
+    @JsonProperty("version")
+    @Column
+    public int version;
 
     @JsonProperty("options")
     public List<Option> options;

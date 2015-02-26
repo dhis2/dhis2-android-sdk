@@ -27,23 +27,31 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
+package org.hisp.dhis2.android.sdk.persistence.models;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Simen Skogly Russnes on 26.02.15.
  */
-public class BaseEvent {
+@Table
+public class FailedItem extends BaseModel {
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished, showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment, sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets, loadProgram
-    }
+    public static final String EVENT = "Event";
+    // add more like TrackedEntityInstance, Enrollment .. in the future
 
-    public EventType eventType;
+    @Column(columnType = Column.PRIMARY_KEY)
+    public String itemId;
 
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
-    }
-    public BaseEvent() {}
+    @Column
+    public String itemType;
+
+    @Column(columnType = Column.FOREIGN_KEY,
+            references = {@ForeignKeyReference(columnName = "importSummary",
+                    columnType = int.class, foreignColumnName = "id")})
+    public ImportSummary importSummary;
+
 }

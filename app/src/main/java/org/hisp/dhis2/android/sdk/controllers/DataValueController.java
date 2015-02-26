@@ -46,6 +46,7 @@ import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis2.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ResponseBody;
@@ -71,11 +72,23 @@ public class DataValueController {
     }
 
     /**
+     * Returns a list of failed items from the database, or null if there are none.
+     * @return
+     */
+    public List<FailedItem> getFailedItems() {
+        List<FailedItem> failedItems = Select.all(FailedItem.class);
+        if(failedItems == null || failedItems.size() <= 0) return null;
+        else return failedItems;
+    }
+
+    /**
      * Tries to send locally stored data to the server
      */
     public void sendLocalData() {
+        Log.d(CLASS_TAG, "sending local data");
         //String serverUrl = Dhis2.getInstance().getServer()
-        if(sending) return;
+        if(sending || Dhis2.getInstance().getMetaDataController().isLoading() ||
+                Dhis2.getInstance().getMetaDataController().isSynchronizing()) return;
         sending = true;
         sendEvents();
     }
@@ -137,20 +150,18 @@ public class DataValueController {
                     Event event = localEvents.get(sendCounter-1);
                     event.delete(false);
                     localEvents.remove(sendCounter-1);
-                    sendCounter--;
-                    if(sendCounter > 0)
-                        sendEvent(localEvents.get(sendCounter-1));
-                    else
-                        onFinishSending();
-                } else {
-                    //TODO: do something to handle the failed items.
-
-                    sendCounter--;
-                    if(sendCounter > 0)
-                        sendEvent(localEvents.get(sendCounter-1));
-                    else
-                        onFinishSending();
+                } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
+                    FailedItem failedItem = new FailedItem();
+                    failedItem.importSummary = responseBody.importSummaries.get(0);
+                    failedItem.itemId = localEvents.get(sendCounter-1).id; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemType = FailedItem.EVENT;
+                    failedItem.save(false);
                 }
+                sendCounter--;
+                if(sendCounter > 0)
+                    sendEvent(localEvents.get(sendCounter-1));
+                else
+                    onFinishSending();
             }
         } else {
             //TODO: handle exceptions..
@@ -158,6 +169,10 @@ public class DataValueController {
                 responseEvent.getResponseHolder().getApiException().printStackTrace();
             onFinishSending();
         }
+    }
+
+    public boolean isSending() {
+        return sending;
     }
 
 }

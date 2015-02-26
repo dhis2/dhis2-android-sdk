@@ -27,16 +27,30 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.controllers;
+package org.hisp.dhis2.android.sdk.persistence.models;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
- * Handles synchronization of Meta Data from the server to the client.
- * @author Simen Skogly Russnes on 25.02.15.
+ * @author Simen Skogly Russnes on 26.02.15.
  */
-public class MetaDataSynchronizer {
+@Table
+public class SystemInfo extends BaseModel {
 
-    public MetaDataSynchronizer() {
-
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+        // do something: put to a Map; log a warning, whatever
     }
+
+    @Column(columnType = Column.PRIMARY_KEY)
+    public int id = 1; //there should only be one row of this which overwrites every time its reloaded
+
+    @JsonProperty("serverDate")
+    @Column
+    public String serverDate;
 
 }

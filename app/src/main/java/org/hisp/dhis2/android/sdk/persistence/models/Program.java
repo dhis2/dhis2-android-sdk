@@ -127,7 +127,7 @@ public class Program extends BaseIdentifiableObject {
             columnType = String.class, foreignColumnName = "id")})
     public TrackedEntity trackedEntity;
 
-    //@JsonProperty("programStages")
+    @JsonProperty("programStages")
     private List<ProgramStage> programStages;
 
     @JsonProperty("programTrackedEntityAttributes")

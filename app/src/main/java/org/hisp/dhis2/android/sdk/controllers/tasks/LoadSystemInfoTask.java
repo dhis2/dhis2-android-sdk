@@ -29,28 +29,34 @@
 
 package org.hisp.dhis2.android.sdk.controllers.tasks;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis2.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Header;
 import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-/**
- * Deprecated. LoadProgramTask handles loading of ProgramStages
- */
-public class LoadProgramStagesTask implements INetworkTask {
-    private final ApiRequest.Builder<List<ProgramStage>> requestBuilder;
 
-    public LoadProgramStagesTask(NetworkManager networkManager,
-                                 ApiRequestCallback<List<ProgramStage>> callback) {
+public class LoadSystemInfoTask implements INetworkTask {
+    private final ApiRequest.Builder<SystemInfo> requestBuilder;
+
+    /**
+     * @param networkManager
+     * @param callback
+     */
+    public LoadSystemInfoTask(NetworkManager networkManager,
+                              ApiRequestCallback<SystemInfo> callback) {
 
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
@@ -61,7 +67,7 @@ public class LoadProgramStagesTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/programStages?paging=false&fields=[:all]";
+        String url = networkManager.getServerUrl() + "/api/system/info";
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

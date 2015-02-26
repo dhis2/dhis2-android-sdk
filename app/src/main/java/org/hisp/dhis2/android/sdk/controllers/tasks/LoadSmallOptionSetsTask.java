@@ -60,7 +60,7 @@ public class LoadSmallOptionSetsTask implements INetworkTask {
         headers.add(new Header("Accept", "application/json"));
 
         String url = networkManager.getServerUrl() + "/api/optionSets.json?paging=false" +
-                "&fields=created,lastUpdated,id,name,options&filter=options:lte:50";
+                "&fields=[:all]&filter=options:lte:50";
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

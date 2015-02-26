@@ -47,15 +47,20 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 
     public static final String CLASS_TAG = "PeriodicSynchronizer";
 
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.e(CLASS_TAG, " onReceive periodique ");
+		Log.d(CLASS_TAG, " onReceive periodique ");
         String serverUrl = Dhis2.getInstance().getServer(context);
         String credentials = Dhis2.getInstance().getCredentials(context);
+        Log.d(CLASS_TAG, "serverUrl: " + serverUrl);
+        Log.d(CLASS_TAG, "credentials: " + credentials);
         if(serverUrl == null || credentials == null) return;
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
-        Dhis2.getInstance().getDataValueController().sendLocalData();
+        if(Dhis2.getInstance().toggle) Dhis2.getInstance().getDataValueController().sendLocalData();
+        else Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
+        Dhis2.getInstance().toggle=!Dhis2.getInstance().toggle;
 	}
 
 	/**
@@ -64,7 +69,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param minutes the time in minutes between each time the synchronizer runs.
 	 */
 	public void ActivatePeriodicSynchronizer(Context context, int minutes) {
-		Log.e(CLASS_TAG, "activate periodic synchronizer");
+		Log.d(CLASS_TAG, "activate periodic synchronizer");
 		AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, PeriodicSynchronizer.class);
@@ -78,7 +83,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param context
 	 */
 	public void CancelPeriodicSynchronizer(Context context) {
-		Log.e(CLASS_TAG, "cancel periodic synchronizer");
+		Log.d(CLASS_TAG, "cancel periodic synchronizer");
 		Intent intent = new Intent(context, PeriodicSynchronizer.class);
 		PendingIntent sender = PendingIntent
 				.getBroadcast(context, 0, intent, 0);

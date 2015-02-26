@@ -29,39 +29,59 @@
 
 package org.hisp.dhis2.android.sdk.controllers.tasks;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis2.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Header;
 import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis2.android.sdk.persistence.models.OptionSet$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-/**
- * Deprecated. LoadProgramTask handles loading of ProgramStages
- */
-public class LoadProgramStagesTask implements INetworkTask {
-    private final ApiRequest.Builder<List<ProgramStage>> requestBuilder;
 
-    public LoadProgramStagesTask(NetworkManager networkManager,
-                                 ApiRequestCallback<List<ProgramStage>> callback) {
+public class LoadOptionSetTask implements INetworkTask {
+    private final ApiRequest.Builder<OptionSet> requestBuilder;
+
+    /**
+     * Loads a program from the online database. If the program has already been loaded you can
+     * set the updating flag so that it doesn't load that if it is the same as the previous version.
+     * @param networkManager
+     * @param callback
+     * @param optionSetId
+     * @param updating set to true if the program is already loaded and you don't want to re-load
+     *                 unnecessary data
+     */
+    public LoadOptionSetTask(NetworkManager networkManager,
+                             ApiRequestCallback<OptionSet> callback, String optionSetId, boolean updating) {
 
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
+        isNull(optionSetId, "Program ID must not be null");
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/programStages?paging=false&fields=[:all]";
+        String url = networkManager.getServerUrl() + "/api/optionSets/" + optionSetId + "?fields=[:all]";
+        if( updating ) {
+            List<OptionSet> result = Select.all(OptionSet.class, Condition.column(OptionSet$Table.ID).is(optionSetId));
+            if( result != null && result.size() > 0 ) {
+                int version = result.get(0).version;
+                url += "&filter=version:gt:" + version;
+            }
+        }
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

@@ -29,6 +29,8 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -73,13 +75,19 @@ public class ProgramStageDataElement extends BaseModel {
         this.programStage = (String) programStage.get("id");
     }
 
-    @JsonProperty("dataElement")
+    /*@JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
-    }
+    }*/
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String programStage;
+
+    @JsonProperty("dataElement")
+    public void setDataElement(DataElement dataElement) {
+        this.dataElement = dataElement.id;
+        dataElement.save(false);
+    }
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String dataElement;

@@ -36,21 +36,19 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-/**
- * Deprecated. LoadProgramTask handles loading of ProgramStages
- */
-public class LoadProgramStagesTask implements INetworkTask {
-    private final ApiRequest.Builder<List<ProgramStage>> requestBuilder;
 
-    public LoadProgramStagesTask(NetworkManager networkManager,
-                                 ApiRequestCallback<List<ProgramStage>> callback) {
+public class LoadTrackedEntitiesTask implements INetworkTask {
+    private final ApiRequest.Builder<List<TrackedEntity>> requestBuilder;
+
+    public LoadTrackedEntitiesTask(NetworkManager networkManager,
+                                   ApiRequestCallback<List<TrackedEntity>> callback) {
 
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
@@ -61,7 +59,7 @@ public class LoadProgramStagesTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/programStages?paging=false&fields=[:all]";
+        String url = networkManager.getServerUrl() + "/api/trackedEntities?paging=false&fields=[:all]";
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

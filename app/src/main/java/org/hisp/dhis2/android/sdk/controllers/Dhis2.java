@@ -63,6 +63,7 @@ public final class Dhis2 {
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
     private ObjectMapper objectMapper;
+    public boolean toggle = false;  //used during development stage to avoid triggering sendData and syncMeta at the same time (in periodicSyncronizer)
 
     private Dhis2() {
         objectMapper = new ObjectMapper();

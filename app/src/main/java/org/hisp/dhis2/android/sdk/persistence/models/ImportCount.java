@@ -31,27 +31,38 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * @author Simen Skogly Russnes on 24.02.15.
  */
-public class ImportCount {
+@Table
+public class ImportCount extends BaseModel{
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
+    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    public int id;
+
     @JsonProperty("imported")
+    @Column
     public int imported;
 
     @JsonProperty("updated")
+    @Column
     public int updated;
 
     @JsonProperty("ignored")
+    @Column
     public int ignored;
 
     @JsonProperty("deleted")
+    @Column
     public int deleted;
 
 }

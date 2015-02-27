@@ -31,42 +31,71 @@ package org.hisp.dhis2.android.sdk.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 
 import org.hisp.dhis2.android.sdk.R;
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.services.StartPeriodicSynchronizerService;
 
 /**
  * Simple Splash activity that displays the DHIS 2 logo for a given time and initiates the Dhis2Manager.
  */
 public class SplashActivity
-    extends Activity
-{
+        extends Activity {
 
     @Override
-    protected void onCreate( Bundle savedInstanceState )
-    {
-        super.onCreate( savedInstanceState );
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        requestWindowFeature( Window.FEATURE_NO_TITLE );
-        setContentView( R.layout.activity_splash );
-
-        new Handler().postDelayed( new Runnable()
-        {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_splash);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
-                Class<? extends Activity> nextActivity = LoginActivity.class;
+            public void run() {
+                Class<? extends Activity> nextActivity = getNextActivity();
                 //if (Dhis2Manager.getInstance().getRecordManager().getLoggedIn())
                 //	nextActivity = PinActivity.class;
 
-                Intent i = new Intent( SplashActivity.this, nextActivity );
-                startActivity( i );
+                Intent i = new Intent(SplashActivity.this, nextActivity);
+                startActivity(i);
                 finish();
             }
-        }, 3000 );
+        }, 3000);
         startService(new Intent(this, StartPeriodicSynchronizerService.class));
+    }
+
+    private Class<? extends Activity> getNextActivity() {
+        Class<? extends Activity> nextClass = LoginActivity.class;
+        User user = null;
+        String userName = Dhis2.getInstance().getUsername(this);
+
+        if ((userName != null) && (userName != "")) {
+            ApplicationInfo ai = null;
+            try {
+                ai = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                return nextClass;
+            }
+            Bundle bundle = ai.metaData;
+            String nextClassName = bundle.getString("nextClassName");
+
+            if (nextClassName != null) {
+                try {
+                    nextClass = (Class<? extends Activity>) Class.forName(nextClassName);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    return LoginActivity.class;
+                }
+            }
+        }
+
+
+        return nextClass;
     }
 }

@@ -34,6 +34,8 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+
 /**
  * @author Simen Skogly Russnes on 26.02.15.
  */
@@ -53,5 +55,13 @@ public class FailedItem extends BaseModel {
             references = {@ForeignKeyReference(columnName = "importSummary",
                     columnType = int.class, foreignColumnName = "id")})
     public ImportSummary importSummary;
+
+    public BaseModel getItem() {
+        BaseModel item = null;
+        if(itemType == EVENT) {
+            item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
+        }
+        return item;
+    }
 
 }

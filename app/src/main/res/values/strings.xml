@@ -222,6 +222,7 @@
     <string name="uploading_error">An error has occurred while uploading. Your data has been saved, and you can try uploading again later. Press OK to see upload summary.</string>
     <string name="loading_error_metadata">An error occurred while loading metadata. Please make sure you have are connected to the internet and resume downloading.</string>
     <string name="resume">Resume</string>
+    <string name="failed_items">Failed Items</string>
     
     <!-- Transfer -->
     <string name="destination_orgunit">Destination Organization Unit</string>
@@ -234,4 +235,5 @@
 
     <string name="discard">Discard</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
+    <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
 </resources>

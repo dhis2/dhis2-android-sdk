@@ -89,7 +89,17 @@ public class Event extends BaseModel {
     public List<DataValue> dataValues;
 
     public List<DataValue> getDataValues() {
-        return Select.all(DataValue.class, Condition.column(DataValue$Table.EVENTID).is(id));
+        if( dataValues == null) dataValues = Select.all(DataValue.class,
+                Condition.column(DataValue$Table.EVENTID).is(id));
+        return dataValues;
     }
 
+    @Override
+    public void delete(boolean async) {
+        if(dataValues != null) {
+            for(DataValue dataValue: dataValues)
+                dataValue.delete(async);
+        }
+        super.delete(async);
+    }
 }

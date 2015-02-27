@@ -29,8 +29,11 @@
 
 package org.hisp.dhis2.android.sdk.fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +43,10 @@ import android.widget.ListView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.events.BaseEvent;
+import org.hisp.dhis2.android.sdk.events.MessageEvent;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis2.android.sdk.utils.FailedItemsListAdapter;
 
@@ -55,12 +62,14 @@ public class FailedItemsFragment extends Fragment {
 
     private ListView listView;
     private List<FailedItem> failedItems;
+    private FailedItem selectedFailedItem;
+    private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_failed_items,
+        this.rootView = inflater.inflate(R.layout.fragment_failed_items,
                 container, false);
         setupUi(rootView);
         return rootView;
@@ -69,13 +78,35 @@ public class FailedItemsFragment extends Fragment {
     public void setupUi(View rootView) {
         listView = (ListView) rootView.findViewById(R.id.list_view_failed_items);
 
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showItemOptions(position);
+                return true;
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showEditItemFragment(failedItems.get(position));
+            }
+        });
+
+        setupListAdapter();
+    }
+
+    public void setupListAdapter() {
         failedItems = Dhis2.getInstance().getDataValueController().getFailedItems();
+        if(failedItems == null || failedItems.isEmpty() ) return;
+
         ArrayList<String[]> values = new ArrayList<String[]>();
         for( FailedItem failedItem: failedItems ) {
-            String[] value = new String[2];
+            String[] value = new String[3];
             value[0] = failedItem.itemType;
             value[1] = failedItem.importSummary.status;
             value[2] = failedItem.importSummary.description;
+            values.add(value);
         }
         FailedItemsListAdapter listAdapter = new FailedItemsListAdapter( getActivity(), values );
         listView.setAdapter(listAdapter);
@@ -90,14 +121,6 @@ public class FailedItemsFragment extends Fragment {
 
             }
         });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showItemOptions(position);
-                return true;
-            }
-        });
     }
 
     /**
@@ -105,15 +128,72 @@ public class FailedItemsFragment extends Fragment {
      * @param failedItem
      */
     public void showEditItemFragment(FailedItem failedItem) {
-        //todo implement
+        selectedFailedItem = failedItem;
+        MessageEvent event = new MessageEvent(BaseEvent.EventType.showEditItemFragment);
+        Dhis2Application.bus.post(event);
     }
 
     /**
      * Shows a dialog with options of what to do with the selected item.
-     * @param position
+     * @param itemIndex
      */
-    public void showItemOptions(int position) {
-        //todo implement
+    public void showItemOptions(final int itemIndex) {
+        AlertDialog.Builder builder;
+
+        //ViewGroup root = (ViewGroup) getActivity().findViewById(R.id.layout_root_accountoptions);
+        View layout = getActivity().getLayoutInflater().inflate(R.layout.listoptionsdialog, null);
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setView(layout);
+        final AlertDialog dialog = builder.create();
+
+        ListView list = (ListView) layout.findViewById(R.id.listoptionsdialog_listview);
+        String[] list_options = new String[]{"Edit", "Delete"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, list_options);
+        list.setAdapter( adapter );
+        list.setOnItemClickListener( new AdapterView.OnItemClickListener()
+        {
+            public void onItemClick( AdapterView<?> parent, View view, int position, long id )
+            {
+                if(position == 0) {
+                    showEditItemFragment(failedItems.get(itemIndex));
+                } else if(position == 1) {
+                    confirmDeleteFailedItem(itemIndex);
+                }
+                dialog.dismiss();
+            }
+        } );
+
+        dialog.show();
+
     }
+
+    public void confirmDeleteFailedItem(final int index) {
+        final FailedItem failedItem = failedItems.get(index);
+        Dhis2.getInstance().showConfirmDialog(getActivity(), getString(R.string.confirm),
+                getString(R.string.confirm_delete_faileditem), getString(R.string.yes_option),
+                getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteFailedItem(failedItem);
+                        setupListAdapter();
+                    }
+                });
+    }
+
+    public void deleteFailedItem(FailedItem failedItem) {
+        if(failedItem.itemType.equals(FailedItem.EVENT)) {
+            Event event = Dhis2.getInstance().getDataValueController().getEvent(failedItem.itemId);
+            if(event!=null) {
+                event.delete(false);
+            }
+        }
+        failedItem.delete(false);
+    }
+
+    public FailedItem getSelectedFailedItem() {
+        return selectedFailedItem;
+    }
+
 
 }

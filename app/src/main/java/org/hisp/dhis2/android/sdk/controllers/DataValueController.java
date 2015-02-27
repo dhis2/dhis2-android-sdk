@@ -71,6 +71,13 @@ public class DataValueController {
         Dhis2Application.bus.register(this);
     }
 
+    public Event getEvent(String eventId) {
+        Log.e(CLASS_TAG, "getting event for: " + eventId);
+        List<Event> result = Select.all(Event.class, Condition.column(Event$Table.ID).is(eventId));
+        if( result != null && !result.isEmpty() ) return result.get(0);
+        else return null;
+    }
+
     /**
      * Returns a list of failed items from the database, or null if there are none.
      * @return
@@ -137,6 +144,14 @@ public class DataValueController {
     }
 
     public void onFinishSending() {
+        //check if some failed items have been approved. Then delete the FailedItem
+        List<FailedItem> failedItems = getFailedItems();
+        if(failedItems!=null) {
+            for(FailedItem failedItem: failedItems) {
+                if(failedItem.getItem() == null) failedItem.delete(false);
+            }
+        }
+
         sending = false;
     }
 

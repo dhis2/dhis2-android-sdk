@@ -70,6 +70,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
+import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.joda.time.LocalDate;
 
@@ -153,6 +154,15 @@ public class MetaDataController {
         if(result != null && result.size() > 0)
             return result.get(0);
         else return null;
+    }
+
+    public static User getUser() {
+        List<User> users = Select.all(User.class);
+        if (users.size() == 0) {
+            return null;
+        } else {
+            return users.get(0);
+        }
     }
 
     /**

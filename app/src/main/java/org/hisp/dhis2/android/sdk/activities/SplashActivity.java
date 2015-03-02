@@ -39,6 +39,7 @@ import android.view.Window;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.services.StartPeriodicSynchronizerService;
 
@@ -71,10 +72,8 @@ public class SplashActivity
 
     private Class<? extends Activity> getNextActivity() {
         Class<? extends Activity> nextClass = LoginActivity.class;
-        User user = null;
-        String userName = Dhis2.getInstance().getUsername(this);
 
-        if ((userName != null) && (userName != "")) {
+        if (MetaDataController.getUser() != null) {
             ApplicationInfo ai = null;
             try {
                 ai = getPackageManager().getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);

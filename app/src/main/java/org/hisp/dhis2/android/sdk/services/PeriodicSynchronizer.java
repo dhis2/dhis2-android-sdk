@@ -47,6 +47,14 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 
     public static final String CLASS_TAG = "PeriodicSynchronizer";
 
+    private static PeriodicSynchronizer periodicSynchronizer;
+    private int currentInterval = 15;
+
+    public static PeriodicSynchronizer getInstance() {
+        if(periodicSynchronizer == null) periodicSynchronizer = new PeriodicSynchronizer();
+        return periodicSynchronizer;
+    }
+
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -58,7 +66,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         if(serverUrl == null || credentials == null) return;
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
-        if(Dhis2.getInstance().toggle) Dhis2.getInstance().getDataValueController().sendLocalData();
+        if(Dhis2.getInstance().toggle) Dhis2.getInstance().getDataValueController().synchronizeDataValues(context);
         else Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
         Dhis2.getInstance().toggle=!Dhis2.getInstance().toggle;
 	}
@@ -91,4 +99,42 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 				.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.cancel(sender);
 	}
+
+    /**
+     * Returns the set update interval in minutes
+     * @param context
+     * @return
+     */
+    public static int getInterval(Context context) {
+        int frequencyIndex = Dhis2.getUpdateFrequency(context);
+        int minutes = 15;
+        switch (frequencyIndex) {
+            case 0: //1 minutes
+                minutes = 1;
+                break;
+            case 1: //15 minutes
+                minutes = 15;
+                break;
+            case 2: //1 hour
+                minutes = 1 * 60;
+                break;
+            case 3:// 1 day
+                minutes = 1 * 60 * 24;
+                break;
+        }
+        return minutes;
+    }
+
+    /**
+     * ReActivates the PeriodicSyncronizer if the time interval has changed.
+     * @return
+     */
+    public static void reActivate(Context context) {
+        int interval = getInterval(context);
+        if (interval != getInstance().currentInterval) {
+            getInstance().CancelPeriodicSynchronizer(context);
+            getInstance().ActivatePeriodicSynchronizer(context, interval);
+            getInstance().currentInterval = interval;
+        }
+    }
 }

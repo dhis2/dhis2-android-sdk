@@ -37,7 +37,7 @@ import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 public class BaseEvent {
 
     public static enum EventType {
-        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished, showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment, sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets, showEditItemFragment, showFailedItemsFragment, loadProgram
+        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished, showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment, sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets, showEditItemFragment, showFailedItemsFragment, logout, loadProgram
     }
 
     public EventType eventType;

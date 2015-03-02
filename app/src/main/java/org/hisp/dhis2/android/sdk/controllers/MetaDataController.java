@@ -612,7 +612,10 @@ public class MetaDataController {
         if (event.getResponseHolder().getItem() != null) {
             if (event.eventType == BaseEvent.EventType.loadSystemInfo) {
                 SystemInfo systemInfo = (SystemInfo) event.getResponseHolder().getItem();
-                systemInfo.save(false);
+                List<SystemInfo> result = Select.all(SystemInfo.class);
+                if( result != null && !result.isEmpty() )
+                    systemInfo.update(false);
+                else systemInfo.save(false);
                 Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
                 onFinishLoading();
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {

@@ -38,10 +38,7 @@ import android.util.Log;
 public class StartPeriodicSynchronizerService extends Service {
 
     public static final String CLASS_TAG = "StartPeriodicSynchronizerService";
-	
-	int minutes = 1;
 
-	PeriodicSynchronizer periodicSynchronizer = new PeriodicSynchronizer();
     public void onCreate()
     {
     	Log.e(CLASS_TAG, "startperiodicsyncservice oncreate");
@@ -52,14 +49,14 @@ public class StartPeriodicSynchronizerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) 
 	{
     	Log.e(CLASS_TAG, "startperiodicsyncservice onstartcommand");
-         periodicSynchronizer.ActivatePeriodicSynchronizer(StartPeriodicSynchronizerService.this, minutes);
+         PeriodicSynchronizer.getInstance().ActivatePeriodicSynchronizer(StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval(this));
 	     return START_STICKY;
 	}
 
-    public void onStart(Context context,Intent intent, int startId)
+    public void onStart(Context context, Intent intent, int startId)
     {
     	Log.e(CLASS_TAG, "startperiodicsyncservice onstart");
-        periodicSynchronizer.ActivatePeriodicSynchronizer(context, minutes);
+        PeriodicSynchronizer.getInstance().ActivatePeriodicSynchronizer(context, PeriodicSynchronizer.getInterval(context));
     }
 	
 	@Override

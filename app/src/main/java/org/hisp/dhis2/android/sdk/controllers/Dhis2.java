@@ -46,6 +46,7 @@ import org.hisp.dhis2.android.sdk.network.managers.Base64Manager;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
+import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 
@@ -53,6 +54,9 @@ import java.io.IOException;
 
 public final class Dhis2 {
 
+    public static final String LOAD_TRACKER = "load_tracker";
+
+    public static final String UPDATE_FREQUENCY = "update_frequency";
     public final static String QUEUED = "queued";
     public final static String PREFS_NAME = "DHIS2";
     private final static String USERNAME = "username";
@@ -75,6 +79,55 @@ public final class Dhis2 {
         }
 
         return dhis2;
+    }
+
+    /**
+     * Logs out the current user
+     */
+    public static void logout(Context context) {
+        Dhis2.getInstance().setServer(null);
+        Dhis2.getInstance().saveCredentials(context, null, null, null);
+        NetworkManager.getInstance().setCredentials(null);
+    }
+
+    /**
+     * Returns the currently set Update Frequency
+     * @param context
+     * @return
+     */
+    public static int getUpdateFrequency(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        int updateFrequency = sharedPreferences.getInt(UPDATE_FREQUENCY, 0);
+        return updateFrequency;
+    }
+
+    /**
+     * Sets the update frequency by an integer referencing the indexes in the update_frequencies string-array
+     * @param context
+     * @param frequency index of update frequencies. See update_frequencies string-array
+     */
+    public static void setUpdateFrequency(Context context, int frequency) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(UPDATE_FREQUENCY, frequency);
+        editor.commit();
+        PeriodicSynchronizer.reActivate(context);
+
+    }
+
+    /**
+     * Enables loading of different data
+     * @param flag
+     */
+    public void enableLoading(Context context, String flag) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(flag, true);
+    }
+
+    public boolean isLoadTrackerDataEnabled(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(LOAD_TRACKER, false);
     }
 
     public ObjectMapper getObjectMapper() {

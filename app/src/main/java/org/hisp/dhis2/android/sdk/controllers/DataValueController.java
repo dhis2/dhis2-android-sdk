@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.controllers;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -86,6 +87,26 @@ public class DataValueController {
         List<FailedItem> failedItems = Select.all(FailedItem.class);
         if(failedItems == null || failedItems.size() <= 0) return null;
         else return failedItems;
+    }
+
+    /**
+     * Loads user generated data from the server. Which data is loaded is determined by enabling
+     * or disabling flags in DHIS 2.
+     */
+    public void synchronizeDataValues(Context context) {
+        if(Dhis2.getInstance().isLoadTrackerDataEnabled(context)) {
+            loadTrackerData();
+        } else {
+            sendLocalData();
+        }
+    }
+
+    /**
+     * Loads Tracker Related data including Tracked Entity Instances, Enrollments and Events
+     * for the current user's assigned programs and organisation units.
+     */
+    public void loadTrackerData() {
+
     }
 
     /**

@@ -236,4 +236,13 @@
     <string name="discard">Discard</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
+    <string name="logout">Log out</string>
+    <string name="update_frequency">Update frequency</string>
+
+    <string-array name="update_frequencies">
+        <item>1 Minute</item>
+        <item>15 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+    </string-array>
 </resources>

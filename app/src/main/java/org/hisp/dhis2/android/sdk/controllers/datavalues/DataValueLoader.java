@@ -352,8 +352,12 @@ public class DataValueLoader {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
                     event.save(false);
-                    if(event.dataValues != null)
-                        for(DataValue dataValue: event.dataValues) dataValue.save(false);
+                    if(event.dataValues != null) {
+                        for(DataValue dataValue: event.dataValues) {
+                            dataValue.event = event.event;
+                            dataValue.save(false);
+                        }
+                    }
                 }
                 programCounter--;
                 if( programCounter <= 0) {

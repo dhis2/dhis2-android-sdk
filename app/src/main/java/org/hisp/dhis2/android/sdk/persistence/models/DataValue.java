@@ -30,6 +30,7 @@
 package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -39,15 +40,15 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
-@JsonIgnoreProperties({"eventId"})
 @Table
 public class DataValue extends BaseModel {
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
 
+    @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
-    public String eventId;
+    public String event;
 
     @JsonProperty("value")
     @Column
@@ -67,9 +68,9 @@ public class DataValue extends BaseModel {
 
     public DataValue() {}
 
-    public DataValue(String eventId, String value, String dataElement, boolean providedElsewhere,
+    public DataValue(String event, String value, String dataElement, boolean providedElsewhere,
                      String storedBy) {
-        this.eventId = eventId;
+        this.event = event;
         this.value = value;
         this.dataElement = dataElement;
         this.providedElsewhere = providedElsewhere;

@@ -44,7 +44,6 @@ import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
@@ -78,7 +77,9 @@ public class DataValueSender {
         List<FailedItem> failedItems = DataValueController.getFailedItems();
         if(failedItems!=null) {
             for(FailedItem failedItem: failedItems) {
-                if(failedItem.getItem() == null) failedItem.delete(false);
+                if(failedItem.getItem() == null) {
+                    failedItem.delete(false);
+                }
             }
         }
 
@@ -89,7 +90,7 @@ public class DataValueSender {
      * Tries to send events
      */
     private void sendEvents() {
-        localEvents = Select.all(Event.class, Condition.column(Event$Table.ID).like(Dhis2.QUEUED + "%"));
+        localEvents = Select.all(Event.class, Condition.column(Event$Table.FROMSERVER).is(false));
         Log.e(CLASS_TAG, "got this many events:" + localEvents.size());
         sendCounter = localEvents.size();
         if(sendCounter>0) {
@@ -98,6 +99,7 @@ public class DataValueSender {
     }
 
     private void sendEvent(Event event) {
+        Log.d(CLASS_TAG, "sending event: "+ event.event);
         final ResponseHolder<ResponseBody> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ResponseBody> responseEvent = new
                 DataValueResponseEvent<ResponseBody>(ResponseEvent.EventType.sendEvent);
@@ -116,19 +118,19 @@ public class DataValueSender {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
                         }
-                        Dhis2Application.bus.post(responseEvent);
+                        onResponse(responseEvent);
                     }
 
                     @Override
                     public void onFailure(APIException exception) {
                         holder.setApiException(exception);
-                        Dhis2Application.bus.post(responseEvent);
+                        onResponse(responseEvent);
                     }
                 }, event, event.getDataValues());
         task.execute();
     }
 
-    public void onResponse(ResponseEvent responseEvent) {
+    private void onResponse(ResponseEvent responseEvent) {
         if (responseEvent.getResponseHolder().getApiException() == null) {
             if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
                 ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
@@ -137,11 +139,13 @@ public class DataValueSender {
                     event.delete(false);
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
+                    Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = responseBody.importSummaries.get(0);
-                    failedItem.itemId = localEvents.get(sendCounter-1).id; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemId = localEvents.get(sendCounter-1).event; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.EVENT;
                     failedItem.save(false);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
                 sendCounter--;
                 if(sendCounter > 0)

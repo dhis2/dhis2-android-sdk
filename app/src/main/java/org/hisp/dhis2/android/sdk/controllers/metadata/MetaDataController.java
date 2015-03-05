@@ -30,37 +30,16 @@
 package org.hisp.dhis2.android.sdk.controllers.metadata;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.squareup.otto.Subscribe;
 
-import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadAssignedProgramsTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadDataElementsTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramStagesTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSmallOptionSetsTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntitiesTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateOptionSetsTask;
-import org.hisp.dhis2.android.sdk.events.BaseEvent;
-import org.hisp.dhis2.android.sdk.events.LoadingEvent;
-import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
-import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis2.android.sdk.network.http.Response;
-import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement$Table;
-import org.hisp.dhis2.android.sdk.persistence.models.Option;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
@@ -68,18 +47,10 @@ import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRela
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
-import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
-import org.hisp.dhis2.android.sdk.utils.APIException;
-import org.joda.time.LocalDate;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**

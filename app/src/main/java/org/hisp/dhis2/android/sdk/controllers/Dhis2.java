@@ -331,14 +331,22 @@ public final class Dhis2 {
 
     /**
      * Called after meta data and data values have finished loading
+     * todo: as more options for data loading is added, expand this to something more comprehensible
      */
     private static void onFinishLoading() {
         Log.e(CLASS_TAG, "onFinishLoading");
-        if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA)  &&
-        ( (isLoadTrackerDataEnabled(getInstance().context))
-                && hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) ){
-            Log.e(CLASS_TAG, "saving full loading success");
-            setHasLoadedInitialData(getInstance().context, true);
+        if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA) ) {
+            if ( isLoadTrackerDataEnabled(getInstance().context) ) {
+                if( hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) {
+                    Log.e(CLASS_TAG, "saving full loading success");
+                    setHasLoadedInitialData(getInstance().context, true);
+                } else {
+                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                }
+            } else {
+                Log.e(CLASS_TAG, "saving full loading success");
+                setHasLoadedInitialData(getInstance().context, true);
+            }
         } else {
             //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
         }

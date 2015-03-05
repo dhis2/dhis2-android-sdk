@@ -29,6 +29,8 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -37,10 +39,13 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 
 /**
+ * Class for holding information on items that have failed to upload to the server.
  * @author Simen Skogly Russnes on 26.02.15.
  */
 @Table
 public class FailedItem extends BaseModel {
+
+    private final static String CLASS_TAG = "FailedItem";
 
     public static final String EVENT = "Event";
     // add more like TrackedEntityInstance, Enrollment .. in the future
@@ -58,7 +63,7 @@ public class FailedItem extends BaseModel {
 
     public BaseModel getItem() {
         BaseModel item = null;
-        if(itemType == EVENT) {
+        if(itemType.equals(EVENT)) {
             item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
         }
         return item;

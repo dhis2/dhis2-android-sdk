@@ -30,8 +30,10 @@
 package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -39,11 +41,11 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
-@JsonIgnoreProperties({"id"})
 @Table
 public class Event extends BaseModel {
 
@@ -62,9 +64,26 @@ public class Event extends BaseModel {
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
 
-    @JsonProperty("event")
+    public Event() {
+    }
+
+    @JsonIgnore
+    @Column
+    public boolean fromServer = true;
+
+    @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
-    public String id;
+    public String event;
+
+    @JsonIgnore
+    public String getEvent() {
+        return event;
+    }
+
+    @JsonProperty("event")
+    public void setEvent(String event) {
+        this.event = event;
+    }
 
     @JsonProperty("status")
     @Column
@@ -95,7 +114,7 @@ public class Event extends BaseModel {
 
     public List<DataValue> getDataValues() {
         if( dataValues == null) dataValues = Select.all(DataValue.class,
-                Condition.column(DataValue$Table.EVENTID).is(id));
+                Condition.column(DataValue$Table.EVENT).is(event));
         return dataValues;
     }
 

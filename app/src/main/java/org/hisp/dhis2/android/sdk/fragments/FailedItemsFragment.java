@@ -60,6 +60,8 @@ import java.util.List;
  */
 public class FailedItemsFragment extends Fragment {
 
+    private static final String CLASS_TAG = "FailedItemsFragment";
+
     private ListView listView;
     private List<FailedItem> failedItems;
     private FailedItem selectedFailedItem;
@@ -140,7 +142,6 @@ public class FailedItemsFragment extends Fragment {
     public void showItemOptions(final int itemIndex) {
         AlertDialog.Builder builder;
 
-        //ViewGroup root = (ViewGroup) getActivity().findViewById(R.id.layout_root_accountoptions);
         View layout = getActivity().getLayoutInflater().inflate(R.layout.listoptionsdialog, null);
 
         builder = new AlertDialog.Builder(getActivity());

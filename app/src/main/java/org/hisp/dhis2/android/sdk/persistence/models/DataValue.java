@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -41,6 +42,9 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 @JsonIgnoreProperties({"eventId"})
 @Table
 public class DataValue extends BaseModel {
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {}
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String eventId;

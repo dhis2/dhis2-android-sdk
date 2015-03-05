@@ -38,9 +38,7 @@ import android.os.Handler;
 import android.view.Window;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.controllers.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.User;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.services.StartPeriodicSynchronizerService;
 
 /**

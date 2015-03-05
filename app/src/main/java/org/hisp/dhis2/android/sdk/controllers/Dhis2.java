@@ -36,13 +36,17 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.otto.Subscribe;
 
-import org.hisp.dhis2.android.sdk.R;
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
+import org.hisp.dhis2.android.sdk.events.BaseEvent;
+import org.hisp.dhis2.android.sdk.events.LoadingEvent;
+import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
-import org.hisp.dhis2.android.sdk.network.managers.Base64Manager;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
@@ -53,9 +57,17 @@ import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 import java.io.IOException;
 
 public final class Dhis2 {
+    private static final String CLASS_TAG = "Dhis2";
 
+    public final static String LAST_UPDATED_METADATA = "lastupdated_metadata";
+    public final static String LAST_UPDATED_DATAVALUES = "lastupdated_datavalues";
+
+    /* flags used to determine what data to be loaded from the server */
     public static final String LOAD_TRACKER = "load_tracker";
 
+    public static final String INITIAL_DATA_LOADED = "init_data";
+    public static final String INITIAL_DATA_LOADED_PART_METADATA = "metadata";
+    public static final String INITIAL_DATA_LOADED_PART_DATAVALUES = "datavalues";
     public static final String UPDATE_FREQUENCY = "update_frequency";
     public final static String QUEUED = "queued";
     public final static String PREFS_NAME = "DHIS2";
@@ -68,9 +80,11 @@ public final class Dhis2 {
     private DataValueController dataValueController;
     private ObjectMapper objectMapper;
     public boolean toggle = false;  //used during development stage to avoid triggering sendData and syncMeta at the same time (in periodicSyncronizer)
+    private Context context; //beware when using this as it must be set explicitly
 
     private Dhis2() {
         objectMapper = new ObjectMapper();
+        Dhis2Application.bus.register(this);
     }
 
     public static Dhis2 getInstance() {
@@ -79,15 +93,6 @@ public final class Dhis2 {
         }
 
         return dhis2;
-    }
-
-    /**
-     * Logs out the current user
-     */
-    public static void logout(Context context) {
-        Dhis2.getInstance().setServer(null);
-        Dhis2.getInstance().saveCredentials(context, null, null, null);
-        NetworkManager.getInstance().setCredentials(null);
     }
 
     /**
@@ -123,9 +128,10 @@ public final class Dhis2 {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(flag, true);
+        editor.commit();
     }
 
-    public boolean isLoadTrackerDataEnabled(Context context) {
+    public static boolean isLoadTrackerDataEnabled(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(LOAD_TRACKER, false);
     }
@@ -153,7 +159,7 @@ public final class Dhis2 {
         NetworkManager.getInstance().setServerUrl(serverUrl);
     }
 
-    public void saveCredentials(Context context, String serverUrl, String username, String password) {
+    public static void saveCredentials(Context context, String serverUrl, String username, String password) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(USERNAME, username);
@@ -164,29 +170,79 @@ public final class Dhis2 {
         editor.commit();
     }
 
-    public String getUsername(Context context) {
+    public static String getUsername(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String username = prefs.getString(USERNAME, null);
         return username;
     }
 
-    public String getPassword(Context context) {
+    public static String getPassword(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String password = prefs.getString(PASSWORD, null);
         return password;
     }
 
-    public String getServer(Context context) {
+    public static String getServer(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String server = prefs.getString(SERVER, null);
         return server;
     }
 
-    public String getCredentials(Context context) {
+    public static String getCredentials(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String credentials = prefs.getString(CREDENTIALS, null);
         return credentials;
     }
+
+    /**
+     * checks if initial data has been loaded. For example MetaData, and DataValues depending on
+     * what data is enabled for the SDK.
+     * @param context
+     * @return
+     */
+    public static boolean hasLoadedInitialData(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(INITIAL_DATA_LOADED, false);
+    }
+
+    /**
+     * Sets a flag whether or not data has been loaded for the app successfully
+     * @param context
+     * @param loadedSuccessfully
+     */
+    public static void setHasLoadedInitialData(Context context, boolean loadedSuccessfully) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(INITIAL_DATA_LOADED, loadedSuccessfully);
+        editor.commit();
+    }
+
+    /**
+     * Method for setting flag for loaded elements in smaller fragments
+     * Flags are Metadata and Datavalue
+     * @param context
+     * @param loadedSuccessfully
+     * @param part
+     */
+    public static void setHasLoadedInitialDataPart(Context context, boolean loadedSuccessfully, String part) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(INITIAL_DATA_LOADED + part, loadedSuccessfully);
+        editor.commit();
+    }
+
+    /**
+     * Method for getting flag for loaded elements in smaller fragments
+     * Flags are Metadata and Datavalue
+     * @param context
+     * @param part
+     * @return
+     */
+    public static boolean hasLoadedInitialDataPart(Context context, String part) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(INITIAL_DATA_LOADED + part, false);
+    }
+
 
     /**
      * Tries to log in to the given DHIS 2 server
@@ -222,12 +278,72 @@ public final class Dhis2 {
                 Dhis2Application.bus.post(event);
             }
         }, username, password).execute();
+    }
 
-        /*if (holder.getApiException() != null) {
-            throw holder.getApiException();
+    /**
+     * Logs out the current user
+     */
+    public static void logout(Context context) {
+        Dhis2.getInstance().setServer(null);
+        Dhis2.getInstance().saveCredentials(context, null, null, null);
+        NetworkManager.getInstance().setCredentials(null);
+        getInstance().metaDataController.resetLastUpdated(context);
+        setHasLoadedInitialDataPart(context, false, INITIAL_DATA_LOADED_PART_DATAVALUES);
+        setHasLoadedInitialDataPart(context, false, INITIAL_DATA_LOADED_PART_METADATA);
+        setHasLoadedInitialData(context, false);
+    }
+
+    /**
+     * Loads initial data, defined by the enableLoading method
+     */
+    public static void loadInitialData(Context context) {
+        if( context != null ) getInstance().context = context;
+        if( context == null && getInstance().context == null ) return;
+
+        loadInitialMetadata();
+    }
+
+    private static void loadInitialMetadata() {
+        if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA))
+        {
+            Log.e(CLASS_TAG, "init loadig metadata");
+            getInstance().getMetaDataController().loadMetaData(getInstance().context);
         } else {
-            return holder.getItem();
-        }*/
+            loadInitialDataValues();
+        }
+    }
+
+    /* called either from loadInitialMetadata, or in Subscribe method*/
+    private static void loadInitialDataValues() {
+        Log.e(CLASS_TAG, "init loadig datavalues");
+        if(isLoadTrackerDataEnabled(getInstance().context)) {
+            Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled");
+            if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES))
+            {
+                Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
+                getInstance().getDataValueController().loadTrackerData(getInstance().context);
+            }
+        } else {
+            Log.e(CLASS_TAG, "init loadig datavalues trackerDisabled");
+            onFinishLoading();
+        }
+    }
+
+    /**
+     * Called after meta data and data values have finished loading
+     */
+    private static void onFinishLoading() {
+        Log.e(CLASS_TAG, "onFinishLoading");
+        if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA)  &&
+        ( (isLoadTrackerDataEnabled(getInstance().context))
+                && hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) ){
+            Log.e(CLASS_TAG, "saving full loading success");
+            setHasLoadedInitialData(getInstance().context, true);
+        } else {
+            //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+        }
+        MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+        Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
     }
 
     public void showErrorDialog(final Activity activity, final String title, final String message) {
@@ -246,5 +362,14 @@ public final class Dhis2 {
                                   DialogInterface.OnClickListener onClickListener) {
         new CustomDialogFragment( title, message, confirmOption, cancelOption, onClickListener ).
                 show(activity.getFragmentManager(), title);
+    }
+
+    @Subscribe
+    public void onResponse(LoadingEvent loadingEvent) {
+        if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {
+            loadInitialDataValues();
+        } else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
+            onFinishLoading();
+        }
     }
 }

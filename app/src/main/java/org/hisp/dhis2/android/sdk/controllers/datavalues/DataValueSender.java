@@ -27,16 +27,16 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.controllers;
+package org.hisp.dhis2.android.sdk.controllers.datavalues;
 
 import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.squareup.otto.Subscribe;
 
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterEventTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
@@ -49,88 +49,52 @@ import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis2.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ResponseBody;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Simen Skogly Russnes on 23.02.15.
- * Handles management of data values
+ * @author Simen Skogly Russnes on 04.03.15.
  */
-public class DataValueController {
+public class DataValueSender {
 
-    private boolean sending = false;
-    private static final String CLASS_TAG = DataValueController.class.getName();
+    private static final String CLASS_TAG = "DataValueSender";
+
+    boolean sending = false;
     private int sendCounter = -1;
     private List<Event> localEvents = null;
+    private Context context;
 
-    public DataValueController() {
-        Dhis2Application.bus.register(this);
-    }
-
-    public Event getEvent(String eventId) {
-        Log.e(CLASS_TAG, "getting event for: " + eventId);
-        List<Event> result = Select.all(Event.class, Condition.column(Event$Table.ID).is(eventId));
-        if( result != null && !result.isEmpty() ) return result.get(0);
-        else return null;
-    }
-
-    /**
-     * Returns a list of failed items from the database, or null if there are none.
-     * @return
-     */
-    public List<FailedItem> getFailedItems() {
-        List<FailedItem> failedItems = Select.all(FailedItem.class);
-        if(failedItems == null || failedItems.size() <= 0) return null;
-        else return failedItems;
-    }
-
-    /**
-     * Loads user generated data from the server. Which data is loaded is determined by enabling
-     * or disabling flags in DHIS 2.
-     */
-    public void synchronizeDataValues(Context context) {
-        if(Dhis2.getInstance().isLoadTrackerDataEnabled(context)) {
-            loadTrackerData();
-        } else {
-            sendLocalData();
-        }
-    }
-
-    /**
-     * Loads Tracker Related data including Tracked Entity Instances, Enrollments and Events
-     * for the current user's assigned programs and organisation units.
-     */
-    public void loadTrackerData() {
-
-    }
-
-    /**
-     * Tries to send locally stored data to the server
-     */
-    public void sendLocalData() {
-        Log.d(CLASS_TAG, "sending local data");
-        //String serverUrl = Dhis2.getInstance().getServer()
-        if(sending || Dhis2.getInstance().getMetaDataController().isLoading() ||
-                Dhis2.getInstance().getMetaDataController().isSynchronizing()) return;
+    void sendLocalData(Context context) {
         sending = true;
+        this.context = context;
         sendEvents();
+    }
+
+    public void onFinishSending(boolean success) {
+        //check if some failed items have been approved. Then delete the FailedItem
+        List<FailedItem> failedItems = DataValueController.getFailedItems();
+        if(failedItems!=null) {
+            for(FailedItem failedItem: failedItems) {
+                if(failedItem.getItem() == null) failedItem.delete(false);
+            }
+        }
+
+        sending = false;
     }
 
     /**
      * Tries to send events
      */
     private void sendEvents() {
-        localEvents = Select.all(Event.class, Condition.column(Event$Table.ID).like(Dhis2.QUEUED+"%"));
+        localEvents = Select.all(Event.class, Condition.column(Event$Table.ID).like(Dhis2.QUEUED + "%"));
         Log.e(CLASS_TAG, "got this many events:" + localEvents.size());
         sendCounter = localEvents.size();
         if(sendCounter>0) {
             sendEvent(localEvents.get(sendCounter-1));
-        } else onFinishSending();
+        } else onFinishSending(true);
     }
 
     private void sendEvent(Event event) {
@@ -164,22 +128,8 @@ public class DataValueController {
         task.execute();
     }
 
-    public void onFinishSending() {
-        //check if some failed items have been approved. Then delete the FailedItem
-        List<FailedItem> failedItems = getFailedItems();
-        if(failedItems!=null) {
-            for(FailedItem failedItem: failedItems) {
-                if(failedItem.getItem() == null) failedItem.delete(false);
-            }
-        }
-
-        sending = false;
-    }
-
-    @Subscribe
-    public void onResponse(DataValueResponseEvent responseEvent) {
-        Log.e(CLASS_TAG, "onResponse");
-        if (responseEvent.getResponseHolder().getItem() != null) {
+    public void onResponse(ResponseEvent responseEvent) {
+        if (responseEvent.getResponseHolder().getApiException() == null) {
             if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
                 ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
                 if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
@@ -197,18 +147,14 @@ public class DataValueController {
                 if(sendCounter > 0)
                     sendEvent(localEvents.get(sendCounter-1));
                 else
-                    onFinishSending();
+                    onFinishSending(true);
             }
         } else {
             //TODO: handle exceptions..
             if(responseEvent.getResponseHolder() != null && responseEvent.getResponseHolder().getApiException() != null)
                 responseEvent.getResponseHolder().getApiException().printStackTrace();
-            onFinishSending();
+            else if(sending) onFinishSending(false);
         }
-    }
-
-    public boolean isSending() {
-        return sending;
     }
 
 }

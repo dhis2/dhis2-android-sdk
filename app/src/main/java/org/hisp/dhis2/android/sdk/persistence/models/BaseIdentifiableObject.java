@@ -42,9 +42,7 @@ import java.util.Date;
 public class BaseIdentifiableObject extends BaseModel{
 
     @JsonAnySetter
-    public void handleUnknown(String key, Object value) {
-        // do something: put to a Map; log a warning, whatever
-    }
+    public void handleUnknown(String key, Object value) {}
 
     @JsonProperty("id")
     @Column(columnType = Column.PRIMARY_KEY)

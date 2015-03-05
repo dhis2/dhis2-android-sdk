@@ -180,7 +180,8 @@ public class LoginActivity
                 User user = (User) event.getResponseHolder().getItem();
                 Log.e(CLASS_TAG, user.getName());
                 user.save(false);
-                Dhis2.getInstance().getMetaDataController().loadMetaData(this);
+                launchMainActivity();
+                //Dhis2.getInstance().getMetaDataController().loadMetaData(this);
             }
         } else {
             if(event.getResponseHolder()!=null && event.getResponseHolder().getApiException() != null)

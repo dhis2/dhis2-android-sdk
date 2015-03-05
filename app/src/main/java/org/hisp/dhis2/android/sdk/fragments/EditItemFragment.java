@@ -42,7 +42,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.controllers.MetaDataController;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
@@ -58,9 +58,6 @@ import org.hisp.dhis2.android.sdk.utils.views.NumberDataElementView;
 import org.hisp.dhis2.android.sdk.utils.views.OptionSetDataElementView;
 import org.hisp.dhis2.android.sdk.utils.views.TextDataElementView;
 import org.hisp.dhis2.android.sdk.utils.views.TrueOnlyDataElementView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 

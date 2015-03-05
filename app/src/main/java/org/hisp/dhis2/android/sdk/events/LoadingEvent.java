@@ -29,25 +29,16 @@
 
 package org.hisp.dhis2.android.sdk.events;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
-
 /**
+ * Used to notify Dhis2 when DataValueController or MetaDataController has finished loading.
  * @author Simen Skogly Russnes on 20.02.15.
  */
-public class BaseEvent {
+public class LoadingEvent<T> extends BaseEvent{
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished,
-        showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showEditItemFragment, showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished, onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadProgram
+    public boolean success;
+
+    public LoadingEvent(EventType eventType) {
+        super(eventType);
     }
 
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
-    }
-    public BaseEvent() {}
 }

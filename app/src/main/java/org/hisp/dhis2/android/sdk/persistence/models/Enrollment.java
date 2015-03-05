@@ -27,27 +27,47 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
+package org.hisp.dhis2.android.sdk.persistence.models;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Simen Skogly Russnes on 04.03.15.
  */
-public class BaseEvent {
+@Table
+public class Enrollment extends BaseModel{
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished,
-        showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showEditItemFragment, showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished, onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadProgram
-    }
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {}
 
-    public EventType eventType;
+    @JsonProperty("enrollment")
+    @Column(columnType = Column.PRIMARY_KEY)
+    public String enrollment;
 
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
-    }
-    public BaseEvent() {}
+    @JsonProperty("trackedEntityInstance")
+    @Column
+    public String trackedEntityInstance;
+
+    @JsonProperty("program")
+    @Column
+    public String program;
+
+    @JsonProperty("dateOfEnrollment")
+    @Column
+    public String dateOfEnrollment;
+
+    @JsonProperty("dateOfIncident")
+    @Column
+    public String dateOfIncident;
+
+    @JsonProperty("followup")
+    @Column
+    public boolean followup;
+
+
+
 }

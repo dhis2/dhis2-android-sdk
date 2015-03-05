@@ -42,12 +42,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.controllers.MetaDataController;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Option;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 
 public class OptionSetDataElementView
     extends DataElementAdapterViewAbstract

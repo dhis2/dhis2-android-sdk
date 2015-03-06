@@ -91,7 +91,14 @@ public class DataValueController {
         dataValueSender = new DataValueSender();
     }
 
-    public Event getEvent(String event) {
+    public static List<Event> getEvents(String organisationUnitId, String programId) {
+        List<Event> events = Select.all(Event.class, Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId),
+                Condition.column(Event$Table.PROGRAMID).is(programId));
+        return events;
+    }
+
+    public static Event getEvent(String event) {
         Log.d(CLASS_TAG, "getting event for: " + event);
         List<Event> result = Select.all(Event.class, Condition.column(Event$Table.EVENT).is(event));
         if( result != null && !result.isEmpty() ) return result.get(0);

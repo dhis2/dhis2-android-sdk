@@ -89,6 +89,16 @@ public class Event extends BaseModel {
     @Column
     public String status;
 
+    @JsonProperty("trackedEntityInstance")
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+    @Column
+    public String trackedEntityInstance;
+
+    @JsonProperty("enrollment")
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+    @Column
+    public String enrollment;
+
     @JsonProperty("program")
     @Column
     public String programId;
@@ -98,6 +108,7 @@ public class Event extends BaseModel {
     public String programStageId;
 
     @JsonProperty("orgUnit")
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
     @Column
     public String organisationUnitId;
 

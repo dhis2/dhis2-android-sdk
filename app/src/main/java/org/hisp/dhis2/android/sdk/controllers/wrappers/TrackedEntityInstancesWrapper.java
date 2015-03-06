@@ -60,7 +60,7 @@ public class TrackedEntityInstancesWrapper {
                 if(row.size() <= 4) continue;
                 for(int i = 5; i<row.size(); i++) {
                     TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
-                    value.trackedEntityAttributeId = headers.get(i).column;
+                    value.trackedEntityAttributeId = headers.get(i).name;
                     value.trackedEntityInstanceId = trackedEntityInstance.trackedEntityInstance;
                     value.value = row.get(i);
                     trackedEntityAttributeValues.add(value);

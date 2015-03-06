@@ -32,6 +32,8 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.ArrayList;
@@ -99,11 +101,10 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         this.program = program;
     }
 
-    public String getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
-
-    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
+    public TrackedEntityAttribute getTrackedEntityAttribute() {
+        List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
+                Condition.column(TrackedEntityAttribute$Table.ID).is(trackedEntityAttribute));
+        if(result != null && !result.isEmpty()) return result.get(0);
+        else return null;
     }
 }

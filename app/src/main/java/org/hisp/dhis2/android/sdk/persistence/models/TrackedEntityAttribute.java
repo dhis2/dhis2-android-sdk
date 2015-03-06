@@ -41,7 +41,7 @@ public class TrackedEntityAttribute extends BaseNameableObject {
 
     @JsonProperty("unique")
     @Column
-    public boolean unique;
+    public boolean isUnique;
 
     @JsonProperty("programScope")
     @Column

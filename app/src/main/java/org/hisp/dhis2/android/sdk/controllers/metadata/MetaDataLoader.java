@@ -48,7 +48,9 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSmallOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntitiesTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityAttributesTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateOptionSetsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateTrackedEntityAttributesTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
@@ -68,6 +70,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.joda.time.LocalDate;
 
@@ -426,7 +429,7 @@ public class MetaDataLoader {
      */
     private void loadLargeOptionSets() {
         //TODO: implement.
-        loadSystemInfo();
+        loadTrackedEntityAttributes();
     }
 
     /**
@@ -489,6 +492,71 @@ public class MetaDataLoader {
                             List<TrackedEntity> trackedEntities = Dhis2.getInstance().getObjectMapper().
                                     readValue( node.traverse(), typeRef);
                             holder.setItem(trackedEntities);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                });
+        task.execute();
+    }
+
+    /**
+     * Updates Option sets from the server if they have been changed since last time
+     * they were uploaded.
+     */
+    private void updateTrackedEntityAttributes() {
+        final ResponseHolder<Object> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<Object> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.onUpdateTrackedEntityAttributes);
+        event.setResponseHolder(holder);
+        UpdateTrackedEntityAttributesTask task = new UpdateTrackedEntityAttributesTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<Object>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        holder.setItem(new Object());
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                });
+        task.execute();
+    }
+
+    private void loadTrackedEntityAttributes() {
+        final ResponseHolder<List<TrackedEntityAttribute>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<TrackedEntityAttribute>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadTrackedEntityAttributes);
+        event.setResponseHolder(holder);
+        LoadTrackedEntityAttributesTask task = new LoadTrackedEntityAttributesTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<TrackedEntityAttribute>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("trackedEntityAttributes");
+                            TypeReference<List<TrackedEntityAttribute>> typeRef =
+                                    new TypeReference<List<TrackedEntityAttribute>>(){};
+                            List<TrackedEntityAttribute> trackedEntityAttributes = Dhis2.getInstance().getObjectMapper().
+                                    readValue( node.traverse(), typeRef);
+                            holder.setItem(trackedEntityAttributes);
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
@@ -674,12 +742,21 @@ public class MetaDataLoader {
                 }
                 loadLargeOptionSets();
             } else if( event.eventType == BaseEvent.EventType.onUpdateOptionSets ) {
-                loadSystemInfo();
+                updateTrackedEntityAttributes();
             } else if( event.eventType == BaseEvent.EventType.loadDataElements ) { /*deprecated*/
                 List<DataElement> dataElements = ( List<DataElement> ) event.getResponseHolder().getItem();
                 for(DataElement de: dataElements ) {
                     de.save(false);
                 }
+            } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
+                List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
+                for(TrackedEntityAttribute tea: trackedEntityAttributes) {
+                    Log.e(CLASS_TAG, "loaded tea: " + tea.id);
+                    tea.save(false);
+                }
+                loadSystemInfo();
+            } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {
+                loadSystemInfo();
             }
         } else {
             //todo handle more effectively

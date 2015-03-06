@@ -39,6 +39,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -46,6 +48,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.squareup.otto.Subscribe;
@@ -69,7 +72,7 @@ import java.util.List;
  */
 public class LoginActivity
     extends Activity
-    implements OnClickListener, OnItemSelectedListener
+    implements OnClickListener
 {
     /**
      * 
@@ -79,9 +82,9 @@ public class LoginActivity
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText serverEditText;
-    private Spinner serverSpinner;
     private Button loginButton;
-    private CheckBox showPasswordCheckbox;
+    private ProgressBar progressBar;
+    private View viewsContainer;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -104,11 +107,15 @@ public class LoginActivity
      */
     private void setupUI()
     {
-        usernameEditText = (EditText) findViewById( R.id.usernameEditText );
-        passwordEditText = (EditText) findViewById( R.id.passwordEditText );
-        serverEditText = (EditText) findViewById( R.id.serverEditText );
-        serverSpinner = (Spinner) findViewById( R.id.serverSpinner );
-        loginButton = (Button) findViewById( R.id.loginButton );
+        viewsContainer = findViewById(R.id.login_views_container);
+        usernameEditText = (EditText) findViewById( R.id.username );
+        passwordEditText = (EditText) findViewById( R.id.password);
+        serverEditText = (EditText) findViewById( R.id.server_url );
+        loginButton = (Button) findViewById( R.id.login_button );
+
+        serverEditText.setText("https://apps.dhis2.org/dev");
+        usernameEditText.setText("admin");
+        passwordEditText.setText("district");
         
         //Setting previous username in username field
         String username = null;
@@ -120,24 +127,8 @@ public class LoginActivity
         			passwordEditText.setText("");
         		}
 
-        showPasswordCheckbox = (CheckBox) findViewById( R.id.showPasswordCheckbox );
-
-        showPasswordCheckbox.setOnCheckedChangeListener( new OnCheckedChangeListener()
-        {
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked )
-            {
-                if ( !isChecked )
-                {
-                    passwordEditText.setTransformationMethod( PasswordTransformationMethod.getInstance() );
-                }
-                else
-                {
-                    passwordEditText.setTransformationMethod( HideReturnsTransformationMethod.getInstance() );
-                }
-            }
-        } );
-
-        serverSpinner.setOnItemSelectedListener( this );
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
         loginButton.setOnClickListener( this );
     }
 
@@ -147,14 +138,7 @@ public class LoginActivity
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        String serverFromSP = serverSpinner.getSelectedItem().toString();
-        String serverFromET = serverEditText.getText().toString();
-
-        String serverURL = serverFromSP;
-        if ( serverFromET != null && !serverFromET.isEmpty() )
-        {
-            serverURL = serverFromET;
-        }
+        String serverURL = serverEditText.getText().toString();
         
         //remove whitespace as last character for username
         if(username.charAt(username.length()-1)== ' ')
@@ -164,11 +148,19 @@ public class LoginActivity
     }
     
     public void login(String serverUrl, String username, String password) {
+        showProgress();
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(NetworkManager.getInstance().getBase64Manager()
                 .toBase64(username, password));
         Dhis2.getInstance().saveCredentials(this, serverUrl, username, password);
         Dhis2.getInstance().login(username, password);
+    }
+
+    private void showProgress() {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
+        viewsContainer.startAnimation(anim);
+        viewsContainer.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Subscribe
@@ -205,25 +197,6 @@ public class LoginActivity
         });
         Dhis2Application.bus.unregister(this);
         this.finish();
-    }
-    
-    @Override
-    public void onItemSelected( AdapterView<?> parent, View view, int position, long id )
-    {
-        if ( serverSpinner.getSelectedItem().toString().equals( getString( R.string.custom_url ) ) )
-        {
-            serverEditText.setVisibility( View.VISIBLE );
-        }
-        else
-        {
-            serverEditText.setVisibility( View.INVISIBLE );
-            serverEditText.setText( "" );
-        }
-    }
-
-    @Override
-    public void onNothingSelected( AdapterView<?> parent )
-    {
     }
 
     @Override

@@ -50,4 +50,19 @@
     <color name="Stage_Overdue">#fb4754</color>
     <color name="Stage_Skipped">#bbbbbb</color>
 
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="grey">#8a000000</color>
+    <color name="light_grey">#FFE5E5E5</color>
+    <color name="darker_grey">#FF9F9F9F</color>
+    <color name="graphite_grey">#FFCBCBCB</color>
+    <color name="navy_blue">#FF1F70C3</color>
+    <color name="dark_navy_blue">#FF1D5288</color>
+    <color name="red">#FFF44336</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="button_login_state_enabled_false">#FF223F5C</color>
+    <color name="button_login_state_unpressed">#FF113151</color>
+    <color name="button_login_state_pressed">#FF0C243C</color>
+
 </resources>

@@ -84,6 +84,8 @@ public class DataValueSender {
         }
 
         sending = false;
+        //update datavalues
+        Dhis2.getInstance().getDataValueController().loadTrackerData(context, true);
     }
 
     /**

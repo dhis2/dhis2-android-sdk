@@ -125,12 +125,15 @@ public class DataValueController {
 
     /**
      * Loads Tracker Related data including Tracked Entity Instances, Enrollments and Events
-     * for the current user's assigned programs and organisation units.
+     * for the current user's assigned programs and organisation units.Set update to true if you only want to load new values.
+     * False if you want it all.
+     * @param context
+     * @param update
      */
-    public void loadTrackerData(Context context) {
+    public void loadTrackerData(Context context, boolean update) {
         if(dataValueSender.sending || dataValueLoader.loading || Dhis2.getInstance().getMetaDataController().isLoading() ||
                 Dhis2.getInstance().getMetaDataController().isSynchronizing()) return; //todo: implement a global checker to see if loading is occurring.
-        dataValueLoader.loadTrackerData(context);
+        dataValueLoader.loadTrackerData(context, update);
     }
 
 

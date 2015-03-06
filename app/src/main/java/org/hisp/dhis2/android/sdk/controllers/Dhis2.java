@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -53,6 +54,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
+import org.hisp.dhis2.android.sdk.utils.GpsManager;
 
 import java.io.IOException;
 
@@ -64,6 +66,7 @@ public final class Dhis2 {
 
     /* flags used to determine what data to be loaded from the server */
     public static final String LOAD_TRACKER = "load_tracker";
+    public static final String LOAD_EVENTCAPTURE = "load_eventcapture";
 
     public static final String INITIAL_DATA_LOADED = "init_data";
     public static final String INITIAL_DATA_LOADED_PART_METADATA = "metadata";
@@ -78,12 +81,14 @@ public final class Dhis2 {
     private static Dhis2 dhis2;
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
+    private GpsManager gpsManager;
     private ObjectMapper objectMapper;
     public boolean toggle = false;  //used during development stage to avoid triggering sendData and syncMeta at the same time (in periodicSyncronizer)
     private Context context; //beware when using this as it must be set explicitly
 
     private Dhis2() {
         objectMapper = new ObjectMapper();
+        gpsManager = new GpsManager();
         Dhis2Application.bus.register(this);
     }
 
@@ -93,6 +98,18 @@ public final class Dhis2 {
         }
 
         return dhis2;
+    }
+
+    public static void activateGps(Context context) {
+        getInstance().gpsManager.requestLocationUpdates(context);
+    }
+
+    public static void disableGps() {
+        getInstance().gpsManager.removeUpdates();
+    }
+
+    public static Location getLocation(Context context) {
+        return getInstance().gpsManager.getLocation(context);
     }
 
     /**
@@ -136,6 +153,11 @@ public final class Dhis2 {
         return sharedPreferences.getBoolean(LOAD_TRACKER, false);
     }
 
+    public static boolean isLoadEventCaptureEnabled(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(LOAD_EVENTCAPTURE, false);
+    }
+
     public ObjectMapper getObjectMapper() {
         if(objectMapper==null) objectMapper = new ObjectMapper();
         return objectMapper;
@@ -165,8 +187,10 @@ public final class Dhis2 {
         editor.putString(USERNAME, username);
         editor.putString(PASSWORD, password);
         editor.putString(SERVER, serverUrl);
-        editor.putString(CREDENTIALS, NetworkManager.getInstance().getBase64Manager()
-                .toBase64(username, password));
+        String credentials = null;
+        if(username!=null && password!=null)
+            credentials = NetworkManager.getInstance().getBase64Manager().toBase64(username, password);
+        editor.putString(CREDENTIALS, credentials);
         editor.commit();
     }
 
@@ -316,12 +340,12 @@ public final class Dhis2 {
     /* called either from loadInitialMetadata, or in Subscribe method*/
     private static void loadInitialDataValues() {
         Log.e(CLASS_TAG, "init loadig datavalues");
-        if(isLoadTrackerDataEnabled(getInstance().context)) {
+        if(isLoadTrackerDataEnabled(getInstance().context) || isLoadEventCaptureEnabled(getInstance().context)) {
             Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled");
             if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES))
             {
                 Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
-                getInstance().getDataValueController().loadTrackerData(getInstance().context);
+                getInstance().getDataValueController().loadTrackerData(getInstance().context, false);
             }
         } else {
             Log.e(CLASS_TAG, "init loadig datavalues trackerDisabled");

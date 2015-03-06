@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.controllers.tasks;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Header;
@@ -37,6 +38,7 @@ import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
+import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +50,7 @@ public class LoadEventsTask implements INetworkTask {
 
     public LoadEventsTask(NetworkManager networkManager,
                           ApiRequestCallback<List<Event>> callback,
-                          String organisationUnitId, String programId) {
+                          String organisationUnitId, String programId, boolean synchronizing) {
 
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
@@ -63,6 +65,12 @@ public class LoadEventsTask implements INetworkTask {
 
         String url = networkManager.getServerUrl() + "/api/events?paging=false&orgUnit="+
                 organisationUnitId+"&program="+programId;
+        if(synchronizing) {
+            SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
+            if( systemInfo != null && systemInfo.serverDate != null ) {
+                url += "&filter=lastUpdated:gt:" + systemInfo.serverDate;
+            }
+        }
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

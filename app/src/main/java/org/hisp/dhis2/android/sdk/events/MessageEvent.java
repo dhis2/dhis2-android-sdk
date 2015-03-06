@@ -40,4 +40,7 @@ public class MessageEvent<T> extends BaseEvent{
         super(eventType);
     }
 
+    /* can be used to pass extra data in an event */
+    public Object item;
+
 }

@@ -84,10 +84,20 @@ public class DataValueLoader {
     private int programCounter = -1;
     private Context context;
 
-    public void loadTrackerData(Context context) {
+    /**
+     * Loads tracker data from server. Set update to true if you only want to load new values.
+     * False if you want it all.
+     * @param context
+     * @param update
+     */
+    public void loadTrackerData(Context context, boolean update) {
         this.context = context;
         loading = true;
-        loadTrackedEntityInstances();
+        synchronizing = update;
+        if(Dhis2.isLoadTrackerDataEnabled(context))
+            loadTrackedEntityInstances();
+        else if(Dhis2.isLoadEventCaptureEnabled(context))
+            loadEvents();
     }
 
     /**
@@ -266,19 +276,35 @@ public class DataValueLoader {
     private void loadEventsForAssignedOrganisationUnits() {
         if( programsForOrgUnit == null || programCounter <= 0) {
             programsForOrgUnit = new ArrayList<>();
-            List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
-            List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.SINGLE_EVENT_WITH_REGISTRATION);
-            if(programsForOrgUnitMEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitMEWR);
-            if(programsForOrgUnitSEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+            if(Dhis2.isLoadTrackerDataEnabled(context)) {
+                List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
+                                Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
+                                Program.SINGLE_EVENT_WITH_REGISTRATION);
+                if (programsForOrgUnitMEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                if (programsForOrgUnitSEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+            }
+            if(Dhis2.isLoadEventCaptureEnabled(context)) {
+                List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
+                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
+                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                if(programsForOrgUnitSEWoR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+            }
             programCounter = programsForOrgUnit.size();
         }
 
-        loadEvents(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                programsForOrgUnit.get(programCounter - 1).getId());
+        if(programCounter > 0) {
+            loadEvents(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
+                    programsForOrgUnit.get(programCounter - 1).getId());
+        } else {
+            organisationUnitCounter--;
+            if(organisationUnitCounter > 0) loadEventsForAssignedOrganisationUnits();
+            else onFinishLoading(true);
+        }
     }
 
     private void loadEvents(String organisationUnitId, String programId) {
@@ -319,7 +345,7 @@ public class DataValueLoader {
                         holder.setApiException(exception);
                         onResponse(event);
                     }
-                }, organisationUnitId, programId);
+                }, organisationUnitId, programId, synchronizing);
         task.execute();
     }
 

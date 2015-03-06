@@ -53,6 +53,9 @@ import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
  * @author Simen Skogly Russnes on 23.02.15.
  */
 public class RegisterEventTask implements INetworkTask {
+
+    private final static String CLASS_TAG = "RegisterEventTask";
+
     private final ApiRequest.Builder<Object> requestBuilder;
 
     /**
@@ -84,7 +87,7 @@ public class RegisterEventTask implements INetworkTask {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        Log.e("ddd", new String(body));
+        Log.e(CLASS_TAG, new String(body));
 
         String url = networkManager.getServerUrl() + "/api/events";
         Request request = new Request(RestMethod.POST, url, headers, body);

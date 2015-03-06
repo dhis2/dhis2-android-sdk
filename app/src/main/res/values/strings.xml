@@ -45,6 +45,8 @@
     <string name="eventDate">Event date</string>
     <string name="date_format">yyyy-mm-dd</string>
 
+    <string name="description">ImageView description</string>
+
     <string-array name="titles">
         <item>Dashboard</item>
         <item>Find $</item>
@@ -94,7 +96,7 @@
     <string name="select_server_url">Select server URL</string>
     <string name="custom_server_url">Enter custom server URL</string>
     <string name="custom_url">Custom URL</string>
-    <string name="login">Login</string>
+    <string name="login">Log in</string>
     <string name="loging_in">Logging In</string>
     <string name="syncing">Syncing</string>
     <string name="syncing_failed">Sync failed. Going Offline Mode.</string>

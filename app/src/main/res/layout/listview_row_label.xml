@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/text_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:textSize="16sp"
+    app:font="@string/light_font_name" />

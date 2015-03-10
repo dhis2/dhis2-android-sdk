@@ -43,6 +43,10 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 @Table
 public class DataValue extends BaseModel {
 
+    public static final String FALSE = "false";
+    public static final String TRUE = "true";
+    public static final String EMPTY_VALUE = "";
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
 

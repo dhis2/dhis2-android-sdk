@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_background"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <include layout="@layout/listview_row_label" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
+            android:id="@+id/date_picker_dialog_invoker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.95"
+            android:background="@drawable/editbox_background"
+            android:focusableInTouchMode="false"
+            android:hint="@string/enter_date"
+            android:inputType="date"
+            android:paddingBottom="11dp"
+            android:paddingTop="11dp"
+            android:singleLine="true"
+            android:textSize="16sp"
+            app:font="@string/regular_font_name"/>
+
+        <ImageView
+            android:id="@+id/clearEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.05"
+            android:background="@drawable/listview_action_button_selector"
+            android:clickable="true"
+            android:contentDescription="@string/imgdesc"
+            android:src="@drawable/ic_cancel" />
+    </LinearLayout>
+
+</LinearLayout>

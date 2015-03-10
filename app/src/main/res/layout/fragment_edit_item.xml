@@ -46,7 +46,6 @@
 
         <Button
             android:id="@+id/edit_item_submitbutton"
-            style="@style/buttonStyle"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/submit"

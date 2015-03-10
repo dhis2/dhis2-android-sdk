@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadAssignedProgramsTask;
@@ -53,6 +54,7 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateTrackedEntityAttributesTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
+import org.hisp.dhis2.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
@@ -113,6 +115,7 @@ public class MetaDataLoader {
     void loadMetaData(Context context) {
         if( loading ) return;
         loading = true;
+        Dhis2.postProgressMessage(context.getString(R.string.loading_metadata));
         this.context = context;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         String lastUpdated = prefs.getString(Dhis2.LAST_UPDATED_METADATA, null);
@@ -128,6 +131,7 @@ public class MetaDataLoader {
     }
 
     private void loadSystemInfo() {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_server_info));
         final ResponseHolder<SystemInfo> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<SystemInfo> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadSystemInfo);
@@ -162,6 +166,7 @@ public class MetaDataLoader {
      * Loads a list of assigned organisation units with their corresponding assigned programs.
      */
     private void loadAssignedPrograms() {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_assigned_programs));
         final ResponseHolder<List<OrganisationUnit>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<OrganisationUnit>> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadAssignedPrograms);
@@ -233,6 +238,10 @@ public class MetaDataLoader {
      * @param id id of program
      */
     private void loadProgram(String id) {
+        int current = programsToLoad.size() - requestCounter;
+        current++;
+        Dhis2.postProgressMessage(context.getString(R.string.loading_program) + " " + current + "/"
+                + programsToLoad.size());
         final ResponseHolder<Program> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadProgram);
@@ -382,6 +391,7 @@ public class MetaDataLoader {
      * be loaded separately, like for example ICD10.
      */
     private void loadOptionSets() {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_optionsets));
         loadSmallOptionSets();
     }
 
@@ -538,6 +548,7 @@ public class MetaDataLoader {
     }
 
     private void loadTrackedEntityAttributes() {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_trackedentityattributes));
         final ResponseHolder<List<TrackedEntityAttribute>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<TrackedEntityAttribute>> event = new
                 MetaDataResponseEvent<>
@@ -751,7 +762,6 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    Log.e(CLASS_TAG, "loaded tea: " + tea.id);
                     tea.save(false);
                 }
                 loadSystemInfo();
@@ -765,5 +775,4 @@ public class MetaDataLoader {
             onFinishLoading(false);
         }
     }
-
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="LoginEditTextProperies">
+        <item name="android:layout_width">340dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginBottom">1px</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">9dp</item>
+        <item name="android:paddingRight">9dp</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:background">@drawable/edittext_customshape</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MenuCardLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/card_background</item>
+    </style>
+
+    <style name="DialogInvokerLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/spinner_background_holo_light</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="MenuCardTextViewLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:background">@drawable/dialog_button_custom_selector</item>
+    </style>
+
+    <style name="ListViewEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:paddingBottom">11dp</item>
+        <item name="android:background">@drawable/editbox_background</item>
+    </style>
+
+    <style name="CoordsEditTextStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:background">@drawable/editbox_background</item>
+        <item name="android:inputType">numberDecimal|numberSigned</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingBottom">11dp</item>
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+</resources>

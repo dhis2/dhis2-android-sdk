@@ -52,6 +52,5 @@
         android:layout_height="wrap_content"
         android:text="@string/logout"
         android:id="@+id/settings_logoutbutton"
-        android:layout_gravity="center_horizontal"
-        style="@style/buttonStyle" />
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>

@@ -54,12 +54,27 @@
     <color name="black">#FF000000</color>
     <color name="grey">#8a000000</color>
     <color name="light_grey">#FFE5E5E5</color>
-    <color name="darker_grey">#FF9F9F9F</color>
     <color name="graphite_grey">#FFCBCBCB</color>
     <color name="navy_blue">#FF1F70C3</color>
     <color name="dark_navy_blue">#FF1D5288</color>
     <color name="red">#FFF44336</color>
     <color name="transparent">#00000000</color>
+
+    <color name="light_blue">#67b0f9</color>
+    <color name="actionbar_blue">#1f70c3</color>
+
+    <color name="login_button_state_enabled_false">#223f5c</color>
+    <color name="login_button_state_unpressed">#113151</color>
+    <color name="login_button_state_pressed">#0c243c</color>
+
+    <color name="dialog_button_state_enabled_false">#adadad</color>
+
+    <color name="darker_grey">#9f9f9f</color>
+    <color name="light_font_grey">#989898</color>
+    <color name="nav_list_pressed_grey">#cbcbcb</color>
+
+    <color name="upload_button_state_unpressed">#C01f70c3</color>
+    <color name="upload_button_state_pressed">#C01d5288</color>
 
     <color name="button_login_state_enabled_false">#FF223F5C</color>
     <color name="button_login_state_unpressed">#FF113151</color>

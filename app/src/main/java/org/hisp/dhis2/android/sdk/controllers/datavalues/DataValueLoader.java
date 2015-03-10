@@ -36,6 +36,7 @@ import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
@@ -150,6 +151,14 @@ public class DataValueLoader {
             if(programsForOrgUnitMEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitMEWR);
             if(programsForOrgUnitSEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWR);
             programCounter = programsForOrgUnit.size();
+        }
+
+        if(context != null) {
+            int current = programsForOrgUnit.size() - programCounter;
+            current ++;
+            Dhis2.postProgressMessage(context.getString(R.string.loading_tracked_entity_instances)
+                    + " " + assignedOrganisationUnits.get(organisationUnitCounter -1 ).getLabel()
+                    + ": " + current + "/" + programsForOrgUnit.size());
         }
 
         loadTrackedEntityInstances(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
@@ -298,6 +307,15 @@ public class DataValueLoader {
         }
 
         if(programCounter > 0) {
+
+            if(context != null) {
+                int current = programsForOrgUnit.size() - programCounter;
+                current ++;
+                Dhis2.postProgressMessage(context.getString(R.string.loading_events)
+                        + " " + assignedOrganisationUnits.get(organisationUnitCounter -1 ).getLabel()
+                        + ": " + current + "/" + programsForOrgUnit.size());
+            }
+
             loadEvents(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
                     programsForOrgUnit.get(programCounter - 1).getId());
         } else {

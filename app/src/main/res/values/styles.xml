@@ -29,30 +29,16 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="DHISActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">#276696</item>
-        <item name="android:titleTextStyle">@style/titleStyle</item>
-    </style>
-
-    <style name="titleStyle" parent="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">#FFFFFF</item>
-    </style>
-
-    <style name="buttonStyle" parent="@android:style/Widget.Holo.Light.Button">
-        <item name="android:background">@drawable/button</item>
-        <item name="android:textColor">#ffffff</item>
-        <item name="android:layout_marginTop">16dp</item>
-        <item name="android:padding">20dp</item>
-    </style>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/navy_blue</item>
         <item name="colorPrimaryDark">@color/dark_navy_blue</item>
         <item name="android:windowBackground">@color/light_grey</item>
     </style>
 
     <style name="LoginScreenTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/navy_blue</item>
         <item name="colorPrimaryDark">@color/dark_navy_blue</item>
         <item name="android:windowBackground">@color/dark_navy_blue</item>

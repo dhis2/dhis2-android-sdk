@@ -58,7 +58,7 @@
             android:contentDescription="@string/description"
             android:src="@drawable/dhis2_logo" />
 
-        <org.hisp.dhis2.android.sdk.utils.views.FontEditText
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
             android:id="@+id/server_url"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -73,7 +73,7 @@
             android:singleLine="true"
             app:font="@string/regular_font_name" />
 
-        <org.hisp.dhis2.android.sdk.utils.views.FontEditText
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -87,7 +87,7 @@
             android:singleLine="true"
             app:font="@string/regular_font_name" />
 
-        <org.hisp.dhis2.android.sdk.utils.views.FontEditText
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="44dp"
@@ -102,7 +102,7 @@
             android:singleLine="true"
             app:font="@string/regular_font_name" />
 
-        <org.hisp.dhis2.android.sdk.utils.views.FontButton
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
             android:id="@+id/login_button"
             android:layout_width="180dp"
             android:layout_height="40dp"

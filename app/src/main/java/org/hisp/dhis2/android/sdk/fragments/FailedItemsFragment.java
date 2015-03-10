@@ -126,13 +126,14 @@ public class FailedItemsFragment extends Fragment {
     }
 
     /**
+     * deprecated. soon removed.
      * Signals the main activity to show edit item fragment for selected item
      * @param failedItem
      */
     public void showEditItemFragment(FailedItem failedItem) {
-        selectedFailedItem = failedItem;
-        MessageEvent event = new MessageEvent(BaseEvent.EventType.showEditItemFragment);
-        Dhis2Application.bus.post(event);
+        //selectedFailedItem = failedItem;
+        //MessageEvent event = new MessageEvent(BaseEvent.EventType.showEditItemFragment);
+        //Dhis2Application.bus.post(event);
     }
 
     /**

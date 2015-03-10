@@ -35,6 +35,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
@@ -49,12 +51,14 @@ public class AttributeListAdapter extends BaseAdapter {
 	private ArrayList<String[]> values;
 
 	private LayoutInflater inflater;
+    private Context context;
 
 	public AttributeListAdapter(Context context,
                                 ArrayList<String[]> values) {
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.values = values;
+        this.context = context;
 	}
 
 	public void addItem(final String[] item) {
@@ -85,9 +89,17 @@ public class AttributeListAdapter extends BaseAdapter {
         if (p != null) {
             for(String s: p) {
                 TextView tv = new TextView(v.getContext());
+                tv.setWidth(0);
+                tv.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT, 1f));
+
                 tv.setText(s);
                 v.addView(tv);
             }
+        }
+
+        if ( (position & 1) == 0 ) {
+            v.setBackgroundColor(context.getResources().getColor(R.color.Light_Blue));
+        } else {
         }
 
         return v;

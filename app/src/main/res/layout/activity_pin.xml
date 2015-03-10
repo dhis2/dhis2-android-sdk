@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/login"
-        style="@style/buttonStyle" />
+         />
 
     <RelativeLayout
         android:id="@+id/logoutLayout"

@@ -44,6 +44,7 @@ import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
+import org.hisp.dhis2.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
@@ -85,6 +86,8 @@ public final class Dhis2 {
     private ObjectMapper objectMapper;
     public boolean toggle = false;  //used during development stage to avoid triggering sendData and syncMeta at the same time (in periodicSyncronizer)
     private Context context; //beware when using this as it must be set explicitly
+
+    private boolean loadingInitial = false;
 
     private Dhis2() {
         objectMapper = new ObjectMapper();
@@ -235,6 +238,7 @@ public final class Dhis2 {
      * @param loadedSuccessfully
      */
     public static void setHasLoadedInitialData(Context context, boolean loadedSuccessfully) {
+        Log.d(CLASS_TAG, "set has loaded init: " + loadedSuccessfully);
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(INITIAL_DATA_LOADED, loadedSuccessfully);
@@ -324,13 +328,14 @@ public final class Dhis2 {
         if( context != null ) getInstance().context = context;
         if( context == null && getInstance().context == null ) return;
 
+        getInstance().loadingInitial = true;
         loadInitialMetadata();
     }
 
     private static void loadInitialMetadata() {
         if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA))
         {
-            Log.e(CLASS_TAG, "init loadig metadata");
+            Log.d(CLASS_TAG, "init loading metadata");
             getInstance().getMetaDataController().loadMetaData(getInstance().context);
         } else {
             loadInitialDataValues();
@@ -339,16 +344,16 @@ public final class Dhis2 {
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
     private static void loadInitialDataValues() {
-        Log.e(CLASS_TAG, "init loadig datavalues");
+        Log.d(CLASS_TAG, "init loadig datavalues");
         if(isLoadTrackerDataEnabled(getInstance().context) || isLoadEventCaptureEnabled(getInstance().context)) {
-            Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled");
+            Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled");
             if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES))
             {
-                Log.e(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
+                Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
                 getInstance().getDataValueController().loadTrackerData(getInstance().context, false);
             }
         } else {
-            Log.e(CLASS_TAG, "init loadig datavalues trackerDisabled");
+            Log.d(CLASS_TAG, "init loadig datavalues trackerDisabled");
             onFinishLoading();
         }
     }
@@ -358,17 +363,19 @@ public final class Dhis2 {
      * todo: as more options for data loading is added, expand this to something more comprehensible
      */
     private static void onFinishLoading() {
-        Log.e(CLASS_TAG, "onFinishLoading");
+        Log.d(CLASS_TAG, "onFinishLoading");
         if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA) ) {
             if ( isLoadTrackerDataEnabled(getInstance().context) ) {
                 if( hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) {
-                    Log.e(CLASS_TAG, "saving full loading success");
+                    Log.d(CLASS_TAG, "saving full loading success");
+                    getInstance().loadingInitial = false;
                     setHasLoadedInitialData(getInstance().context, true);
                 } else {
                     //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
                 }
             } else {
-                Log.e(CLASS_TAG, "saving full loading success");
+                getInstance().loadingInitial = false;
+                Log.d(CLASS_TAG, "saving full loading success");
                 setHasLoadedInitialData(getInstance().context, true);
             }
         } else {
@@ -403,5 +410,28 @@ public final class Dhis2 {
         } else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
             onFinishLoading();
         }
+    }
+
+    /**
+     * Sends an event with feedback to user on loading. Picked up in LoadingFragment.
+     * @param message
+     */
+    public static void postProgressMessage(final String message) {
+        new Thread() {
+            @Override
+            public void run() {
+                LoadingMessageEvent event = new LoadingMessageEvent(BaseEvent.EventType.showRegisterEventFragment);
+                event.message = message;
+                Dhis2Application.bus.post(event);
+            }
+        }.start();
+    }
+
+    public static void setLoadingInitial(boolean loading) {
+        getInstance().loadingInitial = loading;
+    }
+
+    public static boolean isLoadingInitial() {
+        return getInstance().loadingInitial;
     }
 }

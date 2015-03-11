@@ -92,9 +92,9 @@ public class DataValueController {
     }
 
     public static List<Event> getEvents(String organisationUnitId, String programId) {
-        List<Event> events = Select.all(Event.class, Condition.column
-                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId),
-                Condition.column(Event$Table.PROGRAMID).is(programId));
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
+                and(Condition.column(Event$Table.PROGRAMID).is(programId)).orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
 
@@ -117,7 +117,8 @@ public class DataValueController {
 
     /**
      * Loads user generated data from the server. Which data is loaded is determined by enabling
-     * or disabling flags in DHIS 2.
+     * or disabling flags in DHIS 2. Avoid calling this method directly, use Dhis2.sendLocalValues to
+     * be thread safe.
      */
     public void synchronizeDataValues(Context context) {
         sendLocalData(context);
@@ -125,7 +126,7 @@ public class DataValueController {
 
     /**
      * Loads Tracker Related data including Tracked Entity Instances, Enrollments and Events
-     * for the current user's assigned programs and organisation units.Set update to true if you only want to load new values.
+     * for the current user's assigned programs and organisation units. Set update to true if you only want to load new values.
      * False if you want it all.
      * @param context
      * @param update

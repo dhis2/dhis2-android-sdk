@@ -58,6 +58,7 @@ public class AutoCompleteRow implements Row {
     private ArrayList<String> optionNames;
     private List<Option> options;
     private DataValue dataValue;
+    private AutoCompleteRowHolder holder;
     
     public AutoCompleteRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement,
                            OptionSet optionset, DataValue dataValue, Context context) {
@@ -81,7 +82,6 @@ public class AutoCompleteRow implements Row {
     @Override
     public View getView(View convertView) {
         View view;
-        AutoCompleteRowHolder holder;
         
         if (convertView == null) {
             ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.listview_row_autocomplete, null);
@@ -122,6 +122,11 @@ public class AutoCompleteRow implements Row {
         holder.autoComplete.clearFocus();
         
         return view;
+    }
+
+    @Override
+    public TextView getEntryView() {
+        return holder.autoComplete;
     }
     
     private class AutoCompleteRowHolder {

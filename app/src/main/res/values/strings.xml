@@ -83,9 +83,10 @@
     <string name="too_many_result_error">Too many search result. Please refine your search.</string>
     <string name="exit_confirmation">Do you really want to exit?</string>
     <string name="server_error">An error occurred while connecting to server. Please try again later.</string>
-    <string name="add_relative_failed">An error occured while adding relative. Please try again later.</string>
+    <string name="add_relative_failed">An error occurred while adding relative. Please try again later.</string>
     <string name="offline_dataEntry">Network is not available. Data entered was saved locally.</string>
     <string name="offline_findInstance">Your internet connection is currently unavailable. The search result you are about to see are from your local database.</string>
+    <string name="offline_item">This item has not yet been synchronized with the server.</string>
 
     <!-- Login Activity -->
 
@@ -240,7 +241,7 @@
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
     <string name="logout">Log out</string>
-    <string name="update_frequency">Update frequency</string>
+    <string name="update_frequency">Synchronization frequency</string>
     <string name="loading_server_info">Loading server info</string>
     <string name="loading_assigned_programs">Loading assigned programs</string>
     <string name="loading_program">Loading program</string>

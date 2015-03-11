@@ -34,6 +34,7 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.GetOrganisationUnitTask;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
@@ -43,6 +44,9 @@ import org.hisp.dhis2.android.sdk.persistence.models.User;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkManager {
+
+    private static final String CLASS_TAG = "NetworkManager";
+
     private static NetworkManager mNetworkManager;
 
     private String serverUrl;
@@ -68,7 +72,6 @@ public class NetworkManager {
         if (mNetworkManager == null) {
             mNetworkManager = new NetworkManager();
         }
-
         return mNetworkManager;
     }
 

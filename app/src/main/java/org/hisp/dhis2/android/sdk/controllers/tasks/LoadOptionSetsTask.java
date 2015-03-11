@@ -36,19 +36,17 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-
-public class LoadSmallOptionSetsTask implements INetworkTask {
+public class LoadOptionSetsTask implements INetworkTask {
     private final ApiRequest.Builder<List<OptionSet>> requestBuilder;
 
-    public LoadSmallOptionSetsTask(NetworkManager networkManager,
-                                   ApiRequestCallback<List<OptionSet>> callback) {
+    public LoadOptionSetsTask(NetworkManager networkManager,
+                              ApiRequestCallback<List<OptionSet>> callback) {
 
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
@@ -60,7 +58,7 @@ public class LoadSmallOptionSetsTask implements INetworkTask {
         headers.add(new Header("Accept", "application/json"));
 
         String url = networkManager.getServerUrl() + "/api/optionSets.json?paging=false" +
-                "&fields=[:all]&filter=options:lte:50";
+                "&fields=[:all]";
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

@@ -67,12 +67,14 @@ public class DataValueSender {
     private Context context;
 
     void sendLocalData(Context context) {
+        if(sending) return;
         sending = true;
         this.context = context;
         sendEvents();
     }
 
     public void onFinishSending(boolean success) {
+        Log.d(CLASS_TAG, "onFinishSending" + success);
         //check if some failed items have been approved. Then delete the FailedItem
         List<FailedItem> failedItems = DataValueController.getFailedItems();
         if(failedItems!=null) {
@@ -159,7 +161,7 @@ public class DataValueSender {
             //TODO: handle exceptions..
             if(responseEvent.getResponseHolder() != null && responseEvent.getResponseHolder().getApiException() != null)
                 responseEvent.getResponseHolder().getApiException().printStackTrace();
-            else if(sending) onFinishSending(false);
+            onFinishSending(false);
         }
     }
 

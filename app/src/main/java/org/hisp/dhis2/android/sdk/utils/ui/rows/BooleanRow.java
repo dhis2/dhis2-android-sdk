@@ -45,6 +45,7 @@ public class BooleanRow implements Row {
     private final LayoutInflater inflater;
     private final ProgramStageDataElement programStageDataElement;
     private final DataValue dataValue;
+    private BooleanRowHolder holder;
     
     public BooleanRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
         this.inflater = inflater;
@@ -55,7 +56,6 @@ public class BooleanRow implements Row {
     @Override
     public View getView(View convertView) {
         View view;
-        BooleanRowHolder holder;
         
         if (convertView == null) {
             ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.listview_row_boolean, null);
@@ -98,6 +98,11 @@ public class BooleanRow implements Row {
         else if (dataValue.value.equals(DataValue.EMPTY_VALUE)) holder.noneButton.setChecked(true);
         
         return view;
+    }
+
+    @Override
+    public TextView getEntryView() {
+        return null;
     }
     
     private class BooleanRowHolder {

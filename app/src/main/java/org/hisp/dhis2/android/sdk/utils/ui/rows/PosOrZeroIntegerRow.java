@@ -46,6 +46,7 @@ public class PosOrZeroIntegerRow implements Row {
     private final LayoutInflater inflater;
     private final ProgramStageDataElement programStageDataElement;
     private final DataValue dataValue;
+    private EditTextHolder holder;
     
     public PosOrZeroIntegerRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
         this.inflater = inflater;
@@ -56,7 +57,6 @@ public class PosOrZeroIntegerRow implements Row {
     @Override
     public View getView(View convertView) {
         View view;
-        EditTextHolder holder;
         
         if (convertView == null) {
             ViewGroup rowRoot = (ViewGroup) inflater.inflate(R.layout.listview_row_integer_positive_or_zero, null);
@@ -83,6 +83,11 @@ public class PosOrZeroIntegerRow implements Row {
         holder.editText.clearFocus();
         
         return view;
+    }
+
+    @Override
+    public TextView getEntryView() {
+        return holder.editText;
     }
     
     private class InpFilter implements InputFilter {

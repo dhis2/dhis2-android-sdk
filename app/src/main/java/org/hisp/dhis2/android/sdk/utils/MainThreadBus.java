@@ -27,27 +27,35 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
+package org.hisp.dhis2.android.sdk.utils;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
+import android.os.Handler;
+import android.os.Looper;
+
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Simen Skogly Russnes on 11.03.15.
  */
-public class BaseEvent {
+public class MainThreadBus extends Bus {
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, loadSmallOptionSet, onLoadingMetaDataFinished,
-        showRegisterEventFragment, loadDataElements, loadProgramStages, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished, onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes, onUpdateTrackedEntityAttributes, showEditEventFragment, loadOptionSets, loadProgram
+    public MainThreadBus(ThreadEnforcer any) {
+        super(any);
     }
 
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
+    @Override
+    public void post(final Object event) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            super.post(event);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    MainThreadBus.super.post(event);
+                }
+            });
+        }
     }
-    public BaseEvent() {}
 }

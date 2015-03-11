@@ -46,6 +46,7 @@ public class TextRow implements Row {
     private final LayoutInflater inflater;
     private final ProgramStageDataElement programStageDataElement;
     private final DataValue dataValue;
+    private EditTextHolder holder;
     
     public TextRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
         this.inflater = inflater;
@@ -56,7 +57,6 @@ public class TextRow implements Row {
     @Override
     public View getView(View convertView) {
         View view;
-        EditTextHolder holder;
         
         if (convertView == null) {
             ViewGroup rowRoot = (ViewGroup) inflater.inflate(R.layout.listview_row_text, null);
@@ -82,6 +82,11 @@ public class TextRow implements Row {
         holder.editText.clearFocus();
 
         return view;
+    }
+
+    @Override
+    public TextView getEntryView() {
+        return holder.editText;
     }
 }
 

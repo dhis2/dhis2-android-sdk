@@ -29,15 +29,37 @@
 
 package org.hisp.dhis2.android.sdk.utils;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
 public class Utils {
 
+    private static final String CLASS_TAG = "Utils";
+
     public static final String getCurrentDate() {
         LocalDate localDate = new LocalDate();
         return localDate.toString();
+    }
+
+    public static final String getCurrentTime() {
+        DateTime dateTime = new DateTime();
+        Log.d(CLASS_TAG, dateTime.toString());
+        return dateTime.toString();
+    }
+
+    public static final int getDpPx(int dp, DisplayMetrics displayMetrics) {
+        int px = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                displayMetrics);
+        return px;
     }
 }

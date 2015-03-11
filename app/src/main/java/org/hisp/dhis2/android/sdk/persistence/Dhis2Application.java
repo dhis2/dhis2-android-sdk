@@ -36,12 +36,22 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.utils.MainThreadBus;
+
 /**
  *  Application for initiating the DbFlow Back end
  */
 public class Dhis2Application extends Application implements IDhis2Application {
 
-    public static Bus bus = new Bus(ThreadEnforcer.ANY);
+    public static Bus bus;
+    public static Dhis2 dhis2;
+
+    static {
+        bus = new MainThreadBus(ThreadEnforcer.ANY);
+        dhis2 = new Dhis2();
+        bus.register(dhis2);
+    }
 
     @Override
     public void onCreate() {

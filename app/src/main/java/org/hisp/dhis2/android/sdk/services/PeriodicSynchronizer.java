@@ -55,7 +55,6 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         return periodicSynchronizer;
     }
 
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Log.d(CLASS_TAG, " onReceive periodique ");
@@ -66,9 +65,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         if(serverUrl == null || credentials == null) return;
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
-        if(Dhis2.getInstance().toggle) Dhis2.getInstance().getDataValueController().synchronizeDataValues(context);
-        else Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
-        Dhis2.getInstance().toggle=!Dhis2.getInstance().toggle;
+        Dhis2.synchronizeMetaData(context);
 	}
 
 	/**

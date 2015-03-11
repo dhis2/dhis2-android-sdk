@@ -37,9 +37,12 @@ import android.location.Location;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.squareup.otto.ThreadEnforcer;
 
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueLoader;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
@@ -56,6 +59,7 @@ import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis2.android.sdk.utils.GpsManager;
+import org.hisp.dhis2.android.sdk.utils.MainThreadBus;
 
 import java.io.IOException;
 
@@ -79,28 +83,24 @@ public final class Dhis2 {
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
-    private static Dhis2 dhis2;
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
     private GpsManager gpsManager;
     private ObjectMapper objectMapper;
-    public boolean toggle = false;  //used during development stage to avoid triggering sendData and syncMeta at the same time (in periodicSyncronizer)
     private Context context; //beware when using this as it must be set explicitly
 
     private boolean loadingInitial = false;
+    private boolean loading = false;
 
-    private Dhis2() {
+
+
+    public Dhis2() {
         objectMapper = new ObjectMapper();
         gpsManager = new GpsManager();
-        Dhis2Application.bus.register(this);
     }
 
     public static Dhis2 getInstance() {
-        if (dhis2 == null) {
-            dhis2 = new Dhis2();
-        }
-
-        return dhis2;
+        return Dhis2Application.dhis2;
     }
 
     public static void activateGps(Context context) {
@@ -210,13 +210,17 @@ public final class Dhis2 {
     }
 
     public static String getServer(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(context != null ) getInstance().context = context;
+        if(getInstance().context == null) return null;
+        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String server = prefs.getString(SERVER, null);
         return server;
     }
 
     public static String getCredentials(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(context != null ) getInstance().context = context;
+        if(getInstance().context == null) return null;
+        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String credentials = prefs.getString(CREDENTIALS, null);
         return credentials;
     }
@@ -322,6 +326,20 @@ public final class Dhis2 {
     }
 
     /**
+     * initiates sending locally modified data items and loads updated items from the server.
+     * @param context1
+     */
+    public static void sendLocalData(final Context context1) {
+        if(getInstance().loading) return;
+        getInstance().loading = true;
+        new Thread() {
+            public void run() {
+                getInstance().getDataValueController().synchronizeDataValues(context1);
+            }
+        }.start();
+    }
+
+    /**
      * Loads initial data, defined by the enableLoading method
      */
     public static void loadInitialData(Context context) {
@@ -329,6 +347,7 @@ public final class Dhis2 {
         if( context == null && getInstance().context == null ) return;
 
         getInstance().loadingInitial = true;
+        getInstance().loading = true;
         loadInitialMetadata();
     }
 
@@ -340,6 +359,16 @@ public final class Dhis2 {
         } else {
             loadInitialDataValues();
         }
+    }
+
+    /**
+     * initiates synchronization of metadata from server
+     * @param context
+     */
+    public static void synchronizeMetaData(Context context) {
+        if(getInstance().loading) return;
+        getInstance().loading = true;
+        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
     }
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
@@ -364,25 +393,30 @@ public final class Dhis2 {
      */
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
-        if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA) ) {
-            if ( isLoadTrackerDataEnabled(getInstance().context) ) {
-                if( hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) {
-                    Log.d(CLASS_TAG, "saving full loading success");
-                    getInstance().loadingInitial = false;
-                    setHasLoadedInitialData(getInstance().context, true);
+        if( getInstance().loadingInitial ) {
+            if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA) ) {
+                if ( isLoadTrackerDataEnabled(getInstance().context) ) {
+                    if( hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) {
+                        Log.d(CLASS_TAG, "saving full loading success");
+                        setHasLoadedInitialData(getInstance().context, true);
+                    } else {
+                        //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                    }
                 } else {
-                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+
+                    Log.d(CLASS_TAG, "saving full loading success");
+                    setHasLoadedInitialData(getInstance().context, true);
                 }
             } else {
-                getInstance().loadingInitial = false;
-                Log.d(CLASS_TAG, "saving full loading success");
-                setHasLoadedInitialData(getInstance().context, true);
+                //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
             }
-        } else {
-            //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+            Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
         }
-        MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-        Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
+        Log.d(CLASS_TAG, "dhis2: " + getInstance().toString());
+        getInstance().loadingInitial = false;
+        getInstance().loading = false;
+
     }
 
     public void showErrorDialog(final Activity activity, final String title, final String message) {
@@ -406,8 +440,14 @@ public final class Dhis2 {
     @Subscribe
     public void onResponse(LoadingEvent loadingEvent) {
         if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {
-            loadInitialDataValues();
-        } else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
+            if(isLoadingInitial())
+                loadInitialDataValues();
+        } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateMetaDataFinished ) {
+            getInstance().getDataValueController().synchronizeDataValues(context);
+        }
+        else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
+            onFinishLoading();
+        } else if(loadingEvent.eventType == BaseEvent.EventType.onUpdateDataValuesFinished) {
             onFinishLoading();
         }
     }

@@ -77,6 +77,9 @@ public class Event extends BaseModel {
     public Event() {
     }
 
+    /**
+     * used to tell whether or not an event has been updated locally and needs to be sent to server.
+     */
     @JsonIgnore
     @Column
     public boolean fromServer = true;
@@ -101,6 +104,14 @@ public class Event extends BaseModel {
         return null;
         else return event;
     }
+
+    @JsonProperty("lastUpdated")
+    @Column
+    public String lastUpdated;
+
+    @JsonProperty("created")
+    @Column
+    public String created;
 
     @JsonProperty("status")
     @Column

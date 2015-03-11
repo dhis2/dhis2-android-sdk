@@ -64,7 +64,6 @@ public class DatePickerRow implements Row {
     public DatePickerRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, Context context, DataValue dataValue) {
         this.inflater= inflater;
         this.programStageDataElement = programStageDataElement;
-        this.editText = editText;
         this.context = context;
         this.dataValue = dataValue;
         
@@ -114,6 +113,11 @@ public class DatePickerRow implements Row {
         holder.clearButton.setOnClickListener(holder.cbListener);
 
         return view;
+    }
+
+    @Override
+    public TextView getEntryView() {
+        return editText;
     }
 
     

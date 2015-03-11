@@ -30,7 +30,9 @@
 package org.hisp.dhis2.android.sdk.utils.ui.rows;
 
 import android.view.View;
+import android.widget.TextView;
 
 public interface Row {
     public View getView(View convertView);
+    public TextView getEntryView();
 }

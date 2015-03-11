@@ -46,6 +46,7 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityInstancesTa
 import org.hisp.dhis2.android.sdk.controllers.wrappers.TrackedEntityInstancesWrapper;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
+import org.hisp.dhis2.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
@@ -83,6 +84,7 @@ public class DataValueLoader {
     private int organisationUnitCounter = -1;
     /* used while loading Tracked Entity Instances */
     private int programCounter = -1;
+    private int loadedEventCounter = 0;
     private Context context;
 
     /**
@@ -95,6 +97,7 @@ public class DataValueLoader {
         this.context = context;
         loading = true;
         synchronizing = update;
+        int loadedCounter = 0;
         if(Dhis2.isLoadTrackerDataEnabled(context))
             loadTrackedEntityInstances();
         else if(Dhis2.isLoadEventCaptureEnabled(context))
@@ -124,6 +127,11 @@ public class DataValueLoader {
         } else {
             LoadingEvent event = new LoadingEvent(BaseEvent.EventType.onUpdateDataValuesFinished);
             DataValueController.onFinishLoading(event); //todo: not yet used but will be used to notify updates in fragments etc.
+            if(loadedEventCounter>0) {
+                Log.d(CLASS_TAG, "sending invalidate");
+                InvalidateEvent ivEvent = new InvalidateEvent(InvalidateEvent.EventType.event);
+                Dhis2Application.bus.post(ivEvent); //can be used to refresh list of events if subscribed to.
+            }
         }
 
         synchronizing = false;
@@ -395,6 +403,7 @@ public class DataValueLoader {
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEvents) {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
+                    loadedEventCounter++;
                     event.save(false);
                     if(event.dataValues != null) {
                         for(DataValue dataValue: event.dataValues) {

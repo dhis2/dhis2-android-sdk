@@ -44,9 +44,9 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadAssignedProgramsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadDataElementsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramStagesTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSmallOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntitiesTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityAttributesTask;
@@ -54,7 +54,6 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateTrackedEntityAttributesTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
-import org.hisp.dhis2.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
@@ -95,6 +94,7 @@ public class MetaDataLoader {
     private Context context;
     boolean loading = false;
     boolean synchronizing = false;
+    private SystemInfo systemInfo;
 
     /**
      * Connects to the server and checks for updates in Meta Data. If Meta Data has been updated,
@@ -119,8 +119,9 @@ public class MetaDataLoader {
         this.context = context;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         String lastUpdated = prefs.getString(Dhis2.LAST_UPDATED_METADATA, null);
+        systemInfo = null;
         if(lastUpdated == null || synchronizing)
-            loadAssignedPrograms();
+            loadSystemInfo();
     }
 
     void resetLastUpdated(Context context) {
@@ -385,26 +386,16 @@ public class MetaDataLoader {
     }
 
     /**
-     * Loads option sets from the server
-     * This is separated into loading OptionSets with few options and OptionSets with many Options
-     * OptionSets with few options can be loaded in one request, while larger OptionSets need to
-     * be loaded separately, like for example ICD10.
+     * Loads all option sets from the server
      */
     private void loadOptionSets() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_optionsets));
-        loadSmallOptionSets();
-    }
-
-    /**
-     * Loads Option Sets that have a low number of Options
-     */
-    private void loadSmallOptionSets() {
         final ResponseHolder<List<OptionSet>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<OptionSet>> event = new
                 MetaDataResponseEvent<>
-                (BaseEvent.EventType.loadSmallOptionSet);
+                (BaseEvent.EventType.loadOptionSets);
         event.setResponseHolder(holder);
-        LoadSmallOptionSetsTask task = new LoadSmallOptionSetsTask(NetworkManager.getInstance(),
+        LoadOptionSetsTask task = new LoadOptionSetsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OptionSet>>() {
                     @Override
                     public void onSuccess(Response response) {
@@ -432,14 +423,6 @@ public class MetaDataLoader {
                     }
                 });
         task.execute();
-    }
-
-    /**
-     * Loads Option Sets that have a large number of options.
-     */
-    private void loadLargeOptionSets() {
-        //TODO: implement.
-        loadTrackedEntityAttributes();
     }
 
     /**
@@ -593,6 +576,12 @@ public class MetaDataLoader {
             LocalDate localDate = new LocalDate();
             editor.putString(Dhis2.LAST_UPDATED_METADATA, localDate.toString());
             editor.commit();
+            if(systemInfo != null) {
+                List<SystemInfo> result = Select.all(SystemInfo.class);
+                if( result != null && !result.isEmpty() )
+                    systemInfo.update(false);
+                else systemInfo.save(false);
+            }
         }
 
         LoadingEvent event;
@@ -612,13 +601,10 @@ public class MetaDataLoader {
     private void onResponse(MetaDataResponseEvent event) {
         if (event.getResponseHolder().getItem() != null) {
             if (event.eventType == BaseEvent.EventType.loadSystemInfo) {
-                SystemInfo systemInfo = (SystemInfo) event.getResponseHolder().getItem();
-                List<SystemInfo> result = Select.all(SystemInfo.class);
-                if( result != null && !result.isEmpty() )
-                    systemInfo.update(false);
-                else systemInfo.save(false);
+                systemInfo = (SystemInfo) event.getResponseHolder().getItem();
+
                 Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
-                onFinishLoading(true);
+                loadAssignedPrograms();
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
                 List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
                         event.getResponseHolder().getItem();
@@ -742,16 +728,17 @@ public class MetaDataLoader {
                     }
                 }
                 loadOptionSets();
-            } else if( event.eventType == BaseEvent.EventType.loadSmallOptionSet ) {
+            } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
                 for(OptionSet os: optionSets ) {
+                    Log.d(CLASS_TAG, "saving option set " + os.id);
                     for( Option o: os.options ) {
                         o.setOptionSet( os.getId() );
                         o.save(false);
                     }
                     os.save(false);
                 }
-                loadLargeOptionSets();
+                loadTrackedEntityAttributes();
             } else if( event.eventType == BaseEvent.EventType.onUpdateOptionSets ) {
                 updateTrackedEntityAttributes();
             } else if( event.eventType == BaseEvent.EventType.loadDataElements ) { /*deprecated*/
@@ -764,9 +751,9 @@ public class MetaDataLoader {
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
                     tea.save(false);
                 }
-                loadSystemInfo();
+                onFinishLoading(true);
             } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {
-                loadSystemInfo();
+                onFinishLoading(true);
             }
         } else {
             //todo handle more effectively

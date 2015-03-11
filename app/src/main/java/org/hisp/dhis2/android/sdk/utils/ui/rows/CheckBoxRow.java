@@ -82,6 +82,11 @@ public class CheckBoxRow implements Row {
         
         return view;
     }
+
+    @Override
+    public TextView getEntryView() {
+        return null;
+    }
     
     private class CheckBoxListener implements OnCheckedChangeListener {
         private DataValue dataValue;

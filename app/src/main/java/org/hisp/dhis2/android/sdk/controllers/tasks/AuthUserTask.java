@@ -36,6 +36,7 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +50,18 @@ public class AuthUserTask implements INetworkTask {
     public AuthUserTask(NetworkManager networkManager,
                         ApiRequestCallback<User> callback,
                         String username, String password) {
-        isNull(username, "Username must not be null");
-        isNull(password, "Password must not be null");
-        isNull(callback, "ApiRequestCallback must not be null");
 
-        isNull(networkManager.getServerUrl(), "Server URL must not be null");
-        isNull(networkManager.getHttpManager(), "HttpManager must not be null");
-        isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
+        try {
+            isNull(username, "Username must not be null");
+            isNull(password, "Password must not be null");
+            isNull(callback, "ApiRequestCallback must not be null");
+
+            isNull(networkManager.getServerUrl(), "Server URL must not be null");
+            isNull(networkManager.getHttpManager(), "HttpManager must not be null");
+            isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
+        } catch (IllegalArgumentException e) {
+            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+        }
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getBase64Manager()

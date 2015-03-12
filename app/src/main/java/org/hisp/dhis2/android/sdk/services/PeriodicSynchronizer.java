@@ -62,7 +62,10 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         String credentials = Dhis2.getInstance().getCredentials(context);
         Log.d(CLASS_TAG, "serverUrl: " + serverUrl);
         Log.d(CLASS_TAG, "credentials: " + credentials);
-        if(serverUrl == null || credentials == null) return;
+        if(serverUrl == null || credentials == null) {
+            cancelPeriodicSynchronizer(context);
+            return;
+        }
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
         Dhis2.synchronizeMetaData(context);
@@ -73,8 +76,9 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param context
 	 * @param minutes the time in minutes between each time the synchronizer runs.
 	 */
-	public void ActivatePeriodicSynchronizer(Context context, int minutes) {
-		Log.d(CLASS_TAG, "activate periodic synchronizer");
+	public static void activatePeriodicSynchronizer(Context context, int minutes) {
+        cancelPeriodicSynchronizer(context);
+		Log.d(CLASS_TAG, "activate periodic synchronizer " + minutes);
 		AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, PeriodicSynchronizer.class);
@@ -87,7 +91,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * Cancels the PeriodicSynchronizer
 	 * @param context
 	 */
-	public void CancelPeriodicSynchronizer(Context context) {
+	public static void cancelPeriodicSynchronizer(Context context) {
 		Log.d(CLASS_TAG, "cancel periodic synchronizer");
 		Intent intent = new Intent(context, PeriodicSynchronizer.class);
 		PendingIntent sender = PendingIntent
@@ -129,8 +133,8 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
     public static void reActivate(Context context) {
         int interval = getInterval(context);
         if (interval != getInstance().currentInterval) {
-            getInstance().CancelPeriodicSynchronizer(context);
-            getInstance().ActivatePeriodicSynchronizer(context, interval);
+            getInstance().cancelPeriodicSynchronizer(context);
+            getInstance().activatePeriodicSynchronizer(context, interval);
             getInstance().currentInterval = interval;
         }
     }

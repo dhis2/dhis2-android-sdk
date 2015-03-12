@@ -39,6 +39,7 @@ import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,18 +53,22 @@ public class LoadEventsTask implements INetworkTask {
                           ApiRequestCallback<List<Event>> callback,
                           String organisationUnitId, String programId, boolean synchronizing) {
 
-        isNull(callback, "ApiRequestCallback must not be null");
-        isNull(networkManager.getServerUrl(), "Server URL must not be null");
-        isNull(networkManager.getHttpManager(), "HttpManager must not be null");
-        isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-        isNull(organisationUnitId, "OrganisationUnit Id must not be null");
-        isNull(programId, "Program Id must not be null");
+        try {
+            isNull(callback, "ApiRequestCallback must not be null");
+            isNull(networkManager.getServerUrl(), "Server URL must not be null");
+            isNull(networkManager.getHttpManager(), "HttpManager must not be null");
+            isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
+            isNull(organisationUnitId, "OrganisationUnit Id must not be null");
+            isNull(programId, "Program Id must not be null");
+        } catch (IllegalArgumentException e) {
+            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+        }
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/events?paging=false&orgUnit="+
+        String url = networkManager.getServerUrl() + "/api/events?page=0&pageSize=200&orgUnit="+
                 organisationUnitId+"&program="+programId;
         if(synchronizing) {
             SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();

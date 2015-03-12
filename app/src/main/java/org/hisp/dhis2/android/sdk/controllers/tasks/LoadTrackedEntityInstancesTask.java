@@ -36,6 +36,7 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +55,16 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
                                           ApiRequestCallback<Object[]> callback,
                                           String organisationUnit, String program) {
 
+        try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
         isNull(organisationUnit, "OrganisationUnit must not be null");
         isNull(program, "Program must not be null");
+        } catch(IllegalArgumentException e) {
+            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+        }
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getCredentials()));

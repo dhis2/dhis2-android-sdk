@@ -49,14 +49,14 @@ public class StartPeriodicSynchronizerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) 
 	{
     	Log.e(CLASS_TAG, "startperiodicsyncservice onstartcommand");
-         PeriodicSynchronizer.getInstance().ActivatePeriodicSynchronizer(StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval(this));
+         PeriodicSynchronizer.getInstance().activatePeriodicSynchronizer(StartPeriodicSynchronizerService.this, PeriodicSynchronizer.getInterval(this));
 	     return START_STICKY;
 	}
 
     public void onStart(Context context, Intent intent, int startId)
     {
     	Log.e(CLASS_TAG, "startperiodicsyncservice onstart");
-        PeriodicSynchronizer.getInstance().ActivatePeriodicSynchronizer(context, PeriodicSynchronizer.getInterval(context));
+        PeriodicSynchronizer.getInstance().activatePeriodicSynchronizer(context, PeriodicSynchronizer.getInterval(context));
     }
 	
 	@Override

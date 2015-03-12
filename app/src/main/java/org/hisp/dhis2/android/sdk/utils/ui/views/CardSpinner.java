@@ -69,4 +69,8 @@ public class CardSpinner extends CardView {
     public int getSelectedItemPosition() {
         return spinner.getSelectedItemPosition();
     }
+
+    public void setSelection(int position) {
+        spinner.setSelection(position);
+    }
 }

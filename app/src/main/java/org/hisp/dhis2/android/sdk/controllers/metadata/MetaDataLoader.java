@@ -624,11 +624,11 @@ public class MetaDataLoader {
                                 new OrganisationUnitProgramRelationship();
                         orgUnitProgram.organisationUnitId = ou.getId();
                         orgUnitProgram.programId = programId;
-                        orgUnitProgram.save(false);
+                        orgUnitProgram.save(true);
                         if(!assignedPrograms.contains(programId))
                             assignedPrograms.add(programId);
                     }
-                    ou.save(false);
+                    ou.save(true);
                 }
                 loadPrograms(assignedPrograms);
             } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
@@ -638,15 +638,15 @@ public class MetaDataLoader {
                 //API JSON
                 for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                     ptea.setProgram(program.getId());
-                    ptea.save(false);
+                    ptea.save(true);
                 }
 
-                program.save(false);
+                program.save(true);
                 for( ProgramStage programStage: program.getProgramStages() ) {
-                    programStage.save(false);
+                    programStage.save(true);
                     for(ProgramStageDataElement programStageDataElement: programStage.
                             getProgramStageDataElements()) {
-                        programStageDataElement.save(false);
+                        programStageDataElement.save(true);
                     }
                 }
 
@@ -655,7 +655,7 @@ public class MetaDataLoader {
                     loadProgram(programsToLoad.get(requestCounter - 1));
                 } else {
                     if( synchronizing ) updatePrograms();
-                    else loadOptionSets();//loadProgramStages();
+                    else loadOptionSets();
                 }
             } else if (event.eventType == BaseEvent.EventType.updateProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
@@ -730,13 +730,14 @@ public class MetaDataLoader {
                 loadOptionSets();
             } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
+                Log.d(CLASS_TAG, "got option sets");
                 for(OptionSet os: optionSets ) {
                     Log.d(CLASS_TAG, "saving option set " + os.id);
                     for( Option o: os.options ) {
                         o.setOptionSet( os.getId() );
-                        o.save(false);
+                        o.save(true);
                     }
-                    os.save(false);
+                    os.save(true);
                 }
                 loadTrackedEntityAttributes();
             } else if( event.eventType == BaseEvent.EventType.onUpdateOptionSets ) {
@@ -749,7 +750,7 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(false);
+                    tea.save(true);
                 }
                 onFinishLoading(true);
             } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {

@@ -105,7 +105,8 @@
     <string name="offline_mode">No internet connection. Going offline mode.</string>
     <string name="please_wait">Please wait</string>
     <string name="login_fail">Login fail</string>
-    <string name="invalid_username_or_password">Invalid username or password.</string>
+    <string name="invalid_username_or_password">Unable to log in due to an invalid username or password.</string>
+    <string name="unable_to_login">Unable to log in.</string>
     <string name="progress_getting_current_user">Getting Current User</string>
     <string name="progress_getting_users">Getting Users</string>
     <string name="progress_getting_tracked_entity_attributes">Getting Tracked Entity Attributes</string>
@@ -239,6 +240,7 @@
 
     <string name="discard">Discard</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
+    <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
     <string name="logout">Log out</string>
     <string name="update_frequency">Synchronization frequency</string>

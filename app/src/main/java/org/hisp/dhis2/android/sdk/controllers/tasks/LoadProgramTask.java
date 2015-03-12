@@ -43,6 +43,7 @@ import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +66,15 @@ public class LoadProgramTask implements INetworkTask {
     public LoadProgramTask(NetworkManager networkManager,
                            ApiRequestCallback<Program> callback, String programId, boolean updating) {
 
+        try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
         isNull(programId, "Program ID must not be null");
+        } catch(IllegalArgumentException e) {
+            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+        }
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getCredentials()));

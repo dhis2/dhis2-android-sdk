@@ -81,4 +81,14 @@ public class DataValue extends BaseModel {
         this.storedBy = storedBy;
     }
 
+    /**
+     * makes a deep copy of the DataValue
+     * @return
+     */
+    public DataValue clone() {
+        DataValue dataValue = new DataValue(this.event, this.value, this.dataElement,
+                this.providedElsewhere, this.storedBy);
+        return dataValue;
+    }
+
 }

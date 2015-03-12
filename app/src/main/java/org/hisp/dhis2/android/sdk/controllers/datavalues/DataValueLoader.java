@@ -404,11 +404,11 @@ public class DataValueLoader {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
                     loadedEventCounter++;
-                    event.save(false);
+                    event.save(true);
                     if(event.dataValues != null) {
                         for(DataValue dataValue: event.dataValues) {
                             dataValue.event = event.event;
-                            dataValue.save(false);
+                            dataValue.save(true);
                         }
                     }
                 }

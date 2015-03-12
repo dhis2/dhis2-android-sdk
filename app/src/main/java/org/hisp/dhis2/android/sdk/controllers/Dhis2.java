@@ -37,12 +37,9 @@ import android.location.Location;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
 
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
-import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueLoader;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
@@ -59,7 +56,6 @@ import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis2.android.sdk.utils.GpsManager;
-import org.hisp.dhis2.android.sdk.utils.MainThreadBus;
 
 import java.io.IOException;
 
@@ -137,7 +133,14 @@ public final class Dhis2 {
         editor.putInt(UPDATE_FREQUENCY, frequency);
         editor.commit();
         PeriodicSynchronizer.reActivate(context);
+    }
 
+    public static void cancelPeriodicSynchronizer(Context context) {
+        PeriodicSynchronizer.cancelPeriodicSynchronizer(context);
+    }
+
+    public static void activatePeriodicSynchronizer(Context context) {
+        PeriodicSynchronizer.activatePeriodicSynchronizer(context, PeriodicSynchronizer.getInterval(context));
     }
 
     /**
@@ -198,13 +201,17 @@ public final class Dhis2 {
     }
 
     public static String getUsername(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(context != null) getInstance().context = context;
+        if(getInstance().context == null) return null;
+        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String username = prefs.getString(USERNAME, null);
         return username;
     }
 
     public static String getPassword(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(context != null) getInstance().context = context;
+        if(getInstance().context == null) return null;
+        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String password = prefs.getString(PASSWORD, null);
         return password;
     }
@@ -426,6 +433,17 @@ public final class Dhis2 {
             public void run() {
                 new CustomDialogFragment( title, message,
                         "OK", null ).show(activity.getFragmentManager(), title);
+            }
+        });
+    }
+
+    public void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
+        if(activity == null) return;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new CustomDialogFragment( title, message,
+                        "OK", onConfirmClickListener ).show(activity.getFragmentManager(), title);
             }
         });
     }

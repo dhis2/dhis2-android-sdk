@@ -41,6 +41,7 @@ import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +63,15 @@ public class LoadTrackedEntityAttributeTask implements INetworkTask {
     public LoadTrackedEntityAttributeTask(NetworkManager networkManager,
                                           ApiRequestCallback<TrackedEntityAttribute> callback, String trackedEntityAttributeId) {
 
+        try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
         isNull(trackedEntityAttributeId, "ID must not be null");
+        } catch(IllegalArgumentException e) {
+            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+        }
 
         List<Header> headers = new ArrayList<>();
         headers.add(new Header("Authorization", networkManager.getCredentials()));

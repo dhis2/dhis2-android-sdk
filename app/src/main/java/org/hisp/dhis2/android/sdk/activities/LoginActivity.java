@@ -30,6 +30,8 @@
 package org.hisp.dhis2.android.sdk.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -109,7 +111,7 @@ public class LoginActivity
     {
         viewsContainer = findViewById(R.id.login_views_container);
         usernameEditText = (EditText) findViewById( R.id.username );
-        passwordEditText = (EditText) findViewById( R.id.password);
+        passwordEditText = (EditText) findViewById( R.id.password );
         serverEditText = (EditText) findViewById( R.id.server_url );
         loginButton = (Button) findViewById( R.id.login_button );
 
@@ -173,19 +175,35 @@ public class LoginActivity
                 Log.e(CLASS_TAG, user.getName());
                 user.save(false);
                 launchMainActivity();
-                //Dhis2.getInstance().getMetaDataController().loadMetaData(this);
             }
         } else {
-            if(event.getResponseHolder()!=null && event.getResponseHolder().getApiException() != null)
+            if(event.getResponseHolder()!=null && event.getResponseHolder().getApiException() != null) {
                 event.getResponseHolder().getApiException().printStackTrace();
+                onLoginFail(event.getResponseHolder().getApiException());
+            }
         }
     }
 
-    @Subscribe
-    public void onReceiveMessage(MessageEvent event) {
-        if(event.eventType == ResponseEvent.EventType.onLoadingMetaDataFinished) {
-            launchMainActivity();
+    public void onLoginFail(APIException e) {
+        Dialog.OnClickListener listener = new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showLoginDialog();
+            }
+        };
+        Dhis2.saveCredentials(this, null, null, null);
+        if( e.getResponse().getStatus() == 401 ) {
+            Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.invalid_username_or_password), listener);
+        } else {
+            Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
         }
+    }
+
+    private void showLoginDialog() {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
+        progressBar.setVisibility(View.GONE);
+        viewsContainer.setVisibility(View.VISIBLE);
+        viewsContainer.startAnimation(anim);
     }
 
     public void launchMainActivity() {

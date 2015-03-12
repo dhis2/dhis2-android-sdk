@@ -44,6 +44,7 @@ import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
+import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
@@ -140,7 +141,14 @@ public class DataValueSender {
                 ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
                 if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
                     Event event = localEvents.get(sendCounter-1);
+                    List<DataValue> dataValues = event.getDataValues();
                     event.delete(false);
+                    event.event = responseBody.importSummaries.get(0).reference;
+                    for(DataValue dataValue: dataValues) {
+                        dataValue.event = event.event;
+                        dataValue.save(true);
+                    }
+                    event.save(true);
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");

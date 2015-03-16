@@ -42,12 +42,14 @@ import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadEnrollmentsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadEventsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityInstancesTask;
 import org.hisp.dhis2.android.sdk.controllers.wrappers.TrackedEntityInstancesWrapper;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
+import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
@@ -58,10 +60,13 @@ import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.utils.APIException;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,34 +79,320 @@ public class DataValueLoader {
 
     private static final String CLASS_TAG = "DataValueLoader";
 
+    public static final String EVENTS = "events";
+    public static final String TRACKED_ENTITY_INSTANCES = "trackedentityinstances";
+    public static final String ENROLLMENTS = "enrollments";
+
 
     boolean loading = false;
     boolean synchronizing = false;
-
-    private List<OrganisationUnit> assignedOrganisationUnits;
-    private List<Program> programsForOrgUnit;
-    /* used while loading Tracked Entity Instances */
-    private int organisationUnitCounter = -1;
-    /* used while loading Tracked Entity Instances */
-    private int programCounter = -1;
     private int loadedEventCounter = 0;
     private Context context;
 
+    /* Used to keep a reference to which orgunit/program datavalues is loaded for*/
+    private String currentOrganisationUnit;
+    private String currentProgram;
+
+    private SystemInfo systemInfo;
+
     /**
-     * Loads tracker data from server. Set update to true if you only want to load new values.
+     * Loads data values from server. Set update to true if you only want to load new values.
      * False if you want it all.
      * @param context
      * @param update
      */
-    public void loadTrackerData(Context context, boolean update) {
+    public void loadDataValues(Context context, boolean update) {
         this.context = context;
         loading = true;
         synchronizing = update;
-        int loadedCounter = 0;
-        if(Dhis2.isLoadTrackerDataEnabled(context))
-            loadTrackedEntityInstances();
-        else if(Dhis2.isLoadEventCaptureEnabled(context))
-            loadEvents();
+        loadSystemInfo();
+    }
+
+    private void loadSystemInfo() {
+        final ResponseHolder<SystemInfo> holder = new ResponseHolder<>();
+        final DataValueResponseEvent<SystemInfo> event = new
+                DataValueResponseEvent<>(BaseEvent.EventType.loadSystemInfo);
+        event.setResponseHolder(holder);
+        LoadSystemInfoTask task = new LoadSystemInfoTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<SystemInfo>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+
+                        try {
+                            SystemInfo systemInfo = Dhis2.getInstance().getObjectMapper().
+                                    readValue(response.getBody(), SystemInfo.class);
+                            holder.setItem(systemInfo);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                });
+        task.execute();
+    }
+
+    public void loadItem() {
+        if(synchronizing) {
+            updateItem();
+            return;
+        }
+
+        /**
+         * Loading Events
+         */
+        if(Dhis2.isLoadFlagEnabled(context, EVENTS)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                    if(programsForOrgUnitSEWoR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+                    if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
+                        Dhis2.postProgressMessage(context.getString(R.string.loading_events) + ": "
+                                + organisationUnit.label + ": " + program.name);
+                        currentOrganisationUnit = organisationUnit.id;
+                        currentProgram = program.id;
+                        loadEvents(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Loading Tracked Entity Instances
+         */
+        if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+                    if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.id + program.id)) {
+                        currentOrganisationUnit = organisationUnit.id;
+                        currentProgram = program.id;
+                        loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Loading Enrollments
+         */
+        if(Dhis2.isLoadFlagEnabled(context, ENROLLMENTS)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+                    if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.id + program.id)) {
+                        currentOrganisationUnit = organisationUnit.id;
+                        currentProgram = program.id;
+                        loadEnrollments(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+        onFinishLoading(true);
+    }
+
+    public void updateItem() {
+        String currentLoadingDate = systemInfo.serverDate;
+        if(currentLoadingDate == null) {
+            return;
+        }
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);
+
+        /**
+         * Updating Events
+         */
+        if(Dhis2.isLoadFlagEnabled(context, EVENTS)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                currentOrganisationUnit = organisationUnit.id;
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                    if(programsForOrgUnitSEWoR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+
+                    currentProgram = program.id;
+                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
+                            EVENTS+currentOrganisationUnit + currentProgram);
+                    if(lastUpdatedString == null) {
+                        loadEvents(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    if(updatedDateTime.isBefore(currentDateTime)) {
+                        loadEvents(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Updating Tracked Entity Instances
+         */
+        if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+                    currentProgram = program.id;
+                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
+                            TRACKED_ENTITY_INSTANCES+currentOrganisationUnit + currentProgram);
+                    if(lastUpdatedString == null) {
+                        loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    if(updatedDateTime.isBefore(currentDateTime)) {
+                        loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Updating Enrollments
+         */
+        if(Dhis2.isLoadFlagEnabled(context, ENROLLMENTS)) {
+            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                List<Program> programsForOrgUnit = new ArrayList<>();
+                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                    if (programsForOrgUnitMEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+                }
+                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                            (organisationUnit.getId(),
+                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                    if (programsForOrgUnitSEWR != null)
+                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+                }
+
+                for( Program program: programsForOrgUnit) {
+                    currentProgram = program.id;
+                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
+                            ENROLLMENTS+currentOrganisationUnit + currentProgram);
+                    if(lastUpdatedString == null) {
+                        loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    if(updatedDateTime.isBefore(currentDateTime)) {
+                        loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
+                        return;
+                    }
+                }
+            }
+        }
+        onFinishLoading(true);
     }
 
     /**
@@ -114,13 +405,13 @@ public class DataValueLoader {
                 SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 LocalDate localDate = new LocalDate();
-                editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, localDate.toString());
+                editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, systemInfo.serverDate);
                 editor.commit();
             }
         }
 
         if(!synchronizing) {
-            Dhis2.setHasLoadedInitialDataPart(context, success, Dhis2.INITIAL_DATA_LOADED_PART_DATAVALUES);
+            //Dhis2.setHasLoadedInitialDataPart(context, success, Dhis2.INITIAL_DATA_LOADED_PART_DATAVALUES);
             LoadingEvent loadingEvent = new LoadingEvent(BaseEvent.EventType.onLoadDataValuesFinished);//called in Dhis2 Subscribing method
             loadingEvent.success = success;
             DataValueController.onFinishLoading(loadingEvent);
@@ -136,41 +427,6 @@ public class DataValueLoader {
 
         synchronizing = false;
         loading = false;
-    }
-
-    /**
-     * Loads Tracked Entity Instances for assigned programs and organisation units.
-     */
-    void loadTrackedEntityInstances() {
-        assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-        organisationUnitCounter = assignedOrganisationUnits.size();
-        loadTrackedEntityInstancesForAssignedOrganisationUnits();
-    }
-
-    private void loadTrackedEntityInstancesForAssignedOrganisationUnits() {
-        if( programsForOrgUnit == null || programCounter <= 0) {
-            programsForOrgUnit = new ArrayList<>();
-            List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
-            List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.SINGLE_EVENT_WITH_REGISTRATION);
-            if(programsForOrgUnitMEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitMEWR);
-            if(programsForOrgUnitSEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWR);
-            programCounter = programsForOrgUnit.size();
-        }
-
-        if(context != null) {
-            int current = programsForOrgUnit.size() - programCounter;
-            current ++;
-            Dhis2.postProgressMessage(context.getString(R.string.loading_tracked_entity_instances)
-                    + " " + assignedOrganisationUnits.get(organisationUnitCounter -1 ).getLabel()
-                    + ": " + current + "/" + programsForOrgUnit.size());
-        }
-
-        loadTrackedEntityInstances(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                programsForOrgUnit.get(programCounter - 1).getId());
     }
 
     /**
@@ -205,33 +461,6 @@ public class DataValueLoader {
                     }
                 }, organisationUnit, program);
         task.execute();
-    }
-
-    /**
-     * Initiates loading of all enrollments for assigned org units
-     */
-    private void loadEnrollments() {
-        assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-        organisationUnitCounter = assignedOrganisationUnits.size();
-        loadEnrollmentsForAssignedOrganisationUnits();
-    }
-
-    private void loadEnrollmentsForAssignedOrganisationUnits() {
-        if( programsForOrgUnit == null || programCounter <= 0) {
-            programsForOrgUnit = new ArrayList<>();
-            List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
-            List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
-                    (assignedOrganisationUnits.get(organisationUnitCounter-1).getId(),
-                            Program.SINGLE_EVENT_WITH_REGISTRATION);
-            if(programsForOrgUnitMEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitMEWR);
-            if(programsForOrgUnitSEWR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWR);
-            programCounter = programsForOrgUnit.size();
-        }
-
-        loadEnrollments(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                programsForOrgUnit.get(programCounter - 1).getId());
     }
 
     /**
@@ -282,57 +511,10 @@ public class DataValueLoader {
     }
 
     /**
-     * Initiates loading of Events
+     * Loads events for a given org unit and program
+     * @param organisationUnitId
+     * @param programId
      */
-    private void loadEvents() {
-        assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-        organisationUnitCounter = assignedOrganisationUnits.size();
-        loadEventsForAssignedOrganisationUnits();
-    }
-
-    private void loadEventsForAssignedOrganisationUnits() {
-        if( programsForOrgUnit == null || programCounter <= 0) {
-            programsForOrgUnit = new ArrayList<>();
-            if(Dhis2.isLoadTrackerDataEnabled(context)) {
-                List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
-                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                                Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
-                List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
-                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                                Program.SINGLE_EVENT_WITH_REGISTRATION);
-                if (programsForOrgUnitMEWR != null)
-                    programsForOrgUnit.addAll(programsForOrgUnitMEWR);
-                if (programsForOrgUnitSEWR != null)
-                    programsForOrgUnit.addAll(programsForOrgUnitSEWR);
-            }
-            if(Dhis2.isLoadEventCaptureEnabled(context)) {
-                List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
-                        (assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
-                if(programsForOrgUnitSEWoR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
-            }
-            programCounter = programsForOrgUnit.size();
-        }
-
-        if(programCounter > 0) {
-
-            if(context != null) {
-                int current = programsForOrgUnit.size() - programCounter;
-                current ++;
-                Dhis2.postProgressMessage(context.getString(R.string.loading_events)
-                        + " " + assignedOrganisationUnits.get(organisationUnitCounter -1 ).getLabel()
-                        + ": " + current + "/" + programsForOrgUnit.size());
-            }
-
-            loadEvents(assignedOrganisationUnits.get(organisationUnitCounter - 1).getId(),
-                    programsForOrgUnit.get(programCounter - 1).getId());
-        } else {
-            organisationUnitCounter--;
-            if(organisationUnitCounter > 0) loadEventsForAssignedOrganisationUnits();
-            else onFinishLoading(true);
-        }
-    }
-
     private void loadEvents(String organisationUnitId, String programId) {
         final ResponseHolder<List<Event>> holder = new ResponseHolder<>();
         final DataValueResponseEvent<List<Event>> event = new
@@ -377,7 +559,11 @@ public class DataValueLoader {
 
     public void onResponse(ResponseEvent responseEvent) {
         if(responseEvent.getResponseHolder().getApiException() == null) {
-            if (responseEvent.eventType == BaseEvent.EventType.loadTrackedEntityInstances) {
+            if (responseEvent.eventType == BaseEvent.EventType.loadSystemInfo) {
+                systemInfo = (SystemInfo) responseEvent.getResponseHolder().getItem();
+                Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
+                loadItem();
+            } else if (responseEvent.eventType == BaseEvent.EventType.loadTrackedEntityInstances) {
                 Object[] items = (Object[]) responseEvent.getResponseHolder().getItem();
                 List<TrackedEntityInstance> trackedEntityInstances = (List<TrackedEntityInstance>) items[0];
                 List<TrackedEntityAttributeValue> values = (List<TrackedEntityAttributeValue>) items[1];
@@ -385,21 +571,13 @@ public class DataValueLoader {
                     for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(false);
                     for(TrackedEntityAttributeValue value: values) value.save(false);
                 }
-                programCounter--;
-                if( programCounter <= 0) {
-                    organisationUnitCounter--;
-                    if( organisationUnitCounter <= 0 ) loadEnrollments();
-                    else loadTrackedEntityInstancesForAssignedOrganisationUnits();
-                } else loadTrackedEntityInstancesForAssignedOrganisationUnits();
+                flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, true);
+                loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEnrollments) {
-                List<Enrollment> enrollments = (List<Enrollment>) responseEvent.getResponseHolder().getItem();
-                for(Enrollment enrollment: enrollments) enrollment.save(false);
-                programCounter--;
-                if( programCounter <= 0) {
-                    organisationUnitCounter--;
-                    if( organisationUnitCounter <= 0 ) loadEvents();
-                    else loadEnrollmentsForAssignedOrganisationUnits();
-                } else loadEnrollmentsForAssignedOrganisationUnits();
+                flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);
+                loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEvents) {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
@@ -412,18 +590,148 @@ public class DataValueLoader {
                         }
                     }
                 }
-                programCounter--;
-                if( programCounter <= 0) {
-                    organisationUnitCounter--;
-                    if( organisationUnitCounter <= 0 ) onFinishLoading(true);
-                    else loadEventsForAssignedOrganisationUnits();
-                } else loadEventsForAssignedOrganisationUnits();
+
+                flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemLoaded(EVENTS+currentOrganisationUnit+currentProgram, true);
+                loadItem();
             }
         } else {
             //TODO: handle exceptions..
             if(responseEvent.getResponseHolder() != null && responseEvent.getResponseHolder().getApiException() != null)
                 responseEvent.getResponseHolder().getApiException().printStackTrace();
             onFinishLoading(false);
+        }
+    }
+
+    /**
+     * Flags a DataValue item like Events or Enrollments to indicate whether or not it has been loaded.
+     * Can also be set for a UID for example for an individual Program.
+     * @param item
+     * @param loaded
+     */
+    private void flagDataValueItemLoaded(String item, boolean loaded) {
+        if(this.context == null) return;
+        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Dhis2.LOADED+item, loaded);
+        editor.commit();
+    }
+
+    /**
+     * Returns a boolean indicating whether or not a DataValue item has been loaded successfully.
+     * @param item
+     * @return
+     */
+    private static boolean isDataValueItemLoaded(Context context, String item) {
+        if(context == null) return false;
+        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getBoolean(Dhis2.LOADED+item, false);
+    }
+
+    private void flagDataValueItemUpdated(Context context, String item, String dateTime) {
+        if(context == null) return;
+        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Dhis2.UPDATED+item, dateTime);
+        editor.commit();
+    }
+
+    /**
+     * returns the date in a string for the last time an item was updated
+     * @param context
+     * @param item
+     * @return
+     */
+    private static String getLastUpdatedDateForDataValueItem(Context context, String item) {
+        if(context == null) return null;
+        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(Dhis2.UPDATED + item, null);
+    }
+
+    /**
+     * Goes through all assigned programs and checks if they are loaded if loading is enabled.
+     * Returns false if some programs have not been loaded, but have been flagged to load.
+     * @param context
+     * @return
+     */
+    public static boolean isEventsLoaded(Context context) {
+        List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+        for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            List<Program> programsForOrgUnit = new ArrayList<>();
+            if (Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                if (programsForOrgUnitMEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+            }
+            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                if (programsForOrgUnitSEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+            }
+            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                if (programsForOrgUnitSEWoR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+            }
+
+            for (Program program : programsForOrgUnit) {
+                if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Sets all flags for all loaded data values to false, and all updated dates to null
+     * @param context
+     */
+    void clearDataValueLoadedFlags(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+        for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+            String assignedOrganisationUnit = organisationUnit.getId();
+            List<Program> programsForOrgUnit = new ArrayList<>();
+            if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
+                List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
+                if (programsForOrgUnitMEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitMEWR);
+            }
+            if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
+                List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.SINGLE_EVENT_WITH_REGISTRATION);
+
+                if (programsForOrgUnitSEWR != null)
+                    programsForOrgUnit.addAll(programsForOrgUnitSEWR);
+            }
+            if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
+                        (organisationUnit.getId(),
+                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                if(programsForOrgUnitSEWoR!=null) programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
+            }
+
+            for( Program program: programsForOrgUnit) {
+                String programId = program.id;
+                flagDataValueItemLoaded(EVENTS+assignedOrganisationUnit+programId, false);
+                flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit+programId, false);
+                flagDataValueItemLoaded(ENROLLMENTS+assignedOrganisationUnit+programId, false);
+                flagDataValueItemUpdated(context, EVENTS+assignedOrganisationUnit+programId, null);
+                flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit+programId, null);
+                flagDataValueItemUpdated(context, ENROLLMENTS+assignedOrganisationUnit+programId, null);
+            }
         }
     }
 }

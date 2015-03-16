@@ -88,7 +88,7 @@ public class DataValueSender {
 
         sending = false;
         //update datavalues
-        Dhis2.getInstance().getDataValueController().loadTrackerData(context, true);
+        Dhis2.getInstance().getDataValueController().loadDataValues(context, true);
     }
 
     /**
@@ -148,6 +148,7 @@ public class DataValueSender {
                         dataValue.event = event.event;
                         dataValue.save(true);
                     }
+                    event.fromServer = true;
                     event.save(true);
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){

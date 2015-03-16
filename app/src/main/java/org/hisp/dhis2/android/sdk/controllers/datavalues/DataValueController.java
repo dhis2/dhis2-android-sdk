@@ -30,47 +30,20 @@
 package org.hisp.dhis2.android.sdk.controllers.datavalues;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadEnrollmentsTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadEventsTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityInstancesTask;
-import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterEventTask;
-import org.hisp.dhis2.android.sdk.controllers.wrappers.TrackedEntityInstancesWrapper;
-import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
-import org.hisp.dhis2.android.sdk.events.ResponseEvent;
-import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis2.android.sdk.network.http.Response;
-import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
-import org.hisp.dhis2.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
-import org.hisp.dhis2.android.sdk.persistence.models.ResponseBody;
-import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis2.android.sdk.utils.APIException;
-import org.joda.time.LocalDate;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -115,6 +88,10 @@ public class DataValueController {
         else return failedItems;
     }
 
+    public void clearDataValueLoadedFlags(Context context) {
+        dataValueLoader.clearDataValueLoadedFlags(context);
+    }
+
     /**
      * Loads user generated data from the server. Which data is loaded is determined by enabling
      * or disabling flags in DHIS 2. Avoid calling this method directly, use Dhis2.sendLocalValues to
@@ -131,10 +108,10 @@ public class DataValueController {
      * @param context
      * @param update
      */
-    public void loadTrackerData(Context context, boolean update) {
-        if(dataValueSender.sending || dataValueLoader.loading || Dhis2.getInstance().getMetaDataController().isLoading() ||
-                Dhis2.getInstance().getMetaDataController().isSynchronizing()) return; //todo: implement a global checker to see if loading is occurring.
-        dataValueLoader.loadTrackerData(context, update);
+    public void loadDataValues(Context context, boolean update) {
+        //if(dataValueSender.sending || dataValueLoader.loading || Dhis2.getInstance().getMetaDataController().isLoading() ||
+        //        Dhis2.getInstance().getMetaDataController().isSynchronizing()) return; //todo: implement a global checker to see if loading is occurring.
+        dataValueLoader.loadDataValues(context, update);
     }
 
 

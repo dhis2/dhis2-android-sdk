@@ -92,6 +92,19 @@ public class MetaDataController {
         return programs;
     }
 
+    /**
+     * Returns a list of IDs for all assigned programs.
+     * @return
+     */
+    public static List<String> getAssignedPrograms() {
+        List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships = Select.all(OrganisationUnitProgramRelationship.class);
+        List<String> assignedPrograms = new ArrayList<>();
+        for(OrganisationUnitProgramRelationship relationship: organisationUnitProgramRelationships) {
+            if(!assignedPrograms.contains(relationship.programId)) assignedPrograms.add(relationship.programId);
+        }
+        return assignedPrograms;
+    }
+
     public static SystemInfo getSystemInfo() {
         List<SystemInfo> result = Select.all(SystemInfo.class);
         if(result != null && result.size() > 0) return result.get(0);
@@ -167,6 +180,10 @@ public class MetaDataController {
      */
     public void resetLastUpdated(Context context) {
         metaDataLoader.resetLastUpdated(context);
+    }
+
+    public void clearMetaDataLoadedFlags(Context context) {
+        metaDataLoader.clearMetaDataLoadedFlags(context);
     }
 
     @Subscribe

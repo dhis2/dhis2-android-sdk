@@ -39,8 +39,11 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.otto.Subscribe;
 
+import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueLoader;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataLoader;
 import org.hisp.dhis2.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
@@ -51,6 +54,7 @@ import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
@@ -64,12 +68,14 @@ public final class Dhis2 {
 
     public final static String LAST_UPDATED_METADATA = "lastupdated_metadata";
     public final static String LAST_UPDATED_DATAVALUES = "lastupdated_datavalues";
+    public final static String LOAD = "load";
+    public static final String LOADED = "loaded";
+    public static final String UPDATED = "updated";
 
     /* flags used to determine what data to be loaded from the server */
     public static final String LOAD_TRACKER = "load_tracker";
     public static final String LOAD_EVENTCAPTURE = "load_eventcapture";
 
-    public static final String INITIAL_DATA_LOADED = "init_data";
     public static final String INITIAL_DATA_LOADED_PART_METADATA = "metadata";
     public static final String INITIAL_DATA_LOADED_PART_DATAVALUES = "datavalues";
     public static final String UPDATE_FREQUENCY = "update_frequency";
@@ -84,6 +90,7 @@ public final class Dhis2 {
     private GpsManager gpsManager;
     private ObjectMapper objectMapper;
     private Context context; //beware when using this as it must be set explicitly
+    private Activity activity;
 
     private boolean loadingInitial = false;
     private boolean loading = false;
@@ -144,24 +151,98 @@ public final class Dhis2 {
     }
 
     /**
-     * Enables loading of different data
-     * @param flag
+     * Enables loading of different data. LOAD_EVENTCAPTURE, LOAD_TRACKER
+     * @param mode
      */
-    public void enableLoading(Context context, String flag) {
+    public void enableLoading(Context context, String mode) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(flag, true);
+        if( mode.equals(LOAD_EVENTCAPTURE)) {
+            editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
+            editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
+            editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
+        } else if (mode.equals(LOAD_TRACKER)) {
+            editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
+            editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
+            editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
+            editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
+        }
         editor.commit();
     }
 
-    public static boolean isLoadTrackerDataEnabled(Context context) {
+    /**
+     * clears all loading flags
+     * @param context
+     */
+    public static void clearLoadFlags(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(LOAD_TRACKER, false);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, false);
+        editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false);
+        editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, false);
+        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, false);
+        editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
+        editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
+        editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
+        editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, false);
+        editor.commit();
     }
 
-    public static boolean isLoadEventCaptureEnabled(Context context) {
+    /**
+     * returns whether or not a load flag has been enabled.
+     * @param context
+     * @param flag
+     * @return
+     */
+    public static boolean isLoadFlagEnabled(Context context, String flag) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean(LOAD_EVENTCAPTURE, false);
+        return sharedPreferences.getBoolean(LOAD + flag, false);
+    }
+
+    public static boolean isInitialDataLoaded(Context context) {
+        return isMetaDataLoaded(context) & isDataValuesLoaded(context);
+    }
+
+    /**
+     * Returns false if some meta data flags that have been enabled have not been downloaded.
+     * @param context
+     * @return
+     */
+    public static boolean isMetaDataLoaded(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(isLoadFlagEnabled(context, MetaDataLoader.ASSIGNED_PROGRAMS)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.ASSIGNED_PROGRAMS, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.OPTION_SETS)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.OPTION_SETS, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMS)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMS, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false)) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns false if some data value flags that have been enabled have not been downloaded.
+     * @param context
+     * @return
+     */
+    public static boolean isDataValuesLoaded(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        if(isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
+            if(!DataValueLoader.isEventsLoaded(context)) return false;
+        } else if(isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
+            if(!sharedPreferences.getBoolean(LOADED + DataValueLoader.ENROLLMENTS, false)) return false;
+        } else if(isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
+            if(!sharedPreferences.getBoolean(LOADED + DataValueLoader.TRACKED_ENTITY_INSTANCES, false)) return false;
+        }
+        return true;
     }
 
     public ObjectMapper getObjectMapper() {
@@ -233,57 +314,6 @@ public final class Dhis2 {
     }
 
     /**
-     * checks if initial data has been loaded. For example MetaData, and DataValues depending on
-     * what data is enabled for the SDK.
-     * @param context
-     * @return
-     */
-    public static boolean hasLoadedInitialData(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(INITIAL_DATA_LOADED, false);
-    }
-
-    /**
-     * Sets a flag whether or not data has been loaded for the app successfully
-     * @param context
-     * @param loadedSuccessfully
-     */
-    public static void setHasLoadedInitialData(Context context, boolean loadedSuccessfully) {
-        Log.d(CLASS_TAG, "set has loaded init: " + loadedSuccessfully);
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(INITIAL_DATA_LOADED, loadedSuccessfully);
-        editor.commit();
-    }
-
-    /**
-     * Method for setting flag for loaded elements in smaller fragments
-     * Flags are Metadata and Datavalue
-     * @param context
-     * @param loadedSuccessfully
-     * @param part
-     */
-    public static void setHasLoadedInitialDataPart(Context context, boolean loadedSuccessfully, String part) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(INITIAL_DATA_LOADED + part, loadedSuccessfully);
-        editor.commit();
-    }
-
-    /**
-     * Method for getting flag for loaded elements in smaller fragments
-     * Flags are Metadata and Datavalue
-     * @param context
-     * @param part
-     * @return
-     */
-    public static boolean hasLoadedInitialDataPart(Context context, String part) {
-        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(INITIAL_DATA_LOADED + part, false);
-    }
-
-
-    /**
      * Tries to log in to the given DHIS 2 server
      * @param username
      * @param password
@@ -327,9 +357,9 @@ public final class Dhis2 {
         Dhis2.getInstance().saveCredentials(context, null, null, null);
         NetworkManager.getInstance().setCredentials(null);
         getInstance().metaDataController.resetLastUpdated(context);
-        setHasLoadedInitialDataPart(context, false, INITIAL_DATA_LOADED_PART_DATAVALUES);
-        setHasLoadedInitialDataPart(context, false, INITIAL_DATA_LOADED_PART_METADATA);
-        setHasLoadedInitialData(context, false);
+        getInstance().metaDataController.clearMetaDataLoadedFlags(context);
+        getInstance().dataValueController.clearDataValueLoadedFlags(context);
+        clearLoadFlags(context);
     }
 
     /**
@@ -350,7 +380,10 @@ public final class Dhis2 {
      * Loads initial data, defined by the enableLoading method
      */
     public static void loadInitialData(Context context) {
-        if( context != null ) getInstance().context = context;
+        if( context != null ) {
+            getInstance().context = context;
+            if(context instanceof Activity) getInstance().activity = (Activity) context;
+        }
         if( context == null && getInstance().context == null ) return;
 
         getInstance().loadingInitial = true;
@@ -359,9 +392,9 @@ public final class Dhis2 {
     }
 
     private static void loadInitialMetadata() {
-        if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA))
+        if(!isMetaDataLoaded(getInstance().context))
         {
-            Log.d(CLASS_TAG, "init loading metadata");
+            Log.d(CLASS_TAG, "init loading metadata!");
             getInstance().getMetaDataController().loadMetaData(getInstance().context);
         } else {
             loadInitialDataValues();
@@ -380,16 +413,11 @@ public final class Dhis2 {
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
     private static void loadInitialDataValues() {
-        Log.d(CLASS_TAG, "init loadig datavalues");
-        if(isLoadTrackerDataEnabled(getInstance().context) || isLoadEventCaptureEnabled(getInstance().context)) {
-            Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled");
-            if(!hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES))
-            {
+        Log.d(CLASS_TAG, "init loading datavalues");
+        if(!isDataValuesLoaded(getInstance().context)) {
                 Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
-                getInstance().getDataValueController().loadTrackerData(getInstance().context, false);
-            }
+                getInstance().getDataValueController().loadDataValues(getInstance().context, false);
         } else {
-            Log.d(CLASS_TAG, "init loadig datavalues trackerDisabled");
             onFinishLoading();
         }
     }
@@ -401,32 +429,74 @@ public final class Dhis2 {
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
         if( getInstance().loadingInitial ) {
-            if(hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_METADATA) ) {
-                if ( isLoadTrackerDataEnabled(getInstance().context) ) {
-                    if( hasLoadedInitialDataPart(getInstance().context, INITIAL_DATA_LOADED_PART_DATAVALUES) ) {
-                        Log.d(CLASS_TAG, "saving full loading success");
-                        setHasLoadedInitialData(getInstance().context, true);
-                    } else {
-                        //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
-                    }
-                } else {
+            if(isMetaDataLoaded(getInstance().context) ) {
+                Log.d(CLASS_TAG, "has loaded init metadatapart");
+                /**
+                 * Initial loading of meta data is completed successfully, continue checking if
+                 * required data values was loaded successfully.
+                 */
 
-                    Log.d(CLASS_TAG, "saving full loading success");
-                    setHasLoadedInitialData(getInstance().context, true);
+                if ( isDataValuesLoaded(getInstance().context) ) {
+                    Log.d(CLASS_TAG, "full loading success");
+                    MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+                    Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
+                } else {
+                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                    //todo: implement onFailedLoadingInitialDataValues
+                    Log.d(CLASS_TAG, "full loading failed loading data values. Continuing anyways..");
+                    MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+                    Dhis2Application.bus.post(messageEvent);
                 }
             } else {
-                //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                Log.d(CLASS_TAG, "failed loading!!!");
+                /**
+                 * Initial loading of meta data failed. Give the user feedback. Since meta data is
+                 * missing the app will most likely not function very well, but we could allow the
+                 * user to continue working regardless.
+                 */
+                onFailedLoadingInitialMetaData();
             }
-            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-            Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
+
         }
-        Log.d(CLASS_TAG, "dhis2: " + getInstance().toString());
         getInstance().loadingInitial = false;
         getInstance().loading = false;
-
     }
 
-    public void showErrorDialog(final Activity activity, final String title, final String message) {
+    /**
+     * Called if initial meta data loading fails. Gives a notification to user.
+     */
+    private static void onFailedLoadingInitialMetaData() {
+        Log.d(CLASS_TAG, "onfailedloadinginititalmetadata show the dialog");
+        if(getInstance().activity != null) {
+            Log.d(CLASS_TAG, "showing the dialog now");
+            DialogInterface.OnClickListener retryListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    loadInitialData(getInstance().activity);
+                }
+            };
+
+            DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    MessageEvent event = new MessageEvent(BaseEvent.EventType.loadInitialDataFailed); //can be subscribed to for example in MainActivity or wherever loading was initiated.
+                    Dhis2Application.bus.post(event);
+                }
+            };
+            showConfirmDialog(getInstance().activity,
+                    getInstance().activity.getString(R.string.error_message),
+                    getInstance().activity.getString(R.string.loading_failed_metadata),
+                    getInstance().activity.getString(R.string.retry),
+                    getInstance().activity.getString(R.string.cancel),
+                    retryListener,
+                    cancelListener);
+        } else {
+            MessageEvent event = new MessageEvent(BaseEvent.EventType.loadInitialDataFailed); //can be subscribed to for example in MainActivity or wherever loading was initiated.
+            Dhis2Application.bus.post(event);
+        }
+    }
+
+    public static void showErrorDialog(final Activity activity, final String title, final String message) {
         if(activity == null) return;
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -437,7 +507,7 @@ public final class Dhis2 {
         });
     }
 
-    public void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
+    public static void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
         if(activity == null) return;
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -448,18 +518,30 @@ public final class Dhis2 {
         });
     }
 
-    public void showConfirmDialog(final Activity activity, final String title, final String message,
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
                                   final String confirmOption, final String cancelOption,
                                   DialogInterface.OnClickListener onClickListener) {
         new CustomDialogFragment( title, message, confirmOption, cancelOption, onClickListener ).
+                show(activity.getFragmentManager(), title);
+    }
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
+                                          final String confirmOption, final String cancelOption,
+                                          DialogInterface.OnClickListener onConfirmListener,
+                                          DialogInterface.OnClickListener onCancelListener) {
+        new CustomDialogFragment( title, message, confirmOption, cancelOption, onConfirmListener,
+                onCancelListener ).
                 show(activity.getFragmentManager(), title);
     }
 
     @Subscribe
     public void onResponse(LoadingEvent loadingEvent) {
         if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {
-            if(isLoadingInitial())
-                loadInitialDataValues();
+            if(!loadingEvent.success) {
+                onFinishLoading();
+            } else {
+                if(isLoadingInitial())
+                    loadInitialDataValues();
+            }
         } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateMetaDataFinished ) {
             getInstance().getDataValueController().synchronizeDataValues(context);
         }

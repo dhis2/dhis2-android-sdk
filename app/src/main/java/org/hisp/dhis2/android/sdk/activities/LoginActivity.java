@@ -192,10 +192,21 @@ public class LoginActivity
             }
         };
         Dhis2.saveCredentials(this, null, null, null);
-        if( e.getResponse().getStatus() == 401 ) {
-            Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.invalid_username_or_password), listener);
+
+        if(e.getResponse() == null) {
+            String type = "";
+            if(e.isHttpError()) type = "HttpError";
+            else if(e.isUnknownError()) type = "UnknownError";
+            else if(e.isNetworkError()) type = "NetworkError";
+            else if(e.isConversionError()) type = "ConversionError";
+            Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), type + ": "
+                    + e.getMessage(), listener);
         } else {
-            Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
+            if( e.getResponse().getStatus() == 401 ) {
+                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.invalid_username_or_password), listener);
+            } else {
+                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
+            }
         }
     }
 

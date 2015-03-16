@@ -214,6 +214,8 @@
     <string name="adding_orgunit">Adding Organization Unit</string>
     <string name="adding_option_set">Adding Option Set</string>
     <string name="adding_option">Adding Option</string>
+    <string name="saving_data_locally">Saving data locally</string>
+    <string name="retry">Retry</string>
     
     <!-- Data uploading -->
     <string name="uploading_tracked_entity_instances">Uploading Tracked Entity Instances</string>
@@ -226,6 +228,9 @@
     <string name="summary">Summary</string>
     <string name="uploading_error">An error has occurred while uploading. Your data has been saved, and you can try uploading again later. Press OK to see upload summary.</string>
     <string name="loading_error_metadata">An error occurred while loading metadata. Please make sure you have are connected to the internet and resume downloading.</string>
+    <string name="loading_failed_metadata">Loading of Meta Data failed. Meta Data is required for using the application, so please make sure you are connected to the internet and retry.</string>
+    <string name="loading_failed">Loading Failed</string>
+    <string name="retrying">Retrying</string>
     <string name="resume">Resume</string>
     <string name="failed_items">Failed Items</string>
     

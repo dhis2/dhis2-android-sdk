@@ -685,16 +685,18 @@ public class MetaDataLoader {
                       reference
                      */
                     Program oldProgram = MetaDataController.getProgram(program.getId());
-                    for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
-                        ptea.delete(false);
+                    if(oldProgram != null) {
+                        for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
+                            ptea.delete(false);
+                        }
                     }
-
                     for( ProgramStage programStage: program.getProgramStages() ) {
                         for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
                             psde.delete(false);
                         }
                         programStage.delete(false);
                     }
+
                     /**
                      * Then we store the new program.
                      */

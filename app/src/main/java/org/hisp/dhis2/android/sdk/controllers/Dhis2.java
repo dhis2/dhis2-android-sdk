@@ -76,8 +76,6 @@ public final class Dhis2 {
     public static final String LOAD_TRACKER = "load_tracker";
     public static final String LOAD_EVENTCAPTURE = "load_eventcapture";
 
-    public static final String INITIAL_DATA_LOADED_PART_METADATA = "metadata";
-    public static final String INITIAL_DATA_LOADED_PART_DATAVALUES = "datavalues";
     public static final String UPDATE_FREQUENCY = "update_frequency";
     public final static String QUEUED = "queued";
     public final static String PREFS_NAME = "DHIS2";
@@ -172,6 +170,8 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
+            editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITH_REGISTRATION, true);
+            editor.putBoolean(LOAD + Program.MULTIPLE_EVENTS_WITH_REGISTRATION, true);
         }
         editor.commit();
     }
@@ -234,13 +234,14 @@ public final class Dhis2 {
      * @return
      */
     public static boolean isDataValuesLoaded(Context context) {
+        Log.d(CLASS_TAG, "isdatavaluesloaded..");
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         if(isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
             if(!DataValueLoader.isEventsLoaded(context)) return false;
         } else if(isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
-            if(!sharedPreferences.getBoolean(LOADED + DataValueLoader.ENROLLMENTS, false)) return false;
+            if(!DataValueLoader.isEnrollmentsLoaded(context)) return false;
         } else if(isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
-            if(!sharedPreferences.getBoolean(LOADED + DataValueLoader.TRACKED_ENTITY_INSTANCES, false)) return false;
+            if(!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
         }
         return true;
     }
@@ -356,9 +357,9 @@ public final class Dhis2 {
         Dhis2.getInstance().setServer(null);
         Dhis2.getInstance().saveCredentials(context, null, null, null);
         NetworkManager.getInstance().setCredentials(null);
-        getInstance().metaDataController.resetLastUpdated(context);
-        getInstance().metaDataController.clearMetaDataLoadedFlags(context);
-        getInstance().dataValueController.clearDataValueLoadedFlags(context);
+        getInstance().getMetaDataController().resetLastUpdated(context);
+        getInstance().getMetaDataController().clearMetaDataLoadedFlags(context);
+        getInstance().getDataValueController().clearDataValueLoadedFlags(context);
         clearLoadFlags(context);
     }
 

@@ -30,23 +30,57 @@
 package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @author Simen Skogly Russnes on 04.03.15.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
 public class Enrollment extends BaseModel{
+
+    public static final String ACTIVE = "ACTIVE";
+    public static final String COMPLETED = "COMPLETED";
+    public static final String CANCELLED = "CANCELLED"; //aka TERMINATED
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
 
-    @JsonProperty("enrollment")
+    @JsonIgnore
+    @Column
+    public boolean fromServer = true;
+
+    @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
     public String enrollment;
+
+    @JsonProperty("enrollment")
+    public void setEnrollment(String enrollment) {
+        this.enrollment = enrollment;
+    }
+
+    /**
+     * Should only be used by Jackson so that event is included only if its non-local generated
+     * Use Event.event instead to access it.
+     */
+    @JsonProperty("enrollment")
+    public String getEnrollment() {
+        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
+        if(enrollment.length() == randomUUID.length())
+            return null;
+        else return enrollment;
+    }
 
     @JsonProperty("trackedEntityInstance")
     @Column
@@ -68,6 +102,36 @@ public class Enrollment extends BaseModel{
     @Column
     public boolean followup;
 
+    @JsonProperty("status")
+    @Column
+    public String status;
 
+    @JsonIgnore
+    List<Event> events;
+
+    /**
+     * gets a list of events for this enrollment
+     * @param reLoad true if you want to re-load from database. False if just use what's already
+     *               loaded ( faster )
+     * @return
+     */
+    public List<Event> getEvents(boolean reLoad) {
+        if(events == null || reLoad) events = DataValueController.getEventsByEnrollment(enrollment);
+        return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    @Override
+    public void save(boolean async) {
+        super.save(async);
+        if(events!=null) {
+            for(Event event: events) {
+                event.save(async);
+            }
+        }
+    }
 
 }

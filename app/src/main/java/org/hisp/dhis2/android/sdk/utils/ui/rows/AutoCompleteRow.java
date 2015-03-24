@@ -42,7 +42,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Option;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
@@ -53,17 +53,18 @@ import java.util.List;
 public class AutoCompleteRow implements Row {	
 	private ArrayAdapter<String> adapter;
     private LayoutInflater inflater;
-    private ProgramStageDataElement programStageDataElement;
 	private OptionSet optionset;
     private ArrayList<String> optionNames;
     private List<Option> options;
-    private DataValue dataValue;
+    private BaseValue dataValue;
     private AutoCompleteRowHolder holder;
+    private boolean editable = true;
+    private String label;
     
-    public AutoCompleteRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement,
-                           OptionSet optionset, DataValue dataValue, Context context) {
+    public AutoCompleteRow(LayoutInflater inflater, String label,
+                           OptionSet optionset, BaseValue dataValue, Context context) {
         this.inflater = inflater;
-        this.programStageDataElement = programStageDataElement;
+        this.label = label;
         this.optionset = optionset;
         this.dataValue = dataValue;
 
@@ -108,7 +109,7 @@ public class AutoCompleteRow implements Row {
             holder = (AutoCompleteRowHolder) view.getTag();
         }
 
-        holder.textLabel.setText(MetaDataController.getDataElement(programStageDataElement.dataElement).getName());
+        holder.textLabel.setText(label);
         
         holder.autoComplete.setAdapter(adapter);
         holder.onFocusListener.setValues(holder.autoComplete, optionNames);
@@ -120,6 +121,7 @@ public class AutoCompleteRow implements Row {
         holder.listener.setAutoComplete(holder.autoComplete);
         holder.button.setOnClickListener(holder.listener);
         holder.autoComplete.clearFocus();
+        setEditable(editable);
         
         return view;
     }
@@ -128,7 +130,21 @@ public class AutoCompleteRow implements Row {
     public TextView getEntryView() {
         return holder.autoComplete;
     }
-    
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if(holder!=null) {
+            if(editable) {
+                holder.autoComplete.setEnabled(true);
+                holder.button.setVisibility(View.VISIBLE);
+            } else {
+                holder.autoComplete.setEnabled(false);
+                holder.button.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
     private class AutoCompleteRowHolder {
         final TextView textLabel;
         final AutoCompleteTextView autoComplete;

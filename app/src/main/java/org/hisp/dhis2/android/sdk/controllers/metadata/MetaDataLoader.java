@@ -725,7 +725,7 @@ public class MetaDataLoader {
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(OptionSet os: optionSets ) {
                     for( Option o: os.options ) {
-                        o.setOptionSet( os.getId() );
+                        o.setOptionSet( os.getId() ); //save options async since there usually is a lot and they won't be displayed on the first screen.
                         o.save(true);
                     }
                     os.save(true);
@@ -739,7 +739,7 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(true);
+                    tea.save(false);
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
@@ -756,6 +756,7 @@ public class MetaDataLoader {
             if(event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null)
             {
                 event.getResponseHolder().getApiException().printStackTrace();
+                Log.e(CLASS_TAG, event.getResponseHolder().getApiException().getLocalizedMessage());
                 exception = event.getResponseHolder().getApiException();
                 if(exception.isConversionError()) {
 

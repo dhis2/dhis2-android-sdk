@@ -39,24 +39,25 @@ import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 
 public class CheckBoxRow implements Row {
     private LayoutInflater inflater;
-    private ProgramStageDataElement programStageDataElement;
-    private DataValue dataValue;
+    private BaseValue dataValue;
+    private boolean editable = true;
+    private CheckBoxHolder holder;
+    private String label;
     
-    public CheckBoxRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
+    public CheckBoxRow(LayoutInflater inflater, String label, BaseValue dataValue) {
         this.inflater = inflater;
-        this.programStageDataElement = programStageDataElement;
+        this.label = label;
         this.dataValue = dataValue;
     }
 
     @Override
     public View getView(View convertView) {
         View view;
-        CheckBoxHolder holder;
         
         if (convertView == null) {
             ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.listview_row_checkbox, null);
@@ -74,11 +75,12 @@ public class CheckBoxRow implements Row {
             holder = (CheckBoxHolder) view.getTag();
         }
         
-        holder.textLabel.setText(MetaDataController.getDataElement(programStageDataElement.dataElement).getName());
+        holder.textLabel.setText(label);
         holder.listener.setField(dataValue);
         
-        if (dataValue.value.equals(DataValue.TRUE)) holder.checkBox.setChecked(true);
-        else if (dataValue.value.equals(DataValue.EMPTY_VALUE)) holder.checkBox.setChecked(false);
+        if (dataValue.value.equals(BaseValue.TRUE)) holder.checkBox.setChecked(true);
+        else if (dataValue.value.equals(BaseValue.EMPTY_VALUE)) holder.checkBox.setChecked(false);
+        setEditable(editable);
         
         return view;
     }
@@ -87,24 +89,36 @@ public class CheckBoxRow implements Row {
     public TextView getEntryView() {
         return null;
     }
-    
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if(holder!=null) {
+            if(editable) {
+                holder.checkBox.setEnabled(true);
+            } else {
+                holder.checkBox.setEnabled(false);
+            }
+        }
+    }
+
     private class CheckBoxListener implements OnCheckedChangeListener {
-        private DataValue dataValue;
+        private BaseValue dataValue;
         
-        CheckBoxListener(DataValue dataValue) {
+        CheckBoxListener(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
         
-        void setField(DataValue dataValue) {
+        void setField(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                dataValue.value = DataValue.TRUE ;
+                dataValue.value = BaseValue.TRUE ;
             } else {
-                dataValue.value = DataValue.EMPTY_VALUE;
+                dataValue.value = BaseValue.EMPTY_VALUE;
             }
         }
         

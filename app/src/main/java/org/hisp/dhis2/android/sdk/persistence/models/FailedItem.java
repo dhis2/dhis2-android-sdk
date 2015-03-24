@@ -48,6 +48,7 @@ public class FailedItem extends BaseModel {
     private final static String CLASS_TAG = "FailedItem";
 
     public static final String EVENT = "Event";
+    public static final String ENROLLMENT = "Enrollment";
     // add more like TrackedEntityInstance, Enrollment .. in the future
 
     @Column(columnType = Column.PRIMARY_KEY)

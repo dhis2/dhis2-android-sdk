@@ -34,15 +34,22 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis2.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance$Table;
 
 import java.util.List;
 
@@ -64,6 +71,30 @@ public class DataValueController {
         dataValueSender = new DataValueSender();
     }
 
+    /**
+     * Returns a list of enrollments for a given program and tracked entity instance
+     * @param program
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static List<Enrollment> getEnrollments(String program, String trackedEntityInstance) {
+        List<Enrollment> enrollments = new Select().from(Enrollment.class).
+                where(Condition.column(Enrollment$Table.PROGRAM).is(program)).
+                and(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).
+                        is(trackedEntityInstance)).queryList();
+        return enrollments;
+    }
+
+    public static List<Event> getEventsByEnrollment(String enrollment) {
+        return Select.all(Event.class, Condition.column(Event$Table.ENROLLMENT).is(enrollment));
+    }
+
+    /**
+     * Returns a list of events for a given org unit and program
+     * @param organisationUnitId
+     * @param programId
+     * @return
+     */
     public static List<Event> getEvents(String organisationUnitId, String programId) {
         List<Event> events = new Select().from(Event.class).where(Condition.column
                 (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
@@ -71,15 +102,43 @@ public class DataValueController {
         return events;
     }
 
+    /**
+     * Returns an Event based on the given event id
+     * @param event
+     * @return
+     */
     public static Event getEvent(String event) {
-        Log.d(CLASS_TAG, "getting event for: " + event);
         List<Event> result = Select.all(Event.class, Condition.column(Event$Table.EVENT).is(event));
         if( result != null && !result.isEmpty() ) return result.get(0);
         else return null;
     }
 
     /**
+     * Returns a tracked entity instance based on the given id
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static TrackedEntityInstance getTrackedEntityInstance(String trackedEntityInstance) {
+        return new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).querySingle();
+    }
+
+    /**
+     * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance
+     * @param trackedEntityAttribute
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static TrackedEntityAttributeValue getTrackedEntityAttributeValue(String trackedEntityAttribute, String trackedEntityInstance) {
+        return new Select().from(TrackedEntityAttributeValue.class).where(
+                Condition.column(TrackedEntityAttributeValue$Table.
+                        TRACKEDENTITYATTRIBUTEID).is(trackedEntityAttribute),
+                Condition.column(TrackedEntityAttributeValue$Table.
+                        TRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).querySingle();
+    }
+
+    /**
      * Returns a list of failed items from the database, or null if there are none.
+     * Failed items are items that have failed to upload and sync with the server for some reason
      * @return
      */
     public static List<FailedItem> getFailedItems() {

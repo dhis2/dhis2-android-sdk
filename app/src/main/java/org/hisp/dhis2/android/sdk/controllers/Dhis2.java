@@ -124,6 +124,7 @@ public final class Dhis2 {
     public static int getUpdateFrequency(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         int updateFrequency = sharedPreferences.getInt(UPDATE_FREQUENCY, 0);
+        Log.e(CLASS_TAG, "updateFrequency: " + updateFrequency);
         return updateFrequency;
     }
 
@@ -137,6 +138,7 @@ public final class Dhis2 {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(UPDATE_FREQUENCY, frequency);
         editor.commit();
+        Log.e(CLASS_TAG, "updateFrequency: " + frequency);
         PeriodicSynchronizer.reActivate(context);
     }
 

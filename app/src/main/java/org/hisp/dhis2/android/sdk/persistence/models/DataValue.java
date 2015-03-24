@@ -41,11 +41,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  * @author Simen Skogly Russnes on 23.02.15.
  */
 @Table
-public class DataValue extends BaseModel {
-
-    public static final String FALSE = "false";
-    public static final String TRUE = "true";
-    public static final String EMPTY_VALUE = "";
+public class DataValue extends BaseValue {
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
@@ -53,10 +49,6 @@ public class DataValue extends BaseModel {
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
     public String event;
-
-    @JsonProperty("value")
-    @Column
-    public String value;
 
     @JsonProperty("dataElement")
     @Column(columnType = Column.PRIMARY_KEY)

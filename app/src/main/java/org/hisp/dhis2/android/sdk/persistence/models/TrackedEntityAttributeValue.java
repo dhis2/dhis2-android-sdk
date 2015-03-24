@@ -8,15 +8,12 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  * @author Simen Skogly Russnes on 03.03.15.
  */
 @Table
-public class TrackedEntityAttributeValue extends BaseModel {
+public class TrackedEntityAttributeValue extends BaseValue {
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String trackedEntityAttributeId;
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String trackedEntityInstanceId;
-
-    @Column
-    public String value;
 
 }

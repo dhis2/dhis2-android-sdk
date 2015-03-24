@@ -40,7 +40,6 @@
     <string name="organisation_unit">Organisation Unit</string>
     <string name="program">Program</string>
     <string name="register">Register</string>
-    <!-- <string name="profile">Profile</string> -->
     <string name="enrollment">Enrollment</string>
     <string name="eventDate">Event date</string>
     <string name="date_format">yyyy-mm-dd</string>
@@ -135,6 +134,9 @@
     <string name="addrepeatablestage">Add repeatable stage</string>
     <string name="other">Other</string>
     <string name="move_tracked_entity_instance">Transfer</string>
+    <string name="programstages">Program Stages</string>
+    <string name="relationships">Relationships</string>
+    <string name="notes">Notes</string>
 
     <!-- Add Relative Fragment -->
     
@@ -243,6 +245,12 @@
     <string name="confirm">Confirm</string>
     <string name="complete_stage">Complete Stage</string>
 
+    <string name="new_">New</string>
+    <string name="history">History</string>
+    <string name="complete">Complete</string>
+    <string name="incomplete">Incomplete</string>
+    <string name="terminate">Terminate</string>
+    <string name="mark_for_followup">Mark for follow-up</string>
     <string name="discard">Discard</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
     <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>

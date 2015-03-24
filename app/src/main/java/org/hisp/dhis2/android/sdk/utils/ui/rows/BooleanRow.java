@@ -38,18 +38,19 @@ import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 
 public class BooleanRow implements Row {
     private final LayoutInflater inflater;
-    private final ProgramStageDataElement programStageDataElement;
-    private final DataValue dataValue;
+    private final BaseValue dataValue;
     private BooleanRowHolder holder;
+    private boolean editable = true;
+    private String label;
     
-    public BooleanRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
+    public BooleanRow(LayoutInflater inflater, String label, BaseValue dataValue) {
         this.inflater = inflater;
-        this.programStageDataElement = programStageDataElement;
+        this.label = label;
         this.dataValue = dataValue;
     }
 
@@ -83,7 +84,7 @@ public class BooleanRow implements Row {
             holder = (BooleanRowHolder) convertView.getTag();
         }
         
-        holder.textLabel.setText(MetaDataController.getDataElement(programStageDataElement.dataElement).getName());
+        holder.textLabel.setText(label);
         
         holder.trueButtonListener.setField(dataValue);
         holder.falseButtonListener.setField(dataValue);
@@ -93,9 +94,10 @@ public class BooleanRow implements Row {
         holder.falseButton.setOnCheckedChangeListener(holder.falseButtonListener);
         holder.noneButton.setOnCheckedChangeListener(holder.noneButtonListener);
         
-        if (dataValue.value.equals(DataValue.FALSE)) holder.falseButton.setChecked(true);
-        else if (dataValue.value.equals(DataValue.TRUE)) holder.trueButton.setChecked(true);
-        else if (dataValue.value.equals(DataValue.EMPTY_VALUE)) holder.noneButton.setChecked(true);
+        if (dataValue.value.equals(BaseValue.FALSE)) holder.falseButton.setChecked(true);
+        else if (dataValue.value.equals(BaseValue.TRUE)) holder.trueButton.setChecked(true);
+        else if (dataValue.value.equals(BaseValue.EMPTY_VALUE)) holder.noneButton.setChecked(true);
+        setEditable(editable);
         
         return view;
     }
@@ -104,7 +106,23 @@ public class BooleanRow implements Row {
     public TextView getEntryView() {
         return null;
     }
-    
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if(holder!=null) {
+            if(editable) {
+                holder.trueButton.setEnabled(true);
+                holder.falseButton.setEnabled(true);
+                holder.noneButton.setEnabled(true);
+            } else {
+                holder.trueButton.setEnabled(false);
+                holder.falseButton.setEnabled(false);
+                holder.noneButton.setEnabled(false);
+            }
+        }
+    }
+
     private class BooleanRowHolder {
         final TextView textLabel;
         
@@ -133,53 +151,53 @@ public class BooleanRow implements Row {
     }
     
     private class TrueButtonListener implements OnCheckedChangeListener {
-        private DataValue dataValue;
+        private BaseValue dataValue;
         
-        TrueButtonListener(DataValue dataValue) {
+        TrueButtonListener(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
         
-        public void setField(DataValue dataValue) {
+        public void setField(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked) dataValue.value = DataValue.TRUE;
+            if (isChecked) dataValue.value = BaseValue.TRUE;
         } 
     }
     
     private class FalseButtonListener implements OnCheckedChangeListener {
-        private DataValue dataValue;
+        private BaseValue dataValue;
         
-        FalseButtonListener(DataValue dataValue) {
+        FalseButtonListener(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
         
-        public void setField(DataValue dataValue) {
+        public void setField(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked)  dataValue.value = DataValue.FALSE;
+            if (isChecked)  dataValue.value = BaseValue.FALSE;
         } 
     }
 
     private class NoneButtonListener implements OnCheckedChangeListener {
-        private DataValue dataValue;
+        private BaseValue dataValue;
         
-        NoneButtonListener(DataValue dataValue) {
+        NoneButtonListener(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
         
-        public void setField(DataValue dataValue) {
+        public void setField(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked)  dataValue.value = DataValue.EMPTY_VALUE;
+            if (isChecked)  dataValue.value = BaseValue.EMPTY_VALUE;
         } 
     }
     

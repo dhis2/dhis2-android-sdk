@@ -39,31 +39,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.utils.ui.DatePickerDialog;
 import org.joda.time.LocalDate;
 
 public class DatePickerRow implements Row {
     private LayoutInflater inflater;
-    private ProgramStageDataElement programStageDataElement;
-    private DataValue dataValue;
+    private BaseValue dataValue;
     private EditText editText;
     private Context context;
     private LocalDate currentDate;
+    private boolean editable = true;
+    DatePickerRowHolder holder;
+    private String label;
 
     /**
      *
      * @param inflater
-     * @param programStageDataElement
+     * @param label
      * @param context
      * @param dataValue
      */
-    public DatePickerRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, Context context, DataValue dataValue) {
+    public DatePickerRow(LayoutInflater inflater, String label, Context context, BaseValue dataValue) {
         this.inflater= inflater;
-        this.programStageDataElement = programStageDataElement;
+        this.label = label;
         this.context = context;
         this.dataValue = dataValue;
         
@@ -73,7 +72,6 @@ public class DatePickerRow implements Row {
     @Override
     public View getView(View convertView) {
         View view;
-        DatePickerRowHolder holder;
         
         if (convertView == null) {
             ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.listview_row_datepicker, null);
@@ -85,7 +83,7 @@ public class DatePickerRow implements Row {
           
             DateSetListener dateSetListener = new DateSetListener(dataValue, editText);
             OnEditTextClickListener invokerListener = new OnEditTextClickListener(
-                    MetaDataController.getDataElement(programStageDataElement.dataElement), currentDate, dateSetListener, context);
+                    label, currentDate, dateSetListener, context);
             ClearButtonListener clButtonListener = new ClearButtonListener(pickerInvoker, dataValue);
             
             pickerInvoker.setOnClickListener(invokerListener);
@@ -102,15 +100,16 @@ public class DatePickerRow implements Row {
             holder = (DatePickerRowHolder) view.getTag();  
         }
         
-        holder.textLabel.setText(MetaDataController.getDataElement(programStageDataElement.dataElement).getName());
+        holder.textLabel.setText(label);
         
         holder.dateSetListener.setDataValue(dataValue);
-        holder.invokerListener.setFieldAndListener(MetaDataController.getDataElement(programStageDataElement.dataElement), holder.dateSetListener);
+        holder.invokerListener.setFieldAndListener(label, holder.dateSetListener);
         holder.pickerInvoker.setText(dataValue.value);
         holder.pickerInvoker.setOnClickListener(holder.invokerListener);
         
         holder.cbListener.setEditText(holder.pickerInvoker, dataValue);
         holder.clearButton.setOnClickListener(holder.cbListener);
+        setEditable(editable);
 
         return view;
     }
@@ -120,7 +119,20 @@ public class DatePickerRow implements Row {
         return editText;
     }
 
-    
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if(holder != null) {
+            if(editable) {
+                holder.pickerInvoker.setEnabled(true);
+                holder.clearButton.setEnabled(true);
+            } else {
+                holder.pickerInvoker.setEnabled(false);
+                holder.clearButton.setEnabled(false);
+            }
+        }
+    }
+
 
     private class DatePickerRowHolder {
         final TextView textLabel;
@@ -144,15 +156,15 @@ public class DatePickerRow implements Row {
     }
     
     private class DateSetListener implements DatePickerDialog.OnDateSetListener {
-        private DataValue dataValue;
+        private BaseValue dataValue;
         private EditText editText;
     
-        DateSetListener(DataValue dataValue, EditText editText) {
+        DateSetListener(BaseValue dataValue, EditText editText) {
             this.dataValue = dataValue;
             this.editText = editText;
         }
         
-        void setDataValue(DataValue dataValue) {
+        void setDataValue(BaseValue dataValue) {
             this.dataValue = dataValue;
         }
         
@@ -166,28 +178,28 @@ public class DatePickerRow implements Row {
     }
     
     private class OnEditTextClickListener implements OnClickListener {
-        private DataElement dataElement;
+        private String label;
         private DateSetListener listener;
         private LocalDate currentDate;
         private Context context;
        
-        OnEditTextClickListener(DataElement dataElement, LocalDate currentDate,
+        OnEditTextClickListener(String label, LocalDate currentDate,
                 DateSetListener listener, Context context) {
             this.currentDate = currentDate;
             
-            this.dataElement = dataElement;
+            this.label = label;
             this.listener = listener;
             this.context = context;
         }
         
-        void setFieldAndListener(DataElement dataElement, DateSetListener listener) {
-            this.dataElement = dataElement;
+        void setFieldAndListener(String label, DateSetListener listener) {
+            this.label = label;
             this.listener = listener;
         } 
         
 		@Override
         public void onClick(View view) {
-            DatePickerDialog picker = new DatePickerDialog(context, listener, dataElement.getName(),
+            DatePickerDialog picker = new DatePickerDialog(context, listener, label,
                     currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth()); 
             picker.show();
         }   
@@ -195,22 +207,22 @@ public class DatePickerRow implements Row {
     
     private class ClearButtonListener implements OnClickListener {
         private EditText editText;
-        private DataValue dataValue;
+        private BaseValue dataValue;
         
-        public ClearButtonListener(EditText editText, DataValue dataValue) {
+        public ClearButtonListener(EditText editText, BaseValue dataValue) {
             this.editText = editText;
             this.dataValue = dataValue;
         }
         
-        public void setEditText(EditText editText, DataValue dataValue) {
+        public void setEditText(EditText editText, BaseValue dataValue) {
             this.editText = editText;
             this.dataValue = dataValue;
         }
 
         @Override
         public void onClick(View view) {
-            editText.setText(DataValue.EMPTY_VALUE);
-            dataValue.value = DataValue.EMPTY_VALUE;
+            editText.setText(BaseValue.EMPTY_VALUE);
+            dataValue.value = BaseValue.EMPTY_VALUE;
         }     
     }
 }

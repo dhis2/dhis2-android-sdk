@@ -35,4 +35,5 @@ import android.widget.TextView;
 public interface Row {
     public View getView(View convertView);
     public TextView getEntryView();
+    public void setEditable(boolean editable);
 }

@@ -33,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import java.util.Map;
+
 /**
  * @author Simen Skogly Russnes on 20.02.15.
  */
@@ -90,5 +92,17 @@ public class TrackedEntityAttribute extends BaseNameableObject {
     @JsonProperty("sortOrderInListNoProgram")
     @Column
     public int sortOrderInListNoProgram;
+
+    @Column
+    public String optionSet;
+
+    @JsonProperty("optionSet")
+    public void setOptionSet(Map<String, Object> optionSet) {
+        this.optionSet = (String) optionSet.get("id");
+    }
+
+    public String getOptionSet() {
+        return optionSet;
+    }
 
 }

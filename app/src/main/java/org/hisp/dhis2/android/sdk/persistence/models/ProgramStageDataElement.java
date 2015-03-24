@@ -37,6 +37,8 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+
 import java.util.Map;
 
 /**
@@ -132,8 +134,8 @@ public class ProgramStageDataElement extends BaseModel {
         this.programStage = programStage;
     }
 
-    public String getDataElement() {
-        return dataElement;
+    public DataElement getDataElement() {
+        return MetaDataController.getDataElement(dataElement);
     }
 
     public void setDataElement(String dataElement) {

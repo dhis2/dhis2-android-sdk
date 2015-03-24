@@ -44,7 +44,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,14 +68,30 @@ public class Event extends BaseModel {
 
     public static String STATUS_VISITED = "VISITED";
 
-    public static String STATUS_FUTURE_VISIT = "FUTURE_VISIT";
+    public static String STATUS_FUTURE_VISIT = "SCHEDULE";
 
-    public static String STATUS_LATE_VISIT = "LATE_VISIT";
+    public static String STATUS_LATE_VISIT = "OVERDUE";
 
     public static String STATUS_SKIPPED = "SKIPPED";
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
+
+    public Event(String organisationUnitId, String status, String programId, String programStageId,
+                 String trackedEntityInstanceId, String enrollmentId) {
+        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
+        this.fromServer = false;
+        this.dueDate = Utils.getCurrentDate();
+        this.eventDate = Utils.getCurrentDate();
+        this.organisationUnitId = organisationUnitId;
+        this.programId = programId;
+        this.programStageId = programStageId;
+        this.status = status;
+        this.lastUpdated = Utils.getCurrentDate();
+        this.trackedEntityInstance = trackedEntityInstanceId;
+        this.enrollment = enrollmentId;
+        dataValues = new ArrayList<DataValue>();
+    }
 
     public Event() {
     }
@@ -149,6 +168,13 @@ public class Event extends BaseModel {
     @Column
     public String enrollment;
 
+    public String getEnrollment() {
+        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
+        if(enrollment.length() == randomUUID.length())
+            return null;
+        else return enrollment;
+    }
+
     @JsonProperty("program")
     @Column
     public String programId;
@@ -186,5 +212,14 @@ public class Event extends BaseModel {
                 dataValue.delete(async);
         }
         super.delete(async);
+    }
+
+    @Override
+    public void save(boolean async) {
+        super.save(async);
+        if(dataValues!=null) {
+            for(DataValue dataValue: dataValues)
+                dataValue.save(async);
+        }
     }
 }

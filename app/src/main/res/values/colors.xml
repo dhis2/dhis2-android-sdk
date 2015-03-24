@@ -44,11 +44,12 @@
     <color name="Transparent">#00000000</color>
     <color name="Light_Gray">#dddddd</color>
     <color name="Medium_Gray">#727272</color>
-    <color name="Stage_Completed">#8ffe8f</color>
-    <color name="Stage_Incomplete">#fb6bfb</color>
-    <color name="Stage_Scheduled_in_future">#f9f95a</color>
-    <color name="Stage_Overdue">#fb4754</color>
-    <color name="Stage_Skipped">#bbbbbb</color>
+    <color name="stage_Completed">#dff0d8</color>
+    <color name="stage_visited">#d9edf7</color>
+    <color name="stage_Incomplete">#d5cbc1</color>
+    <color name="stage_Scheduled_in_future">#fcf8e3</color>
+    <color name="stage_Overdue">#f2dede</color>
+    <color name="stage_Skipped">#d5cbc1</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>

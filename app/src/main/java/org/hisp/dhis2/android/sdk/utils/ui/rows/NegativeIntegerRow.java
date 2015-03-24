@@ -39,18 +39,19 @@ import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 
 public class NegativeIntegerRow implements Row {
     private final LayoutInflater inflater;
-    private final ProgramStageDataElement programStageDataElement;
-    private final DataValue dataValue;
+    private final BaseValue dataValue;
     private EditTextHolder holder;
+    private boolean editable = true;
+    private String label;
     
-    public NegativeIntegerRow(LayoutInflater inflater, ProgramStageDataElement programStageDataElement, DataValue dataValue) {
+    public NegativeIntegerRow(LayoutInflater inflater, String label, BaseValue dataValue) {
         this.inflater = inflater;
-        this.programStageDataElement = programStageDataElement;
+        this.label = label;
         this.dataValue = dataValue;
     }
 
@@ -75,12 +76,13 @@ public class NegativeIntegerRow implements Row {
             holder = (EditTextHolder) view.getTag();
         }
         
-        holder.textLabel.setText(MetaDataController.getDataElement(programStageDataElement.dataElement).getName());
+        holder.textLabel.setText(label);
         
         holder.textWatcher.setDataValue(dataValue);
         holder.editText.addTextChangedListener(holder.textWatcher);
         holder.editText.setText(dataValue.value);
         holder.editText.clearFocus();
+        setEditable(editable);
 
         return view;
     }
@@ -89,7 +91,19 @@ public class NegativeIntegerRow implements Row {
     public TextView getEntryView() {
         return holder.editText;
     }
-    
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if(holder != null) {
+            if(editable) {
+                holder.editText.setEnabled(true);
+            } else {
+                holder.editText.setEnabled(false);
+            }
+        }
+    }
+
     private class InpFilter implements InputFilter {
 
         @Override

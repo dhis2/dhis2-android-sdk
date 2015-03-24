@@ -44,14 +44,20 @@ import org.hisp.dhis2.android.sdk.persistence.models.DataElement$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -71,11 +77,11 @@ public class MetaDataController {
     /**
      * Returns a list of programs assigned to the given organisation unit id
      * @param organisationUnitId
-     * @param kind set to null to get all programs. Else get kinds Strings from Program.
+     * @param kinds set to null to get all programs. Else get kinds Strings from Program.
      * @return
      */
     public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
-                                                               String kind) {
+                                                               String... kinds) {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships =
                 Select.all(OrganisationUnitProgramRelationship.class,
                         Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
@@ -83,13 +89,37 @@ public class MetaDataController {
 
         List<Program> programs = new ArrayList<Program>();
         for(OrganisationUnitProgramRelationship oupr: organisationUnitProgramRelationships ) {
-            List<Condition> conditions = new ArrayList<Condition>();
-            conditions.add(Condition.column(Program$Table.ID).is(oupr.programId));
-            if(kind!=null) conditions.add(Condition.column(Program$Table.KIND).is(kind));
-            List<Program> plist = new Select().from(Program.class).where(conditions.toArray(new Condition[]{})).queryList();
-            programs.addAll(plist); //will only be one but Idk how to query for one..
+            //List<Condition> conditions = new ArrayList<Condition>();
+            //conditions.add(Condition.column(Program$Table.ID).is(oupr.programId));
+            if(kinds!=null) {
+                for(String kind: kinds)
+                {
+                    //conditions.add(Condition.column(Program$Table.KIND).is(kind));
+                    List<Program> plist = new Select().from(Program.class).where(
+                            Condition.column(Program$Table.ID).is(oupr.programId)).and(
+                            Condition.column(Program$Table.KIND).is(kind)).queryList();
+                    programs.addAll(plist);
+                }
+            }
         }
         return programs;
+    }
+
+    public static List<ProgramStage> getProgramStages(String program) {
+        return new Select().from(ProgramStage.class).where(
+                Condition.column(ProgramStage$Table.PROGRAM).is(program)).orderBy(
+                ProgramStage$Table.SORTORDER).queryList();
+    }
+
+    public static ProgramStage getProgramStage(String programStageId) {
+        return new Select().from(ProgramStage.class).where(
+                Condition.column(ProgramStage$Table.ID).is(programStageId)).querySingle();
+    }
+
+    public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute(String trackedEntityAttribute) {
+        return new Select().from(ProgramTrackedEntityAttribute.class).where
+                (Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).is
+                        (trackedEntityAttribute)).querySingle();
     }
 
     /**
@@ -103,6 +133,10 @@ public class MetaDataController {
             if(!assignedPrograms.contains(relationship.programId)) assignedPrograms.add(relationship.programId);
         }
         return assignedPrograms;
+    }
+
+    public static OrganisationUnit getOrganisationUnit(String id) {
+        return new Select().from(OrganisationUnit.class).where(Condition.column(OrganisationUnit$Table.ID).is(id)).querySingle();
     }
 
     public static SystemInfo getSystemInfo() {

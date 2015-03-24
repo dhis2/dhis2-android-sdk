@@ -37,6 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.List;
@@ -85,9 +86,9 @@ public class Program extends BaseIdentifiableObject {
     @Column
     public boolean displayIncidentDate;
 
-    @JsonProperty("dateOfIncidentDateDescription")
+    @JsonProperty("dateOfIncidentDescription")
     @Column
-    public boolean dateOfIncidentDateDescription;
+    public String dateOfIncidentDescription;
 
     @JsonProperty("registration")
     @Column
@@ -154,8 +155,7 @@ public class Program extends BaseIdentifiableObject {
      */
     public List<ProgramStage> getProgramStages() {
         if(programStages == null) {
-            programStages = Select.all(ProgramStage.class,
-                    Condition.column(ProgramStage$Table.PROGRAM).is(id));
+            programStages = MetaDataController.getProgramStages(id);
         }
         return programStages;
     }

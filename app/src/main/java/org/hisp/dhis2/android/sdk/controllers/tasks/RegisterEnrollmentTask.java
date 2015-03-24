@@ -41,8 +41,8 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
@@ -53,9 +53,9 @@ import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
-public class RegisterEventTask implements INetworkTask {
+public class RegisterEnrollmentTask implements INetworkTask {
 
-    private final static String CLASS_TAG = "RegisterEventTask";
+    private final static String CLASS_TAG = "RegisterEnrollmentTask";
 
     private final ApiRequest.Builder<Object> requestBuilder;
 
@@ -63,19 +63,17 @@ public class RegisterEventTask implements INetworkTask {
      *
      * @param networkManager
      * @param callback
-     * @param event
-     * @param dataValues can be null if no values are entered
+     * @param enrollment
      */
-    public RegisterEventTask(NetworkManager networkManager,
-                           ApiRequestCallback<Object> callback, Event event,
-                           List<DataValue> dataValues) {
+    public RegisterEnrollmentTask(NetworkManager networkManager,
+                                  ApiRequestCallback<Object> callback, Enrollment enrollment) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-        isNull(event, "Event must not be null");
+        isNull(enrollment, "Enrollment must not be null");
         } catch(IllegalArgumentException e) {
             callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
         }
@@ -84,16 +82,15 @@ public class RegisterEventTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Content-Type", "application/json"));
 
-        event.dataValues = null;
         byte[] body = null;
         try {
-            body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(event);
+            body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(enrollment);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         Log.e(CLASS_TAG, new String(body));
 
-        String url = networkManager.getServerUrl() + "/api/events";
+        String url = networkManager.getServerUrl() + "/api/enrollments";
         Request request = new Request(RestMethod.POST, url, headers, body);
 
         requestBuilder = new ApiRequest.Builder<>();

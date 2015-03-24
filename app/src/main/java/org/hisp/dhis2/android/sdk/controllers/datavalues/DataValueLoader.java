@@ -571,13 +571,17 @@ public class DataValueLoader {
                 List<TrackedEntityInstance> trackedEntityInstances = (List<TrackedEntityInstance>) items[0];
                 List<TrackedEntityAttributeValue> values = (List<TrackedEntityAttributeValue>) items[1];
                 if(trackedEntityInstances != null) {
-                    for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(false);
-                    for(TrackedEntityAttributeValue value: values) value.save(false);
+                    for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(true);
+                    for(TrackedEntityAttributeValue value: values) value.save(true);
                 }
                 flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, true);
                 loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEnrollments) {
+                List<Enrollment> enrollments = (List<Enrollment>) responseEvent.getResponseHolder().getItem();
+                for(Enrollment enrollment: enrollments) {
+                    enrollment.save(true);
+                }
                 flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);
                 loadItem();
@@ -585,13 +589,30 @@ public class DataValueLoader {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
                     loadedEventCounter++;
-                    event.save(true);
-                    if(event.dataValues != null) {
-                        for(DataValue dataValue: event.dataValues) {
-                            dataValue.event = event.event;
-                            dataValue.save(true);
+
+                    //check if there have been changes made locally since last update.
+                    //if there are local updates, don't overwrite with data from server.
+                    Event localEvent = DataValueController.getEvent(event.event);
+                    if(localEvent != null) {
+                        if( localEvent.fromServer == true ) {
+                            event.update(true);
+                            if(event.dataValues != null) {
+                                for(DataValue dataValue: event.dataValues) {
+                                    dataValue.event = event.event;
+                                    dataValue.save(true);
+                                }
+                            }
+                        }
+                    } else {
+                        event.save(true);
+                        if(event.dataValues != null) {
+                            for(DataValue dataValue: event.dataValues) {
+                                dataValue.event = event.event;
+                                dataValue.save(true);
+                            }
                         }
                     }
+
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

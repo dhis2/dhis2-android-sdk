@@ -11,4 +11,4 @@ The SDK includes:
 
 The SDK is still in alpha phase but feel free to experiment with it. See example projects https://github.com/dhis2/dhis2-android-trackercapture and https://github.com/dhis2/dhis2-android-eventcapture for how to set up the project.
 
-The SDK requires functionality added to trunk and is currently targeting the upcoming release of 2.19, so DHIS 2 versions 2.18 and lower will experience problems.
+The SDK requires functionality in the Web API added to trunk and is currently targeting the upcoming release of 2.19, so DHIS 2 versions 2.18 and lower will experience problems.

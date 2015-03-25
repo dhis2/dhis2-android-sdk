@@ -34,6 +34,7 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
@@ -102,8 +103,7 @@ public class DataValueSender {
         localEvents = Select.all(Event.class, Condition.column(Event$Table.FROMSERVER).is(false));
         for(int i = 0; i<localEvents.size(); i++) {/* temporary workaround for not trying to upload events with local enrollment reference*/
             Event event = localEvents.get(i);
-            if(event.getEnrollment() == null) {
-                Log.d(CLASS_TAG, "send event problem: " + event.enrollment);
+            if(event.getEnrollment() == null && event.enrollment != null) {
                 localEvents.remove(i);
                 i--;
             }
@@ -198,25 +198,29 @@ public class DataValueSender {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                 if( importSummary.status.equals(ImportSummary.SUCCESS)) {
                     Enrollment enrollment = localEnrollments.get(sendCounter-1);
-                    enrollment.delete(false);
                     List<Event> events = enrollment.getEvents(true);
                     Log.d(CLASS_TAG, "enrollment success! now updating events");
-                    enrollment.enrollment = importSummary.reference;
                     for(Event event: events) {
-                        event.enrollment = enrollment.enrollment;
-                        Log.d(CLASS_TAG, "updating event with enrollment: " + event.enrollment);
+                        event.enrollment = importSummary.reference;
                         event.update(true);
+                        Log.d(CLASS_TAG, "updating event with enrollment: " + event.enrollment + ": " + event.localId);
+                        // need to only update the single field ..!;
+                        //new Update().table(Event.class).set(Condition.column(Event$Table.ENROLLMENT).is(importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).query();
+                        Event event1 = DataValueController.getEventByUid(event.event);
+                        Log.d(CLASS_TAG, "the enrollment issss: " + event1.enrollment + ": " + event1.localId + event1.fromServer);
+                        //event.update(true);
                     }
+                    enrollment.enrollment = importSummary.reference;
                     enrollment.fromServer = true;
-                    enrollment.save(true);
+                    enrollment.update(true);
                     localEnrollments.remove(sendCounter-1);
                 } else if (importSummary.status.equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = importSummary;
-                    failedItem.itemId = localEnrollments.get(sendCounter-1).enrollment; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    //failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.ENROLLMENT;
-                    failedItem.save(false);
+                    failedItem.save(true);
                     Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
                 sendCounter--;
@@ -230,22 +234,22 @@ public class DataValueSender {
                 if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
                     Event event = localEvents.get(sendCounter-1);
                     List<DataValue> dataValues = event.getDataValues();
-                    event.delete(false);
                     event.event = responseBody.importSummaries.get(0).reference;
                     for(DataValue dataValue: dataValues) {
+                        dataValue.localEventId = event.localId;
                         dataValue.event = event.event;
-                        dataValue.save(true);
+                        dataValue.update(true);
                     }
                     event.fromServer = true;
-                    event.save(true);
+                    event.update(true);
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = responseBody.importSummaries.get(0);
-                    failedItem.itemId = localEvents.get(sendCounter-1).event; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.EVENT;
-                    failedItem.save(false);
+                    failedItem.save(true);
                     Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
                 sendCounter--;

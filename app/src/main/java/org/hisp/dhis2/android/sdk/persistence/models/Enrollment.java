@@ -62,7 +62,11 @@ public class Enrollment extends BaseModel{
     public boolean fromServer = true;
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    public long localId;
+
+    @JsonIgnore
+    @Column(unique = true)
     public String enrollment;
 
     @JsonProperty("enrollment")
@@ -116,7 +120,7 @@ public class Enrollment extends BaseModel{
      * @return
      */
     public List<Event> getEvents(boolean reLoad) {
-        if(events == null || reLoad) events = DataValueController.getEventsByEnrollment(enrollment);
+        if(events == null || reLoad) events = DataValueController.getEventsByEnrollment(localId);
         return events;
     }
 
@@ -126,9 +130,15 @@ public class Enrollment extends BaseModel{
 
     @Override
     public void save(boolean async) {
+        /* check if there is an existing enrollment with the same UID to avoid duplicates */
+        Enrollment existingEnrollment = DataValueController.getEnrollment(enrollment);
+        if(existingEnrollment != null) {
+            localId = existingEnrollment.localId;
+        }
         super.save(async);
         if(events!=null) {
             for(Event event: events) {
+                event.localEnrollmentId = localId;
                 event.save(async);
             }
         }

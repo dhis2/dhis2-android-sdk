@@ -37,6 +37,8 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.util.UUID;
+
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
@@ -48,6 +50,10 @@ public class DataValue extends BaseValue {
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
+    public long localEventId; /* reference to local event object */
+
+    @JsonIgnore
+    @Column
     public String event;
 
     @JsonProperty("dataElement")

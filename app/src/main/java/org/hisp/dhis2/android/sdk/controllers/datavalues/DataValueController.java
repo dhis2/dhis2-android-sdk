@@ -85,8 +85,29 @@ public class DataValueController {
         return enrollments;
     }
 
+    public static Enrollment getEnrollment(String enrollment) {
+        return new Select().from(Enrollment.class).where(Condition.column
+                (Enrollment$Table.ENROLLMENT).is(enrollment)).querySingle();
+    }
+
+    /**
+     * Returns a list of events for the given server-assigned UID. Note that if possible,
+     * getEventsByEnrollment(long) should always be used if possible, as the UID may change if the
+     * enrollment is created locally on the device, and then synced with the server.
+     * @param enrollment
+     * @return
+     */
     public static List<Event> getEventsByEnrollment(String enrollment) {
         return Select.all(Event.class, Condition.column(Event$Table.ENROLLMENT).is(enrollment));
+    }
+
+    /**
+     * returns a list of events for a given localEnrollmentId
+     * @param localEnrollmentId
+     * @return
+     */
+    public static List<Event> getEventsByEnrollment(long localEnrollmentId) {
+        return Select.all(Event.class, Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentId));
     }
 
     /**
@@ -103,13 +124,30 @@ public class DataValueController {
     }
 
     /**
-     * Returns an Event based on the given event id
+     * Returns an Event based on the given localId
+     * @param localId
+     * @return
+     */
+    public static Event getEvent(long localId) {
+        List<Event> result = Select.all(Event.class, Condition.column(Event$Table.LOCALID).is(localId));
+        if( result != null && !result.isEmpty() ) {
+            return result.get(0);
+        }
+        else return null;
+    }
+
+    /**
+     * Returns an event based on UID generated on server. Note that this reference may change if
+     * an event is created on the device, and then synced with the server. If possible, always use
+     * getEvent(localId) which is safer.
      * @param event
      * @return
      */
-    public static Event getEvent(String event) {
+    public static Event getEventByUid(String event) {
         List<Event> result = Select.all(Event.class, Condition.column(Event$Table.EVENT).is(event));
-        if( result != null && !result.isEmpty() ) return result.get(0);
+        if( result != null && !result.isEmpty() ) {
+            return result.get(0);
+        }
         else return null;
     }
 
@@ -173,8 +211,6 @@ public class DataValueController {
         dataValueLoader.loadDataValues(context, update);
     }
 
-
-
     /**
      * Tries to send locally stored data to the server
      */
@@ -204,5 +240,4 @@ public class DataValueController {
         return dataValueSender.sending;
     }
     public boolean isLoading() { return dataValueLoader.loading; }
-
 }

@@ -71,6 +71,7 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
@@ -589,21 +590,28 @@ public class DataValueLoader {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
                     loadedEventCounter++;
-
                     //check if there have been changes made locally since last update.
                     //if there are local updates, don't overwrite with data from server.
-                    Event localEvent = DataValueController.getEvent(event.event);
+                    Event localEvent = DataValueController.getEventByUid(event.event);
                     if(localEvent != null) {
+                        event.localId = localEvent.localId;
+                        event.localEnrollmentId = localEvent.localEnrollmentId;
                         if( localEvent.fromServer == true ) {
                             event.update(true);
                             if(event.dataValues != null) {
                                 for(DataValue dataValue: event.dataValues) {
+                                    dataValue.localEventId = event.localId;
                                     dataValue.event = event.event;
                                     dataValue.save(true);
                                 }
                             }
                         }
                     } else {
+                        //check if there is an enrollment for this event stored on the device
+                        //and store the localId of the enrollment
+                        //(there will not be enrollment if its a single event without registration)
+                        Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
+                        if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
                         event.save(true);
                         if(event.dataValues != null) {
                             for(DataValue dataValue: event.dataValues) {

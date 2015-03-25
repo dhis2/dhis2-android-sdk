@@ -44,6 +44,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 
@@ -104,7 +105,11 @@ public class Event extends BaseModel {
     public boolean fromServer = true;
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    public long localId;
+
+    @JsonIgnore
+    @Column(unique = true)
     public String event;
 
     @JsonProperty("event")
@@ -163,6 +168,10 @@ public class Event extends BaseModel {
     @Column
     public String trackedEntityInstance;
 
+    @JsonIgnore
+    @Column
+    public long localEnrollmentId;
+
     @JsonProperty("enrollment")
     @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
     @Column
@@ -170,7 +179,7 @@ public class Event extends BaseModel {
 
     public String getEnrollment() {
         String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if(enrollment.length() == randomUUID.length())
+        if(enrollment == null || enrollment.length() == randomUUID.length())
             return null;
         else return enrollment;
     }
@@ -201,7 +210,7 @@ public class Event extends BaseModel {
 
     public List<DataValue> getDataValues() {
         if( dataValues == null) dataValues = Select.all(DataValue.class,
-                Condition.column(DataValue$Table.EVENT).is(event));
+                Condition.column(DataValue$Table.LOCALEVENTID).is(localId));
         return dataValues;
     }
 
@@ -216,10 +225,18 @@ public class Event extends BaseModel {
 
     @Override
     public void save(boolean async) {
+        /* check if there is an existing event with the same UID to avoid duplicates */
+        Event existingEvent = DataValueController.getEventByUid(event);
+        if(existingEvent != null) {
+            localId = existingEvent.localId;
+        }
         super.save(async);
         if(dataValues!=null) {
             for(DataValue dataValue: dataValues)
+            {
+                dataValue.localEventId = localId;
                 dataValue.save(async);
+            }
         }
     }
 }

@@ -275,4 +275,6 @@
         <item>1 Hour</item>
         <item>1 Day</item>
     </string-array>
+
+    <string name="remote">Remote</string>
 </resources>

@@ -52,7 +52,7 @@ public class FailedItem extends BaseModel {
     // add more like TrackedEntityInstance, Enrollment .. in the future
 
     @Column(columnType = Column.PRIMARY_KEY)
-    public String itemId;
+    public long itemId;
 
     @Column
     public String itemType;

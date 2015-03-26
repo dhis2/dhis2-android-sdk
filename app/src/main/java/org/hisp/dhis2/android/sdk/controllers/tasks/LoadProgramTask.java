@@ -81,7 +81,8 @@ public class LoadProgramTask implements INetworkTask {
         headers.add(new Header("Accept", "application/json"));
 
         String url = networkManager.getServerUrl() + "/api/programs/" + programId + "";
-        url += "?fields=*,programStages[*,program[id],programStageSections[id]," +
+        url += "?fields=*,programStages[*,program[id],programStageSections[*," +
+                "programStageDataElements[*,programStage[id],dataElement[*,optionSet[id]]]]," +
                 "programStageDataElements[*,programStage[id],dataElement[*," +
                 "optionSet[id]]]],!organisationUnits";
         if( updating ) {

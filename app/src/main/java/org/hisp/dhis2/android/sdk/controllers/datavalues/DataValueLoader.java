@@ -146,8 +146,6 @@ public class DataValueLoader {
             return;
         }
 
-        if(context==null) Log.d(CLASS_TAG, "context is nulllllll");
-
         /**
          * Loading Events
          */
@@ -567,7 +565,6 @@ public class DataValueLoader {
                 Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
                 loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadTrackedEntityInstances) {
-                Log.d(CLASS_TAG, "loadTrackedEntityInstances");
                 Object[] items = (Object[]) responseEvent.getResponseHolder().getItem();
                 List<TrackedEntityInstance> trackedEntityInstances = (List<TrackedEntityInstance>) items[0];
                 List<TrackedEntityAttributeValue> values = (List<TrackedEntityAttributeValue>) items[1];
@@ -620,7 +617,6 @@ public class DataValueLoader {
                             }
                         }
                     }
-
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

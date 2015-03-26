@@ -63,6 +63,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRela
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
@@ -653,9 +654,24 @@ public class MetaDataLoader {
                 program.save(true);
                 for( ProgramStage programStage: program.getProgramStages() ) {
                     programStage.save(true);
-                    for(ProgramStageDataElement programStageDataElement: programStage.
-                            getProgramStageDataElements()) {
-                        programStageDataElement.save(true);
+                    if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
+                        // due to the way the WebAPI lists programStageSections we have to manually
+                        // set id of programStageSection in programStageDataElements to be able to
+                        // access it later when loading from local db
+                        for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                            programStageSection.save(true);
+                            for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
+                                programStageDataElement.programStageSection = programStageSection.id;
+                                programStageDataElement.save(true);
+                                //todo: consider implementing override of save function rather
+                                //todo: than doing this manually
+                            }
+                        }
+                    } else {
+                        for(ProgramStageDataElement programStageDataElement: programStage.
+                                getProgramStageDataElements()) {
+                            programStageDataElement.save(true);
+                        }
                     }
                 }
 
@@ -670,7 +686,8 @@ public class MetaDataLoader {
                 else {
 
 
-                    /**Delete everything and store it again cause it's not that big, and
+                    /**Delete everything (except shared things like dataElement and
+                     * trackedEntityAttribute) and store it again cause it's easier, it's not that big, and
                      *it rarely happens.
                      * what needs to be deleted is:
                      * ProgramTrackedEntityAttribute (not the TrackedEntityAttribute itself)
@@ -689,12 +706,15 @@ public class MetaDataLoader {
                         for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
                             ptea.delete(false);
                         }
-                    }
-                    for( ProgramStage programStage: program.getProgramStages() ) {
-                        for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
-                            psde.delete(false);
+                        for( ProgramStage programStage: program.getProgramStages() ) {
+                            for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
+                                psde.delete(false);
+                            }
+                            for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                                programStageSection.delete(false);
+                            }
+                            programStage.delete(false);
                         }
-                        programStage.delete(false);
                     }
 
                     /**
@@ -708,12 +728,28 @@ public class MetaDataLoader {
                         ptea.save(false);
                     }
 
-                    program.update(false);
+                    if(oldProgram== null) program.save(false);
+                    else program.update(false);
                     for( ProgramStage programStage: program.getProgramStages() ) {
-                        programStage.save(false);
-                        for(ProgramStageDataElement programStageDataElement: programStage.
-                                getProgramStageDataElements()) {
-                            programStageDataElement.save(false);
+                        programStage.save(true);
+                        if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
+                            // due to the way the WebAPI lists programStageSections we have to manually
+                            // set id of programStageSection in programStageDataElements to be able to
+                            // access it later when loading from local db
+                            for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                                programStageSection.save(true);
+                                for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
+                                    programStageDataElement.programStageSection = programStageSection.id;
+                                    programStageDataElement.save(true);
+                                    //todo: consider implementing override of save function rather
+                                    //todo: than doing this manually
+                                }
+                            }
+                        } else {
+                            for(ProgramStageDataElement programStageDataElement: programStage.
+                                    getProgramStageDataElements()) {
+                                programStageDataElement.save(true);
+                            }
                         }
                     }
                 }

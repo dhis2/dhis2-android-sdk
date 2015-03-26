@@ -142,6 +142,15 @@ public class ProgramStage extends BaseIdentifiableObject {
         return programStageDataElements;
     }
 
+    @JsonProperty("programStageSections")
+    private List<ProgramStageSection> programStageSections;
+
+    public List<ProgramStageSection> getProgramStageSections() {
+        if(programStageSections == null)
+            programStageSections = Select.all(ProgramStageSection.class, Condition.column(ProgramStageSection$Table.PROGRAMSTAGE).is(id));
+        return programStageSections;
+    }
+
     public String getProgram() {
         return program;
     }

@@ -47,6 +47,8 @@ import java.util.Map;
 @Table
 public class ProgramStageDataElement extends BaseModel {
 
+    private static final String CLASS_TAG = "ProgramStageDataElement";
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
@@ -72,15 +74,13 @@ public class ProgramStageDataElement extends BaseModel {
     @Column
     public boolean compulsory;
 
+    @Column
+    public String programStageSection;
+
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
-
-    /*@JsonProperty("dataElement")
-    public void setDataElement(Map<String, Object> dataElement) {
-        this.dataElement = (String) dataElement.get("id");
-    }*/
 
     @Column(columnType = Column.PRIMARY_KEY)
     public String programStage;

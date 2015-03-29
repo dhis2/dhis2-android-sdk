@@ -81,4 +81,7 @@
     <color name="button_login_state_unpressed">#FF113151</color>
     <color name="button_login_state_pressed">#FF0C243C</color>
 
+    <color name="button_log_out_state_unpressed">#F44336</color>
+    <color name="button_log_out_state_pressed">#D32F2F</color>
+
 </resources>

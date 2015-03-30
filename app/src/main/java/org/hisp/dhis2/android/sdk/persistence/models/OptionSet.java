@@ -52,8 +52,10 @@ public class OptionSet extends BaseIdentifiableObject {
 
     public List<Option> getOptions() {
         if(options == null) {
-            options = Select.all(Option.class,
-                    Condition.column(Option$Table.OPTIONSET).is(id));
+            options = Select.all(
+                    Option.class,
+                    Condition.column(Option$Table.OPTIONSET).is(id)
+            );
         }
         return options;
     }

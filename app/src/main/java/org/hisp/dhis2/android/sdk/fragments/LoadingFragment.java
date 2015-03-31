@@ -45,47 +45,48 @@ import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 
 /**
  * Fragment to show a loading indicator. Initially created to show a loading indicator while
- * preloading data for offline usage.
+ * pre-loading data for offline usage.
  *
  * @author Simen Skogly Russnes on 09.03.15.
  */
 public class LoadingFragment extends Fragment {
     public static final String TAG = LoadingFragment.class.getSimpleName();
 
-    private TextView loadingMessage;
+    private TextView mLoadingMessage;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_loading,
-                container, false);
-        setupUi(rootView);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Dhis2Application.bus.register(LoadingFragment.this);
-        return rootView;
     }
 
-    public void setupUi(View rootView) {
-        loadingMessage = (TextView) rootView.findViewById(R.id.fragment_loading_text);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_loading, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        mLoadingMessage = (TextView) view.findViewById(R.id.fragment_loading_text);
     }
 
     public void setText(CharSequence text) {
-        if (loadingMessage != null)
-            loadingMessage.setText(text);
-        else
-            Log.d(TAG, "loadingmessage is null");
+        if (mLoadingMessage != null) {
+            mLoadingMessage.setText(text);
+        } else {
+            Log.d(TAG, "LoadingMessage is null");
+        }
     }
 
     @Subscribe
-    public void onTest(final LoadingMessageEvent event) {
-        Log.d(TAG, "got message " + event.message);
-        //if(event.message!=null && loadingFragment != null) {
+    public void onLoadingMessageEvent(final LoadingMessageEvent event) {
+        Log.d(TAG, "Message received" + event.message);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 setText(event.message);
             }
         });
-        //}
     }
 
     @Override

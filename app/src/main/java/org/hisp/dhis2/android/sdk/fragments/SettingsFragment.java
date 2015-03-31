@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -39,10 +40,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import org.hisp.dhis2.android.sdk.R;
+import org.hisp.dhis2.android.sdk.activities.SplashActivity;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.events.BaseEvent;
-import org.hisp.dhis2.android.sdk.events.MessageEvent;
-import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,
@@ -82,8 +81,10 @@ public class SettingsFragment extends Fragment
 
     @Override
     public void onClick(View v) {
-        MessageEvent event = new MessageEvent(BaseEvent.EventType.logout);
-        Dhis2Application.bus.post(event);
+        Dhis2.logout(getActivity());
+        startActivity(new Intent(getActivity(),
+                SplashActivity.class));
+        getActivity().finish();
     }
 
     @Override

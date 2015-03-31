@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 
 import java.util.List;
 import java.util.UUID;
@@ -142,6 +143,11 @@ public class Enrollment extends BaseModel{
                 event.save(async);
             }
         }
+    }
+
+    public Program getProgram() {
+        if(program==null) return null;
+        else return MetaDataController.getProgram(program);
     }
 
 }

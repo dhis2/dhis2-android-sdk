@@ -162,6 +162,7 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
         } else if (mode.equals(LOAD_TRACKER)) {
@@ -169,6 +170,7 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
@@ -187,6 +189,7 @@ public final class Dhis2 {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, false);
         editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false);
+        editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, false);
         editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, false);
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, false);
         editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
@@ -226,6 +229,8 @@ public final class Dhis2 {
             if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMS, false)) return false;
         } else if(isLoadFlagEnabled(context, MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES)) {
             if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.CONSTANTS)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.CONSTANTS, false)) return false;
         }
         return true;
     }

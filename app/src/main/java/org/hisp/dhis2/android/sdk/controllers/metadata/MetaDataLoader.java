@@ -42,6 +42,7 @@ import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadAssignedProgramsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadConstantsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
@@ -56,11 +57,13 @@ import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Constant;
 import org.hisp.dhis2.android.sdk.persistence.models.Option;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
@@ -93,6 +96,7 @@ public class MetaDataLoader {
     public static final String PROGRAMS = "programs";
     public static final String OPTION_SETS = "option_sets";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "tracked_entity_attributes";
+    public static final String CONSTANTS = "constants";
 
     private Context context;
     boolean loading = false;
@@ -176,6 +180,12 @@ public class MetaDataLoader {
                 return;
             }
         }
+        if(Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
+            if (!isMetaDataItemLoaded(CONSTANTS)) {
+                loadConstants();
+                return;
+            }
+        }
         onFinishLoading(true); //called when everything is loaded.
     }
 
@@ -239,6 +249,19 @@ public class MetaDataLoader {
                 return;
             }
         }
+        if(Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
+            String lastUpdatedString = getLastUpdatedDateForMetaDataItem(CONSTANTS);
+            if(lastUpdatedString == null) {
+                updateConstants();
+                return;
+            }
+            DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+            if(updatedDateTime.isBefore(currentDateTime)) {
+                updateConstants();
+                return;
+            }
+        }
+
         onFinishLoading(true);
     }
 
@@ -571,6 +594,89 @@ public class MetaDataLoader {
         task.execute();
     }
 
+    private void updateConstants() {
+        Dhis2.postProgressMessage(context.getString(R.string.updating_constants));
+        final ResponseHolder<List<Constant>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<Constant>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.updateConstants);
+        event.setResponseHolder(holder);
+        LoadConstantsTask task = new LoadConstantsTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<Constant>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("constants");
+                            if( node == null ) { /* in case there are no enrollments */
+                                holder.setItem(new ArrayList<Constant>());
+                            } else {
+                                TypeReference<List<Constant>> typeRef =
+                                        new TypeReference<List<Constant>>() {
+                                        };
+                                List<Constant> constants = Dhis2.getInstance().getObjectMapper().
+                                        readValue(node.traverse(), typeRef);
+                                holder.setItem(constants);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                }, true);
+        task.execute();
+    }
+
+    private void loadConstants() {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_constants));
+        final ResponseHolder<List<Constant>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<Constant>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadConstants);
+        event.setResponseHolder(holder);
+        LoadConstantsTask task = new LoadConstantsTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<Constant>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("constants");
+                            TypeReference<List<Constant>> typeRef =
+                                    new TypeReference<List<Constant>>(){};
+                            List<Constant> constants = Dhis2.getInstance().getObjectMapper().
+                                    readValue( node.traverse(), typeRef);
+                            holder.setItem(constants);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                }, false);
+        task.execute();
+    }
+
+
+
     private void onFinishLoading(boolean success) {
         Log.d(CLASS_TAG, "onFinishLoading" + success);
         if( success ) {
@@ -663,14 +769,23 @@ public class MetaDataLoader {
                             for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
                                 programStageDataElement.programStageSection = programStageSection.id;
                                 programStageDataElement.save(true);
-                                //todo: consider implementing override of save function rather
+                                //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
+                            }
+                            for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
+                                programIndicator.programStage = programStage.id;
+                                programIndicator.section = programStageSection.id;
+                                programIndicator.save(true);
                             }
                         }
                     } else {
                         for(ProgramStageDataElement programStageDataElement: programStage.
                                 getProgramStageDataElements()) {
                             programStageDataElement.save(true);
+                        }
+                        for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
+                            programIndicator.programStage = programStage.id;
+                            programIndicator.save(true);
                         }
                     }
                 }
@@ -715,6 +830,9 @@ public class MetaDataLoader {
                             }
                             programStage.delete(false);
                         }
+                        for(ProgramIndicator programIndicator: program.getProgramIndicators()) {
+                            programIndicator.delete(false);
+                        }
                     }
 
                     /**
@@ -744,11 +862,20 @@ public class MetaDataLoader {
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
                                 }
+                                for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
+                                    programIndicator.programStage = programStage.id;
+                                    programIndicator.section = programStageSection.id;
+                                    programIndicator.save(true);
+                                }
                             }
                         } else {
                             for(ProgramStageDataElement programStageDataElement: programStage.
                                     getProgramStageDataElements()) {
                                 programStageDataElement.save(true);
+                            }
+                            for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
+                                programIndicator.programStage = programStage.id;
+                                programIndicator.save(true);
                             }
                         }
                     }
@@ -775,12 +902,26 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(false);
+                    tea.save(false); //todo: not saving async here because the tea may are used in first screen shown (selectProgramFragment)
+                                    //todo: implement other way of fixing this as saving should always happen async to have everything queued in the right order in transactions.
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {
                 flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, systemInfo.serverDate);
+                loadItem();
+            } else if (event.eventType == BaseEvent.EventType.loadConstants ) {
+                List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
+                Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+                for(Constant constant: constants) {
+                    constant.save(true);
+                }
+                flagMetaDataItemLoaded(CONSTANTS, true);
+                loadItem();
+            } else if (event.eventType == BaseEvent.EventType.updateConstants ) {
+                List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
+                for(Constant constant: constants) constant.save(true);
+                flagMetaDataItemUpdated(CONSTANTS, systemInfo.serverDate);
                 loadItem();
             } else {
                 onFinishLoading(false);
@@ -882,6 +1023,10 @@ public class MetaDataLoader {
         return prefs.getString(Dhis2.UPDATED + item, null);
     }
 
+    /**
+     * Clears status and time of loaded meta data items
+     * @param context
+     */
     void clearMetaDataLoadedFlags(Context context) {
         this.context = context;
         flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, false);
@@ -895,5 +1040,7 @@ public class MetaDataLoader {
         flagMetaDataItemUpdated(OPTION_SETS, null);
         flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, false);
         flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, null);
+        flagMetaDataItemLoaded(CONSTANTS, false);
+        flagMetaDataItemUpdated(CONSTANTS, null);
     }
 }

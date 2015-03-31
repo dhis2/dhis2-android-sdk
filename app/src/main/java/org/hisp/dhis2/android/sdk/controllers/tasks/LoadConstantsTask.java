@@ -29,20 +29,16 @@
 
 package org.hisp.dhis2.android.sdk.controllers.tasks;
 
-import android.util.Log;
-
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Header;
 import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
-import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.Constant;
+import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
@@ -50,28 +46,17 @@ import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
+public class LoadConstantsTask implements INetworkTask {
+    private final ApiRequest.Builder<List<Constant>> requestBuilder;
 
-public class LoadProgramTask implements INetworkTask {
-    private final ApiRequest.Builder<Program> requestBuilder;
-
-    /**
-     * Loads a program from the online database. If the program has already been loaded you can
-     * set the updating flag so that it doesn't load that if it is the same as the previous version.
-     * @param networkManager
-     * @param callback
-     * @param programId
-     * @param updating set to true if the program is already loaded and you don't want to re-load
-     *                 unnecessary data
-     */
-    public LoadProgramTask(NetworkManager networkManager,
-                           ApiRequestCallback<Program> callback, String programId, boolean updating) {
+    public LoadConstantsTask(NetworkManager networkManager,
+                             ApiRequestCallback<List<Constant>> callback, boolean updating) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-        isNull(programId, "Program ID must not be null");
         } catch(IllegalArgumentException e) {
             callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
         }
@@ -80,17 +65,12 @@ public class LoadProgramTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/programs/" + programId + "";
-        url += "?fields=*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]],programIndicators[*]]," +
-                "programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]]],!organisationUnits";
-        if( updating ) {
-            List<Program> result = Select.all(Program.class, Condition.column(Program$Table.ID).is(programId));
-            if( result != null && result.size() > 0 ) {
-                int version = result.get(0).version;
-                url += "&filter=version:gt:" + version;
+        String url = networkManager.getServerUrl() + "/api/constants.json?paging=false" +
+                "&fields=[:all]";
+        if(updating) {
+            SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
+            if( systemInfo != null && systemInfo.serverDate != null ) {
+                url += "&filter=lastUpdated:gt:" + systemInfo.serverDate;
             }
         }
 

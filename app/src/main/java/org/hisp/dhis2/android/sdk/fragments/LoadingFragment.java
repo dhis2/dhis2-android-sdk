@@ -29,29 +29,24 @@
 
 package org.hisp.dhis2.android.sdk.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingMessageEvent;
-import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 
 /**
  * Fragment to show a loading indicator. Initially created to show a loading indicator while
  * preloading data for offline usage.
+ *
  * @author Simen Skogly Russnes on 09.03.15.
  */
 public class LoadingFragment extends Fragment {
@@ -62,8 +57,7 @@ public class LoadingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_loading,
                 container, false);
         setupUi(rootView);
@@ -76,7 +70,7 @@ public class LoadingFragment extends Fragment {
     }
 
     public void setText(CharSequence text) {
-        if(loadingMessage!=null)
+        if (loadingMessage != null)
             loadingMessage.setText(text);
         else
             Log.d(CLASS_TAG, "loadingmessage is null");
@@ -86,12 +80,12 @@ public class LoadingFragment extends Fragment {
     public void onTest(final LoadingMessageEvent event) {
         Log.d(CLASS_TAG, "got message " + event.message);
         //if(event.message!=null && loadingFragment != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setText(event.message);
-                }
-            });
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setText(event.message);
+            }
+        });
         //}
     }
 

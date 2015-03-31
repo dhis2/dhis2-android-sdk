@@ -29,8 +29,8 @@
 
 package org.hisp.dhis2.android.sdk.fragments;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +50,8 @@ import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
  *
  * @author Simen Skogly Russnes on 02.03.15.
  */
-public class SettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class SettingsFragment extends Fragment
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
 

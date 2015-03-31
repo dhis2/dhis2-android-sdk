@@ -41,6 +41,18 @@ import java.util.Map;
 @Table
 public class TrackedEntityAttribute extends BaseNameableObject {
 
+    public static final String TYPE_DATE = "date";
+    public static final String TYPE_STRING = "string";
+    public static final String TYPE_NUMBER = "number";
+    public static final String TYPE_LETTER = "letter";
+    public static final String TYPE_BOOL = "bool";
+    public static final String TYPE_TRUE_ONLY = "trueOnly";
+    public static final String TYPE_OPTION_SET = "optionSet";
+    public static final String TYPE_PHONE_NUMBER = "phoneNumber";
+    public static final String TYPE_TRACKER_ASSOCIATE = "trackerAssociate";
+    public static final String TYPE_USERS = "users";
+    public static final String TYPE_EMAIL = "email";
+
     @JsonProperty("unique")
     @Column
     public boolean isUnique;

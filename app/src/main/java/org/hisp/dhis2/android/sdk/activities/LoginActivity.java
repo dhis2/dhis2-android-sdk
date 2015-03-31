@@ -116,8 +116,8 @@ public class LoginActivity
         loginButton = (Button) findViewById( R.id.login_button );
 
         serverEditText.setText("https://apps.dhis2.org/dev");
-        usernameEditText.setText("admin");
-        passwordEditText.setText("district");
+        usernameEditText.setText("android");
+        passwordEditText.setText("Android123");
         
         //Setting previous username in username field
         String username = null;

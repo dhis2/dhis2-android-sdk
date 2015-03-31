@@ -38,10 +38,13 @@
 
     <include layout="@layout/listview_row_label" />
 
-    <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
-        android:id="@+id/edit_number_row"
-        style="@style/ListViewEditTextStyle"
+    <org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView
+        android:id="@+id/textView_number_row"
         android:hint="@string/enter_integer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textSize="16sp"
         android:imeOptions="actionNext|flagNoExtractUi"
         android:inputType="number|numberDecimal|numberSigned"
         android:text=""

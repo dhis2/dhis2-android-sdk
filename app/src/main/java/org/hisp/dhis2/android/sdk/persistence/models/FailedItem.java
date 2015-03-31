@@ -57,6 +57,12 @@ public class FailedItem extends BaseModel {
     @Column
     public String itemType;
 
+    @Column
+    public int httpStatusCode; // 401, 500 .. etc
+
+    @Column
+    public String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
+
     @Column(columnType = Column.FOREIGN_KEY,
             references = {@ForeignKeyReference(columnName = "importSummary",
                     columnType = int.class, foreignColumnName = "id")})

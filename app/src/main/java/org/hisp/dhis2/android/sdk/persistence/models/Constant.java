@@ -27,29 +27,28 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
+package org.hisp.dhis2.android.sdk.persistence.models;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Simen Skogly Russnes on 30.03.15.
  */
-public class BaseEvent {
+@Table
+public class Constant extends BaseIdentifiableObject {
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, onLoadingMetaDataFinished,
-        showRegisterEventFragment, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished,
-        onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
-        onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets, loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment, showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants, loadProgram
-    }
+    @JsonProperty("value")
+    @Column
+    public double value;
 
-    public EventType eventType;
+    @JsonProperty("publicAccess")
+    @Column
+    public boolean externalAccess;
 
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
-    }
-    public BaseEvent() {}
+    @JsonProperty("displayName")
+    @Column
+    public String displayName;
+
 }

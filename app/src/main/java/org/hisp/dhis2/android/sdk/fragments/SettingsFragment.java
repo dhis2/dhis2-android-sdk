@@ -52,6 +52,8 @@ import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
  */
 public class SettingsFragment extends Fragment
         implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+    public static final String TAG = SettingsFragment.class.getSimpleName();
+
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
 

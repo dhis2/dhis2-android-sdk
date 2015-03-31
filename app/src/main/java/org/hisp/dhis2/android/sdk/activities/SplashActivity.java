@@ -39,14 +39,12 @@ import android.view.Window;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.services.StartPeriodicSynchronizerService;
 
 /**
  * Simple Splash activity that displays the DHIS 2 logo for a given time and initiates the Dhis2Manager.
  */
-public class SplashActivity
-        extends Activity {
+public class SplashActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +63,7 @@ public class SplashActivity
                 startActivity(i);
                 finish();
             }
-        }, 3000);
+        }, 1000);
         startService(new Intent(this, StartPeriodicSynchronizerService.class));
     }
 

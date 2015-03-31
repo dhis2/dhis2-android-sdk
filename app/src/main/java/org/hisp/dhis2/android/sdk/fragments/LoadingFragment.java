@@ -50,8 +50,7 @@ import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
  * @author Simen Skogly Russnes on 09.03.15.
  */
 public class LoadingFragment extends Fragment {
-
-    private static final String CLASS_TAG = "LoadingFragment";
+    public static final String TAG = LoadingFragment.class.getSimpleName();
 
     private TextView loadingMessage;
 
@@ -73,12 +72,12 @@ public class LoadingFragment extends Fragment {
         if (loadingMessage != null)
             loadingMessage.setText(text);
         else
-            Log.d(CLASS_TAG, "loadingmessage is null");
+            Log.d(TAG, "loadingmessage is null");
     }
 
     @Subscribe
     public void onTest(final LoadingMessageEvent event) {
-        Log.d(CLASS_TAG, "got message " + event.message);
+        Log.d(TAG, "got message " + event.message);
         //if(event.message!=null && loadingFragment != null) {
         getActivity().runOnUiThread(new Runnable() {
             @Override

@@ -27,29 +27,36 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
-
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
+package org.hisp.dhis2.android.sdk.utils.expression;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Lars Helge Overland
  */
-public class BaseEvent {
+public enum MissingValueStrategy
+{
+    SKIP_IF_ANY_VALUE_MISSING( "skip_if_any_value_missing" ),
+    SKIP_IF_ALL_VALUES_MISSING( "skip_if_all_values_missing" ),
+    NEVER_SKIP( "never_skip" );    
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, onLoadingMetaDataFinished,
-        showRegisterEventFragment, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished,
-        onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
-        onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets, loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment, showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants, loadProgram
+    private final String value;
+
+    private MissingValueStrategy( String value )
+    {
+        this.value = value;
     }
 
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
+    public String getValue()
+    {
+        return value;
     }
-    public BaseEvent() {}
+    
+    public static MissingValueStrategy safeValueOf( String value )
+    {
+        return value != null ? MissingValueStrategy.valueOf( value ) : null;
+    }
+
+    public static MissingValueStrategy safeValueOf( String value, MissingValueStrategy defaultValue )
+    {
+        return value != null ? MissingValueStrategy.valueOf( value ) : defaultValue;
+    }
 }

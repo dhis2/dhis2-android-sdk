@@ -27,29 +27,46 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.events;
+package org.hisp.dhis2.android.sdk.utils;
 
-import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 
-/**
- * @author Simen Skogly Russnes on 20.02.15.
- */
-public class BaseEvent {
+public enum Operator
+{
+    equal_to( "==" ), 
+    not_equal_to( "!=" ), 
+    greater_than( ">" ), 
+    greater_than_or_equal_to( ">=" ), 
+    less_than( "<" ), 
+    less_than_or_equal_to( "<=" ),
+    compulsory_pair( "[Compulsory pair]" );
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, onLoadingMetaDataFinished,
-        showRegisterEventFragment, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished,
-        onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
-        onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets, loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment, showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants, loadProgram
+    private final String mathematicalOperator;
+
+    private Operator( String mathematicalOperator )
+    {
+        this.mathematicalOperator = mathematicalOperator;
     }
 
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
+    public String getMathematicalOperator()
+    {
+        return mathematicalOperator;
     }
-    public BaseEvent() {}
+    
+    public static Operator fromValue( String value )
+    {
+        for ( Operator operator : Operator.values() )
+        {
+            if ( operator.mathematicalOperator.equalsIgnoreCase( value ) )
+            {
+                return operator;
+            }
+        }
+
+        return null;
+    }
+    
+    public static Operator safeValueOf( String name )
+    {
+        return name != null ? Operator.valueOf( name ) : null;
+    }
 }

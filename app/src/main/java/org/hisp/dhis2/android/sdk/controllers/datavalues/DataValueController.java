@@ -41,6 +41,8 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
@@ -137,6 +139,18 @@ public class DataValueController {
     }
 
     /**
+     * Returns an Event for a given enrollment and program stage
+     * @param localEnrollment
+     * @param programStage
+     * @return
+     */
+    public static Event getEvent(long localEnrollment, String programStage) {
+        return new Select().from(Event.class).where(Condition.column
+                (Event$Table.LOCALENROLLMENTID).is(localEnrollment),
+                Condition.column(Event$Table.PROGRAMSTAGEID).is(programStage)).querySingle();
+    }
+
+    /**
      * Returns an event based on UID generated on server. Note that this reference may change if
      * an event is created on the device, and then synced with the server. If possible, always use
      * getEvent(localId) which is safer.
@@ -149,6 +163,11 @@ public class DataValueController {
             return result.get(0);
         }
         else return null;
+    }
+
+    public static DataValue getDataValue(long eventId, String dataElement) {
+        return new Select().from(DataValue.class).where(Condition.column(DataValue$Table.
+                LOCALEVENTID).is(eventId), Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).querySingle();
     }
 
     /**

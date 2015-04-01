@@ -39,6 +39,8 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Constant;
+import org.hisp.dhis2.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
@@ -49,11 +51,15 @@ import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRela
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 
 import java.util.ArrayList;
@@ -111,15 +117,49 @@ public class MetaDataController {
                 ProgramStage$Table.SORTORDER).queryList();
     }
 
-    public static ProgramStage getProgramStage(String programStageId) {
+    /**
+     * Returns a program stage for a given program stage uid
+     * @param programStageUid
+     * @return
+     */
+    public static ProgramStage getProgramStage(String programStageUid) {
         return new Select().from(ProgramStage.class).where(
-                Condition.column(ProgramStage$Table.ID).is(programStageId)).querySingle();
+                Condition.column(ProgramStage$Table.ID).is(programStageUid)).querySingle();
     }
 
+    /**
+     * todo: programTrackedEntityAttributes is not necessarily unique for a trackedEntityAttribute.
+     * todo: implement program parameter
+     * @param trackedEntityAttribute
+     * @return
+     */
     public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute(String trackedEntityAttribute) {
         return new Select().from(ProgramTrackedEntityAttribute.class).where
                 (Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).is
                         (trackedEntityAttribute)).querySingle();
+    }
+
+    public static TrackedEntityAttribute getTrackedEntityAttribute(String trackedEntityAttributeId) {
+        return new Select().from(TrackedEntityAttribute.class).where(Condition.column
+                (TrackedEntityAttribute$Table.ID).is(trackedEntityAttributeId)).querySingle();
+    }
+
+    /**
+     * Returns a constant with the given uid
+     * @param id
+     * @return
+     */
+    public static Constant getConstant(String id) {
+        return new Select().from(Constant.class).where
+                (Condition.column(Constant$Table.ID).is(id)).querySingle();
+    }
+
+    /**
+     * returns a list of all constants
+     * @return
+     */
+    public static List<Constant> getConstants() {
+        return Select.all(Constant.class);
     }
 
     /**
@@ -162,7 +202,7 @@ public class MetaDataController {
     }
 
     /**
-     * Returns the data element for the given Id or null if the dataElement does not exist
+     * Returns the data element for the given uid or null if the dataElement does not exist
      * @param dataElementId
      * @return
      */
@@ -194,6 +234,20 @@ public class MetaDataController {
         if(result!=null && result.size() > 0)
             return result.get(0);
         else return null;
+    }
+
+    public static List<ProgramIndicator> getProgramIndicatorsByProgram(String program) {
+        return Select.all(ProgramIndicator.class, Condition.column(ProgramIndicator$Table.PROGRAM).is(program));
+    }
+
+    public static List<ProgramIndicator> getProgramIndicatorsByProgramStage(String programStage) {
+        return Select.all(ProgramIndicator.class,
+                Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).is(programStage));
+    }
+
+    public static List<ProgramIndicator> getProgramIndicatorsBySection(String section) {
+        return Select.all(ProgramIndicator.class,
+                Condition.column(ProgramIndicator$Table.SECTION).is(section));
     }
 
     public void synchronizeMetaData(Context context) {

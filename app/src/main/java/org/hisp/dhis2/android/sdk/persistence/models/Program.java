@@ -168,5 +168,9 @@ public class Program extends BaseIdentifiableObject {
         return programTrackedEntityAttributes;
     }
 
+    public List<ProgramIndicator> getProgramIndicators() {
+        return MetaDataController.getProgramIndicatorsByProgram(id);
+    }
+
 
 }

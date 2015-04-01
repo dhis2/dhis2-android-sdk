@@ -6,6 +6,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,15 @@ public class ProgramStageSection extends BaseIdentifiableObject {
         if(programStageDataElements == null)
             programStageDataElements = Select.all(ProgramStageDataElement.class, Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(id));
         return programStageDataElements;
+    }
+
+    @JsonProperty("programIndicators")
+    private List<ProgramIndicator> programIndicators;
+
+    public List<ProgramIndicator> getProgramIndicators() {
+        if(programIndicators == null)
+            programIndicators = MetaDataController.getProgramIndicatorsBySection(id);
+        return programIndicators;
     }
 
 

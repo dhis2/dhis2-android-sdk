@@ -33,7 +33,9 @@ public class CardTextViewButton extends CardView {
 
     private void init(Context context) {
         int pxs = getResources().getDimensionPixelSize(R.dimen.card_text_view_margin);
-        FrameLayout.LayoutParams textViewParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams textViewParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT
+        );
         textViewParams.setMargins(pxs, pxs, pxs, pxs);
 
         mTextView = new FontTextView(context);

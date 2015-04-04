@@ -41,7 +41,7 @@ public class ProgramStageSection extends BaseIdentifiableObject {
     private List<ProgramStageDataElement> programStageDataElements;
 
     public List<ProgramStageDataElement> getProgramStageDataElements() {
-        if(programStageDataElements == null)
+        if (programStageDataElements == null)
             programStageDataElements = Select.all(ProgramStageDataElement.class, Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(id));
         return programStageDataElements;
     }
@@ -50,7 +50,7 @@ public class ProgramStageSection extends BaseIdentifiableObject {
     private List<ProgramIndicator> programIndicators;
 
     public List<ProgramIndicator> getProgramIndicators() {
-        if(programIndicators == null)
+        if (programIndicators == null)
             programIndicators = MetaDataController.getProgramIndicatorsBySection(id);
         return programIndicators;
     }

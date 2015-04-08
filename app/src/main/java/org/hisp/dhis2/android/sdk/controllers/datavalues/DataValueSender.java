@@ -76,7 +76,12 @@ public class DataValueSender {
         if(sending) return;
         sending = true;
         this.context = context;
-        sendEnrollments();
+        new Thread() {
+            public void run() {
+                if(!NetworkManager.hasInternetConnection()) onFinishSending(false);
+                else sendEnrollments();
+            }
+        }.start();
     }
 
     public void onFinishSending(boolean success) {
@@ -196,14 +201,7 @@ public class DataValueSender {
             if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
                 if(responseEvent.getResponseHolder().getApiException() != null) {
                     APIException apiException = responseEvent.getResponseHolder().getApiException();
-                    FailedItem failedItem = new FailedItem();
-                    if(apiException.getResponse() != null) {
-                        failedItem.httpStatusCode = apiException.getResponse().getStatus();
-                        failedItem.errorMessage = new String(apiException.getResponse().getBody());
-                    }
-                    failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
-                    failedItem.itemType = FailedItem.ENROLLMENT;
-                    failedItem.save(true);
+                    handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
                 } else {
                     ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                     if (importSummary.status.equals(ImportSummary.SUCCESS)) {
@@ -242,14 +240,7 @@ public class DataValueSender {
             if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
                 if(responseEvent.getResponseHolder().getApiException() != null) {
                     APIException apiException = responseEvent.getResponseHolder().getApiException();
-                    FailedItem failedItem = new FailedItem();
-                    if(apiException.getResponse() != null) {
-                        failedItem.httpStatusCode = apiException.getResponse().getStatus();
-                        failedItem.errorMessage = new String(apiException.getResponse().getBody());
-                    }
-                    failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
-                    failedItem.itemType = FailedItem.EVENT;
-                    failedItem.save(true);
+                    handleError(apiException, FailedItem.EVENT, localEvents.get(sendCounter-1).localId);
                 } else {
                     ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
                     if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
@@ -281,6 +272,20 @@ public class DataValueSender {
                 else
                     onFinishSending(true);
             }
+    }
+
+    public void handleError(APIException apiException, String type, long id) {
+        if(apiException.isNetworkError()) {
+            return; //if item failed due to network error then there is no need to store error info
+        }
+        FailedItem failedItem = new FailedItem();
+        if(apiException.getResponse() != null) {
+            failedItem.httpStatusCode = apiException.getResponse().getStatus();
+            failedItem.errorMessage = new String(apiException.getResponse().getBody());
+        }
+        failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+        failedItem.itemType = FailedItem.ENROLLMENT;
+        failedItem.save(true);
     }
 
 }

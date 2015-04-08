@@ -30,12 +30,17 @@
 package org.hisp.dhis2.android.sdk.network.http;
 
 
+import android.util.Log;
+
 import org.hisp.dhis2.android.sdk.network.managers.IHttpManager;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.io.IOException;
 
 public final class ApiRequest<T> {
+
+    private static final String TAG = ApiRequest.class.getSimpleName();
+
     private final Request request;
     private final IHttpManager networkManager;
     private final ApiRequestCallback<T> taskCallback;

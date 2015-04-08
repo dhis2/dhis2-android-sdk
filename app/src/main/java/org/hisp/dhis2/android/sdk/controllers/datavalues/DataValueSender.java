@@ -197,8 +197,10 @@ public class DataValueSender {
                 if(responseEvent.getResponseHolder().getApiException() != null) {
                     APIException apiException = responseEvent.getResponseHolder().getApiException();
                     FailedItem failedItem = new FailedItem();
-                    failedItem.httpStatusCode = apiException.getResponse().getStatus();
-                    failedItem.errorMessage = new String(apiException.getResponse().getBody());
+                    if(apiException.getResponse() != null) {
+                        failedItem.httpStatusCode = apiException.getResponse().getStatus();
+                        failedItem.errorMessage = new String(apiException.getResponse().getBody());
+                    }
                     failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.ENROLLMENT;
                     failedItem.save(true);
@@ -241,13 +243,10 @@ public class DataValueSender {
                 if(responseEvent.getResponseHolder().getApiException() != null) {
                     APIException apiException = responseEvent.getResponseHolder().getApiException();
                     FailedItem failedItem = new FailedItem();
-                    if(apiException.getResponse() == null) {
-
-                    } else {
+                    if(apiException.getResponse() != null) {
                         failedItem.httpStatusCode = apiException.getResponse().getStatus();
                         failedItem.errorMessage = new String(apiException.getResponse().getBody());
                     }
-
                     failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.EVENT;
                     failedItem.save(true);

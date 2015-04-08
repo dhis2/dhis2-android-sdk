@@ -88,7 +88,7 @@ public class ProgramStageDataElement extends BaseModel {
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.id;
-        dataElement.save(false);
+        dataElement.save(true);
     }
 
     @Column(columnType = Column.PRIMARY_KEY)

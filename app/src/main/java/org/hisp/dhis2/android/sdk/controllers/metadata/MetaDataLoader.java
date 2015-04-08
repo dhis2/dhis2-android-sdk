@@ -688,8 +688,8 @@ public class MetaDataLoader {
             if(systemInfo != null) {
                 List<SystemInfo> result = Select.all(SystemInfo.class);
                 if( result != null && !result.isEmpty() )
-                    systemInfo.update(false);
-                else systemInfo.save(false);
+                    systemInfo.update(true);
+                else systemInfo.save(true);
             }
         } else {
 
@@ -819,19 +819,19 @@ public class MetaDataLoader {
                     Program oldProgram = MetaDataController.getProgram(program.getId());
                     if(oldProgram != null) {
                         for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
-                            ptea.delete(false);
+                            ptea.delete(true);
                         }
                         for( ProgramStage programStage: program.getProgramStages() ) {
                             for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
-                                psde.delete(false);
+                                psde.delete(true);
                             }
                             for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
-                                programStageSection.delete(false);
+                                programStageSection.delete(true);
                             }
-                            programStage.delete(false);
+                            programStage.delete(true);
                         }
                         for(ProgramIndicator programIndicator: program.getProgramIndicators()) {
-                            programIndicator.delete(false);
+                            programIndicator.delete(true);
                         }
                     }
 
@@ -843,11 +843,11 @@ public class MetaDataLoader {
                     //API JSON
                     for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                         ptea.setProgram(program.getId());
-                        ptea.save(false);
+                        ptea.save(true);
                     }
 
-                    if(oldProgram== null) program.save(false);
-                    else program.update(false);
+                    if(oldProgram== null) program.save(true);
+                    else program.update(true);
                     for( ProgramStage programStage: program.getProgramStages() ) {
                         programStage.save(true);
                         if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
@@ -902,7 +902,7 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(false); //todo: not saving async here because the tea may are used in first screen shown (selectProgramFragment)
+                    tea.save(true); //todo: not saving async here because the tea may are used in first screen shown (selectProgramFragment)
                                     //todo: implement other way of fixing this as saving should always happen async to have everything queued in the right order in transactions.
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);

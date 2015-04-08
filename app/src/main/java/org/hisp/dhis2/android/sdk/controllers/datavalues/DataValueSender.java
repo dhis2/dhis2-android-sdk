@@ -86,7 +86,7 @@ public class DataValueSender {
         if(failedItems!=null) {
             for(FailedItem failedItem: failedItems) {
                 if(failedItem.getItem() == null) {
-                    failedItem.delete(false);
+                    failedItem.delete(true);
                 }
             }
         }

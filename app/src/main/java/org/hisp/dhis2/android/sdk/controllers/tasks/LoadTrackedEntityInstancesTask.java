@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.controllers.tasks;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Header;
@@ -36,6 +37,7 @@ import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
@@ -70,7 +72,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/trackedEntityInstances?ou="
+        String url = networkManager.getServerUrl() + "/api/trackedEntityInstances?page=0&pageSize=200&ou="
                 +organisationUnit+"&program="+program;
 
         Request request = new Request(RestMethod.GET, url, headers, null);

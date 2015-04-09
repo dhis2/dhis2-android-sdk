@@ -36,4 +36,5 @@
     <string name="regular_font_name">Roboto-Regular.ttf</string>
     <string name="bold_font_name">Roboto-Bold.ttf</string>
     <string name="medium_font_name">Roboto-Medium.ttf</string>
+    <string name="condensed_font_name">Roboto-Condensed.ttf</string>
 </resources>

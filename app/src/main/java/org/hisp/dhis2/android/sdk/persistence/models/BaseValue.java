@@ -44,10 +44,18 @@ public class BaseValue extends BaseModel {
     public static final String EMPTY_VALUE = "";
 
     @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
+    public void handleUnknown(String key, Object value) {
+    }
 
     @JsonProperty("value")
     @Column
     public String value;
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

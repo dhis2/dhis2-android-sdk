@@ -31,22 +31,15 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-
-import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
 @Table
 public class DataValue extends BaseValue {
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
@@ -68,10 +61,11 @@ public class DataValue extends BaseValue {
     @Column
     public String storedBy;
 
-    public DataValue() {}
+    public DataValue() {
+    }
 
-    public DataValue(String event, String value, String dataElement, boolean providedElsewhere,
-                     String storedBy) {
+    public DataValue(String event, String value, String dataElement,
+                     boolean providedElsewhere, String storedBy) {
         this.event = event;
         this.value = value;
         this.dataElement = dataElement;
@@ -81,12 +75,56 @@ public class DataValue extends BaseValue {
 
     /**
      * makes a deep copy of the DataValue
-     * @return
+     *
+     * @return DataValue
      */
+    @Override
     public DataValue clone() {
-        DataValue dataValue = new DataValue(this.event, this.value, this.dataElement,
+        return new DataValue(this.event, this.value, this.dataElement,
                 this.providedElsewhere, this.storedBy);
-        return dataValue;
     }
 
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+    }
+
+    public long getLocalEventId() {
+        return localEventId;
+    }
+
+    public void setLocalEventId(long localEventId) {
+        this.localEventId = localEventId;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    public String getDataElement() {
+        return dataElement;
+    }
+
+    public void setDataElement(String dataElement) {
+        this.dataElement = dataElement;
+    }
+
+    public boolean isProvidedElsewhere() {
+        return providedElsewhere;
+    }
+
+    public void setProvidedElsewhere(boolean providedElsewhere) {
+        this.providedElsewhere = providedElsewhere;
+    }
+
+    public String getStoredBy() {
+        return storedBy;
+    }
+
+    public void setStoredBy(String storedBy) {
+        this.storedBy = storedBy;
+    }
 }

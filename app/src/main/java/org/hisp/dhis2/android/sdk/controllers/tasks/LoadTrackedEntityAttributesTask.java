@@ -44,7 +44,9 @@ import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-
+/**
+ * deprecated. Now loading TrackedEntityAttributes with Program query
+ */
 public class LoadTrackedEntityAttributesTask implements INetworkTask {
     private final ApiRequest.Builder<List<TrackedEntityAttribute>> requestBuilder;
 

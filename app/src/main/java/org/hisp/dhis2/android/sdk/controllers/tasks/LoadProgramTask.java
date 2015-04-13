@@ -83,9 +83,9 @@ public class LoadProgramTask implements INetworkTask {
         String url = networkManager.getServerUrl() + "/api/programs/" + programId + "";
         url += "?fields=*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                 "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]],programIndicators[*]]," +
-                "programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]]],!organisationUnits";
+                "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                "[*,trackedEntityAttribute[*]],!organisationUnits";
         if( updating ) {
             List<Program> result = Select.all(Program.class, Condition.column(Program$Table.ID).is(programId));
             if( result != null && result.size() > 0 ) {

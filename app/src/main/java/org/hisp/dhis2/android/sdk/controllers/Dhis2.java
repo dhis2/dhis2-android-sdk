@@ -159,7 +159,7 @@ public final class Dhis2 {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if( mode.equals(LOAD_EVENTCAPTURE)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
+            //editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
@@ -167,7 +167,7 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
         } else if (mode.equals(LOAD_TRACKER)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
+            //editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);

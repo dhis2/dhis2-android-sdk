@@ -41,6 +41,7 @@ import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkManager {
@@ -73,6 +74,26 @@ public class NetworkManager {
             mNetworkManager = new NetworkManager();
         }
         return mNetworkManager;
+    }
+
+    /**
+     * Returns true if able to connect to the internet.
+     * Will return false if run on the main ui thread
+     * @return
+     */
+    public static boolean hasInternetConnection() {
+        try {
+            InetAddress ipAddr = InetAddress.getByName("www.dhis2.org"); //You can replace it with your name
+
+            if (ipAddr.equals("")) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String getServerUrl() {

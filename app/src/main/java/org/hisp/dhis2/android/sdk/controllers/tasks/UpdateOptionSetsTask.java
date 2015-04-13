@@ -133,15 +133,15 @@ public class UpdateOptionSetsTask implements INetworkTask {
                 OptionSet oldOptionSet = Dhis2.getInstance().getMetaDataController().getOptionSet(optionSet.id);
                 if( oldOptionSet!=null ) {
                     for(Option option: oldOptionSet.getOptions()) {
-                        option.delete(false);
+                        option.delete(true);
                     }
                 }
                 oldOptionSet = null;
                 for( Option o: optionSet.options ) {
                     o.setOptionSet( optionSet.getId() );
-                    o.save(false);
+                    o.save(true);
                 }
-                optionSet.save(false);
+                optionSet.save(true);
             }
             requestCounter--;
             if(requestCounter > 0)

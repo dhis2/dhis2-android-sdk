@@ -131,9 +131,9 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
                         Condition.column(TrackedEntityAttribute$Table.ID).
                                 is(trackedEntityAttribute.id));
                 if(result != null && !result.isEmpty())
-                    trackedEntityAttribute.update(false);
+                    trackedEntityAttribute.update(true);
                 else
-                    trackedEntityAttribute.save(false);
+                    trackedEntityAttribute.save(true);
             }
             requestCounter--;
             if(requestCounter > 0)

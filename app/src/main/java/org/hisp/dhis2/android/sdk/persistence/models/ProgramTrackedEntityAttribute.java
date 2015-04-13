@@ -29,6 +29,8 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -46,6 +48,8 @@ import java.util.Map;
 @Table
 public class ProgramTrackedEntityAttribute extends BaseModel {
 
+    private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
+
     @JsonProperty("allowFutureDate")
     @Column
     public boolean allowFutureDate;
@@ -62,8 +66,9 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     public String program;
 
     @JsonProperty("trackedEntityAttribute")
-    public void setTrackedEntityAttribute(Map<String, Object> trackedEntityAttribute) {
-            this.trackedEntityAttribute =  (String) trackedEntityAttribute.get("id") ;
+    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
+        trackedEntityAttribute.save(true);
+        this.trackedEntityAttribute = trackedEntityAttribute.id;
     }
 
     @Column(columnType = Column.PRIMARY_KEY)
@@ -105,6 +110,9 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
                 Condition.column(TrackedEntityAttribute$Table.ID).is(trackedEntityAttribute));
         if(result != null && !result.isEmpty()) return result.get(0);
-        else return null;
+        else {
+            Log.d(CLASS_TAG, "tea is null: " + trackedEntityAttribute);
+            return null;
+        }
     }
 }

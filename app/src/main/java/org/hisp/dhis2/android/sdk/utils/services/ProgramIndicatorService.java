@@ -63,6 +63,7 @@ import java.util.regex.Matcher;
 
 /**
  * Handles logic related to ProgramIndicators such as calculating values based on expressions.
+ * This class has been copied from the dhis 2 core repository and been stripped down.
  */
 public class ProgramIndicatorService
 {

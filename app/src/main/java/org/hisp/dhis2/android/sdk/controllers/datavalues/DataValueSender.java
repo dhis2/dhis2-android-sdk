@@ -40,6 +40,7 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterEnrollmentTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterEventTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterTrackedEntityInstanceTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
@@ -54,6 +55,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis2.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis2.android.sdk.persistence.models.ResponseBody;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.io.IOException;
@@ -70,6 +73,7 @@ public class DataValueSender {
     private int sendCounter = -1;
     private List<Event> localEvents = null;
     private List<Enrollment> localEnrollments = null;
+    private List<TrackedEntityInstance> localTrackedEntityInstances = null;
     private Context context;
 
     void sendLocalData(Context context) {
@@ -197,81 +201,169 @@ public class DataValueSender {
         task.execute();
     }
 
-    private void onResponse(ResponseEvent responseEvent) {
-            if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
-                if(responseEvent.getResponseHolder().getApiException() != null) {
-                    APIException apiException = responseEvent.getResponseHolder().getApiException();
-                    handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
-                } else {
-                    ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
-                    if (importSummary.status.equals(ImportSummary.SUCCESS)) {
-                        Enrollment enrollment = localEnrollments.get(sendCounter - 1);
-                        List<Event> events = enrollment.getEvents(true);
-                        //updating any local events that had reference to local enrollment to new
-                        //reference from server.
-                        for (Event event : events) {
-                            event.enrollment = importSummary.reference;
-                            event.update(true);
-                            // need to only update the single field ..!;
-                            //new Update().table(Event.class).set(Condition.column(Event$Table.ENROLLMENT).is(importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).query();
-                        }
-                        enrollment.enrollment = importSummary.reference;
-                        enrollment.fromServer = true;
-                        enrollment.update(true);
-                        localEnrollments.remove(sendCounter - 1);
-                    } else if (importSummary.status.equals((ImportSummary.ERROR))) {
-                        Log.d(CLASS_TAG, "failed.. ");
-                        FailedItem failedItem = new FailedItem();
-                        failedItem.importSummary = importSummary;
-                        failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
-                        failedItem.itemType = FailedItem.ENROLLMENT;
-                        failedItem.httpStatusCode = 200;
-                        failedItem.save(true);
-                        Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
-                    }
-                }
-                sendCounter--;
-                if(sendCounter > 0)
-                    sendEnrollment(localEnrollments.get(sendCounter-1));
-                else
-                    sendEvents();
+    /**
+     * Initiates sending and registering of locally created TrackedEntityInstance to the server.
+     */
+    private void sendTrackedEntityInstances() {
+        localTrackedEntityInstances = Select.all(TrackedEntityInstance.class, Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false));
+        Log.e(CLASS_TAG, "got this many trackedEntityInstances:" + localTrackedEntityInstances.size());
+        sendCounter = localTrackedEntityInstances.size();
+        if(sendCounter>0) {
+            sendTrackedEntityInstance(localTrackedEntityInstances.get(sendCounter - 1));
+        } else sendEnrollments();
+    }
 
-            }
-            if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
-                if(responseEvent.getResponseHolder().getApiException() != null) {
-                    APIException apiException = responseEvent.getResponseHolder().getApiException();
-                    handleError(apiException, FailedItem.EVENT, localEvents.get(sendCounter-1).localId);
-                } else {
-                    ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
-                    if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
-                        Event event = localEvents.get(sendCounter-1);
-                        List<DataValue> dataValues = event.getDataValues();
-                        event.event = responseBody.importSummaries.get(0).reference;
-                        for(DataValue dataValue: dataValues) {
-                            dataValue.localEventId = event.localId;
-                            dataValue.event = event.event;
-                            dataValue.update(true);
+    private void sendTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.trackedEntityInstance);
+        final ResponseHolder<ImportSummary> holder = new ResponseHolder<>();
+        final DataValueResponseEvent<ImportSummary> responseEvent = new
+                DataValueResponseEvent<ImportSummary>(ResponseEvent.EventType.sendTrackedEntityInstance);
+        responseEvent.setResponseHolder(holder);
+        RegisterTrackedEntityInstanceTask task = new RegisterTrackedEntityInstanceTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<Object>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        Log.e(CLASS_TAG, "response: " + new String(response.getBody()));
+                        try {
+                            ImportSummary importSummary = Dhis2.getInstance().getObjectMapper().
+                                    readValue(response.getBody(), ImportSummary.class);
+                            holder.setItem(importSummary);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
                         }
-                        event.fromServer = true;
-                        event.update(true);
-                        localEvents.remove(sendCounter-1);
-                    } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
-                        Log.d(CLASS_TAG, "failed.. ");
-                        FailedItem failedItem = new FailedItem();
-                        failedItem.importSummary = responseBody.importSummaries.get(0);
-                        failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
-                        failedItem.itemType = FailedItem.EVENT;
-                        failedItem.httpStatusCode = 200; // the error is DHIS 2 internal, nothing wrong with connection
-                        failedItem.save(true);
-                        Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                        onResponse(responseEvent);
                     }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(responseEvent);
+                    }
+                }, trackedEntityInstance);
+        task.execute();
+    }
+
+    private void onResponse(ResponseEvent responseEvent) {
+        if( responseEvent.eventType == BaseEvent.EventType.sendTrackedEntityInstance) {
+            Log.d(CLASS_TAG, "SENT tei onResponse!!!");
+            if(responseEvent.getResponseHolder().getApiException() != null) {
+
+                Log.d(CLASS_TAG, "SENT tei apiException.." + new String(responseEvent.getResponseHolder().getApiException().getResponse().getBody()));
+                APIException apiException = responseEvent.getResponseHolder().getApiException();
+                handleError(apiException, FailedItem.TRACKEDENTITYINSTANCE, localTrackedEntityInstances.get(sendCounter-1).localId);
+            } else {
+                ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
+                if (importSummary.status.equals(ImportSummary.SUCCESS)) {
+                    Log.d(CLASS_TAG, "SENT tei SUCCESS!!!");
+                    TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
+                    List<Enrollment> enrollments = DataValueController.getEnrollments(trackedEntityInstance.localId);
+                    for(Enrollment enrollment: enrollments) {
+                        enrollment.trackedEntityInstance = importSummary.reference;
+                        enrollment.update(true);
+                        for(Event event: enrollment.getEvents(true)) {
+                            event.trackedEntityInstance = importSummary.reference;
+                            event.update(true);
+                        }
+                    }
+                    localTrackedEntityInstances.remove(sendCounter - 1);
+                } else if (importSummary.status.equals((ImportSummary.ERROR))) {
+                    Log.d(CLASS_TAG, "failed.. ");
+                    FailedItem failedItem = new FailedItem();
+                    failedItem.importSummary = importSummary;
+                    failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemType = FailedItem.TRACKEDENTITYINSTANCE;
+                    failedItem.httpStatusCode = 200;
+                    failedItem.save(true);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
-                sendCounter--;
-                if(sendCounter > 0)
-                    sendEvent(localEvents.get(sendCounter-1));
-                else
-                    onFinishSending(true);
             }
+            sendCounter--;
+            if(sendCounter > 0)
+                sendTrackedEntityInstance(localTrackedEntityInstances.get(sendCounter-1));
+            else
+                sendEnrollments();
+
+        }
+        else if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
+            Log.d(CLASS_TAG, "SENT ENROLLMENT onResponse!!!");
+            if(responseEvent.getResponseHolder().getApiException() != null) {
+
+                Log.d(CLASS_TAG, "SENT ENROLLMENT apiException.." + new String(responseEvent.getResponseHolder().getApiException().getResponse().getBody()));
+                APIException apiException = responseEvent.getResponseHolder().getApiException();
+                handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
+            } else {
+                ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
+                if (importSummary.status.equals(ImportSummary.SUCCESS)) {
+                    Log.d(CLASS_TAG, "SENT ENROLLMENT SUCCESS!!!");
+                    Enrollment enrollment = localEnrollments.get(sendCounter - 1);
+                    List<Event> events = enrollment.getEvents(true);
+                    //updating any local events that had reference to local enrollment to new
+                    //reference from server.
+                    for (Event event : events) {
+                        event.enrollment = importSummary.reference;
+                        event.update(true);
+                        // need to only update the single field ..!;
+                        //new Update().table(Event.class).set(Condition.column(Event$Table.ENROLLMENT).is(importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).query();
+                    }
+                    enrollment.enrollment = importSummary.reference;
+                    enrollment.fromServer = true;
+                    enrollment.update(true);
+                    localEnrollments.remove(sendCounter - 1);
+                } else if (importSummary.status.equals((ImportSummary.ERROR))) {
+                    Log.d(CLASS_TAG, "failed.. ");
+                    FailedItem failedItem = new FailedItem();
+                    failedItem.importSummary = importSummary;
+                    failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemType = FailedItem.ENROLLMENT;
+                    failedItem.httpStatusCode = 200;
+                    failedItem.save(true);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                }
+            }
+            sendCounter--;
+            if(sendCounter > 0)
+                sendEnrollment(localEnrollments.get(sendCounter-1));
+            else
+                sendEvents();
+
+        }
+        else if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
+            if(responseEvent.getResponseHolder().getApiException() != null) {
+                APIException apiException = responseEvent.getResponseHolder().getApiException();
+                handleError(apiException, FailedItem.EVENT, localEvents.get(sendCounter-1).localId);
+            } else {
+                ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
+                if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
+                    Event event = localEvents.get(sendCounter-1);
+                    List<DataValue> dataValues = event.getDataValues();
+                    event.event = responseBody.importSummaries.get(0).reference;
+                    for(DataValue dataValue: dataValues) {
+                        dataValue.localEventId = event.localId;
+                        dataValue.event = event.event;
+                        dataValue.update(true);
+                    }
+                    event.fromServer = true;
+                    event.update(true);
+                    localEvents.remove(sendCounter-1);
+                } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
+                    Log.d(CLASS_TAG, "failed.. ");
+                    FailedItem failedItem = new FailedItem();
+                    failedItem.importSummary = responseBody.importSummaries.get(0);
+                    failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemType = FailedItem.EVENT;
+                    failedItem.httpStatusCode = 200; // the error is DHIS 2 internal, nothing wrong with connection
+                    failedItem.save(true);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                }
+            }
+            sendCounter--;
+            if(sendCounter > 0)
+                sendEvent(localEvents.get(sendCounter-1));
+            else
+                onFinishSending(true);
+        }
     }
 
     public void handleError(APIException apiException, String type, long id) {

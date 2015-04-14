@@ -41,7 +41,10 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -87,9 +90,17 @@ public class Enrollment extends BaseModel{
         else return enrollment;
     }
 
+    @JsonProperty("orgUnit")
+    @Column
+    public String orgUnit;
+
     @JsonProperty("trackedEntityInstance")
     @Column
     public String trackedEntityInstance;
+
+    @JsonIgnore
+    @Column
+    public long localTrackedEntityInstanceId;
 
     @JsonProperty("program")
     @Column
@@ -110,6 +121,21 @@ public class Enrollment extends BaseModel{
     @JsonProperty("status")
     @Column
     public String status;
+
+    @JsonProperty("attributes")
+    public List<TrackedEntityAttributeValue> getAttributes() {
+        List<TrackedEntityAttributeValue> attributes = new ArrayList<>();
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                MetaDataController.getProgramTrackedEntityAttributes(program);
+        for(ProgramTrackedEntityAttribute ptea: programTrackedEntityAttributes) {
+            TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
+                    (ptea.trackedEntityAttribute, trackedEntityInstance);
+            if(v!=null && v.getValue()!=null && !v.getValue().isEmpty()) {
+                attributes.add(v);
+            }
+        }
+        return attributes;
+    }
 
     @JsonIgnore
     List<Event> events;
@@ -145,6 +171,7 @@ public class Enrollment extends BaseModel{
         }
     }
 
+    @JsonIgnore
     public Program getProgram() {
         if(program==null) return null;
         else return MetaDataController.getProgram(program);

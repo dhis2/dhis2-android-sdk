@@ -556,6 +556,9 @@ public class MetaDataLoader {
         task.execute();
     }
 
+    /**
+     * deprecated. TrackedEntityAttributes are loaded together with Programs in the same query
+     */
     private void loadTrackedEntityAttributes() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_trackedentityattributes));
         final ResponseHolder<List<TrackedEntityAttribute>> holder = new ResponseHolder<>();

@@ -110,9 +110,6 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
                 Condition.column(TrackedEntityAttribute$Table.ID).is(trackedEntityAttribute));
         if(result != null && !result.isEmpty()) return result.get(0);
-        else {
-            Log.d(CLASS_TAG, "tea is null: " + trackedEntityAttribute);
-            return null;
-        }
+        else return null;
     }
 }

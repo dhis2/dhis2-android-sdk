@@ -58,6 +58,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
@@ -78,6 +80,26 @@ public class MetaDataController {
     public MetaDataController() {
         Dhis2Application.bus.register(this);
         metaDataLoader = new MetaDataLoader();
+    }
+
+    /**
+     * returns a tracked Entity object for the given ID
+     * @param trackedEntity
+     * @return
+     */
+    public static TrackedEntity getTrackedEntity(String trackedEntity) {
+        return new Select().from(TrackedEntity.class).where(Condition.column
+                (TrackedEntity$Table.ID).is(trackedEntity)).querySingle();
+    }
+
+    /**
+     * Returns a list of ProgramTrackedEntityAttributes for the given program.
+     * @param program
+     * @return
+     */
+    public static List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes(String program) {
+        return Select.all(ProgramTrackedEntityAttribute.class,
+                Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(program));
     }
 
     /**

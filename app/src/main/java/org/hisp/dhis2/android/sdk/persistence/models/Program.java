@@ -162,8 +162,7 @@ public class Program extends BaseIdentifiableObject {
 
     public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {
         if(programTrackedEntityAttributes == null) {
-            programTrackedEntityAttributes = Select.all(ProgramTrackedEntityAttribute.class,
-                    Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(id));
+            programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(id);
         }
         return programTrackedEntityAttributes;
     }

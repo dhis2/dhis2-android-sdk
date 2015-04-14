@@ -73,6 +73,11 @@ public class DataValueController {
         dataValueSender = new DataValueSender();
     }
 
+    public static List<Enrollment> getEnrollments(long trackedEntityInstance) {
+        return Select.all(Enrollment.class, Condition.column(TrackedEntityInstance$Table.LOCALID).
+                is(trackedEntityInstance));
+    }
+
     /**
      * Returns a list of enrollments for a given program and tracked entity instance
      * @param program
@@ -90,6 +95,11 @@ public class DataValueController {
     public static Enrollment getEnrollment(String enrollment) {
         return new Select().from(Enrollment.class).where(Condition.column
                 (Enrollment$Table.ENROLLMENT).is(enrollment)).querySingle();
+    }
+
+    public static Enrollment getEnrollment(long localEnrollmentId) {
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALID).
+                is(localEnrollmentId)).querySingle();
     }
 
     /**
@@ -179,6 +189,11 @@ public class DataValueController {
         return new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).querySingle();
     }
 
+    public static TrackedEntityInstance getTrackedEntityInstance(long localId) {
+        return new Select().from(TrackedEntityInstance.class).where
+                (Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).querySingle();
+    }
+
     /**
      * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance
      * @param trackedEntityAttribute
@@ -191,6 +206,17 @@ public class DataValueController {
                         TRACKEDENTITYATTRIBUTEID).is(trackedEntityAttribute),
                 Condition.column(TrackedEntityAttributeValue$Table.
                         TRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).querySingle();
+    }
+
+    /**
+     * Returns a list of all trackedEntityAttributeValues for a given TEI
+     * @param trackedEntityInstance
+     * @return
+     */
+    public static List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues
+            (String trackedEntityInstance) {
+        return new Select().from(TrackedEntityAttributeValue.class).where(Condition.column
+                (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).queryList();
     }
 
     /**

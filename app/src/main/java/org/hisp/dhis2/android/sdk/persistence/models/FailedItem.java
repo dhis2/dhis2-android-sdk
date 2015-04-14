@@ -49,7 +49,7 @@ public class FailedItem extends BaseModel {
 
     public static final String EVENT = "Event";
     public static final String ENROLLMENT = "Enrollment";
-    // add more like TrackedEntityInstance, Enrollment .. in the future
+    public static final String TRACKEDENTITYINSTANCE = "TrackedEntityInstance";
 
     @Column(columnType = Column.PRIMARY_KEY)
     public long itemId;
@@ -72,6 +72,10 @@ public class FailedItem extends BaseModel {
         BaseModel item = null;
         if(itemType.equals(EVENT)) {
             item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
+        } else if (itemType.equals(ENROLLMENT)) {
+            item = Dhis2.getInstance().getDataValueController().getEnrollment(itemId);
+        } else if (itemType.equals(TRACKEDENTITYINSTANCE)) {
+            item = Dhis2.getInstance().getDataValueController().getTrackedEntityInstance(itemId);
         }
         return item;
     }

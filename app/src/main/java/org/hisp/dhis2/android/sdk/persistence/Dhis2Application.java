@@ -69,4 +69,8 @@ public class Dhis2Application extends Application implements IDhis2Application {
     public Class<? extends Activity> getMainActivity() {
         return null;
     }
+
+    public static Bus getEventBus() {
+        return bus;
+    }
 }

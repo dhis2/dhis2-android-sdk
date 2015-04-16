@@ -231,36 +231,36 @@ public class Event extends BaseSerializableModel {
     @Override
     public void save(boolean async) {
         /* check if there is an existing event with the same UID to avoid duplicates */
-        Log.d(CLASS_TAG, "eventSave"+async+event+": 1");
+        //Log.d(CLASS_TAG, "eventSave"+async+event+": 1");
         Event existingEvent = DataValueController.getEventByUid(event);
         boolean exists = false;
         if(existingEvent != null) {
             exists = true;
             localId = existingEvent.localId;
         }
-        Log.d(CLASS_TAG, "eventSave"+async+event+": 2");
+        //Log.d(CLASS_TAG, "eventSave"+async+event+": 2");
         if(getEvent() == null && DataValueController.getEvent(localId) != null) { //means that the event is local
             //then we don't want to update the event reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
-            Log.d(CLASS_TAG, "eventSave"+async+event+": 3");
+            //Log.d(CLASS_TAG, "eventSave"+async+event+": 3");
             updateManually(async);
         } else {
-            Log.d(CLASS_TAG, "eventSave"+async+event+": 4");
+            //Log.d(CLASS_TAG, "eventSave"+async+event+": 4");
             if(!exists) super.save(false); //ensuring a localId is created to give foreign key to datavalues
             else super.save(async);
         }
-        Log.d(CLASS_TAG, "eventSave"+async+event+": 5");
+        //Log.d(CLASS_TAG, "eventSave"+async+event+": 5");
         if(dataValues!=null) {
             for(DataValue dataValue: dataValues)
             {
-                Log.d(CLASS_TAG, "eventSave"+async+event+": 6");
+                //Log.d(CLASS_TAG, "eventSave"+async+event+": 6");
                 dataValue.event = event;
                 dataValue.localEventId = localId;
                 dataValue.save(async);
             }
         }
-        Log.d(CLASS_TAG, "eventSave"+async+event+": 7");
+        //Log.d(CLASS_TAG, "eventSave"+async+event+": 7");
     }
 
     /**

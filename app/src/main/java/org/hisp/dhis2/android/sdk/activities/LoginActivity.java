@@ -93,8 +93,10 @@ public class LoginActivity
     {
         super.onCreate( savedInstanceState );
         setContentView(R.layout.activity_login);
-        Dhis2Application.bus.register(this);
-        setupUI();
+        if(savedInstanceState==null){
+            Dhis2Application.bus.register(this);
+            setupUI();
+        }
     }
 
     @Override
@@ -102,6 +104,8 @@ public class LoginActivity
     {
         super.onConfigurationChanged( newConfig );
         setContentView( R.layout.activity_login );
+
+        setupUI();
     }
 
     /**

@@ -38,10 +38,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
+import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
+import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
+import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.squareup.okhttp.internal.Util;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
@@ -59,7 +67,7 @@ import java.util.UUID;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
-public class Event extends BaseModel {
+public class Event extends BaseSerializableModel {
 
     private static final String CLASS_TAG = "Event";
 
@@ -94,8 +102,7 @@ public class Event extends BaseModel {
         dataValues = new ArrayList<DataValue>();
     }
 
-    public Event() {
-    }
+    public Event() {}
 
     /**
      * used to tell whether or not an event has been updated locally and needs to be sent to server.
@@ -123,8 +130,7 @@ public class Event extends BaseModel {
      */
     @JsonProperty("event")
     public String getEvent() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if(event.length() == randomUUID.length())
+        if(Utils.isLocal(event))
         return null;
         else return event;
     }
@@ -178,8 +184,7 @@ public class Event extends BaseModel {
     public String enrollment;
 
     public String getEnrollment() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if(enrollment == null || enrollment.length() == randomUUID.length())
+        if(Utils.isLocal(enrollment))
             return null;
         else return enrollment;
     }
@@ -226,17 +231,58 @@ public class Event extends BaseModel {
     @Override
     public void save(boolean async) {
         /* check if there is an existing event with the same UID to avoid duplicates */
+        Log.d(CLASS_TAG, "eventSave"+async+event+": 1");
         Event existingEvent = DataValueController.getEventByUid(event);
+        boolean exists = false;
         if(existingEvent != null) {
+            exists = true;
             localId = existingEvent.localId;
         }
-        super.save(async);
+        Log.d(CLASS_TAG, "eventSave"+async+event+": 2");
+        if(getEvent() == null && DataValueController.getEvent(localId) != null) { //means that the event is local
+            //then we don't want to update the event reference in fear of overwriting
+            //an updated reference from server while the item has been loaded in memory
+            //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
+            Log.d(CLASS_TAG, "eventSave"+async+event+": 3");
+            updateManually(async);
+        } else {
+            Log.d(CLASS_TAG, "eventSave"+async+event+": 4");
+            if(!exists) super.save(false); //ensuring a localId is created to give foreign key to datavalues
+            else super.save(async);
+        }
+        Log.d(CLASS_TAG, "eventSave"+async+event+": 5");
         if(dataValues!=null) {
             for(DataValue dataValue: dataValues)
             {
+                Log.d(CLASS_TAG, "eventSave"+async+event+": 6");
+                dataValue.event = event;
                 dataValue.localEventId = localId;
                 dataValue.save(async);
             }
         }
+        Log.d(CLASS_TAG, "eventSave"+async+event+": 7");
+    }
+
+    /**
+     * Updates manually without touching UIDs the fields that are modifiable by user.
+     * This will and should only be called if the event has a locally created temp event reference
+     * and has previously been saved, so that it has a localId.
+     */
+    private void updateManually(boolean async) {
+        Queriable q = new Update().table(Event.class).set(
+                Condition.column(Event$Table.LONGITUDE).is(longitude),
+                Condition.column(Event$Table.LATITUDE).is(latitude),
+                Condition.column(Event$Table.STATUS).is(status),
+                Condition.column(Event$Table.FROMSERVER).is(fromServer))
+                .where(Condition.column(Enrollment$Table.LOCALID).is(localId));
+        if(async)
+            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
+        else
+            q.query().close();
+    }
+
+    @Override
+    public void update(boolean async) {
+        save(async);
     }
 }

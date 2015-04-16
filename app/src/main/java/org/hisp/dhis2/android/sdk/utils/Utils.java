@@ -33,9 +33,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 
+import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+
+import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
@@ -43,6 +46,7 @@ import org.joda.time.LocalTime;
 public class Utils {
 
     private static final String CLASS_TAG = "Utils";
+    private static final String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
 
     public static final String getCurrentDate() {
         LocalDate localDate = new LocalDate();
@@ -61,5 +65,17 @@ public class Utils {
                 dp,
                 displayMetrics);
         return px;
+    }
+
+    /**
+     * Used to determine if a uid for a modifiable data model is local (haven't gotten a UID from
+     * server yet) or if it has.
+     * @param uid
+     * @return
+     */
+    public static boolean isLocal(String uid) {
+        if(uid == null || uid.length() == randomUUID.length())
+            return true;
+        else return false;
     }
 }

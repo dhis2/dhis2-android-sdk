@@ -29,13 +29,25 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.database.Cursor;
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
+import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
+import com.raizlabs.android.dbflow.sql.Queriable;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.utils.Utils;
 
 import java.util.UUID;
 
@@ -44,6 +56,8 @@ import java.util.UUID;
  */
 @Table
 public class DataValue extends BaseValue {
+
+    private static final String CLASS_TAG = DataValue.class.getSimpleName();
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
@@ -70,8 +84,19 @@ public class DataValue extends BaseValue {
 
     public DataValue() {}
 
-    public DataValue(String event, String value, String dataElement, boolean providedElsewhere,
+    public DataValue(Event event, String value, String dataElement, boolean providedElsewhere,
+                      String storedBy) {
+        this.localEventId = event.localId;
+        this.event = event.event;
+        this.value = value;
+        this.dataElement = dataElement;
+        this.providedElsewhere = providedElsewhere;
+        this.storedBy = storedBy;
+    }
+
+    private DataValue(long localEventId, String event, String value, String dataElement, boolean providedElsewhere,
                      String storedBy) {
+        this.localEventId = localEventId;
         this.event = event;
         this.value = value;
         this.dataElement = dataElement;
@@ -84,9 +109,45 @@ public class DataValue extends BaseValue {
      * @return
      */
     public DataValue clone() {
-        DataValue dataValue = new DataValue(this.event, this.value, this.dataElement,
-                this.providedElsewhere, this.storedBy);
+        DataValue dataValue = new DataValue(this.localEventId, this.event, this.value,
+                this.dataElement, this.providedElsewhere, this.storedBy);
         return dataValue;
+    }
+
+    @Override
+    public void save(boolean async) {
+        if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {
+
+            //DataValue ex = DataValueController.getDataValue(localEventId, dataElement);
+            //if(ex == null)
+            //    Log.d(CLASS_TAG, "existing is null " );
+            //else Log.d(CLASS_TAG, "existing not null! " + ex.localEventId + ": " + ex.event);
+
+            //to avoid overwriting UID from server due to race conditions with autosyncing with server
+            //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created
+            updateManually(async);
+        } else
+            super.save(async);
+    }
+
+    public void updateManually(boolean async) {
+        Queriable q = new Update().table(DataValue.class).set(
+                Condition.column(DataValue$Table.VALUE).is(value))
+                .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
+                        Condition.column(DataValue$Table.DATAELEMENT).is(dataElement));
+        if(async)
+            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
+        else
+        {
+            Log.d(CLASS_TAG, "this is fine");
+            Cursor c = q.query();
+            c.close();
+        }
+    }
+
+    @Override
+    public void update(boolean async) {
+        save(async);
     }
 
 }

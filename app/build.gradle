@@ -28,8 +28,8 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
-    apt 'com.raizlabs.android:DBFlow-Compiler:1.5.1'
-    mod "com.raizlabs.android:{DBFlow-Core, DBFlow}:1.5.1"
+    apt 'com.raizlabs.android:DBFlow-Compiler:1.8.0'
+    mod "com.raizlabs.android:{DBFlow-Core, DBFlow}:1.8.0"
     compile 'jep:jep:2.24'
     compile 'commons-validator:commons-validator:1.4.0'
     compile 'org.apache.commons:commons-lang3:3.3.2'

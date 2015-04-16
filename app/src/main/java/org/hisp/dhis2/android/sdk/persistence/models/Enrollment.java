@@ -29,12 +29,20 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
+import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
+import com.raizlabs.android.dbflow.sql.Queriable;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
@@ -52,11 +60,38 @@ import java.util.UUID;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
-public class Enrollment extends BaseModel{
+public class Enrollment extends BaseSerializableModel{
+
+    private static final String CLASS_TAG = Enrollment.class.getSimpleName();
 
     public static final String ACTIVE = "ACTIVE";
     public static final String COMPLETED = "COMPLETED";
     public static final String CANCELLED = "CANCELLED"; //aka TERMINATED
+
+    public Enrollment() {
+
+    }
+
+    public Enrollment (String organisationUnit, String trackedEntityInstance, Program program) {
+        orgUnit = organisationUnit;
+        status = Enrollment.ACTIVE;
+        enrollment = Dhis2.QUEUED + UUID.randomUUID().toString();
+        followup = false;
+        fromServer = false;
+        this.program = program.getId();
+        this.trackedEntityInstance = trackedEntityInstance;
+        List<Event> events = new ArrayList<>();
+        for(ProgramStage programStage: program.getProgramStages()) {
+            if(programStage.autoGenerateEvent) {
+                String status = Event.STATUS_FUTURE_VISIT;
+                Event event = new Event(organisationUnit, status,
+                        program.id, programStage.id,
+                        trackedEntityInstance, enrollment);
+                events.add(event);
+            }
+        }
+        if(!events.isEmpty()) setEvents(events);
+    }
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
@@ -94,9 +129,26 @@ public class Enrollment extends BaseModel{
     @Column
     public String orgUnit;
 
-    @JsonProperty("trackedEntityInstance")
+    @JsonIgnore
     @Column
     public String trackedEntityInstance;
+
+    @JsonProperty("trackedEntityInstance")
+    public void setTrackedEntityInstance(String trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
+    }
+
+    /**
+     * Should only be used by Jackson so that event is included only if its non-local generated
+     * Use Event.event instead to access it.
+     */
+    @JsonProperty("trackedEntityInstance")
+    public String getTrackedEntityInstance() {
+        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
+        if(trackedEntityInstance.length() == randomUUID.length())
+            return null;
+        else return trackedEntityInstance;
+    }
 
     @JsonIgnore
     @Column
@@ -159,22 +211,55 @@ public class Enrollment extends BaseModel{
     public void save(boolean async) {
         /* check if there is an existing enrollment with the same UID to avoid duplicates */
         Enrollment existingEnrollment = DataValueController.getEnrollment(enrollment);
+        boolean exists = false;
         if(existingEnrollment != null) {
+            exists = true;
             localId = existingEnrollment.localId;
         }
-        super.save(async);
+        if(getEnrollment() == null && DataValueController.getEnrollment(localId) != null) { //means that the enrollment is local and has previosuly been saved
+            //then we don't want to update the enrollment reference in fear of overwriting
+            //an updated reference from server while the item has been loaded in memory
+            //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
+            updateManually(async);
+        } else {
+            if(!exists) super.save(false); //ensuring a localId is created to give foreign key to events
+            else super.save(async);
+        }
         if(events!=null) {
             for(Event event: events) {
                 event.localEnrollmentId = localId;
+                Log.d(CLASS_TAG, "enrollmentlocalId: " + localId);
                 event.save(async);
             }
         }
+    }
+
+    /**
+     * Updates manually without touching UIDs the fields that are modifiable by user.
+     * This will and should only be called if the enrollment has a locally created temp event reference
+     * and has previously been saved, so that it has a localId.
+     */
+    public void updateManually(boolean async) {
+        Queriable q = new Update().table(Enrollment.class).set(
+                Condition.column(Enrollment$Table.STATUS).is(status),
+                Condition.column(Enrollment$Table.FROMSERVER).is(fromServer),
+                Condition.column(Enrollment$Table.FOLLOWUP).is(followup))
+                .where(Condition.column(Enrollment$Table.LOCALID).is(localId));
+        if(async)
+            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
+        else
+            q.query().close();
     }
 
     @JsonIgnore
     public Program getProgram() {
         if(program==null) return null;
         else return MetaDataController.getProgram(program);
+    }
+
+    @Override
+    public void update(boolean async) {
+        save(async);
     }
 
 }

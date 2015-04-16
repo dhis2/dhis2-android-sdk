@@ -35,10 +35,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
+import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
+import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
+import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.squareup.okhttp.internal.Util;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
@@ -55,15 +63,37 @@ import java.util.UUID;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table
-public class Event extends BaseModel {
+public class Event extends BaseSerializableModel {
 
     private static final String CLASS_TAG = "Event";
+
     public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_VISITED = "VISITED";
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_LATE_VISIT = "OVERDUE";
     public static final String STATUS_SKIPPED = "SKIPPED";
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {}
+
+    public Event(String organisationUnitId, String status, String programId, String programStageId,
+                 String trackedEntityInstanceId, String enrollmentId) {
+        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
+        this.fromServer = false;
+        this.dueDate = Utils.getCurrentDate();
+        this.eventDate = Utils.getCurrentDate();
+        this.organisationUnitId = organisationUnitId;
+        this.programId = programId;
+        this.programStageId = programStageId;
+        this.status = status;
+        this.lastUpdated = Utils.getCurrentDate();
+        this.trackedEntityInstance = trackedEntityInstanceId;
+        this.enrollment = enrollmentId;
+        dataValues = new ArrayList<DataValue>();
+    }
+
+    public Event() {}
 
     /**
      * used to tell whether or not an event has been updated locally and needs to be sent to server.
@@ -79,6 +109,22 @@ public class Event extends BaseModel {
     @JsonIgnore
     @Column(unique = true)
     public String event;
+
+    @JsonProperty("event")
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    /**
+     * Should only be used by Jackson so that event is included only if its non-local generated
+     * Use Event.event instead to access it.
+     */
+    @JsonProperty("event")
+    public String getEvent() {
+        if(Utils.isLocal(event))
+        return null;
+        else return event;
+    }
 
     @JsonProperty("lastUpdated")
     @Column
@@ -115,6 +161,12 @@ public class Event extends BaseModel {
     @Column
     public String enrollment;
 
+    public String getEnrollment() {
+        if(Utils.isLocal(enrollment))
+            return null;
+        else return enrollment;
+    }
+
     @JsonProperty("program")
     @Column
     public String programId;
@@ -139,29 +191,6 @@ public class Event extends BaseModel {
     @JsonProperty("dataValues")
     public List<DataValue> dataValues;
 
-    public Event() {
-    }
-
-    public Event(String organisationUnitId,
-                 String status,
-                 String programId,
-                 String programStageId,
-                 String trackedEntityInstanceId,
-                 String enrollmentId) {
-        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
-        this.fromServer = false;
-        this.dueDate = Utils.getCurrentDate();
-        this.eventDate = Utils.getCurrentDate();
-        this.organisationUnitId = organisationUnitId;
-        this.programId = programId;
-        this.programStageId = programStageId;
-        this.status = status;
-        this.lastUpdated = Utils.getCurrentDate();
-        this.trackedEntityInstance = trackedEntityInstanceId;
-        this.enrollment = enrollmentId;
-        this.dataValues = new ArrayList<DataValue>();
-    }
-
     @Override
     public void delete(boolean async) {
         if (dataValues != null) {
@@ -175,37 +204,51 @@ public class Event extends BaseModel {
     public void save(boolean async) {
         /* check if there is an existing event with the same UID to avoid duplicates */
         Event existingEvent = DataValueController.getEventByUid(event);
-        if (existingEvent != null) {
+        boolean exists = false;
+        if(existingEvent != null) {
+            exists = true;
             localId = existingEvent.localId;
         }
-        super.save(async);
-        if (dataValues != null) {
-            for (DataValue dataValue : dataValues) {
+        if(getEvent() == null && DataValueController.getEvent(localId) != null) { //means that the event is local
+            //then we don't want to update the event reference in fear of overwriting
+            //an updated reference from server while the item has been loaded in memory
+            //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
+            updateManually(async);
+        } else {
+            if(!exists) super.save(false); //ensuring a localId is created to give foreign key to datavalues
+            else super.save(async);
+        }
+        if(dataValues!=null) {
+            for(DataValue dataValue: dataValues)
+            {
+                dataValue.event = event;
                 dataValue.localEventId = localId;
                 dataValue.save(async);
             }
         }
     }
 
-    @JsonProperty("event")
-    public void setEvent(String event) {
-        this.event = event;
-    }
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {
-    }
-
     /**
-     * Should only be used by Jackson so that event is included only if its non-local generated
-     * Use Event.event instead to access it.
+     * Updates manually without touching UIDs the fields that are modifiable by user.
+     * This will and should only be called if the event has a locally created temp event reference
+     * and has previously been saved, so that it has a localId.
      */
-    @JsonProperty("event")
-    public String getEvent() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if (event.length() == randomUUID.length())
-            return null;
-        else return event;
+    private void updateManually(boolean async) {
+        Queriable q = new Update().table(Event.class).set(
+                Condition.column(Event$Table.LONGITUDE).is(longitude),
+                Condition.column(Event$Table.LATITUDE).is(latitude),
+                Condition.column(Event$Table.STATUS).is(status),
+                Condition.column(Event$Table.FROMSERVER).is(fromServer))
+                .where(Condition.column(Enrollment$Table.LOCALID).is(localId));
+        if(async)
+            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
+        else
+            q.query().close();
+    }
+
+    @Override
+    public void update(boolean async) {
+        save(async);
     }
 
     @JsonProperty("coordinate")
@@ -220,13 +263,6 @@ public class Event extends BaseModel {
         coordinate.put("latitude", latitude);
         coordinate.put("longitude", longitude);
         return coordinate;
-    }
-
-    public String getEnrollment() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if (enrollment == null || enrollment.length() == randomUUID.length())
-            return null;
-        else return enrollment;
     }
 
     public List<DataValue> getDataValues() {

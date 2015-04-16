@@ -569,8 +569,18 @@ public class DataValueLoader {
                 List<TrackedEntityInstance> trackedEntityInstances = (List<TrackedEntityInstance>) items[0];
                 List<TrackedEntityAttributeValue> values = (List<TrackedEntityAttributeValue>) items[1];
                 if(trackedEntityInstances != null) {
-                    for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(true);
-                    for(TrackedEntityAttributeValue value: values) value.save(true);
+                    if(synchronizing) {
+                        //todo: implement different handling if synchronizing than if doing 1st load
+                    }
+                    //saving with async false bc we need to ensure the localId is created for later referencing
+                    for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(false);
+
+                    for(TrackedEntityAttributeValue value: values) {
+                        TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(value.trackedEntityInstanceId);
+                        if(tei!=null)
+                            value.localTrackedEntityInstanceId = tei.localId;
+                        value.save(true);
+                    }
                 }
                 flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, true);
@@ -578,7 +588,12 @@ public class DataValueLoader {
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEnrollments) {
                 List<Enrollment> enrollments = (List<Enrollment>) responseEvent.getResponseHolder().getItem();
                 for(Enrollment enrollment: enrollments) {
-                    enrollment.save(true);
+                    if(synchronizing) {
+                        //todo: implement different handling if synchronizing than if doing 1st load
+                    }
+                    TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
+                    if(tei!=null) enrollment.localTrackedEntityInstanceId = tei.localId;
+                    enrollment.save(false);
                 }
                 flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);
@@ -586,37 +601,24 @@ public class DataValueLoader {
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEvents) {
                 List<Event> events = (List<Event>) responseEvent.getResponseHolder().getItem();
                 for(Event event: events) {
-                    loadedEventCounter++;
-                    //check if there have been changes made locally since last update.
-                    //if there are local updates, don't overwrite with data from server.
-                    Event localEvent = DataValueController.getEventByUid(event.event);
-                    if(localEvent != null) {
-                        event.localId = localEvent.localId;
-                        event.localEnrollmentId = localEvent.localEnrollmentId;
-                        if( localEvent.fromServer == true ) {
-                            event.update(true);
-                            if(event.dataValues != null) {
-                                for(DataValue dataValue: event.dataValues) {
-                                    dataValue.localEventId = event.localId;
-                                    dataValue.event = event.event;
-                                    dataValue.save(true);
-                                }
-                            }
-                        }
-                    } else {
-                        //check if there is an enrollment for this event stored on the device
-                        //and store the localId of the enrollment
-                        //(there will not be enrollment if its a single event without registration)
-                        Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
-                        if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
-                        event.save(true);
-                        if(event.dataValues != null) {
-                            for(DataValue dataValue: event.dataValues) {
-                                dataValue.event = event.event;
-                                dataValue.save(true);
-                            }
-                        }
+                    if(synchronizing) {
+                        //todo: implement different handling if synchronizing than if doing 1st load
                     }
+                    //check if there is an enrollment for this event stored on the device
+                    //and store the localId of the enrollment
+                    //(there will not be enrollment if its a single event without registration)
+                    Log.d(CLASS_TAG, "loadEvents1");
+                    Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
+                    Log.d(CLASS_TAG, "loadEvents2");
+                    if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
+                    //if(event.dataValues != null) {
+                    //    for(DataValue dataValue: event.dataValues) {
+                    //        dataValue.event = event.event;
+                    //        //dataValue.save(true);
+                    //    }
+                    //}
+                    event.save(true);
+                    Log.d(CLASS_TAG, "loadEvents3");
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

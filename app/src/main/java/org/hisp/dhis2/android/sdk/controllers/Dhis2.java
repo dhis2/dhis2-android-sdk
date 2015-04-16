@@ -100,6 +100,10 @@ public final class Dhis2 {
         gpsManager = new GpsManager();
     }
 
+    public static Context getContext() {
+        return getInstance().context;
+    }
+
     public static Dhis2 getInstance() {
         return Dhis2Application.dhis2;
     }

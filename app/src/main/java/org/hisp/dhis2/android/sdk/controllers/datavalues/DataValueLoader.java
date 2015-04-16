@@ -607,9 +607,9 @@ public class DataValueLoader {
                     //check if there is an enrollment for this event stored on the device
                     //and store the localId of the enrollment
                     //(there will not be enrollment if its a single event without registration)
-                    Log.d(CLASS_TAG, "loadEvents1");
+                    //Log.d(CLASS_TAG, "loadEvents1");
                     Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
-                    Log.d(CLASS_TAG, "loadEvents2");
+                    //Log.d(CLASS_TAG, "loadEvents2");
                     if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
                     //if(event.dataValues != null) {
                     //    for(DataValue dataValue: event.dataValues) {
@@ -618,7 +618,7 @@ public class DataValueLoader {
                     //    }
                     //}
                     event.save(true);
-                    Log.d(CLASS_TAG, "loadEvents3");
+                    //Log.d(CLASS_TAG, "loadEvents3");
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

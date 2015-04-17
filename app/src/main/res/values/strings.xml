@@ -276,6 +276,7 @@
         <item>15 Minutes</item>
         <item>1 Hour</item>
         <item>1 Day</item>
+        <item>Disable</item>
     </string-array>
 
     <string name="remote">Remote</string>

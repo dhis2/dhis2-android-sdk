@@ -123,7 +123,7 @@ public final class Dhis2 {
      */
     public static int getUpdateFrequency(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        int updateFrequency = sharedPreferences.getInt(UPDATE_FREQUENCY, 0);
+        int updateFrequency = sharedPreferences.getInt(UPDATE_FREQUENCY, PeriodicSynchronizer.DEFAULT_UPDATE_FREQUENCY);
         Log.e(CLASS_TAG, "updateFrequency: " + updateFrequency);
         return updateFrequency;
     }

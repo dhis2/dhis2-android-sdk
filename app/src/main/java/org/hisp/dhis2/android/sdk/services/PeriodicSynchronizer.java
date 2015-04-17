@@ -45,6 +45,13 @@ import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
  */
 public class PeriodicSynchronizer extends BroadcastReceiver {
 
+    public static final int FREQUENCY_ONE_MINUTE = 0;
+    public static final int FREQUENCY_15_MINTUES = 1;
+    public static final int FREQUENCY_ONE_HOUR = 2;
+    public static final int FREQUENCY_ONE_DAY = 3;
+    public static final int FREQUENCY_DISABLED = 4;
+    public static final int DEFAULT_UPDATE_FREQUENCY = FREQUENCY_ONE_MINUTE;
+
     public static final String CLASS_TAG = "PeriodicSynchronizer";
 
     private static PeriodicSynchronizer periodicSynchronizer;
@@ -57,11 +64,9 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(CLASS_TAG, " onReceive periodique ");
         String serverUrl = Dhis2.getInstance().getServer(context);
         String credentials = Dhis2.getInstance().getCredentials(context);
         Log.d(CLASS_TAG, "serverUrl: " + serverUrl);
-        Log.d(CLASS_TAG, "credentials: " + credentials);
         if(serverUrl == null || credentials == null) {
             cancelPeriodicSynchronizer(context);
             return;
@@ -108,20 +113,25 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
      */
     public static int getInterval(Context context) {
         int frequencyIndex = Dhis2.getUpdateFrequency(context);
-        int minutes = 15;
+        int minutes;
         switch (frequencyIndex) {
-            case 0: //1 minutes
+            case FREQUENCY_ONE_MINUTE: //1 minutes
                 minutes = 1;
                 break;
-            case 1: //15 minutes
+            case FREQUENCY_15_MINTUES: //15 minutes
                 minutes = 15;
                 break;
-            case 2: //1 hour
+            case FREQUENCY_ONE_HOUR: //1 hour
                 minutes = 1 * 60;
                 break;
-            case 3:// 1 day
+            case FREQUENCY_ONE_DAY:// 1 day
                 minutes = 1 * 60 * 24;
                 break;
+            case FREQUENCY_DISABLED: //disabled
+                minutes = 0;
+                break;
+            default:
+                minutes = DEFAULT_UPDATE_FREQUENCY;
         }
         return minutes;
     }

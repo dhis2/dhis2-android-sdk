@@ -410,6 +410,15 @@ public final class Dhis2 {
     }
 
     /**
+     * Initiates synchronization with server. Updates MetaData, sends locally saved data, loads
+     * new data values from server.
+     * @param context
+     */
+    public static void synchronize(Context context) {
+        synchronizeMetaData(context);
+    }
+
+    /**
      * initiates synchronization of metadata from server
      * @param context
      */

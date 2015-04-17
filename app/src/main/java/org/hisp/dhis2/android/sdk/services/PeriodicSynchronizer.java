@@ -73,7 +73,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         }
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
-        Dhis2.synchronizeMetaData(context);
+        Dhis2.synchronize(context);
 	}
 
 	/**
@@ -83,6 +83,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 */
 	public static void activatePeriodicSynchronizer(Context context, int minutes) {
         cancelPeriodicSynchronizer(context);
+        if(minutes <= 0) return;
 		Log.d(CLASS_TAG, "activate periodic synchronizer " + minutes);
 		AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);

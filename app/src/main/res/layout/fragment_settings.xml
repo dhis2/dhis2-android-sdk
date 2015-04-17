@@ -64,6 +64,18 @@
                 android:layout_below="@+id/update_frequency_label" />
 
             <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
+                android:id="@+id/settings_sync_button"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/button_blue_selector"
+                android:singleLine="true"
+                android:text="@string/synchronize_with_server"
+                android:textColor="@color/white"
+                android:layout_below="@+id/settings_update_frequency_spinner"
+                android:layout_marginTop="40dp"
+                app:font="@string/medium_font_name" />
+
+            <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
                 android:id="@+id/settings_logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

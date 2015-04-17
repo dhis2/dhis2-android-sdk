@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.activities.SplashActivity;
@@ -55,6 +57,7 @@ public class SettingsFragment extends Fragment
 
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
+    private Button synchronizeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,9 @@ public class SettingsFragment extends Fragment
 
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
         logoutButton.setOnClickListener(this);
+
+        synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
+        synchronizeButton.setOnClickListener(new OnUpdateButtonClickListener());
     }
 
     @Override
@@ -95,5 +101,15 @@ public class SettingsFragment extends Fragment
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // stub implementation
+    }
+
+    public class OnUpdateButtonClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Context context = getActivity();
+            if(context == null) return;
+            Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
+            Dhis2.synchronize(context);
+        }
     }
 }

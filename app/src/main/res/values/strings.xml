@@ -99,7 +99,7 @@
     <string name="custom_url">Custom URL</string>
     <string name="login">Log in</string>
     <string name="loging_in">Logging In</string>
-    <string name="syncing">Syncing</string>
+    <string name="syncing">Synchronizing</string>
     <string name="syncing_failed">Sync failed. Going Offline Mode.</string>
     <string name="offline_mode">No internet connection. Going offline mode.</string>
     <string name="please_wait">Please wait</string>
@@ -256,7 +256,7 @@
     <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
     <string name="logout">Log out</string>
-    <string name="update_frequency">Synchronization frequency</string>
+    <string name="update_frequency">Automatic synchronization frequency</string>
     <string name="loading_server_info">Loading server info</string>
     <string name="loading_assigned_programs">Loading assigned programs</string>
     <string name="loading_program">Loading program</string>
@@ -276,8 +276,10 @@
         <item>15 Minutes</item>
         <item>1 Hour</item>
         <item>1 Day</item>
-        <item>Disable</item>
+        <item>Disabled</item>
     </string-array>
+
+    <string name="synchronize_with_server">Synchronize with server</string>
 
     <string name="remote">Remote</string>
 </resources>

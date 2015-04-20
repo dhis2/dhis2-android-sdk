@@ -426,7 +426,7 @@ public class ProgramIndicatorService
                         if(value.dataElement.equals(dataElement.id)) dataValue = value;
                     }
 
-                    if ( dataValue == null ) {
+                    if ( dataValue == null || dataValue.value == null ) {
                         continue;
                     }
 

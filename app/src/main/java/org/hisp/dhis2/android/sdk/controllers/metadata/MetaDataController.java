@@ -43,6 +43,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.Constant;
 import org.hisp.dhis2.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.Option;
+import org.hisp.dhis2.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
@@ -80,6 +82,10 @@ public class MetaDataController {
     public MetaDataController() {
         Dhis2Application.bus.register(this);
         metaDataLoader = new MetaDataLoader();
+    }
+
+    public static List<Option> getOptions(String optionSetId) {
+        return new Select().from(Option.class).where(Condition.column(Option$Table.OPTIONSET).is(optionSetId)).queryList();
     }
 
     public static List<ProgramStageSection> getProgramStageSections(String programStageId) {

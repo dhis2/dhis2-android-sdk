@@ -35,6 +35,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+
 import java.util.List;
 
 /**
@@ -52,10 +54,7 @@ public class OptionSet extends BaseIdentifiableObject {
 
     public List<Option> getOptions() {
         if(options == null) {
-            options = Select.all(
-                    Option.class,
-                    Condition.column(Option$Table.OPTIONSET).is(id)
-            );
+            options = MetaDataController.getOptions(id);
         }
         return options;
     }

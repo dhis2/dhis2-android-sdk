@@ -148,7 +148,7 @@ public class ProgramStage extends BaseIdentifiableObject {
 
     public List<ProgramStageSection> getProgramStageSections() {
         if(programStageSections == null)
-            programStageSections = Select.all(ProgramStageSection.class, Condition.column(ProgramStageSection$Table.PROGRAMSTAGE).is(id));
+            programStageSections = MetaDataController.getProgramStageSections(id);
         return programStageSections;
     }
 

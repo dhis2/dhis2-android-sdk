@@ -55,6 +55,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
@@ -78,6 +80,12 @@ public class MetaDataController {
     public MetaDataController() {
         Dhis2Application.bus.register(this);
         metaDataLoader = new MetaDataLoader();
+    }
+
+    public static List<ProgramStageSection> getProgramStageSections(String programStageId) {
+        return new Select().from(ProgramStageSection.class).where(Condition.column
+                (ProgramStageSection$Table.PROGRAMSTAGE).is(programStageId)).
+                orderBy(true, ProgramStageSection$Table.SORTORDER).queryList();
     }
 
     /**

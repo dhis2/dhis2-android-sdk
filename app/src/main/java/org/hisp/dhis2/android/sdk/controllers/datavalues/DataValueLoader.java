@@ -591,6 +591,7 @@ public class DataValueLoader {
                     if(synchronizing) {
                         //todo: implement different handling if synchronizing than if doing 1st load
                     }
+                    enrollment.orgUnit = currentOrganisationUnit;
                     TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
                     if(tei!=null) enrollment.localTrackedEntityInstanceId = tei.localId;
                     enrollment.save(false);
@@ -607,18 +608,9 @@ public class DataValueLoader {
                     //check if there is an enrollment for this event stored on the device
                     //and store the localId of the enrollment
                     //(there will not be enrollment if its a single event without registration)
-                    //Log.d(CLASS_TAG, "loadEvents1");
                     Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
-                    //Log.d(CLASS_TAG, "loadEvents2");
                     if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
-                    //if(event.dataValues != null) {
-                    //    for(DataValue dataValue: event.dataValues) {
-                    //        dataValue.event = event.event;
-                    //        //dataValue.save(true);
-                    //    }
-                    //}
                     event.save(true);
-                    //Log.d(CLASS_TAG, "loadEvents3");
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

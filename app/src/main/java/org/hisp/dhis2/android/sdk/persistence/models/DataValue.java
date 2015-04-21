@@ -118,11 +118,6 @@ public class DataValue extends BaseValue {
     public void save(boolean async) {
         if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {
 
-            //DataValue ex = DataValueController.getDataValue(localEventId, dataElement);
-            //if(ex == null)
-            //    Log.d(CLASS_TAG, "existing is null " );
-            //else Log.d(CLASS_TAG, "existing not null! " + ex.localEventId + ": " + ex.event);
-
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created
             updateManually(async);
@@ -139,9 +134,7 @@ public class DataValue extends BaseValue {
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
         {
-            Log.d(CLASS_TAG, "this is fine");
-            Cursor c = q.query();
-            c.close();
+            q.queryClose();
         }
     }
 

@@ -261,25 +261,15 @@ public class DataValueSender {
 
     private void onResponse(ResponseEvent responseEvent) {
         if( responseEvent.eventType == BaseEvent.EventType.sendTrackedEntityInstance) {
-            Log.d(CLASS_TAG, "SENT tei onResponse!!!");
             if(responseEvent.getResponseHolder().getApiException() != null) {
 
-                Log.d(CLASS_TAG, "SENT tei apiException.." + new String(responseEvent.getResponseHolder().getApiException().getResponse().getBody()));
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
                 handleError(apiException, FailedItem.TRACKEDENTITYINSTANCE, localTrackedEntityInstances.get(sendCounter-1).localId);
             } else {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                 if (importSummary.status.equals(ImportSummary.SUCCESS)) {
-                    Log.d(CLASS_TAG, "SENT tei SUCCESS!!!");
                     TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
-                    Log.d(CLASS_TAG, "SENT TEI: LOCALID: " + trackedEntityInstance.localId);
                     List<Enrollment> enrollments = DataValueController.getEnrollments(trackedEntityInstance);
-                    Log.d(CLASS_TAG, "got enrollments for this tei: " + enrollments.size());
-                    //List<TrackedEntityAttributeValue> trackedEntityAttributeValues = DataValueController.getTrackedEntityAttributeValues(trackedEntityInstance.trackedEntityInstance);
-                    //for(TrackedEntityAttributeValue trackedEntityAttributeValue: trackedEntityAttributeValues) {
-                    //    trackedEntityAttributeValue.trackedEntityInstanceId = importSummary.reference;
-                    //    trackedEntityAttributeValue.update(true);
-                    //}
                     Queriable q = new Update().table(TrackedEntityAttributeValue.class).set(Condition.column
                             (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is
                             (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId));
@@ -287,8 +277,6 @@ public class DataValueSender {
                     //todo: replace the following for loops with a query like this ^ to update tei ref
                     for(Enrollment enrollment: enrollments) {
                         for(Event event: enrollment.getEvents(true)) {
-                            //event.trackedEntityInstance = importSummary.reference;
-                            //event.update(true);
                             Queriable q1 = new Update().table(Event.class).set(Condition.column
                                     (Event$Table.TRACKEDENTITYINSTANCE).is
                                     (importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId));
@@ -305,9 +293,6 @@ public class DataValueSender {
                             (importSummary.reference), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
                             where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstance.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q3);
-                    //trackedEntityInstance.fromServer = true;
-                    //trackedEntityInstance.trackedEntityInstance = importSummary.reference;
-                    //trackedEntityInstance.update(true);
                     localTrackedEntityInstances.remove(sendCounter - 1);
                 } else if (importSummary.status.equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
@@ -328,40 +313,27 @@ public class DataValueSender {
 
         }
         else if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
-            Log.d(CLASS_TAG, "SENT ENROLLMENT onResponse!!!");
             if(responseEvent.getResponseHolder().getApiException() != null) {
 
-                Log.d(CLASS_TAG, "SENT ENROLLMENT apiException.." + new String(responseEvent.getResponseHolder().getApiException().getResponse().getBody()));
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
                 handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
             } else {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                 if (importSummary.status.equals(ImportSummary.SUCCESS)) {
-                    Log.d(CLASS_TAG, "SENT ENROLLMENT SUCCESS!!!");
                     Enrollment enrollment = localEnrollments.get(sendCounter - 1);
-                    //List<Event> events = enrollment.getEvents(true);
                     //updating any local events that had reference to local enrollment to new
                     //reference from server.
                     Queriable q = new Update().table(Event.class).set(Condition.column
                             (Event$Table.ENROLLMENT).is
                             (importSummary.reference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollment.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
-                    //for (Event event : events) {
-                    //    event.enrollment = importSummary.reference;
-                    //    event.update(true);
-                    //
-                    //    // need to only update the single field ..!;
-                    //    //new Update().table(Event.class).set(Condition.column(Event$Table.ENROLLMENT).is(importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).query();
-                    //}
+
                     Queriable q1 = new Update().table(Enrollment.class).set(Condition.column
                             (Enrollment$Table.ENROLLMENT).is
                             (importSummary.reference), Condition.column(Enrollment$Table.FROMSERVER)
                             .is(true)).where(Condition.column(Enrollment$Table.LOCALID).is
                             (enrollment.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
-                    //enrollment.enrollment = importSummary.reference;
-                    //enrollment.fromServer = true;
-                    //enrollment.update(true);
                     localEnrollments.remove(sendCounter - 1);
                 } else if (importSummary.status.equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
@@ -396,18 +368,12 @@ public class DataValueSender {
                             (DataValue$Table.EVENT).is
                             (importSummary.reference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(event.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
-                    //for(DataValue dataValue: dataValues) {
-                    //    dataValue.localEventId = event.localId;
-                    //    dataValue.event = event.event;
-                    //    dataValue.update(true);
-                    //}
+
                     Queriable q1 = new Update().table(Event.class).set(Condition.column
                             (Event$Table.EVENT).is
                             (importSummary.reference), Condition.column(Event$Table.FROMSERVER).
                             is(true)).where(Condition.column(Event$Table.LOCALID).is(event.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
-                    //event.fromServer = true;
-                    //event.update(true);
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");

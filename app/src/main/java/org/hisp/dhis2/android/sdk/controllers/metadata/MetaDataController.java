@@ -117,26 +117,6 @@ public class MetaDataController {
     }
 
     /**
-     * returns a tracked Entity object for the given ID
-     * @param trackedEntity
-     * @return
-     */
-    public static TrackedEntity getTrackedEntity(String trackedEntity) {
-        return new Select().from(TrackedEntity.class).where(Condition.column
-                (TrackedEntity$Table.ID).is(trackedEntity)).querySingle();
-    }
-
-    /**
-     * Returns a list of ProgramTrackedEntityAttributes for the given program.
-     * @param program
-     * @return
-     */
-    public static List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes(String program) {
-        return Select.all(ProgramTrackedEntityAttribute.class,
-                Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(program));
-    }
-
-    /**
      * Returns a list of programs assigned to the given organisation unit id
      * @param organisationUnitId
      * @param kinds set to null to get all programs. Else get kinds Strings from Program.

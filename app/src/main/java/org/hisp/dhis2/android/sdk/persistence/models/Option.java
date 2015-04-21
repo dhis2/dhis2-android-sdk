@@ -62,4 +62,8 @@ public class Option extends BaseIdentifiableObject {
     public void setOptionSet(String optionSet) {
         this.optionSet = optionSet;
     }
+
+    public int getSortIndex() {
+        return sortIndex;
+    }
 }

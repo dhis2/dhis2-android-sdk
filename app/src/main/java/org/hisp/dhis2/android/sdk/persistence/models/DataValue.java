@@ -156,7 +156,6 @@ public class DataValue extends BaseValue {
         this.storedBy = storedBy;
     }
 
-
     @Override
     public void save(boolean async) {
         if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {

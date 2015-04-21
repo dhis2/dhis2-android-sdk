@@ -29,6 +29,7 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -38,6 +39,10 @@ import com.raizlabs.android.dbflow.annotation.Table;
  */
 @Table
 public class Option extends BaseIdentifiableObject {
+
+    @JsonIgnore
+    @Column
+    public int sortIndex;
 
     @Column
     public String optionSet;

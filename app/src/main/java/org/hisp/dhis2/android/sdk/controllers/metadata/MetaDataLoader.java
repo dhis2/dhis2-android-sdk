@@ -887,9 +887,12 @@ public class MetaDataLoader {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(OptionSet os: optionSets ) {
+                    int index = 0;
                     for( Option o: os.options ) {
+                        o.sortIndex = index;
                         o.setOptionSet( os.getId() ); //save options async since there usually is a lot and they won't be displayed on the first screen.
                         o.save(true);
+                        index ++;
                     }
                     os.save(true);
                 }

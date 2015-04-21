@@ -137,9 +137,12 @@ public class UpdateOptionSetsTask implements INetworkTask {
                     }
                 }
                 oldOptionSet = null;
+                int index = 0;
                 for( Option o: optionSet.options ) {
+                    o.sortIndex = index;
                     o.setOptionSet( optionSet.getId() );
                     o.save(true);
+                    index ++;
                 }
                 optionSet.save(true);
             }

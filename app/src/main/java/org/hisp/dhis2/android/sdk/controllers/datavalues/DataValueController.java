@@ -73,6 +73,12 @@ public class DataValueController {
         dataValueSender = new DataValueSender();
     }
 
+    public static List<Enrollment> getEnrollments(String program, String organisationUnit) {
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.PROGRAM).
+                is(program)).and(Condition.column(Enrollment$Table.ORGUNIT).is(organisationUnit)).
+                queryList();
+    }
+
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return Select.all(Enrollment.class, Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
                 is(trackedEntityInstance.localId));
@@ -276,8 +282,6 @@ public class DataValueController {
      * @param update
      */
     public void loadDataValues(Context context, boolean update) {
-        //if(dataValueSender.sending || dataValueLoader.loading || Dhis2.getInstance().getMetaDataController().isLoading() ||
-        //        Dhis2.getInstance().getMetaDataController().isSynchronizing()) return; //todo: implement a global checker to see if loading is occurring.
         dataValueLoader.loadDataValues(context, update);
     }
 

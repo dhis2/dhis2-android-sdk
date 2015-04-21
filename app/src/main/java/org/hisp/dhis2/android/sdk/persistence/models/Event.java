@@ -243,7 +243,7 @@ public class Event extends BaseSerializableModel {
         if(async)
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
-            q.query().close();
+            q.queryClose();
     }
 
     @Override

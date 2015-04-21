@@ -1036,6 +1036,7 @@ public class MetaDataLoader {
         flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, null);
         List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
         for(String program: assignedPrograms) {
+            Log.d(CLASS_TAG, "clearing program: " + program);
             flagMetaDataItemLoaded(program, false);
             flagMetaDataItemUpdated(program, null);
         }

@@ -367,6 +367,7 @@ public final class Dhis2 {
         getInstance().getMetaDataController().resetLastUpdated(context);
         getInstance().getMetaDataController().clearMetaDataLoadedFlags(context);
         getInstance().getDataValueController().clearDataValueLoadedFlags(context);
+        getInstance().getMetaDataController().wipeMetaData();
         clearLoadFlags(context);
     }
 

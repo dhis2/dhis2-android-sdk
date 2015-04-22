@@ -413,6 +413,13 @@ public final class Dhis2 {
         }
     }
 
+    public boolean isLoading() {
+        if(Dhis2.getInstance().getMetaDataController().isLoading()) return true;
+        if(Dhis2.getInstance().getDataValueController().isLoading()) return true;
+        if(Dhis2.getInstance().getDataValueController().isSending()) return true;
+        return false;
+    }
+
     /**
      * Initiates synchronization with server. Updates MetaData, sends locally saved data, loads
      * new data values from server.
@@ -427,8 +434,7 @@ public final class Dhis2 {
      * @param context
      */
     public static void synchronizeMetaData(Context context) {
-        if(getInstance().loading) return;
-        getInstance().loading = true;
+        if(getInstance().isLoading()) return;
         Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
     }
 

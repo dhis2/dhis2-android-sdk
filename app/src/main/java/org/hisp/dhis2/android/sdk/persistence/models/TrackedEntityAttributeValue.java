@@ -38,22 +38,18 @@ public class TrackedEntityAttributeValue extends BaseValue {
     public long localTrackedEntityInstanceId;
 
     /**
-     * workaround for sending code if attribute is option set. Currently best approach because
-     * loading from server doesn't even provide the code, only name.
+     * workaround for sending code if attribute is option set.
      * @return
      */
     @JsonProperty("value")
     public String getValue() {
-        Log.d(CLASS_TAG, "getValue!!!!!");
         TrackedEntityAttribute tea = MetaDataController.
                 getTrackedEntityAttribute(trackedEntityAttributeId);
         if(tea.valueType.equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
-            Log.d(CLASS_TAG, "its an option set!" + tea.id);
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
             for(Option o: optionSet.getOptions()) {
                 if(o.name.equals(value)) {
-                    Log.d(CLASS_TAG, "returning value: " + value);
-                    return value;
+                    return o.code;
                 }
             }
         } else return value;

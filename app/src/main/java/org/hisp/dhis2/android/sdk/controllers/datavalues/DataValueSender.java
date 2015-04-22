@@ -51,6 +51,7 @@ import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
@@ -269,25 +270,23 @@ public class DataValueSender {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                 if (importSummary.status.equals(ImportSummary.SUCCESS)) {
                     TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
-                    List<Enrollment> enrollments = DataValueController.getEnrollments(trackedEntityInstance);
+                    //List<Enrollment> enrollments = DataValueController.getEnrollments(trackedEntityInstance);
                     Queriable q = new Update().table(TrackedEntityAttributeValue.class).set(Condition.column
                             (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is
                             (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
                     //todo: replace the following for loops with a query like this ^ to update tei ref
-                    for(Enrollment enrollment: enrollments) {
-                        for(Event event: enrollment.getEvents(true)) {
-                            Queriable q1 = new Update().table(Event.class).set(Condition.column
-                                    (Event$Table.TRACKEDENTITYINSTANCE).is
-                                    (importSummary.reference)).where(Condition.column(Event$Table.LOCALID).is(event.localId));
-                            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
-                        }
-                        //updating only the reference and adding to transactionmanager
-                        Queriable q2 = new Update().table(Enrollment.class).set(Condition.column
-                                (Enrollment$Table.TRACKEDENTITYINSTANCE).is
-                                (importSummary.reference)).where(Condition.column(Enrollment$Table.LOCALID).is(enrollment.localId));
-                        TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q2);
-                    }
+                    Queriable q1 = new Update().table(Event.class).set(Condition.column(Event$Table.
+                            TRACKEDENTITYINSTANCE).is(importSummary.reference)).where(Condition.
+                            column(Event$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance.
+                            trackedEntityInstance));
+                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
+
+                    Queriable q2 = new Update().table(Enrollment.class).set(Condition.column
+                            (Enrollment$Table.TRACKEDENTITYINSTANCE).is(importSummary.reference)).
+                            where(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).is
+                                    (trackedEntityInstance.trackedEntityInstance));
+                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q2);
                     Queriable q3 = new Update().table(TrackedEntityInstance.class).set(Condition.column
                             (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
                             (importSummary.reference), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
@@ -309,7 +308,16 @@ public class DataValueSender {
             if(sendCounter > 0)
                 sendTrackedEntityInstance(localTrackedEntityInstances.get(sendCounter-1));
             else
+            {
+                //temporary fix for waiting for TransactionManager to finish and update references
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendEnrollments();
+            }
+
 
         }
         else if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
@@ -350,7 +358,15 @@ public class DataValueSender {
             if(sendCounter > 0)
                 sendEnrollment(localEnrollments.get(sendCounter-1));
             else
+            {
+                //temporary fix for waiting for TransactionManager to finish and update references
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 sendEvents();
+            }
 
         }
         else if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {

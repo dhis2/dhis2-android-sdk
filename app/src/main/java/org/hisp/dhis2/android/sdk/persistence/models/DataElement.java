@@ -77,6 +77,10 @@ public class DataElement extends BaseNameableObject {
     @Column
     public String displayName;
 
+    @JsonProperty("displayFormName")
+    @Column
+    public String displayFormName;
+
     @Column
     public String optionSet;
 

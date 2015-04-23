@@ -288,4 +288,8 @@
 
     <string name="startdate">Start date</string>
     <string name="enddate">End date</string>
+    <string name="duedate">Due date</string>
+    <string name="eventname">Event name</string>
+    <string name="choose_organisation_unit">Choose organisation unit</string>
+    <string name="choose_program">Choose program</string>
 </resources>

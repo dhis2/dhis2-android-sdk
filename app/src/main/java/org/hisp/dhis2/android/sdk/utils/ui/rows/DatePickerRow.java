@@ -162,6 +162,9 @@ public class DatePickerRow implements Row {
         DateSetListener(BaseValue dataValue, EditText editText) {
             this.dataValue = dataValue;
             this.editText = editText;
+            if(dataValue != null && dataValue.value != null) {
+                this.editText.setText(dataValue.value);
+            }
         }
         
         void setDataValue(BaseValue dataValue) {

@@ -109,6 +109,25 @@ public class DataValueController {
     }
 
     /**
+     * Returns a list of Events that have dueDate between the given dates, and corresponds to
+     * program and orgunit
+     * @param programId
+     * @param orgUnitId
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static List<Event> getScheduledEvents(String programId, String orgUnitId,
+                                                 String startDate, String endDate) {
+        Log.d(CLASS_TAG, "scheduled events!" + programId + ": " + orgUnitId + ": " + startDate + ": " + endDate);
+        //return Select.all(Event.class);
+        return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID).is
+                (programId)).and(Condition.column(Event$Table.ORGANISATIONUNITID).is
+                (orgUnitId)).and(Condition.column(Event$Table.DUEDATE).between(startDate).and
+                (endDate)).orderBy(Event$Table.DUEDATE).queryList();
+    }
+
+    /**
      * Returns a list of events for the given server-assigned UID. Note that if possible,
      * getEventsByEnrollment(long) should always be used if possible, as the UID may change if the
      * enrollment is created locally on the device, and then synced with the server.

@@ -34,4 +34,8 @@
     <dimen name="drawer_size">250dp</dimen>
 
     <dimen name="card_text_view_margin">8dp</dimen>
+
+    <dimen name="floating_action_button_size">56dp</dimen>
+    <dimen name="floating_action_button_size_mini">40dp</dimen>
+    <dimen name="floating_action_button_shadow_size">12dp</dimen>
 </resources>

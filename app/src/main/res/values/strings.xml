@@ -282,4 +282,10 @@
     <string name="synchronize_with_server">Synchronize with server</string>
 
     <string name="remote">Remote</string>
+
+    <string name="register_event">Register Event</string>
+    <string name="upcoming_events">Upcoming Events</string>
+
+    <string name="startdate">Start date</string>
+    <string name="enddate">End date</string>
 </resources>

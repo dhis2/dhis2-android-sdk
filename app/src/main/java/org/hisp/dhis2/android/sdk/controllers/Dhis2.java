@@ -525,6 +525,18 @@ public final class Dhis2 {
         });
     }
 
+    public static void showErrorDialog(final Activity activity, final String title,
+                                       final String message, final int iconId) {
+        if(activity == null) return;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new CustomDialogFragment( title, message,
+                        "OK", iconId, null ).show(activity.getFragmentManager(), title);
+            }
+        });
+    }
+
     public static void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
         if(activity == null) return;
         activity.runOnUiThread(new Runnable() {

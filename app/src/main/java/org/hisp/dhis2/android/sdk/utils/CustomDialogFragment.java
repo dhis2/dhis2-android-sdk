@@ -46,11 +46,22 @@ public class CustomDialogFragment
     String negativeButton;
     OnClickListener positiveButtonListener;
     OnClickListener negativeButtonListener;
+    int iconId = -1;
     
     public CustomDialogFragment(String title, String message, String positiveButton, OnClickListener positiveButtonListener) {
     	this.title = title;
         this.message = message;
         this.positiveButton = positiveButton;
+        this.positiveButtonListener = positiveButtonListener;
+        this.negativeButton = null;
+    }
+
+    public CustomDialogFragment(String title, String message, String positiveButton, int iconId,
+                                OnClickListener positiveButtonListener) {
+        this.title = title;
+        this.message = message;
+        this.positiveButton = positiveButton;
+        this.iconId = iconId;
         this.positiveButtonListener = positiveButtonListener;
         this.negativeButton = null;
     }
@@ -83,11 +94,27 @@ public class CustomDialogFragment
         this.positiveButtonListener = positiveButtonListener;
         this.negativeButtonListener = negativeButtonListener;
     }
+
+    public CustomDialogFragment(String title, String message, String positiveButton, String negativeButton, int iconId,
+                                OnClickListener positiveButtonListener,
+                                OnClickListener negativeButtonListener)
+    {
+        this.title = title;
+        this.message = message;
+        this.positiveButton = positiveButton;
+        this.negativeButton = negativeButton;
+        this.positiveButtonListener = positiveButtonListener;
+        this.negativeButtonListener = negativeButtonListener;
+        this.iconId = iconId;
+    }
     
     @Override
     public Dialog onCreateDialog( Bundle savedInstanceState )
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( getActivity() );
+        if (iconId > 0) {
+            alertDialogBuilder.setIcon(iconId);
+        }
         alertDialogBuilder.setTitle( title );
         alertDialogBuilder.setMessage( message );
         // null should be your on click listener

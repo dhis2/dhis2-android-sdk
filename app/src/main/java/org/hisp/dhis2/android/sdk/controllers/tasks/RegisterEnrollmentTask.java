@@ -91,7 +91,14 @@ public class RegisterEnrollmentTask implements INetworkTask {
         Log.e(CLASS_TAG, new String(body));
 
         String url = networkManager.getServerUrl() + "/api/enrollments";
-        Request request = new Request(RestMethod.POST, url, headers, body);
+        RestMethod restMethod = RestMethod.POST;
+
+        //updating if the enrollment has a valid UID
+        if(enrollment.getEnrollment() != null) {
+            url += "/" + enrollment.getEnrollment();
+            restMethod = RestMethod.PUT;
+        }
+        Request request = new Request(restMethod, url, headers, body);
 
         requestBuilder = new ApiRequest.Builder<>();
         requestBuilder.setRequest(request);

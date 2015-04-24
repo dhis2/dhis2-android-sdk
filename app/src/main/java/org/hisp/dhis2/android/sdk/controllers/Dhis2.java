@@ -80,7 +80,6 @@ import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis2.android.sdk.utils.GpsManager;
 
-import java.io.File;
 import java.io.IOException;
 
 public final class Dhis2 {
@@ -493,7 +492,10 @@ public final class Dhis2 {
                 onFailedLoadingInitialMetaData();
             }
 
-            //here we need to implement check if database is updating still and block before its done...
+            /**
+             * Now we block and wait with sending the 'done' message while data is being saved to
+             * to avoid race conditions with trying to access data.
+             */
             FlowContentObserver observer = new FlowContentObserver();
             observer.registerForContentChanges(getInstance().context, Constant.class);
             observer.registerForContentChanges(getInstance().context, DataElement.class);
@@ -515,8 +517,6 @@ public final class Dhis2 {
             observer.registerForContentChanges(getInstance().context, TrackedEntityAttributeValue.class);
             observer.registerForContentChanges(getInstance().context, TrackedEntityInstance.class);
             observer.registerForContentChanges(getInstance().context, User.class);
-
-
 
             if(finished) {
                 String message;
@@ -646,6 +646,10 @@ public final class Dhis2 {
         return getInstance().loadingInitial;
     }
 
+    /**
+     * Thread for blocking and waiting for DBFlow's TransactionManager to finish saving in the
+     * background
+     */
     private static class BlockThread extends Thread {
         private final FlowContentObserver observer;
         public BlockThread(FlowContentObserver observer) {
@@ -673,6 +677,10 @@ public final class Dhis2 {
         }
     }
 
+    /**
+     * ModelChangeListener for blocking and waiting for DBFlow's TransactionManager to finish saving
+     * in the background
+     */
     private static class BlockingModelChangeListener implements FlowContentObserver.ModelChangeListener {
         private final BlockThread blockThread;
         public BlockingModelChangeListener(BlockThread blockThread) {

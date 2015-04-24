@@ -37,6 +37,7 @@ import android.location.Location;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
@@ -54,7 +55,25 @@ import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.models.Constant;
+import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis2.android.sdk.persistence.models.Event;
+import org.hisp.dhis2.android.sdk.persistence.models.Option;
+import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 import org.hisp.dhis2.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis2.android.sdk.utils.APIException;
@@ -92,7 +111,6 @@ public final class Dhis2 {
 
     private boolean loadingInitial = false;
     private boolean loading = false;
-
 
 
     public Dhis2() {
@@ -446,6 +464,7 @@ public final class Dhis2 {
      */
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
+        boolean finished = false;
         if( getInstance().loadingInitial ) {
             if(isMetaDataLoaded(getInstance().context) ) {
                 Log.d(CLASS_TAG, "has loaded init metadatapart");
@@ -456,14 +475,12 @@ public final class Dhis2 {
 
                 if ( isDataValuesLoaded(getInstance().context) ) {
                     Log.d(CLASS_TAG, "full loading success");
-                    MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-                    Dhis2Application.bus.post(messageEvent); //could be called wherever you want, for example in your MainActivity
+                    finished = true;
                 } else {
                     //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
                     //todo: implement onFailedLoadingInitialDataValues
                     Log.d(CLASS_TAG, "full loading failed loading data values. Continuing anyways..");
-                    MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-                    Dhis2Application.bus.post(messageEvent);
+                    finished = true;
                 }
             } else {
                 Log.d(CLASS_TAG, "failed loading!!!");
@@ -475,9 +492,45 @@ public final class Dhis2 {
                 onFailedLoadingInitialMetaData();
             }
 
+            /**
+             * Now we block and wait with sending the 'done' message while data is being saved to
+             * to avoid race conditions with trying to access data.
+             */
+            FlowContentObserver observer = new FlowContentObserver();
+            observer.registerForContentChanges(getInstance().context, Constant.class);
+            observer.registerForContentChanges(getInstance().context, DataElement.class);
+            observer.registerForContentChanges(getInstance().context, DataValue.class);
+            observer.registerForContentChanges(getInstance().context, Enrollment.class);
+            observer.registerForContentChanges(getInstance().context, Event.class);
+            observer.registerForContentChanges(getInstance().context, Option.class);
+            observer.registerForContentChanges(getInstance().context, OptionSet.class);
+            observer.registerForContentChanges(getInstance().context, OrganisationUnit.class);
+            observer.registerForContentChanges(getInstance().context, OrganisationUnitProgramRelationship.class);
+            observer.registerForContentChanges(getInstance().context, Program.class);
+            observer.registerForContentChanges(getInstance().context, ProgramIndicator.class);
+            observer.registerForContentChanges(getInstance().context, ProgramStage.class);
+            observer.registerForContentChanges(getInstance().context, ProgramStageDataElement.class);
+            observer.registerForContentChanges(getInstance().context, ProgramStageSection.class);
+            observer.registerForContentChanges(getInstance().context, ProgramTrackedEntityAttribute.class);
+            observer.registerForContentChanges(getInstance().context, TrackedEntity.class);
+            observer.registerForContentChanges(getInstance().context, TrackedEntityAttribute.class);
+            observer.registerForContentChanges(getInstance().context, TrackedEntityAttributeValue.class);
+            observer.registerForContentChanges(getInstance().context, TrackedEntityInstance.class);
+            observer.registerForContentChanges(getInstance().context, User.class);
+
+            if(finished) {
+                String message;
+                if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
+                else message = "Finishing Up";
+                postProgressMessage(message);
+                BlockThread blockThread = new BlockThread(observer);
+                BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
+                observer.addModelChangeListener(listener);
+                blockThread.start();
+            } else getInstance().loading = false;
+        } else {
+            getInstance().loading = false;
         }
-        getInstance().loadingInitial = false;
-        getInstance().loading = false;
     }
 
     /**
@@ -604,4 +657,70 @@ public final class Dhis2 {
     public static boolean isLoadingInitial() {
         return getInstance().loadingInitial;
     }
+
+    /**
+     * Thread for blocking and waiting for DBFlow's TransactionManager to finish saving in the
+     * background
+     */
+    private static class BlockThread extends Thread {
+        private final FlowContentObserver observer;
+        public BlockThread(FlowContentObserver observer) {
+            this.observer = observer;
+        }
+        boolean block = true;
+        public void run() {
+            while(block) {
+                Log.e(CLASS_TAG, "Blocking ..");
+                try {
+                    block = false;
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    block = true;
+                }
+            }
+            observer.unregisterForContentChanges(Dhis2.getInstance().context);
+            Log.e(CLASS_TAG, "done blocking ..");
+
+            getInstance().loadingInitial = false;
+            getInstance().loading = false;
+            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+            Dhis2Application.bus.post(messageEvent);
+        }
+    }
+
+    /**
+     * ModelChangeListener for blocking and waiting for DBFlow's TransactionManager to finish saving
+     * in the background
+     */
+    private static class BlockingModelChangeListener implements FlowContentObserver.ModelChangeListener {
+        private final BlockThread blockThread;
+        public BlockingModelChangeListener(BlockThread blockThread) {
+            this.blockThread = blockThread;
+        }
+
+        @Override
+        public void onModelChanged() {
+            blockThread.block = true;
+        }
+
+        @Override
+        public void onModelSaved() {
+            blockThread.block = true;
+        }
+
+        @Override
+        public void onModelDeleted() {
+        }
+
+        @Override
+        public void onModelInserted() {
+            blockThread.block = true;
+        }
+
+        @Override
+        public void onModelUpdated() {
+            blockThread.block = true;
+        }
+    };
 }

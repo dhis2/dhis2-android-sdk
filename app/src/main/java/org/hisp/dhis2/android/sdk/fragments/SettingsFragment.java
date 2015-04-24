@@ -88,8 +88,8 @@ public class SettingsFragment extends Fragment
     @Override
     public void onClick(View v) {
         Dhis2.logout(getActivity());
-        startActivity(new Intent(getActivity(),
-                SplashActivity.class));
+        //startActivity(new Intent(getActivity(),
+        //        SplashActivity.class));
         getActivity().finish();
     }
 

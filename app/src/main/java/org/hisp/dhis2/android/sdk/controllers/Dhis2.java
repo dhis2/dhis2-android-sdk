@@ -61,6 +61,7 @@ import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis2.android.sdk.utils.GpsManager;
 
+import java.io.File;
 import java.io.IOException;
 
 public final class Dhis2 {

@@ -27,43 +27,25 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.persistence.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Table;
+package org.hisp.dhis2.android.sdk.utils.support.math;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * JEP function which returns 1 if the argument is a zero or positive number, 0
+ * otherwise.
+ * 
+ * @author Lars Helge Overland
  */
-@Table
-public class Option extends BaseIdentifiableObject {
-
-    @JsonIgnore
-    @Column
-    public int sortIndex;
-
-    @Column
-    public String optionSet;
-
-    @JsonProperty("code")
-    @Column
-    public String code;
-
-    public String getCode() {
-        return code;
+public class OneIfZeroOrPositiveFunction
+    extends UnaryDoubleFunction
+{
+    public OneIfZeroOrPositiveFunction()
+    {
+        super();
     }
 
-    public String getOptionSet() {
-        return optionSet;
-    }
-
-    public void setOptionSet(String optionSet) {
-        this.optionSet = optionSet;
-    }
-
-    public int getSortIndex() {
-        return sortIndex;
+    @Override
+    public Double eval( double arg )
+    {
+        return ( arg >= 0 ) ? 1d : 0d;
     }
 }

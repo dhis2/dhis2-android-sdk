@@ -40,7 +40,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.validator.routines.DoubleValidator;
 import org.apache.commons.validator.routines.IntegerValidator;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis2.android.sdk.utils.expression.OneIfZeroOrPositiveFunction;
+import org.hisp.dhis2.android.sdk.utils.support.math.OneIfZeroOrPositiveFunction;
+import org.hisp.dhis2.android.sdk.utils.support.math.ZeroIfNegativeFunction;
 import org.nfunk.jep.JEP;
 
 /**
@@ -51,6 +52,7 @@ public class MathUtils
     public static final Double ZERO = new Double( 0 );
 
     public static final String ONEIFZEROORPOSITIVE_FUNCTION_NAME = "oizp";
+    public static final String ZEROIFNEGATIVE_FUNCTION_NAME = "zing";
 
     private static DoubleValidator DOUBLE_VALIDATOR = new DoubleValidator();
     private static IntegerValidator INT_VALIDATOR = new IntegerValidator();
@@ -150,6 +152,7 @@ public class MathUtils
         parser.addStandardFunctions();
         parser.addStandardConstants();
         parser.addFunction( ONEIFZEROORPOSITIVE_FUNCTION_NAME, new OneIfZeroOrPositiveFunction() );
+        parser.addFunction( ZEROIFNEGATIVE_FUNCTION_NAME, new ZeroIfNegativeFunction() );
         return parser;
     }
 

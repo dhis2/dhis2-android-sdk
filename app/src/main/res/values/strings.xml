@@ -265,6 +265,7 @@
     <string name="loading_tracked_entity_instances">Loading tracked entity instances</string>
     <string name="loading_constants">Loading constants</string>
     <string name="updating_constants">Updating constants</string>
+    <string name="finishing_up">Finishing up..</string>
 
     <string name="find_option">Find Option</string>
     <string name="enter_date">Enter Date</string>

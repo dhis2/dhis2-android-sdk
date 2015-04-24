@@ -68,6 +68,7 @@ import java.util.regex.Matcher;
 public class ProgramIndicatorService
 {
     public static final String CLASS_TAG = "ProgramIndicatorService";
+    public static final String ZERO = "0";
 
     /**
      * Calculate an program indicator value based on program instance and an
@@ -427,11 +428,10 @@ public class ProgramIndicatorService
                         if(value.dataElement.equals(dataElement.id)) dataValue = value;
                     }
 
-                    if ( dataValue == null || dataValue.value == null ) {
-                        continue;
-                    }
-
-                    String value = dataValue.value;
+                    String value;
+                    if ( dataValue == null || dataValue.value == null || dataValue.value.isEmpty()) {
+                        value = ZERO;
+                    } else value = dataValue.value;
 
                     if ( dataElement.getType().equals( DataElement.VALUE_TYPE_DATE ) ) {
                         value = DateUtils.daysBetween( new Date(), DateUtils.getDefaultDate( value ) ) + " ";
@@ -451,16 +451,17 @@ public class ProgramIndicatorService
                     if (attribute != null) {
                         TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
                                 attribute.id, programInstance.trackedEntityInstance);
-
+                        String value;
                         if (attributeValue != null) {
-                            String value = attributeValue.value;
-                            if (attribute.valueType.equals(TrackedEntityAttribute.TYPE_DATE)) {
-                                value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
-                            }
-                            matcher.appendReplacement(description, value);
+                            value = attributeValue.value;
                         } else {
-                            continue;
+                            value = ZERO;
                         }
+
+                        if (attribute.valueType.equals(TrackedEntityAttribute.TYPE_DATE)) {
+                            value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
+                        }
+                        matcher.appendReplacement(description, value);
                     } else {
                         continue;
                     }

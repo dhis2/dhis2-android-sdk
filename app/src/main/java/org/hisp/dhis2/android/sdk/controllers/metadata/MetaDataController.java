@@ -33,6 +33,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.squareup.otto.Subscribe;
 
@@ -57,6 +58,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
@@ -66,6 +68,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 
 import java.util.ArrayList;
@@ -308,6 +311,26 @@ public class MetaDataController {
 
     public void clearMetaDataLoadedFlags(Context context) {
         metaDataLoader.clearMetaDataLoadedFlags(context);
+    }
+
+    public void wipeMetaData() {
+        Delete.tables(Constant.class,
+                DataElement.class,
+                Option.class,
+                OptionSet.class,
+                OrganisationUnit.class,
+                OrganisationUnitProgramRelationship.class,
+                Program.class,
+                ProgramIndicator.class,
+                ProgramStage.class,
+                ProgramStageDataElement.class,
+                ProgramStageSection.class,
+                ProgramTrackedEntityAttribute.class,
+                SystemInfo.class,
+                TrackedEntity.class,
+                TrackedEntityAttribute.class,
+                TrackedEntityInstance.class,
+                User.class);
     }
 
     @Subscribe

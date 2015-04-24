@@ -27,43 +27,47 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.persistence.models;
+package org.hisp.dhis2.android.sdk.utils.support.math;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Table;
+import java.util.Stack;
+
+import org.nfunk.jep.ParseException;
+import org.nfunk.jep.function.PostfixMathCommand;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * Abstract JEP function for a single, numerical argument.
+ * 
+ * @author Lars Helge Overland
  */
-@Table
-public class Option extends BaseIdentifiableObject {
+public abstract class UnaryDoubleFunction
+    extends PostfixMathCommand
+{
+    public UnaryDoubleFunction()
+    {
+        super();
 
-    @JsonIgnore
-    @Column
-    public int sortIndex;
-
-    @Column
-    public String optionSet;
-
-    @JsonProperty("code")
-    @Column
-    public String code;
-
-    public String getCode() {
-        return code;
+        numberOfParameters = 1;
     }
-
-    public String getOptionSet() {
-        return optionSet;
+    
+    @Override
+    @SuppressWarnings( { "rawtypes", "unchecked" } )
+    public void run( Stack inStack ) throws ParseException 
+    {
+        checkStack( inStack );
+        
+        Object param = inStack.pop();
+        
+        if ( param == null || !( param instanceof Double ) )
+        {
+            throw new ParseException( "Invalid parameter type, must be double: " + param );
+        }
+        
+        double arg = ( (Double) param ).doubleValue();
+        
+        Double result = eval( arg );
+        
+        inStack.push( result );
     }
-
-    public void setOptionSet(String optionSet) {
-        this.optionSet = optionSet;
-    }
-
-    public int getSortIndex() {
-        return sortIndex;
-    }
+    
+    public abstract Double eval( double arg );
 }

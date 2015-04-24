@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.utils;
+package org.hisp.dhis2.android.sdk.utils.support;
 
 import static org.hisp.dhis2.android.sdk.utils.i18n.LocaleManager.DHIS_STANDARD_LOCALE;
 
@@ -40,6 +40,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.validator.routines.DoubleValidator;
 import org.apache.commons.validator.routines.IntegerValidator;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.utils.Operator;
 import org.hisp.dhis2.android.sdk.utils.support.math.OneIfZeroOrPositiveFunction;
 import org.hisp.dhis2.android.sdk.utils.support.math.ZeroIfNegativeFunction;
 import org.nfunk.jep.JEP;

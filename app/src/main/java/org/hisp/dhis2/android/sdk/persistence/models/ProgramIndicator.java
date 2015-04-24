@@ -50,6 +50,7 @@ public class ProgramIndicator extends BaseNameableObject {
     public static final String INCIDENT_DATE = "incident_date";
     public static final String ENROLLMENT_DATE = "enrollment_date";
     public static final String CURRENT_DATE = "current_date";
+    public static final String VALUE_COUNT = "value_count";
     public static final String VALUE_TYPE_DATE = "date";
     public static final String VALUE_TYPE_INT = "int";
 
@@ -61,6 +62,7 @@ public class ProgramIndicator extends BaseNameableObject {
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile( EXPRESSION_REGEXP );
     public static final Pattern DATAELEMENT_PATTERN = Pattern.compile( KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}" );
     public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile( KEY_ATTRIBUTE + "\\{(\\w{11})\\}" );
+    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile( "V\\{value_count\\}" );
 
     public static final String VALID = "valid";
 

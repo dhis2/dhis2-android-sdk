@@ -29,10 +29,6 @@
 
 package org.hisp.dhis2.android.sdk.utils.services;
 
-import android.util.Log;
-
-import com.raizlabs.android.dbflow.sql.language.Select;
-
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.models.Constant;
@@ -46,7 +42,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis2.android.sdk.utils.DateUtils;
-import org.hisp.dhis2.android.sdk.utils.MathUtils;
+import org.hisp.dhis2.android.sdk.utils.support.MathUtils;
+import org.hisp.dhis2.android.sdk.utils.support.TextUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -235,6 +232,10 @@ public class ProgramIndicatorService
                 {
                     matcher.appendReplacement( description, "Incident date" );
                 }
+                else if ( uid.equals( ProgramIndicator.VALUE_COUNT ) )
+                {
+                    matcher.appendReplacement( description, "Value count" );
+                }
             }
         }
 
@@ -395,9 +396,13 @@ public class ProgramIndicatorService
      */
     private static Double getValue( Enrollment programInstance, Event event, ProgramIndicator indicator )
     {
-        StringBuffer description = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
 
-        Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher( indicator.expression );
+        String expression = indicator.expression;
+
+        Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher( expression );
+
+        int valueCount = 0;
 
         while ( matcher.find() )
         {
@@ -436,8 +441,8 @@ public class ProgramIndicatorService
                         value = DateUtils.daysBetween( new Date(), DateUtils.getDefaultDate( value ) ) + " ";
                     }
 
-                    matcher.appendReplacement( description, value );
-
+                    matcher.appendReplacement( buffer, value );
+                    valueCount++;
                 }
                 else {
                     continue;
@@ -451,16 +456,17 @@ public class ProgramIndicatorService
                         TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
                                 attribute.id, programInstance.trackedEntityInstance);
                         String value;
-                        if (attributeValue != null) {
-                            value = attributeValue.value;
-                        } else {
+                        if (attributeValue == null || attributeValue.value == null || attributeValue.value.isEmpty()) {
                             value = ZERO;
+                        } else {
+                            value = attributeValue.value;
                         }
 
                         if (attribute.valueType.equals(TrackedEntityAttribute.TYPE_DATE)) {
                             value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                         }
-                        matcher.appendReplacement(description, value);
+                        matcher.appendReplacement(buffer, value);
+                        valueCount++;
                     } else {
                         continue;
                     }
@@ -473,7 +479,7 @@ public class ProgramIndicatorService
 
                 if ( constant != null )
                 {
-                    matcher.appendReplacement( description, String.valueOf( constant.value ) );
+                    matcher.appendReplacement( buffer, String.valueOf( constant.value ) );
                 }
                 else
                 {
@@ -495,15 +501,29 @@ public class ProgramIndicatorService
                     }
 
                     if (date != null) {
-                        matcher.appendReplacement(description, DateUtils.daysBetween(currentDate, date) + "");
+                        matcher.appendReplacement(buffer, DateUtils.daysBetween(currentDate, date) + "");
                     }
                 }
             }
 
         }
 
-        matcher.appendTail( description );
+        expression = TextUtils.appendTail(matcher, buffer);
 
-        return MathUtils.calculateExpression( description.toString() );
+        // ---------------------------------------------------------------------
+        // Value count variable
+        // ---------------------------------------------------------------------
+
+        buffer = new StringBuffer();
+        matcher = ProgramIndicator.VALUECOUNT_PATTERN.matcher( expression );
+
+        while ( matcher.find() )
+        {
+            matcher.appendReplacement( buffer, String.valueOf( valueCount ) );
+        }
+
+        expression = TextUtils.appendTail( matcher, buffer );
+
+        return MathUtils.calculateExpression( expression );
     }
 }

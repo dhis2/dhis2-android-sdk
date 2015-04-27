@@ -43,7 +43,7 @@ public class DataValue extends BaseValue {
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY)
-    public long localEventId; /* reference to local event object */
+    public long localEventId = -1; /* reference to local event object */
 
     @JsonIgnore
     @Column

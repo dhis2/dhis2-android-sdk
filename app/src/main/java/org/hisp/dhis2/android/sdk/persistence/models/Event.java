@@ -74,7 +74,7 @@ public class Event extends BaseModel {
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
-    public long localId;
+    public long localId = -1;
 
     @JsonIgnore
     @Column(unique = true)

@@ -526,10 +526,8 @@ public class ProgramIndicatorService
         // ---------------------------------------------------------------------
         // Value count variable
         // ---------------------------------------------------------------------
-        Log.d(CLASS_TAG, expression);
         buffer = new StringBuffer();
         matcher = ProgramIndicator.VALUECOUNT_PATTERN.matcher( expression );
-        Log.d(CLASS_TAG, "valuecount: " + zeroPosValueCount);
 
         while ( matcher.find() )
         {

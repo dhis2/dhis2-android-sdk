@@ -72,6 +72,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.utils.APIException;
+import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -102,7 +103,7 @@ public class MetaDataLoader {
     boolean loading = false;
     boolean synchronizing = false;
     private int retries = 0;
-    private int maxRetries = 9;
+    private static final int maxRetries = 9;
 
     private SystemInfo systemInfo;
 
@@ -194,7 +195,7 @@ public class MetaDataLoader {
         if(currentLoadingDate == null) {
             return;
         }
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        String pattern = Utils.DATE_FORMAT;
         DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);//combinedFormatter.parseDateTime(currentLoadingDate).withZone(DateTimeZone.getDefault());
         if(Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(ASSIGNED_PROGRAMS);
@@ -675,8 +676,6 @@ public class MetaDataLoader {
         task.execute();
     }
 
-
-
     private void onFinishLoading(boolean success) {
         Log.d(CLASS_TAG, "onFinishLoading" + success);
         if( success ) {
@@ -691,20 +690,13 @@ public class MetaDataLoader {
                     systemInfo.update(true);
                 else systemInfo.save(true);
             }
-        } else {
-
         }
-
-        LoadingEvent event;
-        if( !synchronizing ) { //initial load or force load of all data.
-            event = new LoadingEvent(BaseEvent.EventType.onLoadingMetaDataFinished); //called in Dhis2 Subscribing method
-        } else {
-            event = new LoadingEvent(BaseEvent.EventType.onUpdateMetaDataFinished);
-            //todo: not yet used but can be used to notify updates in fragments +++
-        }
-        event.success = success;
         loading = false;
         synchronizing = false;
+
+        LoadingEvent event;
+        event = new LoadingEvent(BaseEvent.EventType.onLoadingMetaDataFinished); //called in Dhis2 Subscribing method
+        event.success = success;
         Dhis2Application.bus.post(event);
     }
 
@@ -890,7 +882,7 @@ public class MetaDataLoader {
                     int index = 0;
                     for( Option o: os.options ) {
                         o.sortIndex = index;
-                        o.setOptionSet( os.getId() ); //save options async since there usually is a lot and they won't be displayed on the first screen.
+                        o.setOptionSet( os.getId() );
                         o.save(true);
                         index ++;
                     }
@@ -905,8 +897,7 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(true); //todo: not saving async here because the tea may are used in first screen shown (selectProgramFragment)
-                                    //todo: implement other way of fixing this as saving should always happen async to have everything queued in the right order in transactions.
+                    tea.save(true);
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();

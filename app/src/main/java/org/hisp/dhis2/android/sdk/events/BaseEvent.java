@@ -41,7 +41,7 @@ public class BaseEvent {
         showRegisterEventFragment, showSelectProgramFragment,
         sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
         showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished, onUpdateMetaDataFinished,
+        loadEnrollments, loadEvents, onLoadDataValuesFinished,
         onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
         onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets, loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment, showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants, loadProgram
     }

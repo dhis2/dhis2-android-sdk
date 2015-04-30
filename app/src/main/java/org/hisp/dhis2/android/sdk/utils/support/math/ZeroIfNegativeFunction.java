@@ -38,6 +38,7 @@ package org.hisp.dhis2.android.sdk.utils.support.math;
 public class ZeroIfNegativeFunction
     extends UnaryDoubleFunction
 {
+    public static final String NAME = "zing";
     public ZeroIfNegativeFunction()
     {
         super();

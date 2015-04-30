@@ -52,9 +52,6 @@ public class MathUtils
 {
     public static final Double ZERO = new Double( 0 );
 
-    public static final String ONEIFZEROORPOSITIVE_FUNCTION_NAME = "oizp";
-    public static final String ZEROIFNEGATIVE_FUNCTION_NAME = "zing";
-
     private static DoubleValidator DOUBLE_VALIDATOR = new DoubleValidator();
     private static IntegerValidator INT_VALIDATOR = new IntegerValidator();
 
@@ -72,17 +69,28 @@ public class MathUtils
     private static final Pattern ZERO_PATTERN = Pattern.compile( "^0(\\.0*)?$" );
 
     /**
-     * Validates whether an expression is true or false.
+     * Evaluates whether an expression is true or false.
      *
      * @param leftSide The left side of the expression.
      * @param operator The expression operator.
      * @param rightSide The right side of the expression.
-     * @return True if the expressio is true, fals otherwise.
+     * @return True if the expression is true, false otherwise.
      */
     public static boolean expressionIsTrue( double leftSide, Operator operator, double rightSide )
     {
         final String expression = leftSide + operator.getMathematicalOperator() + rightSide;
 
+        return expressionIsTrue( expression );
+    }
+
+    /**
+     * Evaluates whether an expression is true or false.
+     *
+     * @param expression the expression to evaluate.
+     * @return True if the expression is true, false otherwise.
+     */
+    public static boolean expressionIsTrue( String expression )
+    {
         final JEP parser = getJep();
         parser.parseExpression( expression );
 
@@ -152,8 +160,8 @@ public class MathUtils
         final JEP parser = new JEP();
         parser.addStandardFunctions();
         parser.addStandardConstants();
-        parser.addFunction( ONEIFZEROORPOSITIVE_FUNCTION_NAME, new OneIfZeroOrPositiveFunction() );
-        parser.addFunction( ZEROIFNEGATIVE_FUNCTION_NAME, new ZeroIfNegativeFunction() );
+        parser.addFunction( OneIfZeroOrPositiveFunction.NAME, new OneIfZeroOrPositiveFunction() );
+        parser.addFunction( ZeroIfNegativeFunction.NAME, new ZeroIfNegativeFunction() );
         return parser;
     }
 

@@ -713,8 +713,10 @@ public class DataValueLoader {
                 if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
                     return false;
                 }
+                Log.d(CLASS_TAG, "program done for: " + program.getName() + ": " +organisationUnit.getLabel());
             }
         }
+
         return true;
     }
 

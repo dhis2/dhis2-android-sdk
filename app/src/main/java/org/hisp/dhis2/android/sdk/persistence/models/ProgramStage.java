@@ -168,8 +168,8 @@ public class ProgramStage extends BaseIdentifiableObject {
         return programIndicators;
     }
 
-    public String getProgram() {
-        return program;
+    public Program getProgram() {
+        return MetaDataController.getProgram(program);
     }
 
     public void setProgram(String program) {

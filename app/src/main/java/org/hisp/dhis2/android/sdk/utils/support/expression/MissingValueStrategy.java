@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.utils.expression;
+package org.hisp.dhis2.android.sdk.utils.support.expression;
 
 /**
  * @author Lars Helge Overland

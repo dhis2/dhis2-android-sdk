@@ -38,6 +38,7 @@ package org.hisp.dhis2.android.sdk.utils.support.math;
 public class OneIfZeroOrPositiveFunction
     extends UnaryDoubleFunction
 {
+    public static final String NAME = "oizp";
     public OneIfZeroOrPositiveFunction()
     {
         super();

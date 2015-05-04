@@ -29,6 +29,8 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -179,8 +182,22 @@ public class Event extends BaseModel {
             localId = existingEvent.localId;
         }
         super.save(async);
+        boolean wait = true;
+        if(localId<0) { //workaround to wait for primary autoincrement key to be assigned with async=true
+            while(wait) {
+
+                Event tempEvent = DataValueController.getEventByUid(event);
+                if(tempEvent==null) continue;
+                else {
+                    localId = tempEvent.localId;
+                    wait = false;
+                }
+                Thread.yield();
+            }
+        }
         if (dataValues != null) {
             for (DataValue dataValue : dataValues) {
+                dataValue.event = event;
                 dataValue.localEventId = localId;
                 dataValue.save(async);
             }

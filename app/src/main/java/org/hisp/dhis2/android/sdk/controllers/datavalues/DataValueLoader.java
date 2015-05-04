@@ -610,12 +610,6 @@ public class DataValueLoader {
                         Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
                         if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
                         event.save(true);
-                        if(event.dataValues != null) {
-                            for(DataValue dataValue: event.dataValues) {
-                                dataValue.event = event.event;
-                                dataValue.save(true);
-                            }
-                        }
                     }
                 }
 

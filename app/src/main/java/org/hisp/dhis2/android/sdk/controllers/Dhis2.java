@@ -625,6 +625,16 @@ public final class Dhis2 {
                 show(activity.getFragmentManager(), title);
     }
 
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
+                                         final String firstOption, final String secondOption, final String thirdOption,
+                                         DialogInterface.OnClickListener firstOptionListener,
+                                         DialogInterface.OnClickListener secondOptionListener,
+                                         DialogInterface.OnClickListener thirdOptionListener) {
+        new CustomDialogFragment( title, message, firstOption, secondOption, thirdOption,
+                firstOptionListener, secondOptionListener, thirdOptionListener).
+                show(activity.getFragmentManager(), title);
+    }
+
     @Subscribe
     public void onResponse(LoadingEvent loadingEvent) {
         if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {

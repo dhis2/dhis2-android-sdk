@@ -252,6 +252,7 @@
     <string name="terminate">Terminate</string>
     <string name="mark_for_followup">Mark for follow-up</string>
     <string name="discard">Discard</string>
+    <string name="save_and_close">Save and close</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
     <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>

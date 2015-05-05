@@ -2,6 +2,8 @@ package org.hisp.dhis2.android.sdk.utils.services;
 
 import android.util.Log;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
@@ -35,6 +37,9 @@ public class ProgramRuleService {
 
             String variableName = matcher.group( 1 );
             ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
+            if(programRuleVariable==null) {
+                return false;
+            }
             DataElement dataElement = MetaDataController.getDataElement(programRuleVariable.dataElement);
             DataValue dataValue = null;
             if(event.getDataValues()!=null) {
@@ -70,8 +75,10 @@ public class ProgramRuleService {
             String variableName = matcher.group( 1 );
             Log.d("programruleservice: ", variableName);
             ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
-            Log.d("programruleservice", "the dataelement is: " + programRuleVariable.dataElement);
-            dataElementsInRule.add(programRuleVariable.dataElement);
+            if(programRuleVariable!=null) {
+                Log.d("programruleservice", "the dataelement is: " + programRuleVariable.dataElement);
+                dataElementsInRule.add(programRuleVariable.dataElement);
+            }
         }
 
         return dataElementsInRule;

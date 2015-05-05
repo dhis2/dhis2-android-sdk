@@ -239,7 +239,7 @@ public final class Dhis2 {
     }
 
     public static boolean isInitialDataLoaded(Context context) {
-        return isMetaDataLoaded(context) & isDataValuesLoaded(context);
+        return (isMetaDataLoaded(context) && isDataValuesLoaded(context));
     }
 
     /**
@@ -422,6 +422,7 @@ public final class Dhis2 {
      * Loads initial data. Which data is enabled is defined by the enableLoading method
      */
     public static void loadInitialData(Context context) {
+        Log.d(CLASS_TAG, "loadInitialData");
         if( context != null ) {
             getInstance().context = context;
             if(context instanceof Activity) getInstance().activity = (Activity) context;
@@ -476,7 +477,7 @@ public final class Dhis2 {
         FlowContentObserver observer = getFlowContentObserverForAllTables();
         String message;
         if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-        else message = "Finishing Up";
+        else message = "Finishing initial database setup. This may take several minutes so please be patient.";
         postProgressMessage(message);
         WaitForMetaDataSavingBlockThread blockThread = new WaitForMetaDataSavingBlockThread(observer);
         BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);

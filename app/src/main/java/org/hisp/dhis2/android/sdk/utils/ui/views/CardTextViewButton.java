@@ -3,6 +3,7 @@ package org.hisp.dhis2.android.sdk.utils.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.support.v7.widget.CardView;
@@ -44,6 +45,7 @@ public class CardTextViewButton extends CardView {
         mTextView.setBackgroundResource(R.drawable.spinner_background_holo_light);
         mTextView.setFont(getContext().getString(R.string.regular_font_name));
         mTextView.setLayoutParams(textViewParams);
+        mTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.medium_text_size));
 
         addView(mTextView);
     }

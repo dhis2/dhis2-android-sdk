@@ -265,10 +265,10 @@
     <string name="loading_tracked_entity_instances">Loading tracked entity instances</string>
     <string name="loading_constants">Loading constants</string>
     <string name="updating_constants">Updating constants</string>
+    <string name="finishing_up">Finishing initial database setup. This may take several minutes so please be patient.</string>
     <string name="loading_programrules">Loading program rules</string>
     <string name="loading_programrulevariables">Loading program rule variables</string>
     <string name="loading_programruleactions">Loading program rule actions</string>
-    <string name="finishing_up">Finishing up..</string>
 
     <string name="find_option">Find Option</string>
     <string name="enter_date">Enter Date</string>

@@ -37,7 +37,7 @@ import android.widget.CheckBox;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontCheckBox extends AppCompatCheckBox {
+public class FontCheckBox extends CheckBox {
     public FontCheckBox(Context context) {
         super(context);
     }

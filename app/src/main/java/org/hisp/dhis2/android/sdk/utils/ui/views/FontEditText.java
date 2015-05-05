@@ -11,7 +11,7 @@ import android.widget.EditText;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontEditText extends AppCompatEditText {
+public class FontEditText extends EditText {
 
     public FontEditText(Context context) {
         super(context);

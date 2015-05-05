@@ -35,11 +35,12 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontAutoCompleteTextView extends AppCompatAutoCompleteTextView {
+public class FontAutoCompleteTextView extends TextView {
     public FontAutoCompleteTextView(Context context) {
         super(context);
     }

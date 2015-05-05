@@ -40,7 +40,7 @@ import android.widget.RadioButton;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontRadioButton extends AppCompatRadioButton {
+public class FontRadioButton extends RadioButton {
     public FontRadioButton(Context context) {
         super(context);
     }

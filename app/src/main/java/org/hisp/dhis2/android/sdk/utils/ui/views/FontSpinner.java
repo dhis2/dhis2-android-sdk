@@ -26,7 +26,7 @@ import android.widget.Spinner;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontSpinner extends AppCompatSpinner {
+public class FontSpinner extends Spinner {
 
     public FontSpinner(Context context) {
         super(context);

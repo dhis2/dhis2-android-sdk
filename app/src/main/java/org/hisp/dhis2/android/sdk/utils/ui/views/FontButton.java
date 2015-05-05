@@ -11,7 +11,7 @@ import android.widget.Button;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontButton extends AppCompatButton {
+public class FontButton extends Button {
 
     public FontButton(Context context) {
         super(context);

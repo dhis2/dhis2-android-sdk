@@ -19,13 +19,14 @@ package org.hisp.dhis2.android.sdk.utils.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.widget.Spinner;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontSpinner extends Spinner {
+public class FontSpinner extends AppCompatSpinner {
 
     public FontSpinner(Context context) {
         super(context);

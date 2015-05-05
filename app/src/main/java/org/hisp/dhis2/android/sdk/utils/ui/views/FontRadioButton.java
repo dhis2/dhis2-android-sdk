@@ -33,13 +33,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.widget.RadioButton;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontRadioButton extends RadioButton {
+public class FontRadioButton extends AppCompatRadioButton {
     public FontRadioButton(Context context) {
         super(context);
     }

@@ -33,13 +33,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
-import android.widget.AutoCompleteTextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.TypefaceManager;
 
-public class FontAutoCompleteTextView extends AutoCompleteTextView {
+public class FontAutoCompleteTextView extends AppCompatAutoCompleteTextView {
     public FontAutoCompleteTextView(Context context) {
         super(context);
     }

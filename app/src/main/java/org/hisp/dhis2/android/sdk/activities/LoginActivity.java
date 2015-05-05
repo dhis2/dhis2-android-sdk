@@ -108,12 +108,12 @@ public class LoginActivity extends Activity implements OnClickListener {
         String password = "";
 
         if (server == null) {
-            server = "https://apps.dhis2.org/dev";
+            server = "https://";
         }
 
         if (username == null) {
-            username = "android";
-            password = "Android123";
+            username = "";
+            password = "";
         }
 
         serverEditText.setText(server);

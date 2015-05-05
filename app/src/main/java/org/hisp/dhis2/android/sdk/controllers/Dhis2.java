@@ -239,7 +239,7 @@ public final class Dhis2 {
     }
 
     public static boolean isInitialDataLoaded(Context context) {
-        return isMetaDataLoaded(context) & isDataValuesLoaded(context);
+        return (isMetaDataLoaded(context) && isDataValuesLoaded(context));
     }
 
     /**
@@ -276,7 +276,6 @@ public final class Dhis2 {
      */
     public static boolean isDataValuesLoaded(Context context) {
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         if(isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
             if(!DataValueLoader.isEventsLoaded(context)) return false;
         } else if(isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
@@ -285,6 +284,12 @@ public final class Dhis2 {
             if(!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
         }
         Log.d(CLASS_TAG, "data values are loaded.");
+        return true;
+    }
+
+    public static boolean hasLoadedInitial(Context context) {
+        if(!isMetaDataLoaded(context)) return false;
+        else if (!isDataValuesLoaded(context)) return false;
         return true;
     }
 
@@ -330,14 +335,6 @@ public final class Dhis2 {
         SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String username = prefs.getString(USERNAME, null);
         return username;
-    }
-
-    public static String getPassword(Context context) {
-        if(context != null) getInstance().context = context;
-        if(getInstance().context == null) return null;
-        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String password = prefs.getString(PASSWORD, null);
-        return password;
     }
 
     public static String getServer(Context context) {
@@ -408,22 +405,24 @@ public final class Dhis2 {
 
     /**
      * initiates sending locally modified data items and loads updated items from the server.
-     * @param context1
+     * @param context
      */
-    public static void sendLocalData(final Context context1) {
+    public static void sendLocalData(Context context) {
         if(getInstance().loading) return;
         getInstance().loading = true;
+        getInstance().context = context;
         new Thread() {
             public void run() {
-                getInstance().getDataValueController().synchronizeDataValues(context1);
+                getInstance().getDataValueController().synchronizeDataValues(getInstance().context);
             }
         }.start();
     }
 
     /**
-     * Loads initial data, defined by the enableLoading method
+     * Loads initial data. Which data is enabled is defined by the enableLoading method
      */
     public static void loadInitialData(Context context) {
+        Log.d(CLASS_TAG, "loadInitialData");
         if( context != null ) {
             getInstance().context = context;
             if(context instanceof Activity) getInstance().activity = (Activity) context;
@@ -432,17 +431,24 @@ public final class Dhis2 {
 
         getInstance().loadingInitial = true;
         getInstance().loading = true;
-        loadInitialMetadata();
+        if(!isMetaDataLoaded(getInstance().context))
+        {
+            loadInitialMetadata();
+        } else if(!isDataValuesLoaded(getInstance().context)){
+            loadInitialDataValues();
+        } else {
+            onFinishLoading();
+        }
     }
 
     private static void loadInitialMetadata() {
-        if(!isMetaDataLoaded(getInstance().context))
-        {
-            Log.d(CLASS_TAG, "init loading metadata!");
-            getInstance().getMetaDataController().loadMetaData(getInstance().context);
-        } else {
-            loadInitialDataValues();
-        }
+        Log.d(CLASS_TAG, "loading initial metadata!");
+        loadMetaData(getInstance().context);
+    }
+
+    private static void loadMetaData(Context context) {
+        Log.d(CLASS_TAG, "loading metadata!");
+        getInstance().getMetaDataController().loadMetaData(getInstance().context);
     }
 
     /**
@@ -459,29 +465,32 @@ public final class Dhis2 {
      * @param context
      */
     public static void synchronizeMetaData(Context context) {
+        Log.d(CLASS_TAG, "synchronizing metadata!");
         if(getInstance().loading) return;
         getInstance().loading = true;
-        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
+        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context); //callback is onFinishLoading
     }
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
     private static void loadInitialDataValues() {
-
+        Log.d(CLASS_TAG, "loading initial datavalues");
         FlowContentObserver observer = getFlowContentObserverForAllTables();
         String message;
         if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-        else message = "Finishing Up";
+        else message = "Finishing initial database setup. This may take several minutes so please be patient.";
         postProgressMessage(message);
         WaitForMetaDataSavingBlockThread blockThread = new WaitForMetaDataSavingBlockThread(observer);
         BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
         observer.addModelChangeListener(listener);
         blockThread.start();
+    }
 
+    public static void synchronizeDataValues(Context context) {
+        getInstance().getDataValueController().synchronizeDataValues(context);
     }
 
     /**
      * Called after meta data and data values have finished loading
-     * todo: as more options for data loading is added, expand this to something more comprehensible
      */
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
@@ -498,7 +507,7 @@ public final class Dhis2 {
                     Log.d(CLASS_TAG, "full loading success");
                     finished = true;
                 } else {
-                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down (earlier) in the process
                     //todo: implement onFailedLoadingInitialDataValues
                     Log.d(CLASS_TAG, "full loading failed loading data values. Continuing anyways..");
                     finished = true;
@@ -523,7 +532,7 @@ public final class Dhis2 {
                 FlowContentObserver observer = getFlowContentObserverForAllTables();
                 String message;
                 if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-                else message = "Finishing Up";
+                else message = "Finishing initial database setup. This may take several minutes so please be patient.";
                 postProgressMessage(message);
                 FinishLoadingBlockThread blockThread = new FinishLoadingBlockThread(observer);
                 BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
@@ -539,9 +548,7 @@ public final class Dhis2 {
      * Called if initial meta data loading fails. Gives a notification to user.
      */
     private static void onFailedLoadingInitialMetaData() {
-        Log.d(CLASS_TAG, "onfailedloadinginititalmetadata show the dialog");
         if(getInstance().activity != null) {
-            Log.d(CLASS_TAG, "showing the dialog now");
             DialogInterface.OnClickListener retryListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -624,11 +631,12 @@ public final class Dhis2 {
             if(!loadingEvent.success) {
                 onFinishLoading();
             } else {
-                if(isLoadingInitial())
+                if(isLoadingInitial()) {
                     loadInitialDataValues();
+                } else {
+                    synchronizeDataValues(context);
+                }
             }
-        } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateMetaDataFinished ) {
-            getInstance().getDataValueController().synchronizeDataValues(context);
         }
         else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
             onFinishLoading();

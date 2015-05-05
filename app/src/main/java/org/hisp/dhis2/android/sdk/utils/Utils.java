@@ -43,6 +43,7 @@ import org.joda.time.LocalTime;
 public class Utils {
 
     private static final String CLASS_TAG = "Utils";
+    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static final String getCurrentDate() {
         LocalDate localDate = new LocalDate();

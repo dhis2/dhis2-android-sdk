@@ -102,7 +102,7 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
-    public long localId;
+    public long localId = -1;
 
     @JsonIgnore
     @Column(unique = true)
@@ -222,8 +222,19 @@ public class Enrollment extends BaseSerializableModel{
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
             updateManually(async);
         } else {
-            if(!exists) super.save(false); //ensuring a localId is created to give foreign key to events
-            else super.save(async);
+            super.save(async);
+            boolean wait = true;
+            if( localId < 0 ) { //workaround to wait for primary autoincrement key to be assigned with async=true
+                while(wait) {
+                    Enrollment tempEnrollment = DataValueController.getEnrollment(enrollment);
+                    if(tempEnrollment==null) continue;
+                    else {
+                        localId = tempEnrollment.localId;
+                        wait = false;
+                    }
+                    Thread.yield();
+                }
+            }
         }
         if(events!=null) {
             for(Event event: events) {

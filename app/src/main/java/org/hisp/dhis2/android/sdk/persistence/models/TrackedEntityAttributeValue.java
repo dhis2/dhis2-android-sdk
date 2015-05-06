@@ -66,8 +66,9 @@ public class TrackedEntityAttributeValue extends BaseValue {
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie and not the other fields) if the currently in-memory event UID is locally created
             updateManually(async);
-        } else
+        } else {
             super.save(async);
+        }
     }
 
 

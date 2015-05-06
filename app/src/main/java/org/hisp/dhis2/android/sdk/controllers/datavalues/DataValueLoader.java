@@ -573,12 +573,15 @@ public class DataValueLoader {
                         //todo: implement different handling if synchronizing than if doing 1st load
                     }
                     //saving with async false bc we need to ensure the localId is created for later referencing
-                    for(TrackedEntityInstance tei: trackedEntityInstances) tei.save(false);
+                    for(TrackedEntityInstance tei: trackedEntityInstances) {
+                        tei.save(true);
+                    }
 
                     for(TrackedEntityAttributeValue value: values) {
                         TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(value.trackedEntityInstanceId);
-                        if(tei!=null)
+                        if(tei!=null) {
                             value.localTrackedEntityInstanceId = tei.localId;
+                        }
                         value.save(true);
                     }
                 }
@@ -594,7 +597,7 @@ public class DataValueLoader {
                     enrollment.orgUnit = currentOrganisationUnit;
                     TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
                     if(tei!=null) enrollment.localTrackedEntityInstanceId = tei.localId;
-                    enrollment.save(false);
+                    enrollment.save(true);
                 }
                 flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);

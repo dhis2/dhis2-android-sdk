@@ -27,34 +27,24 @@
   ~  */
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar_layout" />
-
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="org.dhis.mobile.android.ui.activities.MenuActivity">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/navy_blue"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-        <ListView
-            android:id="@+id/left_drawer"
-            android:layout_width="@dimen/drawer_size"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@color/light_grey"
-            android:choiceMode="singleChoice"
-            android:divider="@color/darker_grey"
-            android:dividerHeight="1px" />
-
-    </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

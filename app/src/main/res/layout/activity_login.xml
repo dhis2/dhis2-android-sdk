@@ -71,6 +71,7 @@
             android:inputType="textUri"
             android:paddingLeft="7dp"
             android:singleLine="true"
+            android:textSize="@dimen/medium_text_size"
             app:font="@string/regular_font_name" />
 
         <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
@@ -85,6 +86,7 @@
             android:hint="@string/username"
             android:paddingLeft="7dp"
             android:singleLine="true"
+            android:textSize="@dimen/medium_text_size"
             app:font="@string/regular_font_name" />
 
         <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
@@ -100,6 +102,7 @@
             android:inputType="textPassword"
             android:paddingLeft="7dp"
             android:singleLine="true"
+            android:textSize="@dimen/medium_text_size"
             app:font="@string/regular_font_name" />
 
         <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
@@ -110,7 +113,7 @@
             android:background="@drawable/button_blue_selector"
             android:text="@string/login"
             android:textColor="@color/white"
-            android:textSize="17sp"
+            android:textSize="@dimen/medium_text_size"
             app:font="@string/bold_font_name" />
 
     </LinearLayout>

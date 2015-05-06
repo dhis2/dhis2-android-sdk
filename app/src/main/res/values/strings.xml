@@ -252,6 +252,7 @@
     <string name="terminate">Terminate</string>
     <string name="mark_for_followup">Mark for follow-up</string>
     <string name="discard">Discard</string>
+    <string name="save_and_close">Save and close</string>
     <string name="discard_confirm">Are you sure you want to discard the current Event?</string>
     <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>
     <string name="confirm_delete_faileditem">Are you sure you want to delete the current item?</string>
@@ -265,7 +266,10 @@
     <string name="loading_tracked_entity_instances">Loading tracked entity instances</string>
     <string name="loading_constants">Loading constants</string>
     <string name="updating_constants">Updating constants</string>
-    <string name="finishing_up">Finishing up..</string>
+    <string name="finishing_up">Finishing initial database setup. This may take several minutes so please be patient.</string>
+    <string name="loading_programrules">Loading program rules</string>
+    <string name="loading_programrulevariables">Loading program rule variables</string>
+    <string name="loading_programruleactions">Loading program rule actions</string>
 
     <string name="find_option">Find Option</string>
     <string name="enter_date">Enter Date</string>

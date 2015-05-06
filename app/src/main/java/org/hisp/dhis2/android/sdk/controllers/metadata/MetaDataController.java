@@ -56,6 +56,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
@@ -199,6 +201,14 @@ public class MetaDataController {
      */
     public static List<Constant> getConstants() {
         return Select.all(Constant.class);
+    }
+
+    public static ProgramRuleVariable getProgramRuleVariable(String id) {
+        return new Select().from(ProgramRuleVariable.class).where(Condition.column(ProgramRuleVariable$Table.ID).is(id)).querySingle();
+    }
+
+    public static ProgramRuleVariable getProgramRuleVariableByName(String name) {
+        return new Select().from(ProgramRuleVariable.class).where(Condition.column(ProgramRuleVariable$Table.NAME).is(name)).querySingle();
     }
 
     /**

@@ -171,5 +171,9 @@ public class Program extends BaseIdentifiableObject {
         return MetaDataController.getProgramIndicatorsByProgram(id);
     }
 
+    public List<ProgramRule> getProgramRules() {
+        return new Select().from(ProgramRule.class).where(Condition.column(ProgramRule$Table.PROGRAM).is(id)).queryList();
+    }
+
 
 }

@@ -36,8 +36,7 @@ import org.hisp.dhis2.android.sdk.network.http.Header;
 import org.hisp.dhis2.android.sdk.network.http.Request;
 import org.hisp.dhis2.android.sdk.network.http.RestMethod;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis2.android.sdk.persistence.models.Event;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
@@ -46,21 +45,18 @@ import java.util.List;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-public class LoadEventsTask implements INetworkTask {
-    private final ApiRequest.Builder<List<Event>> requestBuilder;
+public class LoadProgramRulesTask implements INetworkTask {
+    private final ApiRequest.Builder<List<ProgramRule>> requestBuilder;
 
-    public LoadEventsTask(NetworkManager networkManager,
-                          ApiRequestCallback<List<Event>> callback,
-                          String organisationUnitId, String programId, boolean synchronizing) {
+    public LoadProgramRulesTask(NetworkManager networkManager,
+                                ApiRequestCallback<List<ProgramRule>> callback, boolean updating) {
 
         try {
-            isNull(callback, "ApiRequestCallback must not be null");
-            isNull(networkManager.getServerUrl(), "Server URL must not be null");
-            isNull(networkManager.getHttpManager(), "HttpManager must not be null");
-            isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-            isNull(organisationUnitId, "OrganisationUnit Id must not be null");
-            isNull(programId, "Program Id must not be null");
-        } catch (IllegalArgumentException e) {
+        isNull(callback, "ApiRequestCallback must not be null");
+        isNull(networkManager.getServerUrl(), "Server URL must not be null");
+        isNull(networkManager.getHttpManager(), "HttpManager must not be null");
+        isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
+        } catch(IllegalArgumentException e) {
             callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
         }
 
@@ -68,12 +64,12 @@ public class LoadEventsTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Accept", "application/json"));
 
-        String url = networkManager.getServerUrl() + "/api/events?page=0&pageSize=200&orgUnit="+
-                organisationUnitId+"&program="+programId;
-        if(synchronizing) {
+        String url = networkManager.getServerUrl() + "/api/programRules.json?paging=false" +
+                "&fields=[:all]";
+        if(updating) {
             SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
             if( systemInfo != null && systemInfo.serverDate != null ) {
-                url += "&lastUpdated="+systemInfo.serverDate;
+                url += "&filter=lastUpdated:gt:" + systemInfo.serverDate;
             }
         }
 

@@ -181,18 +181,24 @@ public final class Dhis2 {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if( mode.equals(LOAD_EVENTCAPTURE)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            //editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
+
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
         } else if (mode.equals(LOAD_TRACKER)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            //editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
+            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
+
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
             editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
@@ -214,6 +220,10 @@ public final class Dhis2 {
         editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, false);
         editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, false);
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, false);
+        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, false);
+        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, false);
+        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, false);
+
         editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
         editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
         editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
@@ -233,7 +243,7 @@ public final class Dhis2 {
     }
 
     public static boolean isInitialDataLoaded(Context context) {
-        return isMetaDataLoaded(context) & isDataValuesLoaded(context);
+        return (isMetaDataLoaded(context) && isDataValuesLoaded(context));
     }
 
     /**
@@ -253,6 +263,12 @@ public final class Dhis2 {
             if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false)) return false;
         } else if(isLoadFlagEnabled(context, MetaDataLoader.CONSTANTS)) {
             if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.CONSTANTS, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULES)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULES, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEVARIABLES)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEVARIABLES, false)) return false;
+        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEACTIONS)) {
+            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEACTIONS, false)) return false;
         }
         return true;
     }
@@ -264,7 +280,6 @@ public final class Dhis2 {
      */
     public static boolean isDataValuesLoaded(Context context) {
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         if(isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
             if(!DataValueLoader.isEventsLoaded(context)) return false;
         } else if(isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
@@ -272,6 +287,13 @@ public final class Dhis2 {
         } else if(isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
             if(!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
         }
+        Log.d(CLASS_TAG, "data values are loaded.");
+        return true;
+    }
+
+    public static boolean hasLoadedInitial(Context context) {
+        if(!isMetaDataLoaded(context)) return false;
+        else if (!isDataValuesLoaded(context)) return false;
         return true;
     }
 
@@ -317,14 +339,6 @@ public final class Dhis2 {
         SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String username = prefs.getString(USERNAME, null);
         return username;
-    }
-
-    public static String getPassword(Context context) {
-        if(context != null) getInstance().context = context;
-        if(getInstance().context == null) return null;
-        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        String password = prefs.getString(PASSWORD, null);
-        return password;
     }
 
     public static String getServer(Context context) {
@@ -395,22 +409,24 @@ public final class Dhis2 {
 
     /**
      * initiates sending locally modified data items and loads updated items from the server.
-     * @param context1
+     * @param context
      */
-    public static void sendLocalData(final Context context1) {
+    public static void sendLocalData(Context context) {
         if(getInstance().loading) return;
         getInstance().loading = true;
+        getInstance().context = context;
         new Thread() {
             public void run() {
-                getInstance().getDataValueController().synchronizeDataValues(context1);
+                getInstance().getDataValueController().synchronizeDataValues(getInstance().context);
             }
         }.start();
     }
 
     /**
-     * Loads initial data, defined by the enableLoading method
+     * Loads initial data. Which data is enabled is defined by the enableLoading method
      */
     public static void loadInitialData(Context context) {
+        Log.d(CLASS_TAG, "loadInitialData");
         if( context != null ) {
             getInstance().context = context;
             if(context instanceof Activity) getInstance().activity = (Activity) context;
@@ -419,24 +435,31 @@ public final class Dhis2 {
 
         getInstance().loadingInitial = true;
         getInstance().loading = true;
-        loadInitialMetadata();
-    }
-
-    private static void loadInitialMetadata() {
         if(!isMetaDataLoaded(getInstance().context))
         {
-            Log.d(CLASS_TAG, "init loading metadata!");
-            getInstance().getMetaDataController().loadMetaData(getInstance().context);
-        } else {
+            loadInitialMetadata();
+        } else if(!isDataValuesLoaded(getInstance().context)){
             loadInitialDataValues();
+        } else {
+            onFinishLoading();
         }
     }
 
     public boolean isLoading() {
-        if(Dhis2.getInstance().getMetaDataController().isLoading()) return true;
-        if(Dhis2.getInstance().getDataValueController().isLoading()) return true;
-        if(Dhis2.getInstance().getDataValueController().isSending()) return true;
+        if (Dhis2.getInstance().getMetaDataController().isLoading()) return true;
+        if (Dhis2.getInstance().getDataValueController().isLoading()) return true;
+        if (Dhis2.getInstance().getDataValueController().isSending()) return true;
         return false;
+    }
+
+    private static void loadInitialMetadata() {
+        Log.d(CLASS_TAG, "loading initial metadata!");
+        loadMetaData(getInstance().context);
+    }
+
+    private static void loadMetaData(Context context) {
+        Log.d(CLASS_TAG, "loading metadata!");
+        getInstance().getMetaDataController().loadMetaData(getInstance().context);
     }
 
     /**
@@ -453,24 +476,32 @@ public final class Dhis2 {
      * @param context
      */
     public static void synchronizeMetaData(Context context) {
-        if(getInstance().isLoading()) return;
-        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context);
+        Log.d(CLASS_TAG, "synchronizing metadata!");
+        if(getInstance().loading) return;
+        getInstance().loading = true;
+        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context); //callback is onFinishLoading
     }
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
     private static void loadInitialDataValues() {
-        Log.d(CLASS_TAG, "init loading datavalues");
-        if(!isDataValuesLoaded(getInstance().context)) {
-                Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
-                getInstance().getDataValueController().loadDataValues(getInstance().context, false);
-        } else {
-            onFinishLoading();
-        }
+        Log.d(CLASS_TAG, "loading initial datavalues");
+        FlowContentObserver observer = getFlowContentObserverForAllTables();
+        String message;
+        if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
+        else message = "Finishing initial database setup. This may take several minutes so please be patient.";
+        postProgressMessage(message);
+        WaitForMetaDataSavingBlockThread blockThread = new WaitForMetaDataSavingBlockThread(observer);
+        BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
+        observer.addModelChangeListener(listener);
+        blockThread.start();
+    }
+
+    public static void synchronizeDataValues(Context context) {
+        getInstance().getDataValueController().synchronizeDataValues(context);
     }
 
     /**
      * Called after meta data and data values have finished loading
-     * todo: as more options for data loading is added, expand this to something more comprehensible
      */
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
@@ -487,7 +518,7 @@ public final class Dhis2 {
                     Log.d(CLASS_TAG, "full loading success");
                     finished = true;
                 } else {
-                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down in the process
+                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down (earlier) in the process
                     //todo: implement onFailedLoadingInitialDataValues
                     Log.d(CLASS_TAG, "full loading failed loading data values. Continuing anyways..");
                     finished = true;
@@ -506,34 +537,15 @@ public final class Dhis2 {
              * Now we block and wait with sending the 'done' message while data is being saved to
              * to avoid race conditions with trying to access data.
              */
-            FlowContentObserver observer = new FlowContentObserver();
-            observer.registerForContentChanges(getInstance().context, Constant.class);
-            observer.registerForContentChanges(getInstance().context, DataElement.class);
-            observer.registerForContentChanges(getInstance().context, DataValue.class);
-            observer.registerForContentChanges(getInstance().context, Enrollment.class);
-            observer.registerForContentChanges(getInstance().context, Event.class);
-            observer.registerForContentChanges(getInstance().context, Option.class);
-            observer.registerForContentChanges(getInstance().context, OptionSet.class);
-            observer.registerForContentChanges(getInstance().context, OrganisationUnit.class);
-            observer.registerForContentChanges(getInstance().context, OrganisationUnitProgramRelationship.class);
-            observer.registerForContentChanges(getInstance().context, Program.class);
-            observer.registerForContentChanges(getInstance().context, ProgramIndicator.class);
-            observer.registerForContentChanges(getInstance().context, ProgramStage.class);
-            observer.registerForContentChanges(getInstance().context, ProgramStageDataElement.class);
-            observer.registerForContentChanges(getInstance().context, ProgramStageSection.class);
-            observer.registerForContentChanges(getInstance().context, ProgramTrackedEntityAttribute.class);
-            observer.registerForContentChanges(getInstance().context, TrackedEntity.class);
-            observer.registerForContentChanges(getInstance().context, TrackedEntityAttribute.class);
-            observer.registerForContentChanges(getInstance().context, TrackedEntityAttributeValue.class);
-            observer.registerForContentChanges(getInstance().context, TrackedEntityInstance.class);
-            observer.registerForContentChanges(getInstance().context, User.class);
+
 
             if(finished) {
+                FlowContentObserver observer = getFlowContentObserverForAllTables();
                 String message;
                 if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-                else message = "Finishing Up";
+                else message = "Finishing initial database setup. This may take several minutes so please be patient.";
                 postProgressMessage(message);
-                BlockThread blockThread = new BlockThread(observer);
+                FinishLoadingBlockThread blockThread = new FinishLoadingBlockThread(observer);
                 BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
                 observer.addModelChangeListener(listener);
                 blockThread.start();
@@ -547,9 +559,7 @@ public final class Dhis2 {
      * Called if initial meta data loading fails. Gives a notification to user.
      */
     private static void onFailedLoadingInitialMetaData() {
-        Log.d(CLASS_TAG, "onfailedloadinginititalmetadata show the dialog");
         if(getInstance().activity != null) {
-            Log.d(CLASS_TAG, "showing the dialog now");
             DialogInterface.OnClickListener retryListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -588,6 +598,18 @@ public final class Dhis2 {
         });
     }
 
+    public static void showErrorDialog(final Activity activity, final String title,
+                                       final String message, final int iconId) {
+        if(activity == null) return;
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new CustomDialogFragment( title, message,
+                        "OK", iconId, null ).show(activity.getFragmentManager(), title);
+            }
+        });
+    }
+
     public static void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
         if(activity == null) return;
         activity.runOnUiThread(new Runnable() {
@@ -614,17 +636,28 @@ public final class Dhis2 {
                 show(activity.getFragmentManager(), title);
     }
 
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
+                                         final String firstOption, final String secondOption, final String thirdOption,
+                                         DialogInterface.OnClickListener firstOptionListener,
+                                         DialogInterface.OnClickListener secondOptionListener,
+                                         DialogInterface.OnClickListener thirdOptionListener) {
+        new CustomDialogFragment( title, message, firstOption, secondOption, thirdOption,
+                firstOptionListener, secondOptionListener, thirdOptionListener).
+                show(activity.getFragmentManager(), title);
+    }
+
     @Subscribe
     public void onResponse(LoadingEvent loadingEvent) {
         if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {
             if(!loadingEvent.success) {
                 onFinishLoading();
             } else {
-                if(isLoadingInitial())
+                if(isLoadingInitial()) {
                     loadInitialDataValues();
+                } else {
+                    synchronizeDataValues(context);
+                }
             }
-        } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateMetaDataFinished ) {
-            getInstance().getDataValueController().synchronizeDataValues(context);
         }
         else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
             onFinishLoading();
@@ -656,6 +689,39 @@ public final class Dhis2 {
         return getInstance().loadingInitial;
     }
 
+    private static class WaitForMetaDataSavingBlockThread extends BlockThread {
+
+        public WaitForMetaDataSavingBlockThread(FlowContentObserver observer) {
+            super(observer);
+        }
+
+        @Override
+        public void callback() {
+            Log.d(CLASS_TAG, "init loading datavalues");
+            if(!isDataValuesLoaded(getInstance().context)) {
+                Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
+                getInstance().getDataValueController().loadDataValues(getInstance().context, false);
+            } else {
+                onFinishLoading();
+            }
+        }
+    }
+
+    private static class FinishLoadingBlockThread extends BlockThread {
+
+        public FinishLoadingBlockThread(FlowContentObserver observer) {
+            super(observer);
+        }
+
+        @Override
+        public void callback() {
+            getInstance().loadingInitial = false;
+            getInstance().loading = false;
+            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
+            Dhis2Application.bus.post(messageEvent);
+        }
+    }
+
     /**
      * Thread for blocking and waiting for DBFlow's TransactionManager to finish saving in the
      * background
@@ -679,12 +745,35 @@ public final class Dhis2 {
             }
             observer.unregisterForContentChanges(Dhis2.getInstance().context);
             Log.e(CLASS_TAG, "done blocking ..");
-
-            getInstance().loadingInitial = false;
-            getInstance().loading = false;
-            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-            Dhis2Application.bus.post(messageEvent);
+            callback();
         }
+
+        public void callback() { }
+    }
+
+    public static FlowContentObserver getFlowContentObserverForAllTables() {
+        FlowContentObserver observer = new FlowContentObserver();
+        observer.registerForContentChanges(getInstance().context, Constant.class);
+        observer.registerForContentChanges(getInstance().context, DataElement.class);
+        observer.registerForContentChanges(getInstance().context, DataValue.class);
+        observer.registerForContentChanges(getInstance().context, Enrollment.class);
+        observer.registerForContentChanges(getInstance().context, Event.class);
+        observer.registerForContentChanges(getInstance().context, Option.class);
+        observer.registerForContentChanges(getInstance().context, OptionSet.class);
+        observer.registerForContentChanges(getInstance().context, OrganisationUnit.class);
+        observer.registerForContentChanges(getInstance().context, OrganisationUnitProgramRelationship.class);
+        observer.registerForContentChanges(getInstance().context, Program.class);
+        observer.registerForContentChanges(getInstance().context, ProgramIndicator.class);
+        observer.registerForContentChanges(getInstance().context, ProgramStage.class);
+        observer.registerForContentChanges(getInstance().context, ProgramStageDataElement.class);
+        observer.registerForContentChanges(getInstance().context, ProgramStageSection.class);
+        observer.registerForContentChanges(getInstance().context, ProgramTrackedEntityAttribute.class);
+        observer.registerForContentChanges(getInstance().context, TrackedEntity.class);
+        observer.registerForContentChanges(getInstance().context, TrackedEntityAttribute.class);
+        observer.registerForContentChanges(getInstance().context, TrackedEntityAttributeValue.class);
+        observer.registerForContentChanges(getInstance().context, TrackedEntityInstance.class);
+        observer.registerForContentChanges(getInstance().context, User.class);
+        return observer;
     }
 
     /**

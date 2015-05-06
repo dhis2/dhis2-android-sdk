@@ -19,6 +19,7 @@ package org.hisp.dhis2.android.sdk.utils.ui.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.widget.Spinner;
 

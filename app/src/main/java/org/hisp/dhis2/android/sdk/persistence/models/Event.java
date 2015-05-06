@@ -35,18 +35,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
-import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
 import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.squareup.okhttp.internal.Util;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
@@ -104,7 +100,7 @@ public class Event extends BaseSerializableModel {
 
     @JsonIgnore
     @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
-    public long localId;
+    public long localId = -1;
 
     @JsonIgnore
     @Column(unique = true)
@@ -204,9 +200,7 @@ public class Event extends BaseSerializableModel {
     public void save(boolean async) {
         /* check if there is an existing event with the same UID to avoid duplicates */
         Event existingEvent = DataValueController.getEventByUid(event);
-        boolean exists = false;
         if(existingEvent != null) {
-            exists = true;
             localId = existingEvent.localId;
         }
         if(getEvent() == null && DataValueController.getEvent(localId) != null) { //means that the event is local
@@ -215,12 +209,24 @@ public class Event extends BaseSerializableModel {
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
             updateManually(async);
         } else {
-            if(!exists) super.save(false); //ensuring a localId is created to give foreign key to datavalues
-            else super.save(async);
+
+            super.save(async);
+            boolean wait = true;
+            if(localId<0) { //workaround to wait for primary autoincrement key to be assigned with async=true
+                while(wait) {
+                    Event tempEvent = DataValueController.getEventByUid(event);
+                    if(tempEvent==null) continue;
+                    else {
+                        localId = tempEvent.localId;
+                        wait = false;
+                    }
+                    Thread.yield();
+                }
+            }
         }
-        if(dataValues!=null) {
-            for(DataValue dataValue: dataValues)
-            {
+
+        if (dataValues != null) {
+            for (DataValue dataValue : dataValues) {
                 dataValue.event = event;
                 dataValue.localEventId = localId;
                 dataValue.save(async);

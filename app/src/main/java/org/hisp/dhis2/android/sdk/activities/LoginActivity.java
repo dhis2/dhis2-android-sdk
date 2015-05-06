@@ -33,51 +33,33 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.events.MessageEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
-import org.hisp.dhis2.android.sdk.network.managers.Base64Manager;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
+import org.hisp.dhis2.android.sdk.persistence.preferences.AppPreferences;
 import org.hisp.dhis2.android.sdk.utils.APIException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * 
+ *
  */
-public class LoginActivity
-    extends Activity
-    implements OnClickListener
-{
+public class LoginActivity extends Activity implements OnClickListener {
     /**
-     * 
+     *
      */
     private final static String CLASS_TAG = "LoginActivity";
 
@@ -88,71 +70,75 @@ public class LoginActivity
     private ProgressBar progressBar;
     private View viewsContainer;
 
+    private AppPreferences mPrefs;
+
     @Override
-    protected void onCreate( Bundle savedInstanceState )
-    {
-        super.onCreate( savedInstanceState );
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if(savedInstanceState==null){
-            Dhis2Application.bus.register(this);
-            setupUI();
-        }
+
+        mPrefs = new AppPreferences(getApplicationContext());
+        setupUI();
     }
 
     @Override
-    public void onConfigurationChanged( Configuration newConfig )
-    {
-        super.onConfigurationChanged( newConfig );
-        setContentView( R.layout.activity_login );
+    public void onPause() {
+        super.onPause();
+        Dhis2Application.bus.unregister(this);
+    }
 
-        setupUI();
+    @Override
+    public void onResume() {
+        super.onResume();
+        Dhis2Application.bus.register(this);
     }
 
     /**
      * Sets up the initial UI elements
      */
-    private void setupUI()
-    {
+    private void setupUI() {
         viewsContainer = findViewById(R.id.login_views_container);
-        usernameEditText = (EditText) findViewById( R.id.username );
-        passwordEditText = (EditText) findViewById( R.id.password );
-        serverEditText = (EditText) findViewById( R.id.server_url );
-        loginButton = (Button) findViewById( R.id.login_button );
+        usernameEditText = (EditText) findViewById(R.id.username);
+        passwordEditText = (EditText) findViewById(R.id.password);
+        serverEditText = (EditText) findViewById(R.id.server_url);
+        loginButton = (Button) findViewById(R.id.login_button);
 
-        serverEditText.setText("https://apps.dhis2.org/dev");
-        usernameEditText.setText("android");
-        passwordEditText.setText("Android123");
-        
-        //Setting previous username in username field
-        String username = null;
-        
-        if(username!=null)
-        	if(username.length()>0)
-        		{
-        			usernameEditText.setText(username);
-        			passwordEditText.setText("");
-        		}
+        String server = mPrefs.getServerUrl();
+        String username = mPrefs.getUsername();
+        String password = "";
+
+        if (server == null) {
+            server = "https://";
+        }
+
+        if (username == null) {
+            username = "";
+            password = "";
+        }
+
+        serverEditText.setText(server);
+        usernameEditText.setText(username);
+        passwordEditText.setText(password);
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.GONE);
-        loginButton.setOnClickListener( this );
+        loginButton.setOnClickListener(this);
     }
 
     @Override
-    public void onClick( View v )
-    {
+    public void onClick(View v) {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-
         String serverURL = serverEditText.getText().toString();
-        
+
         //remove whitespace as last character for username
-        if(username.charAt(username.length()-1)== ' ')
-        	username=username.substring(0, username.length()-1);
+        if (username.charAt(username.length() - 1) == ' ') {
+            username = username.substring(0, username.length() - 1);
+        }
 
         login(serverURL, username, password);
     }
-    
+
     public void login(String serverUrl, String username, String password) {
         showProgress();
         NetworkManager.getInstance().setServerUrl(serverUrl);
@@ -174,14 +160,18 @@ public class LoginActivity
         Log.e(CLASS_TAG, "on Login!");
 
         if (event.getResponseHolder().getItem() != null) {
-            if(event.eventType == ResponseEvent.EventType.onLogin) {
+            if (event.eventType == ResponseEvent.EventType.onLogin) {
                 User user = (User) event.getResponseHolder().getItem();
                 Log.e(CLASS_TAG, user.getName());
                 user.save(false);
-                launchMainActivity();
+                runOnUiThread(new Runnable() {
+                    @Override public void run() {
+                        handleUser();
+                    }
+                });
             }
         } else {
-            if(event.getResponseHolder()!=null && event.getResponseHolder().getApiException() != null) {
+            if (event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null) {
                 event.getResponseHolder().getApiException().printStackTrace();
                 onLoginFail(event.getResponseHolder().getApiException());
             }
@@ -197,19 +187,21 @@ public class LoginActivity
         };
         Dhis2.saveCredentials(this, null, null, null);
 
-        if(e.getResponse() == null) {
+        if (e.getResponse() == null) {
             String type = "";
-            if(e.isHttpError()) type = "HttpError";
-            else if(e.isUnknownError()) type = "UnknownError";
-            else if(e.isNetworkError()) type = "NetworkError";
-            else if(e.isConversionError()) type = "ConversionError";
+            if (e.isHttpError()) type = "HttpError";
+            else if (e.isUnknownError()) type = "UnknownError";
+            else if (e.isNetworkError()) type = "NetworkError";
+            else if (e.isConversionError()) type = "ConversionError";
             Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), type + ": "
                     + e.getMessage(), listener);
         } else {
-            if( e.getResponse().getStatus() == 401 ) {
-                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.invalid_username_or_password), listener);
+            if (e.getResponse().getStatus() == 401) {
+                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message),
+                        getString(R.string.invalid_username_or_password), listener);
             } else {
-                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message), getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
+                Dhis2.getInstance().showErrorDialog(this, getString(R.string.error_message),
+                        getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
             }
         }
     }
@@ -221,25 +213,22 @@ public class LoginActivity
         viewsContainer.startAnimation(anim);
     }
 
+    private void handleUser() {
+        mPrefs.putServerUrl(serverEditText.getText().toString());
+        mPrefs.putUserName(usernameEditText.getText().toString());
+        launchMainActivity();
+    }
+
     public void launchMainActivity() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(LoginActivity.this, ((Dhis2Application) getApplication()).getMainActivity()));
-            }
-        });
-        Dhis2Application.bus.unregister(this);
-        this.finish();
+        startActivity(new Intent(LoginActivity.this,
+                ((Dhis2Application) getApplication()).getMainActivity()));
+        finish();
     }
 
     @Override
-    public boolean onKeyDown( int keyCode, KeyEvent event )
-    {
-        if ( (keyCode == KeyEvent.KEYCODE_BACK) )
-        {
-            finish();
-            System.exit( 0 );
-        }
-        return super.onKeyDown( keyCode, event );
+    public void onBackPressed() {
+        finish();
+        System.exit(0);
+        super.onBackPressed();
     }
 }

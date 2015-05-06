@@ -44,6 +44,9 @@ import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadAssignedProgramsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadConstantsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadOptionSetsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramRuleActionsTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramRuleVariablesTask;
+import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramRulesTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadProgramTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntitiesTask;
@@ -64,6 +67,9 @@ import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleAction;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
@@ -72,6 +78,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.utils.APIException;
+import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -97,12 +104,15 @@ public class MetaDataLoader {
     public static final String OPTION_SETS = "option_sets";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "tracked_entity_attributes";
     public static final String CONSTANTS = "constants";
+    public static final String PROGRAMRULES = "programrules";
+    public static final String PROGRAMRULEVARIABLES = "programrulevariables";
+    public static final String PROGRAMRULEACTIONS = "programruleactions";
 
     private Context context;
     boolean loading = false;
     boolean synchronizing = false;
     private int retries = 0;
-    private int maxRetries = 9;
+    private static final int maxRetries = 9;
 
     private SystemInfo systemInfo;
 
@@ -186,6 +196,24 @@ public class MetaDataLoader {
                 return;
             }
         }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
+            if (!isMetaDataItemLoaded(PROGRAMRULES)) {
+                loadProgramRules(synchronizing);
+                return;
+            }
+        }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
+            if (!isMetaDataItemLoaded(PROGRAMRULEVARIABLES)) {
+                loadProgramRuleVariables(synchronizing);
+                return;
+            }
+        }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
+            if (!isMetaDataItemLoaded(PROGRAMRULEACTIONS)) {
+                loadProgramRuleActions(synchronizing);
+                return;
+            }
+        }
         onFinishLoading(true); //called when everything is loaded.
     }
 
@@ -194,7 +222,7 @@ public class MetaDataLoader {
         if(currentLoadingDate == null) {
             return;
         }
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        String pattern = Utils.DATE_FORMAT;
         DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);//combinedFormatter.parseDateTime(currentLoadingDate).withZone(DateTimeZone.getDefault());
         if(Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(ASSIGNED_PROGRAMS);
@@ -258,6 +286,42 @@ public class MetaDataLoader {
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
             if(updatedDateTime.isBefore(currentDateTime)) {
                 updateConstants();
+                return;
+            }
+        }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
+            String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULES);
+            if(lastUpdatedString == null) {
+                loadProgramRules(synchronizing);
+                return;
+            }
+            DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+            if(updatedDateTime.isBefore(currentDateTime)) {
+                loadProgramRules(synchronizing);
+                return;
+            }
+        }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
+            String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULEVARIABLES);
+            if(lastUpdatedString == null) {
+                loadProgramRuleVariables(synchronizing);
+                return;
+            }
+            DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+            if(updatedDateTime.isBefore(currentDateTime)) {
+                loadProgramRuleVariables(synchronizing);
+                return;
+            }
+        }
+        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
+            String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULEACTIONS);
+            if(lastUpdatedString == null) {
+                loadProgramRuleActions(synchronizing);
+                return;
+            }
+            DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+            if(updatedDateTime.isBefore(currentDateTime)) {
+                loadProgramRuleActions(synchronizing);
                 return;
             }
         }
@@ -678,7 +742,134 @@ public class MetaDataLoader {
         task.execute();
     }
 
+    private void loadProgramRules(boolean update) {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_programrules));
+        final ResponseHolder<List<ProgramRule>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<ProgramRule>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadProgramRules);
+        event.setResponseHolder(holder);
+        LoadProgramRulesTask task = new LoadProgramRulesTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<ProgramRule>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("programRules");
+                            if( node == null ) { /* in case there are no items */
+                                holder.setItem(new ArrayList<ProgramRule>());
+                            } else {
+                                TypeReference<List<ProgramRule>> typeRef =
+                                        new TypeReference<List<ProgramRule>>() {
+                                        };
+                                List<ProgramRule> programRules = Dhis2.getInstance().getObjectMapper().
+                                        readValue(node.traverse(), typeRef);
+                                holder.setItem(programRules);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
 
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                }, update);
+        task.execute();
+    }
+
+    private void loadProgramRuleVariables(boolean update) {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_programrulevariables));
+        final ResponseHolder<List<ProgramRuleVariable>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<ProgramRuleVariable>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadProgramRuleVariables);
+        event.setResponseHolder(holder);
+        LoadProgramRuleVariablesTask task = new LoadProgramRuleVariablesTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<ProgramRuleVariable>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("programRuleVariables");
+                            if( node == null ) { /* in case there are no items */
+                                holder.setItem(new ArrayList<ProgramRuleVariable>());
+                            } else {
+                                TypeReference<List<ProgramRuleVariable>> typeRef =
+                                        new TypeReference<List<ProgramRuleVariable>>() {
+                                        };
+                                List<ProgramRuleVariable> programRuleVariables = Dhis2.getInstance().getObjectMapper().
+                                        readValue(node.traverse(), typeRef);
+                                holder.setItem(programRuleVariables);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                }, update);
+        task.execute();
+    }
+
+    private void loadProgramRuleActions(boolean update) {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_programruleactions));
+        final ResponseHolder<List<ProgramRuleAction>> holder = new ResponseHolder<>();
+        final MetaDataResponseEvent<List<ProgramRuleAction>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadProgramRuleActions);
+        event.setResponseHolder(holder);
+        LoadProgramRuleActionsTask task = new LoadProgramRuleActionsTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<ProgramRuleAction>>() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        holder.setResponse(response);
+                        try {
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().
+                                    readTree(response.getBody());
+                            node = node.get("programRuleActions");
+                            if( node == null ) { /* in case there are no items */
+                                holder.setItem(new ArrayList<ProgramRuleAction>());
+                            } else {
+                                TypeReference<List<ProgramRuleAction>> typeRef =
+                                        new TypeReference<List<ProgramRuleAction>>() {
+                                        };
+                                List<ProgramRuleAction> programRuleActions = Dhis2.getInstance().getObjectMapper().
+                                        readValue(node.traverse(), typeRef);
+                                holder.setItem(programRuleActions);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                        }
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        holder.setApiException(exception);
+                        onResponse(event);
+                    }
+                }, update);
+        task.execute();
+    }
 
     private void onFinishLoading(boolean success) {
         Log.d(CLASS_TAG, "onFinishLoading" + success);
@@ -694,20 +885,13 @@ public class MetaDataLoader {
                     systemInfo.update(true);
                 else systemInfo.save(true);
             }
-        } else {
-
         }
-
-        LoadingEvent event;
-        if( !synchronizing ) { //initial load or force load of all data.
-            event = new LoadingEvent(BaseEvent.EventType.onLoadingMetaDataFinished); //called in Dhis2 Subscribing method
-        } else {
-            event = new LoadingEvent(BaseEvent.EventType.onUpdateMetaDataFinished);
-            //todo: not yet used but can be used to notify updates in fragments +++
-        }
-        event.success = success;
         loading = false;
         synchronizing = false;
+
+        LoadingEvent event;
+        event = new LoadingEvent(BaseEvent.EventType.onLoadingMetaDataFinished); //called in Dhis2 Subscribing method
+        event.success = success;
         Dhis2Application.bus.post(event);
     }
 
@@ -893,7 +1077,7 @@ public class MetaDataLoader {
                     int index = 0;
                     for( Option o: os.options ) {
                         o.sortIndex = index;
-                        o.setOptionSet( os.getId() ); //save options async since there usually is a lot and they won't be displayed on the first screen.
+                        o.setOptionSet( os.getId() );
                         o.save(true);
                         index ++;
                     }
@@ -908,8 +1092,7 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(true); //todo: not saving async here because the tea may are used in first screen shown (selectProgramFragment)
-                                    //todo: implement other way of fixing this as saving should always happen async to have everything queued in the right order in transactions.
+                    tea.save(true);
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
@@ -928,6 +1111,42 @@ public class MetaDataLoader {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
                 for(Constant constant: constants) constant.save(true);
                 flagMetaDataItemUpdated(CONSTANTS, systemInfo.serverDate);
+                loadItem();
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
+                List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
+                Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+                for(ProgramRule programRule: programRules) {
+                    programRule.save(true);
+                }
+                if(!synchronizing) {
+                    flagMetaDataItemLoaded(PROGRAMRULES, true);
+                } else {
+                    flagMetaDataItemUpdated(PROGRAMRULES, systemInfo.serverDate);
+                }
+                loadItem();
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables ) {
+                List<ProgramRuleVariable> programRuleVariables = (List<ProgramRuleVariable>) event.getResponseHolder().getItem();
+                Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+                for(ProgramRuleVariable programRuleVariable: programRuleVariables) {
+                    programRuleVariable.save(true);
+                }
+                if(!synchronizing) {
+                    flagMetaDataItemLoaded(PROGRAMRULEVARIABLES, true);
+                } else {
+                    flagMetaDataItemUpdated(PROGRAMRULEVARIABLES, systemInfo.serverDate);
+                }
+                loadItem();
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions ) {
+                List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
+                Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+                for(ProgramRuleAction programRuleAction: programRuleActions) {
+                    programRuleAction.save(true);
+                }
+                if(!synchronizing) {
+                    flagMetaDataItemLoaded(PROGRAMRULEACTIONS, true);
+                } else {
+                    flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.serverDate);
+                }
                 loadItem();
             } else {
                 onFinishLoading(false);
@@ -1049,5 +1268,14 @@ public class MetaDataLoader {
         flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, null);
         flagMetaDataItemLoaded(CONSTANTS, false);
         flagMetaDataItemUpdated(CONSTANTS, null);
+
+        flagMetaDataItemLoaded(PROGRAMRULES, false);
+        flagMetaDataItemUpdated(PROGRAMRULES, null);
+
+        flagMetaDataItemLoaded(PROGRAMRULEVARIABLES, false);
+        flagMetaDataItemUpdated(PROGRAMRULEVARIABLES, null);
+
+        flagMetaDataItemLoaded(PROGRAMRULEACTIONS, false);
+        flagMetaDataItemUpdated(PROGRAMRULEACTIONS, null);
     }
 }

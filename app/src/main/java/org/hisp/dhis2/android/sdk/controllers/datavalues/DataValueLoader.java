@@ -605,6 +605,31 @@ public class DataValueLoader {
                     if(synchronizing) {
                         //todo: implement different handling if synchronizing than if doing 1st load
                     }
+                    loadedEventCounter++;
+                    //check if there have been changes made locally since last update.
+                    //if there are local updates, don't overwrite with data from server.
+                    Event localEvent = DataValueController.getEventByUid(event.event);
+                    if(localEvent != null) {
+                        event.localId = localEvent.localId;
+                        event.localEnrollmentId = localEvent.localEnrollmentId;
+                        if( localEvent.fromServer == true ) {
+                            event.update(true);
+                            if(event.dataValues != null) {
+                                for(DataValue dataValue: event.dataValues) {
+                                    dataValue.localEventId = event.localId;
+                                    dataValue.event = event.event;
+                                    dataValue.save(true);
+                                }
+                            }
+                        }
+                    } else {
+                        //check if there is an enrollment for this event stored on the device
+                        //and store the localId of the enrollment
+                        //(there will not be enrollment if its a single event without registration)
+                        Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
+                        if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
+                        event.save(true);
+                    }
                     //check if there is an enrollment for this event stored on the device
                     //and store the localId of the enrollment
                     //(there will not be enrollment if its a single event without registration)
@@ -707,8 +732,10 @@ public class DataValueLoader {
                 if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
                     return false;
                 }
+                Log.d(CLASS_TAG, "program done for: " + program.getName() + ": " +organisationUnit.getLabel());
             }
         }
+
         return true;
     }
 

@@ -32,7 +32,6 @@ package org.hisp.dhis2.android.sdk.utils;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
@@ -42,58 +41,102 @@ public class CustomDialogFragment
 {
     String title;
     String message;
-    String positiveButton;
-    String negativeButton;
-    OnClickListener positiveButtonListener;
-    OnClickListener negativeButtonListener;
+    String firstOption;
+    String secondOption;
+    String thirdOption;
+    OnClickListener firstOptionListener;
+    OnClickListener secondOptionListener;
+    OnClickListener thirdOptionListener;
+    int iconId = -1;
     
-    public CustomDialogFragment(String title, String message, String positiveButton, OnClickListener positiveButtonListener) {
+    public CustomDialogFragment(String title, String message, String firstOption, OnClickListener firstOptionListener) {
     	this.title = title;
         this.message = message;
-        this.positiveButton = positiveButton;
-        this.positiveButtonListener = positiveButtonListener;
-        this.negativeButton = null;
+        this.firstOption = firstOption;
+        this.firstOptionListener = firstOptionListener;
+        this.secondOption = null;
+    }
+
+    public CustomDialogFragment(String title, String message, String firstOption, int iconId,
+                                OnClickListener firstOptionListener) {
+        this.title = title;
+        this.message = message;
+        this.firstOption = firstOption;
+        this.iconId = iconId;
+        this.firstOptionListener = firstOptionListener;
+        this.secondOption = null;
     }
     
-    public CustomDialogFragment(String title, String message, String positiveButton)
+    public CustomDialogFragment(String title, String message, String firstOption)
     {
         this.title = title;
         this.message = message;
-        this.positiveButton = positiveButton;
-        this.negativeButton = null;
-        this.positiveButtonListener = null;
+        this.firstOption = firstOption;
+        this.secondOption = null;
+        this.firstOptionListener = null;
     }
     
-    public CustomDialogFragment(String title, String message, String positiveButton, String negativeButton, OnClickListener positiveButtonListener)
+    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, OnClickListener firstOptionListener)
     {
         this.title = title;
         this.message = message;
-        this.positiveButton = positiveButton;
-        this.negativeButton = negativeButton;
-        this.positiveButtonListener = positiveButtonListener;
+        this.firstOption = firstOption;
+        this.secondOption = secondOption;
+        this.firstOptionListener = firstOptionListener;
     }
     
-    public CustomDialogFragment(String title, String message, String positiveButton, String negativeButton, OnClickListener positiveButtonListener,
-    		OnClickListener negativeButtonListener)
+    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, OnClickListener firstOptionListener,
+    		OnClickListener secondOptionListener)
     {
         this.title = title;
         this.message = message;
-        this.positiveButton = positiveButton;
-        this.negativeButton = negativeButton;
-        this.positiveButtonListener = positiveButtonListener;
-        this.negativeButtonListener = negativeButtonListener;
+        this.firstOption = firstOption;
+        this.secondOption = secondOption;
+        this.firstOptionListener = firstOptionListener;
+        this.secondOptionListener = secondOptionListener;
     }
-    
+
+    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, int iconId,
+                                OnClickListener firstOptionListener,
+                                OnClickListener secondOptionListener)
+    {
+        this.title = title;
+        this.message = message;
+        this.firstOption = firstOption;
+        this.secondOption = secondOption;
+        this.firstOptionListener = firstOptionListener;
+        this.secondOptionListener = secondOptionListener;
+        this.iconId = iconId;
+    }
+
+    public CustomDialogFragment(String title, String message, String firstOption,
+                                String secondOption, String thirdOption,
+                                OnClickListener firstOptionListener,
+                                OnClickListener secondOptionListener,
+                                OnClickListener thirdOptionListener) {
+        this.title = title;
+        this.message = message;
+        this.firstOption = firstOption;
+        this.secondOption = secondOption;
+        this.thirdOption = thirdOption;
+        this.firstOptionListener = firstOptionListener;
+        this.secondOptionListener = secondOptionListener;
+        this.thirdOptionListener = thirdOptionListener;
+    }
+
     @Override
     public Dialog onCreateDialog( Bundle savedInstanceState )
     {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder( getActivity() );
+        if (iconId > 0) {
+            alertDialogBuilder.setIcon(iconId);
+        }
         alertDialogBuilder.setTitle( title );
         alertDialogBuilder.setMessage( message );
         // null should be your on click listener
-        alertDialogBuilder.setPositiveButton( positiveButton, positiveButtonListener );
-        if(negativeButtonListener==null)
-        	negativeButtonListener = new OnClickListener()
+        alertDialogBuilder.setPositiveButton(firstOption, firstOptionListener);
+        if(secondOptionListener ==null)
+        	secondOptionListener = new OnClickListener()
             {
 
                 @Override
@@ -102,8 +145,13 @@ public class CustomDialogFragment
                     dialog.dismiss();
                 }
             }; 
-        if(negativeButton!=null)
-        	alertDialogBuilder.setNegativeButton( negativeButton, negativeButtonListener);
+        if(secondOption !=null) {
+            alertDialogBuilder.setNegativeButton(secondOption, secondOptionListener);
+        }
+        if(thirdOption!=null) {
+            alertDialogBuilder.setNeutralButton(thirdOption, thirdOptionListener);
+        }
+
 
         return alertDialogBuilder.create();
     }

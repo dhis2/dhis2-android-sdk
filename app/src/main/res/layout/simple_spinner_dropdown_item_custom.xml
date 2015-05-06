@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ * Copyright (c) 2015, University of Oslo
   ~  * All rights reserved.
@@ -27,22 +28,12 @@
   ~  */
   -->
 
-<resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">8dp</dimen>
-    <dimen name="activity_vertical_margin">4dp</dimen>
-    <dimen name="drawer_size">250dp</dimen>
-
-    <dimen name="card_text_view_margin">8dp</dimen>
-
-    <dimen name="floating_action_button_size">56dp</dimen>
-    <dimen name="floating_action_button_size_mini">40dp</dimen>
-    <dimen name="floating_action_button_shadow_size">12dp</dimen>
-    <dimen name="xsmall_text_size">14sp</dimen>
-    <dimen name="small_text_size">18sp</dimen>
-    <dimen name="medium_text_size">22sp</dimen>
-    <dimen name="large_text_size">24sp</dimen>
-    <dimen name="xlarge_text_size">26sp</dimen>
-
-    <dimen name="dropdownListPreferredItemHeight">40dp</dimen>
-</resources>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="?android:attr/spinnerDropDownItemStyle"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dropdownListPreferredItemHeight"
+    android:textSize="@dimen/medium_text_size"
+    android:padding="4dp"
+    android:ellipsize="marquee"/>

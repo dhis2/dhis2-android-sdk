@@ -203,13 +203,12 @@ public class Event extends BaseSerializableModel {
         if(existingEvent != null) {
             localId = existingEvent.localId;
         }
-        if(getEvent() == null && DataValueController.getEvent(localId) != null) { //means that the event is local
+        if(getEvent() == null && localId >= 0) { //means that the event is local and has been saved previously
             //then we don't want to update the event reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
             updateManually(async);
         } else {
-
             super.save(async);
             boolean wait = true;
             if(localId<0) { //workaround to wait for primary autoincrement key to be assigned with async=true

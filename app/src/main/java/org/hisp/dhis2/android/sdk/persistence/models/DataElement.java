@@ -35,6 +35,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.Map;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
@@ -87,6 +89,14 @@ public class DataElement extends BaseNameableObject {
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
         this.optionSet = (String) optionSet.get("id");
+    }
+
+    public String getDisplayName() {
+        if (!isEmpty(displayFormName)) {
+            return displayFormName;
+        } else {
+            return displayName;
+        }
     }
 
     public String getType() {

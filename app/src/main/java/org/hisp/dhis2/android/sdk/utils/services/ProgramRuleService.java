@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
  */
 public class ProgramRuleService {
 
+    private static final String CLASS_TAG = ProgramRuleService.class.getSimpleName();
+
     private static final Pattern CONDITION_PATTERN = Pattern.compile( "#\\{(.+)\\}" );
 
     public static boolean evaluate( final String condition, Event event ) {
@@ -58,10 +60,13 @@ public class ProgramRuleService {
                 return false;
             }
 
+            value = '\'' + value + '\'';
             matcher.appendReplacement( buffer, value );
         }
 
         String conditionReplaced = TextUtils.appendTail(matcher, buffer);
+        Log.d(CLASS_TAG, condition);
+        Log.d(CLASS_TAG, conditionReplaced);
 
         return ExpressionUtils.isTrue(conditionReplaced, null);
     }

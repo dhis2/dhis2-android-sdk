@@ -42,7 +42,7 @@ public class ProgramStageSection extends BaseIdentifiableObject {
 
     public List<ProgramStageDataElement> getProgramStageDataElements() {
         if (programStageDataElements == null)
-            programStageDataElements = Select.all(ProgramStageDataElement.class, Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(id));
+            programStageDataElements = MetaDataController.getProgramStageDataElements(this);
         return programStageDataElements;
     }
 

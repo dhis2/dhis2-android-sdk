@@ -137,8 +137,7 @@ public class ProgramStage extends BaseIdentifiableObject {
 
     public List<ProgramStageDataElement> getProgramStageDataElements() {
         if(programStageDataElements == null) {
-            programStageDataElements = Select.all(ProgramStageDataElement.class,
-                    Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGE).is(id));
+            programStageDataElements = MetaDataController.getProgramStageDataElements(this);
         }
         return programStageDataElements;
     }

@@ -56,11 +56,14 @@ import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
@@ -99,6 +102,20 @@ public class MetaDataController {
         return new Select().from(ProgramStageSection.class).where(Condition.column
                 (ProgramStageSection$Table.PROGRAMSTAGE).is(programStageId)).
                 orderBy(true, ProgramStageSection$Table.SORTORDER).queryList();
+    }
+
+    public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
+        if(section==null) return null;
+        return new Select().from(ProgramStageDataElement.class).where(Condition.column
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).orderBy
+                (ProgramStageDataElement$Table.SORTORDER).queryList();
+    }
+
+    public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {
+        if(programStage==null) return null;
+        return new Select().from(ProgramStageDataElement.class).where(Condition.column
+                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.id)).orderBy
+                (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     /**
@@ -340,7 +357,10 @@ public class MetaDataController {
                 TrackedEntity.class,
                 TrackedEntityAttribute.class,
                 TrackedEntityInstance.class,
-                User.class);
+                User.class,
+                ProgramRule.class,
+                ProgramRuleVariable.class,
+                ProgramRuleAction.class);
     }
 
     @Subscribe

@@ -316,13 +316,6 @@ public class MetaDataController {
                 Condition.column(ProgramIndicator$Table.SECTION).is(section));
     }
 
-    public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
-        if(section==null) return null;
-        return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).
-                orderBy(ProgramStageDataElement$Table.SORTORDER).queryList();
-    }
-
     public void synchronizeMetaData(Context context) {
         metaDataLoader.synchronizeMetaData(context);
     }

@@ -309,7 +309,9 @@ public class DataEntryFragment extends Fragment
             doBack();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
-            submitEvent();
+            if(validate()) {
+                submitEvent();
+            }
         }
 
         return super.onOptionsItemSelected(menuItem);
@@ -409,6 +411,9 @@ public class DataEntryFragment extends Fragment
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(hasDataChanged) {
+            submitEvent();
+        }
         DataEntryFragmentSection section = (DataEntryFragmentSection)
                 mSpinnerAdapter.getItem(position);
 
@@ -440,7 +445,8 @@ public class DataEntryFragment extends Fragment
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(submitEvent()) {
+                            if(validate()) {
+                                submitEvent();
                                 getFragmentManager().popBackStack();
                             }
                         }
@@ -793,54 +799,55 @@ public class DataEntryFragment extends Fragment
         return mSpinnerContainer != null;
     }
 
-    /**
-     * returns true if the event was successfully saved
-     * @return
-     */
-    public boolean submitEvent() {
-        if(saving) return false;
+    public boolean validate() {
         ArrayList<String> errors = isEventValid();
         if (!errors.isEmpty()) {
             ValidationErrorDialog dialog = ValidationErrorDialog
                     .newInstance(errors);
             dialog.show(getChildFragmentManager());
             return false;
-        }
-        else {
-
-            flagDataChanged(false);
-            new Thread() {
-                public void run() {
-                saving = true;
-                if(mForm!=null && isAdded()) {
-                    final Context context = getActivity().getBaseContext();
-
-                    mForm.getEvent().setFromServer(true);
-                    mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
-                    mForm.getEvent().save(true);
-
-                    /*workaround for dbflow concurrency bug. This ensures that datavalues are saved
-                    before Dhis2 sends data to server to avoid some data values not being sent in race
-                    conditions*/
-                    mForm.getEvent().setFromServer(false);
-                    mForm.getEvent().save(true);
-
-
-                    TimerTask timerTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            Dhis2.sendLocalData(context);
-                        }
-                    };
-                    Timer timer = new Timer();
-                    timer.schedule(timerTask, 5000);
-                    }
-                    saving = false;
-                }
-
-            }.start();
+        } else {
             return true;
         }
+    }
+
+    /**
+     * returns true if the event was successfully saved
+     * @return
+     */
+    public void submitEvent() {
+        if(saving) return;
+        flagDataChanged(false);
+        new Thread() {
+            public void run() {
+            saving = true;
+            if(mForm!=null && isAdded()) {
+                final Context context = getActivity().getBaseContext();
+
+                mForm.getEvent().setFromServer(true);
+                mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
+                mForm.getEvent().save(true);
+
+                /*workaround for dbflow concurrency bug. This ensures that datavalues are saved
+                before Dhis2 sends data to server to avoid some data values not being sent in race
+                conditions*/
+                mForm.getEvent().setFromServer(false);
+                mForm.getEvent().save(true);
+
+
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Dhis2.sendLocalData(context);
+                    }
+                };
+                Timer timer = new Timer();
+                timer.schedule(timerTask, 5000);
+                }
+                saving = false;
+            }
+
+        }.start();
     }
 
     private ArrayList<String> isEventValid() {

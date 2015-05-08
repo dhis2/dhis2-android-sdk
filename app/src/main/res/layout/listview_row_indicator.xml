@@ -37,7 +37,7 @@
     <include layout="@layout/listview_row_text_view_label"/>
 
     <org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView
-        android:background="@drawable/textfield_background"
+        android:background="@color/light_grey_transparent"
         android:id="@+id/indicator_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

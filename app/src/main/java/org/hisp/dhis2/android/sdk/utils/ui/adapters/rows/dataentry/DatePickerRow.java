@@ -39,6 +39,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
+import org.hisp.dhis2.android.sdk.fragments.dataentry.EditTextValueChangedEvent;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -167,6 +169,8 @@ public class DatePickerRow implements DataEntryRow {
         public void onClick(View view) {
             editText.setText(EMPTY_FIELD);
             value.setValue(EMPTY_FIELD);
+            Dhis2Application.getEventBus()
+                    .post(new EditTextValueChangedEvent(value));
         }
     }
 
@@ -190,6 +194,8 @@ public class DatePickerRow implements DataEntryRow {
             String newValue = date.toString(DATE_FORMAT);
             editText.setText(newValue);
             value.setValue(newValue);
+            Dhis2Application.getEventBus()
+                    .post(new EditTextValueChangedEvent(value));
         }
     }
 

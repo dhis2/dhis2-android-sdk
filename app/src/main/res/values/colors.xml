@@ -60,6 +60,14 @@
     <color name="dark_navy_blue">#FF1D5288</color>
     <color name="red">#FFF44336</color>
     <color name="transparent">#00000000</color>
+    <color name="transparent_blue">#E1F5FE</color>
+
+    <color name="button_re_log_in_state_enabled_false">#B0BEC5</color>
+    <color name="button_re_log_in_state_unpressed">#FF1F70C3</color>
+    <color name="button_re_log_in_state_pressed">#FF1D5288</color>
+
+    <color name="light_transparent_blue">#FF1f70c3</color>
+    <color name="spinner_text_grey">#ff333333</color>
 
     <color name="light_blue">#67b0f9</color>
     <color name="actionbar_blue">#1f70c3</color>

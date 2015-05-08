@@ -1,44 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  ~ Copyright (c) 2015, dhis2
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~
+  ~ * Redistributions of source code must retain the above copyright notice, this
+  ~ list of conditions and the following disclaimer.
+  ~
+  ~ * Redistributions in binary form must reproduce the above copyright notice,
+  ~ this list of conditions and the following disclaimer in the documentation
+  ~ and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  ~ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  ~ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  ~ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  ~ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  ~ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  ~ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_background"
-    android:orientation="vertical"
-    android:padding="5dp" >
-
-    <include layout="@layout/listview_row_label" />
+    android:weightSum="1"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:background="@color/white">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:padding="12dp"
+        android:orientation="vertical"
+        android:layout_weight="0.86"
+        android:gravity="center_vertical">
+
+        <include layout="@layout/listview_row_text_view_label"/>
 
         <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
-            android:id="@+id/date_picker_dialog_invoker"
-            android:layout_width="0dp"
+            android:id="@+id/date_picker_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.95"
-            android:background="@drawable/editbox_background"
-            android:focusableInTouchMode="false"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:focusable="false"
             android:hint="@string/enter_date"
             android:inputType="date"
-            android:paddingBottom="11dp"
-            android:paddingTop="11dp"
             android:singleLine="true"
-            android:textSize="16sp"
-            app:font="@string/regular_font_name"/>
+            android:textSize="@dimen/medium_text_size"
+            app:font="@string/light_font_name"/>
+    </LinearLayout>
 
-        <ImageView
-            android:id="@+id/clearEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0.05"
-            android:background="@drawable/listview_action_button_selector"
-            android:clickable="true"
-            android:contentDescription="@string/imgdesc"
-            android:src="@drawable/ic_cancel" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.14"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/light_grey"/>
+
+        <ImageButton
+            android:id="@+id/clear_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/transparent_selector"
+            android:contentDescription="@string/description"
+            android:src="@drawable/ic_cancel"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -95,7 +95,7 @@ public class MetaDataController {
     }
 
     public static List<Option> getOptions(String optionSetId) {
-        return new Select().from(Option.class).where(Condition.column(Option$Table.OPTIONSET).is(optionSetId)).queryList();
+        return new Select().from(Option.class).where(Condition.column(Option$Table.OPTIONSET).is(optionSetId)).orderBy(Option$Table.SORTINDEX).queryList();
     }
 
     public static List<ProgramStageSection> getProgramStageSections(String programStageId) {
@@ -314,6 +314,13 @@ public class MetaDataController {
     public static List<ProgramIndicator> getProgramIndicatorsBySection(String section) {
         return Select.all(ProgramIndicator.class,
                 Condition.column(ProgramIndicator$Table.SECTION).is(section));
+    }
+
+    public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
+        if(section==null) return null;
+        return new Select().from(ProgramStageDataElement.class).where(Condition.column
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).
+                orderBy(ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     public void synchronizeMetaData(Context context) {

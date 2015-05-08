@@ -45,4 +45,6 @@
     <dimen name="xlarge_text_size">26sp</dimen>
 
     <dimen name="dropdownListPreferredItemHeight">40dp</dimen>
+
+    <integer name="activity_anim_duration">300</integer>
 </resources>

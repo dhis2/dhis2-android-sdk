@@ -272,9 +272,6 @@
     <string name="loading_programruleactions">Loading program rule actions</string>
 
     <string name="find_option">Find Option</string>
-    <string name="enter_date">Enter Date</string>
-    <string name="enter_integer">Enter Number</string>
-    <string name="enter_text">Enter Text</string>
 
     <string-array name="update_frequencies">
         <item>1 Minute</item>
@@ -291,10 +288,45 @@
     <string name="register_event">Register Event</string>
     <string name="upcoming_events">Upcoming Events</string>
 
+    <string name="new_event">New event</string>
+    <string name="event_sent">Sent</string>
+    <string name="event_offline">Offline</string>
+    <string name="event_error">Error</string>
+
     <string name="startdate">Start date</string>
     <string name="enddate">End date</string>
     <string name="duedate">Due date</string>
     <string name="eventname">Event name</string>
     <string name="choose_organisation_unit">Choose organisation unit</string>
     <string name="choose_program">Choose program</string>
+
+    <string name="validation_error">Please complete the following compulsory fields</string>
+    <string name="warning_hidefieldwithvalue">The following fields with value is being hidden.</string>
+    <string name="report_date">Report date</string>
+
+    <string name="enter_coordinates">Enter coordinates</string>
+    <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
+    <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
+
+    <string name="enter_text">Enter text</string>
+    <string name="enter_long_text">Enter long text</string>
+    <string name="enter_number">Enter number</string>
+    <string name="enter_integer">Enter integer</string>
+    <string name="enter_negative_integer">Enter negative integer</string>
+    <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
+    <string name="enter_positive_integer">Enter positive integer</string>
+    <string name="enter_date">Enter date</string>
+
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="none">None</string>
+
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_other">Other</string>
+
+    <string name="registered_events">Registered events</string>
+
+    <string name="status">Status</string>
 </resources>

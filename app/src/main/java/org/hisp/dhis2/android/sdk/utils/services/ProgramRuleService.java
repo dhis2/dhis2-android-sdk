@@ -42,7 +42,6 @@ public class ProgramRuleService {
             if(programRuleVariable==null) {
                 return false;
             }
-            DataElement dataElement = MetaDataController.getDataElement(programRuleVariable.dataElement);
             DataValue dataValue = null;
             if(event.getDataValues()!=null) {
                 for(DataValue dv: event.getDataValues()) {
@@ -65,8 +64,6 @@ public class ProgramRuleService {
         }
 
         String conditionReplaced = TextUtils.appendTail(matcher, buffer);
-        Log.d(CLASS_TAG, condition);
-        Log.d(CLASS_TAG, conditionReplaced);
 
         return ExpressionUtils.isTrue(conditionReplaced, null);
     }
@@ -78,10 +75,8 @@ public class ProgramRuleService {
 
         while(matcher.find()) {
             String variableName = matcher.group( 1 );
-            Log.d("programruleservice: ", variableName);
             ProgramRuleVariable programRuleVariable = MetaDataController.getProgramRuleVariableByName(variableName);
             if(programRuleVariable!=null) {
-                Log.d("programruleservice", "the dataelement is: " + programRuleVariable.dataElement);
                 dataElementsInRule.add(programRuleVariable.dataElement);
             }
         }

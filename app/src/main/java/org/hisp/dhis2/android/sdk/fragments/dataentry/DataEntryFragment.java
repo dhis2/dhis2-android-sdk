@@ -57,17 +57,14 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.activities.INavigationHandler;
 import org.hisp.dhis2.android.sdk.activities.OnBackPressedListener;
+import org.hisp.dhis2.android.sdk.fragments.ProgressDialogFragment;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.persistence.models.Event;
-import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.DataValueAdapter;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.SectionAdapter;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
@@ -140,6 +137,9 @@ public class DataEntryFragment extends Fragment
     private boolean refreshing = false;
     private boolean hasDataChanged = false;
     private boolean saving = false;
+
+    private ValidationErrorDialog validationErrorDialog;
+    private ProgressDialogFragment progressDialogFragment;
 
     public static DataEntryFragment newInstance(String unitId, String programId, String programStageId) {
         DataEntryFragment fragment = new DataEntryFragment();
@@ -411,11 +411,16 @@ public class DataEntryFragment extends Fragment
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        selectSection(position);
+    }
+
+    private void selectSection(int position) {
         if(hasDataChanged) {
             submitEvent();
         }
         DataEntryFragmentSection section = (DataEntryFragmentSection)
                 mSpinnerAdapter.getItem(position);
+        mForm.setCurrentSection(section);
 
         if (section != null) {
             mListView.smoothScrollToPosition(INITIAL_POSITION);
@@ -426,7 +431,6 @@ public class DataEntryFragment extends Fragment
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        // stub implementation
     }
 
     @Override
@@ -473,10 +477,12 @@ public class DataEntryFragment extends Fragment
                 dataElementNames.add(de.getDisplayName());
             }
         }
-        ValidationErrorDialog dialog = ValidationErrorDialog
-                .newInstance(getString(R.string.warning_hidefieldwithvalue), dataElementNames
-                );
-        dialog.show(getChildFragmentManager());
+        if(validationErrorDialog==null || !validationErrorDialog.isVisible()) {
+            validationErrorDialog = ValidationErrorDialog
+                    .newInstance(getString(R.string.warning_hidefieldwithvalue), dataElementNames
+                    );
+            validationErrorDialog.show(getChildFragmentManager());
+        }
     }
 
     /**
@@ -484,36 +490,105 @@ public class DataEntryFragment extends Fragment
      * the results. This is for example used for hiding views if a rule contains skip logic
      */
     public void evaluateRules() {
-        List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
-        mListViewAdapter.resetHiding();
-        ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
-        for (ProgramRule programRule : rules) {
-            boolean actionTrue = ProgramRuleService.evaluate(programRule.condition, mForm.getEvent());
-            if(actionTrue) {
-                for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-                    boolean valueInField = applyProgramRuleAction(programRuleAction, actionTrue);
-                    if (valueInField) {
-                        affectedFieldsWithValue.add(programRuleAction.dataElement);
+        showLoadingDialog();
+        new Thread() {
+            public void run() {
+                List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
+                mListViewAdapter.resetHiding();
+                mSpinnerAdapter.resetHiding();
+                ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
+                boolean currentSelectedSectionRemoved = false;
+                for (ProgramRule programRule : rules) {
+                    boolean actionTrue = ProgramRuleService.evaluate(programRule.condition, mForm.getEvent());
+                    if(actionTrue) {
+                        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+                            boolean applyActionResult = applyProgramRuleAction(programRuleAction, actionTrue);
+                            if (applyActionResult && programRuleAction.programRuleActionType.equals(ProgramRuleAction.TYPE_HIDEFIELD)) {
+                                affectedFieldsWithValue.add(programRuleAction.dataElement);
+                            } else if (applyActionResult && programRuleAction.programRuleActionType.equals(ProgramRuleAction.TYPE_HIDESECTION)) {
+                                currentSelectedSectionRemoved = true;
+                            }
+                        }
                     }
                 }
+                if(!affectedFieldsWithValue.isEmpty()) {
+                    showWarningHiddenValuesDialog(affectedFieldsWithValue);
+                }
+                refreshListView();
+                Activity activity = getActivity();
+                if(activity!=null) {
+                    activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
+                }
             }
+        }.start();
+    }
+
+    private void showLoadingDialog() {
+        Activity activity = getActivity();
+        if(activity==null) return;
+        activity.runOnUiThread(new Thread() {
+            public void run() {
+                if(progressDialogFragment==null) {
+                    progressDialogFragment = ProgressDialogFragment.newInstance(R.string.please_wait);
+                }
+                if(!progressDialogFragment.isAdded())
+                    progressDialogFragment.show(getChildFragmentManager(), ProgressDialogFragment.TAG);
+            }
+        });
+    }
+
+    private void hideLoadingDialog() {
+        if(progressDialogFragment!=null) {
+            progressDialogFragment.dismiss();
         }
-        if(!affectedFieldsWithValue.isEmpty()) {
-            showWarningHiddenValuesDialog(affectedFieldsWithValue);
+    }
+
+    private class UpdateSectionThread extends Thread {
+        private final boolean refreshSelection;
+        public UpdateSectionThread(boolean refreshSelection) {
+            this.refreshSelection = refreshSelection;
         }
-        refreshListView();
-        //todo dias make counter of stuff to show in dialog in rows with values are hidden.
+        @Override
+        public void run() {
+            mSpinnerAdapter.notifyDataSetChanged();
+            if(refreshSelection) {
+                selectSection(0);
+            }
+            hideLoadingDialog();
+        }
     }
 
     public boolean applyProgramRuleAction(ProgramRuleAction programRuleAction, boolean actionTrue) {
         switch (programRuleAction.programRuleActionType) {
-            case ProgramRuleAction.TYPE_HIDEFIELD:
+            case ProgramRuleAction.TYPE_HIDEFIELD: {
                 if (actionTrue) {
                     return hideField(programRuleAction.dataElement);
                 }
                 break;
+            }
+
+            case ProgramRuleAction.TYPE_HIDESECTION: {
+                if (actionTrue) {
+                    return hideSection(programRuleAction.programStageSection);
+                }
+            }
         }
         return false;
+    }
+
+    /**
+     * Hides a programstagesection from being displayed in the list of sections
+     * @param programStageSection
+     * @return true if the section that's hidden is the one that's currently selected.
+     */
+    public boolean hideSection(String programStageSection) {
+        DataEntryFragmentSection currentSection = mForm.getCurrentSection();
+        mSpinnerAdapter.hideSection(programStageSection);
+        if(currentSection.getId().equals(programStageSection)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

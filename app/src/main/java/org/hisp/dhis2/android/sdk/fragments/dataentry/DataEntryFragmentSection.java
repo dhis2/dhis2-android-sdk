@@ -32,11 +32,14 @@ import java.util.List;
 
 public final class DataEntryFragmentSection {
     private final String label;
+    private final String id;
     private final List<DataEntryRow> rows;
+    private boolean hidden = false;
 
-    public DataEntryFragmentSection(String label,
+    public DataEntryFragmentSection(String label, String id,
                                     List<DataEntryRow> rows) {
         this.label = label;
+        this.id = id;
         this.rows = rows;
     }
 
@@ -46,5 +49,17 @@ public final class DataEntryFragmentSection {
 
     public List<DataEntryRow> getRows() {
         return rows;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public String getId() {
+        return id;
     }
 }

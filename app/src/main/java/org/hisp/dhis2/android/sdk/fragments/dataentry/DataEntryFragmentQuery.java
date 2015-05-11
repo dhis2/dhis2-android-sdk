@@ -110,7 +110,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
             List<DataEntryRow> rows = new ArrayList<>();
             populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
             populateIndicatorRows(form, stage.getProgramIndicators(), rows);
-            form.getSections().add(new DataEntryFragmentSection(DEFAULT_SECTION, rows));
+            form.getSections().add(new DataEntryFragmentSection(DEFAULT_SECTION, null, rows));
         } else {
             for (int i = 0; i < stage.getProgramStageSections().size(); i++) {
 
@@ -122,7 +122,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                 List<DataEntryRow> rows = new ArrayList<>();
                 populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username);
                 populateIndicatorRows(form, section.getProgramIndicators(), rows);
-                form.getSections().add(new DataEntryFragmentSection(section.getName(), rows));
+                form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getId(), rows));
             }
         }
 

@@ -13,6 +13,7 @@ import java.util.Map;
 public class ProgramRuleAction extends BaseIdentifiableObject {
 
     public static final String TYPE_HIDEFIELD = "HIDEFIELD";
+    public static final String TYPE_HIDESECTION = "HIDESECTION";
 
     @Column
     public String programRuleActionType;
@@ -37,5 +38,13 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
+    }
+
+    @Column
+    public String programStageSection;
+
+    @JsonProperty("programStageSection")
+    public void setProgramStageSection(Map<String, Object> programStageSection) {
+        this.programStageSection = (String) programStageSection.get("id");
     }
 }

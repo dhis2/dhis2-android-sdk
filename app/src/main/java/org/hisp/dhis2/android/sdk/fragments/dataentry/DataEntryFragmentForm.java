@@ -40,6 +40,7 @@ class DataEntryFragmentForm {
     private Event event;
     private ProgramStage stage;
     private List<DataEntryFragmentSection> sections;
+    private DataEntryFragmentSection currentSection;
     private Map<String, DataValue> dataValues;
     private Map<String, String> dataElementNames;
     private List<IndicatorRow> indicatorRows;
@@ -98,5 +99,13 @@ class DataEntryFragmentForm {
 
     public void setIndicatorRows(List<IndicatorRow> indicatorRows) {
         this.indicatorRows = indicatorRows;
+    }
+
+    public DataEntryFragmentSection getCurrentSection() {
+        return currentSection;
+    }
+
+    public void setCurrentSection(DataEntryFragmentSection currentSection) {
+        this.currentSection = currentSection;
     }
 }

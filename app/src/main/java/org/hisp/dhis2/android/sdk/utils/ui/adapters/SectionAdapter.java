@@ -34,9 +34,16 @@ import android.widget.TextView;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.fragments.dataentry.DataEntryFragmentSection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class SectionAdapter extends AbsAdapter<DataEntryFragmentSection> {
     private static final String DROPDOWN = "dropDown";
     private static final String NON_DROPDOWN = "nonDropDown";
+    /**
+     * Copy of original mData because some rows may be removed if they are hidden by program rules
+     */
+    private List<DataEntryFragmentSection> mDataOriginalCopy;
 
     public SectionAdapter(LayoutInflater inflater) {
         super(inflater);
@@ -66,5 +73,43 @@ public final class SectionAdapter extends AbsAdapter<DataEntryFragmentSection> {
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         textView.setText(getData().get(position).getLabel());
         return view;
+    }
+
+    @Override
+    public void swapData(List<DataEntryFragmentSection> data) {
+        boolean notifyAdapter = mData != data;
+        mData = data;
+        if(mData == null) {
+            mDataOriginalCopy = null;
+        } else {
+            mDataOriginalCopy = new ArrayList<>(mData);
+        }
+
+        if (notifyAdapter) {
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Flags a section to be hidden
+     * @param id
+     */
+    public void hideSection(String id) {
+        if(mData==null) return;
+        for(DataEntryFragmentSection section: mData) {
+            if(section.getId()!=null && section.getId().equals(id)) {
+                section.setHidden(true);
+                mData.remove(section);
+                return;
+            }
+        }
+    }
+
+    public void resetHiding() {
+        if(mData==null) return;
+        for(DataEntryFragmentSection s: mData) {
+            s.setHidden(false);
+        }
+        mData = new ArrayList<>(mDataOriginalCopy);
     }
 }

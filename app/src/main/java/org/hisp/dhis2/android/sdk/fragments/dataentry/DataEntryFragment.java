@@ -495,7 +495,9 @@ public class DataEntryFragment extends Fragment
             public void run() {
                 List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
                 mListViewAdapter.resetHiding();
-                mSpinnerAdapter.resetHiding();
+                if(mSpinnerAdapter!=null) {
+                    mSpinnerAdapter.resetHiding();
+                }
                 ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
                 boolean currentSelectedSectionRemoved = false;
                 for (ProgramRule programRule : rules) {
@@ -516,8 +518,12 @@ public class DataEntryFragment extends Fragment
                 }
                 refreshListView();
                 Activity activity = getActivity();
-                if(activity!=null) {
-                    activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
+                if(mSpinnerAdapter!=null) {
+                    if (activity != null) {
+                        activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
+                    }
+                } else {
+                    hideLoadingDialog();
                 }
             }
         }.start();

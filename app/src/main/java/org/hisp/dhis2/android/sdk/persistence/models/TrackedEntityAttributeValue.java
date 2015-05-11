@@ -11,6 +11,7 @@ import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
 import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -47,6 +48,8 @@ public class TrackedEntityAttributeValue extends BaseValue {
                 getTrackedEntityAttribute(trackedEntityAttributeId);
         if(tea.valueType.equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
+            Log.d(CLASS_TAG, "optionSet: " + tea.getOptionSet());
+            if(optionSet == null) return "";
             for(Option o: optionSet.getOptions()) {
                 if(o.name.equals(value)) {
                     return o.code;

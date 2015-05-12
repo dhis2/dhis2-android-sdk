@@ -28,6 +28,7 @@
 
 package org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -35,6 +36,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,7 +93,8 @@ public class OptionDialogFragment extends DialogFragment implements AdapterView.
                 .findViewById(R.id.close_dialog_button);
         mFilter = (EditText) view
                 .findViewById(R.id.filter_options);
-
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
         mAdapter = new OptionDialogAdapter(LayoutInflater.from(getActivity()));
         mAdapter.swapData(getOptions());
         listView.setAdapter(mAdapter);

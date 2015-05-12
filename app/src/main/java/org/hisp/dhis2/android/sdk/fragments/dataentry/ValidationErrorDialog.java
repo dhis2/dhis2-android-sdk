@@ -62,16 +62,16 @@ public final class ValidationErrorDialog extends DialogFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mListView = (ListView) view.findViewById(R.id.simple_listview);
         mHeader = (TextView) view.findViewById(R.id.header);
+        mButton = (Button) view.findViewById(R.id.closebutton);
         String header = getArguments().getString(HEADER_EXTRA, null);
         if(header != null) {
             mHeader.setText(header);
         }
-        //mButton = (Button) view.findViewById(R.id.ok_button);
 
         mAdapter = new ValidationErrorAdapter(
                 LayoutInflater.from(getActivity().getBaseContext()));
         mListView.setAdapter(mAdapter);
-        //mButton.setOnClickListener(this);
+        mButton.setOnClickListener(this);
         if (getArguments() != null) {
             mAdapter.swapData(getArguments()
                     .getStringArrayList(ERRORS_LIST_EXTRA));

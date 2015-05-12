@@ -301,7 +301,7 @@
     <string name="choose_program">Choose program</string>
 
     <string name="validation_error">Please complete the following compulsory fields</string>
-    <string name="warning_hidefieldwithvalue">The following fields with value is being hidden.</string>
+    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>
     <string name="report_date">Report date</string>
 
     <string name="enter_coordinates">Enter coordinates</string>

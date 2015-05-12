@@ -3,6 +3,7 @@ package org.hisp.dhis2.android.sdk.utils.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;

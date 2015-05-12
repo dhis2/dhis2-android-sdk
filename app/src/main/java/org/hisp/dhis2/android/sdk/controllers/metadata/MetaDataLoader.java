@@ -400,6 +400,8 @@ public class MetaDataLoader {
                                     organisationUnits.add(ou);
                                 }
                                 holder.setItem(organisationUnits);
+                            } else {
+                                holder.setItem(new ArrayList<OrganisationUnit>());
                             }
                         } catch (IOException e) {
                             e.printStackTrace();

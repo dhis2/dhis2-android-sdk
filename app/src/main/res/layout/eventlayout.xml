@@ -33,7 +33,7 @@
     android:layout_height="wrap_content"
     android:padding="6dp"
     android:layout_margin="6dp"
-    android:background="@color/stage_Scheduled_in_future">
+    android:background="@color/stage_executed">
 
 
     <TextView

@@ -269,13 +269,13 @@ public class DataValueSender {
             } else {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
                 if (importSummary.status.equals(ImportSummary.SUCCESS)) {
+                    //update references with uid received from server
                     TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
-                    //List<Enrollment> enrollments = DataValueController.getEnrollments(trackedEntityInstance);
                     Queriable q = new Update().table(TrackedEntityAttributeValue.class).set(Condition.column
                             (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is
                             (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
-                    //todo: replace the following for loops with a query like this ^ to update tei ref
+
                     Queriable q1 = new Update().table(Event.class).set(Condition.column(Event$Table.
                             TRACKEDENTITYINSTANCE).is(importSummary.reference)).where(Condition.
                             column(Event$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance.
@@ -287,6 +287,7 @@ public class DataValueSender {
                             where(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).is
                                     (trackedEntityInstance.trackedEntityInstance));
                     TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q2);
+
                     Queriable q3 = new Update().table(TrackedEntityInstance.class).set(Condition.column
                             (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
                             (importSummary.reference), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).

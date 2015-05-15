@@ -588,6 +588,7 @@ public class DataEntryFragment extends Fragment
      * @return true if the section that's hidden is the one that's currently selected.
      */
     public boolean hideSection(String programStageSection) {
+        if(mSpinnerAdapter==null) return false;
         DataEntryFragmentSection currentSection = mForm.getCurrentSection();
         mSpinnerAdapter.hideSection(programStageSection);
         if(currentSection.getId().equals(programStageSection)) {

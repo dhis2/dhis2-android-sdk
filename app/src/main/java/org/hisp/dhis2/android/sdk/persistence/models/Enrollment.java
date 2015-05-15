@@ -174,16 +174,24 @@ public class Enrollment extends BaseSerializableModel{
     @Column
     public String status;
 
+    @JsonIgnore
+    public List<TrackedEntityAttributeValue> attributes;
+
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
-        List<TrackedEntityAttributeValue> attributes = new ArrayList<>();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
-                MetaDataController.getProgramTrackedEntityAttributes(program);
-        for(ProgramTrackedEntityAttribute ptea: programTrackedEntityAttributes) {
-            TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                    (ptea.trackedEntityAttribute, trackedEntityInstance);
-            if(v!=null && v.getValue()!=null && !v.getValue().isEmpty()) {
-                attributes.add(v);
+
+        if(attributes == null)
+        {
+            attributes = new ArrayList<>();
+
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                    MetaDataController.getProgramTrackedEntityAttributes(program);
+            for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {
+                TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
+                        (ptea.trackedEntityAttribute, trackedEntityInstance);
+                if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
+                    attributes.add(v);
+                }
             }
         }
         return attributes;
@@ -239,8 +247,17 @@ public class Enrollment extends BaseSerializableModel{
         if(events!=null) {
             for(Event event: events) {
                 event.localEnrollmentId = localId;
-                Log.d(CLASS_TAG, "enrollmentlocalId: " + localId);
                 event.save(async);
+            }
+        }
+
+        if(attributes != null)
+        {
+            for(TrackedEntityAttributeValue value : attributes)
+            {
+                value.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
+                value.save(async);
+                Log.d(CLASS_TAG, "VALUE: " + value.getValue() + "\n ID: " + value.localTrackedEntityInstanceId + "\n TEI ID:" + value.trackedEntityInstanceId);
             }
         }
     }

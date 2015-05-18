@@ -86,7 +86,7 @@
     <string name="offline_dataEntry">Network is not available. Data entered was saved locally.</string>
     <string name="offline_findInstance">Your internet connection is currently unavailable. The search result you are about to see are from your local database.</string>
     <string name="offline_item">This item has not yet been synchronized with the server.</string>
-
+    <string name="logout_option">Log out</string>
     <!-- Login Activity -->
 
     <string name="username">Username</string>
@@ -329,4 +329,7 @@
     <string name="registered_events">Registered events</string>
 
     <string name="status">Status</string>
+
+    <string name="logout_message">Are you sure you want to log out? All your data stored on the device will get lost if you choose to log out.</string>
+    <string name="logout_title">Logging out</string>
 </resources>

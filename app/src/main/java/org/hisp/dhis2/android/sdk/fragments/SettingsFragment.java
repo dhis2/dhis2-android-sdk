@@ -30,6 +30,7 @@
 package org.hisp.dhis2.android.sdk.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -87,10 +88,18 @@ public class SettingsFragment extends Fragment
 
     @Override
     public void onClick(View v) {
-        Dhis2.logout(getActivity());
-        //startActivity(new Intent(getActivity(),
-        //        SplashActivity.class));
-        getActivity().finish();
+        if(v.getId() == R.id.settings_logout_button)
+        {
+
+            Dhis2.showConfirmDialog(getActivity(), getString(R.string.logout_title), getString(R.string.logout_message),
+                    getString(R.string.logout_option), getString(R.string.cancel_option), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Dhis2.logout(getActivity());
+                            getActivity().finish();
+                        }
+                    });
+            }
     }
 
     @Override

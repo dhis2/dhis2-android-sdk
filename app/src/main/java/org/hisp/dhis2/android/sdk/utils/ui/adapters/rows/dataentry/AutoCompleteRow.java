@@ -26,6 +26,7 @@
 
 package org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -35,16 +36,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis2.android.sdk.fragments.dataentry.EditTextValueChangedEvent;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.OptionDialogFragment.OnOptionSelectedListener;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Option;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis2.android.sdk.utils.ui.dialogs.AutoCompleteDialogAdapter;
+import org.hisp.dhis2.android.sdk.utils.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
+import org.hisp.dhis2.android.sdk.utils.ui.dialogs.AutoCompleteDialogFragment;
+import org.hisp.dhis2.android.sdk.utils.ui.dialogs.AutoCompleteDialogFragment.OnOptionSelectedListener;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
@@ -167,7 +172,7 @@ public final class AutoCompleteRow implements DataEntryRow {
         }
 
         @Override
-        public void onOptionSelected(int position, String name) {
+        public void onOptionSelected(int dialogId, int position, String id, String name) {
             valueTextView.setText(name);
         }
     }
@@ -222,6 +227,38 @@ public final class AutoCompleteRow implements DataEntryRow {
                 Dhis2Application.getEventBus()
                         .post(new EditTextValueChangedEvent(value));
             }
+        }
+    }
+
+    public static class OptionDialogFragment extends AutoCompleteDialogFragment {
+        private static final String EXTRA_OPTIONS = "extra:options";
+
+        public static OptionDialogFragment newInstance(ArrayList<String> options,
+                                                       OnOptionSelectedListener listener) {
+            OptionDialogFragment dialogFragment = new OptionDialogFragment();
+            Bundle args = new Bundle();
+            args.putStringArrayList(EXTRA_OPTIONS, options);
+            dialogFragment.setArguments(args);
+            dialogFragment.setOnOptionSetListener(listener);
+            return dialogFragment;
+        }
+
+        private List<AutoCompleteDialogAdapter.OptionAdapterValue> getOptions() {
+            List<AutoCompleteDialogAdapter.OptionAdapterValue> values = new ArrayList<>();
+            List<String> options = getArguments().getStringArrayList(EXTRA_OPTIONS);
+            if (options != null && !options.isEmpty()) {
+                for (String option : options) {
+                    values.add(new OptionAdapterValue(option, option));
+                }
+            }
+            return values;
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            setDialogLabel(R.string.find_option);
+            getAdapter().swapData(getOptions());
         }
     }
 }

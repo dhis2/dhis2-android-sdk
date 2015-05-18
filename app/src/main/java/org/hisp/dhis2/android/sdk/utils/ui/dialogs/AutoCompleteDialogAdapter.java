@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry;
+package org.hisp.dhis2.android.sdk.utils.ui.dialogs;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-public class OptionDialogAdapter extends BaseAdapter implements Filterable {
+public class AutoCompleteDialogAdapter extends BaseAdapter implements Filterable {
     /**
      * Lock used to modify the content of {@link #mObjects}. Any write operation
      * performed on the array should be synchronized on this lock. This lock is also
@@ -43,16 +43,16 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
      * Contains the list of objects that represent the data of this ArrayAdapter.
      * The content of this list is referred to as "the array" in the documentation.
      */
-    private List<String> mObjects;
+    private List<OptionAdapterValue> mObjects;
 
     // A copy of the original mObjects array, initialized from and then used instead as soon as
     // the mFilter ArrayFilter is used. mObjects will then only contain the filtered values.
-    private ArrayList<String> mOriginalValues;
+    private ArrayList<OptionAdapterValue> mOriginalValues;
     private ArrayFilter mFilter;
 
     private final LayoutInflater mInflater;
 
-    public OptionDialogAdapter(LayoutInflater inflater) {
+    public AutoCompleteDialogAdapter(LayoutInflater inflater) {
         mInflater = inflater;
         mObjects = new ArrayList<>();
     }
@@ -69,18 +69,8 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
      * {@inheritDoc}
      */
     @Override
-    public String getItem(int position) {
+    public OptionAdapterValue getItem(int position) {
         return mObjects.get(position);
-    }
-
-    /**
-     * Returns the position of the specified item in the array.
-     *
-     * @param item The item to retrieve the position of.
-     * @return The position of the specified item.
-     */
-    public int getPosition(String item) {
-        return mObjects.indexOf(item);
     }
 
     /**
@@ -121,7 +111,7 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
             holder = (ViewHolder) view.getTag();
         }
 
-        String item = getItem(position);
+        String item = getItem(position).label;
         holder.textView.setText(item);
 
         return view;
@@ -163,7 +153,7 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
             }
 
             if (prefix == null || prefix.length() == 0) {
-                ArrayList<String> list;
+                ArrayList<OptionAdapterValue> list;
                 synchronized (mLock) {
                     list = new ArrayList<>(mOriginalValues);
                 }
@@ -172,21 +162,22 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
             } else {
                 String prefixString = prefix.toString().toLowerCase();
 
-                ArrayList<String> values;
+                ArrayList<OptionAdapterValue> values;
                 synchronized (mLock) {
                     values = new ArrayList<>(mOriginalValues);
                 }
 
                 final int count = values.size();
-                final ArrayList<String> newValues = new ArrayList<>();
+                final ArrayList<OptionAdapterValue> newValues = new ArrayList<>();
 
                 for (int i = 0; i < count; i++) {
-                    final String value = values.get(i);
+                    final OptionAdapterValue optionValue = values.get(i);
+                    final String value = optionValue.label;
                     final String valueText = value.toLowerCase();
 
                     // First match against the whole, non-splitted value
                     if (valueText.startsWith(prefixString)) {
-                        newValues.add(value);
+                        newValues.add(optionValue);
                     } else {
                         final String[] words = valueText.split(" ");
                         final int wordCount = words.length;
@@ -194,7 +185,7 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
                         // Start at index 0, in case valueText starts with space(s)
                         for (int k = 0; k < wordCount; k++) {
                             if (words[k].startsWith(prefixString)) {
-                                newValues.add(value);
+                                newValues.add(optionValue);
                                 break;
                             }
                         }
@@ -211,7 +202,7 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             //noinspection unchecked
-            mObjects = (List<String>) results.values;
+            mObjects = (List<OptionAdapterValue>) results.values;
             if (results.count > 0) {
                 notifyDataSetChanged();
             } else {
@@ -220,7 +211,11 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    public void swapData(List<String> values) {
+    public void swapData(List<OptionAdapterValue> values) {
+        if (values == null) {
+            values = new ArrayList<>();
+        }
+
         clear();
         addAll(values);
         notifyDataSetChanged();
@@ -231,7 +226,7 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
      *
      * @param collection The Collection to add at the end of the array.
      */
-    private void addAll(Collection<String> collection) {
+    private void addAll(Collection<OptionAdapterValue> collection) {
         synchronized (mLock) {
             if (mOriginalValues != null) {
                 mOriginalValues.addAll(collection);
@@ -251,6 +246,34 @@ public class OptionDialogAdapter extends BaseAdapter implements Filterable {
             } else {
                 mObjects.clear();
             }
+        }
+    }
+
+    public static class OptionAdapterValue {
+        public final String id;
+        public final String label;
+
+        public OptionAdapterValue(String id, String label) {
+            this.id = id;
+            this.label = label;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof OptionAdapterValue)) {
+                return false;
+            }
+            OptionAdapterValue p = (OptionAdapterValue) o;
+            return objectsEqual(p.id, label) && objectsEqual(p.id, label);
+        }
+
+        private static boolean objectsEqual(Object a, Object b) {
+            return a == b || (a != null && a.equals(b));
+        }
+
+        @Override
+        public int hashCode() {
+            return (id == null ? 0 : id.hashCode()) ^ (label == null ? 0 : label.hashCode());
         }
     }
 }

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry;
+package org.hisp.dhis2.android.sdk.utils.ui.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -41,36 +41,21 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
+import org.hisp.dhis2.android.sdk.utils.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OptionDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
-    private static final String TAG = OptionDialogFragment.class.getSimpleName();
-
-    private static final int LOADER_ID = 1;
-    private static final String EXTRA_OPTIONS = "extra:options";
+public class AutoCompleteDialogFragment extends DialogFragment
+        implements AdapterView.OnItemClickListener {
+    private static final String TAG = AutoCompleteDialogFragment.class.getSimpleName();
 
     private EditText mFilter;
-    private OptionDialogAdapter mAdapter;
+    private TextView mDialogLabel;
+    private AutoCompleteDialogAdapter mAdapter;
     private OnOptionSelectedListener mListener;
-
-    public static OptionDialogFragment newInstance(ArrayList<String> options,
-                                                   OnOptionSelectedListener listener) {
-        OptionDialogFragment dialogFragment = new OptionDialogFragment();
-        Bundle args = new Bundle();
-        args.putStringArrayList(EXTRA_OPTIONS, options);
-        dialogFragment.setArguments(args);
-        dialogFragment.setOnOptionSetListener(listener);
-        return dialogFragment;
-    }
-
-    private List<String> getOptions() {
-        return getArguments().getStringArrayList(EXTRA_OPTIONS);
-    }
+    private int mDialogId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,7 +67,7 @@ public class OptionDialogFragment extends DialogFragment implements AdapterView.
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_options, container, false);
+        return inflater.inflate(R.layout.dialog_fragment_auto_complete, container, false);
     }
 
     @Override
@@ -93,10 +78,13 @@ public class OptionDialogFragment extends DialogFragment implements AdapterView.
                 .findViewById(R.id.close_dialog_button);
         mFilter = (EditText) view
                 .findViewById(R.id.filter_options);
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        mDialogLabel = (TextView) view
+                .findViewById(R.id.dialog_label);
+        InputMethodManager imm = (InputMethodManager)
+                getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
-        mAdapter = new OptionDialogAdapter(LayoutInflater.from(getActivity()));
-        mAdapter.swapData(getOptions());
+
+        mAdapter = new AutoCompleteDialogAdapter(LayoutInflater.from(getActivity()));
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(this);
 
@@ -116,13 +104,51 @@ public class OptionDialogFragment extends DialogFragment implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (mListener != null) {
-            mListener.onOptionSelected(position, mAdapter.getItem(position));
+            OptionAdapterValue value = mAdapter.getItem(position);
+            if (value != null) {
+                mListener.onOptionSelected(mDialogId, position, value.id, value.label);
+            }
         }
 
         dismiss();
     }
 
-    private void setOnOptionSetListener(OnOptionSelectedListener listener) {
+    /* This method must be called only after onViewCreated() */
+    public void setDialogLabel(int resourceId) {
+        if (mDialogLabel != null) {
+            mDialogLabel.setText(resourceId);
+        }
+    }
+
+    /* This method must be called only after onViewCreated() */
+    public void setDialogLabel(CharSequence sequence) {
+        if (mDialogLabel != null) {
+            mDialogLabel.setText(sequence);
+        }
+    }
+
+    public void setDialogId(int dialogId) {
+        mDialogId = dialogId;
+    }
+
+    public int getDialogId() {
+        return mDialogId;
+    }
+
+    /* This method must be called only after onViewCreated() */
+    public CharSequence getDialogLabel() {
+        if (mDialogLabel != null) {
+            return mDialogLabel.getText();
+        } else {
+            return null;
+        }
+    }
+
+    public AutoCompleteDialogAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    public void setOnOptionSetListener(OnOptionSelectedListener listener) {
         mListener = listener;
     }
 
@@ -131,6 +157,6 @@ public class OptionDialogFragment extends DialogFragment implements AdapterView.
     }
 
     public interface OnOptionSelectedListener {
-        void onOptionSelected(int position, String name);
+        void onOptionSelected(int dialogId, int position, String id, String name);
     }
 }

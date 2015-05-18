@@ -536,11 +536,22 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(response.getBody());
                             node = node.get("optionSets");
-                            TypeReference<List<OptionSet>> typeRef =
-                                    new TypeReference<List<OptionSet>>(){};
-                            List<OptionSet> optionSets = Dhis2.getInstance().getObjectMapper().
-                                    readValue( node.traverse(), typeRef);
-                            holder.setItem(optionSets);
+
+                            if(node == null)
+                            {
+                                holder.setItem(new ArrayList<OptionSet>());
+                            }
+                            else
+                            {
+                                TypeReference<List<OptionSet>> typeRef =
+                                        new TypeReference<List<OptionSet>>(){};
+                                List<OptionSet> optionSets = Dhis2.getInstance().getObjectMapper().
+                                        readValue( node.traverse(), typeRef);
+                                holder.setItem(optionSets);
+                            }
+
+
+
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
@@ -572,11 +583,21 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(response.getBody());
                             node = node.get("trackedEntities");
-                            TypeReference<List<TrackedEntity>> typeRef =
-                                    new TypeReference<List<TrackedEntity>>(){};
-                            List<TrackedEntity> trackedEntities = Dhis2.getInstance().getObjectMapper().
-                                    readValue( node.traverse(), typeRef);
-                            holder.setItem(trackedEntities);
+
+                            if(node == null)
+                            {
+                                holder.setItem(new ArrayList<TrackedEntity>());
+                            }
+                            else
+                            {
+                                TypeReference<List<TrackedEntity>> typeRef =
+                                        new TypeReference<List<TrackedEntity>>(){};
+                                List<TrackedEntity> trackedEntities = Dhis2.getInstance().getObjectMapper().
+                                        readValue( node.traverse(), typeRef);
+                                holder.setItem(trackedEntities);
+                            }
+
+
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
@@ -641,11 +662,19 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(response.getBody());
                             node = node.get("trackedEntityAttributes");
-                            TypeReference<List<TrackedEntityAttribute>> typeRef =
-                                    new TypeReference<List<TrackedEntityAttribute>>(){};
-                            List<TrackedEntityAttribute> trackedEntityAttributes = Dhis2.getInstance().getObjectMapper().
-                                    readValue( node.traverse(), typeRef);
-                            holder.setItem(trackedEntityAttributes);
+
+                            if(node == null){
+                                holder.setItem(new ArrayList<TrackedEntityAttribute>());
+                            }
+                            else
+                            {
+                                TypeReference<List<TrackedEntityAttribute>> typeRef =
+                                        new TypeReference<List<TrackedEntityAttribute>>(){};
+                                List<TrackedEntityAttribute> trackedEntityAttributes = Dhis2.getInstance().getObjectMapper().
+                                        readValue( node.traverse(), typeRef);
+                                holder.setItem(trackedEntityAttributes);
+                            }
+
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
@@ -722,11 +751,18 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(response.getBody());
                             node = node.get("constants");
-                            TypeReference<List<Constant>> typeRef =
-                                    new TypeReference<List<Constant>>(){};
-                            List<Constant> constants = Dhis2.getInstance().getObjectMapper().
-                                    readValue( node.traverse(), typeRef);
-                            holder.setItem(constants);
+                            if(node == null)
+                            {
+                                holder.setItem(new ArrayList<Constant>());
+                            }
+                            else
+                            {
+                                TypeReference<List<Constant>> typeRef =
+                                        new TypeReference<List<Constant>>(){};
+                                List<Constant> constants = Dhis2.getInstance().getObjectMapper().
+                                        readValue( node.traverse(), typeRef);
+                                holder.setItem(constants);
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(response.getUrl(), response, e));

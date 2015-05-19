@@ -68,6 +68,12 @@ public class Utils {
         return px;
     }
 
+    public static String removeTimeFromDateString(String dateTime) {
+        if(dateTime==null) return null;
+        DateTime dt = new DateTime(dateTime);
+        return dt.toLocalDate().toString();
+    }
+
     /**
      * Used to determine if a uid for a modifiable data model is local (haven't gotten a UID from
      * server yet) or if it has.

@@ -93,4 +93,10 @@
     <color name="button_log_out_state_unpressed">#F44336</color>
     <color name="button_log_out_state_pressed">#D32F2F</color>
 
+    <color name="button_gray_state_unpressed">#cbcbcb</color>
+    <color name="button_gray_state_pressed">#b0b0b0</color>
+
+    <color name="button_orange_state_unpressed">#FF9900</color>
+    <color name="button_orange_state_pressed">#E68A00</color>
+
 </resources>

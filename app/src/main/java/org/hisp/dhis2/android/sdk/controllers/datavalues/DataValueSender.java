@@ -323,7 +323,6 @@ public class DataValueSender {
         }
         else if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
             if(responseEvent.getResponseHolder().getApiException() != null) {
-
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
                 handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
             } else {
@@ -412,6 +411,9 @@ public class DataValueSender {
     }
 
     public void handleError(APIException apiException, String type, long id) {
+        if(apiException.getResponse() != null && apiException.getResponse().getBody()!=null) {
+            Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
+        }
         if(apiException.isNetworkError()) {
             return; //if item failed due to network error then there is no need to store error info
         }

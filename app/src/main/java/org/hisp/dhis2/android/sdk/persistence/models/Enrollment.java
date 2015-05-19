@@ -183,7 +183,6 @@ public class Enrollment extends BaseSerializableModel{
         if(attributes == null)
         {
             attributes = new ArrayList<>();
-
             List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
                     MetaDataController.getProgramTrackedEntityAttributes(program);
             for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {

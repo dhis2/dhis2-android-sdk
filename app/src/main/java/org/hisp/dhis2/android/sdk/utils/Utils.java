@@ -74,6 +74,10 @@ public class Utils {
         return dt.toLocalDate().toString();
     }
 
+    public static String getTempUid() {
+        return Dhis2.QUEUED + UUID.randomUUID().toString();
+    }
+
     /**
      * Used to determine if a uid for a modifiable data model is local (haven't gotten a UID from
      * server yet) or if it has.

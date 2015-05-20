@@ -87,9 +87,9 @@ public class LoadProgramTask implements INetworkTask {
                 "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                 "[*,trackedEntityAttribute[*]],!organisationUnits";
         if( updating ) {
-            List<Program> result = Select.all(Program.class, Condition.column(Program$Table.ID).is(programId));
-            if( result != null && result.size() > 0 ) {
-                int version = result.get(0).version;
+            Program result = new Select().from(Program.class).where(Condition.column(Program$Table.ID).is(programId)).querySingle();
+            if( result != null ) {
+                int version = result.version;
                 url += "&filter=version:gt:" + version;
             }
         }

@@ -48,6 +48,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis2.android.sdk.persistence.models.FailedItem$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
@@ -80,8 +81,8 @@ public class DataValueController {
     }
 
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return Select.all(Enrollment.class, Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                is(trackedEntityInstance.localId));
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
+                is(trackedEntityInstance.localId)).queryList();
     }
 
     /**
@@ -119,8 +120,6 @@ public class DataValueController {
      */
     public static List<Event> getScheduledEvents(String programId, String orgUnitId,
                                                  String startDate, String endDate) {
-        Log.d(CLASS_TAG, "scheduled events!" + programId + ": " + orgUnitId + ": " + startDate + ": " + endDate);
-        //return Select.all(Event.class);
         return new Select().from(Event.class).where(Condition.column(Event$Table.PROGRAMID).is
                 (programId)).and(Condition.column(Event$Table.ORGANISATIONUNITID).is
                 (orgUnitId)).and(Condition.column(Event$Table.DUEDATE).between(startDate).and
@@ -135,7 +134,7 @@ public class DataValueController {
      * @return
      */
     public static List<Event> getEventsByEnrollment(String enrollment) {
-        return Select.all(Event.class, Condition.column(Event$Table.ENROLLMENT).is(enrollment));
+        return new Select().from(Event.class).where(Condition.column(Event$Table.ENROLLMENT).is(enrollment)).queryList();
     }
 
     /**
@@ -144,7 +143,7 @@ public class DataValueController {
      * @return
      */
     public static List<Event> getEventsByEnrollment(long localEnrollmentId) {
-        return Select.all(Event.class, Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentId));
+        return new Select().from(Event.class).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentId)).queryList();
     }
 
     /**
@@ -166,11 +165,7 @@ public class DataValueController {
      * @return
      */
     public static Event getEvent(long localId) {
-        List<Event> result = Select.all(Event.class, Condition.column(Event$Table.LOCALID).is(localId));
-        if( result != null && !result.isEmpty() ) {
-            return result.get(0);
-        }
-        else return null;
+        return new Select().from(Event.class).where(Condition.column(Event$Table.LOCALID).is(localId)).querySingle();
     }
 
     /**
@@ -193,11 +188,7 @@ public class DataValueController {
      * @return
      */
     public static Event getEventByUid(String event) {
-        List<Event> result = Select.all(Event.class, Condition.column(Event$Table.EVENT).is(event));
-        if( result != null && !result.isEmpty() ) {
-            return result.get(0);
-        }
-        else return null;
+        return new Select().from(Event.class).where(Condition.column(Event$Table.EVENT).is(event)).querySingle();
     }
 
     public static DataValue getDataValue(long eventId, String dataElement) {
@@ -275,9 +266,17 @@ public class DataValueController {
      * @return
      */
     public static List<FailedItem> getFailedItems() {
-        List<FailedItem> failedItems = Select.all(FailedItem.class);
+        List<FailedItem> failedItems = new Select().from(FailedItem.class).queryList();
         if(failedItems == null || failedItems.size() <= 0) return null;
         else return failedItems;
+    }
+
+    public static List<FailedItem> getFailedItems(String type) {
+        return new Select().from(FailedItem.class).where(Condition.column(FailedItem$Table.ITEMTYPE).is(type)).queryList();
+    }
+
+    public static FailedItem getFailedItem(String type, long id) {
+        return new Select().from(FailedItem.class).where(Condition.column(FailedItem$Table.ITEMTYPE).is(type), Condition.column(FailedItem$Table.ITEMID).is(id)).querySingle();
     }
 
     public void clearDataValueLoadedFlags(Context context) {

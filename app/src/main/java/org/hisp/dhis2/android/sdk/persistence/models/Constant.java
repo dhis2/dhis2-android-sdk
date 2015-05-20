@@ -33,10 +33,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
+
 /**
  * @author Simen Skogly Russnes on 30.03.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class Constant extends BaseIdentifiableObject {
 
     @JsonProperty("value")

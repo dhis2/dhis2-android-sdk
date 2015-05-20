@@ -34,17 +34,19 @@ import android.util.Log;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class ProgramStageDataElement extends BaseModel {
 
     private static final String CLASS_TAG = "ProgramStageDataElement";
@@ -82,16 +84,18 @@ public class ProgramStageDataElement extends BaseModel {
         this.programStage = (String) programStage.get("id");
     }
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String programStage;
 
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.id;
-        dataElement.save(true);
+        dataElement.async().save();
     }
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String dataElement;
 
     public boolean isAllowFutureDate() {

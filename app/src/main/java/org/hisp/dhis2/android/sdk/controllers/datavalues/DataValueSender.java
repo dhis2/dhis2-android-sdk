@@ -35,10 +35,10 @@ import android.util.Log;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
-import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.raizlabs.android.dbflow.sql.queriable.Queriable;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.ResponseHolder;
@@ -103,7 +103,7 @@ public class DataValueSender {
         if(failedItems!=null) {
             for(FailedItem failedItem: failedItems) {
                 if(failedItem.getItem() == null) {
-                    failedItem.delete(true);
+                    failedItem.async().delete();
                 }
             }
         }
@@ -117,7 +117,7 @@ public class DataValueSender {
      * Tries to send events
      */
     private void sendEvents() {
-        localEvents = Select.all(Event.class, Condition.column(Event$Table.FROMSERVER).is(false));
+        localEvents = new Select().from(Event.class).where(Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
         for(int i = 0; i<localEvents.size(); i++) {/* temporary workaround for not trying to upload events with local enrollment reference*/
             Event event = localEvents.get(i);
             if(event.getEnrollment() == null && event.enrollment != null) {
@@ -169,7 +169,7 @@ public class DataValueSender {
      * added to the database while sending occurs will not be sent until next sending is initiated
      */
     private void sendEnrollments() {
-        localEnrollments = Select.all(Enrollment.class, Condition.column(Enrollment$Table.FROMSERVER).is(false));
+        localEnrollments = new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
         for(int i = 0; i<localEnrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
             Enrollment enrollment = localEnrollments.get(i);
             if(enrollment.getTrackedEntityInstance() == null) {
@@ -220,7 +220,7 @@ public class DataValueSender {
      * Initiates sending and registering of locally created TrackedEntityInstance to the server.
      */
     private void sendTrackedEntityInstances() {
-        localTrackedEntityInstances = Select.all(TrackedEntityInstance.class, Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false));
+        localTrackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
         Log.d(CLASS_TAG, "got this many trackedEntityInstances:" + localTrackedEntityInstances.size());
         sendCounter = localTrackedEntityInstances.size();
         if(sendCounter>0) {
@@ -271,28 +271,24 @@ public class DataValueSender {
                 if (importSummary.status.equals(ImportSummary.SUCCESS)) {
                     //update references with uid received from server
                     TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
-                    Queriable q = new Update().table(TrackedEntityAttributeValue.class).set(Condition.column
+                    new Update(TrackedEntityAttributeValue.class).set(Condition.column
                             (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is
-                            (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
+                            (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId)).async().execute();
 
-                    Queriable q1 = new Update().table(Event.class).set(Condition.column(Event$Table.
+                    new Update(Event.class).set(Condition.column(Event$Table.
                             TRACKEDENTITYINSTANCE).is(importSummary.reference)).where(Condition.
                             column(Event$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance.
-                            trackedEntityInstance));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
+                            trackedEntityInstance)).async().execute();
 
-                    Queriable q2 = new Update().table(Enrollment.class).set(Condition.column
+                    new Update(Enrollment.class).set(Condition.column
                             (Enrollment$Table.TRACKEDENTITYINSTANCE).is(importSummary.reference)).
                             where(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).is
-                                    (trackedEntityInstance.trackedEntityInstance));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q2);
+                                    (trackedEntityInstance.trackedEntityInstance)).async().execute();
 
-                    Queriable q3 = new Update().table(TrackedEntityInstance.class).set(Condition.column
+                    new Update(TrackedEntityInstance.class).set(Condition.column
                             (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
                             (importSummary.reference), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
-                            where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstance.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q3);
+                            where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstance.localId)).async().execute();
                     localTrackedEntityInstances.remove(sendCounter - 1);
                 } else if (importSummary.status.equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
@@ -301,7 +297,7 @@ public class DataValueSender {
                     failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.TRACKEDENTITYINSTANCE;
                     failedItem.httpStatusCode = 200;
-                    failedItem.save(true);
+                    failedItem.async().save();
                     Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
             }
@@ -331,17 +327,15 @@ public class DataValueSender {
                     Enrollment enrollment = localEnrollments.get(sendCounter - 1);
                     //updating any local events that had reference to local enrollment to new
                     //reference from server.
-                    Queriable q = new Update().table(Event.class).set(Condition.column
+                    new Update(Event.class).set(Condition.column
                             (Event$Table.ENROLLMENT).is
-                            (importSummary.reference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollment.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
+                            (importSummary.reference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollment.localId)).async().execute();
 
-                    Queriable q1 = new Update().table(Enrollment.class).set(Condition.column
+                    new Update(Enrollment.class).set(Condition.column
                             (Enrollment$Table.ENROLLMENT).is
                             (importSummary.reference), Condition.column(Enrollment$Table.FROMSERVER)
                             .is(true)).where(Condition.column(Enrollment$Table.LOCALID).is
-                            (enrollment.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
+                            (enrollment.localId)).async().execute();
                     localEnrollments.remove(sendCounter - 1);
                 } else if (importSummary.status.equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
@@ -350,7 +344,7 @@ public class DataValueSender {
                     failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.ENROLLMENT;
                     failedItem.httpStatusCode = 200;
-                    failedItem.save(true);
+                    failedItem.async().save();
                     Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
             }
@@ -380,16 +374,14 @@ public class DataValueSender {
                     Event event = localEvents.get(sendCounter-1);
                     List<DataValue> dataValues = event.getDataValues();
                     event.event = responseBody.importSummaries.get(0).reference;
-                    Queriable q = new Update().table(DataValue.class).set(Condition.column
+                    new Update(DataValue.class).set(Condition.column
                             (DataValue$Table.EVENT).is
-                            (importSummary.reference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(event.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q);
+                            (importSummary.reference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(event.localId)).async().execute();
 
-                    Queriable q1 = new Update().table(Event.class).set(Condition.column
+                    new Update(Event.class).set(Condition.column
                             (Event$Table.EVENT).is
                             (importSummary.reference), Condition.column(Event$Table.FROMSERVER).
-                            is(true)).where(Condition.column(Event$Table.LOCALID).is(event.localId));
-                    TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_UI), q1);
+                            is(true)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).async().execute();
                     localEvents.remove(sendCounter-1);
                 } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");
@@ -398,7 +390,7 @@ public class DataValueSender {
                     failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
                     failedItem.itemType = FailedItem.EVENT;
                     failedItem.httpStatusCode = 200; // the error is DHIS 2 internal, nothing wrong with connection
-                    failedItem.save(true);
+                    failedItem.async().save();
                     Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
                 }
             }
@@ -430,7 +422,7 @@ public class DataValueSender {
             failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId;
         }
         failedItem.itemType = type;
-        failedItem.save(true);
+        failedItem.async().save();
     }
 
 }

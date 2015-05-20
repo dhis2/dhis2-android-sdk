@@ -32,6 +32,7 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
@@ -45,7 +46,8 @@ public class BaseIdentifiableObject extends BaseModel{
     public void handleUnknown(String key, Object value) {}
 
     @JsonProperty("id")
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String id;
 
     @JsonProperty("name")

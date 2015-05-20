@@ -32,17 +32,20 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 /**
  * Class for holding information on items that have failed to upload to the server.
  * @author Simen Skogly Russnes on 26.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class FailedItem extends BaseModel {
 
     private final static String CLASS_TAG = "FailedItem";
@@ -51,7 +54,8 @@ public class FailedItem extends BaseModel {
     public static final String ENROLLMENT = "Enrollment";
     public static final String TRACKEDENTITYINSTANCE = "TrackedEntityInstance";
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public long itemId;
 
     @Column
@@ -63,8 +67,8 @@ public class FailedItem extends BaseModel {
     @Column
     public String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
 
-    @Column(columnType = Column.FOREIGN_KEY,
-            references = {@ForeignKeyReference(columnName = "importSummary",
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(columnName = "importSummary",
                     columnType = int.class, foreignColumnName = "id")})
     public ImportSummary importSummary;
 

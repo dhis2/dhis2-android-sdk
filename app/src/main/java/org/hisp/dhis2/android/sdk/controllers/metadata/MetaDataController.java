@@ -77,7 +77,6 @@ import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.persistence.models.User;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -134,8 +133,7 @@ public class MetaDataController {
      * @return
      */
     public static List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes(String program) {
-        return Select.all(ProgramTrackedEntityAttribute.class,
-                Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(program));
+        return new Select().from(ProgramTrackedEntityAttribute.class).where(Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(program)).queryList();
     }
 
     /**
@@ -147,18 +145,15 @@ public class MetaDataController {
     public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
                                                                String... kinds) {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships =
-                Select.all(OrganisationUnitProgramRelationship.class,
+                new Select().from(OrganisationUnitProgramRelationship.class).where(
                         Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
-                                is(organisationUnitId));
+                                is(organisationUnitId)).queryList();
 
         List<Program> programs = new ArrayList<Program>();
         for(OrganisationUnitProgramRelationship oupr: organisationUnitProgramRelationships ) {
-            //List<Condition> conditions = new ArrayList<Condition>();
-            //conditions.add(Condition.column(Program$Table.ID).is(oupr.programId));
             if(kinds!=null) {
                 for(String kind: kinds)
                 {
-                    //conditions.add(Condition.column(Program$Table.KIND).is(kind));
                     List<Program> plist = new Select().from(Program.class).where(
                             Condition.column(Program$Table.ID).is(oupr.programId)).and(
                             Condition.column(Program$Table.KIND).is(kind)).queryList();
@@ -217,7 +212,7 @@ public class MetaDataController {
      * @return
      */
     public static List<Constant> getConstants() {
-        return Select.all(Constant.class);
+        return new Select().from(Constant.class).queryList();
     }
 
     public static ProgramRuleVariable getProgramRuleVariable(String id) {
@@ -233,7 +228,7 @@ public class MetaDataController {
      * @return
      */
     public static List<String> getAssignedPrograms() {
-        List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships = Select.all(OrganisationUnitProgramRelationship.class);
+        List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships = new Select().from(OrganisationUnitProgramRelationship.class).queryList();
         List<String> assignedPrograms = new ArrayList<>();
         for(OrganisationUnitProgramRelationship relationship: organisationUnitProgramRelationships) {
             if(!assignedPrograms.contains(relationship.programId)) assignedPrograms.add(relationship.programId);
@@ -246,16 +241,12 @@ public class MetaDataController {
     }
 
     public static SystemInfo getSystemInfo() {
-        List<SystemInfo> result = Select.all(SystemInfo.class);
-        if(result != null && result.size() > 0) return result.get(0);
-        else return null;
+        return new Select().from(SystemInfo.class).querySingle();
     }
 
     public static Program getProgram(String programId) {
-        List<Program> plist = Select.all(Program.class, Condition.column(Program$Table.ID).
-                is(programId));
-        if(plist != null && plist.size() > 0) return plist.get(0);
-        else return null;
+        return new Select().from(Program.class).where(Condition.column(Program$Table.ID).
+                is(programId)).querySingle();
     }
 
     /**
@@ -263,7 +254,7 @@ public class MetaDataController {
      * @return
      */
     public static List<OrganisationUnit> getAssignedOrganisationUnits() {
-        List<OrganisationUnit> organisationUnits = Select.all(OrganisationUnit.class);
+        List<OrganisationUnit> organisationUnits = new Select().from(OrganisationUnit.class).queryList();
         return organisationUnits;
     }
 
@@ -273,20 +264,12 @@ public class MetaDataController {
      * @return
      */
     public static DataElement getDataElement(String dataElementId) {
-        List<DataElement> result =
-            Select.all(DataElement.class, Condition.column(DataElement$Table.ID).is(dataElementId));
-        if(result != null && result.size() > 0)
-            return result.get(0);
-        else return null;
+        return new Select().from(DataElement.class).where(Condition.column(DataElement$Table.ID).
+                is(dataElementId)).querySingle();
     }
 
     public static User getUser() {
-        List<User> users = Select.all(User.class);
-        if (users.size() == 0) {
-            return null;
-        } else {
-            return users.get(0);
-        }
+        return new Select().from(User.class).querySingle();
     }
 
     /**
@@ -295,25 +278,21 @@ public class MetaDataController {
      * @return
      */
     public static OptionSet getOptionSet(String optionSetId) {
-        List<OptionSet> result = Select.all(OptionSet.class, Condition.column(OptionSet$Table.ID).
-                is(optionSetId));
-        if(result!=null && result.size() > 0)
-            return result.get(0);
-        else return null;
+        return new Select().from(OptionSet.class).where(Condition.column(OptionSet$Table.ID).
+                is(optionSetId)).querySingle();
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsByProgram(String program) {
-        return Select.all(ProgramIndicator.class, Condition.column(ProgramIndicator$Table.PROGRAM).is(program));
+        return new Select().from(ProgramIndicator.class).where(Condition.column(ProgramIndicator$Table.PROGRAM).is(program)).queryList();
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsByProgramStage(String programStage) {
-        return Select.all(ProgramIndicator.class,
-                Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).is(programStage));
+        return new Select().from(ProgramIndicator.class).where(Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).is(programStage)).queryList();
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsBySection(String section) {
-        return Select.all(ProgramIndicator.class,
-                Condition.column(ProgramIndicator$Table.SECTION).is(section));
+        return new Select().from(ProgramIndicator.class).where(
+                Condition.column(ProgramIndicator$Table.SECTION).is(section)).queryList();
     }
 
     public void synchronizeMetaData(Context context) {

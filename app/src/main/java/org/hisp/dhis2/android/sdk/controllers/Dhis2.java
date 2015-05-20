@@ -38,6 +38,8 @@ import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.R;
@@ -780,13 +782,13 @@ public final class Dhis2 {
      * ModelChangeListener for blocking and waiting for DBFlow's TransactionManager to finish saving
      * in the background
      */
-    private static class BlockingModelChangeListener implements FlowContentObserver.ModelChangeListener {
+    private static class BlockingModelChangeListener implements FlowContentObserver.OnModelStateChangedListener {
         private final BlockThread blockThread;
         public BlockingModelChangeListener(BlockThread blockThread) {
             this.blockThread = blockThread;
         }
 
-        @Override
+        /*@Override
         public void onModelChanged() {
             blockThread.block = true;
         }
@@ -807,6 +809,11 @@ public final class Dhis2 {
 
         @Override
         public void onModelUpdated() {
+            blockThread.block = true;
+        }*/
+
+        @Override
+        public void onModelStateChanged(Class<? extends Model> aClass, BaseModel.Action action) {
             blockThread.block = true;
         }
     };

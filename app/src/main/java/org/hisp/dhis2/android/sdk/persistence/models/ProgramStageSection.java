@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * @author Simen Skogly Russnes on 26.03.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class ProgramStageSection extends BaseIdentifiableObject {
 
     @JsonProperty("sortOrder")

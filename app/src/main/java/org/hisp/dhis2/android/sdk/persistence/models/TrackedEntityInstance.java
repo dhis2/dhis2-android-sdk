@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
-import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.UUID;
  * @author Simen Skogly Russnes on 03.03.15.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class TrackedEntityInstance extends BaseSerializableModel {
 
     public TrackedEntityInstance() {
@@ -33,7 +34,7 @@ public class TrackedEntityInstance extends BaseSerializableModel {
 
     public TrackedEntityInstance (Program program, String organisationUnit) {
         fromServer = false;
-        trackedEntityInstance = Dhis2.QUEUED + UUID.randomUUID().toString();
+        trackedEntityInstance = Utils.getTempUid();
         trackedEntity = program.getTrackedEntity().getId();
         created = Utils.getCurrentTime();
         lastUpdated = Utils.getCurrentTime();
@@ -45,11 +46,13 @@ public class TrackedEntityInstance extends BaseSerializableModel {
     public boolean fromServer = true;
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    @Column
+    @PrimaryKey(autoincrement = true)
     public long localId = -1;
 
     @JsonIgnore
-    @Column(unique = true)
+    @Column
+    @Unique
     public String trackedEntityInstance;
 
     @JsonProperty("trackedEntityInstance")
@@ -93,7 +96,7 @@ public class TrackedEntityInstance extends BaseSerializableModel {
     }
 
     @Override
-    public void save(boolean async) {
+    public void save() {
         /* check if there is an existing tei with the same UID to avoid duplicates */
         TrackedEntityInstance existingTei = DataValueController.
                 getTrackedEntityInstance(trackedEntityInstance);
@@ -107,10 +110,10 @@ public class TrackedEntityInstance extends BaseSerializableModel {
             //then we don't want to update the tei reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
-            updateManually(async);
+            updateManually();
         } else {
-            super.save(async);
-            boolean wait = true;
+            super.save();
+            /*boolean wait = true;
             if( localId < 0 ) { //workaround to wait for primary autoincrement key to be assigned with async=true
                 while(wait) {
                     TrackedEntityInstance tempTei = DataValueController.getTrackedEntityInstance(trackedEntityInstance);
@@ -121,7 +124,7 @@ public class TrackedEntityInstance extends BaseSerializableModel {
                     }
                     Thread.yield();
                 }
-            }
+            }*/
         }
     }
 
@@ -130,19 +133,19 @@ public class TrackedEntityInstance extends BaseSerializableModel {
      * This will and should only be called if the enrollment has a locally created temp event reference
      * and has previously been saved, so that it has a localId.
      */
-    public void updateManually(boolean async) {
-        Queriable q = new Update().table(TrackedEntityInstance.class).set(
+    public void updateManually() {
+        /*Queriable q = */new Update(TrackedEntityInstance.class).set(
                 Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(fromServer))
-                .where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId));
-        if(async)
+                .where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).queryClose();
+        /*if(async)
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
-            q.queryClose();
+            q.queryClose();*/
     }
 
     @Override
-    public void update(boolean async) {
-        save(async);
+    public void update() {
+        save();
     }
 
 }

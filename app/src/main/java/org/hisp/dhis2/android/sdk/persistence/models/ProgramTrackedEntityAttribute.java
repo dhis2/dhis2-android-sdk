@@ -33,10 +33,14 @@ import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +49,7 @@ import java.util.Map;
 /**
  * @author Simen Skogly Russnes on 20.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class ProgramTrackedEntityAttribute extends BaseModel {
 
     private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
@@ -62,16 +66,19 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     @Column
     public boolean mandatory;
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String program;
 
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        trackedEntityAttribute.save(true);
+        //trackedEntityAttribute.save(true);
+        trackedEntityAttribute.async().save();
         this.trackedEntityAttribute = trackedEntityAttribute.id;
     }
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String trackedEntityAttribute;
 
     public boolean isAllowFutureDate() {
@@ -107,9 +114,10 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     }
 
     public TrackedEntityAttribute getTrackedEntityAttribute() {
-        List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
+        /*List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
                 Condition.column(TrackedEntityAttribute$Table.ID).is(trackedEntityAttribute));
         if(result != null && !result.isEmpty()) return result.get(0);
-        else return null;
+        else return null;*/
+        return MetaDataController.getTrackedEntityAttribute(trackedEntityAttribute);
     }
 }

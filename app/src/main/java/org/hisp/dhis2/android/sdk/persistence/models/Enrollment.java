@@ -36,18 +36,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
-import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.raizlabs.android.dbflow.sql.queriable.Queriable;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +62,7 @@ import java.util.UUID;
  * @author Simen Skogly Russnes on 04.03.15.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class Enrollment extends BaseSerializableModel{
 
     private static final String CLASS_TAG = Enrollment.class.getSimpleName();
@@ -101,11 +104,13 @@ public class Enrollment extends BaseSerializableModel{
     public boolean fromServer = true;
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    @Column
+    @PrimaryKey(autoincrement = true)
     public long localId = -1;
 
     @JsonIgnore
-    @Column(unique = true)
+    @Column
+    @Unique
     public String enrollment;
 
     @JsonProperty("enrollment")
@@ -215,7 +220,7 @@ public class Enrollment extends BaseSerializableModel{
     }
 
     @Override
-    public void save(boolean async) {
+    public void save() {
         /* check if there is an existing enrollment with the same UID to avoid duplicates */
         Enrollment existingEnrollment = DataValueController.getEnrollment(enrollment);
         boolean exists = false;
@@ -227,10 +232,10 @@ public class Enrollment extends BaseSerializableModel{
             //then we don't want to update the enrollment reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
-            updateManually(async);
+            updateManually();
         } else {
-            super.save(async);
-            boolean wait = true;
+            super.save(); //saving the enrollment first to get a autoincrement id from db
+            /*boolean wait = true;
             if( localId < 0 ) { //workaround to wait for primary autoincrement key to be assigned with async=true
                 while(wait) {
                     Enrollment tempEnrollment = DataValueController.getEnrollment(enrollment);
@@ -241,12 +246,12 @@ public class Enrollment extends BaseSerializableModel{
                     }
                     Thread.yield();
                 }
-            }
+            }*/
         }
         if(events!=null) {
             for(Event event: events) {
                 event.localEnrollmentId = localId;
-                event.save(async);
+                event.save();
             }
         }
 
@@ -255,7 +260,7 @@ public class Enrollment extends BaseSerializableModel{
             for(TrackedEntityAttributeValue value : attributes)
             {
                 value.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
-                value.save(async);
+                value.save();
                 Log.d(CLASS_TAG, "VALUE: " + value.getValue() + "\n ID: " + value.localTrackedEntityInstanceId + "\n TEI ID:" + value.trackedEntityInstanceId);
             }
         }
@@ -266,16 +271,16 @@ public class Enrollment extends BaseSerializableModel{
      * This will and should only be called if the enrollment has a locally created temp event reference
      * and has previously been saved, so that it has a localId.
      */
-    public void updateManually(boolean async) {
-        Queriable q = new Update().table(Enrollment.class).set(
+    public void updateManually() {
+        /*Queriable q = */new Update(Enrollment.class).set(
                 Condition.column(Enrollment$Table.STATUS).is(status),
                 Condition.column(Enrollment$Table.FROMSERVER).is(fromServer),
                 Condition.column(Enrollment$Table.FOLLOWUP).is(followup))
-                .where(Condition.column(Enrollment$Table.LOCALID).is(localId));
-        if(async)
+                .where(Condition.column(Enrollment$Table.LOCALID).is(localId)).queryClose();
+        /*if(async)
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
-            q.queryClose();
+            q.queryClose();*/
     }
 
     @JsonIgnore
@@ -285,8 +290,8 @@ public class Enrollment extends BaseSerializableModel{
     }
 
     @Override
-    public void update(boolean async) {
-        save(async);
+    public void update() {
+        save();
     }
 
 }

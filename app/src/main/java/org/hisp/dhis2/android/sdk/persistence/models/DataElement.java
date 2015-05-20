@@ -33,6 +33,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
+
 import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
@@ -40,7 +42,7 @@ import static android.text.TextUtils.isEmpty;
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class DataElement extends BaseNameableObject {
 
     @JsonProperty("type")

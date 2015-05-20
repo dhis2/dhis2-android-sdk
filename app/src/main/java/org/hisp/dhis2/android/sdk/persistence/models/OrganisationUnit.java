@@ -32,6 +32,7 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
@@ -53,7 +54,8 @@ public class OrganisationUnit extends BaseModel {
     }
 
     @JsonProperty("id")
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String id;
 
     @JsonProperty("label")

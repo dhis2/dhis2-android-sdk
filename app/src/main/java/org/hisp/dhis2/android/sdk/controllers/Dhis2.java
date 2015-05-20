@@ -94,14 +94,14 @@ public final class Dhis2 {
     /* flags used to determine what data to be loaded from the server */
     public static final String LOAD_TRACKER = "load_tracker";
     public static final String LOAD_EVENTCAPTURE = "load_eventcapture";
-
-    public static final String UPDATE_FREQUENCY = "update_frequency";
+    public final static String UPDATE_FREQUENCY = "update_frequency";
     public final static String QUEUED = "queued";
     public final static String PREFS_NAME = "DHIS2";
     private final static String USERNAME = "username";
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
+
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
     private ObjectMapper objectMapper;
@@ -110,7 +110,6 @@ public final class Dhis2 {
 
     private boolean loadingInitial = false;
     private boolean loading = false;
-
 
     public Dhis2() {
         objectMapper = new ObjectMapper();

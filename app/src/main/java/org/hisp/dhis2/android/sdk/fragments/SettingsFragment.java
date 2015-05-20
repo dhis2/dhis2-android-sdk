@@ -31,7 +31,6 @@ package org.hisp.dhis2.android.sdk.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,7 +42,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.activities.SplashActivity;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 
 /**
@@ -79,18 +77,16 @@ public class SettingsFragment extends Fragment
         updateFrequencySpinner.setSelection(Dhis2.getUpdateFrequency(getActivity()));
         updateFrequencySpinner.setOnItemSelectedListener(this);
 
-        logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-        logoutButton.setOnClickListener(this);
-
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
-        synchronizeButton.setOnClickListener(new OnUpdateButtonClickListener());
+        logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
+
+        logoutButton.setOnClickListener(this);
+        synchronizeButton.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.settings_logout_button)
-        {
-
+    public void onClick(View view) {
+        if (view.getId() == R.id.settings_logout_button) {
             Dhis2.showConfirmDialog(getActivity(), getString(R.string.logout_title), getString(R.string.logout_message),
                     getString(R.string.logout_option), getString(R.string.cancel_option), new DialogInterface.OnClickListener() {
                         @Override
@@ -99,7 +95,13 @@ public class SettingsFragment extends Fragment
                             getActivity().finish();
                         }
                     });
+        } else if (view.getId() == R.id.settings_sync_button) {
+            if (isAdded()) {
+                Context context = getActivity().getBaseContext();
+                Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
+                Dhis2.synchronize(context);
             }
+        }
     }
 
     @Override
@@ -110,15 +112,5 @@ public class SettingsFragment extends Fragment
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // stub implementation
-    }
-
-    public class OnUpdateButtonClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Context context = getActivity();
-            if(context == null) return;
-            Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
-            Dhis2.synchronize(context);
-        }
     }
 }

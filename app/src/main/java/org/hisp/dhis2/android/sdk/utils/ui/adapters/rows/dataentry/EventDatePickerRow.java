@@ -43,6 +43,8 @@ import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import static android.text.TextUtils.isEmpty;
+
 public class EventDatePickerRow implements DataEntryRow {
     private static final String EMPTY_FIELD = "";
     private static final String DATE_FORMAT = "YYYY-MM-dd";
@@ -115,7 +117,8 @@ public class EventDatePickerRow implements DataEntryRow {
             clearButtonListener.setEvent(event);
 
             String eventDate = null;
-            if (event != null && event.getEventDate() != null) {
+            if (event != null && event.getEventDate() != null
+                    && !isEmpty(event.getEventDate())) {
                 DateTime eventDateTime = DateTime.parse(event.getEventDate());
                 eventDate = eventDateTime.toString(DATE_FORMAT);
             }

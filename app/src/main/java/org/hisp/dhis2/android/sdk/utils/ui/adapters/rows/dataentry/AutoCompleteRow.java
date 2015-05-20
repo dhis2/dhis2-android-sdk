@@ -143,28 +143,30 @@ public final class AutoCompleteRow implements DataEntryRow {
     private static class ViewHolder {
         public final TextView textView;
         public final TextView valueTextView;
-        public final ImageButton imageButton;
+        public final ImageButton clearButton;
+        public final OnClearButtonListener onClearButtonListener;
         public final OnTextChangedListener onTextChangedListener;
         public final DropDownButtonListener onDropDownButtonListener;
 
         private ViewHolder(View view) {
             textView = (TextView) view.findViewById(R.id.text_label);
             valueTextView = (TextView) view.findViewById(R.id.choose_option);
-            imageButton = (ImageButton) view.findViewById(R.id.show_drop_down_list);
+            clearButton = (ImageButton) view.findViewById(R.id.clear_option_value);
 
             OnOptionSelectedListener onOptionListener
                     = new OnOptionItemSelectedListener(valueTextView);
+            onClearButtonListener = new OnClearButtonListener(valueTextView);
             onTextChangedListener = new OnTextChangedListener();
             onDropDownButtonListener = new DropDownButtonListener();
             onDropDownButtonListener.setListener(onOptionListener);
 
-            imageButton.setOnClickListener(onDropDownButtonListener);
+            clearButton.setOnClickListener(onClearButtonListener);
             valueTextView.addTextChangedListener(onTextChangedListener);
+            valueTextView.setOnClickListener(onDropDownButtonListener);
         }
     }
 
-    private static class OnOptionItemSelectedListener
-            implements OnOptionSelectedListener {
+    private static class OnOptionItemSelectedListener implements OnOptionSelectedListener {
         private final TextView valueTextView;
 
         public OnOptionItemSelectedListener(TextView valueTextView) {
@@ -199,6 +201,19 @@ public final class AutoCompleteRow implements DataEntryRow {
             OptionDialogFragment fragment =
                     OptionDialogFragment.newInstance(options, listener);
             fragment.show(fragmentManager);
+        }
+    }
+
+    private static class OnClearButtonListener implements View.OnClickListener {
+        private final TextView textView;
+
+        public OnClearButtonListener(TextView textView) {
+            this.textView = textView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            textView.setText(EMPTY_FIELD);
         }
     }
 

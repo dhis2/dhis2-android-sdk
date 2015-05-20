@@ -52,7 +52,8 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_marginTop="6dp"
-            android:background="@drawable/textfield_background"
+            android:background="@drawable/textfield_background_selector"
+            android:clickable="true"
             android:hint="@string/find_option"
             android:paddingBottom="11dp"
             android:paddingTop="11dp"
@@ -73,12 +74,12 @@
             android:background="@color/light_grey"/>
 
         <ImageButton
-            android:id="@+id/show_drop_down_list"
+            android:id="@+id/clear_option_value"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/transparent_selector"
             android:contentDescription="@string/description"
-            android:src="@drawable/ic_expand_autocomplete"/>
+            android:src="@drawable/ic_cancel"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -104,7 +104,6 @@ public final class Dhis2 {
     private final static String CREDENTIALS = "credentials";
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
-    private GpsManager gpsManager;
     private ObjectMapper objectMapper;
     private Context context; //beware when using this as it must be set explicitly
     private Activity activity;
@@ -115,7 +114,6 @@ public final class Dhis2 {
 
     public Dhis2() {
         objectMapper = new ObjectMapper();
-        gpsManager = new GpsManager();
     }
 
     public static Context getContext() {
@@ -127,19 +125,21 @@ public final class Dhis2 {
     }
 
     public static void activateGps(Context context) {
-        getInstance().gpsManager.requestLocationUpdates(context);
+        GpsManager.init(context);
+        GpsManager.getInstance().requestLocationUpdates();
     }
 
     public static void disableGps() {
-        getInstance().gpsManager.removeUpdates();
+        GpsManager.getInstance().removeUpdates();
     }
 
-    public static Location getLocation(Context context) {
-        return getInstance().gpsManager.getLocation(context);
+    public static Location getLocation() {
+        return GpsManager.getInstance().getLocation();
     }
 
     /**
      * Returns the currently set Update Frequency
+     *
      * @param context
      * @return
      */
@@ -152,6 +152,7 @@ public final class Dhis2 {
 
     /**
      * Sets the update frequency by an integer referencing the indexes in the update_frequencies string-array
+     *
      * @param context
      * @param frequency index of update frequencies. See update_frequencies string-array
      */
@@ -174,12 +175,13 @@ public final class Dhis2 {
 
     /**
      * Enables loading of different data. LOAD_EVENTCAPTURE, LOAD_TRACKER
+     *
      * @param mode
      */
     public void enableLoading(Context context, String mode) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        if( mode.equals(LOAD_EVENTCAPTURE)) {
+        if (mode.equals(LOAD_EVENTCAPTURE)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
@@ -210,6 +212,7 @@ public final class Dhis2 {
 
     /**
      * clears all loading flags
+     *
      * @param context
      */
     public static void clearLoadFlags(Context context) {
@@ -233,6 +236,7 @@ public final class Dhis2 {
 
     /**
      * returns whether or not a load flag has been enabled.
+     *
      * @param context
      * @param flag
      * @return
@@ -248,72 +252,81 @@ public final class Dhis2 {
 
     /**
      * Returns false if some meta data flags that have been enabled have not been downloaded.
+     *
      * @param context
      * @return
      */
     public static boolean isMetaDataLoaded(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        if(isLoadFlagEnabled(context, MetaDataLoader.ASSIGNED_PROGRAMS)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.ASSIGNED_PROGRAMS, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.OPTION_SETS)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.OPTION_SETS, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMS)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMS, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.CONSTANTS)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.CONSTANTS, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULES)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULES, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEVARIABLES)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEVARIABLES, false)) return false;
-        } else if(isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEACTIONS)) {
-            if(!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEACTIONS, false)) return false;
+        if (isLoadFlagEnabled(context, MetaDataLoader.ASSIGNED_PROGRAMS)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.ASSIGNED_PROGRAMS, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.OPTION_SETS)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.OPTION_SETS, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMS)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMS, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.CONSTANTS)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.CONSTANTS, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULES)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULES, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEVARIABLES)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEVARIABLES, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEACTIONS)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEACTIONS, false))
+                return false;
         }
         return true;
     }
 
     /**
      * Returns false if some data value flags that have been enabled have not been downloaded.
+     *
      * @param context
      * @return
      */
     public static boolean isDataValuesLoaded(Context context) {
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        if(isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
-            if(!DataValueLoader.isEventsLoaded(context)) return false;
-        } else if(isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
-            if(!DataValueLoader.isEnrollmentsLoaded(context)) return false;
-        } else if(isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
-            if(!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
+        if (isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
+            if (!DataValueLoader.isEventsLoaded(context)) return false;
+        } else if (isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
+            if (!DataValueLoader.isEnrollmentsLoaded(context)) return false;
+        } else if (isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
+            if (!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
         }
         Log.d(CLASS_TAG, "data values are loaded.");
         return true;
     }
 
     public static boolean hasLoadedInitial(Context context) {
-        if(!isMetaDataLoaded(context)) return false;
+        if (!isMetaDataLoaded(context)) return false;
         else if (!isDataValuesLoaded(context)) return false;
         return true;
     }
 
     public ObjectMapper getObjectMapper() {
-        if(objectMapper==null) objectMapper = new ObjectMapper();
+        if (objectMapper == null) objectMapper = new ObjectMapper();
         return objectMapper;
     }
 
     public MetaDataController getMetaDataController() {
-        if(metaDataController == null) metaDataController = new MetaDataController();
+        if (metaDataController == null) metaDataController = new MetaDataController();
         return metaDataController;
     }
 
     public DataValueController getDataValueController() {
-        if(dataValueController == null) dataValueController = new DataValueController();
+        if (dataValueController == null) dataValueController = new DataValueController();
         return dataValueController;
     }
 
     /**
-     *
      * @param serverUrl
      */
     public void setServer(String serverUrl) {
@@ -327,31 +340,31 @@ public final class Dhis2 {
         editor.putString(PASSWORD, password);
         editor.putString(SERVER, serverUrl);
         String credentials = null;
-        if(username!=null && password!=null)
+        if (username != null && password != null)
             credentials = NetworkManager.getInstance().getBase64Manager().toBase64(username, password);
         editor.putString(CREDENTIALS, credentials);
         editor.commit();
     }
 
     public static String getUsername(Context context) {
-        if(context != null) getInstance().context = context;
-        if(getInstance().context == null) return null;
+        if (context != null) getInstance().context = context;
+        if (getInstance().context == null) return null;
         SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String username = prefs.getString(USERNAME, null);
         return username;
     }
 
     public static String getServer(Context context) {
-        if(context != null ) getInstance().context = context;
-        if(getInstance().context == null) return null;
+        if (context != null) getInstance().context = context;
+        if (getInstance().context == null) return null;
         SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String server = prefs.getString(SERVER, null);
         return server;
     }
 
     public static String getCredentials(Context context) {
-        if(context != null ) getInstance().context = context;
-        if(getInstance().context == null) return null;
+        if (context != null) getInstance().context = context;
+        if (getInstance().context == null) return null;
         SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         String credentials = prefs.getString(CREDENTIALS, null);
         return credentials;
@@ -359,6 +372,7 @@ public final class Dhis2 {
 
     /**
      * Tries to log in to the given DHIS 2 server
+     *
      * @param username
      * @param password
      */
@@ -409,10 +423,11 @@ public final class Dhis2 {
 
     /**
      * initiates sending locally modified data items and loads updated items from the server.
+     *
      * @param context
      */
     public static void sendLocalData(Context context) {
-        if(getInstance().loading) return;
+        if (getInstance().loading) return;
         getInstance().loading = true;
         getInstance().context = context;
         new Thread() {
@@ -427,18 +442,17 @@ public final class Dhis2 {
      */
     public static void loadInitialData(Context context) {
         Log.d(CLASS_TAG, "loadInitialData");
-        if( context != null ) {
+        if (context != null) {
             getInstance().context = context;
-            if(context instanceof Activity) getInstance().activity = (Activity) context;
+            if (context instanceof Activity) getInstance().activity = (Activity) context;
         }
-        if( context == null && getInstance().context == null ) return;
+        if (context == null && getInstance().context == null) return;
 
         getInstance().loadingInitial = true;
         getInstance().loading = true;
-        if(!isMetaDataLoaded(getInstance().context))
-        {
+        if (!isMetaDataLoaded(getInstance().context)) {
             loadInitialMetadata();
-        } else if(!isDataValuesLoaded(getInstance().context)){
+        } else if (!isDataValuesLoaded(getInstance().context)) {
             loadInitialDataValues();
         } else {
             onFinishLoading();
@@ -465,6 +479,7 @@ public final class Dhis2 {
     /**
      * Initiates synchronization with server. Updates MetaData, sends locally saved data, loads
      * new data values from server.
+     *
      * @param context
      */
     public static void synchronize(Context context) {
@@ -473,11 +488,12 @@ public final class Dhis2 {
 
     /**
      * initiates synchronization of metadata from server
+     *
      * @param context
      */
     public static void synchronizeMetaData(Context context) {
         Log.d(CLASS_TAG, "synchronizing metadata!");
-        if(getInstance().loading) return;
+        if (getInstance().loading) return;
         getInstance().loading = true;
         Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context); //callback is onFinishLoading
     }
@@ -487,8 +503,10 @@ public final class Dhis2 {
         Log.d(CLASS_TAG, "loading initial datavalues");
         FlowContentObserver observer = getFlowContentObserverForAllTables();
         String message;
-        if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-        else message = "Finishing initial database setup. This may take several minutes so please be patient.";
+        if (getInstance().activity != null)
+            message = getInstance().activity.getString(R.string.finishing_up);
+        else
+            message = "Finishing initial database setup. This may take several minutes so please be patient.";
         postProgressMessage(message);
         WaitForMetaDataSavingBlockThread blockThread = new WaitForMetaDataSavingBlockThread(observer);
         BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
@@ -506,15 +524,15 @@ public final class Dhis2 {
     private static void onFinishLoading() {
         Log.d(CLASS_TAG, "onFinishLoading");
         boolean finished = false;
-        if( getInstance().loadingInitial ) {
-            if(isMetaDataLoaded(getInstance().context) ) {
+        if (getInstance().loadingInitial) {
+            if (isMetaDataLoaded(getInstance().context)) {
                 Log.d(CLASS_TAG, "has loaded init metadatapart");
                 /**
                  * Initial loading of meta data is completed successfully, continue checking if
                  * required data values was loaded successfully.
                  */
 
-                if ( isDataValuesLoaded(getInstance().context) ) {
+                if (isDataValuesLoaded(getInstance().context)) {
                     Log.d(CLASS_TAG, "full loading success");
                     finished = true;
                 } else {
@@ -539,11 +557,13 @@ public final class Dhis2 {
              */
 
 
-            if(finished) {
+            if (finished) {
                 FlowContentObserver observer = getFlowContentObserverForAllTables();
                 String message;
-                if(getInstance().activity!=null) message = getInstance().activity.getString(R.string.finishing_up);
-                else message = "Finishing initial database setup. This may take several minutes so please be patient.";
+                if (getInstance().activity != null)
+                    message = getInstance().activity.getString(R.string.finishing_up);
+                else
+                    message = "Finishing initial database setup. This may take several minutes so please be patient.";
                 postProgressMessage(message);
                 FinishLoadingBlockThread blockThread = new FinishLoadingBlockThread(observer);
                 BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
@@ -559,7 +579,7 @@ public final class Dhis2 {
      * Called if initial meta data loading fails. Gives a notification to user.
      */
     private static void onFailedLoadingInitialMetaData() {
-        if(getInstance().activity != null) {
+        if (getInstance().activity != null) {
             DialogInterface.OnClickListener retryListener = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -588,51 +608,52 @@ public final class Dhis2 {
     }
 
     public static void showErrorDialog(final Activity activity, final String title, final String message) {
-        if(activity == null) return;
+        if (activity == null) return;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new CustomDialogFragment( title, message,
-                        "OK", null ).show(activity.getFragmentManager(), title);
+                new CustomDialogFragment(title, message,
+                        "OK", null).show(activity.getFragmentManager(), title);
             }
         });
     }
 
     public static void showErrorDialog(final Activity activity, final String title,
                                        final String message, final int iconId) {
-        if(activity == null) return;
+        if (activity == null) return;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new CustomDialogFragment( title, message,
-                        "OK", iconId, null ).show(activity.getFragmentManager(), title);
+                new CustomDialogFragment(title, message,
+                        "OK", iconId, null).show(activity.getFragmentManager(), title);
             }
         });
     }
 
     public static void showErrorDialog(final Activity activity, final String title, final String message, final DialogInterface.OnClickListener onConfirmClickListener) {
-        if(activity == null) return;
+        if (activity == null) return;
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new CustomDialogFragment( title, message,
-                        "OK", onConfirmClickListener ).show(activity.getFragmentManager(), title);
+                new CustomDialogFragment(title, message,
+                        "OK", onConfirmClickListener).show(activity.getFragmentManager(), title);
             }
         });
     }
 
     public static void showConfirmDialog(final Activity activity, final String title, final String message,
-                                  final String confirmOption, final String cancelOption,
-                                  DialogInterface.OnClickListener onClickListener) {
-        new CustomDialogFragment( title, message, confirmOption, cancelOption, onClickListener ).
+                                         final String confirmOption, final String cancelOption,
+                                         DialogInterface.OnClickListener onClickListener) {
+        new CustomDialogFragment(title, message, confirmOption, cancelOption, onClickListener).
                 show(activity.getFragmentManager(), title);
     }
+
     public static void showConfirmDialog(final Activity activity, final String title, final String message,
-                                          final String confirmOption, final String cancelOption,
-                                          DialogInterface.OnClickListener onConfirmListener,
-                                          DialogInterface.OnClickListener onCancelListener) {
-        new CustomDialogFragment( title, message, confirmOption, cancelOption, onConfirmListener,
-                onCancelListener ).
+                                         final String confirmOption, final String cancelOption,
+                                         DialogInterface.OnClickListener onConfirmListener,
+                                         DialogInterface.OnClickListener onCancelListener) {
+        new CustomDialogFragment(title, message, confirmOption, cancelOption, onConfirmListener,
+                onCancelListener).
                 show(activity.getFragmentManager(), title);
     }
 
@@ -641,33 +662,33 @@ public final class Dhis2 {
                                          DialogInterface.OnClickListener firstOptionListener,
                                          DialogInterface.OnClickListener secondOptionListener,
                                          DialogInterface.OnClickListener thirdOptionListener) {
-        new CustomDialogFragment( title, message, firstOption, secondOption, thirdOption,
+        new CustomDialogFragment(title, message, firstOption, secondOption, thirdOption,
                 firstOptionListener, secondOptionListener, thirdOptionListener).
                 show(activity.getFragmentManager(), title);
     }
 
     @Subscribe
     public void onResponse(LoadingEvent loadingEvent) {
-        if( loadingEvent.eventType== BaseEvent.EventType.onLoadingMetaDataFinished) {
-            if(!loadingEvent.success) {
+        if (loadingEvent.eventType == BaseEvent.EventType.onLoadingMetaDataFinished) {
+            if (!loadingEvent.success) {
                 onFinishLoading();
             } else {
-                if(isLoadingInitial()) {
+                if (isLoadingInitial()) {
                     loadInitialDataValues();
                 } else {
                     synchronizeDataValues(context);
                 }
             }
-        }
-        else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
+        } else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
             onFinishLoading();
-        } else if(loadingEvent.eventType == BaseEvent.EventType.onUpdateDataValuesFinished) {
+        } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateDataValuesFinished) {
             onFinishLoading();
         }
     }
 
     /**
      * Sends an event with feedback to user on loading. Picked up in LoadingFragment.
+     *
      * @param message
      */
     public static void postProgressMessage(final String message) {
@@ -698,7 +719,7 @@ public final class Dhis2 {
         @Override
         public void callback() {
             Log.d(CLASS_TAG, "init loading datavalues");
-            if(!isDataValuesLoaded(getInstance().context)) {
+            if (!isDataValuesLoaded(getInstance().context)) {
                 Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
                 getInstance().getDataValueController().loadDataValues(getInstance().context, false);
             } else {
@@ -728,12 +749,15 @@ public final class Dhis2 {
      */
     private static class BlockThread extends Thread {
         private final FlowContentObserver observer;
+
         public BlockThread(FlowContentObserver observer) {
             this.observer = observer;
         }
+
         boolean block = true;
+
         public void run() {
-            while(block) {
+            while (block) {
                 Log.e(CLASS_TAG, "Blocking ..");
                 try {
                     block = false;
@@ -748,7 +772,8 @@ public final class Dhis2 {
             callback();
         }
 
-        public void callback() { }
+        public void callback() {
+        }
     }
 
     public static FlowContentObserver getFlowContentObserverForAllTables() {
@@ -782,6 +807,7 @@ public final class Dhis2 {
      */
     private static class BlockingModelChangeListener implements FlowContentObserver.ModelChangeListener {
         private final BlockThread blockThread;
+
         public BlockingModelChangeListener(BlockThread blockThread) {
             this.blockThread = blockThread;
         }
@@ -809,5 +835,7 @@ public final class Dhis2 {
         public void onModelUpdated() {
             blockThread.block = true;
         }
-    };
+    }
+
+    ;
 }

@@ -30,33 +30,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="1"
+    android:background="@color/transparent_blue"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:background="@color/transparent_blue">
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:orientation="vertical"
         android:layout_weight="0.86"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <include layout="@layout/listview_row_text_view_label"/>
-
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
-            android:id="@+id/date_picker_edit_text"
+        <org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:focusable="false"
-            android:hint="@string/enter_date"
-            android:inputType="date"
             android:singleLine="true"
+            android:text="@string/enter_coordinates"
             android:textSize="@dimen/medium_text_size"
-            app:font="@string/light_font_name"/>
+            app:font="@string/condensed_font_name"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
+                android:id="@+id/latitude_edittext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="0.5"
+                android:hint="@string/latitude"
+                android:inputType="numberDecimal"
+                android:paddingBottom="11dp"
+                android:paddingTop="11dp"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/light_font_name"/>
+
+            <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
+                android:id="@+id/longitude_edittext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_weight="0.5"
+                android:hint="@string/longitude"
+                android:inputType="numberDecimal"
+                android:paddingBottom="11dp"
+                android:paddingTop="11dp"
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/light_font_name"/>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -71,12 +103,12 @@
             android:background="@color/white"/>
 
         <ImageButton
-            android:id="@+id/clear_edit_text"
+            android:id="@+id/capture_coordinates"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/transparent_selector"
             android:contentDescription="@string/description"
-            android:src="@drawable/ic_cancel"/>
+            android:src="@drawable/ic_location"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -1,7 +1,5 @@
 package org.hisp.dhis2.android.sdk.utils;
 
-import java.util.List;
-
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -10,136 +8,102 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
-public class GpsManager implements LocationListener
-{
-	private final String CLASS_TAG = "GpsManager";
-	
-	private double latitude;
-	
-	private double longitude;
-	
-	private Location location;
-	
-	private LocationManager locationManager;
-	
-	private LocationListener locationListener;
-	
-	public GpsManager()
-	{
+import java.util.List;
 
-	}
-	
-	public void requestLocationUpdates(Context context)
-	{
-        locationListener = this;
-        if(locationManager == null)
-            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		List<String> providers = locationManager.getProviders( true );
-        for ( String provider : providers )
-        {
-            Log.d(CLASS_TAG, provider);
-            locationManager.requestLocationUpdates( provider, 0, 0, this );
+public class GpsManager implements LocationListener {
+    private final String TAG = GpsManager.class.getSimpleName();
+
+    private static GpsManager mManager;
+
+    // Variables for caching latest
+    // latitude and longitude values
+    private double mLatitude;
+    private double mLongitude;
+
+    // private Location location;
+    private LocationManager mLocationManager;
+
+    private GpsManager(Context context) {
+        mLocationManager = (LocationManager) context
+                .getSystemService(Context.LOCATION_SERVICE);
+    }
+
+    public static void init(Context context) {
+        if (mManager == null) {
+            mManager = new GpsManager(context);
         }
-	}
+    }
 
-	public boolean isGpsAvailable()
-	{
-		if(locationManager != null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	public Location getLocation(Context context)
-	{
-        if(locationManager == null) requestLocationUpdates(context);
-		Criteria criteria = new Criteria();
-
-        String provider = locationManager.getBestProvider( criteria, false );
-
-        location = locationManager.getLastKnownLocation( provider );
-        if ( location != null )
-        {
-            setLatitude( location.getLatitude() );
-            setLongitude( location.getLongitude() );
+    public static GpsManager getInstance() {
+        if (mManager == null) {
+            throw new IllegalArgumentException("You have to call init() method first");
         }
 
-        Location location = new Location(provider);
-        location.setLatitude( getLatitude() );
-        location.setLongitude( getLongitude() );
+        return mManager;
+    }
+
+    public void requestLocationUpdates() {
+        List<String> providers = mLocationManager.getProviders(true);
+        for (String provider : providers) {
+            Log.d(TAG, provider);
+            mLocationManager.requestLocationUpdates(provider, 0, 0, this);
+        }
+    }
+
+    public boolean isGpsAvailable() {
+        return mLocationManager != null;
+    }
+
+    public Location getLocation() {
+        requestLocationUpdates();
+
+        Criteria criteria = new Criteria();
+        String provider = mLocationManager.getBestProvider(criteria, false);
+        Location location = mLocationManager.getLastKnownLocation(provider);
+        if (location != null) {
+            mLatitude = location.getLatitude();
+            mLongitude = location.getLongitude();
+        }
+
+        location = new Location(provider);
+        location.setLatitude(getLatitude());
+        location.setLongitude(getLongitude());
 
         return location;
-	}
+    }
 
-	public double getLatitude() 
-	{
-		return latitude;
-	}
+    public void removeUpdates() {
+        mLocationManager.removeUpdates(this);
+    }
 
-	public void setLatitude(double latitude) 
-	{
-		this.latitude = latitude;
-	}
+    @Override
+    public void onLocationChanged(Location location) {
+        mLatitude = location.getLatitude();
+        mLongitude = location.getLongitude();
+    }
 
-	public double getLongitude() 
-	{
-		return longitude;
-	}
+    @Override
+    public void onProviderDisabled(String provider) {
+        // stub implementation
+        Log.d(TAG, "Provider disabled");
+    }
 
-	public void setLongitude(double longitude) 
-	{
-		this.longitude = longitude;
-	}
+    @Override
+    public void onProviderEnabled(String provider) {
+        // stub implementation
+        Log.d(TAG, "Provider enabled");
+    }
 
-	public LocationManager getLocationManager() 
-	{
-		return locationManager;
-	}
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // stub implementation
+    }
 
-	public void setLocationManager(LocationManager locationManager) 
-	{
-		this.locationManager = locationManager;
-	}
+    public double getLatitude() {
+        return mLatitude;
+    }
 
-	public LocationListener getLocationListener() 
-	{
-		return locationListener;
-	}
-
-	public void setLocationListener(LocationListener locationListener) 
-	{
-		this.locationListener = locationListener;
-	}
-	
-	public void removeUpdates()
-	{
-        if(locationManager!=null)
-		    locationManager.removeUpdates(this);
-	}
-
-	public void setLocation(Location location) 
-	{
-		this.location = location;
-	}
-
-	public void onLocationChanged(Location location) {
-        setLatitude( location.getLatitude() );
-        setLongitude( location.getLongitude() );
-	}
-
-	public void onProviderDisabled(String provider) {
-		Log.d(CLASS_TAG, "Provider disabled");
-	}
-
-	public void onProviderEnabled(String provider) {
-		Log.d(CLASS_TAG, "Provider enabled");
-	}
-
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-	}
-
+    public double getLongitude() {
+        return mLongitude;
+    }
 }

@@ -27,10 +27,8 @@
 package org.hisp.dhis2.android.sdk.fragments.dataentry;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -38,7 +36,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -46,16 +43,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
@@ -63,15 +55,11 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.activities.INavigationHandler;
 import org.hisp.dhis2.android.sdk.activities.OnBackPressedListener;
-import org.hisp.dhis2.android.sdk.fragments.ProgressDialogFragment;
-import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.DataValueAdapter;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.SectionAdapter;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
-import org.hisp.dhis2.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.fragments.ProgressDialogFragment;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis2.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
@@ -80,8 +68,9 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramRuleService;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.DataValueAdapter;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.SectionAdapter;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,9 +86,6 @@ public class DataEntryFragment extends Fragment
         OnBackPressedListener, AdapterView.OnItemSelectedListener {
     public static final String TAG = DataEntryFragment.class.getSimpleName();
 
-    private static final String EMPTY_FIELD = "";
-    private static final String DATE_FORMAT = "YYYY-MM-dd";
-
     private static final int LOADER_ID = 1;
     private static final int INITIAL_POSITION = 0;
 
@@ -108,31 +94,20 @@ public class DataEntryFragment extends Fragment
 
     private static final String ORG_UNIT_ID = "extra:orgUnitId";
     private static final String PROGRAM_ID = "extra:ProgramId";
-    private static final String PROGRAMSTAGE_ID = "extra:ProgramStageId";
+    private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
     private static final String EVENT_ID = "extra:EventId";
     private static final String ENROLLMENT_ID = "extra:EnrollmentId";
-
 
     private ListView mListView;
     private ProgressBar mProgressBar;
 
     private View mSpinnerContainer;
     private Spinner mSpinner;
-
-    private EditText mLatitude;
-    private EditText mLongitude;
-    private ImageButton mCaptureCoords;
-
     private SectionAdapter mSpinnerAdapter;
     private DataValueAdapter mListViewAdapter;
 
-    private INavigationHandler mNavigationHandler;
     private DataEntryFragmentForm mForm;
-
     private ProgramRuleHelper mProgramRuleHelper;
-
-    private View mReportDatePicker;
-    private View mCoordinatePickerView;
 
     private boolean refreshing = false;
     private boolean hasDataChanged = false;
@@ -146,7 +121,7 @@ public class DataEntryFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(ORG_UNIT_ID, unitId);
         args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAMSTAGE_ID, programStageId);
+        args.putString(PROGRAM_STAGE_ID, programStageId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -157,19 +132,19 @@ public class DataEntryFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(ORG_UNIT_ID, unitId);
         args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAMSTAGE_ID, programStageId);
+        args.putString(PROGRAM_STAGE_ID, programStageId);
         args.putLong(EVENT_ID, eventId);
         fragment.setArguments(args);
         return fragment;
     }
 
     public static DataEntryFragment newInstanceWithEnrollment(String unitId, String programId, String programStageId,
-                                                long enrollmentId) {
+                                                              long enrollmentId) {
         DataEntryFragment fragment = new DataEntryFragment();
         Bundle args = new Bundle();
         args.putString(ORG_UNIT_ID, unitId);
         args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAMSTAGE_ID, programStageId);
+        args.putString(PROGRAM_STAGE_ID, programStageId);
         args.putLong(ENROLLMENT_ID, enrollmentId);
         fragment.setArguments(args);
         return fragment;
@@ -181,7 +156,7 @@ public class DataEntryFragment extends Fragment
         Bundle args = new Bundle();
         args.putString(ORG_UNIT_ID, unitId);
         args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAMSTAGE_ID, programStageId);
+        args.putString(PROGRAM_STAGE_ID, programStageId);
         args.putLong(EVENT_ID, eventId);
         args.putLong(ENROLLMENT_ID, enrollmentId);
         fragment.setArguments(args);
@@ -211,12 +186,6 @@ public class DataEntryFragment extends Fragment
         if (activity instanceof INavigationHandler) {
             ((INavigationHandler) activity).setBackPressedListener(this);
         }
-
-        if (activity instanceof INavigationHandler) {
-            mNavigationHandler = (INavigationHandler) activity;
-        } else {
-            throw new IllegalArgumentException("Activity must implement INavigationHandler interface");
-        }
     }
 
     @Override
@@ -236,7 +205,6 @@ public class DataEntryFragment extends Fragment
         }
 
         Dhis2.disableGps();
-        mNavigationHandler = null;
         super.onDetach();
     }
 
@@ -263,7 +231,7 @@ public class DataEntryFragment extends Fragment
         inflater.inflate(R.menu.menu_data_entry, menu);
         Log.d(TAG, "onCreateOptionsMenu");
         MenuItem menuItem = menu.findItem(R.id.action_new_event);
-        if(!hasDataChanged) {
+        if (!hasDataChanged) {
             menuItem.setEnabled(false);
             menuItem.getIcon().setAlpha(0x30);
         } else {
@@ -286,14 +254,6 @@ public class DataEntryFragment extends Fragment
                 getLayoutInflater(savedInstanceState));
         mListView = (ListView) view.findViewById(R.id.datavalues_listview);
         mListView.setVisibility(View.VISIBLE);
-
-        mReportDatePicker = LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_data_entry_date_picker, mListView, false);
-        mListView.addHeaderView(mReportDatePicker);
-
-        mCoordinatePickerView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_data_entry_coordinate_picker, mListView, false);
-        mListView.addHeaderView(mCoordinatePickerView);
         mListView.setAdapter(mListViewAdapter);
     }
 
@@ -309,7 +269,7 @@ public class DataEntryFragment extends Fragment
             doBack();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
-            if(validate()) {
+            if (validate()) {
                 submitEvent();
             }
         }
@@ -335,22 +295,19 @@ public class DataEntryFragment extends Fragment
         super.onSaveInstanceState(outState);
     }
 
-    long timerStart = -1;
-
     @Override
     public Loader<DataEntryFragmentForm> onCreateLoader(int id, Bundle args) {
         if (LOADER_ID == id && isAdded()) {
             // Adding Tables for tracking here is dangerous (since MetaData updates in background
             // can trigger reload of values from db which will reset all fields).
             // Hence, it would be more safe not to track any changes in any tables
-            timerStart = System.currentTimeMillis();
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
             Bundle fragmentArguments = args.getBundle(EXTRA_ARGUMENTS);
             return new DbLoader<>(
                     getActivity().getBaseContext(), modelsToTrack, new DataEntryFragmentQuery(
                     fragmentArguments.getString(ORG_UNIT_ID),
                     fragmentArguments.getString(PROGRAM_ID),
-                    fragmentArguments.getString(PROGRAMSTAGE_ID),
+                    fragmentArguments.getString(PROGRAM_STAGE_ID),
                     fragmentArguments.getLong(EVENT_ID, -1),
                     fragmentArguments.getLong(ENROLLMENT_ID, -1)
             )
@@ -365,23 +322,12 @@ public class DataEntryFragment extends Fragment
             mProgressBar.setVisibility(View.GONE);
             mListView.setVisibility(View.VISIBLE);
 
-            System.out.println("TIME: " + (System.currentTimeMillis() - timerStart));
             mForm = data;
             mProgramRuleHelper = new ProgramRuleHelper(mForm.getStage().getProgram());
 
-            if (data.getStage() != null) {
-                attachDatePicker();
-            }
-
             if (data.getStage() != null &&
                     data.getStage().captureCoordinates) {
-                attachCoordinatePicker();
-            } else {
-                if (mCoordinatePickerView != null) {
-                    mCoordinatePickerView.setVisibility(View.GONE);
-                    mCoordinatePickerView.setLayoutParams(new AbsListView.
-                            LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, 1));
-                }
+                Dhis2.activateGps(getActivity().getBaseContext());
             }
 
             if (!data.getSections().isEmpty()) {
@@ -415,7 +361,7 @@ public class DataEntryFragment extends Fragment
     }
 
     private void selectSection(int position) {
-        if(hasDataChanged) {
+        if (hasDataChanged) {
             submitEvent();
         }
         DataEntryFragmentSection section = (DataEntryFragmentSection)
@@ -449,7 +395,7 @@ public class DataEntryFragment extends Fragment
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if(validate()) {
+                            if (validate()) {
                                 submitEvent();
                                 getFragmentManager().popBackStack();
                             }
@@ -471,13 +417,13 @@ public class DataEntryFragment extends Fragment
 
     public void showWarningHiddenValuesDialog(ArrayList<String> affectedValues) {
         ArrayList<String> dataElementNames = new ArrayList<>();
-        for(String s: affectedValues) {
+        for (String s : affectedValues) {
             DataElement de = MetaDataController.getDataElement(s);
-            if(de!=null) {
+            if (de != null) {
                 dataElementNames.add(de.getDisplayName());
             }
         }
-        if(validationErrorDialog==null || !validationErrorDialog.isVisible()) {
+        if (validationErrorDialog == null || !validationErrorDialog.isVisible()) {
             validationErrorDialog = ValidationErrorDialog
                     .newInstance(getString(R.string.warning_hidefieldwithvalue), dataElementNames
                     );
@@ -495,14 +441,14 @@ public class DataEntryFragment extends Fragment
             public void run() {
                 List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
                 mListViewAdapter.resetHiding();
-                if(mSpinnerAdapter!=null) {
+                if (mSpinnerAdapter != null) {
                     mSpinnerAdapter.resetHiding();
                 }
                 ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
                 boolean currentSelectedSectionRemoved = false;
                 for (ProgramRule programRule : rules) {
                     boolean actionTrue = ProgramRuleService.evaluate(programRule.condition, mForm.getEvent());
-                    if(actionTrue) {
+                    if (actionTrue) {
                         for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
                             boolean applyActionResult = applyProgramRuleAction(programRuleAction, actionTrue);
                             if (applyActionResult && programRuleAction.programRuleActionType.equals(ProgramRuleAction.TYPE_HIDEFIELD)) {
@@ -513,12 +459,12 @@ public class DataEntryFragment extends Fragment
                         }
                     }
                 }
-                if(!affectedFieldsWithValue.isEmpty()) {
+                if (!affectedFieldsWithValue.isEmpty()) {
                     showWarningHiddenValuesDialog(affectedFieldsWithValue);
                 }
                 refreshListView();
                 Activity activity = getActivity();
-                if(mSpinnerAdapter!=null) {
+                if (mSpinnerAdapter != null) {
                     if (activity != null) {
                         activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
                     }
@@ -531,33 +477,35 @@ public class DataEntryFragment extends Fragment
 
     private void showLoadingDialog() {
         Activity activity = getActivity();
-        if(activity==null) return;
+        if (activity == null) return;
         activity.runOnUiThread(new Thread() {
             public void run() {
-                if(progressDialogFragment==null) {
+                if (progressDialogFragment == null) {
                     progressDialogFragment = ProgressDialogFragment.newInstance(R.string.please_wait);
                 }
-                if(!progressDialogFragment.isAdded())
+                if (!progressDialogFragment.isAdded())
                     progressDialogFragment.show(getChildFragmentManager(), ProgressDialogFragment.TAG);
             }
         });
     }
 
     private void hideLoadingDialog() {
-        if(progressDialogFragment!=null) {
+        if (progressDialogFragment != null) {
             progressDialogFragment.dismiss();
         }
     }
 
     private class UpdateSectionThread extends Thread {
         private final boolean refreshSelection;
+
         public UpdateSectionThread(boolean refreshSelection) {
             this.refreshSelection = refreshSelection;
         }
+
         @Override
         public void run() {
             mSpinnerAdapter.notifyDataSetChanged();
-            if(refreshSelection) {
+            if (refreshSelection) {
                 selectSection(0);
             }
             hideLoadingDialog();
@@ -584,14 +532,15 @@ public class DataEntryFragment extends Fragment
 
     /**
      * Hides a programstagesection from being displayed in the list of sections
+     *
      * @param programStageSection
      * @return true if the section that's hidden is the one that's currently selected.
      */
     public boolean hideSection(String programStageSection) {
-        if(mSpinnerAdapter==null) return false;
+        if (mSpinnerAdapter == null) return false;
         DataEntryFragmentSection currentSection = mForm.getCurrentSection();
         mSpinnerAdapter.hideSection(programStageSection);
-        if(currentSection.getId().equals(programStageSection)) {
+        if (currentSection.getId().equals(programStageSection)) {
             return true;
         } else {
             return false;
@@ -601,13 +550,14 @@ public class DataEntryFragment extends Fragment
     /**
      * Hides a field in the listView of dataEntryRows. Returns true if the hidden field contained
      * a value
+     *
      * @param dataElement
      * @return
      */
     public boolean hideField(String dataElement) {
         mListViewAdapter.hideIndex(dataElement);
         DataValue dv = mForm.getDataValues().get(dataElement);
-        if(dv!=null && dv.getValue()!=null && !dv.getValue().isEmpty()){
+        if (dv != null && dv.getValue() != null && !dv.getValue().isEmpty()) {
             return true;
         } else {
             return false;
@@ -641,7 +591,7 @@ public class DataEntryFragment extends Fragment
     }
 
     public void flagDataChanged(boolean changed) {
-        if(hasDataChanged!=changed) {
+        if (hasDataChanged != changed) {
             hasDataChanged = changed;
             getActivity().invalidateOptionsMenu();
         }
@@ -696,130 +646,11 @@ public class DataEntryFragment extends Fragment
     }
 
     private Toolbar getActionBarToolbar() {
-        if (isAdded() && getActivity() != null ) {
+        if (isAdded() && getActivity() != null) {
             return (Toolbar) getActivity().findViewById(R.id.toolbar);
         } else {
             throw new IllegalArgumentException("Fragment should be attached to MainActivity");
         }
-    }
-
-    private void attachDatePicker() {
-        if (mForm != null && isAdded()) {
-            //final View mReportDatePicker = LayoutInflater.from(getActivity())
-            //        .inflate(R.layout.fragment_data_entry_date_picker, mListView, false);
-            final TextView label = (TextView) mReportDatePicker
-                    .findViewById(R.id.text_label);
-            final EditText datePickerEditText = (EditText) mReportDatePicker
-                    .findViewById(R.id.date_picker_edit_text);
-            final ImageButton clearDateButton = (ImageButton) mReportDatePicker
-                    .findViewById(R.id.clear_edit_text);
-
-            final DatePickerDialog.OnDateSetListener dateSetListener
-                    = new DatePickerDialog.OnDateSetListener() {
-                @Override public void onDateSet(DatePicker view, int year,
-                                                int monthOfYear, int dayOfMonth) {
-                    LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
-                    String newValue = date.toString(DATE_FORMAT);
-                    datePickerEditText.setText(newValue);
-                    mForm.getEvent().setEventDate(newValue);
-                }
-            };
-            clearDateButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    datePickerEditText.setText(EMPTY_FIELD);
-                    mForm.getEvent().setEventDate(EMPTY_FIELD);
-                }
-            });
-            datePickerEditText.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    LocalDate currentDate = new LocalDate();
-                    DatePickerDialog picker = new DatePickerDialog(getActivity(),
-                            dateSetListener, currentDate.getYear(),
-                            currentDate.getMonthOfYear() - 1,
-                            currentDate.getDayOfMonth());
-                    picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
-                    picker.show();
-                }
-            });
-
-            String reportDateDescription = mForm.getStage().reportDateDescription == null ?
-                    getString(R.string.report_date) : mForm.getStage().reportDateDescription;
-            label.setText(reportDateDescription);
-            if (mForm.getEvent() != null && mForm.getEvent().getEventDate() != null) {
-                DateTime date = DateTime.parse(mForm.getEvent().getEventDate());
-                String newValue = date.toString(DATE_FORMAT);
-                datePickerEditText.setText(newValue);
-            }
-
-            //mListView.addHeaderView(mReportDatePicker);
-        }
-    }
-
-    private void attachCoordinatePicker() {
-        if (mForm == null || mForm.getEvent() == null || !isAdded()) {
-            return;
-        }
-        // Prepare GPS for work. Note, we should use base
-        // context in order not to leak activity
-        Dhis2.activateGps(getActivity().getBaseContext());
-
-        Double latitude = mForm.getEvent().getLatitude();
-        Double longitude = mForm.getEvent().getLongitude();
-
-        LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-        mLatitude = (EditText) mCoordinatePickerView.findViewById(R.id.latitude_edittext);
-        mLongitude = (EditText) mCoordinatePickerView.findViewById(R.id.longitude_edittext);
-        mCaptureCoords = (ImageButton) mCoordinatePickerView.findViewById(R.id.capture_coordinates);
-
-        if (latitude != null) {
-            mLatitude.setText(String.valueOf(latitude));
-        }
-
-        if (longitude != null) {
-            mLongitude.setText(String.valueOf(longitude));
-        }
-
-        final String latitudeMessage = getString(R.string.latitude_error_message);
-        final String longitudeMessage = getString(R.string.longitude_error_message);
-
-        mLatitude.addTextChangedListener(new AbsTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 1) {
-                    double value = Double.parseDouble(s.toString());
-                    if (value < -90 || value > 90) {
-                        mLatitude.setError(latitudeMessage);
-                    }
-                    mForm.getEvent().setLatitude(Double.valueOf(value));
-                }
-            }
-        });
-
-        mLongitude.addTextChangedListener(new AbsTextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 1) {
-                    double value = Double.parseDouble(s.toString());
-                    if (value < -180 || value > 180) {
-                        mLongitude.setError(longitudeMessage);
-                    }
-                    mForm.getEvent().setLongitude(Double.valueOf(value));
-                }
-            }
-        });
-
-        mCaptureCoords.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Location location = Dhis2.getLocation(getActivity().getBaseContext());
-
-                mLatitude.setText(String.valueOf(location.getLatitude()));
-                mLongitude.setText(String.valueOf(location.getLongitude()));
-            }
-        });
     }
 
     private void attachSpinner() {
@@ -895,36 +726,37 @@ public class DataEntryFragment extends Fragment
 
     /**
      * returns true if the event was successfully saved
+     *
      * @return
      */
     public void submitEvent() {
-        if(saving) return;
+        if (saving) return;
         flagDataChanged(false);
         new Thread() {
             public void run() {
-            saving = true;
-            if(mForm!=null && isAdded()) {
-                final Context context = getActivity().getBaseContext();
+                saving = true;
+                if (mForm != null && isAdded()) {
+                    final Context context = getActivity().getBaseContext();
 
-                mForm.getEvent().setFromServer(true);
-                mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
-                mForm.getEvent().save(true);
+                    mForm.getEvent().setFromServer(true);
+                    mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
+                    mForm.getEvent().save(true);
 
-                /*workaround for dbflow concurrency bug. This ensures that datavalues are saved
+                /* workaround for DbFlow concurrency bug. This ensures that datavalues are saved
                 before Dhis2 sends data to server to avoid some data values not being sent in race
-                conditions*/
-                mForm.getEvent().setFromServer(false);
-                mForm.getEvent().save(true);
+                conditions */
+                    mForm.getEvent().setFromServer(false);
+                    mForm.getEvent().save(true);
 
 
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Dhis2.sendLocalData(context);
-                    }
-                };
-                Timer timer = new Timer();
-                timer.schedule(timerTask, 5000);
+                    TimerTask timerTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            Dhis2.sendLocalData(context);
+                        }
+                    };
+                    Timer timer = new Timer();
+                    timer.schedule(timerTask, 5000);
                 }
                 saving = false;
             }

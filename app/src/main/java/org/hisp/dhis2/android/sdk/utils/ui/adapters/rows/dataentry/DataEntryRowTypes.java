@@ -40,4 +40,6 @@ public enum DataEntryRowTypes {
     AUTO_COMPLETE,
     DATE,
     INDICATOR,
+    EVENT_DATE,
+    COORDINATES,
 }

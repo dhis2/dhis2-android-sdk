@@ -27,34 +27,35 @@
 package org.hisp.dhis2.android.sdk.fragments.dataentry;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.AutoCompleteRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.CheckBoxRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DataEntryRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DataEntryRowTypes;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DatePickerRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EditTextRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
-import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.RadioButtonsRow;
-import org.hisp.dhis2.android.sdk.persistence.loaders.Query;
+import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramIndicatorService;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.AutoCompleteRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.CheckBoxRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.CoordinatesRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DataEntryRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DataEntryRowTypes;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.DatePickerRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EditTextRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EventDatePickerRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.RadioButtonsRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,18 +109,23 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
         if (stage.getProgramStageSections() == null || stage.getProgramStageSections().isEmpty()) {
             List<DataEntryRow> rows = new ArrayList<>();
+            addEventDateRow(context, form, rows);
+            addCoordinateRow(form, rows);
             populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
             populateIndicatorRows(form, stage.getProgramIndicators(), rows);
             form.getSections().add(new DataEntryFragmentSection(DEFAULT_SECTION, null, rows));
         } else {
             for (int i = 0; i < stage.getProgramStageSections().size(); i++) {
-
                 ProgramStageSection section = stage.getProgramStageSections().get(i);
                 if (section.getProgramStageDataElements() == null) {
                     continue;
                 }
 
                 List<DataEntryRow> rows = new ArrayList<>();
+                if (i == 0) {
+                    addEventDateRow(context, form, rows);
+                    addCoordinateRow(form, rows);
+                }
                 populateDataEntryRows(form, section.getProgramStageDataElements(), rows, username);
                 populateIndicatorRows(form, section.getProgramIndicators(), rows);
                 form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getId(), rows));
@@ -127,6 +133,20 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         }
 
         return form;
+    }
+
+    private static void addEventDateRow(Context context, DataEntryFragmentForm form,
+                                        List<DataEntryRow> rows) {
+        String reportDateDescription = form.getStage().reportDateDescription == null ?
+                context.getString(R.string.report_date) : form.getStage().reportDateDescription;
+        rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
+    }
+
+    private static void addCoordinateRow(DataEntryFragmentForm form, List<DataEntryRow> rows) {
+        if (form.getStage() != null &&
+                form.getStage().captureCoordinates) {
+            rows.add(new CoordinatesRow(form.getEvent()));
+        }
     }
 
     private static void populateDataEntryRows(DataEntryFragmentForm form,
@@ -164,9 +184,9 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         Event event;
         if (eventId < 0) {
             event = new Event();
-            if(enrollmentId > 0) {
+            if (enrollmentId > 0) {
                 Enrollment enrollment = DataValueController.getEnrollment(enrollmentId);
-                if(enrollment!=null) {
+                if (enrollment != null) {
                     event.setLocalEnrollmentId(enrollmentId);
                     event.setEnrollment(enrollment.enrollment);
                     event.trackedEntityInstance = enrollment.trackedEntityInstance;

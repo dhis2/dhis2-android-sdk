@@ -38,23 +38,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis2.android.sdk.R;
-import org.hisp.dhis2.android.sdk.fragments.dataentry.EditTextValueChangedEvent;
-import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-public class DatePickerRow implements DataEntryRow {
+public class EventDatePickerRow implements DataEntryRow {
     private static final String EMPTY_FIELD = "";
+    private static final String DATE_FORMAT = "YYYY-MM-dd";
 
     private final String mLabel;
-    private final BaseValue mValue;
+    private final Event mEvent;
 
-    private boolean hidden = false;
+    private boolean mHidden = false;
 
-    public DatePickerRow(String label, BaseValue value) {
+    public EventDatePickerRow(String label, Event event) {
         mLabel = label;
-        mValue = value;
+        mEvent = event;
     }
 
     @Override
@@ -68,28 +68,28 @@ public class DatePickerRow implements DataEntryRow {
             holder = (DatePickerRowHolder) view.getTag();
         } else {
             View root = inflater.inflate(
-                    R.layout.listview_row_datepicker, container, false);
+                    R.layout.listview_row_event_datepicker, container, false);
             holder = new DatePickerRowHolder(root, inflater.getContext());
 
             root.setTag(holder);
             view = root;
         }
 
-        holder.updateViews(mLabel, mValue);
+        holder.updateViews(mLabel, mEvent);
         return view;
     }
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.DATE.ordinal();
+        return DataEntryRowTypes.EVENT_DATE.ordinal();
     }
 
     @Override
     public BaseValue getBaseValue() {
-        return mValue;
+        return null;
     }
 
-    private class DatePickerRowHolder {
+    private static class DatePickerRowHolder {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
@@ -110,12 +110,18 @@ public class DatePickerRow implements DataEntryRow {
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
-        public void updateViews(String label, BaseValue baseValue) {
-            dateSetListener.setBaseValue(baseValue);
-            clearButtonListener.setBaseValue(baseValue);
+        public void updateViews(String label, Event event) {
+            dateSetListener.setEvent(event);
+            clearButtonListener.setEvent(event);
+
+            String eventDate = null;
+            if (event != null && event.getEventDate() != null) {
+                DateTime eventDateTime = DateTime.parse(event.getEventDate());
+                eventDate = eventDateTime.toString(DATE_FORMAT);
+            }
 
             textLabel.setText(label);
-            pickerInvoker.setText(baseValue.getValue());
+            pickerInvoker.setText(eventDate);
         }
     }
 
@@ -141,36 +147,34 @@ public class DatePickerRow implements DataEntryRow {
 
     private static class ClearButtonListener implements OnClickListener {
         private final TextView textView;
-        private BaseValue value;
+        private Event event;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
-            this.value = value;
+        public void setEvent(Event event) {
+            this.event = event;
         }
 
         @Override
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
-            value.setValue(EMPTY_FIELD);
-            Dhis2Application.getEventBus()
-                    .post(new EditTextValueChangedEvent(value));
+            event.setEventDate(EMPTY_FIELD);
         }
     }
 
     private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
-        private BaseValue value;
+        private Event event;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
-            this.value = value;
+        public void setEvent(Event event) {
+            this.event = event;
         }
 
         @Override
@@ -179,19 +183,17 @@ public class DatePickerRow implements DataEntryRow {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
-            value.setValue(newValue);
-            Dhis2Application.getEventBus()
-                    .post(new EditTextValueChangedEvent(value));
+            event.setEventDate(newValue);
         }
     }
 
     @Override
     public boolean isHidden() {
-        return hidden;
+        return mHidden;
     }
 
     @Override
     public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+        mHidden = hidden;
     }
 }

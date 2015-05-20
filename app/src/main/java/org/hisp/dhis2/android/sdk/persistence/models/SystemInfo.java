@@ -32,13 +32,16 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 /**
  * @author Simen Skogly Russnes on 26.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class SystemInfo extends BaseModel {
 
     @JsonAnySetter
@@ -46,7 +49,8 @@ public class SystemInfo extends BaseModel {
         // do something: put to a Map; log a warning, whatever
     }
 
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public int id = 1; //there should only be one row of this which overwrites every time its reloaded
 
     @JsonProperty("serverDate")

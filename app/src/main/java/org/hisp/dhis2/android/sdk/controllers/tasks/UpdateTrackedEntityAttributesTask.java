@@ -127,13 +127,13 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
             if(trackedEntityAttribute.id == null) noUpdate = true;
             if(noUpdate) {}
             else {
-                List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
+                TrackedEntityAttribute result = new Select().from(TrackedEntityAttribute.class).where(
                         Condition.column(TrackedEntityAttribute$Table.ID).
-                                is(trackedEntityAttribute.id));
-                if(result != null && !result.isEmpty())
-                    trackedEntityAttribute.update(true);
+                                is(trackedEntityAttribute.id)).querySingle();
+                if(result != null)
+                    trackedEntityAttribute.async().update();
                 else
-                    trackedEntityAttribute.save(true);
+                    trackedEntityAttribute.async().save();
             }
             requestCounter--;
             if(requestCounter > 0)

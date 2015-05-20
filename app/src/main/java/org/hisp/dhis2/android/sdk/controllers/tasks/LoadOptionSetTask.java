@@ -81,9 +81,9 @@ public class LoadOptionSetTask implements INetworkTask {
 
         String url = networkManager.getServerUrl() + "/api/optionSets/" + optionSetId + "?fields=[:all]";
         if( updating ) {
-            List<OptionSet> result = Select.all(OptionSet.class, Condition.column(OptionSet$Table.ID).is(optionSetId));
-            if( result != null && result.size() > 0 ) {
-                int version = result.get(0).version;
+            OptionSet result = new Select().from(OptionSet.class).where(Condition.column(OptionSet$Table.ID).is(optionSetId)).querySingle();
+            if( result != null ) {
+                int version = result.version;
                 url += "&filter=version:gt:" + version;
             }
         }

@@ -49,13 +49,11 @@ import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
-import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
@@ -71,7 +69,6 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
@@ -154,7 +151,6 @@ public class DataValueLoader {
             Log.d(CLASS_TAG, "assignedorgunits: " + assignedOrganisationUnits.size());
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
                 currentOrganisationUnit = organisationUnit.getId();
-                Log.d(CLASS_TAG, "orgunit: " + organisationUnit.getLabel() + ": " + organisationUnit.getId());
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                     List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -578,9 +574,9 @@ public class DataValueLoader {
                     if(synchronizing) {
                         //todo: implement different handling if synchronizing than if doing 1st load
                     }
-                    //saving with async false bc we need to ensure the localId is created for later referencing
+
                     for(TrackedEntityInstance tei: trackedEntityInstances) {
-                        tei.save(true);
+                        tei.save();
                     }
 
                     for(TrackedEntityAttributeValue value: values) {
@@ -588,7 +584,7 @@ public class DataValueLoader {
                         if(tei!=null) {
                             value.localTrackedEntityInstanceId = tei.localId;
                         }
-                        value.save(true);
+                        value.async().save();
                     }
                 }
                 flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
@@ -603,7 +599,7 @@ public class DataValueLoader {
                     enrollment.orgUnit = currentOrganisationUnit;
                     TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
                     if(tei!=null) enrollment.localTrackedEntityInstanceId = tei.localId;
-                    enrollment.save(true);
+                    enrollment.save();
                 }
                 flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
                 flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);
@@ -622,14 +618,7 @@ public class DataValueLoader {
                         event.localId = localEvent.localId;
                         event.localEnrollmentId = localEvent.localEnrollmentId;
                         if( localEvent.fromServer == true ) {
-                            event.update(true);
-                            if(event.dataValues != null) {
-                                for(DataValue dataValue: event.dataValues) {
-                                    dataValue.localEventId = event.localId;
-                                    dataValue.event = event.event;
-                                    dataValue.save(true);
-                                }
-                            }
+                            event.update();
                         }
                     } else {
                         //check if there is an enrollment for this event stored on the device
@@ -641,14 +630,8 @@ public class DataValueLoader {
                             event.localEnrollmentId = enrollment.localId;
                         } else {//could be single event without registration
                         }
-                        event.save(true);
+                        event.save();
                     }
-                    //check if there is an enrollment for this event stored on the device
-                    //and store the localId of the enrollment
-                    //(there will not be enrollment if its a single event without registration)
-                    //Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
-                    //if(enrollment!=null) event.localEnrollmentId = enrollment.localId;
-                    //event.save(true);
                 }
 
                 flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);

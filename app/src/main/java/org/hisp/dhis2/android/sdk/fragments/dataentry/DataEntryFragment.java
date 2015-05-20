@@ -751,16 +751,9 @@ public class DataEntryFragment extends Fragment
                 if (mForm != null && isAdded()) {
                     final Context context = getActivity().getBaseContext();
 
-                    mForm.getEvent().setFromServer(true);
-                    mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
-                    mForm.getEvent().save(true);
-
-                /* workaround for DbFlow concurrency bug. This ensures that datavalues are saved
-                before Dhis2 sends data to server to avoid some data values not being sent in race
-                conditions */
                     mForm.getEvent().setFromServer(false);
-                    mForm.getEvent().save(true);
-
+                    mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
+                    mForm.getEvent().save();
 
                     TimerTask timerTask = new TimerTask() {
                         @Override

@@ -163,7 +163,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             if (event.eventType == ResponseEvent.EventType.onLogin) {
                 User user = (User) event.getResponseHolder().getItem();
                 Log.e(CLASS_TAG, user.getName());
-                user.save(false);
+                user.save();
                 runOnUiThread(new Runnable() {
                     @Override public void run() {
                         handleUser();

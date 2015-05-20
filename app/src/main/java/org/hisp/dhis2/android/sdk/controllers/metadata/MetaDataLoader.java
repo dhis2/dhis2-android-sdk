@@ -918,10 +918,13 @@ public class MetaDataLoader {
             editor.putString(Dhis2.LAST_UPDATED_METADATA, localDate.toString());
             editor.commit();
             if(systemInfo != null) {
-                List<SystemInfo> result = Select.all(SystemInfo.class);
-                if( result != null && !result.isEmpty() )
-                    systemInfo.update(true);
-                else systemInfo.save(true);
+                List<SystemInfo> result = new Select().from(SystemInfo.class).queryList();
+                if( result != null && !result.isEmpty() ) {
+                    systemInfo.async().update();
+                }
+                else {
+                    systemInfo.async().save();
+                }
             }
         }
         loading = false;
@@ -961,11 +964,11 @@ public class MetaDataLoader {
                                 new OrganisationUnitProgramRelationship();
                         orgUnitProgram.organisationUnitId = ou.getId();
                         orgUnitProgram.programId = programId;
-                        orgUnitProgram.save(true);
+                        orgUnitProgram.async().save();
                         if(!assignedPrograms.contains(programId))
                             assignedPrograms.add(programId);
                     }
-                    ou.save(true);
+                    ou.async().save();
                 }
 
                 flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, true);
@@ -979,38 +982,38 @@ public class MetaDataLoader {
                 //API JSON
                 for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                     ptea.setProgram(program.getId());
-                    ptea.save(true);
+                    ptea.async().save();
                 }
 
-                program.save(true);
+                program.async().save();
                 for( ProgramStage programStage: program.getProgramStages() ) {
-                    programStage.save(true);
+                    programStage.async().save();
                     if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                         // due to the way the WebAPI lists programStageSections we have to manually
                         // set id of programStageSection in programStageDataElements to be able to
                         // access it later when loading from local db
                         for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
-                            programStageSection.save(true);
+                            programStageSection.async().save();
                             for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
                                 programStageDataElement.programStageSection = programStageSection.id;
-                                programStageDataElement.save(true);
+                                programStageDataElement.async().save();
                                 //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
                             }
                             for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
                                 programIndicator.programStage = programStage.id;
                                 programIndicator.section = programStageSection.id;
-                                programIndicator.save(true);
+                                programIndicator.async().save();
                             }
                         }
                     } else {
                         for(ProgramStageDataElement programStageDataElement: programStage.
                                 getProgramStageDataElements()) {
-                            programStageDataElement.save(true);
+                            programStageDataElement.async().save();
                         }
                         for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
                             programIndicator.programStage = programStage.id;
-                            programIndicator.save(true);
+                            programIndicator.async().save();
                         }
                     }
                 }
@@ -1044,19 +1047,19 @@ public class MetaDataLoader {
                     Program oldProgram = MetaDataController.getProgram(program.getId());
                     if(oldProgram != null) {
                         for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
-                            ptea.delete(true);
+                            ptea.async().delete();
                         }
                         for( ProgramStage programStage: program.getProgramStages() ) {
                             for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
-                                psde.delete(true);
+                                psde.async().delete();
                             }
                             for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
-                                programStageSection.delete(true);
+                                programStageSection.async().delete();
                             }
-                            programStage.delete(true);
+                            programStage.async().delete();
                         }
                         for(ProgramIndicator programIndicator: program.getProgramIndicators()) {
-                            programIndicator.delete(true);
+                            programIndicator.async().delete();
                         }
                     }
 
@@ -1068,39 +1071,43 @@ public class MetaDataLoader {
                     //API JSON
                     for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                         ptea.setProgram(program.getId());
-                        ptea.save(true);
+                        ptea.async().save();
                     }
 
-                    if(oldProgram== null) program.save(true);
-                    else program.update(true);
+                    if(oldProgram== null) {
+                        program.async().save();
+                    }
+                    else {
+                        program.async().update();
+                    }
                     for( ProgramStage programStage: program.getProgramStages() ) {
-                        programStage.save(true);
+                        programStage.async().save();
                         if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                             // due to the way the WebAPI lists programStageSections we have to manually
                             // set id of programStageSection in programStageDataElements to be able to
                             // access it later when loading from local db
                             for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
-                                programStageSection.save(true);
+                                programStageSection.async().save();
                                 for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
                                     programStageDataElement.programStageSection = programStageSection.id;
-                                    programStageDataElement.save(true);
+                                    programStageDataElement.async().save();
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
                                 }
                                 for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
                                     programIndicator.programStage = programStage.id;
                                     programIndicator.section = programStageSection.id;
-                                    programIndicator.save(true);
+                                    programIndicator.async().save();
                                 }
                             }
                         } else {
                             for(ProgramStageDataElement programStageDataElement: programStage.
                                     getProgramStageDataElements()) {
-                                programStageDataElement.save(true);
+                                programStageDataElement.async().save();
                             }
                             for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
                                 programIndicator.programStage = programStage.id;
-                                programIndicator.save(true);
+                                programIndicator.async().save();
                             }
                         }
                     }
@@ -1116,10 +1123,10 @@ public class MetaDataLoader {
                     for( Option o: os.options ) {
                         o.sortIndex = index;
                         o.setOptionSet( os.getId() );
-                        o.save(true);
+                        o.async().save();
                         index ++;
                     }
-                    os.save(true);
+                    os.async().save();
                 }
                 flagMetaDataItemLoaded(OPTION_SETS, true);
                 loadItem();
@@ -1130,7 +1137,7 @@ public class MetaDataLoader {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
-                    tea.save(true);
+                    tea.async().save();
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
@@ -1141,20 +1148,22 @@ public class MetaDataLoader {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(Constant constant: constants) {
-                    constant.save(true);
+                    constant.async().save();
                 }
                 flagMetaDataItemLoaded(CONSTANTS, true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
-                for(Constant constant: constants) constant.save(true);
+                for(Constant constant: constants) {
+                    constant.async().save();
+                }
                 flagMetaDataItemUpdated(CONSTANTS, systemInfo.serverDate);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
                 List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRule programRule: programRules) {
-                    programRule.save(true);
+                    programRule.async().save();
                 }
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULES, true);
@@ -1166,7 +1175,7 @@ public class MetaDataLoader {
                 List<ProgramRuleVariable> programRuleVariables = (List<ProgramRuleVariable>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleVariable programRuleVariable: programRuleVariables) {
-                    programRuleVariable.save(true);
+                    programRuleVariable.async().save();
                 }
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEVARIABLES, true);
@@ -1178,7 +1187,7 @@ public class MetaDataLoader {
                 List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleAction programRuleAction: programRuleActions) {
-                    programRuleAction.save(true);
+                    programRuleAction.async().save();
                 }
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEACTIONS, true);

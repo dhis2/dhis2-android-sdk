@@ -88,7 +88,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
     @Override
     public DataEntryFragmentForm query(Context context) {
-        final ProgramStage stage = Select.byId(ProgramStage.class, programStageId);
+        final ProgramStage stage = MetaDataController.getProgramStage(programStageId);
         final DataEntryFragmentForm form = new DataEntryFragmentForm();
 
         if (stage == null || stage.getProgramStageSections() == null) {

@@ -32,11 +32,13 @@ package org.hisp.dhis2.android.sdk.persistence.loaders;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
+import com.raizlabs.android.dbflow.structure.AsyncModel;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import static org.hisp.dhis2.android.sdk.utils.Preconditions.isNull;
 
-public class ModelChangeObserver<ModelClass extends Model> implements FlowContentObserver.ModelChangeListener {
+public class ModelChangeObserver<ModelClass extends Model> implements FlowContentObserver.OnModelStateChangedListener {
     private static final String TAG = ModelChangeObserver.class.getSimpleName();
 
     private final DbLoader<?> mLoader;
@@ -61,7 +63,7 @@ public class ModelChangeObserver<ModelClass extends Model> implements FlowConten
         mObserver.removeModelChangeListener(this);
     }
 
-    @Override
+    /*@Override
     public void onModelChanged() {
         Log.d(TAG, "onModelChanged()");
         mLoader.onContentChanged();
@@ -88,6 +90,12 @@ public class ModelChangeObserver<ModelClass extends Model> implements FlowConten
     @Override
     public void onModelUpdated() {
         Log.d(TAG, "onModelUpdated()");
+        mLoader.onContentChanged();
+    }*/
+
+    @Override
+    public void onModelStateChanged(Class<? extends Model> aClass, BaseModel.Action action) {
+        Log.d(TAG, "onModelStateChanged() " + aClass.getSimpleName() + ": " + action);
         mLoader.onContentChanged();
     }
 }

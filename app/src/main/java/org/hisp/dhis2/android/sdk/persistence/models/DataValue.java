@@ -36,16 +36,18 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
-import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.raizlabs.android.dbflow.sql.queriable.Queriable;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 
 import java.util.UUID;
@@ -53,7 +55,7 @@ import java.util.UUID;
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class DataValue extends BaseValue {
 
     private static final String CLASS_TAG = DataValue.class.getSimpleName();
@@ -62,7 +64,8 @@ public class DataValue extends BaseValue {
     public void handleUnknown(String key, Object value) {}
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public long localEventId = -1; /* reference to local event object */
 
     @JsonIgnore
@@ -70,7 +73,8 @@ public class DataValue extends BaseValue {
     public String event;
 
     @JsonProperty("dataElement")
-    @Column(columnType = Column.PRIMARY_KEY)
+    @Column
+    @PrimaryKey
     public String dataElement;
 
     @JsonProperty("providedElsewhere")
@@ -157,31 +161,31 @@ public class DataValue extends BaseValue {
     }
 
     @Override
-    public void save(boolean async) {
+    public void save() {
         if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {
 
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created
-            updateManually(async);
+            updateManually();
         } else
-            super.save(async);
+            super.save();
     }
 
-    public void updateManually(boolean async) {
-        Queriable q = new Update().table(DataValue.class).set(
+    public void updateManually() {
+        /*Queriable q = */new Update(DataValue.class).set(
                 Condition.column(DataValue$Table.VALUE).is(value))
                 .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
-                        Condition.column(DataValue$Table.DATAELEMENT).is(dataElement));
-        if(async)
+                        Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).queryClose();
+        /*if(async)
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
         {
             q.queryClose();
-        }
+        }*/
     }
 
     @Override
-    public void update(boolean async) {
-        save(async);
+    public void update() {
+        save();
     }
 }

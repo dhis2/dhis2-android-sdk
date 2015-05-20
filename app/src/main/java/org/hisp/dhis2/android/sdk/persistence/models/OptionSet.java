@@ -36,13 +36,14 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 
 import java.util.List;
 
 /**
  * @author Simen Skogly Russnes on 20.02.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")

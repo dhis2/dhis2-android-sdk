@@ -33,13 +33,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
+
 import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
  * @author Simen Skogly Russnes on 27.03.15.
  */
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class ProgramIndicator extends BaseNameableObject {
 
     public static final String SEPARATOR_ID = "\\.";

@@ -32,6 +32,7 @@ package org.hisp.dhis2.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -123,8 +124,8 @@ public class Program extends BaseIdentifiableObject {
     public boolean selectIncidentDatesInFuture;
 
     @JsonProperty("trackedEntity")
-    @Column(columnType = Column.FOREIGN_KEY,
-            references = {@ForeignKeyReference(columnName = "trackedEntity",
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(columnName = "trackedEntity",
             columnType = String.class, foreignColumnName = "id")})
     public TrackedEntity trackedEntity;
 

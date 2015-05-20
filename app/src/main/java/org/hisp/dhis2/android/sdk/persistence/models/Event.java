@@ -29,23 +29,28 @@
 
 package org.hisp.dhis2.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.runtime.DBTransactionInfo;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 import com.raizlabs.android.dbflow.runtime.transaction.BaseTransaction;
-import com.raizlabs.android.dbflow.sql.Queriable;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
+import com.raizlabs.android.dbflow.sql.queriable.Queriable;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 
 import java.util.ArrayList;
@@ -58,7 +63,7 @@ import java.util.UUID;
  * @author Simen Skogly Russnes on 23.02.15.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Table
+@Table(databaseName = Dhis2Database.NAME)
 public class Event extends BaseSerializableModel {
 
     private static final String CLASS_TAG = "Event";
@@ -99,11 +104,13 @@ public class Event extends BaseSerializableModel {
     public boolean fromServer = true;
 
     @JsonIgnore
-    @Column(columnType = Column.PRIMARY_KEY_AUTO_INCREMENT)
+    @Column
+    @PrimaryKey(autoincrement = true)
     public long localId = -1;
 
     @JsonIgnore
-    @Column(unique = true)
+    @Column
+    @Unique
     public String event;
 
     @JsonProperty("event")
@@ -188,16 +195,16 @@ public class Event extends BaseSerializableModel {
     public List<DataValue> dataValues;
 
     @Override
-    public void delete(boolean async) {
+    public void delete() {
         if (dataValues != null) {
             for (DataValue dataValue : dataValues)
-                dataValue.delete(async);
+                dataValue.delete();
         }
-        super.delete(async);
+        super.delete();
     }
 
     @Override
-    public void save(boolean async) {
+    public void save() {
         /* check if there is an existing event with the same UID to avoid duplicates */
         Event existingEvent = DataValueController.getEventByUid(event);
         if(existingEvent != null) {
@@ -207,10 +214,10 @@ public class Event extends BaseSerializableModel {
             //then we don't want to update the event reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
-            updateManually(async);
+            updateManually();
         } else {
-            super.save(async);
-            boolean wait = true;
+            super.save(); //saving the event first to get a autoincrement index from db
+            /*boolean wait = true;
             if(localId<0) { //workaround to wait for primary autoincrement key to be assigned with async=true
                 while(wait) {
                     Event tempEvent = DataValueController.getEventByUid(event);
@@ -221,14 +228,15 @@ public class Event extends BaseSerializableModel {
                     }
                     Thread.yield();
                 }
-            }
+            }*/
+            Log.d(CLASS_TAG, "save finished Event " + localId);
         }
 
         if (dataValues != null) {
             for (DataValue dataValue : dataValues) {
                 dataValue.event = event;
                 dataValue.localEventId = localId;
-                dataValue.save(async);
+                dataValue.save();
             }
         }
     }
@@ -238,22 +246,22 @@ public class Event extends BaseSerializableModel {
      * This will and should only be called if the event has a locally created temp event reference
      * and has previously been saved, so that it has a localId.
      */
-    private void updateManually(boolean async) {
-        Queriable q = new Update().table(Event.class).set(
+    private void updateManually() {
+        /*Queriable q = */new Update(Event.class).set(
                 Condition.column(Event$Table.LONGITUDE).is(longitude),
                 Condition.column(Event$Table.LATITUDE).is(latitude),
                 Condition.column(Event$Table.STATUS).is(status),
                 Condition.column(Event$Table.FROMSERVER).is(fromServer))
-                .where(Condition.column(Enrollment$Table.LOCALID).is(localId));
-        if(async)
+                .where(Condition.column(Enrollment$Table.LOCALID).is(localId)).queryClose();
+        /*if(async)
             TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
         else
-            q.queryClose();
+            q.queryClose();*/
     }
 
     @Override
-    public void update(boolean async) {
-        save(async);
+    public void update() {
+        save();
     }
 
     @JsonProperty("coordinate")
@@ -271,8 +279,8 @@ public class Event extends BaseSerializableModel {
     }
 
     public List<DataValue> getDataValues() {
-        if (dataValues == null) dataValues = Select.all(DataValue.class,
-                Condition.column(DataValue$Table.LOCALEVENTID).is(localId));
+        if (dataValues == null) dataValues = new Select().from(DataValue.class).where(
+                Condition.column(DataValue$Table.LOCALEVENTID).is(localId)).queryList();
         return dataValues;
     }
 

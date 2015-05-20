@@ -250,11 +250,22 @@ public class DataEntryFragment extends Fragment
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         mProgressBar.setVisibility(View.GONE);
 
+        mListView = (ListView) view.findViewById(R.id.datavalues_listview);
+        View upButton = getLayoutInflater(savedInstanceState)
+                .inflate(R.layout.up_button_layout, mListView, false);
         mListViewAdapter = new DataValueAdapter(getChildFragmentManager(),
                 getLayoutInflater(savedInstanceState));
-        mListView = (ListView) view.findViewById(R.id.datavalues_listview);
+
+        mListView.addFooterView(upButton);
         mListView.setVisibility(View.VISIBLE);
         mListView.setAdapter(mListViewAdapter);
+
+        upButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListView.smoothScrollToPosition(INITIAL_POSITION);
+            }
+        });
     }
 
     @Override
@@ -675,7 +686,8 @@ public class DataEntryFragment extends Fragment
             mSpinner.setOnItemSelectedListener(this);
 
             previousSectionButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
                     int currentPosition = mSpinner.getSelectedItemPosition();
                     if (!(currentPosition - 1 < 0)) {
                         mSpinner.setSelection(currentPosition - 1);
@@ -684,7 +696,8 @@ public class DataEntryFragment extends Fragment
             });
 
             nextSectionButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
                     int currentPosition = mSpinner.getSelectedItemPosition();
                     if (!(currentPosition + 1 >= mSpinnerAdapter.getCount())) {
                         mSpinner.setSelection(currentPosition + 1);

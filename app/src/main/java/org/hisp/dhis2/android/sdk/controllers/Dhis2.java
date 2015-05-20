@@ -572,6 +572,9 @@ public final class Dhis2 {
         } else {
             getInstance().loading = false;
         }
+
+        Dhis2Application.bus.post(new LoadingMessageEvent(BaseEvent
+                .EventType.metaDataSyncFinished));
     }
 
     /**

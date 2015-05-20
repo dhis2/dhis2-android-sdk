@@ -31,14 +31,14 @@ package org.hisp.dhis2.android.sdk.events;
 
 /**
  * Used to notify loading fragment with messages to display during initial loading.
+ *
  * @author Simen Skogly Russnes on 20.02.15.
  */
-public class LoadingMessageEvent<T> extends BaseEvent{
+public class LoadingMessageEvent<T> extends BaseEvent {
 
     public String message;
 
     public LoadingMessageEvent(EventType eventType) {
         super(eventType);
     }
-
 }

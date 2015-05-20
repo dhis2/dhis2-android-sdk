@@ -47,7 +47,7 @@ public class BaseEvent {
         loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment,
         showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants,
         loadProgramRules, loadProgramRuleVariables, loadProgramRuleActions,
-        sendTrackedEntityInstance, loadProgram, showUpcomingEventsFragment
+        sendTrackedEntityInstance, loadProgram, showUpcomingEventsFragment, metaDataSyncFinished
     }
 
     public EventType eventType;

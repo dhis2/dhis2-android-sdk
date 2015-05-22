@@ -131,7 +131,11 @@ public final class Dhis2 {
     }
 
     public static void disableGps() {
-        GpsManager.getInstance().removeUpdates();
+        try {
+            GpsManager.getInstance().removeUpdates();
+        } catch (IllegalArgumentException e) {
+            //if this is called then probably the Gps hasnt been started, so we don't need to disable
+        }
     }
 
     public static Location getLocation() {

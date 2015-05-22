@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.sql.language.Where;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
@@ -49,11 +50,14 @@ import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis2.android.sdk.persistence.models.FailedItem$Table;
+import org.hisp.dhis2.android.sdk.persistence.models.Program;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance$Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -209,6 +213,29 @@ public class DataValueController {
         return new Select().from(TrackedEntityInstance.class).where
                 (Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).querySingle();
     }
+
+    /*
+   * Returns a list of tracked entity attribute values for an instance in a selected program
+   * @param trackedEntityInstance
+   * @param program
+   * @return
+   */
+    public static List<TrackedEntityAttributeValue> getProgramTrackedEntityAttributeValues(Program program, TrackedEntityInstance trackedEntityInstance)
+    {
+        List<TrackedEntityAttributeValue> programTrackedEntityAttributeValues = new ArrayList<>();
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.id);
+
+        for(ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes)
+        {
+            TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
+                    (ptea.trackedEntityAttribute, trackedEntityInstance.localId);
+            if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
+                programTrackedEntityAttributeValues.add(v);
+            }
+        }
+        return programTrackedEntityAttributeValues;
+    }
+
 
     /**
      * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance

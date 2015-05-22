@@ -48,6 +48,7 @@ public class CheckBoxRow implements DataEntryRow {
     private final BaseValue mBaseValue;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public CheckBoxRow(String label, BaseValue baseValue) {
         mLabel = label;
@@ -73,6 +74,16 @@ public class CheckBoxRow implements DataEntryRow {
 
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
 
+            if(!isEditable())
+            {
+                holder.checkBox.setEnabled(false);
+                holder.textLabel.setEnabled(false);
+            }
+            else
+            {
+                holder.textLabel.setEnabled(true);
+                holder.checkBox.setEnabled(true);
+            }
             root.setTag(holder);
             view = root;
         }
@@ -138,6 +149,16 @@ public class CheckBoxRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }
 

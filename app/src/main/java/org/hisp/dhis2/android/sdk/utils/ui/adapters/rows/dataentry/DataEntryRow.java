@@ -43,4 +43,8 @@ public interface DataEntryRow {
     boolean isHidden();
 
     void setHidden(boolean hidden);
+
+    boolean isEditable();
+
+    void setEditable(boolean editable);
 }

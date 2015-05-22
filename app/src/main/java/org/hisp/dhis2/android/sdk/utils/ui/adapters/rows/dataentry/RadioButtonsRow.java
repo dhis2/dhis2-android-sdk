@@ -51,6 +51,7 @@ public class RadioButtonsRow implements DataEntryRow {
     private final DataEntryRowTypes mType;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public RadioButtonsRow(String label, BaseValue baseValue, DataEntryRowTypes type) {
         if (!DataEntryRowTypes.GENDER.equals(type) && !DataEntryRowTypes.BOOLEAN.equals(type)) {
@@ -101,6 +102,20 @@ public class RadioButtonsRow implements DataEntryRow {
             holder.secondButton.setOnCheckedChangeListener(listener);
             holder.thirdButton.setOnCheckedChangeListener(listener);
 
+            if(!isEditable())
+            {
+                holder.firstButton.setEnabled(false);
+                holder.secondButton.setEnabled(false);
+                holder.thirdButton.setEnabled(false);
+            }
+            else
+            {
+                holder.firstButton.setEnabled(true);
+                holder.secondButton.setEnabled(true);
+                holder.thirdButton.setEnabled(true);
+            }
+
+
             root.setTag(holder);
             view = root;
         }
@@ -127,6 +142,16 @@ public class RadioButtonsRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     private static class BooleanRowHolder {

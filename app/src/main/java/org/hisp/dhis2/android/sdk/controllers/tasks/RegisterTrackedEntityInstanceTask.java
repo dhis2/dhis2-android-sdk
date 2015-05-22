@@ -90,7 +90,18 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
         Log.e(CLASS_TAG, new String(body));
 
         String url = networkManager.getServerUrl() + "/api/trackedEntityInstances";
-        Request request = new Request(RestMethod.POST, url, headers, body);
+
+        if(trackedEntityInstance.getTrackedEntityInstance() != null)
+        {
+            url += "/" + trackedEntityInstance.trackedEntityInstance;
+        }
+
+        Request request;
+
+        if(url.equalsIgnoreCase(networkManager.getServerUrl() + "/api/trackedEntityInstances"))
+            request = new Request(RestMethod.POST, url, headers, body);
+        else
+            request = new Request(RestMethod.PUT, url, headers, body);
 
         requestBuilder = new ApiRequest.Builder<>();
         requestBuilder.setRequest(request);

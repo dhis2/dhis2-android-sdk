@@ -62,8 +62,10 @@ import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleAction;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramIndicatorService;
@@ -315,7 +317,7 @@ public class DataEntryFragment extends Fragment
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
             Bundle fragmentArguments = args.getBundle(EXTRA_ARGUMENTS);
             return new DbLoader<>(
-                    getActivity().getBaseContext(), modelsToTrack, new DataEntryFragmentQuery(
+                    getActivity(), modelsToTrack, new DataEntryFragmentQuery(
                     fragmentArguments.getString(ORG_UNIT_ID),
                     fragmentArguments.getString(PROGRAM_ID),
                     fragmentArguments.getString(PROGRAM_STAGE_ID),
@@ -335,6 +337,9 @@ public class DataEntryFragment extends Fragment
 
             mForm = data;
             mProgramRuleHelper = new ProgramRuleHelper(mForm.getStage().getProgram());
+            if(mForm.getStatusRow()!=null) {
+                mForm.getStatusRow().setFragmentActivity(getActivity());
+            }
 
             if (data.getStage() != null &&
                     data.getStage().captureCoordinates) {
@@ -726,7 +731,7 @@ public class DataEntryFragment extends Fragment
     }
 
     public boolean validate() {
-        ArrayList<String> errors = isEventValid();
+        ArrayList<String> errors = isEventValid(mForm.getEvent(), mForm.getStage(), getActivity());
         if (!errors.isEmpty()) {
             ValidationErrorDialog dialog = ValidationErrorDialog
                     .newInstance(errors);
@@ -770,27 +775,28 @@ public class DataEntryFragment extends Fragment
         }.start();
     }
 
-    private ArrayList<String> isEventValid() {
+    public static ArrayList<String> isEventValid(Event event, ProgramStage programStage,
+                                                 Context context) {
         ArrayList<String> errors = new ArrayList<>();
 
-        if (mForm == null || mForm.getEvent() == null || mForm.getStage() == null) {
+        if (event == null || programStage == null) {
             return errors;
         }
 
-        if (isEmpty(mForm.getEvent().getEventDate())) {
-            String reportDateDescription = mForm.getStage().reportDateDescription == null ?
-                    getString(R.string.report_date) : mForm.getStage().reportDateDescription;
+        if (isEmpty(event.getEventDate())) {
+            String reportDateDescription = programStage.reportDateDescription == null ?
+                    context.getString(R.string.report_date) : programStage.reportDateDescription;
             errors.add(reportDateDescription);
         }
 
         Map<String, ProgramStageDataElement> dataElements = toMap(
-                mForm.getStage().getProgramStageDataElements()
+                programStage.getProgramStageDataElements()
         );
 
-        for (DataValue dataValue : mForm.getEvent().getDataValues()) {
+        for (DataValue dataValue : event.getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.dataElement);
             if (dataElement.compulsory && isEmpty(dataValue.getValue())) {
-                errors.add(mForm.getDataElementNames().get(dataValue.dataElement));
+                errors.add(MetaDataController.getDataElement(dataElement.dataElement).getDisplayName());
             }
         }
 

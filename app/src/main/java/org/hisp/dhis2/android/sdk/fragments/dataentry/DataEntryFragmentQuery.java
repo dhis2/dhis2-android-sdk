@@ -27,6 +27,7 @@
 package org.hisp.dhis2.android.sdk.fragments.dataentry;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -56,6 +57,7 @@ import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EventDatePickerRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.RadioButtonsRow;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.StatusRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,6 +111,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
         if (stage.getProgramStageSections() == null || stage.getProgramStageSections().isEmpty()) {
             List<DataEntryRow> rows = new ArrayList<>();
+            addStatusRow(context, form, rows);
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);
             populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
@@ -123,6 +126,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
                 List<DataEntryRow> rows = new ArrayList<>();
                 if (i == 0) {
+                    addStatusRow(context, form, rows);
                     addEventDateRow(context, form, rows);
                     addCoordinateRow(form, rows);
                 }
@@ -133,6 +137,15 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         }
 
         return form;
+    }
+
+    private static void addStatusRow(Context context, DataEntryFragmentForm form,
+                                     List<DataEntryRow> rows) {
+        Event event = form.getEvent();
+        if(event==null) return;
+        StatusRow row = new StatusRow(context, event);
+        rows.add(row);
+        form.setStatusRow(row);
     }
 
     private static void addEventDateRow(Context context, DataEntryFragmentForm form,
@@ -199,7 +212,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
             event.setOrganisationUnitId(orgUnitId);
             event.setProgramId(programId);
             event.setProgramStageId(programStage.getId());
-            event.setStatus(Event.STATUS_COMPLETED);
+            event.setStatus(Event.STATUS_ACTIVE);
             event.setLastUpdated(Utils.getCurrentTime());
 
             List<DataValue> dataValues = new ArrayList<>();

@@ -816,35 +816,9 @@ public final class Dhis2 {
             this.blockThread = blockThread;
         }
 
-        /*@Override
-        public void onModelChanged() {
-            blockThread.block = true;
-        }
-
-        @Override
-        public void onModelSaved() {
-            blockThread.block = true;
-        }
-
-        @Override
-        public void onModelDeleted() {
-        }
-
-        @Override
-        public void onModelInserted() {
-            blockThread.block = true;
-        }
-
-        @Override
-        public void onModelUpdated() {
-            blockThread.block = true;
-        }*/
-
         @Override
         public void onModelStateChanged(Class<? extends Model> aClass, BaseModel.Action action) {
             blockThread.block = true;
         }
     }
-
-    ;
 }

@@ -99,4 +99,8 @@
     <color name="button_orange_state_unpressed">#FF9900</color>
     <color name="button_orange_state_pressed">#E68A00</color>
 
+    <color name="button_teal_state_unpressed">#4DDBFF</color>
+    <color name="button_teal_state_pressed">#66E0FF</color>
+
+
 </resources>

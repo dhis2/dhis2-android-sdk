@@ -31,6 +31,7 @@ import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.Event;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.StatusRow;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ class DataEntryFragmentForm {
     private Map<String, DataValue> dataValues;
     private Map<String, String> dataElementNames;
     private List<IndicatorRow> indicatorRows;
+    private StatusRow statusRow;
 
     public Enrollment getEnrollment() {
         return enrollment;
@@ -107,5 +109,13 @@ class DataEntryFragmentForm {
 
     public void setCurrentSection(DataEntryFragmentSection currentSection) {
         this.currentSection = currentSection;
+    }
+
+    public StatusRow getStatusRow() {
+        return statusRow;
+    }
+
+    public void setStatusRow(StatusRow statusRow) {
+        this.statusRow = statusRow;
     }
 }

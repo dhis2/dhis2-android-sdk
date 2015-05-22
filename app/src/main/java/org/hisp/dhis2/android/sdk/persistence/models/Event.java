@@ -70,9 +70,7 @@ public class Event extends BaseSerializableModel {
 
     public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_COMPLETED = "COMPLETED";
-    public static final String STATUS_VISITED = "VISITED";
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
-    public static final String STATUS_LATE_VISIT = "OVERDUE";
     public static final String STATUS_SKIPPED = "SKIPPED";
 
     @JsonAnySetter

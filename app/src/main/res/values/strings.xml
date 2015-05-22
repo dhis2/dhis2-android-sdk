@@ -331,6 +331,14 @@
     <string name="status">Status</string>
     <string name="up">UP</string>
 
+    <string name="validate">Validate</string>
+    <string name="event_status">Event status</string>
+
     <string name="logout_message">Are you sure you want to log out? All your data stored on the device will get lost if you choose to log out.</string>
     <string name="logout_title">Logging out</string>
+
+    <string name="complete_confirm">Are you sure you want to complete the event?</string>
+    <string name="incomplete_confirm">Are you sure you want to incomplete the event?</string>
+
+    <string name="validation_success">Validation successful!</string>
 </resources>

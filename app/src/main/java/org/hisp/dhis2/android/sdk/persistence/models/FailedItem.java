@@ -72,6 +72,10 @@ public class FailedItem extends BaseModel {
                     columnType = int.class, foreignColumnName = "id")})
     public ImportSummary importSummary;
 
+    /**
+     * Returns the item for the given FailedItem. Can be cast to either of the model types
+     * @return
+     */
     public BaseModel getItem() {
         BaseModel item = null;
         if(itemType.equals(EVENT)) {
@@ -82,6 +86,10 @@ public class FailedItem extends BaseModel {
             item = Dhis2.getInstance().getDataValueController().getTrackedEntityInstance(itemId);
         }
         return item;
+    }
+
+    public ImportSummary getImportSummary() {
+        return importSummary;
     }
 
 }

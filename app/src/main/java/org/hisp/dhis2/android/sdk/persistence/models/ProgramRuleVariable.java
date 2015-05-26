@@ -14,6 +14,7 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class ProgramRuleVariable extends BaseIdentifiableObject {
 
+    @JsonProperty("programRuleVariableSourceType")
     @Column
     public String sourceType;
 

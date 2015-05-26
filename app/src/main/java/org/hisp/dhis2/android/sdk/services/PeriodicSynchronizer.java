@@ -37,7 +37,10 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
+import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 /**
  *	This class can be activated to periodically synchronize with a DHIS 2 server to fetch newly updated meta data and
@@ -73,7 +76,18 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         }
         NetworkManager.getInstance().setServerUrl(serverUrl);
         NetworkManager.getInstance().setCredentials(credentials);
-        Dhis2.synchronize(context);
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            @Override
+            public void onSuccess(Response response) {
+                //do nothing
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                //do nothing
+            }
+        };
+        Dhis2.synchronize(context, callback);
 	}
 
 	/**

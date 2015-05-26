@@ -83,9 +83,11 @@ public class DataValueSender {
     private List<Enrollment> localEnrollments = null;
     private List<TrackedEntityInstance> localTrackedEntityInstances = null;
     private Context context;
+    private ApiRequestCallback callback;
 
-    void sendLocalData(Context context) {
-        if(sending) return;
+    void sendLocalData(Context context, ApiRequestCallback callback) {
+        if(Dhis2.isLoading()) return;
+        this.callback = callback;
         sending = true;
         this.context = context;
         new Thread() {
@@ -96,7 +98,7 @@ public class DataValueSender {
         }.start();
     }
 
-    public void onFinishSending(boolean success) {
+    private void onFinishSending(boolean success) {
         Log.d(CLASS_TAG, "onFinishSending" + success);
         //check if some failed items have been approved. Then delete the FailedItem
         List<FailedItem> failedItems = DataValueController.getFailedItems();
@@ -109,8 +111,11 @@ public class DataValueSender {
         }
 
         sending = false;
-        //update datavalues
-        Dhis2.getInstance().getDataValueController().loadDataValues(context, true);
+        if(success) {
+            callback.onSuccess(null);
+        } else {
+            callback.onFailure(null);
+        }
     }
 
     /**
@@ -402,7 +407,7 @@ public class DataValueSender {
         }
     }
 
-    public void handleError(APIException apiException, String type, long id) {
+    private void handleError(APIException apiException, String type, long id) {
         if(apiException.getResponse() != null && apiException.getResponse().getBody()!=null) {
             Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
         }
@@ -424,5 +429,4 @@ public class DataValueSender {
         failedItem.itemType = type;
         failedItem.async().save();
     }
-
 }

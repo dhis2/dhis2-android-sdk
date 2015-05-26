@@ -34,12 +34,10 @@ import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Where;
-import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
-import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
-import org.hisp.dhis2.android.sdk.events.LoadingEvent;
+import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
+import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue$Table;
@@ -53,6 +51,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance$Table;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 import java.util.List;
 
@@ -279,6 +278,11 @@ public class DataValueController {
         return new Select().from(FailedItem.class).where(Condition.column(FailedItem$Table.ITEMTYPE).is(type), Condition.column(FailedItem$Table.ITEMID).is(id)).querySingle();
     }
 
+    /**
+     * Clear flags for loaded data values, deleting the status info for when data values were
+     * last updated
+     * @param context
+     */
     public void clearDataValueLoadedFlags(Context context) {
         dataValueLoader.clearDataValueLoadedFlags(context);
     }
@@ -288,8 +292,23 @@ public class DataValueController {
      * or disabling flags in DHIS 2. Avoid calling this method directly, use Dhis2.sendLocalValues to
      * be thread safe.
      */
-    public void synchronizeDataValues(Context context) {
-        sendLocalData(context);
+    public void synchronizeDataValues(final Context context, final ApiRequestCallback parentCallback) {
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            private ApiRequestCallback callback;
+            {
+                this.callback = parentCallback;
+            }
+            @Override
+            public void onSuccess(Response response) {
+                loadDataValues(context, true, callback);
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                callback.onFailure(exception);
+            }
+        };
+        sendLocalData(context, callback);
     }
 
     /**
@@ -299,33 +318,16 @@ public class DataValueController {
      * @param context
      * @param update
      */
-    public void loadDataValues(Context context, boolean update) {
-        dataValueLoader.loadDataValues(context, update);
+    public void loadDataValues(Context context, boolean update, ApiRequestCallback callback) {
+        dataValueLoader.loadDataValues(context, update, callback);
     }
 
     /**
      * Tries to send locally stored data to the server
      */
-    public void sendLocalData(Context context) {
+    public void sendLocalData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "sending local data");
-        if( dataValueSender.sending || dataValueLoader.loading || Dhis2.getInstance().getMetaDataController().isLoading() ||
-                Dhis2.getInstance().getMetaDataController().isSynchronizing()) return;
-        dataValueSender.sendLocalData(context);
-    }
-
-
-    /* called from dataValueLoader */
-    static void onFinishLoading(LoadingEvent event) {
-        Dhis2Application.bus.post(event); //subscribed to in Dhis2
-    }
-
-    public static void onFinishSending() {
-
-    }
-
-    @Subscribe
-    public void onResponse(DataValueResponseEvent responseEvent) {
-        Log.e(CLASS_TAG, "onResponse");
+        dataValueSender.sendLocalData(context, callback);
     }
 
     public boolean isSending() {

@@ -39,6 +39,7 @@ import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
+import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.models.Constant;
 import org.hisp.dhis2.android.sdk.persistence.models.Constant$Table;
@@ -268,6 +269,10 @@ public class MetaDataController {
                 is(dataElementId)).querySingle();
     }
 
+    /**
+     * Returns a User object for the currently logged in user.
+     * @return
+     */
     public static User getUser() {
         return new Select().from(User.class).querySingle();
     }
@@ -295,16 +300,22 @@ public class MetaDataController {
                 Condition.column(ProgramIndicator$Table.SECTION).is(section)).queryList();
     }
 
-    public void synchronizeMetaData(Context context) {
-        metaDataLoader.synchronizeMetaData(context);
+    /**
+     * Synchronizes meta data by downloading newly changed data from the server.
+     * @param context
+     * @param callback
+     */
+    public void synchronizeMetaData(Context context, ApiRequestCallback callback) {
+        metaDataLoader.synchronizeMetaData(context, callback);
     }
 
     /**
-     * Initiates loading of metadata from the server
+     * Initiates loading of metadata from the server. To update existing data, rather use
+     * synchronizeMetaData to save data.
      * @param context
      */
-    public void loadMetaData(Context context) {
-        metaDataLoader.loadMetaData(context);
+    public void loadMetaData(Context context, ApiRequestCallback callback) {
+        metaDataLoader.loadMetaData(context, callback);
     }
 
     /**
@@ -315,10 +326,18 @@ public class MetaDataController {
         metaDataLoader.resetLastUpdated(context);
     }
 
+    /**
+     * Resets the loaded status of all meta data. This status is used to know whether or not
+     * to update the data, or to load all of it.
+     * @param context
+     */
     public void clearMetaDataLoadedFlags(Context context) {
         metaDataLoader.clearMetaDataLoadedFlags(context);
     }
 
+    /**
+     * Deletes all meta data from local database
+     */
     public void wipeMetaData() {
         Delete.tables(Constant.class,
                 DataElement.class,
@@ -340,11 +359,6 @@ public class MetaDataController {
                 ProgramRule.class,
                 ProgramRuleVariable.class,
                 ProgramRuleAction.class);
-    }
-
-    @Subscribe
-    public void onResponse(MetaDataResponseEvent event) {
-        Log.e(CLASS_TAG, "onResponse");
     }
 
     public boolean isLoading() {

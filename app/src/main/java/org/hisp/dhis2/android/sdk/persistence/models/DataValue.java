@@ -172,16 +172,10 @@ public class DataValue extends BaseValue {
     }
 
     public void updateManually() {
-        /*Queriable q = */new Update(DataValue.class).set(
+        new Update(DataValue.class).set(
                 Condition.column(DataValue$Table.VALUE).is(value))
                 .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
                         Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).queryClose();
-        /*if(async)
-            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
-        else
-        {
-            q.queryClose();
-        }*/
     }
 
     @Override

@@ -67,8 +67,6 @@ public class TrackedEntityAttributeValue extends BaseValue {
         if(Utils.isLocal(trackedEntityInstanceId) && DataValueController.
                 getTrackedEntityAttributeValue(trackedEntityAttributeId,
                         localTrackedEntityInstanceId)!=null) {
-
-
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie and not the other fields) if the currently in-memory event UID is locally created
             updateManually();
@@ -79,14 +77,10 @@ public class TrackedEntityAttributeValue extends BaseValue {
 
 
     public void updateManually() {
-        /*Queriable q = */new Update(TrackedEntityAttributeValue.class).set(
+        new Update(TrackedEntityAttributeValue.class).set(
                 Condition.column(TrackedEntityAttributeValue$Table.VALUE).is(value))
                 .where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(localTrackedEntityInstanceId),
                         Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).is(trackedEntityAttributeId)).queryClose();
-        /*if(async)
-            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
-        else
-            q.queryClose();*/
     }
 
     @Override

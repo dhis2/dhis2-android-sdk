@@ -68,6 +68,9 @@ import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis2.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis2.android.sdk.persistence.models.Program;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleAction;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
@@ -109,9 +112,6 @@ public final class Dhis2 {
     private ObjectMapper objectMapper;
     private Context context; //beware when using this as it must be set explicitly
     private Activity activity;
-
-    private boolean loadingInitial = false;
-    private boolean loading = false;
 
     public Dhis2() {
         objectMapper = new ObjectMapper();
@@ -427,58 +427,87 @@ public final class Dhis2 {
     }
 
     /**
-     * initiates sending locally modified data items and loads updated items from the server.
+     * initiates sending locally modified data items and loads updated items from the server. todo: make a different method for doing both, let this one only send.
      *
      * @param context
      */
-    public static void sendLocalData(Context context) {
-        if (getInstance().loading) return;
-        getInstance().loading = true;
+    public static void sendLocalData(Context context, final ApiRequestCallback callback) {
         getInstance().context = context;
         new Thread() {
             public void run() {
-                getInstance().getDataValueController().synchronizeDataValues(getInstance().context);
+                getInstance().getDataValueController().sendLocalData(getInstance().context, callback);
             }
         }.start();
     }
 
     /**
-     * Loads initial data. Which data is enabled is defined by the enableLoading method
+     * Loads initial data (Meta Data and Data Values). Which data is enabled is defined by the
+     * enableLoading method
      */
-    public static void loadInitialData(Context context) {
+    public static void loadInitialData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "loadInitialData");
         if (context != null) {
             getInstance().context = context;
             if (context instanceof Activity) getInstance().activity = (Activity) context;
         }
-        if (context == null && getInstance().context == null) return;
-
-        getInstance().loadingInitial = true;
-        getInstance().loading = true;
-        if (!isMetaDataLoaded(getInstance().context)) {
-            loadInitialMetadata();
-        } else if (!isDataValuesLoaded(getInstance().context)) {
-            loadInitialDataValues();
+        if (context == null && getInstance().context == null) {
+            callback.onFailure(null);
         } else {
-            onFinishLoading();
+            if (!isMetaDataLoaded(getInstance().context)) {
+                loadInitialMetadata(callback);
+            } else if (!isDataValuesLoaded(getInstance().context)) {
+                loadInitialDataValues(callback);
+            } else {
+                callback.onSuccess(null);
+            }
         }
     }
 
-    public boolean isLoading() {
+    /**
+     * Returns true if MetaData or DataValues are currently being loaded or sent
+     * @return
+     */
+    public static boolean isLoading() {
         if (Dhis2.getInstance().getMetaDataController().isLoading()) return true;
         if (Dhis2.getInstance().getDataValueController().isLoading()) return true;
         if (Dhis2.getInstance().getDataValueController().isSending()) return true;
         return false;
     }
 
-    private static void loadInitialMetadata() {
+    /**
+     * Initiates loading meta data, and then triggers loading of data values
+     * @param parentCallback
+     */
+    private static void loadInitialMetadata(final ApiRequestCallback parentCallback) {
         Log.d(CLASS_TAG, "loading initial metadata!");
-        loadMetaData(getInstance().context);
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            final ApiRequestCallback callback;
+            {
+                this.callback = parentCallback;
+            }
+            @Override
+            public void onSuccess(Response response) {
+                loadInitialDataValues(callback);
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                //todo retry?
+                callback.onFailure(null);
+            }
+        };
+        loadMetaData(getInstance().context, callback);
     }
 
-    private static void loadMetaData(Context context) {
+    /**
+     * Initiates loading of metadata from the server. To update existing data, rather use
+     * synchronizeMetaData to save data.
+     * @param context
+     * @param callback
+     */
+    public static void loadMetaData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "loading metadata!");
-        getInstance().getMetaDataController().loadMetaData(getInstance().context);
+        getInstance().getMetaDataController().loadMetaData(getInstance().context, callback);
     }
 
     /**
@@ -487,8 +516,23 @@ public final class Dhis2 {
      *
      * @param context
      */
-    public static void synchronize(Context context) {
-        synchronizeMetaData(context);
+    public static void synchronize(final Context context, final ApiRequestCallback parentCallback) {
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            private final ApiRequestCallback callback;
+            {
+                this.callback = parentCallback;
+            }
+            @Override
+            public void onSuccess(Response response) {
+                synchronizeDataValues(context, callback);
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                callback.onFailure(exception);
+            }
+        };
+        synchronizeMetaData(context, callback);
     }
 
     /**
@@ -496,123 +540,48 @@ public final class Dhis2 {
      *
      * @param context
      */
-    public static void synchronizeMetaData(Context context) {
+    public static void synchronizeMetaData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "synchronizing metadata!");
-        if (getInstance().loading) return;
-        getInstance().loading = true;
-        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context); //callback is onFinishLoading
+        Dhis2.getInstance().getMetaDataController().synchronizeMetaData(context, callback); //callback is onFinishLoading
     }
 
     /* called either from loadInitialMetadata, or in Subscribe method*/
-    private static void loadInitialDataValues() {
+    private static void loadInitialDataValues(final ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "loading initial datavalues");
         FlowContentObserver observer = getFlowContentObserverForAllTables();
-        String message;
+        String message = "";
         if (getInstance().activity != null)
             message = getInstance().activity.getString(R.string.finishing_up);
-        else
-            message = "Finishing initial database setup. This may take several minutes so please be patient.";
         postProgressMessage(message);
-        WaitForMetaDataSavingBlockThread blockThread = new WaitForMetaDataSavingBlockThread(observer);
+        ApiRequestCallback blockCallback = new ApiRequestCallback() {
+            private final ApiRequestCallback parentCallback;
+            {
+                this.parentCallback = callback;
+            }
+            @Override
+            public void onSuccess(Response response) {
+                Log.d(CLASS_TAG, "init loading datavalues");
+                if (!isDataValuesLoaded(getInstance().context)) {
+                    Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
+                    getInstance().getDataValueController().loadDataValues(getInstance().context, false, parentCallback);
+                } else {
+                    parentCallback.onFailure(null);
+                }
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                parentCallback.onFailure(null);
+            }
+        };
+        BlockThread blockThread = new BlockThread(observer, blockCallback);
         BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
         observer.addModelChangeListener(listener);
         blockThread.start();
     }
 
-    public static void synchronizeDataValues(Context context) {
-        getInstance().getDataValueController().synchronizeDataValues(context);
-    }
-
-    /**
-     * Called after meta data and data values have finished loading
-     */
-    private static void onFinishLoading() {
-        Log.d(CLASS_TAG, "onFinishLoading");
-        boolean finished = false;
-        if (getInstance().loadingInitial) {
-            if (isMetaDataLoaded(getInstance().context)) {
-                Log.d(CLASS_TAG, "has loaded init metadatapart");
-                /**
-                 * Initial loading of meta data is completed successfully, continue checking if
-                 * required data values was loaded successfully.
-                 */
-
-                if (isDataValuesLoaded(getInstance().context)) {
-                    Log.d(CLASS_TAG, "full loading success");
-                    finished = true;
-                } else {
-                    //todo: implement re-trying of loading or sth. Could perhaps be handled further down (earlier) in the process
-                    //todo: implement onFailedLoadingInitialDataValues
-                    Log.d(CLASS_TAG, "full loading failed loading data values. Continuing anyways..");
-                    finished = true;
-                }
-            } else {
-                Log.d(CLASS_TAG, "failed loading!!!");
-                /**
-                 * Initial loading of meta data failed. Give the user feedback. Since meta data is
-                 * missing the app will most likely not function very well, but we could allow the
-                 * user to continue working regardless.
-                 */
-                onFailedLoadingInitialMetaData();
-            }
-
-            /**
-             * Now we block and wait with sending the 'done' message while data is being saved to
-             * to avoid race conditions with trying to access data.
-             */
-
-
-            if (finished) {
-                FlowContentObserver observer = getFlowContentObserverForAllTables();
-                String message;
-                if (getInstance().activity != null)
-                    message = getInstance().activity.getString(R.string.finishing_up);
-                else
-                    message = "Finishing initial database setup. This may take several minutes so please be patient.";
-                postProgressMessage(message);
-                FinishLoadingBlockThread blockThread = new FinishLoadingBlockThread(observer);
-                BlockingModelChangeListener listener = new BlockingModelChangeListener(blockThread);
-                observer.addModelChangeListener(listener);
-                blockThread.start();
-            } else getInstance().loading = false;
-        } else {
-            getInstance().loading = false;
-        }
-
-        Dhis2Application.bus.post(new LoadingMessageEvent(BaseEvent
-                .EventType.metaDataSyncFinished));
-    }
-
-    /**
-     * Called if initial meta data loading fails. Gives a notification to user.
-     */
-    private static void onFailedLoadingInitialMetaData() {
-        if (getInstance().activity != null) {
-            DialogInterface.OnClickListener retryListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    loadInitialData(getInstance().activity);
-                }
-            };
-
-            DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    MessageEvent event = new MessageEvent(BaseEvent.EventType.loadInitialDataFailed); //can be subscribed to for example in MainActivity or wherever loading was initiated.
-                    Dhis2Application.bus.post(event);
-                }
-            };
-            showConfirmDialog(getInstance().activity,
-                    getInstance().activity.getString(R.string.error_message),
-                    getInstance().activity.getString(R.string.loading_failed_metadata),
-                    getInstance().activity.getString(R.string.retry),
-                    getInstance().activity.getString(R.string.cancel),
-                    retryListener,
-                    cancelListener);
-        } else {
-            MessageEvent event = new MessageEvent(BaseEvent.EventType.loadInitialDataFailed); //can be subscribed to for example in MainActivity or wherever loading was initiated.
-            Dhis2Application.bus.post(event);
-        }
+    public static void synchronizeDataValues(Context context, ApiRequestCallback callback) {
+        getInstance().getDataValueController().synchronizeDataValues(context, callback);
     }
 
     public static void showErrorDialog(final Activity activity, final String title, final String message) {
@@ -675,25 +644,6 @@ public final class Dhis2 {
                 show(activity.getFragmentManager(), title);
     }
 
-    @Subscribe
-    public void onResponse(LoadingEvent loadingEvent) {
-        if (loadingEvent.eventType == BaseEvent.EventType.onLoadingMetaDataFinished) {
-            if (!loadingEvent.success) {
-                onFinishLoading();
-            } else {
-                if (isLoadingInitial()) {
-                    loadInitialDataValues();
-                } else {
-                    synchronizeDataValues(context);
-                }
-            }
-        } else if (loadingEvent.eventType == BaseEvent.EventType.onLoadDataValuesFinished) {
-            onFinishLoading();
-        } else if (loadingEvent.eventType == BaseEvent.EventType.onUpdateDataValuesFinished) {
-            onFinishLoading();
-        }
-    }
-
     /**
      * Sends an event with feedback to user on loading. Picked up in LoadingFragment.
      *
@@ -710,56 +660,17 @@ public final class Dhis2 {
         }.start();
     }
 
-    public static void setLoadingInitial(boolean loading) {
-        getInstance().loadingInitial = loading;
-    }
-
-    public static boolean isLoadingInitial() {
-        return getInstance().loadingInitial;
-    }
-
-    private static class WaitForMetaDataSavingBlockThread extends BlockThread {
-
-        public WaitForMetaDataSavingBlockThread(FlowContentObserver observer) {
-            super(observer);
-        }
-
-        @Override
-        public void callback() {
-            Log.d(CLASS_TAG, "init loading datavalues");
-            if (!isDataValuesLoaded(getInstance().context)) {
-                Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
-                getInstance().getDataValueController().loadDataValues(getInstance().context, false);
-            } else {
-                onFinishLoading();
-            }
-        }
-    }
-
-    private static class FinishLoadingBlockThread extends BlockThread {
-
-        public FinishLoadingBlockThread(FlowContentObserver observer) {
-            super(observer);
-        }
-
-        @Override
-        public void callback() {
-            getInstance().loadingInitial = false;
-            getInstance().loading = false;
-            MessageEvent messageEvent = new MessageEvent(BaseEvent.EventType.onLoadingInitialDataFinished);
-            Dhis2Application.bus.post(messageEvent);
-        }
-    }
-
     /**
      * Thread for blocking and waiting for DBFlow's TransactionManager to finish saving in the
      * background
      */
-    private static class BlockThread extends Thread {
+    public static class BlockThread extends Thread {
         private final FlowContentObserver observer;
+        private final ApiRequestCallback callback;
 
-        public BlockThread(FlowContentObserver observer) {
+        public BlockThread(FlowContentObserver observer, ApiRequestCallback callback) {
             this.observer = observer;
+            this.callback = callback;
         }
 
         boolean block = true;
@@ -781,6 +692,7 @@ public final class Dhis2 {
         }
 
         public void callback() {
+            callback.onSuccess(null);
         }
     }
 
@@ -806,6 +718,9 @@ public final class Dhis2 {
         observer.registerForContentChanges(getInstance().context, TrackedEntityAttributeValue.class);
         observer.registerForContentChanges(getInstance().context, TrackedEntityInstance.class);
         observer.registerForContentChanges(getInstance().context, User.class);
+        observer.registerForContentChanges(getInstance().context, ProgramRule.class);
+        observer.registerForContentChanges(getInstance().context, ProgramRuleAction.class);
+        observer.registerForContentChanges(getInstance().context, ProgramRuleVariable.class);
         return observer;
     }
 
@@ -813,7 +728,7 @@ public final class Dhis2 {
      * ModelChangeListener for blocking and waiting for DBFlow's TransactionManager to finish saving
      * in the background
      */
-    private static class BlockingModelChangeListener implements FlowContentObserver.OnModelStateChangedListener {
+    public static class BlockingModelChangeListener implements FlowContentObserver.OnModelStateChangedListener {
         private final BlockThread blockThread;
 
         public BlockingModelChangeListener(BlockThread blockThread) {

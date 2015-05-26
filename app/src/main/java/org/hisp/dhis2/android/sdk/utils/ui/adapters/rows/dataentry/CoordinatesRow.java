@@ -46,7 +46,7 @@ public final class CoordinatesRow implements DataEntryRow {
 
     private final Event mEvent;
     private boolean mHidden = false;
-
+    private boolean editable = true;
     public CoordinatesRow(Event event) {
         mEvent = event;
     }
@@ -70,6 +70,20 @@ public final class CoordinatesRow implements DataEntryRow {
         }
 
         holder.updateViews(mEvent);
+
+        if(!isEditable())
+        {
+            holder.latitude.setEnabled(false);
+            holder.longitude.setEnabled(false);
+            holder.captureCoords.setEnabled(false);
+        }
+        else
+        {
+            holder.latitude.setEnabled(true);
+            holder.longitude.setEnabled(true);
+            holder.captureCoords.setEnabled(true);
+        }
+
         return view;
     }
 
@@ -91,6 +105,16 @@ public final class CoordinatesRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         mHidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     private static class CoordinateViewHolder {

@@ -51,6 +51,7 @@ public class DatePickerRow implements DataEntryRow {
     private final BaseValue mValue;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public DatePickerRow(String label, BaseValue value) {
         mLabel = label;
@@ -73,6 +74,17 @@ public class DatePickerRow implements DataEntryRow {
 
             root.setTag(holder);
             view = root;
+        }
+
+        if(!isEditable())
+        {
+            holder.clearButton.setEnabled(false);
+            holder.pickerInvoker.setEnabled(false);
+        }
+        else
+        {
+            holder.clearButton.setEnabled(true);
+            holder.pickerInvoker.setEnabled(true);
         }
 
         holder.updateViews(mLabel, mValue);
@@ -193,5 +205,15 @@ public class DatePickerRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

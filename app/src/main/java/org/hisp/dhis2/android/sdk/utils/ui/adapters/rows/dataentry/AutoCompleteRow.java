@@ -26,6 +26,7 @@
 
 package org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -65,6 +66,7 @@ public final class AutoCompleteRow implements DataEntryRow {
     private final ArrayList<String> mOptions;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public AutoCompleteRow(String label, BaseValue value,
                            OptionSet optionSet) {
@@ -117,6 +119,18 @@ public final class AutoCompleteRow implements DataEntryRow {
         holder.valueTextView.setText(name);
         holder.valueTextView.clearFocus();
 
+        if(!isEditable())
+        {
+            holder.valueTextView.setEnabled(false);
+            holder.valueTextView.setTextColor(Color.parseColor("#C6C6C6")); //setEnabled(false) won't set disabled text on some devices
+        }
+        else
+        {
+            holder.valueTextView.setEnabled(true);
+            holder.valueTextView.setTextColor(Color.BLACK);
+
+        }
+
         return view;
     }
 
@@ -138,6 +152,16 @@ public final class AutoCompleteRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     private static class ViewHolder {

@@ -103,6 +103,9 @@ public class DataEntryFragment extends Fragment
     private ListView mListView;
     private ProgressBar mProgressBar;
 
+    private ImageView mPreviousSectionButton;
+    private ImageView mNextSectionButton;
+
     private View mSpinnerContainer;
     private Spinner mSpinner;
     private SectionAdapter mSpinnerAdapter;
@@ -337,7 +340,7 @@ public class DataEntryFragment extends Fragment
 
             mForm = data;
             mProgramRuleHelper = new ProgramRuleHelper(mForm.getStage().getProgram());
-            if(mForm.getStatusRow()!=null) {
+            if (mForm.getStatusRow() != null) {
                 mForm.getStatusRow().setFragmentActivity(getActivity());
             }
 
@@ -388,6 +391,20 @@ public class DataEntryFragment extends Fragment
             mListView.smoothScrollToPosition(INITIAL_POSITION);
             mListViewAdapter.swapData(section.getRows());
             evaluateRules();
+        }
+
+        if (mNextSectionButton != null && mPreviousSectionButton != null) {
+            if (position - 1 < 0) {
+                mPreviousSectionButton.setVisibility(View.INVISIBLE);
+            } else {
+                mPreviousSectionButton.setVisibility(View.VISIBLE);
+            }
+
+            if (position + 1 >= mSpinnerAdapter.getCount()) {
+                mNextSectionButton.setVisibility(View.INVISIBLE);
+            } else {
+                mNextSectionButton.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -671,16 +688,16 @@ public class DataEntryFragment extends Fragment
 
     private void attachSpinner() {
         if (!isSpinnerAttached()) {
-            Toolbar toolbar = getActionBarToolbar();
+            final Toolbar toolbar = getActionBarToolbar();
 
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            final LayoutInflater inflater = LayoutInflater.from(getActivity());
             mSpinnerContainer = inflater.inflate(
                     R.layout.toolbar_spinner, toolbar, false);
-            ImageView previousSectionButton = (ImageView) mSpinnerContainer
+            mPreviousSectionButton = (ImageView) mSpinnerContainer
                     .findViewById(R.id.previous_section);
-            ImageView nextSectionButton = (ImageView) mSpinnerContainer
+            mNextSectionButton = (ImageView) mSpinnerContainer
                     .findViewById(R.id.next_section);
-            ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
+            final ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             toolbar.addView(mSpinnerContainer, lp);
 
@@ -690,22 +707,24 @@ public class DataEntryFragment extends Fragment
             mSpinner.setAdapter(mSpinnerAdapter);
             mSpinner.setOnItemSelectedListener(this);
 
-            previousSectionButton.setOnClickListener(new View.OnClickListener() {
+            mPreviousSectionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int currentPosition = mSpinner.getSelectedItemPosition();
                     if (!(currentPosition - 1 < 0)) {
-                        mSpinner.setSelection(currentPosition - 1);
+                        currentPosition = currentPosition - 1;
+                        mSpinner.setSelection(currentPosition);
                     }
                 }
             });
 
-            nextSectionButton.setOnClickListener(new View.OnClickListener() {
+            mNextSectionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int currentPosition = mSpinner.getSelectedItemPosition();
                     if (!(currentPosition + 1 >= mSpinnerAdapter.getCount())) {
-                        mSpinner.setSelection(currentPosition + 1);
+                        currentPosition = currentPosition + 1;
+                        mSpinner.setSelection(currentPosition);
                     }
                 }
             });

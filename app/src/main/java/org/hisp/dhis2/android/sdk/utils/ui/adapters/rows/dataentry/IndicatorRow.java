@@ -17,6 +17,7 @@ public final class IndicatorRow implements DataEntryRow {
     private String mValue;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public IndicatorRow(ProgramIndicator indicator, String value) {
         mIndicator = indicator;
@@ -49,6 +50,13 @@ public final class IndicatorRow implements DataEntryRow {
         } else {
             holder.textLabel.setText(EMPTY_FIELD);
         }
+
+        if(!isEditable())
+        {
+            holder.textValue.setEnabled(false);
+        }
+        else
+            holder.textValue.setEnabled(true);
 
         holder.textValue.setText(mValue);
         return view;
@@ -95,5 +103,15 @@ public final class IndicatorRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

@@ -52,6 +52,7 @@ public final class StatusRow implements DataEntryRow {
     private final Event mEvent;
     private Context context;
     private boolean mHidden = false;
+    private boolean editable = true;
     private StatusViewHolder holder;
     private FragmentActivity fragmentActivity;
 
@@ -82,6 +83,18 @@ public final class StatusRow implements DataEntryRow {
         }
         holder.onValidateButtonClickListener.setFragmentActivity(fragmentActivity);
         holder.onCompleteButtonClickListener.setActivity(fragmentActivity);
+
+        if(!isEditable())
+        {
+            holder.complete.setEnabled(false);
+            holder.validate.setEnabled(false);
+        }
+        else
+        {
+            holder.complete.setEnabled(true);
+            holder.validate.setEnabled(true);
+        }
+
         return view;
     }
 
@@ -103,6 +116,16 @@ public final class StatusRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         mHidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     private static class StatusViewHolder {

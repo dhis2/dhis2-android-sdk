@@ -32,6 +32,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -52,6 +53,7 @@ public class EditTextRow implements DataEntryRow {
     private final DataEntryRowTypes mRowType;
 
     private boolean hidden = false;
+    private boolean editable = true;
 
     public EditTextRow(String label, BaseValue baseValue, DataEntryRowTypes rowType) {
         mLabel = label;
@@ -73,7 +75,7 @@ public class EditTextRow implements DataEntryRow {
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
                         View convertView, ViewGroup container) {
         View view;
-        ValueEntryHolder holder;
+        final ValueEntryHolder holder;
 
         if (convertView != null && convertView.getTag() instanceof ValueEntryHolder) {
             view = convertView;
@@ -124,6 +126,13 @@ public class EditTextRow implements DataEntryRow {
             holder = new ValueEntryHolder(label, editText, listener);
             holder.editText.addTextChangedListener(listener);
 
+            if(!isEditable())
+                holder.editText.setEnabled(false);
+            else
+            {
+                holder.editText.setEnabled(true);
+            }
+
             root.setTag(holder);
             view = root;
         }
@@ -133,6 +142,9 @@ public class EditTextRow implements DataEntryRow {
 
         holder.editText.setText(mValue.getValue());
         holder.editText.clearFocus();
+
+
+
         return view;
     }
 
@@ -146,10 +158,13 @@ public class EditTextRow implements DataEntryRow {
         return mValue;
     }
 
+
+
     private static class ValueEntryHolder {
         final TextView textLabel;
         final EditText editText;
         final OnTextChangeListener listener;
+
 
         public ValueEntryHolder(TextView textLabel,
                                 EditText editText,
@@ -233,5 +248,15 @@ public class EditTextRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

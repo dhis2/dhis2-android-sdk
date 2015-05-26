@@ -89,8 +89,8 @@ public class TrackedEntityInstance extends BaseSerializableModel {
     @Column
     public String orgUnit;
 
-    //@JsonProperty("attributes")
-    @JsonIgnore
+    @JsonProperty("attributes")
+//    @JsonIgnore
     public List<TrackedEntityAttributeValue> getAttributes() {
         return DataValueController.getTrackedEntityAttributeValues(localId);
     }

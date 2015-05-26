@@ -53,6 +53,7 @@ public class EventDatePickerRow implements DataEntryRow {
     private final Event mEvent;
 
     private boolean mHidden = false;
+    private boolean editable = true;
 
     public EventDatePickerRow(String label, Event event) {
         mLabel = label;
@@ -75,6 +76,17 @@ public class EventDatePickerRow implements DataEntryRow {
 
             root.setTag(holder);
             view = root;
+        }
+
+        if(!isEditable())
+        {
+            holder.clearButton.setEnabled(false);
+            holder.textLabel.setEnabled(false); //change color
+        }
+        else
+        {
+            holder.clearButton.setEnabled(true);
+            holder.textLabel.setEnabled(true);
         }
 
         holder.updateViews(mLabel, mEvent);
@@ -198,5 +210,15 @@ public class EventDatePickerRow implements DataEntryRow {
     @Override
     public void setHidden(boolean hidden) {
         mHidden = hidden;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return editable;
+    }
+
+    @Override
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

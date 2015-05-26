@@ -54,6 +54,7 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.LoadTrackedEntityAttributesT
 import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateOptionSetsTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.UpdateTrackedEntityAttributesTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
+import org.hisp.dhis2.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis2.android.sdk.events.LoadingEvent;
 import org.hisp.dhis2.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
@@ -930,6 +931,9 @@ public class MetaDataLoader {
         }
         loading = false;
         synchronizing = false;
+
+        InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.metaDataLoaded);
+        Dhis2Application.getEventBus().post(event);
 
         if(callback!=null) {
             if(success) {

@@ -96,15 +96,17 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param minutes the time in minutes between each time the synchronizer runs.
 	 */
 	public static void activatePeriodicSynchronizer(Context context, int minutes) {
-        cancelPeriodicSynchronizer(context);
         if(minutes <= 0) return;
 		Log.d(CLASS_TAG, "activate periodic synchronizer " + minutes);
 		AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		Intent i = new Intent(context, PeriodicSynchronizer.class);
-		PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, 0);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-				1000 * 60 * minutes, pi); // Millisec * Second * Minute
+        PendingIntent existingPi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_NO_CREATE);
+        if(existingPi == null) {
+            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+            am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                    1000 * 60 * minutes, pi); // Millisec * Second * Minute
+        }
 	}
 
 	/**
@@ -115,10 +117,13 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 		Log.d(CLASS_TAG, "cancel periodic synchronizer");
 		Intent intent = new Intent(context, PeriodicSynchronizer.class);
 		PendingIntent sender = PendingIntent
-				.getBroadcast(context, 0, intent, 0);
-		AlarmManager alarmManager = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-		alarmManager.cancel(sender);
+				.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
+        if(sender!=null) {
+            AlarmManager alarmManager = (AlarmManager) context
+                    .getSystemService(Context.ALARM_SERVICE);
+            alarmManager.cancel(sender);
+            sender.cancel();
+        }
 	}
 
     /**
@@ -128,6 +133,36 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
      */
     public static int getInterval(Context context) {
         int frequencyIndex = Dhis2.getUpdateFrequency(context);
+        int minutes;
+        switch (frequencyIndex) {
+            case FREQUENCY_ONE_MINUTE: //1 minutes
+                minutes = 1;
+                break;
+            case FREQUENCY_15_MINTUES: //15 minutes
+                minutes = 15;
+                break;
+            case FREQUENCY_ONE_HOUR: //1 hour
+                minutes = 1 * 60;
+                break;
+            case FREQUENCY_ONE_DAY:// 1 day
+                minutes = 1 * 60 * 24;
+                break;
+            case FREQUENCY_DISABLED: //disabled
+                minutes = 0;
+                break;
+            default:
+                minutes = DEFAULT_UPDATE_FREQUENCY;
+        }
+        return minutes;
+    }
+
+    /**
+     * Returns the given update interval in minutes
+     * @param context
+     * @return
+     */
+    public static int getInterval(Context context, int index) {
+        int frequencyIndex = index;
         int minutes;
         switch (frequencyIndex) {
             case FREQUENCY_ONE_MINUTE: //1 minutes

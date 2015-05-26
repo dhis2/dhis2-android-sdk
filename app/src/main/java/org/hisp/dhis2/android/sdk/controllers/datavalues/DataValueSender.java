@@ -47,10 +47,12 @@ import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterEventTask;
 import org.hisp.dhis2.android.sdk.controllers.tasks.RegisterTrackedEntityInstanceTask;
 import org.hisp.dhis2.android.sdk.events.BaseEvent;
 import org.hisp.dhis2.android.sdk.events.DataValueResponseEvent;
+import org.hisp.dhis2.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis2.android.sdk.events.ResponseEvent;
 import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.network.managers.NetworkManager;
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis2.android.sdk.persistence.models.DataValue$Table;
@@ -109,6 +111,9 @@ public class DataValueSender {
                 }
             }
         }
+
+        InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
+        Dhis2Application.getEventBus().post(event);
 
         sending = false;
         if(success) {

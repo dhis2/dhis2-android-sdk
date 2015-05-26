@@ -416,6 +416,9 @@ public class DataValueLoader {
             }
         }
 
+        InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
+        Dhis2Application.getEventBus().post(event);
+
         synchronizing = false;
         loading = false;
         if(success) {

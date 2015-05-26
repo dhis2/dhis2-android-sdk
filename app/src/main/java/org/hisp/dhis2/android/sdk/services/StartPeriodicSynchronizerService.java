@@ -37,11 +37,11 @@ import android.util.Log;
 
 public class StartPeriodicSynchronizerService extends Service {
 
-    public static final String CLASS_TAG = "StartPeriodicSynchronizerService";
+    public static final String CLASS_TAG = StartPeriodicSynchronizerService.class.getSimpleName();
 
     public void onCreate()
     {
-    	Log.e(CLASS_TAG, "startperiodicsyncservice oncreate");
+    	Log.d(CLASS_TAG, "startperiodicsyncservice oncreate");
         super.onCreate();       
     }
 

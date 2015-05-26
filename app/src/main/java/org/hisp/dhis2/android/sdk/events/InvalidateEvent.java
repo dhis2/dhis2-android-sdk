@@ -37,7 +37,7 @@ public class InvalidateEvent<T> extends BaseEvent{
     public InvalidateEvent.EventType eventType;
 
     public static enum EventType {
-        event, enrollment;
+        event, enrollment, trackedEntityInstance, dataValuesSent, dataValuesLoaded, metaDataLoaded;
     }
 
     public InvalidateEvent(EventType eventType) {

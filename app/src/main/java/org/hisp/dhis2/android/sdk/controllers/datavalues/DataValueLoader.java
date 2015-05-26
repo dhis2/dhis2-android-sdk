@@ -93,13 +93,17 @@ public class DataValueLoader {
 
     private SystemInfo systemInfo;
 
+    private ApiRequestCallback callback;
+
     /**
      * Loads data values from server. Set update to true if you only want to load new values.
      * False if you want it all.
      * @param context
      * @param update
      */
-    public void loadDataValues(Context context, boolean update) {
+    public void loadDataValues(Context context, boolean update, ApiRequestCallback callback) {
+        if(loading) return;
+        this.callback = callback;
         this.context = context;
         loading = true;
         synchronizing = update;
@@ -137,7 +141,7 @@ public class DataValueLoader {
         task.execute();
     }
 
-    public void loadItem() {
+    private void loadItem() {
         if(synchronizing) {
             updateItem();
             return;
@@ -148,7 +152,6 @@ public class DataValueLoader {
          */
         if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-            Log.d(CLASS_TAG, "assignedorgunits: " + assignedOrganisationUnits.size());
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
@@ -258,7 +261,7 @@ public class DataValueLoader {
         onFinishLoading(true);
     }
 
-    public void updateItem() {
+    private void updateItem() {
         String currentLoadingDate = systemInfo.serverDate;
         if(currentLoadingDate == null) {
             return;
@@ -401,7 +404,7 @@ public class DataValueLoader {
     /**
      * called when loading of data values has finished.
      */
-    public void onFinishLoading(boolean success) {
+    private void onFinishLoading(boolean success) {
         Log.e(CLASS_TAG, "onfinishloading");
         if(success) {
             if( success ) {
@@ -413,23 +416,13 @@ public class DataValueLoader {
             }
         }
 
-        if(!synchronizing) {
-            //Dhis2.setHasLoadedInitialDataPart(context, success, Dhis2.INITIAL_DATA_LOADED_PART_DATAVALUES);
-            LoadingEvent loadingEvent = new LoadingEvent(BaseEvent.EventType.onLoadDataValuesFinished);//called in Dhis2 Subscribing method
-            loadingEvent.success = success;
-            DataValueController.onFinishLoading(loadingEvent);
-        } else {
-            LoadingEvent event = new LoadingEvent(BaseEvent.EventType.onUpdateDataValuesFinished);
-            DataValueController.onFinishLoading(event); //todo: not yet used but will be used to notify updates in fragments etc.
-            if(loadedEventCounter>0) {
-                Log.d(CLASS_TAG, "sending invalidate");
-                InvalidateEvent ivEvent = new InvalidateEvent(InvalidateEvent.EventType.event);
-                Dhis2Application.bus.post(ivEvent); //can be used to refresh list of events if subscribed to.
-            }
-        }
-
         synchronizing = false;
         loading = false;
+        if(success) {
+            callback.onSuccess(null);
+        } else {
+            callback.onFailure(null);
+        }
     }
 
     /**
@@ -560,7 +553,7 @@ public class DataValueLoader {
         task.execute();
     }
 
-    public void onResponse(ResponseEvent responseEvent) {
+    private void onResponse(ResponseEvent responseEvent) {
         if(responseEvent.getResponseHolder().getApiException() == null) {
             if (responseEvent.eventType == BaseEvent.EventType.loadSystemInfo) {
                 systemInfo = (SystemInfo) responseEvent.getResponseHolder().getItem();
@@ -728,7 +721,6 @@ public class DataValueLoader {
                 if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
                     return false;
                 }
-                Log.d(CLASS_TAG, "program done for: " + program.getName() + ": " +organisationUnit.getLabel());
             }
         }
 

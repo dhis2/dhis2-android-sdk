@@ -113,6 +113,7 @@ public class MetaDataLoader {
     boolean synchronizing = false;
     private int retries = 0;
     private static final int maxRetries = 9;
+    private ApiRequestCallback callback;
 
     private SystemInfo systemInfo;
 
@@ -120,20 +121,20 @@ public class MetaDataLoader {
      * Connects to the server and checks for updates in Meta Data. If Meta Data has been updated,
      * changes are downloaded and reflected in the client.
      */
-    void synchronizeMetaData(Context context) {
+    void synchronizeMetaData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "loading: " + loading);
-        if( loading ) return;
-        if(Dhis2.getInstance().getDataValueController().isSending()) return;
+        if( Dhis2.isLoading() ) return;
         synchronizing = true;
-        loadMetaData(context);
+        loadMetaData(context, callback);
     }
 
     /**
      * Loads metaData from the server and stores it in local persistence.
      * By default this method loads metaData required for data entry in Event Capture
      */
-    void loadMetaData(Context context) {
+    void loadMetaData(Context context, ApiRequestCallback callback) {
         if( loading ) return;
+        this.callback = callback;
         loading = true;
         Dhis2.postProgressMessage(context.getString(R.string.loading_metadata));
         this.context = context;
@@ -930,10 +931,13 @@ public class MetaDataLoader {
         loading = false;
         synchronizing = false;
 
-        LoadingEvent event;
-        event = new LoadingEvent(BaseEvent.EventType.onLoadingMetaDataFinished); //called in Dhis2 Subscribing method
-        event.success = success;
-        Dhis2Application.bus.post(event);
+        if(callback!=null) {
+            if(success) {
+                callback.onSuccess(null);
+            } else {
+                callback.onFailure(null);
+            }
+        }
     }
 
     private void onResponse(MetaDataResponseEvent event) {

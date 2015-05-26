@@ -43,6 +43,9 @@ import android.widget.Toast;
 
 import org.hisp.dhis2.android.sdk.R;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
+import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
+import org.hisp.dhis2.android.sdk.network.http.Response;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,
@@ -99,7 +102,18 @@ public class SettingsFragment extends Fragment
             if (isAdded()) {
                 Context context = getActivity().getBaseContext();
                 Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
-                Dhis2.synchronize(context);
+                ApiRequestCallback callback = new ApiRequestCallback() {
+                    @Override
+                    public void onSuccess(Response response) {
+                        //do nothing
+                    }
+
+                    @Override
+                    public void onFailure(APIException exception) {
+                        //do nothing
+                    }
+                };
+                Dhis2.synchronize(context, callback);
             }
         }
     }

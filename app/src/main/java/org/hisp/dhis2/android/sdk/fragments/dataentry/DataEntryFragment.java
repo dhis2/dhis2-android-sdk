@@ -58,6 +58,8 @@ import org.hisp.dhis2.android.sdk.activities.OnBackPressedListener;
 import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.fragments.ProgressDialogFragment;
+import org.hisp.dhis2.android.sdk.network.http.ApiRequestCallback;
+import org.hisp.dhis2.android.sdk.network.http.Response;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis2.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis2.android.sdk.persistence.models.DataElement;
@@ -67,6 +69,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis2.android.sdk.utils.APIException;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramRuleService;
@@ -779,10 +782,22 @@ public class DataEntryFragment extends Fragment
                     mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
                     mForm.getEvent().save();
 
+                    final ApiRequestCallback callback = new ApiRequestCallback() {
+                        @Override
+                        public void onSuccess(Response response) {
+                            //do nothing
+                        }
+
+                        @Override
+                        public void onFailure(APIException exception) {
+                            //do nothing
+                        }
+                    };
+
                     TimerTask timerTask = new TimerTask() {
                         @Override
                         public void run() {
-                            Dhis2.sendLocalData(context);
+                            Dhis2.sendLocalData(context, callback);
                         }
                     };
                     Timer timer = new Timer();

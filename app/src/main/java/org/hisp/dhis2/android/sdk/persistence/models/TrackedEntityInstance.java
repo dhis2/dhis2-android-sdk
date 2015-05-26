@@ -113,18 +113,6 @@ public class TrackedEntityInstance extends BaseSerializableModel {
             updateManually();
         } else {
             super.save();
-            /*boolean wait = true;
-            if( localId < 0 ) { //workaround to wait for primary autoincrement key to be assigned with async=true
-                while(wait) {
-                    TrackedEntityInstance tempTei = DataValueController.getTrackedEntityInstance(trackedEntityInstance);
-                    if(tempTei==null) continue;
-                    else {
-                        localId = tempTei.localId;
-                        wait = false;
-                    }
-                    Thread.yield();
-                }
-            }*/
         }
     }
 
@@ -134,13 +122,9 @@ public class TrackedEntityInstance extends BaseSerializableModel {
      * and has previously been saved, so that it has a localId.
      */
     public void updateManually() {
-        /*Queriable q = */new Update(TrackedEntityInstance.class).set(
+        new Update(TrackedEntityInstance.class).set(
                 Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(fromServer))
                 .where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).queryClose();
-        /*if(async)
-            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
-        else
-            q.queryClose();*/
     }
 
     @Override

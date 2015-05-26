@@ -215,19 +215,6 @@ public class Event extends BaseSerializableModel {
             updateManually();
         } else {
             super.save(); //saving the event first to get a autoincrement index from db
-            /*boolean wait = true;
-            if(localId<0) { //workaround to wait for primary autoincrement key to be assigned with async=true
-                while(wait) {
-                    Event tempEvent = DataValueController.getEventByUid(event);
-                    if(tempEvent==null) continue;
-                    else {
-                        localId = tempEvent.localId;
-                        wait = false;
-                    }
-                    Thread.yield();
-                }
-            }*/
-            Log.d(CLASS_TAG, "save finished Event " + localId);
         }
 
         if (dataValues != null) {
@@ -245,16 +232,12 @@ public class Event extends BaseSerializableModel {
      * and has previously been saved, so that it has a localId.
      */
     private void updateManually() {
-        /*Queriable q = */new Update(Event.class).set(
+        new Update(Event.class).set(
                 Condition.column(Event$Table.LONGITUDE).is(longitude),
                 Condition.column(Event$Table.LATITUDE).is(latitude),
                 Condition.column(Event$Table.STATUS).is(status),
                 Condition.column(Event$Table.FROMSERVER).is(fromServer))
                 .where(Condition.column(Enrollment$Table.LOCALID).is(localId)).queryClose();
-        /*if(async)
-            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
-        else
-            q.queryClose();*/
     }
 
     @Override

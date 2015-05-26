@@ -63,7 +63,7 @@ public final class ValidationErrorDialog extends DialogFragment
         mListView = (ListView) view.findViewById(R.id.simple_listview);
         mHeader = (TextView) view.findViewById(R.id.header);
         mButton = (Button) view.findViewById(R.id.closebutton);
-        String header = getArguments().getString(HEADER_EXTRA, null);
+        String header = getArguments().getString(HEADER_EXTRA);
         if(header != null) {
             mHeader.setText(header);
         }

@@ -235,18 +235,6 @@ public class Enrollment extends BaseSerializableModel{
             updateManually();
         } else {
             super.save(); //saving the enrollment first to get a autoincrement id from db
-            /*boolean wait = true;
-            if( localId < 0 ) { //workaround to wait for primary autoincrement key to be assigned with async=true
-                while(wait) {
-                    Enrollment tempEnrollment = DataValueController.getEnrollment(enrollment);
-                    if(tempEnrollment==null) continue;
-                    else {
-                        localId = tempEnrollment.localId;
-                        wait = false;
-                    }
-                    Thread.yield();
-                }
-            }*/
         }
         if(events!=null) {
             for(Event event: events) {
@@ -261,7 +249,6 @@ public class Enrollment extends BaseSerializableModel{
             {
                 value.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
                 value.save();
-                Log.d(CLASS_TAG, "VALUE: " + value.getValue() + "\n ID: " + value.localTrackedEntityInstanceId + "\n TEI ID:" + value.trackedEntityInstanceId);
             }
         }
     }
@@ -272,15 +259,11 @@ public class Enrollment extends BaseSerializableModel{
      * and has previously been saved, so that it has a localId.
      */
     public void updateManually() {
-        /*Queriable q = */new Update(Enrollment.class).set(
+        new Update(Enrollment.class).set(
                 Condition.column(Enrollment$Table.STATUS).is(status),
                 Condition.column(Enrollment$Table.FROMSERVER).is(fromServer),
                 Condition.column(Enrollment$Table.FOLLOWUP).is(followup))
                 .where(Condition.column(Enrollment$Table.LOCALID).is(localId)).queryClose();
-        /*if(async)
-            TransactionManager.getInstance().transactQuery(DBTransactionInfo.create(BaseTransaction.PRIORITY_HIGH), q);
-        else
-            q.queryClose();*/
     }
 
     @JsonIgnore

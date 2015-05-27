@@ -32,9 +32,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="6dp"
-    android:layout_margin="6dp"
-    android:background="@color/stage_executed">
-
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:background="@color/white">
+    <LinearLayout
+        android:id="@+id/eventbackground"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:layout_margin="6dp"
+        android:background="@color/stage_executed">
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,4 +59,5 @@
         android:text="Large Text"
         android:id="@+id/date"
         android:layout_gravity="center_horizontal" />
+    </LinearLayout>
 </LinearLayout>

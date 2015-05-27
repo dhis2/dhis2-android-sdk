@@ -54,6 +54,9 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
 
+    @Column
+    public int sortOrder;
+
     @JsonProperty("allowFutureDate")
     @Column
     public boolean allowFutureDate;
@@ -72,7 +75,6 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        //trackedEntityAttribute.save(true);
         trackedEntityAttribute.async().save();
         this.trackedEntityAttribute = trackedEntityAttribute.id;
     }
@@ -114,10 +116,14 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     }
 
     public TrackedEntityAttribute getTrackedEntityAttribute() {
-        /*List<TrackedEntityAttribute> result = Select.all(TrackedEntityAttribute.class,
-                Condition.column(TrackedEntityAttribute$Table.ID).is(trackedEntityAttribute));
-        if(result != null && !result.isEmpty()) return result.get(0);
-        else return null;*/
         return MetaDataController.getTrackedEntityAttribute(trackedEntityAttribute);
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

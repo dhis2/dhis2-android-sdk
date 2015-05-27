@@ -134,7 +134,9 @@ public class MetaDataController {
      * @return
      */
     public static List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes(String program) {
-        return new Select().from(ProgramTrackedEntityAttribute.class).where(Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).is(program)).queryList();
+        return new Select().from(ProgramTrackedEntityAttribute.class).where(Condition.column
+                (ProgramTrackedEntityAttribute$Table.PROGRAM).is(program)).orderBy(true,
+                ProgramTrackedEntityAttribute$Table.SORTORDER).queryList();
     }
 
     /**

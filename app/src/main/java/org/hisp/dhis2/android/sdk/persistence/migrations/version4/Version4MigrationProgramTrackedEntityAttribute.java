@@ -27,19 +27,29 @@
  *
  */
 
-package org.hisp.dhis2.android.sdk.persistence;
+package org.hisp.dhis2.android.sdk.persistence.migrations.version4;
 
-import com.raizlabs.android.dbflow.annotation.Database;
+import com.raizlabs.android.dbflow.annotation.Migration;
+import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
+
+import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis2.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 
 /**
- * @author Simen Skogly Russnes
- * Database definition for DbFlow
+ * @author Simen Skogly Russnes on 27.05.15.
  */
-@Database(name = Dhis2Database.NAME, version = Dhis2Database.VERSION, foreignKeysSupported = true)
-public class Dhis2Database {
+@Migration(version = 4, databaseName = Dhis2Database.NAME)
+public class Version4MigrationProgramTrackedEntityAttribute extends AlterTableMigration<ProgramTrackedEntityAttribute> {
 
-    public static final String NAME = "Dhis2";
 
-    public static final int VERSION = 4;
+    public Version4MigrationProgramTrackedEntityAttribute() {
+        super(ProgramTrackedEntityAttribute.class);
+    }
 
+    @Override
+    public void onPreMigrate() {
+        // Simple ALTER TABLE migration wraps the statements into a nice builder notation
+        super.onPreMigrate();
+        addColumn(int.class, "sortOrder");
+    }
 }

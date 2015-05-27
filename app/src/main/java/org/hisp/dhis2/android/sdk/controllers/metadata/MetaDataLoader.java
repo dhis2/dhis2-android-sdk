@@ -988,9 +988,12 @@ public class MetaDataLoader {
 
                 //Have to set program reference in ptea manually because it is not referenced in
                 //API JSON
+                int sortOrder = 0;
                 for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                     ptea.setProgram(program.getId());
+                    ptea.setSortOrder(sortOrder);
                     ptea.async().save();
+                    sortOrder++;
                 }
 
                 program.async().save();
@@ -1077,9 +1080,12 @@ public class MetaDataLoader {
 
                     //Have to set program reference in ptea manually because it is not referenced in
                     //API JSON
+                    int sortOrder = 0;
                     for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                         ptea.setProgram(program.getId());
+                        ptea.setSortOrder(sortOrder);
                         ptea.async().save();
+                        sortOrder++;
                     }
 
                     if(oldProgram== null) {

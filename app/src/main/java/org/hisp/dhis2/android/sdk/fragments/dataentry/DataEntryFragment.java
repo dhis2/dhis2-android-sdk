@@ -779,7 +779,7 @@ public class DataEntryFragment extends Fragment
                     final Context context = getActivity().getBaseContext();
 
                     mForm.getEvent().setFromServer(false);
-                    mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
+                    //mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
                     mForm.getEvent().save();
 
                     final ApiRequestCallback callback = new ApiRequestCallback() {

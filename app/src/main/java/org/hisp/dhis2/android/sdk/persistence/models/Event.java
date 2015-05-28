@@ -52,6 +52,11 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis2.android.sdk.utils.Utils;
+import org.hisp.dhis2.android.sdk.utils.support.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,19 +81,22 @@ public class Event extends BaseSerializableModel {
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
 
-    public Event(String organisationUnitId, String status, String programId, String programStageId,
-                 String trackedEntityInstanceId, String enrollmentId) {
+    public Event(String organisationUnitId, String status, String programId, ProgramStage programStage,
+                 String trackedEntityInstanceId, Enrollment enrollment) {
         this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
         this.fromServer = false;
-        this.dueDate = Utils.getCurrentDate();
-        this.eventDate = Utils.getCurrentDate();
+        this.dueDate = DateUtils.getMediumDateString();
+        this.eventDate = DateUtils.getMediumDateString();
         this.organisationUnitId = organisationUnitId;
         this.programId = programId;
-        this.programStageId = programStageId;
+        this.programStageId = programStage.getId();
         this.status = status;
-        this.lastUpdated = Utils.getCurrentDate();
         this.trackedEntityInstance = trackedEntityInstanceId;
-        this.enrollment = enrollmentId;
+        if(enrollment!=null) {
+            this.enrollment = enrollment.enrollment;
+            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(enrollment.dateOfEnrollment));
+            this.dueDate = currentDateTime.plusDays(programStage.minDaysFromStart).toString();
+        }
         dataValues = new ArrayList<DataValue>();
     }
 

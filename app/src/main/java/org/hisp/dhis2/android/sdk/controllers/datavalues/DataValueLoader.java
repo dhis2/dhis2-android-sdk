@@ -62,6 +62,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis2.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis2.android.sdk.utils.APIException;
+import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -266,8 +267,7 @@ public class DataValueLoader {
         if(currentLoadingDate == null) {
             return;
         }
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-        DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);
+        DateTime currentDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(currentLoadingDate);
 
         /**
          * Updating Tracked Entity Instances
@@ -301,7 +301,7 @@ public class DataValueLoader {
                         loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
                         return;
                     }
-                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(lastUpdatedString);
                     if(updatedDateTime.isBefore(currentDateTime)) {
                         loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
                         return;
@@ -342,7 +342,7 @@ public class DataValueLoader {
                         loadEnrollments(currentOrganisationUnit, currentProgram);
                         return;
                     }
-                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(lastUpdatedString);
                     if(updatedDateTime.isBefore(currentDateTime)) {
                         loadEnrollments(currentOrganisationUnit, currentProgram);
                         return;
@@ -390,7 +390,7 @@ public class DataValueLoader {
                         loadEvents(currentOrganisationUnit, currentProgram);
                         return;
                     }
-                    DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(lastUpdatedString);
                     if(updatedDateTime.isBefore(currentDateTime)) {
                         loadEvents(currentOrganisationUnit, currentProgram);
                         return;

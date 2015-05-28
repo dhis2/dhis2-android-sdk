@@ -51,6 +51,8 @@ import org.hisp.dhis2.android.sdk.controllers.Dhis2;
 import org.hisp.dhis2.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis2.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis2.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis2.android.sdk.utils.Utils;
+import org.hisp.dhis2.android.sdk.utils.support.DateUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,13 +85,15 @@ public class Enrollment extends BaseSerializableModel{
         fromServer = false;
         this.program = program.getId();
         this.trackedEntityInstance = trackedEntityInstance;
+        this.dateOfEnrollment = DateUtils.getMediumDateString();
+        this.dateOfIncident = DateUtils.getMediumDateString();
         List<Event> events = new ArrayList<>();
         for(ProgramStage programStage: program.getProgramStages()) {
             if(programStage.autoGenerateEvent) {
                 String status = Event.STATUS_FUTURE_VISIT;
                 Event event = new Event(organisationUnit, status,
-                        program.id, programStage.id,
-                        trackedEntityInstance, enrollment);
+                        program.id, programStage,
+                        trackedEntityInstance, this);
                 events.add(event);
             }
         }

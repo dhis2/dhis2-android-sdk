@@ -341,4 +341,6 @@
     <string name="incomplete_confirm">Are you sure you want to incomplete the event?</string>
 
     <string name="validation_success">Validation successful!</string>
+
+    <string name="tracked_entity_instances">Tracked Entity Instances</string>
 </resources>

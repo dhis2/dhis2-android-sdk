@@ -304,7 +304,7 @@ public class DataValueSender {
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = importSummary;
-                    failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId;
                     failedItem.itemType = FailedItem.TRACKEDENTITYINSTANCE;
                     failedItem.httpStatusCode = 200;
                     failedItem.async().save();
@@ -351,7 +351,7 @@ public class DataValueSender {
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = importSummary;
-                    failedItem.itemId = localEnrollments.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemId = localEnrollments.get(sendCounter-1).localId;
                     failedItem.itemType = FailedItem.ENROLLMENT;
                     failedItem.httpStatusCode = 200;
                     failedItem.async().save();
@@ -397,7 +397,7 @@ public class DataValueSender {
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
                     failedItem.importSummary = responseBody.importSummaries.get(0);
-                    failedItem.itemId = localEvents.get(sendCounter-1).localId; //todo: implement support for more item types in future (TrackedEntityInstance, Enrollment .. )
+                    failedItem.itemId = localEvents.get(sendCounter-1).localId;
                     failedItem.itemType = FailedItem.EVENT;
                     failedItem.httpStatusCode = 200; // the error is DHIS 2 internal, nothing wrong with connection
                     failedItem.async().save();

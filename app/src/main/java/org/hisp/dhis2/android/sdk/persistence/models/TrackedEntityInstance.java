@@ -36,8 +36,8 @@ public class TrackedEntityInstance extends BaseSerializableModel {
         fromServer = false;
         trackedEntityInstance = Utils.getTempUid();
         trackedEntity = program.getTrackedEntity().getId();
-        created = Utils.getCurrentTime();
-        lastUpdated = Utils.getCurrentTime();
+        //created = Utils.getCurrentTime();
+        //lastUpdated = Utils.getCurrentTime();
         orgUnit = organisationUnit;
     }
 

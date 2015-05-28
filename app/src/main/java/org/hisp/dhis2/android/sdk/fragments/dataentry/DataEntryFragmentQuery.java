@@ -47,6 +47,7 @@ import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis2.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis2.android.sdk.utils.Utils;
 import org.hisp.dhis2.android.sdk.utils.services.ProgramIndicatorService;
+import org.hisp.dhis2.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.CheckBoxRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.CoordinatesRow;
@@ -58,6 +59,7 @@ import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.EventDatePick
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.RadioButtonsRow;
 import org.hisp.dhis2.android.sdk.utils.ui.adapters.rows.dataentry.StatusRow;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,7 +169,6 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                                               List<DataEntryRow> rows, String username) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.dataElement, form.getEvent(), username);
-            //DataValue copyDataValue = dataValue.clone();
             DataElement dataElement = getDataElement(stageDataElement.dataElement);
 
             if (dataElement != null) {
@@ -196,24 +197,17 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                            ProgramStage programStage, String username) {
         Event event;
         if (eventId < 0) {
-            event = new Event();
+            event = new Event(orgUnitId, Event.STATUS_ACTIVE, programId, programStage, null, null);
             if (enrollmentId > 0) {
                 Enrollment enrollment = DataValueController.getEnrollment(enrollmentId);
                 if (enrollment != null) {
                     event.setLocalEnrollmentId(enrollmentId);
                     event.setEnrollment(enrollment.enrollment);
                     event.trackedEntityInstance = enrollment.trackedEntityInstance;
+                    LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.dateOfEnrollment)).plusDays(programStage.minDaysFromStart);
+                    event.setDueDate(dueDate.toString());
                 }
             }
-
-            event.setEvent(Dhis2.QUEUED + UUID.randomUUID().toString());
-            event.setFromServer(false);
-            event.setDueDate(Utils.getCurrentDate());
-            event.setOrganisationUnitId(orgUnitId);
-            event.setProgramId(programId);
-            event.setProgramStageId(programStage.getId());
-            event.setStatus(Event.STATUS_ACTIVE);
-            event.setLastUpdated(Utils.getCurrentTime());
 
             List<DataValue> dataValues = new ArrayList<>();
             for (ProgramStageDataElement dataElement : programStage.getProgramStageDataElements()) {

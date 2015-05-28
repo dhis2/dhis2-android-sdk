@@ -49,17 +49,6 @@ public class Utils {
     private static final String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
-    public static final String getCurrentDate() {
-        LocalDate localDate = new LocalDate();
-        return localDate.toString();
-    }
-
-    public static final String getCurrentTime() {
-        DateTime dateTime = new DateTime();
-        Log.d(CLASS_TAG, dateTime.toString());
-        return dateTime.toString();
-    }
-
     public static final int getDpPx(int dp, DisplayMetrics displayMetrics) {
         int px = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,

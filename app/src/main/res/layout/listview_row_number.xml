@@ -38,7 +38,7 @@
 
     <include layout="@layout/listview_row_label" />
 
-    <org.hisp.dhis2.android.sdk.utils.ui.views.FontEditText
+    <org.hisp.dhis.android.sdk.utils.ui.views.FontEditText
         android:id="@+id/edit_number_row"
         style="@style/ListViewEditTextStyle"
         android:hint="@string/enter_integer"

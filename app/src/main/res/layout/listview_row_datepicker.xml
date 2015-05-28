@@ -45,7 +45,7 @@
 
         <include layout="@layout/listview_row_text_view_label"/>
 
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
             android:id="@+id/date_picker_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <org.hisp.dhis2.android.sdk.utils.ui.views.FontTextView
+            <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
                 android:id="@+id/update_frequency_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 android:entries="@array/update_frequencies"
                 android:layout_below="@+id/update_frequency_label" />
 
-            <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
+            <org.hisp.dhis.android.sdk.utils.ui.views.FontButton
                 android:id="@+id/settings_sync_button"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -76,7 +76,7 @@
                 android:layout_marginTop="40dp"
                 app:font="@string/medium_font_name" />
 
-            <org.hisp.dhis2.android.sdk.utils.ui.views.FontButton
+            <org.hisp.dhis.android.sdk.utils.ui.views.FontButton
                 android:id="@+id/settings_logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

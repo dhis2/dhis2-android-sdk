@@ -29,7 +29,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisp.dhis2.android.sdk" >
+    package="org.hisp.dhis.android.sdk" >
 
     <uses-sdk
         android:targetSdkVersion="21" />

@@ -44,7 +44,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal" >
 
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
             android:id="@+id/true_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
             android:text="@string/yes_option"
             app:font="@string/regular_font_name"/>
 
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
             android:id="@+id/false_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
             android:text="@string/no_option"
             app:font="@string/regular_font_name" />
 
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
             android:id="@+id/none_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -52,7 +52,7 @@
             android:textColor="@color/Dark_Gray"
             android:layout_gravity="bottom" />
 
-        <org.hisp.dhis2.android.sdk.utils.ui.views.FloatingActionButton
+        <org.hisp.dhis.android.sdk.utils.ui.views.FloatingActionButton
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:gravity="center"

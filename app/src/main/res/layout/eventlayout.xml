@@ -75,11 +75,10 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/hasfailedbutton"
+                android:id="@+id/statusButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@drawable/ic_event_error">
+                android:layout_gravity="right">
             </ImageButton>
             </LinearLayout>
 

@@ -36,22 +36,24 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
 
 public class DbLoader<T> extends AsyncTaskLoader<T> {
-    // A Model Class which we want to observe
+    // A List of Model classes which we want to observe
     private final List<Class<? extends Model>> mModelClasses;
 
-    // The actual observer
-    // private ModelChangeObserver<ModelClass> mObserver;
+    // The List of observers
     private List<ModelChangeObserver<?>> mObservers;
 
     // The object which will perform Query
     private final Query<T> mQuery;
 
     private T mData;
+
+    private AtomicBoolean mIsLoading;
 
     public DbLoader(Context context,
                     List<Class<? extends Model>> modelClasses,
@@ -60,6 +62,7 @@ public class DbLoader<T> extends AsyncTaskLoader<T> {
 
         mModelClasses = isNull(modelClasses, "Model Class object must not be null");
         mQuery = isNull(query, "Query object must not be null");
+        mIsLoading = new AtomicBoolean(false);
     }
 
     private void registerObservers() {
@@ -69,8 +72,6 @@ public class DbLoader<T> extends AsyncTaskLoader<T> {
             observer.registerObserver();
             mObservers.add(observer);
         }
-        // mObserver = new ModelChangeObserver<>(mModelClass, this);
-        // mObserver.registerObserver();
     }
 
     private void unregisterObservers() {
@@ -79,15 +80,15 @@ public class DbLoader<T> extends AsyncTaskLoader<T> {
                 observer.unregisterObserver();
             }
             mObservers = null;
-            // mObserver.unregisterObserver();
-            // mObserver = null;
         }
     }
 
     @Override
     public T loadInBackground() {
-        System.out.println("loadInBackground()");
-        return mQuery.query(getContext());
+        mIsLoading.set(true);
+        T data = mQuery.query(getContext());
+        mIsLoading.set(false);
+        return data;
     }
 
     @Override
@@ -164,6 +165,10 @@ public class DbLoader<T> extends AsyncTaskLoader<T> {
         // The load has been canceled, so we should release the resources
         // associated with 'data'.
         releaseResources();
+    }
+
+    public boolean isLoading() {
+        return mIsLoading.get();
     }
 
     private void releaseResources() {

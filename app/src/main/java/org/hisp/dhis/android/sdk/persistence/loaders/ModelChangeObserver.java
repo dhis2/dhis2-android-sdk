@@ -62,39 +62,12 @@ public class ModelChangeObserver<ModelClass extends Model> implements FlowConten
         mObserver.removeModelChangeListener(this);
     }
 
-    /*@Override
-    public void onModelChanged() {
-        Log.d(TAG, "onModelChanged()");
-        mLoader.onContentChanged();
-    }
-
-    @Override
-    public void onModelSaved() {
-        Log.d(TAG, "onModelSaved()");
-        mLoader.onContentChanged();
-    }
-
-    @Override
-    public void onModelDeleted() {
-        Log.d(TAG, "onModelDeleted()");
-        mLoader.onContentChanged();
-    }
-
-    @Override
-    public void onModelInserted() {
-        Log.d(TAG, "onModelInserted()");
-        mLoader.onContentChanged();
-    }
-
-    @Override
-    public void onModelUpdated() {
-        Log.d(TAG, "onModelUpdated()");
-        mLoader.onContentChanged();
-    }*/
-
     @Override
     public void onModelStateChanged(Class<? extends Model> aClass, BaseModel.Action action) {
         Log.d(TAG, "onModelStateChanged() " + aClass.getSimpleName() + ": " + action);
-        mLoader.onContentChanged();
+
+        if (!mLoader.isLoading()) {
+            mLoader.onContentChanged();
+        }
     }
 }

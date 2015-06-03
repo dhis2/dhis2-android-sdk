@@ -173,6 +173,8 @@ public class DataValueLoader {
 
                 for( Program program: programsForOrgUnit) {
                     if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.id + program.id)) {
+                        Dhis2.postProgressMessage(context.getString(R.string.loading_tracked_entity_instances) + ": "
+                                + organisationUnit.label + ": " + program.name);
                         currentOrganisationUnit = organisationUnit.id;
                         currentProgram = program.id;
                         loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
@@ -208,6 +210,8 @@ public class DataValueLoader {
 
                 for( Program program: programsForOrgUnit) {
                     if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.id + program.id)) {
+                        Dhis2.postProgressMessage(context.getString(R.string.loading_enrollments) + ": "
+                                + organisationUnit.label + ": " + program.name);
                         currentOrganisationUnit = organisationUnit.id;
                         currentProgram = program.id;
                         loadEnrollments(currentOrganisationUnit, currentProgram);

@@ -73,7 +73,11 @@ public class NetworkManager {
      */
     public static boolean hasInternetConnection() {
         try {
-            InetAddress ipAddr = InetAddress.getByName("www.dhis2.org"); //You can replace it with your name
+            String url = getInstance().getServerUrl();
+            if(url == null) {
+                return false;
+            }
+            InetAddress ipAddr = InetAddress.getByName(url); //You can replace it with your name
 
             if (ipAddr.equals("")) {
                 return false;

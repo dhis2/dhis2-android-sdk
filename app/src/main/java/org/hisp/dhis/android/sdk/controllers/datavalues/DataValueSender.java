@@ -89,8 +89,8 @@ public class DataValueSender {
         this.context = context;
         new Thread() {
             public void run() {
-                if(!NetworkManager.hasInternetConnection()) onFinishSending(false);
-                else sendTrackedEntityInstances();
+                /*if(!NetworkManager.hasInternetConnection()) onFinishSending(false);
+                else */sendTrackedEntityInstances();
             }
         }.start();
     }

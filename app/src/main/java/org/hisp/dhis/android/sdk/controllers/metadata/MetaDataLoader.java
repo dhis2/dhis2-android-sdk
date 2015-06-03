@@ -133,7 +133,10 @@ public class MetaDataLoader {
      * By default this method loads metaData required for data entry in Event Capture
      */
     void loadMetaData(Context context, ApiRequestCallback callback) {
-        if( loading ) return;
+        if( loading ) {
+            callback.onFailure(null);
+            return;
+        }
         this.callback = callback;
         loading = true;
         Dhis2.postProgressMessage(context.getString(R.string.loading_metadata));
@@ -141,8 +144,8 @@ public class MetaDataLoader {
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         String lastUpdated = prefs.getString(Dhis2.LAST_UPDATED_METADATA, null);
         systemInfo = null;
-        if(lastUpdated == null || synchronizing)
-            loadSystemInfo();
+        //if(lastUpdated == null || synchronizing)
+        loadSystemInfo();
     }
 
     /**

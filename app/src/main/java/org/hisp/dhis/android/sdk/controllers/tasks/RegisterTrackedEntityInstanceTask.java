@@ -92,7 +92,7 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
 
         if(trackedEntityInstance.getTrackedEntityInstance() != null)
         {
-            url += "/" + trackedEntityInstance.trackedEntityInstance;
+            url += "/" + trackedEntityInstance.getTrackedEntityInstance();
         }
 
         Request request;

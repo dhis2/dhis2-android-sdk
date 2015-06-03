@@ -92,9 +92,9 @@ public class BooleanRow implements Row {
         holder.falseButton.setOnCheckedChangeListener(holder.falseButtonListener);
         holder.noneButton.setOnCheckedChangeListener(holder.noneButtonListener);
         
-        if (dataValue.value.equals(BaseValue.FALSE)) holder.falseButton.setChecked(true);
-        else if (dataValue.value.equals(BaseValue.TRUE)) holder.trueButton.setChecked(true);
-        else if (dataValue.value.equals(BaseValue.EMPTY_VALUE)) holder.noneButton.setChecked(true);
+        if (dataValue.getValue().equals(BaseValue.FALSE)) holder.falseButton.setChecked(true);
+        else if (dataValue.getValue().equals(BaseValue.TRUE)) holder.trueButton.setChecked(true);
+        else if (dataValue.getValue().equals(BaseValue.EMPTY_VALUE)) holder.noneButton.setChecked(true);
         setEditable(editable);
         
         return view;
@@ -161,7 +161,7 @@ public class BooleanRow implements Row {
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked) dataValue.value = BaseValue.TRUE;
+            if (isChecked) dataValue.setValue(BaseValue.TRUE);
         } 
     }
     
@@ -178,7 +178,7 @@ public class BooleanRow implements Row {
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked)  dataValue.value = BaseValue.FALSE;
+            if (isChecked)  dataValue.setValue(BaseValue.FALSE);
         } 
     }
 
@@ -195,7 +195,7 @@ public class BooleanRow implements Row {
 
         @Override
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            if (isChecked)  dataValue.value = BaseValue.EMPTY_VALUE;
+            if (isChecked)  dataValue.setValue(BaseValue.EMPTY_VALUE);
         } 
     }
     

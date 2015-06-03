@@ -47,11 +47,11 @@ public class TrackedEntity extends BaseModel{
     @JsonProperty("id")
     @Column
     @PrimaryKey
-    public String id;
+    protected String id;
 
     @JsonProperty("name")
     @Column
-    public String name;
+    private String name;
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {

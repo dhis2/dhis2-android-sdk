@@ -43,14 +43,41 @@ public class Constant extends BaseIdentifiableObject {
 
     @JsonProperty("value")
     @Column
-    public double value;
+    private double value;
 
     @JsonProperty("publicAccess")
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
+
+
 
     @JsonProperty("displayName")
     @Column
-    public String displayName;
+    private String displayName;
+
+    public double getValue() {
+        return value;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
 
 }

@@ -54,21 +54,21 @@ public class FailedItem extends BaseModel {
 
     @Column
     @PrimaryKey
-    public long itemId;
+    private long itemId;
 
     @Column
-    public String itemType;
+    private String itemType;
 
     @Column
-    public int httpStatusCode; // 401, 500 .. etc
+    private int httpStatusCode; // 401, 500 .. etc
 
     @Column
-    public String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
+    private String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "importSummary",
                     columnType = int.class, foreignColumnName = "id")})
-    public ImportSummary importSummary;
+    protected ImportSummary importSummary;
 
     /**
      * Returns the item for the given FailedItem. Can be cast to either of the model types
@@ -90,4 +90,39 @@ public class FailedItem extends BaseModel {
         return importSummary;
     }
 
+    public long getItemId() {
+        return itemId;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public void setImportSummary(ImportSummary importSummary) {
+        this.importSummary = importSummary;
+    }
 }

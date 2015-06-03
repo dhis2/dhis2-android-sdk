@@ -48,7 +48,7 @@ public class BaseValue extends BaseSerializableModel {
 
     @JsonProperty("value")
     @Column
-    public String value;
+    protected String value;
 
     public void setValue(String value) {
         this.value = value;

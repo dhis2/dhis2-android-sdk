@@ -46,15 +46,27 @@ public class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")
     @Column
-    public int version;
+    private int version;
 
     @JsonProperty("options")
-    public List<Option> options;
+    private List<Option> options;
 
     public List<Option> getOptions() {
         if(options == null) {
             options = MetaDataController.getOptions(id);
         }
         return options;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
     }
 }

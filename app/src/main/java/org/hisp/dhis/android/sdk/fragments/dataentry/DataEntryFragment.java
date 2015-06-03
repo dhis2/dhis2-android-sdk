@@ -174,7 +174,7 @@ public class DataEntryFragment extends Fragment
         Map<String, ProgramStageDataElement> dataElementMap = new HashMap<>();
         if (dataElements != null && !dataElements.isEmpty()) {
             for (ProgramStageDataElement dataElement : dataElements) {
-                dataElementMap.put(dataElement.dataElement, dataElement);
+                dataElementMap.put(dataElement.getDataElement().getId(), dataElement); //todo check if break!!
             }
         }
         return dataElementMap;
@@ -347,7 +347,7 @@ public class DataEntryFragment extends Fragment
             }
 
             if (data.getStage() != null &&
-                    data.getStage().captureCoordinates) {
+                    data.getStage().getCaptureCoordinates()) {
                 Dhis2.activateGps(getActivity().getBaseContext());
             }
 
@@ -482,13 +482,13 @@ public class DataEntryFragment extends Fragment
                 ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
                 boolean currentSelectedSectionRemoved = false;
                 for (ProgramRule programRule : rules) {
-                    boolean actionTrue = ProgramRuleService.evaluate(programRule.condition, mForm.getEvent());
+                    boolean actionTrue = ProgramRuleService.evaluate(programRule.getCondition(), mForm.getEvent());
                     if (actionTrue) {
                         for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
                             boolean applyActionResult = applyProgramRuleAction(programRuleAction, actionTrue);
-                            if (applyActionResult && programRuleAction.programRuleActionType.equals(ProgramRuleAction.TYPE_HIDEFIELD)) {
-                                affectedFieldsWithValue.add(programRuleAction.dataElement);
-                            } else if (applyActionResult && programRuleAction.programRuleActionType.equals(ProgramRuleAction.TYPE_HIDESECTION)) {
+                            if (applyActionResult && programRuleAction.getProgramRuleActionType().equals(ProgramRuleAction.TYPE_HIDEFIELD)) {
+                                affectedFieldsWithValue.add(programRuleAction.getDataElement());
+                            } else if (applyActionResult && programRuleAction.getProgramRuleActionType().equals(ProgramRuleAction.TYPE_HIDESECTION)) {
                                 currentSelectedSectionRemoved = true;
                             }
                         }
@@ -548,17 +548,17 @@ public class DataEntryFragment extends Fragment
     }
 
     public boolean applyProgramRuleAction(ProgramRuleAction programRuleAction, boolean actionTrue) {
-        switch (programRuleAction.programRuleActionType) {
+        switch (programRuleAction.getProgramRuleActionType()) {
             case ProgramRuleAction.TYPE_HIDEFIELD: {
                 if (actionTrue) {
-                    return hideField(programRuleAction.dataElement);
+                    return hideField(programRuleAction.getDataElement());
                 }
                 break;
             }
 
             case ProgramRuleAction.TYPE_HIDESECTION: {
                 if (actionTrue) {
-                    return hideSection(programRuleAction.programStageSection);
+                    return hideSection(programRuleAction.getProgramStageSection());
                 }
             }
         }
@@ -817,8 +817,8 @@ public class DataEntryFragment extends Fragment
         }
 
         if (isEmpty(event.getEventDate())) {
-            String reportDateDescription = programStage.reportDateDescription == null ?
-                    context.getString(R.string.report_date) : programStage.reportDateDescription;
+            String reportDateDescription = programStage.getReportDateDescription() == null ?
+                    context.getString(R.string.report_date) : programStage.getReportDateDescription();
             errors.add(reportDateDescription);
         }
 
@@ -827,9 +827,9 @@ public class DataEntryFragment extends Fragment
         );
 
         for (DataValue dataValue : event.getDataValues()) {
-            ProgramStageDataElement dataElement = dataElements.get(dataValue.dataElement);
-            if (dataElement.compulsory && isEmpty(dataValue.getValue())) {
-                errors.add(MetaDataController.getDataElement(dataElement.dataElement).getDisplayName());
+            ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
+            if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
+                errors.add(MetaDataController.getDataElement(dataElement.getDataElement().getId()).getDisplayName()); //todo check if break
             }
         }
 

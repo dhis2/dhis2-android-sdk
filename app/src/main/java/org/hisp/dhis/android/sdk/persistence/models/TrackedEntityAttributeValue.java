@@ -25,16 +25,16 @@ public class TrackedEntityAttributeValue extends BaseValue {
     @JsonProperty("attribute")
     @Column
     @PrimaryKey
-    public String trackedEntityAttributeId;
+    private String trackedEntityAttributeId;
 
     @JsonIgnore
     @Column
     @PrimaryKey
-    public String trackedEntityInstanceId;
+    private String trackedEntityInstanceId;
 
     @JsonIgnore
     @Column
-    public long localTrackedEntityInstanceId;
+    private long localTrackedEntityInstanceId;
 
     /**
      * workaround for sending code if attribute is option set.
@@ -44,13 +44,13 @@ public class TrackedEntityAttributeValue extends BaseValue {
     public String getValue() {
         TrackedEntityAttribute tea = MetaDataController.
                 getTrackedEntityAttribute(trackedEntityAttributeId);
-        if(tea.valueType.equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
+        if(tea.getValueType().equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
             Log.d(CLASS_TAG, "optionSet: " + tea.getOptionSet());
             if(optionSet == null) return "";
             for(Option o: optionSet.getOptions()) {
                 if(o.name.equals(value)) {
-                    return o.code;
+                    return o.getCode();
                 }
             }
         } else return value;
@@ -81,5 +81,29 @@ public class TrackedEntityAttributeValue extends BaseValue {
     @Override
     public void update() {
         save();
+    }
+
+    public String getTrackedEntityAttributeId() {
+        return trackedEntityAttributeId;
+    }
+
+    public String getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
+
+    public long getLocalTrackedEntityInstanceId() {
+        return localTrackedEntityInstanceId;
+    }
+
+    public void setTrackedEntityAttributeId(String trackedEntityAttributeId) {
+        this.trackedEntityAttributeId = trackedEntityAttributeId;
+    }
+
+    public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
+        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
+
+    public void setLocalTrackedEntityInstanceId(long localTrackedEntityInstanceId) {
+        this.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
     }
 }

@@ -57,58 +57,58 @@ public class TrackedEntityAttribute extends BaseNameableObject {
 
     @JsonProperty("unique")
     @Column
-    public boolean isUnique;
+    private boolean isUnique;
 
     @JsonProperty("programScope")
     @Column
-    public boolean programScope;
+    private boolean programScope;
 
     @JsonProperty("orgunitScope")
     @Column
-    public boolean orgunitScope;
+    private boolean orgunitScope;
 
     @JsonProperty("displayInListNoProgram")
     @Column
-    public boolean displayInListNoProgram;
+    private boolean displayInListNoProgram;
 
     @JsonProperty("displayOnVisitSchedule")
     @Column
-    public boolean displayOnVisitSchedule;
+    private boolean displayOnVisitSchedule;
 
     @JsonProperty("externalAccess")
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
 
     @JsonProperty("valueType")
     @Column
-    public String valueType;
+    private String valueType;
 
     @JsonProperty("confidential")
     @Column
-    public boolean confidential;
+    private boolean confidential;
 
     @JsonProperty("inherit")
     @Column
-    public boolean inherit;
+    private boolean inherit;
 
     @JsonProperty("sortOrderVisitSchedule")
     @Column
-    public int sortOrderVisitSchedule;
+    private int sortOrderVisitSchedule;
 
     @JsonProperty("dimension")
     @Column
-    public String dimension;
+    private String dimension;
 
     @JsonProperty("displayName")
     @Column
-    public String displayName;
+    private String displayName;
 
     @JsonProperty("sortOrderInListNoProgram")
     @Column
-    public int sortOrderInListNoProgram;
+    private int sortOrderInListNoProgram;
 
     @Column
-    public String optionSet;
+    protected String optionSet;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
@@ -119,4 +119,111 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         return optionSet;
     }
 
+    public boolean getIsUnique() {
+        return isUnique;
+    }
+
+    public boolean getProgramScope() {
+        return programScope;
+    }
+
+    public boolean getOrgunitScope() {
+        return orgunitScope;
+    }
+
+    public boolean getDisplayInListNoProgram() {
+        return displayInListNoProgram;
+    }
+
+    public boolean getDisplayOnVisitSchedule() {
+        return displayOnVisitSchedule;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public boolean getConfidential() {
+        return confidential;
+    }
+
+    public boolean getInherit() {
+        return inherit;
+    }
+
+    public int getSortOrderVisitSchedule() {
+        return sortOrderVisitSchedule;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public int getSortOrderInListNoProgram() {
+        return sortOrderInListNoProgram;
+    }
+
+    public void setOptionSet(String optionSet) {
+        this.optionSet = optionSet;
+    }
+
+    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
+        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setSortOrderVisitSchedule(int sortOrderVisitSchedule) {
+        this.sortOrderVisitSchedule = sortOrderVisitSchedule;
+    }
+
+    public void setInherit(boolean inherit) {
+        this.inherit = inherit;
+    }
+
+    public void setConfidential(boolean confidential) {
+        this.confidential = confidential;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public void setDisplayOnVisitSchedule(boolean displayOnVisitSchedule) {
+        this.displayOnVisitSchedule = displayOnVisitSchedule;
+    }
+
+    public void setDisplayInListNoProgram(boolean displayInListNoProgram) {
+        this.displayInListNoProgram = displayInListNoProgram;
+    }
+
+    public void setOrgunitScope(boolean orgunitScope) {
+        this.orgunitScope = orgunitScope;
+    }
+
+    public void setProgramScope(boolean programScope) {
+        this.programScope = programScope;
+    }
+
+    public void setIsUnique(boolean isUnique) {
+        this.isUnique = isUnique;
+    }
 }

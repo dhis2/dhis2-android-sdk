@@ -83,17 +83,17 @@ public class ProgramIndicatorService
         {
             value = MathUtils.getRounded( value, 2 );
 
-            if ( programIndicator.valueType.equals(ProgramIndicator.VALUE_TYPE_DATE) )
+            if ( programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE) )
             {
                 Date baseDate = new Date();
 
-                if ( ProgramIndicator.INCIDENT_DATE.equals( programIndicator.rootDate ) )
+                if ( ProgramIndicator.INCIDENT_DATE.equals( programIndicator.getRootDate()) )
                 {
-                    baseDate = DateUtils.getMediumDate(programInstance.dateOfIncident);
+                    baseDate = DateUtils.getMediumDate(programInstance.getDateOfIncident());
                 }
-                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.rootDate ) )
+                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.getRootDate()) )
                 {
-                    baseDate = DateUtils.getMediumDate(programInstance.dateOfEnrollment);
+                    baseDate = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
                 }
 
                 Date date = DateUtils.getDateAfterAddition( baseDate, value.intValue() );
@@ -122,15 +122,15 @@ public class ProgramIndicatorService
         {
             value = MathUtils.getRounded( value, 2 );
 
-            if ( programIndicator.valueType.equals(ProgramIndicator.VALUE_TYPE_DATE) )
+            if ( programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE) )
             {
                 Date baseDate = new Date();
 
-                if ( ProgramIndicator.INCIDENT_DATE.equals( programIndicator.rootDate ) )
+                if ( ProgramIndicator.INCIDENT_DATE.equals( programIndicator.getRootDate()) )
                 { //todo: ignoring in case of single event event without registration
                     //baseDate = DateUtils.getMediumDate(programInstance.dateOfIncident);
                 }
-                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.rootDate ) )
+                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.getRootDate() ) )
                 {
                     //baseDate = DateUtils.getMediumDate(programInstance.dateOfEnrollment);
                 }
@@ -163,7 +163,7 @@ public class ProgramIndicatorService
 
             if ( value != null )
             {
-                result.put( programIndicator.displayName,
+                result.put( programIndicator.getDisplayName(),
                         getProgramIndicatorValue( programInstance, programIndicator ) );
             }
         }
@@ -197,9 +197,9 @@ public class ProgramIndicatorService
 
                 if ( programStage != null && dataElement != null )
                 {
-                    String programStageName = programStage.displayName;
+                    String programStageName = programStage.getDisplayName();
 
-                    String dataelementName = dataElement.displayName;
+                    String dataelementName = dataElement.getDisplayName();
 
                     matcher.appendReplacement( description, programStageName + ProgramIndicator.SEPARATOR_ID + dataelementName );
                 }
@@ -211,7 +211,7 @@ public class ProgramIndicatorService
 
                 if ( attribute != null )
                 {
-                    matcher.appendReplacement( description, attribute.displayName );
+                    matcher.appendReplacement( description, attribute.getDisplayName());
                 }
             }
             else if ( ProgramIndicator.KEY_CONSTANT.equals( key ) )
@@ -220,7 +220,7 @@ public class ProgramIndicatorService
 
                 if ( constant != null )
                 {
-                    matcher.appendReplacement( description, constant.displayName );
+                    matcher.appendReplacement( description, constant.getDisplayName());
                 }
             }
             else if ( ProgramIndicator.KEY_PROGRAM_VARIABLE.equals( key ) )
@@ -303,7 +303,7 @@ public class ProgramIndicatorService
 
                 if ( constant != null )
                 {
-                    matcher.appendReplacement( description, String.valueOf( constant.value ) );
+                    matcher.appendReplacement( description, String.valueOf( constant.getValue()) );
                 }
                 else
                 {
@@ -341,7 +341,7 @@ public class ProgramIndicatorService
     {
         Set<ProgramStageDataElement> elements = new HashSet<>();
 
-        Matcher matcher = ProgramIndicator.DATAELEMENT_PATTERN.matcher( indicator.expression );
+        Matcher matcher = ProgramIndicator.DATAELEMENT_PATTERN.matcher( indicator.getExpression() );
 
         while ( matcher.find() )
         {
@@ -353,7 +353,7 @@ public class ProgramIndicatorService
 
             if ( programStage != null && dataElement != null )
             {
-                elements.add( programStage.getProgramStageDataElement( dataElement.id ) );
+                elements.add( programStage.getProgramStageDataElement( dataElement.getId()) );
             }
         }
 
@@ -371,7 +371,7 @@ public class ProgramIndicatorService
     {
         Set<TrackedEntityAttribute> attributes = new HashSet<>();
 
-        Matcher matcher = ProgramIndicator.ATTRIBUTE_PATTERN.matcher( indicator.expression );
+        Matcher matcher = ProgramIndicator.ATTRIBUTE_PATTERN.matcher( indicator.getExpression() );
 
         while ( matcher.find() )
         {
@@ -403,7 +403,7 @@ public class ProgramIndicatorService
     {
         StringBuffer buffer = new StringBuffer();
 
-        String expression = indicator.expression;
+        String expression = indicator.getExpression();
 
         Matcher matcher = ProgramIndicator.EXPRESSION_PATTERN.matcher( expression );
 
@@ -427,23 +427,23 @@ public class ProgramIndicatorService
                     if(programInstance == null) { //in case single event without reg
                         programStageInstance = event;
                     } else {
-                        programStageInstance = DataValueController.getEvent(programInstance.localId, programStage.id );
+                        programStageInstance = DataValueController.getEvent(programInstance.getLocalId(), programStage.getId());
                     }
 
                     DataValue dataValue = null;
-                    if(programStageInstance.dataValues == null) {
+                    if(programStageInstance.getDataValues()== null) {
                         continue;
                     }
-                    for(DataValue value: programStageInstance.dataValues) {
-                        if(value.dataElement.equals(dataElement.id)) dataValue = value;
+                    for(DataValue value: programStageInstance.getDataValues() ) {
+                        if(value.getDataElement().equals(dataElement.getId())) dataValue = value;
                     }
 
                     String value;
-                    if ( dataValue == null || dataValue.value == null || dataValue.value.isEmpty()) {
+                    if ( dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
                         value = ZERO;
                     }
                     else {
-                        value = dataValue.value;
+                        value = dataValue.getValue();
 
                         valueCount++;
                         zeroPosValueCount = isZeroOrPositive( value ) ? ( zeroPosValueCount + 1 ) : zeroPosValueCount;
@@ -465,18 +465,18 @@ public class ProgramIndicatorService
 
                     if (attribute != null) {
                         TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
-                                attribute.id, programInstance.trackedEntityInstance);
+                                attribute.getId(), programInstance.getTrackedEntityInstance());
                         String value;
-                        if (attributeValue == null || attributeValue.value == null || attributeValue.value.isEmpty()) {
+                        if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;
                         } else {
-                            value = attributeValue.value;
+                            value = attributeValue.getValue();
 
                             valueCount++;
                             zeroPosValueCount = isZeroOrPositive( value ) ? ( zeroPosValueCount + 1 ) : zeroPosValueCount;
                         }
 
-                        if (attribute.valueType.equals(TrackedEntityAttribute.TYPE_DATE)) {
+                        if (attribute.getValueType().equals(TrackedEntityAttribute.TYPE_DATE)) {
                             value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                         }
                         matcher.appendReplacement(buffer, value);
@@ -491,7 +491,7 @@ public class ProgramIndicatorService
 
                 if ( constant != null )
                 {
-                    matcher.appendReplacement( buffer, String.valueOf( constant.value ) );
+                    matcher.appendReplacement( buffer, String.valueOf( constant.getValue()) );
                 }
                 else
                 {
@@ -505,9 +505,9 @@ public class ProgramIndicatorService
                     Date date = null;
 
                     if (uid.equals(ProgramIndicator.ENROLLMENT_DATE)) {
-                        date = DateUtils.getMediumDate(programInstance.dateOfEnrollment);
+                        date = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
                     } else if (uid.equals(ProgramIndicator.INCIDENT_DATE)) {
-                        date = DateUtils.getMediumDate(programInstance.dateOfIncident);
+                        date = DateUtils.getMediumDate(programInstance.getDateOfIncident());
                     } else if (uid.equals(ProgramIndicator.CURRENT_DATE)) {
                         date = currentDate;
                     }

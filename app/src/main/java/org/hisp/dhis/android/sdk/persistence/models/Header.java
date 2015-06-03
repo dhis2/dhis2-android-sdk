@@ -13,18 +13,66 @@ public class Header {
     public void handleUnknown(String key, Object value) {}
 
     @JsonProperty("name")
-    public String name;
+    private String name;
 
     @JsonProperty("column")
-    public String column;
+    private String column;
 
     @JsonProperty("type")
-    public String type;
+    private String type;
 
     @JsonProperty("hidden")
-    public boolean hidden;
+    private boolean hidden;
 
     @JsonProperty("meta")
-    public boolean meta;
+    private boolean meta;
 
+
+    public boolean getMeta() {
+        return meta;
+    }
+
+    public boolean getHidden() {
+        return hidden;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getColumn() {
+        return column;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isMeta() {
+        return meta;
+    }
+
+    public void setMeta(boolean meta) {
+        this.meta = meta;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setColumn(String column) {
+        this.column = column;
+    }
 }

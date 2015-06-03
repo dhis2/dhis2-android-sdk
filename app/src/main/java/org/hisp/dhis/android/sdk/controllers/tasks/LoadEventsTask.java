@@ -71,8 +71,8 @@ public class LoadEventsTask implements INetworkTask {
                 organisationUnitId+"&program="+programId;
         if(synchronizing) {
             SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
-            if( systemInfo != null && systemInfo.serverDate != null ) {
-                url += "&lastUpdated="+systemInfo.serverDate;
+            if( systemInfo != null && systemInfo.getServerDate() != null ) {
+                url += "&lastUpdated="+systemInfo.getServerDate();
             }
         }
 

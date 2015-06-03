@@ -86,7 +86,7 @@ public class LoadProgramTask implements INetworkTask {
         if( updating ) {
             Program result = new Select().from(Program.class).where(Condition.column(Program$Table.ID).is(programId)).querySingle();
             if( result != null ) {
-                int version = result.version;
+                int version = result.getVersion();
                 url += "&filter=version:gt:" + version;
             }
         }

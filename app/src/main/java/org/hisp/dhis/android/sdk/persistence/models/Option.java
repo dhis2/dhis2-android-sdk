@@ -42,16 +42,18 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 @Table(databaseName = Dhis2Database.NAME)
 public class Option extends BaseIdentifiableObject {
 
+
+
     @JsonIgnore
     @Column
-    public int sortIndex;
+    private int sortIndex;
 
     @Column
-    public String optionSet;
+    private String optionSet;
 
     @JsonProperty("code")
     @Column
-    public String code;
+    private String code;
 
     public String getCode() {
         return code;
@@ -67,5 +69,13 @@ public class Option extends BaseIdentifiableObject {
 
     public int getSortIndex() {
         return sortIndex;
+    }
+
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

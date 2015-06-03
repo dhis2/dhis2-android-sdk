@@ -46,19 +46,19 @@ public class BaseIdentifiableObject extends BaseModel{
     @JsonProperty("id")
     @Column
     @PrimaryKey
-    public String id;
+    protected String id;
 
     @JsonProperty("name")
     @Column
-    public String name;
+    protected String name;
 
     @JsonProperty("created")
     @Column
-    public String created;
+    protected String created;
 
     @JsonProperty("lastUpdated")
     @Column
-    public String lastUpdated;
+    protected String lastUpdated;
 
     public String getId() {
         return id;

@@ -47,46 +47,46 @@ public class DataElement extends BaseNameableObject {
 
     @JsonProperty("type")
     @Column
-    public String type;
+    private String type;
 
     @JsonProperty("zeroIsSignificant")
     @Column
-    public boolean zeroIsSignificant;
+    private boolean zeroIsSignificant;
 
     @JsonProperty("externalAccess")
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
 
     @JsonProperty("aggregationOperator")
     @Column
-    public String aggregationOperator;
+    private String aggregationOperator;
 
     @JsonProperty("formName")
     @Column
-    public String formName;
+    private String formName;
 
     @JsonProperty("numberType")
     @Column
-    public String numberType;
+    private String numberType;
 
     @JsonProperty("domainType")
     @Column
-    public String domainType;
+    private String domainType;
 
     @JsonProperty("dimension")
     @Column
-    public String dimension;
+    private String dimension;
 
     @JsonProperty("displayName")
     @Column
-    public String displayName;
+    private String displayName;
 
     @JsonProperty("displayFormName")
     @Column
-    public String displayFormName;
+    private String displayFormName;
 
     @Column
-    public String optionSet;
+    protected String optionSet;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
@@ -115,6 +115,74 @@ public class DataElement extends BaseNameableObject {
 
     public void setOptionSet(String optionSet) {
         this.optionSet = optionSet;
+    }
+
+    public boolean getZeroIsSignificant() {
+        return zeroIsSignificant;
+    }
+
+    public void setZeroIsSignificant(boolean zeroIsSignificant) {
+        this.zeroIsSignificant = zeroIsSignificant;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public String getAggregationOperator() {
+        return aggregationOperator;
+    }
+
+    public void setAggregationOperator(String aggregationOperator) {
+        this.aggregationOperator = aggregationOperator;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public String getNumberType() {
+        return numberType;
+    }
+
+    public void setNumberType(String numberType) {
+        this.numberType = numberType;
+    }
+
+    public String getDomainType() {
+        return domainType;
+    }
+
+    public void setDomainType(String domainType) {
+        this.domainType = domainType;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayFormName() {
+        return displayFormName;
+    }
+
+    public void setDisplayFormName(String displayFormName) {
+        this.displayFormName = displayFormName;
     }
 
     /**

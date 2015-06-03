@@ -16,16 +16,16 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
 
     @JsonProperty("programRuleVariableSourceType")
     @Column
-    public String sourceType;
+    private String sourceType;
 
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
 
     @Column
-    public String displayName;
+    private String displayName;
 
     @Column
-    public String program;
+    protected String program;
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
@@ -33,11 +33,50 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
     }
 
     @Column
-    public String dataElement;
+    protected String dataElement;
 
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
     }
 
+    public String getDataElement() {
+        return dataElement;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
+    public void setDataElement(String dataElement) {
+        this.dataElement = dataElement;
+    }
 }

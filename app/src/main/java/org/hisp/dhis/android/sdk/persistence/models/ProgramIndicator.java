@@ -74,38 +74,38 @@ public class ProgramIndicator extends BaseNameableObject {
 
     @JsonProperty("code")
     @Column
-    public String code;
+    private String code;
 
     @JsonProperty("expression")
     @Column
-    public String expression;
+    private String expression;
 
     @JsonProperty("displayDescription")
     @Column
-    public String displayDescription;
+    private String displayDescription;
 
     @JsonProperty("rootDate")
     @Column
-    public String rootDate;
+    private String rootDate;
 
     @JsonProperty("externalAccess")
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
 
     @JsonProperty("valueType")
     @Column
-    public String valueType;
+    private String valueType;
 
     @JsonProperty("displayName")
     @Column
-    public String displayName;
+    private String displayName;
 
     @JsonProperty("displayShortName")
     @Column
-    public String displayShortName;
+    private String displayShortName;
 
     @Column
-    public String program;
+    protected String program;
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
@@ -116,12 +116,104 @@ public class ProgramIndicator extends BaseNameableObject {
      * Can be null if not assigned to a programStage
      */
     @Column
-    public String programStage;
+    private String programStage;
 
     /**
      * Can be null if not assigned to a specific section
      */
     @Column
-    public String section;
+    private String section;
 
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public String getDisplayDescription() {
+        return displayDescription;
+    }
+
+    public String getRootDate() {
+        return rootDate;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getDisplayShortName() {
+        return displayShortName;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public String getSection() {
+        return section;
+    }
+
+    public String getProgramStage() {
+        return programStage;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
+    public void setDisplayShortName(String displayShortName) {
+        this.displayShortName = displayShortName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public boolean isExternalAccess() {
+        return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public void setRootDate(String rootDate) {
+        this.rootDate = rootDate;
+    }
+
+    public void setDisplayDescription(String displayDescription) {
+        this.displayDescription = displayDescription;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

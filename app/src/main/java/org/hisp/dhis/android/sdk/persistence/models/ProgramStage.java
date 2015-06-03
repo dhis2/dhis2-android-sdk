@@ -51,83 +51,83 @@ public class ProgramStage extends BaseIdentifiableObject {
     }
 
     @Column
-    public String program;
+    protected String program;
 
     @JsonProperty("dataEntryType")
     @Column
-    public String dataEntryType;
+    private String dataEntryType;
 
     @JsonProperty("blockEntryForm")
     @Column
-    public boolean blockEntryForm;
+    private boolean blockEntryForm;
 
     @JsonProperty("reportDateDescription")
     @Column
-    public String reportDateDescription;
+    private String reportDateDescription;
 
     @JsonProperty("displayGenerateEventBox")
     @Column
-    public boolean displayGenerateEventBox;
+    private boolean displayGenerateEventBox;
 
     @JsonProperty("description")
     @Column
-    public String description;
+    private String description;
 
     @JsonProperty("externalAccess")
     @Column
-    public boolean externalAccess;
+    private boolean externalAccess;
 
     @JsonProperty("openAfterEnrollment")
     @Column
-    public boolean openAfterEnrollment;
+    private boolean openAfterEnrollment;
 
     @JsonProperty("captureCoordinates")
     @Column
-    public boolean captureCoordinates;
+    private boolean captureCoordinates;
 
     @JsonProperty("defaultTemplateMessage")
     @Column
-    public String defaultTemplateMessage;
+    private String defaultTemplateMessage;
 
     @JsonProperty("remindCompleted")
     @Column
-    public boolean remindCompleted;
+    private boolean remindCompleted;
 
     @JsonProperty("validCompleteOnly")
     @Column
-    public boolean validCompleteOnly;
+    private boolean validCompleteOnly;
 
     @JsonProperty("sortOrder")
     @Column
-    public int sortOrder;
+    private int sortOrder;
 
     @JsonProperty("generatedByEnrollmentDate")
     @Column
-    public boolean generatedByEnrollmentDate;
+    private boolean generatedByEnrollmentDate;
 
     @JsonProperty("preGenerateUID")
     @Column
-    public boolean preGenerateUID;
+    private boolean preGenerateUID;
 
     @JsonProperty("autoGenerateEvent")
     @Column
-    public boolean autoGenerateEvent;
+    private boolean autoGenerateEvent;
 
     @JsonProperty("allowGenerateNextVisit")
     @Column
-    public boolean allowGenerateNextVisit;
+    private boolean allowGenerateNextVisit;
 
     @JsonProperty("repeatable")
     @Column
-    public boolean repeatable;
+    private boolean repeatable;
 
     @JsonProperty("minDaysFromStart")
     @Column
-    public int minDaysFromStart;
+    private int minDaysFromStart;
 
     @JsonProperty("displayName")
     @Column
-    public String displayName;
+    private String displayName;
 
     @JsonProperty("programStageDataElements")
     private List<ProgramStageDataElement> programStageDataElements;
@@ -151,7 +151,7 @@ public class ProgramStage extends BaseIdentifiableObject {
     public ProgramStageDataElement getProgramStageDataElement(String dataElementId) {
         if(getProgramStageDataElements()==null) return null;
         for( ProgramStageDataElement programStageDataElement: getProgramStageDataElements() ) {
-            if(programStageDataElement.dataElement.equals(dataElementId)) return programStageDataElement;
+            if(programStageDataElement.getDataElement().equals(dataElementId)) return programStageDataElement;
         } return null;
     }
 
@@ -170,5 +170,169 @@ public class ProgramStage extends BaseIdentifiableObject {
 
     public void setProgram(String program) {
         this.program = program;
+    }
+
+    public String getDataEntryType() {
+        return dataEntryType;
+    }
+
+    public boolean getBlockEntryForm() {
+        return blockEntryForm;
+    }
+
+    public String getReportDateDescription() {
+        return reportDateDescription;
+    }
+
+    public boolean getDisplayGenerateEventBox() {
+        return displayGenerateEventBox;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public boolean getOpenAfterEnrollment() {
+        return openAfterEnrollment;
+    }
+
+    public String getDefaultTemplateMessage() {
+        return defaultTemplateMessage;
+    }
+
+    public boolean getCaptureCoordinates() {
+        return captureCoordinates;
+    }
+
+    public boolean getRemindCompleted() {
+        return remindCompleted;
+    }
+
+    public boolean getValidCompleteOnly() {
+        return validCompleteOnly;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public boolean getGeneratedByEnrollmentDate() {
+        return generatedByEnrollmentDate;
+    }
+
+    public boolean getPreGenerateUID() {
+        return preGenerateUID;
+    }
+
+    public boolean getAutoGenerateEvent() {
+        return autoGenerateEvent;
+    }
+
+    public boolean getAllowGenerateNextVisit() {
+        return allowGenerateNextVisit;
+    }
+
+    public boolean getRepeatable() {
+        return repeatable;
+    }
+
+    public int getMinDaysFromStart() {
+        return minDaysFromStart;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDataEntryType(String dataEntryType) {
+        this.dataEntryType = dataEntryType;
+    }
+
+    public void setBlockEntryForm(boolean blockEntryForm) {
+        this.blockEntryForm = blockEntryForm;
+    }
+
+    public void setReportDateDescription(String reportDateDescription) {
+        this.reportDateDescription = reportDateDescription;
+    }
+
+    public void setDisplayGenerateEventBox(boolean displayGenerateEventBox) {
+        this.displayGenerateEventBox = displayGenerateEventBox;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public void setCaptureCoordinates(boolean captureCoordinates) {
+        this.captureCoordinates = captureCoordinates;
+    }
+
+    public void setOpenAfterEnrollment(boolean openAfterEnrollment) {
+        this.openAfterEnrollment = openAfterEnrollment;
+    }
+
+    public void setDefaultTemplateMessage(String defaultTemplateMessage) {
+        this.defaultTemplateMessage = defaultTemplateMessage;
+    }
+
+    public void setRemindCompleted(boolean remindCompleted) {
+        this.remindCompleted = remindCompleted;
+    }
+
+    public void setValidCompleteOnly(boolean validCompleteOnly) {
+        this.validCompleteOnly = validCompleteOnly;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public void setGeneratedByEnrollmentDate(boolean generatedByEnrollmentDate) {
+        this.generatedByEnrollmentDate = generatedByEnrollmentDate;
+    }
+
+    public void setPreGenerateUID(boolean preGenerateUID) {
+        this.preGenerateUID = preGenerateUID;
+    }
+
+    public void setAutoGenerateEvent(boolean autoGenerateEvent) {
+        this.autoGenerateEvent = autoGenerateEvent;
+    }
+
+    public void setAllowGenerateNextVisit(boolean allowGenerateNextVisit) {
+        this.allowGenerateNextVisit = allowGenerateNextVisit;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
+    }
+
+    public void setMinDaysFromStart(int minDaysFromStart) {
+        this.minDaysFromStart = minDaysFromStart;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+        this.programStageDataElements = programStageDataElements;
+    }
+
+    public void setProgramStageSections(List<ProgramStageSection> programStageSections) {
+        this.programStageSections = programStageSections;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
     }
 }

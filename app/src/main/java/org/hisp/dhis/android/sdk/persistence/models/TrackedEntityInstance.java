@@ -38,17 +38,17 @@ public class TrackedEntityInstance extends BaseSerializableModel {
 
     @JsonIgnore
     @Column
-    public boolean fromServer = true;
+    private boolean fromServer = true;
 
     @JsonIgnore
     @Column
     @PrimaryKey(autoincrement = true)
-    public long localId = -1;
+    protected long localId = -1;
 
     @JsonIgnore
     @Column
     @Unique
-    public String trackedEntityInstance;
+    protected String trackedEntityInstance;
 
     @JsonProperty("trackedEntityInstance")
     public void setTrackedEntityInstance(String trackedEntityInstance) {
@@ -68,21 +68,21 @@ public class TrackedEntityInstance extends BaseSerializableModel {
 
     @JsonProperty("trackedEntity")
     @Column
-    public String trackedEntity;
+    private String trackedEntity;
 
     //@JsonProperty("created")
     @JsonIgnore
     @Column
-    public String created;
+    private String created;
 
     //@JsonProperty("lastUpdated")
     @JsonIgnore
     @Column
-    public String lastUpdated;
+    private String lastUpdated;
 
     @JsonProperty("orgUnit")
     @Column
-    public String orgUnit;
+    private String orgUnit;
 
     @JsonProperty("attributes")
 //    @JsonIgnore
@@ -127,4 +127,51 @@ public class TrackedEntityInstance extends BaseSerializableModel {
         save();
     }
 
+    public boolean getFromServer() {
+        return fromServer;
+    }
+
+    public long getLocalId() {
+        return localId;
+    }
+
+    public String getTrackedEntity() {
+        return trackedEntity;
+    }
+
+    public String getCreated() {
+        return created;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public String getOrgUnit() {
+        return orgUnit;
+    }
+
+    public void setFromServer(boolean fromServer) {
+        this.fromServer = fromServer;
+    }
+
+    public void setLocalId(long localId) {
+        this.localId = localId;
+    }
+
+    public void setTrackedEntity(String trackedEntity) {
+        this.trackedEntity = trackedEntity;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public void setOrgUnit(String orgUnit) {
+        this.orgUnit = orgUnit;
+    }
 }

@@ -222,7 +222,7 @@ public class MetaDataLoader {
     }
 
     private void updateItem() {
-        String currentLoadingDate = systemInfo.serverDate;
+        String currentLoadingDate = systemInfo.getServerDate();
         if(currentLoadingDate == null) {
             return;
         }
@@ -465,7 +465,7 @@ public class MetaDataLoader {
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.updateProgram);
         Program program = new Program();
-        program.id = id;
+        program.setId(id);
         holder.setItem(program); //passing a reference in case there is no reference from server
         event.setResponseHolder(holder);
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
@@ -475,7 +475,7 @@ public class MetaDataLoader {
                         holder.setResponse(response);
                         try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);
-                            if(program.id != null)
+                            if(program.getId() != null)
                                 holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -952,7 +952,7 @@ public class MetaDataLoader {
             if (event.eventType == BaseEvent.EventType.loadSystemInfo) {
                 systemInfo = (SystemInfo) event.getResponseHolder().getItem();
 
-                Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
+                Log.d(CLASS_TAG, "got system info " + systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
                 List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
@@ -969,11 +969,11 @@ public class MetaDataLoader {
                     Delete.tables(OrganisationUnitProgramRelationship.class, OrganisationUnit.class);
                 }
                 for(OrganisationUnit ou: organisationUnits) {
-                    for(String programId : ou.programs) {
+                    for(String programId : ou.getPrograms()) {
                         OrganisationUnitProgramRelationship orgUnitProgram =
                                 new OrganisationUnitProgramRelationship();
-                        orgUnitProgram.organisationUnitId = ou.getId();
-                        orgUnitProgram.programId = programId;
+                        orgUnitProgram.setOrganisationUnitId(ou.getId());
+                        orgUnitProgram.setProgramId(programId);
                         orgUnitProgram.async().save();
                         if(!assignedPrograms.contains(programId))
                             assignedPrograms.add(programId);
@@ -982,7 +982,7 @@ public class MetaDataLoader {
                 }
 
                 flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, true);
-                flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, systemInfo.serverDate);
+                flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
@@ -1008,14 +1008,14 @@ public class MetaDataLoader {
                         for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
                             programStageSection.async().save();
                             for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
-                                programStageDataElement.programStageSection = programStageSection.id;
+                                programStageDataElement.setProgramStageSection(programStageSection.getId());
                                 programStageDataElement.async().save();
                                 //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
                             }
                             for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                programIndicator.programStage = programStage.id;
-                                programIndicator.section = programStageSection.id;
+                                programIndicator.setProgramStage(programStage.getId());
+                                programIndicator.setSection(programStageSection.getId());
                                 programIndicator.async().save();
                             }
                         }
@@ -1025,18 +1025,18 @@ public class MetaDataLoader {
                             programStageDataElement.async().save();
                         }
                         for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                            programIndicator.programStage = programStage.id;
+                            programIndicator.setProgramStage(programStage.getId());
                             programIndicator.async().save();
                         }
                     }
                 }
 
-                flagMetaDataItemLoaded(program.id, true);
+                flagMetaDataItemLoaded(program.getId(), true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
                 boolean noProgram = false;
-                if( program.created == null ) noProgram = true;
+                if( program.getCreated() == null ) noProgram = true;
 
                 if(noProgram) {/*Means the program didn't need to be updated so we just do nothing*/}
                 else {
@@ -1105,14 +1105,14 @@ public class MetaDataLoader {
                             for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
                                 programStageSection.async().save();
                                 for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
-                                    programStageDataElement.programStageSection = programStageSection.id;
+                                    programStageDataElement.setProgramStageSection(programStageSection.getId());
                                     programStageDataElement.async().save();
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
                                 }
                                 for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                    programIndicator.programStage = programStage.id;
-                                    programIndicator.section = programStageSection.id;
+                                    programIndicator.setProgramStage(programStage.getId());
+                                    programIndicator.setSection(programStageSection.getId());
                                     programIndicator.async().save();
                                 }
                             }
@@ -1122,22 +1122,22 @@ public class MetaDataLoader {
                                 programStageDataElement.async().save();
                             }
                             for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                                programIndicator.programStage = programStage.id;
+                                programIndicator.setProgramStage(programStage.getId());
                                 programIndicator.async().save();
                             }
                         }
                     }
                 }
 
-                flagMetaDataItemUpdated(program.id, systemInfo.serverDate);
+                flagMetaDataItemUpdated(program.getId(), systemInfo.getServerDate());
                 loadItem();
             } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(OptionSet os: optionSets ) {
                     int index = 0;
-                    for( Option o: os.options ) {
-                        o.sortIndex = index;
+                    for( Option o: os.getOptions()) {
+                        o.setSortIndex(index);
                         o.setOptionSet( os.getId() );
                         o.async().save();
                         index ++;
@@ -1147,7 +1147,7 @@ public class MetaDataLoader {
                 flagMetaDataItemLoaded(OPTION_SETS, true);
                 loadItem();
             } else if( event.eventType == BaseEvent.EventType.onUpdateOptionSets ) {
-                flagMetaDataItemUpdated(OPTION_SETS, systemInfo.serverDate);
+                flagMetaDataItemUpdated(OPTION_SETS, systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
@@ -1158,7 +1158,7 @@ public class MetaDataLoader {
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {
-                flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, systemInfo.serverDate);
+                flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
@@ -1173,7 +1173,7 @@ public class MetaDataLoader {
                 for(Constant constant: constants) {
                     constant.async().save();
                 }
-                flagMetaDataItemUpdated(CONSTANTS, systemInfo.serverDate);
+                flagMetaDataItemUpdated(CONSTANTS, systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
                 List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
@@ -1184,7 +1184,7 @@ public class MetaDataLoader {
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULES, true);
                 } else {
-                    flagMetaDataItemUpdated(PROGRAMRULES, systemInfo.serverDate);
+                    flagMetaDataItemUpdated(PROGRAMRULES, systemInfo.getServerDate());
                 }
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables ) {
@@ -1196,7 +1196,7 @@ public class MetaDataLoader {
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEVARIABLES, true);
                 } else {
-                    flagMetaDataItemUpdated(PROGRAMRULEVARIABLES, systemInfo.serverDate);
+                    flagMetaDataItemUpdated(PROGRAMRULEVARIABLES, systemInfo.getServerDate());
                 }
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions ) {
@@ -1208,7 +1208,7 @@ public class MetaDataLoader {
                 if(!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEACTIONS, true);
                 } else {
-                    flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.serverDate);
+                    flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.getServerDate());
                 }
                 loadItem();
             } else {

@@ -40,16 +40,16 @@ public class ProgramRule extends BaseIdentifiableObject {
     public static final Pattern DATAELEMENT_PATTERN = Pattern.compile( KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}" );
 
     @Column
-    public String condition;
+    private String condition;
 
     @Column
-    public boolean externalAction;
+    private boolean externalAction;
 
     @Column
-    public String displayName;
+    private String displayName;
 
     @Column
-    public String programStage;
+    protected String programStage;
 
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
@@ -57,7 +57,7 @@ public class ProgramRule extends BaseIdentifiableObject {
     }
 
     @Column
-    public String program;
+    protected String program;
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
@@ -65,10 +65,54 @@ public class ProgramRule extends BaseIdentifiableObject {
     }
 
     @JsonIgnore
-    List<ProgramRuleAction> programRuleActions;
+    private List<ProgramRuleAction> programRuleActions;
 
     public List<ProgramRuleAction> getProgramRuleActions() {
         return new Select().from(ProgramRuleAction.class).where
                 (Condition.column(ProgramRuleAction$Table.PROGRAMRULE).is(id)).queryList();
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public String getProgramStage() {
+        return programStage;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public boolean getExternalAction() {
+        return externalAction;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setExternalAction(boolean externalAction) {
+        this.externalAction = externalAction;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
+    public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
+        this.programRuleActions = programRuleActions;
     }
 }

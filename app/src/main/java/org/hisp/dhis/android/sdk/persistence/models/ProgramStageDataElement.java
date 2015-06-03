@@ -56,26 +56,26 @@ public class ProgramStageDataElement extends BaseModel {
 
     @JsonProperty("allowFutureDate")
     @Column
-    public boolean allowFutureDate;
+    private boolean allowFutureDate;
 
     @JsonProperty("sortOrder")
     @Column
-    public int sortOrder;
+    private int sortOrder;
 
     @JsonProperty("displayInReports")
     @Column
-    public boolean displayInReports;
+    private boolean displayInReports;
 
     @JsonProperty("allowProvidedElsewhere")
     @Column
-    public boolean allowProvidedElsewhere;
+    private boolean allowProvidedElsewhere;
 
     @JsonProperty("compulsory")
     @Column
-    public boolean compulsory;
+    private boolean compulsory;
 
     @Column
-    public String programStageSection;
+    private String programStageSection;
 
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
@@ -84,7 +84,7 @@ public class ProgramStageDataElement extends BaseModel {
 
     @Column
     @PrimaryKey
-    public String programStage;
+    protected String programStage;
 
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
@@ -94,9 +94,9 @@ public class ProgramStageDataElement extends BaseModel {
 
     @Column
     @PrimaryKey
-    public String dataElement;
+    protected String dataElement;
 
-    public boolean isAllowFutureDate() {
+    public boolean getAllowFutureDate() {
         return allowFutureDate;
     }
 
@@ -120,7 +120,7 @@ public class ProgramStageDataElement extends BaseModel {
         this.allowProvidedElsewhere = allowProvidedElsewhere;
     }
 
-    public boolean isCompulsory() {
+    public boolean getCompulsory() {
         return compulsory;
     }
 
@@ -142,5 +142,30 @@ public class ProgramStageDataElement extends BaseModel {
 
     public void setDataElement(String dataElement) {
         this.dataElement = dataElement;
+    }
+
+    public String getProgramStageSection() {
+        return programStageSection;
+    }
+
+    public boolean getDisplayInReports() {
+        return displayInReports;
+    }
+
+    public boolean isAllowProvidedElsewhere() {
+        return allowProvidedElsewhere;
+    }
+
+    public void setProgramStageSection(String programStageSection) {
+        this.programStageSection = programStageSection;
+    }
+
+    public void setDisplayInReports(boolean displayInReports) {
+        this.displayInReports = displayInReports;
+    }
+
+    public String getDataelement()
+    {
+        return dataElement;
     }
 }

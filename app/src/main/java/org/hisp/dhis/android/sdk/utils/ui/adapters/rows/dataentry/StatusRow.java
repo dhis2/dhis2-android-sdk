@@ -153,7 +153,7 @@ public final class StatusRow implements DataEntryRow {
         }
 
         public static void updateViews(Event event, Button button, Context context) {
-            if(event.status.equals(Event.STATUS_COMPLETED)) {
+            if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 if(context != null) {
                     button.setText(context.getString(R.string.incomplete));
                 }
@@ -180,9 +180,9 @@ public final class StatusRow implements DataEntryRow {
         @Override
         public void onClick(View v) {
             if(activity==null) return;
-            String label = event.status.equals(Event.STATUS_COMPLETED) ?
+            String label = event.getStatus().equals(Event.STATUS_COMPLETED) ?
                     activity.getString(R.string.incomplete) : activity.getString(R.string.complete);
-            String action = event.status.equals(Event.STATUS_COMPLETED) ?
+            String action = event.getStatus().equals(Event.STATUS_COMPLETED) ?
                     activity.getString(R.string.incomplete_confirm) : activity.getString(R.string.complete_confirm);
             Dhis2.showConfirmDialog(activity, label, action, label, activity.getString(R.string.cancel), this);
         }
@@ -193,10 +193,10 @@ public final class StatusRow implements DataEntryRow {
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if(event.status.equals(Event.STATUS_COMPLETED)) {
-                event.status = Event.STATUS_ACTIVE;
+            if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
+                event.setStatus(Event.STATUS_ACTIVE);
             } else {
-                event.status = Event.STATUS_COMPLETED;
+                event.setStatus(Event.STATUS_COMPLETED);
             }
             StatusViewHolder.updateViews(event, complete, context);
         }

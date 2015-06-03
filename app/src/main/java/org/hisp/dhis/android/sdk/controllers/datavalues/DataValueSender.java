@@ -125,7 +125,7 @@ public class DataValueSender {
         localEvents = new Select().from(Event.class).where(Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
         for(int i = 0; i<localEvents.size(); i++) {/* temporary workaround for not trying to upload events with local enrollment reference*/
             Event event = localEvents.get(i);
-            if(event.getEnrollment() == null && event.enrollment != null) {
+            if(event.getEnrollment() == null && event.getEnrollment() != null) {
                 localEvents.remove(i);
                 i--;
             }
@@ -138,7 +138,7 @@ public class DataValueSender {
     }
 
     private void sendEvent(Event event) {
-        Log.d(CLASS_TAG, "sending event: "+ event.event);
+        Log.d(CLASS_TAG, "sending event: "+ event.getEvent());
         final ResponseHolder<ResponseBody> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ResponseBody> responseEvent = new
                 DataValueResponseEvent<ResponseBody>(ResponseEvent.EventType.sendEvent);
@@ -190,7 +190,7 @@ public class DataValueSender {
     }
 
     private void sendEnrollment(Enrollment enrollment) {
-        Log.d(CLASS_TAG, "sending enrollment: "+ enrollment.enrollment);
+        Log.d(CLASS_TAG, "sending enrollment: "+ enrollment.getEnrollment());
         final ResponseHolder<ImportSummary> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ImportSummary> responseEvent = new
                 DataValueResponseEvent<ImportSummary>(ResponseEvent.EventType.sendEnrollment);
@@ -234,7 +234,7 @@ public class DataValueSender {
     }
 
     private void sendTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
-        Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.trackedEntityInstance);
+        Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.getTrackedEntityInstance());
         final ResponseHolder<ImportSummary> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ImportSummary> responseEvent = new
                 DataValueResponseEvent<ImportSummary>(ResponseEvent.EventType.sendTrackedEntityInstance);
@@ -270,40 +270,40 @@ public class DataValueSender {
             if(responseEvent.getResponseHolder().getApiException() != null) {
 
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
-                handleError(apiException, FailedItem.TRACKEDENTITYINSTANCE, localTrackedEntityInstances.get(sendCounter-1).localId);
+                handleError(apiException, FailedItem.TRACKEDENTITYINSTANCE, localTrackedEntityInstances.get(sendCounter-1).getLocalId());
             } else {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
-                if (importSummary.status.equals(ImportSummary.SUCCESS)) {
+                if (importSummary.getStatus().equals(ImportSummary.SUCCESS)) {
                     //update references with uid received from server
                     TrackedEntityInstance trackedEntityInstance = localTrackedEntityInstances.get(sendCounter - 1);
                     new Update(TrackedEntityAttributeValue.class).set(Condition.column
                             (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is
-                            (importSummary.reference)).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.localId)).async().execute();
+                            (importSummary.getReference())).where(Condition.column(TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance.getLocalId())).async().execute();
 
                     new Update(Event.class).set(Condition.column(Event$Table.
-                            TRACKEDENTITYINSTANCE).is(importSummary.reference)).where(Condition.
+                            TRACKEDENTITYINSTANCE).is(importSummary.getReference())).where(Condition.
                             column(Event$Table.TRACKEDENTITYINSTANCE).is(trackedEntityInstance.
-                            trackedEntityInstance)).async().execute();
+                            getTrackedEntityInstance())).async().execute();
 
                     new Update(Enrollment.class).set(Condition.column
-                            (Enrollment$Table.TRACKEDENTITYINSTANCE).is(importSummary.reference)).
+                            (Enrollment$Table.TRACKEDENTITYINSTANCE).is(importSummary.getReference())).
                             where(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).is
-                                    (trackedEntityInstance.trackedEntityInstance)).async().execute();
+                                    (trackedEntityInstance.getTrackedEntityInstance())).async().execute();
 
                     new Update(TrackedEntityInstance.class).set(Condition.column
                             (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
-                            (importSummary.reference), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
-                            where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstance.localId)).async().execute();
+                            (importSummary.getReference()), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
+                            where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstance.getLocalId())).async().execute();
                     localTrackedEntityInstances.remove(sendCounter - 1);
-                } else if (importSummary.status.equals((ImportSummary.ERROR))) {
+                } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
-                    failedItem.importSummary = importSummary;
-                    failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId;
-                    failedItem.itemType = FailedItem.TRACKEDENTITYINSTANCE;
-                    failedItem.httpStatusCode = 200;
+                    failedItem.setImportSummary(importSummary);
+                    failedItem.setItemId(localTrackedEntityInstances.get(sendCounter-1).getLocalId());
+                    failedItem.setItemType(FailedItem.TRACKEDENTITYINSTANCE);
+                    failedItem.setHttpStatusCode(200);
                     failedItem.async().save();
-                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId()+ ":" + failedItem.getItemType());
                 }
             }
             sendCounter--;
@@ -325,32 +325,32 @@ public class DataValueSender {
         else if( responseEvent.eventType == BaseEvent.EventType.sendEnrollment) {
             if(responseEvent.getResponseHolder().getApiException() != null) {
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
-                handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).localId);
+                handleError(apiException, FailedItem.ENROLLMENT, localEnrollments.get(sendCounter-1).getLocalId());
             } else {
                 ImportSummary importSummary = (ImportSummary) responseEvent.getResponseHolder().getItem();
-                if (importSummary.status.equals(ImportSummary.SUCCESS)) {
+                if (importSummary.getStatus().equals(ImportSummary.SUCCESS)) {
                     Enrollment enrollment = localEnrollments.get(sendCounter - 1);
                     //updating any local events that had reference to local enrollment to new
                     //reference from server.
                     new Update(Event.class).set(Condition.column
                             (Event$Table.ENROLLMENT).is
-                            (importSummary.reference)).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollment.localId)).async().execute();
+                            (importSummary.getReference())).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(enrollment.getLocalId())).async().execute();
 
                     new Update(Enrollment.class).set(Condition.column
                             (Enrollment$Table.ENROLLMENT).is
-                            (importSummary.reference), Condition.column(Enrollment$Table.FROMSERVER)
+                            (importSummary.getReference()), Condition.column(Enrollment$Table.FROMSERVER)
                             .is(true)).where(Condition.column(Enrollment$Table.LOCALID).is
-                            (enrollment.localId)).async().execute();
+                            (enrollment.getLocalId())).async().execute();
                     localEnrollments.remove(sendCounter - 1);
-                } else if (importSummary.status.equals((ImportSummary.ERROR))) {
+                } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
-                    failedItem.importSummary = importSummary;
-                    failedItem.itemId = localEnrollments.get(sendCounter-1).localId;
-                    failedItem.itemType = FailedItem.ENROLLMENT;
-                    failedItem.httpStatusCode = 200;
+                    failedItem.setImportSummary(importSummary);
+                    failedItem.setItemId(localEnrollments.get(sendCounter-1).getLocalId());
+                    failedItem.setItemType(FailedItem.ENROLLMENT);
+                    failedItem.setHttpStatusCode(200);
                     failedItem.async().save();
-                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId() + ":" + failedItem.getItemType());
                 }
             }
             sendCounter--;
@@ -371,32 +371,32 @@ public class DataValueSender {
         else if (responseEvent.eventType == BaseEvent.EventType.sendEvent) {
             if(responseEvent.getResponseHolder().getApiException() != null) {
                 APIException apiException = responseEvent.getResponseHolder().getApiException();
-                handleError(apiException, FailedItem.EVENT, localEvents.get(sendCounter-1).localId);
+                handleError(apiException, FailedItem.EVENT, localEvents.get(sendCounter-1).getLocalId());
             } else {
                 ResponseBody responseBody = (ResponseBody) responseEvent.getResponseHolder().getItem();
-                if( responseBody.importSummaries.get(0).status.equals(ImportSummary.SUCCESS)) {
-                    ImportSummary importSummary = responseBody.importSummaries.get(0);
+                if( responseBody.getImportSummaries().get(0).getStatus().equals(ImportSummary.SUCCESS)) {
+                    ImportSummary importSummary = responseBody.getImportSummaries().get(0);
                     Event event = localEvents.get(sendCounter-1);
                     List<DataValue> dataValues = event.getDataValues();
-                    event.event = responseBody.importSummaries.get(0).reference;
+                    event.setEvent(responseBody.getImportSummaries().get(0).getReference());
                     new Update(DataValue.class).set(Condition.column
                             (DataValue$Table.EVENT).is
-                            (importSummary.reference)).where(Condition.column(DataValue$Table.LOCALEVENTID).is(event.localId)).async().execute();
+                            (importSummary.getReference())).where(Condition.column(DataValue$Table.LOCALEVENTID).is(event.getLocalId())).async().execute();
 
                     new Update(Event.class).set(Condition.column
                             (Event$Table.EVENT).is
-                            (importSummary.reference), Condition.column(Event$Table.FROMSERVER).
-                            is(true)).where(Condition.column(Event$Table.LOCALID).is(event.localId)).async().execute();
+                            (importSummary.getReference()), Condition.column(Event$Table.FROMSERVER).
+                            is(true)).where(Condition.column(Event$Table.LOCALID).is(event.getLocalId())).async().execute();
                     localEvents.remove(sendCounter-1);
-                } else if (responseBody.importSummaries.get(0).status.equals((ImportSummary.ERROR)) ){
+                } else if (responseBody.getImportSummaries().get(0).getStatus().equals((ImportSummary.ERROR)) ){
                     Log.d(CLASS_TAG, "failed.. ");
                     FailedItem failedItem = new FailedItem();
-                    failedItem.importSummary = responseBody.importSummaries.get(0);
-                    failedItem.itemId = localEvents.get(sendCounter-1).localId;
-                    failedItem.itemType = FailedItem.EVENT;
-                    failedItem.httpStatusCode = 200; // the error is DHIS 2 internal, nothing wrong with connection
+                    failedItem.setImportSummary(responseBody.getImportSummaries().get(0));
+                    failedItem.setItemId(localEvents.get(sendCounter-1).getLocalId());
+                    failedItem.setItemType(FailedItem.EVENT);
+                    failedItem.setHttpStatusCode(200); // the error is DHIS 2 internal, nothing wrong with connection
                     failedItem.async().save();
-                    Log.d(CLASS_TAG, "saved item: " + failedItem.itemId + ":" + failedItem.itemType);
+                    Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId() + ":" + failedItem.getItemType());
                 }
             }
             sendCounter--;
@@ -416,17 +416,17 @@ public class DataValueSender {
         }
         FailedItem failedItem = new FailedItem();
         if(apiException.getResponse() != null) {
-            failedItem.httpStatusCode = apiException.getResponse().getStatus();
-            failedItem.errorMessage = new String(apiException.getResponse().getBody());
+            failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+            failedItem.setErrorMessage(new String(apiException.getResponse().getBody()));
         }
         if(type.equals(FailedItem.EVENT)) {
-            failedItem.itemId = localEvents.get(sendCounter-1).localId;
+            failedItem.setItemId(localEvents.get(sendCounter-1).getLocalId());
         } else if(type.equals(FailedItem.ENROLLMENT)) {
-            failedItem.itemId = localEnrollments.get(sendCounter-1).localId;
+            failedItem.setItemId(localEnrollments.get(sendCounter-1).getLocalId());
         } else if(type.equals(FailedItem.TRACKEDENTITYINSTANCE)) {
-            failedItem.itemId = localTrackedEntityInstances.get(sendCounter-1).localId;
+            failedItem.setItemId(localTrackedEntityInstances.get(sendCounter-1).getLocalId());
         }
-        failedItem.itemType = type;
+        failedItem.setItemType(type);
         failedItem.async().save();
     }
 }

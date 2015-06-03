@@ -84,9 +84,9 @@ public class Event extends BaseSerializableModel {
         this.status = status;
         this.trackedEntityInstance = trackedEntityInstanceId;
         if(enrollment!=null) {
-            this.enrollment = enrollment.enrollment;
-            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(enrollment.dateOfEnrollment));
-            this.dueDate = currentDateTime.plusDays(programStage.minDaysFromStart).toString();
+            this.enrollment = enrollment.getEnrollment();
+            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment()));
+            this.dueDate = currentDateTime.plusDays(programStage.getMinDaysFromStart()).toString();
         }
         dataValues = new ArrayList<DataValue>();
     }
@@ -98,17 +98,17 @@ public class Event extends BaseSerializableModel {
      */
     @JsonIgnore
     @Column
-    public boolean fromServer = true;
+    private boolean fromServer = true;
 
     @JsonIgnore
     @Column
     @PrimaryKey(autoincrement = true)
-    public long localId = -1;
+    protected long localId = -1;
 
     @JsonIgnore
     @Column
     @Unique
-    public String event;
+    private String event;
 
     @JsonProperty("event")
     public void setEvent(String event) {
@@ -128,38 +128,38 @@ public class Event extends BaseSerializableModel {
 
     @JsonProperty("lastUpdated")
     @Column
-    public String lastUpdated;
+    private String lastUpdated;
 
     @JsonProperty("created")
     @Column
-    public String created;
+    private String created;
 
     @JsonProperty("status")
     @Column
 
-    public String status;
+    private String status;
 
     @JsonIgnore
     @Column
-    public Double latitude;
+    private Double latitude;
 
     @JsonIgnore
     @Column
-    public Double longitude;
+    private Double longitude;
 
     @JsonProperty("trackedEntityInstance")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     @Column
-    public String trackedEntityInstance;
+    private String trackedEntityInstance;
 
     @JsonIgnore
     @Column
-    public long localEnrollmentId;
+    private long localEnrollmentId;
 
     @JsonProperty("enrollment")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     @Column
-    public String enrollment;
+    private String enrollment;
 
     public String getEnrollment() {
         if(Utils.isLocal(enrollment))
@@ -169,27 +169,27 @@ public class Event extends BaseSerializableModel {
 
     @JsonProperty("program")
     @Column
-    public String programId;
+    private String programId;
 
     @JsonProperty("programStage")
     @Column
-    public String programStageId;
+    private String programStageId;
 
     @JsonProperty("orgUnit")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     @Column
-    public String organisationUnitId;
+    private String organisationUnitId;
 
     @JsonProperty("eventDate")
     @Column
-    public String eventDate;
+    private String eventDate;
 
     @JsonProperty("dueDate")
     @Column
-    public String dueDate;
+    private String dueDate;
 
     @JsonProperty("dataValues")
-    public List<DataValue> dataValues;
+    private List<DataValue> dataValues;
 
     @Override
     public void delete() {
@@ -218,7 +218,7 @@ public class Event extends BaseSerializableModel {
 
         if (dataValues != null) {
             for (DataValue dataValue : dataValues) {
-                dataValue.event = event;
+                dataValue.setEvent(event);
                 dataValue.localEventId = localId;
                 dataValue.save();
             }
@@ -264,7 +264,7 @@ public class Event extends BaseSerializableModel {
         return dataValues;
     }
 
-    public boolean isFromServer() {
+    public boolean getFromServer() {
         return fromServer;
     }
 
@@ -383,4 +383,6 @@ public class Event extends BaseSerializableModel {
     public void setDataValues(List<DataValue> dataValues) {
         this.dataValues = dataValues;
     }
+
+
 }

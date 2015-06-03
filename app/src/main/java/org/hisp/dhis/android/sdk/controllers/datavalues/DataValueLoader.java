@@ -172,11 +172,11 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
-                    if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.id + program.id)) {
+                    if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.getId() + program.getId())) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_tracked_entity_instances) + ": "
-                                + organisationUnit.label + ": " + program.name);
-                        currentOrganisationUnit = organisationUnit.id;
-                        currentProgram = program.id;
+                                + organisationUnit.getLabel() + ": " + program.getName());
+                        currentOrganisationUnit = organisationUnit.getId();
+                        currentProgram = program.getId();
                         loadTrackedEntityInstances(currentOrganisationUnit, currentProgram);
                         return;
                     }
@@ -209,11 +209,11 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
-                    if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.id + program.id)) {
+                    if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.getId() + program.getId())) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_enrollments) + ": "
-                                + organisationUnit.label + ": " + program.name);
-                        currentOrganisationUnit = organisationUnit.id;
-                        currentProgram = program.id;
+                                + organisationUnit.getLabel()+ ": " + program.getName());
+                        currentOrganisationUnit = organisationUnit.getId();
+                        currentProgram = program.getId();
                         loadEnrollments(currentOrganisationUnit, currentProgram);
                         return;
                     }
@@ -251,11 +251,11 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
-                    if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
+                    if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.getId() + program.getId())) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_events) + ": "
-                                + organisationUnit.label + ": " + program.name);
-                        currentOrganisationUnit = organisationUnit.id;
-                        currentProgram = program.id;
+                                + organisationUnit.getLabel()+ ": " + program.getName());
+                        currentOrganisationUnit = organisationUnit.getId();
+                        currentProgram = program.getId();
                         loadEvents(currentOrganisationUnit, currentProgram);
                         return;
                     }
@@ -266,7 +266,7 @@ public class DataValueLoader {
     }
 
     private void updateItem() {
-        String currentLoadingDate = systemInfo.serverDate;
+        String currentLoadingDate = systemInfo.getServerDate();
         if(currentLoadingDate == null) {
             return;
         }
@@ -297,7 +297,7 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
-                    currentProgram = program.id;
+                    currentProgram = program.getId();
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
                             TRACKED_ENTITY_INSTANCES+currentOrganisationUnit + currentProgram);
                     if(lastUpdatedString == null) {
@@ -338,7 +338,7 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
-                    currentProgram = program.id;
+                    currentProgram = program.getId();
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
                             ENROLLMENTS+currentOrganisationUnit + currentProgram);
                     if(lastUpdatedString == null) {
@@ -360,7 +360,7 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, EVENTS)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
-                currentOrganisationUnit = organisationUnit.id;
+                currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                     List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -386,7 +386,7 @@ public class DataValueLoader {
 
                 for( Program program: programsForOrgUnit) {
 
-                    currentProgram = program.id;
+                    currentProgram = program.getId();
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
                             EVENTS+currentOrganisationUnit + currentProgram);
                     if(lastUpdatedString == null) {
@@ -414,7 +414,7 @@ public class DataValueLoader {
                 SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 LocalDate localDate = new LocalDate();
-                editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, systemInfo.serverDate);
+                editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, systemInfo.getServerDate());
                 editor.commit();
             }
         }
@@ -563,7 +563,7 @@ public class DataValueLoader {
         if(responseEvent.getResponseHolder().getApiException() == null) {
             if (responseEvent.eventType == BaseEvent.EventType.loadSystemInfo) {
                 systemInfo = (SystemInfo) responseEvent.getResponseHolder().getItem();
-                Log.d(CLASS_TAG, "got system info " + systemInfo.serverDate);
+                Log.d(CLASS_TAG, "got system info " + systemInfo.getServerDate());
                 loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadTrackedEntityInstances) {
                 Object[] items = (Object[]) responseEvent.getResponseHolder().getItem();
@@ -579,14 +579,14 @@ public class DataValueLoader {
                     }
 
                     for(TrackedEntityAttributeValue value: values) {
-                        TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(value.trackedEntityInstanceId);
+                        TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(value.getTrackedEntityInstanceId());
                         if(tei!=null) {
-                            value.localTrackedEntityInstanceId = tei.localId;
+                            value.setLocalTrackedEntityInstanceId(tei.getLocalId());
                         }
                         value.async().save();
                     }
                 }
-                flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, systemInfo.getServerDate());
                 flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+currentOrganisationUnit+currentProgram, true);
                 loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEnrollments) {
@@ -595,12 +595,12 @@ public class DataValueLoader {
                     if(synchronizing) {
                         //todo: implement different handling if synchronizing than if doing 1st load
                     }
-                    enrollment.orgUnit = currentOrganisationUnit;
-                    TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
-                    if(tei!=null) enrollment.localTrackedEntityInstanceId = tei.localId;
+                    enrollment.setOrgUnit(currentOrganisationUnit);
+                    TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+                    if(tei!=null) enrollment.setLocalTrackedEntityInstanceId(tei.getLocalId());
                     enrollment.save();
                 }
-                flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemUpdated(context, ENROLLMENTS+currentOrganisationUnit+currentProgram, systemInfo.getServerDate());
                 flagDataValueItemLoaded(ENROLLMENTS+currentOrganisationUnit+currentProgram, true);
                 loadItem();
             } else if (responseEvent.eventType == BaseEvent.EventType.loadEvents) {
@@ -612,28 +612,28 @@ public class DataValueLoader {
                     loadedEventCounter++;
                     //check if there have been changes made locally since last update.
                     //if there are local updates, don't overwrite with data from server.
-                    Event localEvent = DataValueController.getEventByUid(event.event);
+                    Event localEvent = DataValueController.getEventByUid(event.getEvent());
                     if(localEvent != null) {
-                        event.localId = localEvent.localId;
-                        event.localEnrollmentId = localEvent.localEnrollmentId;
-                        if( localEvent.fromServer == true ) {
+                        event.setLocalId(localEvent.getLocalId());
+                        event.setLocalEnrollmentId(localEvent.getLocalEnrollmentId());
+                        if( localEvent.getFromServer()== true ) {
                             event.update();
                         }
                     } else {
                         //check if there is an enrollment for this event stored on the device
                         //and store the localId of the enrollment
                         //(there will not be enrollment if its a single event without registration)
-                        Enrollment enrollment = DataValueController.getEnrollment(event.enrollment);
+                        Enrollment enrollment = DataValueController.getEnrollment(event.getEnrollment());
 
                         if(enrollment!=null) {
-                            event.localEnrollmentId = enrollment.localId;
+                            event.setLocalEnrollmentId(enrollment.getLocalId());
                         } else {//could be single event without registration
                         }
                         event.save();
                     }
                 }
 
-                flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.serverDate);
+                flagDataValueItemUpdated(context, EVENTS+currentOrganisationUnit+currentProgram, systemInfo.getServerDate());
                 flagDataValueItemLoaded(EVENTS+currentOrganisationUnit+currentProgram, true);
                 loadItem();
             }
@@ -724,7 +724,7 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
-                if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.id + program.id)) {
+                if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.getId() + program.getId())) {
                     return false;
                 }
             }
@@ -761,7 +761,7 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
-                if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.id + program.id)) {
+                if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.getId() + program.getId())) {
                     return false;
                 }
             }
@@ -797,7 +797,7 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
-                if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.id + program.id)) {
+                if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.getId() + program.getId())) {
                     return false;
                 }
             }
@@ -839,7 +839,7 @@ public class DataValueLoader {
             }
 
             for( Program program: programsForOrgUnit) {
-                String programId = program.id;
+                String programId = program.getId();
                 flagDataValueItemLoaded(EVENTS+assignedOrganisationUnit+programId, false);
                 flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit+programId, false);
                 flagDataValueItemLoaded(ENROLLMENTS+assignedOrganisationUnit+programId, false);

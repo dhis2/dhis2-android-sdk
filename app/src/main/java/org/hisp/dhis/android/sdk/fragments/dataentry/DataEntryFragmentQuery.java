@@ -147,14 +147,14 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
     private static void addEventDateRow(Context context, DataEntryFragmentForm form,
                                         List<DataEntryRow> rows) {
-        String reportDateDescription = form.getStage().reportDateDescription == null ?
-                context.getString(R.string.report_date) : form.getStage().reportDateDescription;
+        String reportDateDescription = form.getStage().getReportDateDescription() == null ?
+                context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
         rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
     }
 
     private static void addCoordinateRow(DataEntryFragmentForm form, List<DataEntryRow> rows) {
         if (form.getStage() != null &&
-                form.getStage().captureCoordinates) {
+                form.getStage().getCaptureCoordinates()) {
             rows.add(new CoordinatesRow(form.getEvent()));
         }
     }
@@ -163,14 +163,14 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                                               List<ProgramStageDataElement> dataElements,
                                               List<DataEntryRow> rows, String username) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
-            DataValue dataValue = getDataValue(stageDataElement.dataElement, form.getEvent(), username);
-            DataElement dataElement = getDataElement(stageDataElement.dataElement);
+            DataValue dataValue = getDataValue(stageDataElement.getDataElement().getId(), form.getEvent(), username);
+            DataElement dataElement = getDataElement(stageDataElement.getDataElement().getId());
 
             if (dataElement != null) {
-                form.getDataElementNames().put(stageDataElement.dataElement,
-                        dataElement.displayName);
+                form.getDataElementNames().put(stageDataElement.getDataElement().getId(),
+                        dataElement.getDisplayName());
 
-                form.getDataValues().put(dataValue.dataElement, dataValue);
+                form.getDataValues().put(dataValue.getDataElement(), dataValue);
                 rows.add(createDataEntryRow(dataElement, dataValue));
             }
         }
@@ -197,9 +197,9 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                 Enrollment enrollment = DataValueController.getEnrollment(enrollmentId);
                 if (enrollment != null) {
                     event.setLocalEnrollmentId(enrollmentId);
-                    event.setEnrollment(enrollment.enrollment);
-                    event.trackedEntityInstance = enrollment.trackedEntityInstance;
-                    LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.dateOfEnrollment)).plusDays(programStage.minDaysFromStart);
+                    event.setEnrollment(enrollment.getEnrollment());
+                    event.setTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+                    LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment())).plusDays(programStage.getMinDaysFromStart());
                     event.setDueDate(dueDate.toString());
                 }
             }
@@ -207,7 +207,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
             List<DataValue> dataValues = new ArrayList<>();
             for (ProgramStageDataElement dataElement : programStage.getProgramStageDataElements()) {
                 dataValues.add(
-                        new DataValue(event, EMPTY_FIELD, dataElement.dataElement, false, username)
+                        new DataValue(event, EMPTY_FIELD, dataElement.getDataElement().getId(), false, username)
                 );
             }
             event.setDataValues(dataValues);
@@ -222,14 +222,14 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         DataEntryRow row;
 
         String dataElementName;
-        if (!isEmpty(dataElement.displayFormName)) {
-            dataElementName = dataElement.displayFormName;
+        if (!isEmpty(dataElement.getDisplayFormName())) {
+            dataElementName = dataElement.getDisplayFormName();
         } else {
-            dataElementName = dataElement.displayName;
+            dataElementName = dataElement.getDisplayName();
         }
 
         if (dataElement.getOptionSet() != null) {
-            OptionSet optionSet = MetaDataController.getOptionSet(dataElement.optionSet);
+            OptionSet optionSet = MetaDataController.getOptionSet(dataElement.getOptionSet());
             if (optionSet == null) {
                 row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.TEXT);
             } else {

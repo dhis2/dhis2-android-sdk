@@ -83,9 +83,9 @@ public class RegisterEventTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Content-Type", "application/json"));
 
-        event.dataValues = null;
-        if(event.longitude==null) event.longitude = new Double(0);
-        if(event.latitude==null) event.latitude = new Double(0);
+        event.setDataValues(null);
+        if(event.getLongitude()==null) event.setLongitude(new Double(0));
+        if(event.getLatitude()==null) event.setLatitude(new Double(0));
         byte[] body = null;
         try {
             body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(event);

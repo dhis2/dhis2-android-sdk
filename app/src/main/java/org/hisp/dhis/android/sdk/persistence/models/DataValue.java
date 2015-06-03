@@ -56,32 +56,33 @@ public class DataValue extends BaseValue {
     @JsonIgnore
     @Column
     @PrimaryKey
-    public long localEventId = -1; /* reference to local event object */
+    protected long localEventId = -1; /* reference to local event object */
 
     @JsonIgnore
     @Column
-    public String event;
+    private String event;
 
     @JsonProperty("dataElement")
     @Column
     @PrimaryKey
-    public String dataElement;
+    private String dataElement;
 
     @JsonProperty("providedElsewhere")
     @Column
-    public boolean providedElsewhere;
+    private boolean providedElsewhere;
 
     @JsonProperty("storedBy")
     @Column
-    public String storedBy;
+    private String storedBy;
+
 
     public DataValue() {
     }
 
     public DataValue(Event event, String value, String dataElement, boolean providedElsewhere,
                       String storedBy) {
-        this.localEventId = event.localId;
-        this.event = event.event;
+        this.localEventId = event.getLocalId();
+        this.event = event.getEvent();
         this.value = value;
         this.dataElement = dataElement;
         this.providedElsewhere = providedElsewhere;
@@ -105,7 +106,7 @@ public class DataValue extends BaseValue {
      */
     @Override
     public DataValue clone() {
-        DataValue dataValue = new DataValue(this.localEventId, this.event, this.value,
+        DataValue dataValue = new DataValue(this.localEventId, this.event, this.getValue(),
                 this.dataElement, this.providedElsewhere, this.storedBy);
         return dataValue;
     }
@@ -134,7 +135,7 @@ public class DataValue extends BaseValue {
         this.dataElement = dataElement;
     }
 
-    public boolean isProvidedElsewhere() {
+    public boolean getProvidedElsewhere() {
         return providedElsewhere;
     }
 
@@ -150,6 +151,9 @@ public class DataValue extends BaseValue {
         this.storedBy = storedBy;
     }
 
+
+
+
     @Override
     public void save() {
         if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {
@@ -162,8 +166,9 @@ public class DataValue extends BaseValue {
     }
 
     public void updateManually() {
+
         new Update(DataValue.class).set(
-                Condition.column(DataValue$Table.VALUE).is(value))
+                Condition.column(DataValue$Table.VALUE).is(this.getValue()))
                 .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
                         Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).queryClose();
     }

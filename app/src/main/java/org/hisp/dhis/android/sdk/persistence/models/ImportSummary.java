@@ -56,28 +56,67 @@ public class ImportSummary extends BaseModel {
 
     @Column
     @PrimaryKey(autoincrement = true)
-    public int id;
+    protected int id;
 
     @JsonProperty("status")
     @Column
-    public String status;
+    private String status;
 
     @JsonProperty("description")
     @Column
-    public String description;
+    private String description;
 
     @JsonProperty("importCount")
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "importCount",
                     columnType = int.class, foreignColumnName = "id")})
-    public ImportCount importCount;
+    protected ImportCount importCount;
 
     @JsonProperty("reference")
     @Column
-    public String reference;
+    private String reference;
 
     @JsonProperty("href")
     @Column
-    public String href;
+    private String href;
 
+    public String getReference() {
+        return reference;
+    }
+
+    public String getHref() {
+        return href;
+    }
+
+    public ImportCount getImportCount() {
+        return importCount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
 }

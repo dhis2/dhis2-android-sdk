@@ -51,10 +51,25 @@ public class SystemInfo extends BaseModel {
 
     @Column
     @PrimaryKey
-    public int id = 1; //there should only be one row of this which overwrites every time its reloaded
+    private int id = 1; //there should only be one row of this which overwrites every time its reloaded
 
     @JsonProperty("serverDate")
     @Column
-    public String serverDate;
+    private String serverDate;
 
+    public int getId() {
+        return id;
+    }
+
+    public String getServerDate() {
+        return serverDate;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setServerDate(String serverDate) {
+        this.serverDate = serverDate;
+    }
 }

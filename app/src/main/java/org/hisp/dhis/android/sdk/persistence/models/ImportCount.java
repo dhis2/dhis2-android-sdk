@@ -51,22 +51,61 @@ public class ImportCount extends BaseModel{
 
     @Column
     @PrimaryKey(autoincrement = true)
-    public int id;
+    protected int id;
 
     @JsonProperty("imported")
     @Column
-    public int imported;
+    private int imported;
 
     @JsonProperty("updated")
     @Column
-    public int updated;
+    private int updated;
 
     @JsonProperty("ignored")
     @Column
-    public int ignored;
+    private int ignored;
 
     @JsonProperty("deleted")
     @Column
-    public int deleted;
+    private int deleted;
 
+    public int getId() {
+        return id;
+    }
+
+    public int getImported() {
+        return imported;
+    }
+
+    public int getUpdated() {
+        return updated;
+    }
+
+    public int getIgnored() {
+        return ignored;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
+    }
+
+    public void setIgnored(int ignored) {
+        this.ignored = ignored;
+    }
+
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
+    public void setImported(int imported) {
+        this.imported = imported;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

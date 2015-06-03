@@ -68,8 +68,8 @@ public class LoadProgramRulesTask implements INetworkTask {
                 "&fields=[:all]";
         if(updating) {
             SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
-            if( systemInfo != null && systemInfo.serverDate != null ) {
-                url += "&filter=lastUpdated:gt:" + systemInfo.serverDate;
+            if( systemInfo != null && systemInfo.getServerDate() != null ) {
+                url += "&filter=lastUpdated:gt:" + systemInfo.getServerDate();
             }
         }
 

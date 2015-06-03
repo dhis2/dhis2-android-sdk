@@ -106,7 +106,7 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
                 DataEntryRow dataEntryRow = mData.get(i);
                 BaseValue baseValue = dataEntryRow.getBaseValue();
                 if (baseValue instanceof DataValue) {
-                    dataElementsToRowIndexMap.put(((DataValue) baseValue).dataElement, i);
+                    dataElementsToRowIndexMap.put(((DataValue) baseValue).getDataElement(), i);
                 }
             }
         }

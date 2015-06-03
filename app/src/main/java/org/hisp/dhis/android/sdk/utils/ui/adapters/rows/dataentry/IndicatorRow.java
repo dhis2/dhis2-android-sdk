@@ -45,8 +45,8 @@ public final class IndicatorRow implements DataEntryRow {
             view = root;
         }
 
-        if (mIndicator.name != null) {
-            holder.textLabel.setText(mIndicator.name);
+        if (mIndicator.getName() != null) {
+            holder.textLabel.setText(mIndicator.getName());
         } else {
             holder.textLabel.setText(EMPTY_FIELD);
         }

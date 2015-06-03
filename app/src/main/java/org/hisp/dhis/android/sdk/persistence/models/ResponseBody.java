@@ -45,12 +45,36 @@ public class ResponseBody {
     }
 
     @JsonProperty("imported")
-    public int imported;
+    private int imported;
 
     @JsonProperty("ignored")
-    public int ignored;
+    private int ignored;
 
     @JsonProperty("importSummaries")
-    public List<ImportSummary> importSummaries;
+    private List<ImportSummary> importSummaries;
 
+
+    public int getImported() {
+        return imported;
+    }
+
+    public int getIgnored() {
+        return ignored;
+    }
+
+    public List<ImportSummary> getImportSummaries() {
+        return importSummaries;
+    }
+
+    public void setIgnored(int ignored) {
+        this.ignored = ignored;
+    }
+
+    public void setImportSummaries(List<ImportSummary> importSummaries) {
+        this.importSummaries = importSummaries;
+    }
+
+    public void setImported(int imported) {
+        this.imported = imported;
+    }
 }

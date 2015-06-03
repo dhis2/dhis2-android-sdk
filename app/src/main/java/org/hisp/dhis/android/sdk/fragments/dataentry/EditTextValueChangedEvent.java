@@ -14,10 +14,10 @@ public final class EditTextValueChangedEvent {
     public EditTextValueChangedEvent(BaseValue baseValue) {
         if(baseValue instanceof DataValue) {
             type = DATAVALUE;
-            id = ( ( DataValue ) baseValue ).dataElement;
+            id = ( ( DataValue ) baseValue ).getDataElement();
         } else if(baseValue instanceof TrackedEntityAttributeValue) {
             type = TRACKEDENTITYATTRIBUTEVALUE;
-            id = ( ( TrackedEntityAttributeValue ) baseValue ).trackedEntityAttributeId;
+            id = ( ( TrackedEntityAttributeValue ) baseValue ).getTrackedEntityAttributeId();
         }
     }
 

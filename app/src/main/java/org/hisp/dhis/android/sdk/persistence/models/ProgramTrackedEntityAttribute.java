@@ -47,23 +47,23 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
 
     @Column
-    public int sortOrder;
+    private int sortOrder;
 
     @JsonProperty("allowFutureDate")
     @Column
-    public boolean allowFutureDate;
+    private boolean allowFutureDate;
 
     @JsonProperty("displayInList")
     @Column
-    public boolean displayInList;
+    private boolean displayInList;
 
     @JsonProperty("mandatory")
     @Column
-    public boolean mandatory;
+    private boolean mandatory;
 
     @Column
     @PrimaryKey
-    public String program;
+    private String program;
 
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
@@ -73,9 +73,9 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     @Column
     @PrimaryKey
-    public String trackedEntityAttribute;
+    protected String trackedEntityAttribute;
 
-    public boolean isAllowFutureDate() {
+    public boolean getAllowFutureDate() {
         return allowFutureDate;
     }
 
@@ -83,7 +83,7 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         this.allowFutureDate = allowFutureDate;
     }
 
-    public boolean isDisplayInList() {
+    public boolean getDisplayInList() {
         return displayInList;
     }
 
@@ -91,7 +91,7 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         this.displayInList = displayInList;
     }
 
-    public boolean isMandatory() {
+    public boolean getMandatory() {
         return mandatory;
     }
 
@@ -111,11 +111,20 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         return MetaDataController.getTrackedEntityAttribute(trackedEntityAttribute);
     }
 
+    public String getTrackedEntityAttributeId()
+    {
+        return trackedEntityAttribute;
+    }
+
     public int getSortOrder() {
         return sortOrder;
     }
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
     }
 }

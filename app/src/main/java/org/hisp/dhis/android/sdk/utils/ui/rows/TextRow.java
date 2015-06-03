@@ -77,7 +77,7 @@ public class TextRow implements Row {
         
         holder.textWatcher.setDataValue(dataValue);
         holder.editText.addTextChangedListener(holder.textWatcher);
-        holder.editText.setText(dataValue.value);
+        holder.editText.setText(dataValue.getValue());
         holder.editText.clearFocus();
         setEditable(editable);
 
@@ -115,7 +115,7 @@ class EditTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable arg) {
-        dataValue.value = (arg.toString());
+        dataValue.setValue((arg.toString()));
     }
 
     @Override

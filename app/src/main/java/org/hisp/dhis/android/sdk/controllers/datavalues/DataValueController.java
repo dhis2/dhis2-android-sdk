@@ -85,7 +85,7 @@ public class DataValueController {
 
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                is(trackedEntityInstance.localId)).queryList();
+                is(trackedEntityInstance.getLocalId())).queryList();
     }
 
     /**
@@ -98,7 +98,7 @@ public class DataValueController {
         List<Enrollment> enrollments = new Select().from(Enrollment.class).
                 where(Condition.column(Enrollment$Table.PROGRAM).is(program)).
                 and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                        is(trackedEntityInstance.localId)).queryList();
+                        is(trackedEntityInstance.getLocalId())).queryList();
         return enrollments;
     }
 
@@ -222,12 +222,12 @@ public class DataValueController {
     public static List<TrackedEntityAttributeValue> getProgramTrackedEntityAttributeValues(Program program, TrackedEntityInstance trackedEntityInstance)
     {
         List<TrackedEntityAttributeValue> programTrackedEntityAttributeValues = new ArrayList<>();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.id);
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.getId());
 
         for(ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes)
         {
             TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                    (ptea.trackedEntityAttribute, trackedEntityInstance.localId);
+                    (ptea.getTrackedEntityAttributeId(), trackedEntityInstance.getLocalId());
             if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                 programTrackedEntityAttributeValues.add(v);
             }

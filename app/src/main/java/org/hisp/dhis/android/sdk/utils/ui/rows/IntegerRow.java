@@ -75,7 +75,7 @@ public class IntegerRow implements Row {
         
         holder.textWatcher.setDataValue(dataValue);
         holder.editText.addTextChangedListener(holder.textWatcher);
-        holder.editText.setText(dataValue.value);
+        holder.editText.setText(dataValue.getValue());
         holder.editText.clearFocus();
         setEditable(editable);
         

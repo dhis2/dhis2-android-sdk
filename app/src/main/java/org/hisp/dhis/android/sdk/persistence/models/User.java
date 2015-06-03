@@ -45,11 +45,11 @@ public class User extends BaseIdentifiableObject {
 
     @JsonProperty("firstName")
     @Column
-    public String firstName;
+    private String firstName;
 
     @JsonProperty("surName")
     @Column
-    public String surName;
+    private String surName;
 
     @JsonProperty("organisationUnits")
     private List<OrganisationUnit> organisationUnits;
@@ -62,4 +62,19 @@ public class User extends BaseIdentifiableObject {
         return organisationUnits;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
+    }
 }

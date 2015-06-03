@@ -44,10 +44,25 @@ public class OrganisationUnitProgramRelationship extends BaseModel {
 
     @Column
     @PrimaryKey
-    public String organisationUnitId;
+    private String organisationUnitId;
 
     @Column
     @PrimaryKey
-    public String programId;
+    private String programId;
 
+    public String getOrganisationUnitId() {
+        return organisationUnitId;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setOrganisationUnitId(String organisationUnitId) {
+        this.organisationUnitId = organisationUnitId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
+    }
 }

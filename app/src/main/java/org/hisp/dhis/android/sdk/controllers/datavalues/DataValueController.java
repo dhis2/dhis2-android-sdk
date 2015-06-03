@@ -79,6 +79,7 @@ public class DataValueController {
     public static List<Enrollment> getEnrollments(String program, String organisationUnit) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.PROGRAM).
                 is(program)).and(Condition.column(Enrollment$Table.ORGUNIT).is(organisationUnit)).
+                orderBy(false, Enrollment$Table.DATEOFENROLLMENT).
                 queryList();
     }
 

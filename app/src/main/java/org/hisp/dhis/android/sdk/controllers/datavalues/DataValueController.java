@@ -85,7 +85,7 @@ public class DataValueController {
 
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                is(trackedEntityInstance.getLocalId())).queryList();
+                is(trackedEntityInstance.localId)).queryList();
     }
 
     /**
@@ -98,7 +98,7 @@ public class DataValueController {
         List<Enrollment> enrollments = new Select().from(Enrollment.class).
                 where(Condition.column(Enrollment$Table.PROGRAM).is(program)).
                 and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
-                        is(trackedEntityInstance.getLocalId())).queryList();
+                        is(trackedEntityInstance.localId)).queryList();
         return enrollments;
     }
 
@@ -179,7 +179,7 @@ public class DataValueController {
      */
     public static Event getEvent(long localEnrollment, String programStage) {
         return new Select().from(Event.class).where(Condition.column
-                (Event$Table.LOCALENROLLMENTID).is(localEnrollment),
+                        (Event$Table.LOCALENROLLMENTID).is(localEnrollment),
                 Condition.column(Event$Table.PROGRAMSTAGEID).is(programStage)).querySingle();
     }
 
@@ -222,12 +222,12 @@ public class DataValueController {
     public static List<TrackedEntityAttributeValue> getProgramTrackedEntityAttributeValues(Program program, TrackedEntityInstance trackedEntityInstance)
     {
         List<TrackedEntityAttributeValue> programTrackedEntityAttributeValues = new ArrayList<>();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.getId());
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.id);
 
         for(ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes)
         {
             TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                    (ptea.getTrackedEntityAttributeId(), trackedEntityInstance.getLocalId());
+                    (ptea.trackedEntityAttribute, trackedEntityInstance.localId);
             if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                 programTrackedEntityAttributeValues.add(v);
             }
@@ -256,7 +256,7 @@ public class DataValueController {
      * @return
      */
     public static List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues
-            (String trackedEntityInstance) {
+    (String trackedEntityInstance) {
         return new Select().from(TrackedEntityAttributeValue.class).where(Condition.column
                 (TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).queryList();
     }

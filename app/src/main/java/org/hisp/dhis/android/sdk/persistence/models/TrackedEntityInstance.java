@@ -43,12 +43,12 @@ public class TrackedEntityInstance extends BaseSerializableModel {
     @JsonIgnore
     @Column
     @PrimaryKey(autoincrement = true)
-    protected long localId = -1;
+    public long localId = -1;
 
     @JsonIgnore
     @Column
     @Unique
-    protected String trackedEntityInstance;
+    public String trackedEntityInstance;
 
     @JsonProperty("trackedEntityInstance")
     public void setTrackedEntityInstance(String trackedEntityInstance) {

@@ -91,7 +91,7 @@ public class UpdateOptionSetsTask implements INetworkTask {
             if( optionSets != null && optionSets.size() > 0 ) {
                 optionSetsToLoad = new ArrayList<>();
                 for(OptionSet optionSet: optionSets) {
-                    optionSetsToLoad.add(optionSet.getId());
+                    optionSetsToLoad.add(optionSet.id);
                 }
                 loadOptionSets();
             } else {
@@ -121,14 +121,14 @@ public class UpdateOptionSetsTask implements INetworkTask {
         if( holder.getItem() != null ) {
             OptionSet optionSet = holder.getItem();
             boolean noUpdate = false;
-            if(optionSet.getId() == null) noUpdate = true;
+            if(optionSet.id == null) noUpdate = true;
             if(noUpdate) {}
             else {
                 /**
                  * Firstly delete the old options for the already stored Option set in case
                  * some of them have been deleted.
                  */
-                OptionSet oldOptionSet = Dhis2.getInstance().getMetaDataController().getOptionSet(optionSet.getId());
+                OptionSet oldOptionSet = Dhis2.getInstance().getMetaDataController().getOptionSet(optionSet.id);
                 if( oldOptionSet!=null ) {
                     for(Option option: oldOptionSet.getOptions()) {
                         //option.delete(true);
@@ -137,7 +137,7 @@ public class UpdateOptionSetsTask implements INetworkTask {
                 }
                 oldOptionSet = null;
                 int index = 0;
-                for( Option o: optionSet.getOptions() ) {
+                for( Option o: optionSet.getOptions()) {
                     o.setSortIndex(index);
                     o.setOptionSet( optionSet.getId() );
                     //o.save(true);

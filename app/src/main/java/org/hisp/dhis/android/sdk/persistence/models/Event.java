@@ -150,7 +150,7 @@ public class Event extends BaseSerializableModel {
     @JsonProperty("trackedEntityInstance")
     @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     @Column
-    private String trackedEntityInstance;
+    public String trackedEntityInstance;
 
     @JsonIgnore
     @Column

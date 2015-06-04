@@ -46,7 +46,7 @@ public class ProgramRuleService {
             }
 
             String value;
-            if(dataValue!=null && dataValue.getValue() !=null && !dataValue.getValue().isEmpty()) {
+            if(dataValue!=null && dataValue.getValue()!=null && !dataValue.getValue().isEmpty()) {
                 value = dataValue.getValue();
             } else {
                 return false;

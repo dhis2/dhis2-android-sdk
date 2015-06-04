@@ -46,7 +46,7 @@ public class BaseIdentifiableObject extends BaseModel{
     @JsonProperty("id")
     @Column
     @PrimaryKey
-    protected String id;
+    public String id;
 
     @JsonProperty("name")
     @Column

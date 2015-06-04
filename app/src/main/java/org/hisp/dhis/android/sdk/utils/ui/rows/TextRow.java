@@ -115,7 +115,7 @@ class EditTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable arg) {
-        dataValue.setValue((arg.toString()));
+        dataValue.setValue(arg.toString());
     }
 
     @Override

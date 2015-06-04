@@ -73,7 +73,7 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     @Column
     @PrimaryKey
-    protected String trackedEntityAttribute;
+    public String trackedEntityAttribute;
 
     public boolean getAllowFutureDate() {
         return allowFutureDate;

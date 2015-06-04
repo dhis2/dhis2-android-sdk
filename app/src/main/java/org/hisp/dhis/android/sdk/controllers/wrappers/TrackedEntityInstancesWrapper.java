@@ -48,7 +48,7 @@ public class TrackedEntityInstancesWrapper {
                 /*from 0-4 is hardcoded: instance, created, lastupdated, ou, te (trackedEntity),
                     * everything >4 is attribute*/
                 TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
-                trackedEntityInstance.setTrackedEntityInstance(row.get(0));
+                trackedEntityInstance.trackedEntityInstance = row.get(0);
                 trackedEntityInstance.setCreated(row.get(1));
                 trackedEntityInstance.setLastUpdated(row.get(2));
                 trackedEntityInstance.setOrgUnit(row.get(3));
@@ -58,7 +58,7 @@ public class TrackedEntityInstancesWrapper {
                 for(int i = 5; i<row.size(); i++) {
                     TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
                     value.setTrackedEntityAttributeId(headers.get(i).getName());
-                    value.setTrackedEntityInstanceId(trackedEntityInstance.getTrackedEntityInstance());
+                    value.setTrackedEntityInstanceId(trackedEntityInstance.trackedEntityInstance);
                     value.setValue(row.get(i));
                     trackedEntityAttributeValues.add(value);
                  }

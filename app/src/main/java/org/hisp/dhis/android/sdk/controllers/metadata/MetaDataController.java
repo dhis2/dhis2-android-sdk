@@ -103,14 +103,14 @@ public class MetaDataController {
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
         if(section==null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getId())).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {
         if(programStage==null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getId())).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.id)).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
@@ -184,32 +184,11 @@ public class MetaDataController {
      * todo: implement program parameter
      * @param trackedEntityAttribute
      * @return
-     * @deprecated Please use getProgramTrackedEntityAttribute(String trackedEntityAttribute, String programId) because of uniqueness issues
      */
     public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute(String trackedEntityAttribute) {
         return new Select().from(ProgramTrackedEntityAttribute.class).where
                 (Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).is
                         (trackedEntityAttribute)).querySingle();
-    }
-
-    /**
-     *
-     * @param trackedEntityAttribute
-     * @param programId
-     * @return
-     */
-    public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute(String trackedEntityAttribute, String programId) {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = new Select().from(ProgramTrackedEntityAttribute.class).where
-                (Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).is
-                        (trackedEntityAttribute)).queryList();
-        ProgramTrackedEntityAttribute attributeToReturn = new ProgramTrackedEntityAttribute();
-        for(ProgramTrackedEntityAttribute attribute : programTrackedEntityAttributes)
-        {
-            if(attribute.getProgram().equals(programId))
-                attributeToReturn = attribute;
-
-        }
-        return attributeToReturn;
     }
 
     public static TrackedEntityAttribute getTrackedEntityAttribute(String trackedEntityAttributeId) {

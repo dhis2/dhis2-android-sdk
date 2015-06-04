@@ -465,7 +465,7 @@ public class MetaDataLoader {
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.updateProgram);
         Program program = new Program();
-        program.setId(id);
+        program.id = id;
         holder.setItem(program); //passing a reference in case there is no reference from server
         event.setResponseHolder(holder);
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
@@ -475,7 +475,7 @@ public class MetaDataLoader {
                         holder.setResponse(response);
                         try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);
-                            if(program.getId() != null)
+                            if(program.id != null)
                                 holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -1008,14 +1008,14 @@ public class MetaDataLoader {
                         for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
                             programStageSection.async().save();
                             for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
-                                programStageDataElement.setProgramStageSection(programStageSection.getId());
+                                programStageDataElement.setProgramStageSection(programStageSection.id);
                                 programStageDataElement.async().save();
                                 //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
                             }
                             for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                programIndicator.setProgramStage(programStage.getId());
-                                programIndicator.setSection(programStageSection.getId());
+                                programIndicator.setProgramStage(programStage.id);
+                                programIndicator.setSection(programStageSection.id);
                                 programIndicator.async().save();
                             }
                         }
@@ -1025,13 +1025,13 @@ public class MetaDataLoader {
                             programStageDataElement.async().save();
                         }
                         for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                            programIndicator.setProgramStage(programStage.getId());
+                            programIndicator.setProgramStage(programStage.id);
                             programIndicator.async().save();
                         }
                     }
                 }
 
-                flagMetaDataItemLoaded(program.getId(), true);
+                flagMetaDataItemLoaded(program.id, true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
@@ -1105,14 +1105,14 @@ public class MetaDataLoader {
                             for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
                                 programStageSection.async().save();
                                 for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
-                                    programStageDataElement.setProgramStageSection(programStageSection.getId());
+                                    programStageDataElement.setProgramStageSection(programStageSection.id);
                                     programStageDataElement.async().save();
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
                                 }
                                 for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                    programIndicator.setProgramStage(programStage.getId());
-                                    programIndicator.setSection(programStageSection.getId());
+                                    programIndicator.setProgramStage(programStage.id);
+                                    programIndicator.setSection(programStageSection.id);
                                     programIndicator.async().save();
                                 }
                             }
@@ -1122,14 +1122,14 @@ public class MetaDataLoader {
                                 programStageDataElement.async().save();
                             }
                             for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                                programIndicator.setProgramStage(programStage.getId());
+                                programIndicator.setProgramStage(programStage.id);
                                 programIndicator.async().save();
                             }
                         }
                     }
                 }
 
-                flagMetaDataItemUpdated(program.getId(), systemInfo.getServerDate());
+                flagMetaDataItemUpdated(program.id, systemInfo.getServerDate());
                 loadItem();
             } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();

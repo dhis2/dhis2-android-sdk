@@ -174,7 +174,7 @@ public class DataEntryFragment extends Fragment
         Map<String, ProgramStageDataElement> dataElementMap = new HashMap<>();
         if (dataElements != null && !dataElements.isEmpty()) {
             for (ProgramStageDataElement dataElement : dataElements) {
-                dataElementMap.put(dataElement.getDataElement().getId(), dataElement); //todo check if break!!
+                dataElementMap.put(dataElement.getDataelement(), dataElement);
             }
         }
         return dataElementMap;
@@ -829,7 +829,7 @@ public class DataEntryFragment extends Fragment
         for (DataValue dataValue : event.getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
             if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
-                errors.add(MetaDataController.getDataElement(dataElement.getDataElement().getId()).getDisplayName()); //todo check if break
+                errors.add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
             }
         }
 

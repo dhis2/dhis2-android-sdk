@@ -94,7 +94,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
             if( trackedEntityAttributes != null && trackedEntityAttributes.size() > 0 ) {
                 trackedEntityAttributesToLoad = new ArrayList<>();
                 for(TrackedEntityAttribute trackedEntityAttribute: trackedEntityAttributes) {
-                    trackedEntityAttributesToLoad.add(trackedEntityAttribute.getId());
+                    trackedEntityAttributesToLoad.add(trackedEntityAttribute.id);
                 }
                 loadTrackedEntityAttributes();
             } else {
@@ -124,12 +124,12 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
         if( holder.getItem() != null ) {
             TrackedEntityAttribute trackedEntityAttribute = holder.getItem();
             boolean noUpdate = false;
-            if(trackedEntityAttribute.getId()== null) noUpdate = true;
+            if(trackedEntityAttribute.id == null) noUpdate = true;
             if(noUpdate) {}
             else {
                 TrackedEntityAttribute result = new Select().from(TrackedEntityAttribute.class).where(
                         Condition.column(TrackedEntityAttribute$Table.ID).
-                                is(trackedEntityAttribute.getId())).querySingle();
+                                is(trackedEntityAttribute.id)).querySingle();
                 if(result != null)
                     trackedEntityAttribute.async().update();
                 else
@@ -239,7 +239,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
             headers.add(new Header("Accept", "application/json"));
 
             SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
-            if( systemInfo != null && systemInfo.getServerDate() != null ) {
+            if( systemInfo != null && systemInfo.getServerDate()!= null ) {
                 String url = networkManager.getServerUrl() + "/api/trackedEntityAttributes?paging=false" +
                         "&fields=id&filter=lastUpdated:gt:" + systemInfo.getServerDate();
 

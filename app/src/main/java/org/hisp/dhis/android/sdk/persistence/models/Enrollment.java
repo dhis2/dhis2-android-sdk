@@ -95,17 +95,17 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonIgnore
     @Column
-    private boolean fromServer = true;
+    public boolean fromServer = true;
 
     @JsonIgnore
     @Column
     @PrimaryKey(autoincrement = true)
-    protected long localId = -1;
+    public long localId = -1;
 
     @JsonIgnore
     @Column
     @Unique
-    private String enrollment;
+    public String enrollment;
 
     @JsonProperty("enrollment")
     public void setEnrollment(String enrollment) {
@@ -126,11 +126,11 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonProperty("orgUnit")
     @Column
-    private String orgUnit;
+    public String orgUnit;
 
     @JsonIgnore
     @Column
-    private String trackedEntityInstance;
+    public String trackedEntityInstance;
 
     @JsonProperty("trackedEntityInstance")
     public void setTrackedEntityInstance(String trackedEntityInstance) {
@@ -151,30 +151,30 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonIgnore
     @Column
-    private long localTrackedEntityInstanceId;
+    public long localTrackedEntityInstanceId;
 
     @JsonProperty("program")
     @Column
-    protected String program;
+    public String program;
 
     @JsonProperty("dateOfEnrollment")
     @Column
-    private String dateOfEnrollment;
+    public String dateOfEnrollment;
 
     @JsonProperty("dateOfIncident")
     @Column
-    private String dateOfIncident;
+    public String dateOfIncident;
 
     @JsonProperty("followup")
     @Column
-    private boolean followup;
+    public boolean followup;
 
     @JsonProperty("status")
     @Column
-    private String status;
+    public String status;
 
     @JsonIgnore
-    private List<TrackedEntityAttributeValue> attributes;
+    public List<TrackedEntityAttributeValue> attributes;
 
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
@@ -186,7 +186,7 @@ public class Enrollment extends BaseSerializableModel{
                     MetaDataController.getProgramTrackedEntityAttributes(program);
             for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {
                 TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                        (ptea.getTrackedEntityAttributeId(), trackedEntityInstance);
+                        (ptea.trackedEntityAttribute, trackedEntityInstance);
                 if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                     attributes.add(v);
                 }
@@ -196,7 +196,7 @@ public class Enrollment extends BaseSerializableModel{
     }
 
     @JsonIgnore
-    private List<Event> events;
+    List<Event> events;
 
     /**
      * gets a list of events for this enrollment
@@ -266,49 +266,37 @@ public class Enrollment extends BaseSerializableModel{
         else return MetaDataController.getProgram(program);
     }
 
+    @Override
+    public void update() {
+        save();
+    }
+
     public boolean getFromServer() {
         return fromServer;
+    }
+
+    public void setFromServer(boolean fromServer) {
+        this.fromServer = fromServer;
     }
 
     public long getLocalId() {
         return localId;
     }
 
-    public String getOrgUnit() {
-        return orgUnit;
-    }
-
-    public long getLocalTrackedEntityInstanceId() {
-        return localTrackedEntityInstanceId;
-    }
-
-    public String getDateOfEnrollment() {
-        return dateOfEnrollment;
-    }
-
-    public String getDateOfIncident() {
-        return dateOfIncident;
-    }
-
-    public boolean getFollowup() {
-        return followup;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-
-    public void setFromServer(boolean fromServer) {
-        this.fromServer = fromServer;
-    }
-
     public void setLocalId(long localId) {
         this.localId = localId;
     }
 
+    public String getOrgUnit() {
+        return orgUnit;
+    }
+
     public void setOrgUnit(String orgUnit) {
         this.orgUnit = orgUnit;
+    }
+
+    public long getLocalTrackedEntityInstanceId() {
+        return localTrackedEntityInstanceId;
     }
 
     public void setLocalTrackedEntityInstanceId(long localTrackedEntityInstanceId) {
@@ -319,17 +307,32 @@ public class Enrollment extends BaseSerializableModel{
         this.program = program;
     }
 
+    public String getDateOfEnrollment() {
+        return dateOfEnrollment;
+    }
+
     public void setDateOfEnrollment(String dateOfEnrollment) {
         this.dateOfEnrollment = dateOfEnrollment;
+    }
+
+    public String getDateOfIncident() {
+        return dateOfIncident;
     }
 
     public void setDateOfIncident(String dateOfIncident) {
         this.dateOfIncident = dateOfIncident;
     }
 
+    public boolean getFollowup() {
+        return followup;
+    }
 
     public void setFollowup(boolean followup) {
         this.followup = followup;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
@@ -340,9 +343,7 @@ public class Enrollment extends BaseSerializableModel{
         this.attributes = attributes;
     }
 
-    @Override
-    public void update() {
-        save();
+    public List<Event> getEvents() {
+        return events;
     }
-
 }

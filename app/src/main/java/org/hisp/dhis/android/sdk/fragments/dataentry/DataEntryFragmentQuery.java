@@ -147,7 +147,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
 
     private static void addEventDateRow(Context context, DataEntryFragmentForm form,
                                         List<DataEntryRow> rows) {
-        String reportDateDescription = form.getStage().getReportDateDescription() == null ?
+        String reportDateDescription = form.getStage().getReportDateDescription()== null ?
                 context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
         rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
     }
@@ -163,11 +163,11 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                                               List<ProgramStageDataElement> dataElements,
                                               List<DataEntryRow> rows, String username) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
-            DataValue dataValue = getDataValue(stageDataElement.getDataElement().getId(), form.getEvent(), username);
-            DataElement dataElement = getDataElement(stageDataElement.getDataElement().getId());
+            DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
 
+            DataElement dataElement = getDataElement(stageDataElement.getDataelement());
             if (dataElement != null) {
-                form.getDataElementNames().put(stageDataElement.getDataElement().getId(),
+                form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
 
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
@@ -198,7 +198,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                 if (enrollment != null) {
                     event.setLocalEnrollmentId(enrollmentId);
                     event.setEnrollment(enrollment.getEnrollment());
-                    event.setTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+                    event.trackedEntityInstance = enrollment.trackedEntityInstance;
                     LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment())).plusDays(programStage.getMinDaysFromStart());
                     event.setDueDate(dueDate.toString());
                 }
@@ -207,7 +207,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
             List<DataValue> dataValues = new ArrayList<>();
             for (ProgramStageDataElement dataElement : programStage.getProgramStageDataElements()) {
                 dataValues.add(
-                        new DataValue(event, EMPTY_FIELD, dataElement.getDataElement().getId(), false, username)
+                        new DataValue(event, EMPTY_FIELD, dataElement.getDataelement(), false, username)
                 );
             }
             event.setDataValues(dataValues);

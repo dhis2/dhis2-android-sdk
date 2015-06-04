@@ -130,7 +130,7 @@ public class ProgramIndicatorService
                 { //todo: ignoring in case of single event event without registration
                     //baseDate = DateUtils.getMediumDate(programInstance.dateOfIncident);
                 }
-                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.getRootDate() ) )
+                else if ( ProgramIndicator.ENROLLMENT_DATE.equals( programIndicator.getRootDate()) )
                 {
                     //baseDate = DateUtils.getMediumDate(programInstance.dateOfEnrollment);
                 }
@@ -220,7 +220,7 @@ public class ProgramIndicatorService
 
                 if ( constant != null )
                 {
-                    matcher.appendReplacement( description, constant.getDisplayName());
+                    matcher.appendReplacement( description, constant.getDisplayName() );
                 }
             }
             else if ( ProgramIndicator.KEY_PROGRAM_VARIABLE.equals( key ) )
@@ -353,7 +353,7 @@ public class ProgramIndicatorService
 
             if ( programStage != null && dataElement != null )
             {
-                elements.add( programStage.getProgramStageDataElement( dataElement.getId()) );
+                elements.add( programStage.getProgramStageDataElement( dataElement.id ) );
             }
         }
 
@@ -371,7 +371,7 @@ public class ProgramIndicatorService
     {
         Set<TrackedEntityAttribute> attributes = new HashSet<>();
 
-        Matcher matcher = ProgramIndicator.ATTRIBUTE_PATTERN.matcher( indicator.getExpression() );
+        Matcher matcher = ProgramIndicator.ATTRIBUTE_PATTERN.matcher( indicator.getExpression());
 
         while ( matcher.find() )
         {
@@ -427,19 +427,19 @@ public class ProgramIndicatorService
                     if(programInstance == null) { //in case single event without reg
                         programStageInstance = event;
                     } else {
-                        programStageInstance = DataValueController.getEvent(programInstance.getLocalId(), programStage.getId());
+                        programStageInstance = DataValueController.getEvent(programInstance.localId, programStage.id );
                     }
 
                     DataValue dataValue = null;
-                    if(programStageInstance.getDataValues()== null) {
+                    if(programStageInstance.getDataValues() == null) {
                         continue;
                     }
-                    for(DataValue value: programStageInstance.getDataValues() ) {
-                        if(value.getDataElement().equals(dataElement.getId())) dataValue = value;
+                    for(DataValue value: programStageInstance.getDataValues()) {
+                        if(value.getDataElement().equals(dataElement.id)) dataValue = value;
                     }
 
                     String value;
-                    if ( dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
+                    if ( dataValue == null || dataValue.getValue()== null || dataValue.getValue().isEmpty()) {
                         value = ZERO;
                     }
                     else {
@@ -465,9 +465,9 @@ public class ProgramIndicatorService
 
                     if (attribute != null) {
                         TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
-                                attribute.getId(), programInstance.getTrackedEntityInstance());
+                                attribute.id, programInstance.trackedEntityInstance);
                         String value;
-                        if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
+                        if (attributeValue == null || attributeValue.getValue()== null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;
                         } else {
                             value = attributeValue.getValue();

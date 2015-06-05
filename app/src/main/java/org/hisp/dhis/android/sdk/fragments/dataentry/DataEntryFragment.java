@@ -70,11 +70,13 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.OnEventClick;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.events.OnCompleteEventClick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -444,6 +446,31 @@ public class DataEntryFragment extends Fragment
         } else {
             getFragmentManager().popBackStack();
         }
+    }
+
+    @Subscribe
+    public void onItemClick(final OnCompleteEventClick eventClick)
+    {
+        if(validate() && !eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED))
+        {
+            Dhis2.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
+                    eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            flagDataChanged(true);
+                            eventClick.getComplete().setText(R.string.incomplete);
+                            eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
+                        }
+                    });
+
+        }
+        else
+        {
+            eventClick.getComplete().setText(R.string.complete);
+            eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
+        }
+
     }
 
     private boolean haveValuesChanged() {

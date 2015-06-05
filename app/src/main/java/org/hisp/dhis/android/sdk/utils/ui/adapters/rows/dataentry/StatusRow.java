@@ -41,8 +41,10 @@ import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.fragments.dataentry.ValidationErrorDialog;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.events.OnCompleteEventClick;
 
 import java.util.ArrayList;
 
@@ -184,7 +186,9 @@ public final class StatusRow implements DataEntryRow {
                     activity.getString(R.string.incomplete) : activity.getString(R.string.complete);
             String action = event.getStatus().equals(Event.STATUS_COMPLETED) ?
                     activity.getString(R.string.incomplete_confirm) : activity.getString(R.string.complete_confirm);
-            Dhis2.showConfirmDialog(activity, label, action, label, activity.getString(R.string.cancel), this);
+//            Dhis2.showConfirmDialog(activity, label, action, label, activity.getString(R.string.cancel), this);
+
+            Dhis2Application.getEventBus().post(new OnCompleteEventClick(label,action,event,complete));
         }
 
         private void setActivity(Activity activity) {

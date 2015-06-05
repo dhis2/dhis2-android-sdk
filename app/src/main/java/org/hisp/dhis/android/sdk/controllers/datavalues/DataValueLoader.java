@@ -69,6 +69,7 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
@@ -80,7 +81,7 @@ public class DataValueLoader {
     public static final String EVENTS = "events";
     public static final String TRACKED_ENTITY_INSTANCES = "trackedentityinstances";
     public static final String ENROLLMENTS = "enrollments";
-
+    private String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString(); // for integrity check
 
     boolean loading = false;
     boolean synchronizing = false;
@@ -153,6 +154,9 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
+
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -172,6 +176,9 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
+
                     if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.getId() + program.id)) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_tracked_entity_instances) + ": "
                                 + organisationUnit.getLabel()+ ": " + program.getName());
@@ -190,6 +197,10 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, ENROLLMENTS)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
+
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -209,6 +220,10 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
+
                     if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.getId()+ program.id)) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_enrollments) + ": "
                                 + organisationUnit.getLabel()+ ": " + program.getName());
@@ -227,6 +242,9 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, EVENTS)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
+
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                     List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -251,6 +269,9 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
+
                     if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.getId()+ program.id)) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel()+ ": " + program.getName());
@@ -278,6 +299,8 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -297,6 +320,9 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
+
                     currentProgram = program.id;
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
                             TRACKED_ENTITY_INSTANCES+currentOrganisationUnit + currentProgram);
@@ -319,6 +345,9 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, ENROLLMENTS)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
+
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -338,6 +367,8 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
                     currentProgram = program.id;
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
                             ENROLLMENTS+currentOrganisationUnit + currentProgram);
@@ -360,6 +391,8 @@ public class DataValueLoader {
         if(Dhis2.isLoadFlagEnabled(context, EVENTS)) {
             List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
             for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
+                    break;
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -385,6 +418,8 @@ public class DataValueLoader {
                 }
 
                 for( Program program: programsForOrgUnit) {
+                    if(program.getId() == null || program.getId().length() == randomUUID.length())
+                        break;
 
                     currentProgram = program.id;
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
@@ -699,6 +734,9 @@ public class DataValueLoader {
     public static boolean isEventsLoaded(Context context) {
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            if(organisationUnit.getId() == null)
+                break;
+
             List<Program> programsForOrgUnit = new ArrayList<>();
             if (Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                 List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -724,6 +762,9 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
+                if(program.getId() == null)
+                    break;
+
                 if (!isDataValueItemLoaded(context, EVENTS+organisationUnit.getId()+ program.id)) {
                     return false;
                 }
@@ -736,6 +777,9 @@ public class DataValueLoader {
     public static boolean isEnrollmentsLoaded(Context context) {
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            if(organisationUnit.getId() == null)
+                break;
+
             List<Program> programsForOrgUnit = new ArrayList<>();
             if (Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                 List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -761,6 +805,9 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
+                if(program.getId() == null)
+                    break;
+
                 if (!isDataValueItemLoaded(context, ENROLLMENTS+organisationUnit.getId()+ program.id)) {
                     return false;
                 }
@@ -772,6 +819,9 @@ public class DataValueLoader {
     public static boolean isTrackedEntityInstancesLoaded(Context context) {
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+            if(organisationUnit.getId() == null)
+                break;
+
             List<Program> programsForOrgUnit = new ArrayList<>();
             if (Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
                 List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
@@ -797,6 +847,9 @@ public class DataValueLoader {
             }
 
             for (Program program : programsForOrgUnit) {
+                if(program.getId() == null)
+                    break;
+
                 if (!isDataValueItemLoaded(context, TRACKED_ENTITY_INSTANCES+organisationUnit.getId()+ program.id)) {
                     return false;
                 }
@@ -814,6 +867,9 @@ public class DataValueLoader {
         SharedPreferences.Editor editor = prefs.edit();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
+            if(organisationUnit.getId() == null)
+                break;
+
             String assignedOrganisationUnit = organisationUnit.getId();
             List<Program> programsForOrgUnit = new ArrayList<>();
             if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
@@ -839,6 +895,9 @@ public class DataValueLoader {
             }
 
             for( Program program: programsForOrgUnit) {
+                if(program.getId() == null)
+                    break;
+
                 String programId = program.id;
                 flagDataValueItemLoaded(EVENTS+assignedOrganisationUnit+programId, false);
                 flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit+programId, false);

@@ -428,6 +428,9 @@ public class MetaDataLoader {
      * @param id id of program
      */
     private void loadProgram(String id) {
+        if(id == null)
+            return;
+
         Dhis2.postProgressMessage(context.getString(R.string.loading_program) + ": " + id);
         final ResponseHolder<Program> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Program> event = new
@@ -461,6 +464,9 @@ public class MetaDataLoader {
      * Queries the server and updates a program if it is necessary
      */
     private void updateProgram(String id) {
+        if(id == null)
+            return;
+
         final ResponseHolder<Program> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.updateProgram);
@@ -957,8 +963,12 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
                 List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
                         event.getResponseHolder().getItem();
+                if(organisationUnits == null)
+                    return;
+
                 ArrayList<String> assignedPrograms = new ArrayList<String>();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+
 
                 /**
                  * If we are synchronizing we simply delete all the previously stored
@@ -986,11 +996,16 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
+                if(program == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
 
                 //Have to set program reference in ptea manually because it is not referenced in
                 //API JSON
                 int sortOrder = 0;
+
+
                 for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
                     ptea.setProgram(program.getId());
                     ptea.setSortOrder(sortOrder);
@@ -1133,6 +1148,10 @@ public class MetaDataLoader {
                 loadItem();
             } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
+
+                if(optionSets == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(OptionSet os: optionSets ) {
                     int index = 0;
@@ -1151,6 +1170,10 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
+
+                if(trackedEntityAttributes == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
                     tea.async().save();
@@ -1162,6 +1185,9 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
+                if(constants == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(Constant constant: constants) {
                     constant.async().save();
@@ -1170,6 +1196,9 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
+                if(constants == null)
+                    return;
+
                 for(Constant constant: constants) {
                     constant.async().save();
                 }
@@ -1177,6 +1206,9 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
                 List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
+                if(programRules == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRule programRule: programRules) {
                     programRule.async().save();
@@ -1189,6 +1221,9 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables ) {
                 List<ProgramRuleVariable> programRuleVariables = (List<ProgramRuleVariable>) event.getResponseHolder().getItem();
+                if(programRuleVariables == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleVariable programRuleVariable: programRuleVariables) {
                     programRuleVariable.async().save();
@@ -1201,6 +1236,10 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions ) {
                 List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
+
+                if(programRuleActions == null)
+                    return;
+
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleAction programRuleAction: programRuleActions) {
                     programRuleAction.async().save();
@@ -1320,6 +1359,10 @@ public class MetaDataLoader {
         flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, false);
         flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, null);
         List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
+
+        if(assignedPrograms == null)
+            return;
+
         for(String program: assignedPrograms) {
             Log.d(CLASS_TAG, "clearing program: " + program);
             flagMetaDataItemLoaded(program, false);

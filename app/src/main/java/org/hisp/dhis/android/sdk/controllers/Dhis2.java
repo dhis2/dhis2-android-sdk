@@ -61,6 +61,7 @@ import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
@@ -85,6 +86,7 @@ import org.hisp.dhis.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis.android.sdk.utils.GpsManager;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class Dhis2 {
     private static final String CLASS_TAG = "Dhis2";
@@ -605,6 +607,26 @@ public final class Dhis2 {
         };
         getInstance().getDataValueController().synchronizeDataValues(context, callback);
 
+    }
+
+
+    public static String getLastSynchronizationSummary()
+    {
+        SharedPreferences prefs = getInstance().context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        String lastUpdated = prefs.getString(LAST_UPDATED_METADATA, "");
+        StringBuilder builder = new StringBuilder();
+        builder.append(getContext().getString(R.string.last_updated));
+        builder.append(" ");
+        builder.append(lastUpdated);
+        List<FailedItem> failedItemList = DataValueController.getFailedItems();
+        if(failedItemList != null)
+        {
+            for(FailedItem failedItem : failedItemList)
+            {
+                builder.append("\nFailed item: " + failedItem.getItemType() + " " + failedItem.getErrorMessage());
+            }
+        }
+        return builder.toString();
     }
 
     public static void showErrorDialog(final Activity activity, final String title, final String message) {

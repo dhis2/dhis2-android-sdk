@@ -107,6 +107,11 @@ public class SettingsFragment extends Fragment
             syncTextView.setText(getProgressMessage());
             Log.d(TAG, getProgressMessage());
         }
+        else if(!Dhis2.isLoading())
+        {
+            //setSummaryFromLastSync in syncTextView
+            syncTextView.setText(Dhis2.getLastSynchronizationSummary());
+        }
     }
 
     @Override
@@ -193,7 +198,7 @@ public class SettingsFragment extends Fragment
         {
             synchronizeButton.setEnabled(true);
             mProgessBar.setVisibility(View.GONE);
-            syncTextView.setText("");
+            syncTextView.setText(Dhis2.getLastSynchronizationSummary());
             synchronizeButton.setText(R.string.synchronize_with_server);
         }
 

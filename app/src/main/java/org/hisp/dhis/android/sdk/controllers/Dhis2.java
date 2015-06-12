@@ -48,8 +48,10 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataLoader;
 import org.hisp.dhis.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis.android.sdk.events.BaseEvent;
+import org.hisp.dhis.android.sdk.events.LoadingEvent;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.ResponseEvent;
+import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
@@ -245,8 +247,12 @@ public final class Dhis2 {
      */
     public static boolean isLoadFlagEnabled(Context context, String flag) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        postLoadingFlag(sharedPreferences.getBoolean(LOAD + flag, false));
+
         return sharedPreferences.getBoolean(LOAD + flag, false);
     }
+
+
 
     public static boolean isInitialDataLoaded(Context context) {
         return (isMetaDataLoaded(context) && isDataValuesLoaded(context));
@@ -530,6 +536,8 @@ public final class Dhis2 {
             }
         };
         synchronizeMetaData(context, callback);
+
+
     }
 
     /**
@@ -577,8 +585,26 @@ public final class Dhis2 {
         blockThread.start();
     }
 
-    public static void synchronizeDataValues(Context context, ApiRequestCallback callback) {
+    public static void synchronizeDataValues(final Context context, final ApiRequestCallback parentCallback) {
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            private final ApiRequestCallback callback;
+            {
+                this.callback = parentCallback;
+            }
+            @Override
+            public void onSuccess(Response response) {
+                SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
+                event.success = true;
+                Dhis2Application.getEventBus().post(event); //is finished synchronizing
+            }
+
+            @Override
+            public void onFailure(APIException exception) {
+                callback.onFailure(exception);
+            }
+        };
         getInstance().getDataValueController().synchronizeDataValues(context, callback);
+
     }
 
     public static void showErrorDialog(final Activity activity, final String title, final String message) {
@@ -639,6 +665,18 @@ public final class Dhis2 {
         new CustomDialogFragment(title, message, firstOption, secondOption, thirdOption,
                 firstOptionListener, secondOptionListener, thirdOptionListener).
                 show(activity.getFragmentManager(), title);
+    }
+
+    public static void postLoadingFlag(final boolean enabled)
+    {
+        new Thread(){
+            @Override
+            public void run() {
+                LoadingEvent event = new LoadingEvent(BaseEvent.EventType.loadEvents);
+                event.success = enabled;
+                Dhis2Application.bus.post(event);
+            }
+        }.start();
     }
 
     /**

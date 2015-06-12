@@ -1314,6 +1314,7 @@ public class MetaDataLoader {
      */
     private void flagMetaDataItemLoaded(String item, boolean loaded) {
         if(this.context == null) return;
+        Log.d("METADATALOADERisLoaded,", item);
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(Dhis2.LOADED+item, loaded);
@@ -1384,4 +1385,6 @@ public class MetaDataLoader {
         flagMetaDataItemLoaded(PROGRAMRULEACTIONS, false);
         flagMetaDataItemUpdated(PROGRAMRULEACTIONS, null);
     }
+
+
 }

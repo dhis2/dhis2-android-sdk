@@ -84,7 +84,7 @@ public class DataValueLoader {
     private String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString(); // for integrity check
 
     boolean loading = false;
-    boolean synchronizing = false;
+    static boolean synchronizing = false;
     private int loadedEventCounter = 0;
     private Context context;
 
@@ -907,5 +907,8 @@ public class DataValueLoader {
                 flagDataValueItemUpdated(context, ENROLLMENTS+assignedOrganisationUnit+programId, null);
             }
         }
+    }
+    public static boolean isSynchronizing() {
+        return synchronizing;
     }
 }

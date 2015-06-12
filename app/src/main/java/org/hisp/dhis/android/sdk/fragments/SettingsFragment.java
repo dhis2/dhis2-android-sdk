@@ -32,19 +32,30 @@ package org.hisp.dhis.android.sdk.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.events.LoadingEvent;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.utils.APIException;
 
 /**
@@ -60,6 +71,9 @@ public class SettingsFragment extends Fragment
     private Spinner updateFrequencySpinner;
     private Button logoutButton;
     private Button synchronizeButton;
+    private ProgressBar mProgessBar;
+    private TextView syncTextView;
+    private String progressMessage;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,9 +96,17 @@ public class SettingsFragment extends Fragment
 
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
         logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-
+        mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
+        syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
+        mProgessBar.setVisibility(View.GONE);
         logoutButton.setOnClickListener(this);
         synchronizeButton.setOnClickListener(this);
+
+        if(Dhis2.isLoading() && getProgressMessage() != null)
+        {
+            syncTextView.setText(getProgressMessage());
+            Log.d(TAG, getProgressMessage());
+        }
     }
 
     @Override
@@ -102,6 +124,7 @@ public class SettingsFragment extends Fragment
             if (isAdded()) {
                 Context context = getActivity().getBaseContext();
                 Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
+
                 ApiRequestCallback callback = new ApiRequestCallback() {
                     @Override
                     public void onSuccess(Response response) {
@@ -113,7 +136,11 @@ public class SettingsFragment extends Fragment
                         //do nothing
                     }
                 };
+
                 Dhis2.synchronize(context, callback);
+                synchronizeButton.setEnabled(false);
+                mProgessBar.setVisibility(View.VISIBLE);
+                synchronizeButton.setText("Synchronizing...");
             }
         }
     }
@@ -126,5 +153,94 @@ public class SettingsFragment extends Fragment
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // stub implementation
+    }
+    private void setText(CharSequence text)
+    {
+        if(isAdded())
+        {
+            if(text != null)
+            {
+                syncTextView.setText(text);
+            }
+            else
+                Log.d(TAG, "Loading message is null");
+        }
+    }
+    @Subscribe
+    public void onLoadingMessageEvent(final LoadingMessageEvent event) {
+        Log.d(TAG, "Message received" + event.message);
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                setProgressMessage(event.message);
+                setText(event.message);
+            }
+        });
+    }
+
+    private void enableUi(boolean enable)
+    {
+        if(!enable)
+        {
+            synchronizeButton.setEnabled(false);
+            mProgessBar.setVisibility(View.VISIBLE);
+            synchronizeButton.setText("Synchronizing...");
+            syncTextView.setText(getProgressMessage());
+        }
+        else
+        {
+            synchronizeButton.setEnabled(true);
+            mProgessBar.setVisibility(View.GONE);
+            syncTextView.setText("");
+            synchronizeButton.setText(R.string.synchronize_with_server);
+        }
+
+    }
+
+    @Subscribe
+    public void onLoadingEvent(final LoadingEvent event)
+    {
+        if(event.success && Dhis2.isLoading())
+        {
+            enableUi(false);
+        }
+    }
+
+    @Subscribe
+    public void onSynchronizationFinishedEvent(final SynchronizationFinishedEvent event)
+    {
+        if(event.success)
+        {
+            enableUi(true);
+        }
+    }
+
+    public String getProgressMessage() {
+        return progressMessage;
+    }
+
+    public void setProgressMessage(String progressMessage) {
+        this.progressMessage = progressMessage;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Dhis2Application.getEventBus().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Dhis2Application.getEventBus().register(this);
+
+        if(!Dhis2.isLoading())
+        {
+            enableUi(true);
+        }
+        else
+            enableUi(false);
     }
 }

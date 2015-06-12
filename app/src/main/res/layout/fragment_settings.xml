@@ -62,10 +62,18 @@
                 android:background="@drawable/spinner_background_holo_light"
                 android:entries="@array/update_frequencies"
                 android:layout_below="@+id/update_frequency_label" />
+            <LinearLayout
+                android:id="@+id/settings_sync_wrap_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_update_frequency_spinner"
+                android:orientation="horizontal"
+                android:paddingTop="40dp"
+                android:weightSum="1">
 
             <org.hisp.dhis.android.sdk.utils.ui.views.FontButton
                 android:id="@+id/settings_sync_button"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="@drawable/button_blue_selector"
                 android:singleLine="true"
@@ -73,8 +81,33 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/medium_text_size"
                 android:layout_below="@+id/settings_update_frequency_spinner"
-                android:layout_marginTop="40dp"
-                app:font="@string/medium_font_name" />
+                android:layout_gravity="center_horizontal"
+                app:font="@string/medium_font_name"
+                android:layout_weight="0.5"
+                />
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/settings_progessbar"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/settings_sync_wrap_layout">
+                <TextView
+                    android:id="@+id/settings_sync_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/medium_text_size"
+                    android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
 
             <org.hisp.dhis.android.sdk.utils.ui.views.FontButton
                 android:id="@+id/settings_logout_button"

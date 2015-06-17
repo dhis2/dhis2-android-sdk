@@ -123,11 +123,13 @@ public final class AutoCompleteRow implements DataEntryRow {
         {
             holder.valueTextView.setEnabled(false);
             holder.valueTextView.setTextColor(Color.parseColor("#C6C6C6")); //setEnabled(false) won't set disabled text on some devices
+            holder.clearButton.setEnabled(false);
         }
         else
         {
             holder.valueTextView.setEnabled(true);
             holder.valueTextView.setTextColor(Color.BLACK);
+            holder.clearButton.setEnabled(true);
 
         }
 

@@ -35,6 +35,7 @@ import android.util.Log;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -61,22 +62,53 @@ import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRule$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
+import org.hisp.dhis.android.sdk.persistence.models.User;
+import org.hisp.dhis.android.sdk.persistence.models.User$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
@@ -952,6 +984,172 @@ public class MetaDataLoader {
         }
     }
 
+    /**
+     * This method checks if all models that all UID references to other models are valid
+     */
+    public void metaDataIntegrityCheck()
+    {
+        Log.d(CLASS_TAG, "Running meta data integrity check");
+
+        List<OrganisationUnitProgramRelationship> relationships = new Select().from(OrganisationUnitProgramRelationship.class).
+                where(Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).isNull()).
+                or(Condition.column(OrganisationUnitProgramRelationship$Table.PROGRAMID).isNull()).queryList();
+
+        if(relationships == null || relationships.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "OrgUnitProgramRelationships are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "orgUnitProgramRelationships are NOT valid");
+            for(OrganisationUnitProgramRelationship relationship : relationships)
+                relationship.delete();
+        }
+//          THIS IS COMMENTED AT THE MOMENT DUE TO FIX ON PROGRAM.SETTRACKEDENTITY. ENABLE WHEN TRACKED ENTITY IS LOADED SEPARATE
+//        List<Program> programs = new Select().from(Program.class).where(
+//                Condition.column(Program$Table.TRACKEDENTITY_TRACKEDENTITY).isNull()
+//        ).queryList();
+
+//        if(programs == null || programs.size() < 1)
+//        {
+//            Log.d(CLASS_TAG, "Programs are valid ");
+//        }
+//        else
+//        {
+//            Log.d(CLASS_TAG, "Programs are NOT valid");
+//            for(Program program : programs)
+//            {
+////                Log.d(CLASS_TAG, "Program: Tracked Entity: " + program.getTrackedEntity());
+////                program.delete();
+//            }
+//        }
+
+        List<ProgramIndicator> programIndicators = new Select().from(ProgramIndicator.class).where(
+                Condition.column(ProgramIndicator$Table.PROGRAM).isNull()).
+                or(Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).isNull()).queryList();
+
+        if(programIndicators == null || programIndicators.size() < 1)
+        {
+            Log.d(CLASS_TAG, "Valid program indicators");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program indicators are NOT valid");
+            for(ProgramIndicator programIndicator : programIndicators)
+                programIndicator.delete();
+        }
+
+        List<ProgramRule> programRules = new Select().from(ProgramRule.class).where(
+                Condition.column(ProgramRule$Table.PROGRAM).isNull()).queryList();
+        if(programRules == null || programRules.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Valid program rules");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program rules are NOT valid");
+            for(ProgramRule programRule : programRules)
+            {
+                programRule.delete();
+                Log.d(CLASS_TAG, "Program rules: Program: " + programRule.getProgram());
+            }
+        }
+
+        List<ProgramRuleAction> programRuleActions = new Select().from(ProgramRuleAction.class).where(
+                Condition.column(ProgramRuleAction$Table.PROGRAMRULE).isNull()).
+                or(Condition.column(ProgramRuleAction$Table.DATAELEMENT).isNull()).queryList();
+
+        if(programRuleActions == null || programRuleActions.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Valid program rule actions");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program rule actions are NOT valid");
+            for(ProgramRuleAction programRuleAction : programRuleActions)
+            {
+                programRuleAction.delete();
+                Log.d(CLASS_TAG, "Program rule action: Program Rule:" + programRuleAction.getProgramRule() + " Data element: " +
+                        programRuleAction.getDataElement());
+            }
+        }
+
+        List<ProgramRuleVariable> programRuleVariables = new Select().from(ProgramRuleVariable.class).where(
+                Condition.column(ProgramRuleVariable$Table.PROGRAM).isNull()).
+                or(Condition.column(ProgramRuleVariable$Table.DATAELEMENT).isNull()).queryList();
+
+        if(programRuleVariables == null || programRuleVariables.size() < 1)
+        {
+            Log.d(CLASS_TAG, "Valid program rule variables");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program rule variables are NOT valid");
+            for(ProgramRuleVariable programRuleVariable : programRuleVariables)
+                programRuleVariable.delete();
+        }
+
+        List<ProgramStage> programStages = new Select().from(ProgramStage.class).where(
+                Condition.column(ProgramStage$Table.PROGRAM).isNull()).queryList();
+        if(programStages == null || programStages.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Valid program stages");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program stages are NOT valid");
+            for(ProgramStage programStage : programStages)
+                programStage.delete();
+        }
+
+        List<ProgramStageDataElement> programStageDataElements = new Select().from(ProgramStageDataElement.class).where(
+                Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGE).isNull()).
+                or(Condition.column(ProgramStageDataElement$Table.DATAELEMENT).isNull()).queryList();
+
+        if(programStageDataElements == null || programStageDataElements.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Valid program stage data elements");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program stage data elements are NOT valid");
+            for(ProgramStageDataElement programStageDataElement : programStageDataElements)
+            {
+                programStageDataElement.delete();
+                Log.d(CLASS_TAG, "ProgramStageDataElement: ProgramStage: " + programStageDataElement.getProgramStage() +
+                         " DataElement: " + programStageDataElement.getDataelement());
+            }
+        }
+
+        List<ProgramStageSection> programStageSections = new Select().from(ProgramStageSection.class).where(
+                Condition.column(ProgramStageSection$Table.PROGRAMSTAGE).isNull()).queryList();
+        if(programStageSections == null || programStageSections.size() < 1)
+        {
+            Log.d(CLASS_TAG, "Valid program stage sections");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program stage sections are NOT valid");
+            for(ProgramStageSection programStageSection : programStageSections)
+                programStageSection.delete();
+        }
+
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = new Select().from(ProgramTrackedEntityAttribute.class).where(
+                Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).isNull()).
+                or(Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).isNull()).queryList();
+
+        if(programTrackedEntityAttributes == null || programTrackedEntityAttributes.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Program tracked entity attributes are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Program tracked entity attributes are NOT valid");
+            for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes)
+                programTrackedEntityAttribute.delete();
+        }
+    }
+
     private void onResponse(MetaDataResponseEvent event) {
         if (event.getResponseHolder().getItem() != null) {
             retries = 0;
@@ -963,8 +1161,6 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
                 List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
                         event.getResponseHolder().getItem();
-                if(organisationUnits == null)
-                    return;
 
                 ArrayList<String> assignedPrograms = new ArrayList<String>();
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
@@ -996,8 +1192,7 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
                 Program program = (Program) event.getResponseHolder().getItem();
-                if(program == null)
-                    return;
+
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
 
@@ -1149,9 +1344,6 @@ public class MetaDataLoader {
             } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
                 List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
 
-                if(optionSets == null)
-                    return;
-
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(OptionSet os: optionSets ) {
                     int index = 0;
@@ -1171,8 +1363,6 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
 
-                if(trackedEntityAttributes == null)
-                    return;
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(TrackedEntityAttribute tea: trackedEntityAttributes) {
@@ -1185,8 +1375,6 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
-                if(constants == null)
-                    return;
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(Constant constant: constants) {
@@ -1196,8 +1384,6 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateConstants ) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
-                if(constants == null)
-                    return;
 
                 for(Constant constant: constants) {
                     constant.async().save();
@@ -1206,8 +1392,7 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
                 List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
-                if(programRules == null)
-                    return;
+
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRule programRule: programRules) {
@@ -1221,8 +1406,6 @@ public class MetaDataLoader {
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables ) {
                 List<ProgramRuleVariable> programRuleVariables = (List<ProgramRuleVariable>) event.getResponseHolder().getItem();
-                if(programRuleVariables == null)
-                    return;
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleVariable programRuleVariable: programRuleVariables) {
@@ -1237,8 +1420,6 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions ) {
                 List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
 
-                if(programRuleActions == null)
-                    return;
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for(ProgramRuleAction programRuleAction: programRuleActions) {
@@ -1360,9 +1541,6 @@ public class MetaDataLoader {
         flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, false);
         flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, null);
         List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
-
-        if(assignedPrograms == null)
-            return;
 
         for(String program: assignedPrograms) {
             Log.d(CLASS_TAG, "clearing program: " + program);

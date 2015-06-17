@@ -357,6 +357,11 @@ public class DataValueController {
         dataValueSender.sendLocalData(context, callback);
     }
 
+    public void dataValueIntegrityCheck()
+    {
+        dataValueLoader.dataValueIntegrityCheck();
+    }
+
     public boolean isSending() {
         return dataValueSender.sending;
     }

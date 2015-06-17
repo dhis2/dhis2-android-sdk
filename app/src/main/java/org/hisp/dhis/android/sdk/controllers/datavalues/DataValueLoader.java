@@ -35,6 +35,8 @@ import android.util.Log;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
@@ -53,13 +55,44 @@ import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRule$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStage$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
@@ -856,6 +889,98 @@ public class DataValueLoader {
             }
         }
         return true;
+    }
+
+    public void dataValueIntegrityCheck()
+    {
+        Log.d(CLASS_TAG, "Running data value integrity check");
+
+
+        List<DataValue> dataValues = new Select().from(DataValue.class).where(
+                Condition.column(DataValue$Table.DATAELEMENT).isNull()).
+                and(Condition.column(DataValue$Table.EVENT).isNull()).
+                and(Condition.column(DataValue$Table.LOCALEVENTID).isNull()).queryList();
+        if(dataValues == null || dataValues.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Data values are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Data values are NOT valid");
+            for(DataValue dataValue : dataValues)
+                dataValue.delete();
+        }
+
+        List<Enrollment> enrollments = new Select().from(Enrollment.class).where(
+                Condition.column(Enrollment$Table.ORGUNIT).isNull()).
+                or(Condition.column(Enrollment$Table.PROGRAM).isNull()).
+                and(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).isNull()).
+                and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).isNull()).queryList();
+
+        if(enrollments == null || enrollments.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Enrollments are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Enrollments NOT valid");
+
+            for(Enrollment enrollment : enrollments)
+                enrollment.delete();
+        }
+
+        List<Event> events = new Select().from(Event.class).where(
+                Condition.column(Event$Table.ENROLLMENT).isNull()).
+                or(Condition.column(Event$Table.PROGRAMID).isNull()).
+                or(Condition.column(Event$Table.PROGRAMSTAGEID).isNull()).
+                or(Condition.column(Event$Table.ORGANISATIONUNITID).isNull()).
+                or(Condition.column(Event$Table.TRACKEDENTITYINSTANCE).isNull()).queryList();
+
+        if(events == null || events.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Events are valid ");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Events are NOT valid");
+            for(Event event : events)
+            {
+                event.delete();
+                Log.d(CLASS_TAG, "Event: Enrollment: " + event.getEnrollment() + " ProgramID: " + event.getProgramId() +
+                " ProgramStageId: " + event.getProgramStageId() + " OrgUnitId: " + event.getOrganisationUnitId() +
+                        " TrackedEntityInstance: " + event.getTrackedEntityInstance());
+            }
+        }
+
+
+        List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(
+                Condition.column(TrackedEntityInstance$Table.TRACKEDENTITY).isNull()).
+                or(Condition.column(TrackedEntityInstance$Table.ORGUNIT).isNull()).queryList();
+        if(trackedEntityInstances == null || trackedEntityInstances.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Trackedentity instances are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Tracked entity instances are NOT valid");
+            for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances)
+                trackedEntityInstance.delete();
+        }
+
+        List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new Select().from(TrackedEntityAttributeValue.class).where(
+                Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).isNull()).
+                or(Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).isNull()).queryList();
+
+        if(trackedEntityAttributeValues == null || trackedEntityAttributeValues.size() < 1 )
+        {
+            Log.d(CLASS_TAG, "Trackedentity attribute values are valid");
+        }
+        else
+        {
+            Log.d(CLASS_TAG, "Trackedentity attribute values are NOT valid");
+            for(TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues)
+                trackedEntityAttributeValue.delete();
+        }
     }
 
     /**

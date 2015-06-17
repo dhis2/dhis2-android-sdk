@@ -317,6 +317,14 @@ public class MetaDataController {
     }
 
     /**
+     * This method checks if all models that all UID references to other models are valid
+     */
+    public void metaDataIntegrityCheck()
+    {
+        metaDataLoader.metaDataIntegrityCheck();
+    }
+
+    /**
      * Resets the value set for last updated
      * @param context
      */

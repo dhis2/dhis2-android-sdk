@@ -542,6 +542,19 @@ public final class Dhis2 {
 
     }
 
+    public static void dataIntegrityCheck(Context context)
+    {
+        getInstance().context = context;
+        new Thread() {
+            public void run() {
+                getInstance().getMetaDataController().metaDataIntegrityCheck();
+                getInstance().getDataValueController().dataValueIntegrityCheck();
+            }
+        }.start();
+
+    }
+
+
     /**
      * initiates synchronization of metadata from server
      *
@@ -598,6 +611,7 @@ public final class Dhis2 {
                 SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
                 event.success = true;
                 Dhis2Application.getEventBus().post(event); //is finished synchronizing
+                dataIntegrityCheck(context);
             }
 
             @Override

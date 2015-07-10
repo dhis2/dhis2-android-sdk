@@ -29,11 +29,14 @@
 
 package org.hisp.dhis.android.sdk.utils.support;
 
+import android.util.Log;
+
 import static org.hisp.dhis.android.sdk.utils.i18n.LocaleManager.DHIS_STANDARD_LOCALE;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -51,6 +54,8 @@ import org.nfunk.jep.JEP;
 public class MathUtils
 {
     public static final Double ZERO = new Double( 0 );
+
+    private static final Locale LOCALE = new Locale( "en" );
 
     private static DoubleValidator DOUBLE_VALIDATOR = new DoubleValidator();
     private static IntegerValidator INT_VALIDATOR = new IntegerValidator();
@@ -106,7 +111,7 @@ public class MathUtils
     public static double calculateExpression( String expression )
     {
         final JEP parser = getJep();
-        parser.parseExpression( expression );
+        parser.parseExpression(expression);
 
         return parser.getValue();
     }
@@ -335,7 +340,7 @@ public class MathUtils
      */
     public static boolean isNumeric( String value )
     {
-        return value != null && DOUBLE_VALIDATOR.isValid( value, DHIS_STANDARD_LOCALE ) && NUMERIC_PATTERN.matcher( value ).matches();
+        return value != null && DOUBLE_VALIDATOR.isValid( value, LOCALE ) && NUMERIC_PATTERN.matcher( value ).matches();
     }
 
     /**
@@ -347,7 +352,7 @@ public class MathUtils
      */
     public static boolean isNumericLenient( String value )
     {
-        return value != null && DOUBLE_VALIDATOR.isValid( value, DHIS_STANDARD_LOCALE ) && NUMERIC_LENIENT_PATTERN.matcher( value ).matches();
+        return value != null && DOUBLE_VALIDATOR.isValid( value, LOCALE ) && NUMERIC_LENIENT_PATTERN.matcher( value ).matches();
     }
 
     /**
@@ -459,7 +464,7 @@ public class MathUtils
      */
     public static boolean isBool( String value )
     {
-        return value != null && ( value.equals( DataValue.TRUE ) || value.equals( DataValue.FALSE ) );
+        return value != null && ( value.equals( "true" ) || value.equals( "false" ) );
     }
 
     /**

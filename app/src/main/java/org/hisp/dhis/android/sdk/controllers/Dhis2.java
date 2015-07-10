@@ -114,6 +114,16 @@ public final class Dhis2 {
     private Context context; //beware when using this as it must be set explicitly
     private Activity activity;
 
+    public boolean isBlocking() {
+        return blocking;
+    }
+
+    public void setBlocking(boolean blocking) {
+        this.blocking = blocking;
+    }
+
+    private boolean blocking = false;
+
     public Dhis2() {
         objectMapper = new ObjectMapper();
     }
@@ -749,6 +759,10 @@ public final class Dhis2 {
         public void run() {
             while (block) {
                 Log.e(CLASS_TAG, "Blocking ..");
+                String message = "Finishing initial database setup. This may take several minutes so please be patient.";
+                if (getInstance().activity != null)
+                    message = getInstance().activity.getString(R.string.finishing_up);
+                postProgressMessage(message);
                 try {
                     block = false;
                     Thread.sleep(5000);
@@ -757,9 +771,15 @@ public final class Dhis2 {
                     block = true;
                 }
             }
+            Dhis2.getInstance().setBlocking(false);
             observer.unregisterForContentChanges(Dhis2.getInstance().context);
             Log.e(CLASS_TAG, "done blocking ..");
             callback();
+        }
+
+        public void setBlocking(boolean blocking) {
+            this.block = blocking;
+            Dhis2.getInstance().setBlocking(block);
         }
 
         public void callback() {
@@ -808,7 +828,7 @@ public final class Dhis2 {
 
         @Override
         public void onModelStateChanged(Class<? extends Model> aClass, BaseModel.Action action) {
-            blockThread.block = true;
+            blockThread.setBlocking(true);
         }
     }
 }

@@ -38,7 +38,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.fragments.dataentry.EditTextValueChangedEvent;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -187,7 +187,7 @@ public class EditTextRow implements DataEntryRow {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
-                        .post(new EditTextValueChangedEvent(value));
+                        .post(new RowValueChangedEvent(value));
             }
         }
     }

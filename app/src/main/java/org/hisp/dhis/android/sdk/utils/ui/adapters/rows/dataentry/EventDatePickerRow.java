@@ -38,6 +38,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.joda.time.DateTime;
@@ -183,7 +185,7 @@ public class EventDatePickerRow implements DataEntryRow {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
         private Event event;
-
+        private BaseValue value;
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
@@ -196,9 +198,20 @@ public class EventDatePickerRow implements DataEntryRow {
         public void onDateSet(DatePicker view, int year,
                               int monthOfYear, int dayOfMonth) {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
+
+            if(event.getEventDate() != null)
+                value.setValue(event.getEventDate());
+
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
-            event.setEventDate(newValue);
+
+            if(!newValue.equals(value.getValue()))
+            {
+                value.setValue(newValue);
+                event.setEventDate(value.getValue());
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value));
+            }
+
         }
     }
 

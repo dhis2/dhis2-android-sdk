@@ -37,6 +37,8 @@ import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
@@ -164,6 +166,7 @@ public final class CoordinatesRow implements DataEntryRow {
         private final EditText mLatitude;
         private final String mLatitudeMessage;
         private Event mEvent;
+        private double value;
 
         public LatitudeWatcher(EditText latitude, String latitudeMessage) {
             mLatitude = latitude;
@@ -176,12 +179,21 @@ public final class CoordinatesRow implements DataEntryRow {
 
         @Override
         public void afterTextChanged(Editable s) {
+            if(mEvent.getLatitude() != null)
+                value = mEvent.getLatitude();
+
             if (s.length() > 1) {
-                double value = Double.parseDouble(s.toString());
-                if (value < -90 || value > 90) {
+                double newValue = Double.parseDouble(s.toString());
+                if (newValue < -90 || newValue > 90) {
                     mLatitude.setError(mLatitudeMessage);
                 }
-                mEvent.setLatitude(Double.valueOf(value));
+                if(newValue != value)
+                {
+                    mEvent.setLatitude(Double.valueOf(newValue));
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setValue(""+ newValue);
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(baseValue));
+                }
             }
         }
     }
@@ -190,6 +202,7 @@ public final class CoordinatesRow implements DataEntryRow {
         private final EditText mLongitude;
         private final String mLongitudeMessage;
         private Event mEvent;
+        private double value;
 
         public LongitudeWatcher(EditText latitude, String latitudeMessage) {
             mLongitude = latitude;
@@ -202,12 +215,21 @@ public final class CoordinatesRow implements DataEntryRow {
 
         @Override
         public void afterTextChanged(Editable s) {
+            if(mEvent.getLongitude() != null)
+                value = mEvent.getLongitude();
+
             if (s.length() > 1) {
-                double value = Double.parseDouble(s.toString());
-                if (value < -180 || value > 180) {
+                double newValue = Double.parseDouble(s.toString());
+                if (newValue < -180 || newValue > 180) {
                     mLongitude.setError(mLongitudeMessage);
                 }
-                mEvent.setLongitude(Double.valueOf(value));
+                if(newValue != value)
+                {
+                    mEvent.setLongitude(Double.valueOf(newValue));
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setValue(""+ newValue);
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(baseValue));
+                }
             }
         }
     }

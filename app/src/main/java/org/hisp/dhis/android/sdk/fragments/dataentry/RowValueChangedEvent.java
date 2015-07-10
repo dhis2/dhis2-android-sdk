@@ -4,17 +4,14 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 
-/**
- * @deprecated Please use RowValueChangedEvent
- */
-public final class EditTextValueChangedEvent {
+public final class RowValueChangedEvent {
 
     public static final String DATAVALUE = "datavalue";
     public static final String TRACKEDENTITYATTRIBUTEVALUE = "trackedentityattributevalue";
     private String type;
     private String id;
 
-    public EditTextValueChangedEvent(BaseValue baseValue) {
+    public RowValueChangedEvent(BaseValue baseValue) {
         if(baseValue instanceof DataValue) {
             type = DATAVALUE;
             id = ( ( DataValue ) baseValue ).getDataElement();

@@ -37,7 +37,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.fragments.dataentry.EditTextValueChangedEvent;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
@@ -266,7 +266,7 @@ public final class AutoCompleteRow implements DataEntryRow {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
-                        .post(new EditTextValueChangedEvent(value));
+                        .post(new RowValueChangedEvent(value));
             }
         }
     }

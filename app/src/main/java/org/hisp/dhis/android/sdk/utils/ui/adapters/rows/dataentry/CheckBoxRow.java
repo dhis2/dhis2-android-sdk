@@ -36,6 +36,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
 import static android.text.TextUtils.isEmpty;
@@ -120,11 +122,18 @@ public class CheckBoxRow implements DataEntryRow {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                value.setValue(TRUE);
-            } else {
-                value.setValue(EMPTY_FIELD);
+            String newValue;
+            if(isChecked)
+                newValue = TRUE;
+            else
+                newValue = EMPTY_FIELD;
+
+            if(!newValue.toString().equals(value.getValue()))
+            {
+                value.setValue(newValue);
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value));
             }
+
         }
     }
 

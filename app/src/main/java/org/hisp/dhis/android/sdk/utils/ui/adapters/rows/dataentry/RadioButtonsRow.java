@@ -35,6 +35,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
 public class RadioButtonsRow implements DataEntryRow {
@@ -218,6 +220,31 @@ public class RadioButtonsRow implements DataEntryRow {
             // So we are not interested in events where button is being unchecked
             if (!isChecked) {
                 return;
+            }
+            String newValue = "";
+            if (DataEntryRowTypes.BOOLEAN.equals(type)) {
+                if (buttonView.getId() == R.id.first_radio_button) {
+                    newValue = TRUE;
+                } else if (buttonView.getId() == R.id.second_radio_button) {
+                    newValue = FALSE;
+                } else if (buttonView.getId() == R.id.third_radio_button) {
+                    newValue = EMPTY_FIELD;
+                }
+            }
+            if (DataEntryRowTypes.GENDER.equals(type)) {
+                if(buttonView.getId() == R.id.first_radio_button) {
+                    newValue = MALE;
+                } else if (buttonView.getId() == R.id.second_radio_button) {
+                    newValue = FEMALE;
+                } else if (buttonView.getId() == R.id.third_radio_button ) {
+                    newValue = OTHER;
+                }
+            }
+
+            if(!newValue.toString().equals(value.getValue()))
+            {
+                value.setValue(newValue);
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value));
             }
 
             if (DataEntryRowTypes.BOOLEAN.equals(type)) {

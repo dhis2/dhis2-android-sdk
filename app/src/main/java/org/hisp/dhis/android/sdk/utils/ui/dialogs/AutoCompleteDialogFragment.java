@@ -71,6 +71,7 @@ public class AutoCompleteDialogFragment extends DialogFragment
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         return inflater.inflate(R.layout.dialog_fragment_auto_complete, container, false);
+
     }
 
     @Override

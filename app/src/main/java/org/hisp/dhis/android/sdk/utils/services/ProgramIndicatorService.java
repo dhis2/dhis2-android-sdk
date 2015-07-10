@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.android.sdk.utils.services;
 
+import android.util.Log;
+
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
@@ -42,6 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.utils.DateUtils;
+import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
 
@@ -543,8 +546,7 @@ public class ProgramIndicatorService
         }
 
         expression = TextUtils.appendTail( matcher, buffer );
-
-        return MathUtils.calculateExpression( expression );
+        return ExpressionUtils.evaluateToDouble(expression, null);
     }
 
     private static boolean isZeroOrPositive( String value )

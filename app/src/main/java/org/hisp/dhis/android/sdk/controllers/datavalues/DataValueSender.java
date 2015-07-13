@@ -130,7 +130,7 @@ public class DataValueSender {
                 i--;
             }
         }
-        Log.d(CLASS_TAG, "got this many events:" + localEvents.size());
+        Log.d(CLASS_TAG, "got this many events to send:" + localEvents.size());
         sendCounter = localEvents.size();
         if(sendCounter>0) {
             sendEvent(localEvents.get(sendCounter-1));
@@ -139,30 +139,28 @@ public class DataValueSender {
 
     private void sendEvent(Event event) {
         Log.d(CLASS_TAG, "sending event: "+ event.getEvent());
-        final ResponseHolder<ResponseBody> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ResponseBody> responseEvent = new
                 DataValueResponseEvent<ResponseBody>(ResponseEvent.EventType.sendEvent);
-        responseEvent.setResponseHolder(holder);
         RegisterEventTask task = new RegisterEventTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
-                        Log.e(CLASS_TAG, "response: " + new String(response.getBody()));
+                    public void onSuccess(ResponseHolder holder) {
+                        Log.d(CLASS_TAG, "response: " + new String(holder.getResponse().getBody()));
                         try {
                             ResponseBody responseBody = Dhis2.getInstance().getObjectMapper().
-                                    readValue(response.getBody(), ResponseBody.class);
+                                    readValue(holder.getResponse().getBody(), ResponseBody.class);
                             holder.setItem(responseBody);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder holder) {
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
                 }, event, event.getDataValues());
@@ -182,7 +180,7 @@ public class DataValueSender {
                 i--;
             }
         }
-        Log.d(CLASS_TAG, "got this many enrollments:" + localEnrollments.size());
+        Log.d(CLASS_TAG, "got this many enrollments to send:" + localEnrollments.size());
         sendCounter = localEnrollments.size();
         if(sendCounter>0) {
             sendEnrollment(localEnrollments.get(sendCounter - 1));
@@ -191,30 +189,28 @@ public class DataValueSender {
 
     private void sendEnrollment(Enrollment enrollment) {
         Log.d(CLASS_TAG, "sending enrollment: "+ enrollment.getEnrollment());
-        final ResponseHolder<ImportSummary> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ImportSummary> responseEvent = new
                 DataValueResponseEvent<ImportSummary>(ResponseEvent.EventType.sendEnrollment);
-        responseEvent.setResponseHolder(holder);
         RegisterEnrollmentTask task = new RegisterEnrollmentTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
-                        Log.e(CLASS_TAG, "response: " + new String(response.getBody()));
+                    public void onSuccess(ResponseHolder holder) {
+                        Log.d(CLASS_TAG, "response: " + new String(holder.getResponse().getBody()));
                         try {
                             ImportSummary importSummary = Dhis2.getInstance().getObjectMapper().
-                                    readValue(response.getBody(), ImportSummary.class);
+                                    readValue(holder.getResponse().getBody(), ImportSummary.class);
                             holder.setItem(importSummary);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder holder) {
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
                 }, enrollment);
@@ -226,7 +222,7 @@ public class DataValueSender {
      */
     private void sendTrackedEntityInstances() {
         localTrackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
-        Log.d(CLASS_TAG, "got this many trackedEntityInstances:" + localTrackedEntityInstances.size());
+        Log.d(CLASS_TAG, "got this many trackedEntityInstances to send:" + localTrackedEntityInstances.size());
         sendCounter = localTrackedEntityInstances.size();
         if(sendCounter>0) {
             sendTrackedEntityInstance(localTrackedEntityInstances.get(sendCounter - 1));
@@ -235,30 +231,28 @@ public class DataValueSender {
 
     private void sendTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
         Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.trackedEntityInstance);
-        final ResponseHolder<ImportSummary> holder = new ResponseHolder<>();
         final DataValueResponseEvent<ImportSummary> responseEvent = new
                 DataValueResponseEvent<ImportSummary>(ResponseEvent.EventType.sendTrackedEntityInstance);
-        responseEvent.setResponseHolder(holder);
         RegisterTrackedEntityInstanceTask task = new RegisterTrackedEntityInstanceTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
-                        Log.e(CLASS_TAG, "response: " + new String(response.getBody()));
+                    public void onSuccess(ResponseHolder holder) {
+                        Log.d(CLASS_TAG, "response: " + new String(holder.getResponse().getBody()));
                         try {
                             ImportSummary importSummary = Dhis2.getInstance().getObjectMapper().
-                                    readValue(response.getBody(), ImportSummary.class);
+                                    readValue(holder.getResponse().getBody(), ImportSummary.class);
                             holder.setItem(importSummary);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder holder) {
+                        responseEvent.setResponseHolder(holder);
                         onResponse(responseEvent);
                     }
                 }, trackedEntityInstance);

@@ -29,97 +29,83 @@
 
 package org.hisp.dhis.android.sdk.controllers.tasks;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import android.util.Log;
+
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
+import org.hisp.dhis.android.sdk.controllers.wrappers.TrackedEntityInstancesWrapper;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
 import org.hisp.dhis.android.sdk.network.http.Request;
+import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.utils.APIException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
-public class LoadEventsTask implements INetworkTask {
-    private final ApiRequest.Builder<List<Event>> requestBuilder;
+/**
+ * Task for loading Tracked Entity Instances in batch from the trackedEntityInstances/ endpoint
+ * in the api. Due to the structure of the output from the endpoint a special wrapper class
+ * is needed to handle the response of this task.
+ */
+public class QueryTrackedEntityInstancesTask implements INetworkTask {
+    private final ApiRequest.Builder<Object> requestBuilder;
+    public final static String CLASS_TAG = QueryTrackedEntityInstancesTask.class.getSimpleName();
 
-    public LoadEventsTask(NetworkManager networkManager,
-                          ApiRequestCallback<List<Event>> callback,
-                          String organisationUnitId, String programId, boolean synchronizing) {
+    public QueryTrackedEntityInstancesTask(NetworkManager networkManager,
+                                           ApiRequestCallback<Object> callback,
+                                           String organisationUnit,
+                                           String program,
+                                           String queryString,
+                                           TrackedEntityAttributeValue... params) {
         requestBuilder = new ApiRequest.Builder<>();
+
         try {
             isNull(callback, "ApiRequestCallback must not be null");
             isNull(networkManager.getServerUrl(), "Server URL must not be null");
             isNull(networkManager.getHttpManager(), "HttpManager must not be null");
             isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-            isNull(organisationUnitId, "OrganisationUnit Id must not be null");
-            isNull(programId, "Program Id must not be null");
-
+            isNull(organisationUnit, "OrgUnit must not be null");
             List<Header> headers = new ArrayList<>();
             headers.add(new Header("Authorization", networkManager.getCredentials()));
             headers.add(new Header("Accept", "application/json"));
 
-            String url = networkManager.getServerUrl() + "/api/events?page=0&pageSize=200&orgUnit="+
-                    organisationUnitId+"&program="+programId;
-            if(synchronizing) {
-                SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
-                if( systemInfo != null && systemInfo.getServerDate()!= null ) {
-                    url += "&lastUpdated="+systemInfo.getServerDate();
+            String url = networkManager.getServerUrl() + "/api/trackedEntityInstances?paging=false&ou="
+                    +organisationUnit;
+            if(program!=null) {
+                url += "&program="+program;
+            }
+
+            if(queryString!=null && !queryString.isEmpty() && params==null || params.length <= 0) {
+                url+="&query=LIKE:"+queryString;
+            }
+
+            if(params!=null) {
+                for(TrackedEntityAttributeValue param: params) {
+                    if(param!=null && param.getValue()!=null && !param.getValue().isEmpty()) {
+                        url+="&filter="+param.getTrackedEntityAttributeId()+":LIKE:"+param.getValue();
+                    }
                 }
             }
 
             Request request = new Request(RestMethod.GET, url, headers, null);
+            QueryCallback queryCallback = new QueryCallback(callback);
 
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
-            requestBuilder.setRequestCallback(callback);
-        } catch (IllegalArgumentException e) {
-            requestBuilder.setRequest(new Request(RestMethod.POST, "dummy", new ArrayList<Header>(), null));
-            requestBuilder.setNetworkManager(networkManager.getHttpManager());
-            requestBuilder.setRequestCallback(callback);
-        }
-
-
-    }
-
-    public LoadEventsTask(NetworkManager networkManager,
-                          ApiRequestCallback<List<Event>> callback,
-                          Enrollment enrollment, boolean synchronizing) {
-
-        requestBuilder = new ApiRequest.Builder<>();
-        try {
-            isNull(callback, "ApiRequestCallback must not be null");
-            isNull(networkManager.getServerUrl(), "Server URL must not be null");
-            isNull(networkManager.getHttpManager(), "HttpManager must not be null");
-            isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
-            isNull(enrollment, "Enrollment must not be null");
-            isNull(enrollment.getProgram(), "EnrollmentProgram must not be null");
-            isNull(enrollment.getTrackedEntityInstance(), "TrackedEntityInstance must not be null");
-
-            List<Header> headers = new ArrayList<>();
-            headers.add(new Header("Authorization", networkManager.getCredentials()));
-            headers.add(new Header("Accept", "application/json"));
-
-            String url = networkManager.getServerUrl() + "/api/events?program="+enrollment.getProgram().getId()+"&programStatus="+enrollment.getStatus()+"&trackedEntityInstance="+enrollment.getTrackedEntityInstance();
-            if(synchronizing) {
-                SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
-                if( systemInfo != null && systemInfo.getServerDate()!= null ) {
-                    url += "&lastUpdated="+systemInfo.getServerDate();
-                }
-            }
-
-            Request request = new Request(RestMethod.GET, url, headers, null);
-            requestBuilder.setRequest(request);
-            requestBuilder.setNetworkManager(networkManager.getHttpManager());
-            requestBuilder.setRequestCallback(callback);
-        } catch (IllegalArgumentException e) {
+            requestBuilder.setRequestCallback(queryCallback);
+        } catch(IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, "dummy", new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(callback);
@@ -133,5 +119,35 @@ public class LoadEventsTask implements INetworkTask {
                 requestBuilder.build().request();
             }
         }.start();
+    }
+
+    public class QueryCallback implements ApiRequestCallback {
+        private final ApiRequestCallback parentCallback;
+
+        public QueryCallback(ApiRequestCallback parentCallback) {
+            this.parentCallback = parentCallback;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder holder) {
+
+            try {
+                List<TrackedEntityInstance> trackedEntityInstances = TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
+                holder.setItem(trackedEntityInstances);
+                parentCallback.onSuccess(holder);
+            } catch (IOException e) {
+                e.printStackTrace();
+                if(holder.getApiException()==null) {
+                    holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
+                }
+                parentCallback.onFailure(holder);
+            }
+
+        }
+
+        @Override
+        public void onFailure(ResponseHolder holder) {
+            parentCallback.onFailure(holder);
+        }
     }
 }

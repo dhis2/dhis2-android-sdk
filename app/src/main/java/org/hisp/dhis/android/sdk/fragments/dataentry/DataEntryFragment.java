@@ -56,6 +56,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.activities.OnBackPressedListener;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.fragments.ProgressDialogFragment;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
@@ -817,12 +818,12 @@ public class DataEntryFragment extends Fragment
 
                     final ApiRequestCallback callback = new ApiRequestCallback() {
                         @Override
-                        public void onSuccess(Response response) {
+                        public void onSuccess(ResponseHolder holder) {
                             //do nothing
                         }
 
                         @Override
-                        public void onFailure(APIException exception) {
+                        public void onFailure(ResponseHolder holder) {
                             //do nothing
                         }
                     };

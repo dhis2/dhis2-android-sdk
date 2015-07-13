@@ -15,11 +15,13 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
+import java.io.Serializable;
+
 /**
  * @author Simen Skogly Russnes on 03.03.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class TrackedEntityAttributeValue extends BaseValue {
+public class TrackedEntityAttributeValue extends BaseValue implements Serializable {
     private static final String CLASS_TAG = TrackedEntityAttributeValue.class.getSimpleName();
 
     @JsonProperty("attribute")

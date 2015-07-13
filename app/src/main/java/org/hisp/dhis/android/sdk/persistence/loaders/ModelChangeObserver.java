@@ -68,6 +68,7 @@ public class ModelChangeObserver<ModelClass extends Model> implements FlowConten
 
         if (!mLoader.isLoading()) {
             mLoader.onContentChanged();
+            mLoader.loadInBackground();
         }
     }
 }

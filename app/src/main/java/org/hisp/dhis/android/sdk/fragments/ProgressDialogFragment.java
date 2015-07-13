@@ -4,8 +4,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
+
+import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.events.LoadingEvent;
+import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 
 /**
  */

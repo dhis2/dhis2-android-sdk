@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.controllers.tasks;
 
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
@@ -56,7 +57,9 @@ public class LoadAssignedProgramsTask implements INetworkTask {
             isNull(networkManager.getHttpManager(), "HttpManager must not be null");
             isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
         } catch(IllegalArgumentException e) {
-            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+            ResponseHolder holder = new ResponseHolder<>();
+            holder.setApiException(APIException.unexpectedError(e.getMessage(), e));
+            callback.onFailure(holder);
         }
 
         List<Header> headers = new ArrayList<>();

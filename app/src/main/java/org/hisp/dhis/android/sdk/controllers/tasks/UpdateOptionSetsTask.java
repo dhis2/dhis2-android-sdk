@@ -77,7 +77,7 @@ public class UpdateOptionSetsTask implements INetworkTask {
      * @param holder
      */
     private void onUpdateFailed(ResponseHolder holder) {
-        callback.onFailure(holder.getApiException());
+        callback.onFailure(holder);
     }
 
     /**
@@ -162,25 +162,24 @@ public class UpdateOptionSetsTask implements INetworkTask {
      * @param optionSetId
      */
     private void loadOptionSet(String optionSetId) {
-        final ResponseHolder<OptionSet> holder = new ResponseHolder<>();
         LoadOptionSetTask task = new LoadOptionSetTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<OptionSet>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<OptionSet> holder) {
                         try {
-                            OptionSet optionSet = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), OptionSet.class);
+                            OptionSet optionSet = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), OptionSet.class);
                             holder.setItem(optionSet);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            if(holder.getApiException()==null) {
+                                holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
+                            }
                         }
                         onLoadOptionSetFinished(holder);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<OptionSet> holder) {
                         onLoadOptionSetFinished(holder);
                     }
                 }, optionSetId, true);
@@ -191,26 +190,24 @@ public class UpdateOptionSetsTask implements INetworkTask {
      * Called when the UpdateOptionSetsTask is finished
      */
     private void onFinishUpdatingOptionSets() {
-        callback.onSuccess(null);
+        callback.onSuccess(new ResponseHolder<Object>());
     }
 
     @Override
     public void execute() {
         new Thread() {
             public void run() {
-                final ResponseHolder<List<OptionSet>> holder = new ResponseHolder<>();
                 QueryUpdatedOptionSetsTask task = new QueryUpdatedOptionSetsTask(NetworkManager.getInstance(),
                         new ApiRequestCallback<List<OptionSet>>() {
                             @Override
-                            public void onSuccess(Response response) {
-                                holder.setResponse(response);
-                                if( response == null ) { /*if the response is null its most like
+                            public void onSuccess(ResponseHolder<List<OptionSet>> holder) {
+                                if( holder.getResponse() == null ) { /*if the response is null its most like
                                                         because nothing needs to be updated.*/
                                     holder.setItem(new ArrayList<OptionSet>());
                                 } else {
                                     try {
                                         JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                                readTree(response.getBody());
+                                                readTree(holder.getResponse().getBody());
                                         node = node.get("optionSets");
                                         TypeReference<List<OptionSet>> typeRef =
                                                 new TypeReference<List<OptionSet>>(){};
@@ -219,7 +216,7 @@ public class UpdateOptionSetsTask implements INetworkTask {
                                         holder.setItem(optionSets);
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                                        holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                                     }
                                 }
 
@@ -227,8 +224,7 @@ public class UpdateOptionSetsTask implements INetworkTask {
                             }
 
                             @Override
-                            public void onFailure(APIException exception) {
-                                holder.setApiException(exception);
+                            public void onFailure(ResponseHolder<List<OptionSet>> holder) {
                                 onQueryUpdatedOptionSetsTaskFinish(holder);
                             }
                         });
@@ -247,7 +243,9 @@ public class UpdateOptionSetsTask implements INetworkTask {
                 isNull(networkManager.getHttpManager(), "HttpManager must not be null");
                 isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
             } catch(IllegalArgumentException e) {
-                callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+                ResponseHolder holder = new ResponseHolder<>();
+                holder.setApiException(APIException.unexpectedError(e.getMessage(), e));
+                callback.onFailure(holder);
             }
 
             List<Header> headers = new ArrayList<>();

@@ -34,6 +34,7 @@ import android.util.Log;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
@@ -66,42 +67,45 @@ public class RegisterEnrollmentTask implements INetworkTask {
     public RegisterEnrollmentTask(NetworkManager networkManager,
                                   ApiRequestCallback<Object> callback, Enrollment enrollment) {
 
+        requestBuilder = new ApiRequest.Builder<>();
         try {
         isNull(callback, "ApiRequestCallback must not be null");
         isNull(networkManager.getServerUrl(), "Server URL must not be null");
         isNull(networkManager.getHttpManager(), "HttpManager must not be null");
         isNull(networkManager.getBase64Manager(), "Base64Manager must not be null");
         isNull(enrollment, "Enrollment must not be null");
+            List<Header> headers = new ArrayList<>();
+            headers.add(new Header("Authorization", networkManager.getCredentials()));
+            headers.add(new Header("Content-Type", "application/json"));
+
+            byte[] body = null;
+            try {
+                body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(enrollment);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            Log.e(CLASS_TAG, new String(body));
+
+            String url = networkManager.getServerUrl() + "/api/enrollments";
+            RestMethod restMethod = RestMethod.POST;
+
+            //updating if the enrollment has a valid UID
+            if(enrollment.getEnrollment() != null) {
+                url += "/" + enrollment.getEnrollment();
+                restMethod = RestMethod.PUT;
+            }
+            Request request = new Request(restMethod, url, headers, body);
+
+            requestBuilder.setRequest(request);
+            requestBuilder.setNetworkManager(networkManager.getHttpManager());
+            requestBuilder.setRequestCallback(callback);
         } catch(IllegalArgumentException e) {
-            callback.onFailure(APIException.unexpectedError(e.getMessage(), e));
+            requestBuilder.setRequest(new Request(RestMethod.POST, CLASS_TAG, new ArrayList<Header>(), null));
+            requestBuilder.setNetworkManager(networkManager.getHttpManager());
+            requestBuilder.setRequestCallback(callback);
+            ResponseHolder holder = new ResponseHolder();
+            holder.setApiException(APIException.unexpectedError(e.getMessage(), e));
         }
-
-        List<Header> headers = new ArrayList<>();
-        headers.add(new Header("Authorization", networkManager.getCredentials()));
-        headers.add(new Header("Content-Type", "application/json"));
-
-        byte[] body = null;
-        try {
-            body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(enrollment);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        Log.e(CLASS_TAG, new String(body));
-
-        String url = networkManager.getServerUrl() + "/api/enrollments";
-        RestMethod restMethod = RestMethod.POST;
-
-        //updating if the enrollment has a valid UID
-        if(enrollment.getEnrollment() != null) {
-            url += "/" + enrollment.getEnrollment();
-            restMethod = RestMethod.PUT;
-        }
-        Request request = new Request(restMethod, url, headers, body);
-
-        requestBuilder = new ApiRequest.Builder<>();
-        requestBuilder.setRequest(request);
-        requestBuilder.setNetworkManager(networkManager.getHttpManager());
-        requestBuilder.setRequestCallback(callback);
     }
 
     @Override

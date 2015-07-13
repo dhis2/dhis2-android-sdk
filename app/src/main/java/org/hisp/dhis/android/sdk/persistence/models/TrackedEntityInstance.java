@@ -14,6 +14,7 @@ import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(databaseName = Dhis2Database.NAME)
-public class TrackedEntityInstance extends BaseSerializableModel {
+public class TrackedEntityInstance extends BaseSerializableModel implements Serializable {
 
     public TrackedEntityInstance() {
 
@@ -85,10 +86,23 @@ public class TrackedEntityInstance extends BaseSerializableModel {
     private String orgUnit;
 
     @JsonProperty("attributes")
-//    @JsonIgnore
+    private List<TrackedEntityAttributeValue> attributes;
+
+    @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
-        return DataValueController.getTrackedEntityAttributeValues(localId);
+        if(attributes == null) {
+            attributes = DataValueController.getTrackedEntityAttributeValues(localId);
+        }
+        return attributes;
     }
+
+    @JsonIgnore
+    public void setAttributes(List<TrackedEntityAttributeValue> attributes) {
+        this.attributes = attributes;
+    }
+
+    @JsonProperty("relationships")
+    private List<Relationship> relationships;
 
     @Override
     public void save() {

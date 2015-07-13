@@ -378,30 +378,28 @@ public class MetaDataLoader {
 
     private void loadSystemInfo() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_server_info));
-        final ResponseHolder<SystemInfo> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<SystemInfo> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadSystemInfo);
-        event.setResponseHolder(holder);
         LoadSystemInfoTask task = new LoadSystemInfoTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<SystemInfo>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<SystemInfo> holder) {
 
                         try {
                             SystemInfo systemInfo = Dhis2.getInstance().getObjectMapper().
-                                    readValue(response.getBody(), SystemInfo.class);
+                                    readValue(holder.getResponse().getBody(), SystemInfo.class);
                             holder.setItem(systemInfo);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<SystemInfo> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -413,18 +411,14 @@ public class MetaDataLoader {
      */
     private void loadAssignedPrograms() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_assigned_programs));
-        final ResponseHolder<List<OrganisationUnit>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<OrganisationUnit>> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadAssignedPrograms);
-        event.setResponseHolder(holder);
         LoadAssignedProgramsTask task = new LoadAssignedProgramsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OrganisationUnit>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
-
+                    public void onSuccess(ResponseHolder<List<OrganisationUnit>> holder) {
                         try {
-                            JsonNode node = Dhis2.getInstance().getObjectMapper().readTree( response.getBody() );
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().readTree( holder.getResponse().getBody() );
                             node = node.get("organisationUnits");
                             if(node!=null) {
                                 Iterator<JsonNode> elements = node.elements();
@@ -441,14 +435,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<OrganisationUnit>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -461,31 +456,29 @@ public class MetaDataLoader {
      */
     private void loadProgram(String id) {
         if(id == null)
-            return;
+            return; //todo unsafe behaviour. should continue loading sequence
 
         Dhis2.postProgressMessage(context.getString(R.string.loading_program) + ": " + id);
-        final ResponseHolder<Program> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.loadProgram);
-        event.setResponseHolder(holder);
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Program>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<Program> holder) {
                         try {
-                            Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);
+                            Program program = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), Program.class);
                             holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<Program> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, id, false);
@@ -499,32 +492,32 @@ public class MetaDataLoader {
         if(id == null)
             return;
 
-        final ResponseHolder<Program> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.updateProgram);
-        Program program = new Program();
-        program.id = id;
-        holder.setItem(program); //passing a reference in case there is no reference from server
-        event.setResponseHolder(holder);
+        final Program programBackup = new Program();
+        programBackup.id = id;
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Program>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<Program> holder) {
                         try {
-                            Program program = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), Program.class);
+                            Program program = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), Program.class);
                             if(program.id != null)
                                 holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        if(holder.getItem() == null) {
+                            holder.setItem(programBackup); //passing a reference in case there is no reference from server
+                        }
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<Program> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, id, true);
@@ -536,23 +529,21 @@ public class MetaDataLoader {
      * they were uploaded.
      */
     private void updateOptionSets() {
-        final ResponseHolder<Object> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Object> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.onUpdateOptionSets);
-        event.setResponseHolder(holder);
         UpdateOptionSetsTask task = new UpdateOptionSetsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder holder) {
                         holder.setItem(new Object());
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -564,19 +555,16 @@ public class MetaDataLoader {
      */
     private void loadOptionSets() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_optionsets));
-        final ResponseHolder<List<OptionSet>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<OptionSet>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadOptionSets);
-        event.setResponseHolder(holder);
         LoadOptionSetsTask task = new LoadOptionSetsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<OptionSet>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<OptionSet>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("optionSets");
 
                             if(node == null)
@@ -596,14 +584,15 @@ public class MetaDataLoader {
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<OptionSet>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -611,19 +600,16 @@ public class MetaDataLoader {
     }
 
     private void loadTrackedEntities() {
-        final ResponseHolder<List<TrackedEntity>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<TrackedEntity>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadTrackedEntities);
-        event.setResponseHolder(holder);
         LoadTrackedEntitiesTask task = new LoadTrackedEntitiesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<TrackedEntity>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<TrackedEntity>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("trackedEntities");
 
                             if(node == null)
@@ -642,15 +628,15 @@ public class MetaDataLoader {
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<TrackedEntity>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -662,23 +648,21 @@ public class MetaDataLoader {
      * they were uploaded.
      */
     private void updateTrackedEntityAttributes() {
-        final ResponseHolder<Object> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<Object> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.onUpdateTrackedEntityAttributes);
-        event.setResponseHolder(holder);
         UpdateTrackedEntityAttributesTask task = new UpdateTrackedEntityAttributesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Object>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder holder) {
                         holder.setItem(new Object());
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -690,19 +674,16 @@ public class MetaDataLoader {
      */
     private void loadTrackedEntityAttributes() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_trackedentityattributes));
-        final ResponseHolder<List<TrackedEntityAttribute>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<TrackedEntityAttribute>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadTrackedEntityAttributes);
-        event.setResponseHolder(holder);
         LoadTrackedEntityAttributesTask task = new LoadTrackedEntityAttributesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<TrackedEntityAttribute>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<TrackedEntityAttribute>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("trackedEntityAttributes");
 
                             if(node == null){
@@ -719,15 +700,15 @@ public class MetaDataLoader {
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<TrackedEntityAttribute>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 });
@@ -736,19 +717,16 @@ public class MetaDataLoader {
 
     private void updateConstants() {
         Dhis2.postProgressMessage(context.getString(R.string.updating_constants));
-        final ResponseHolder<List<Constant>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<Constant>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.updateConstants);
-        event.setResponseHolder(holder);
         LoadConstantsTask task = new LoadConstantsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<Constant>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<Constant>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("constants");
                             if( node == null ) { /* in case there are no enrollments */
                                 holder.setItem(new ArrayList<Constant>());
@@ -762,15 +740,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<Constant>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, true);
@@ -779,19 +757,16 @@ public class MetaDataLoader {
 
     private void loadConstants() {
         Dhis2.postProgressMessage(context.getString(R.string.loading_constants));
-        final ResponseHolder<List<Constant>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<Constant>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadConstants);
-        event.setResponseHolder(holder);
         LoadConstantsTask task = new LoadConstantsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<Constant>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<Constant>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("constants");
                             if(node == null)
                             {
@@ -807,15 +782,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<Constant>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, false);
@@ -824,19 +799,16 @@ public class MetaDataLoader {
 
     private void loadProgramRules(boolean update) {
         Dhis2.postProgressMessage(context.getString(R.string.loading_programrules));
-        final ResponseHolder<List<ProgramRule>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<ProgramRule>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadProgramRules);
-        event.setResponseHolder(holder);
         LoadProgramRulesTask task = new LoadProgramRulesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<ProgramRule>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<ProgramRule>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("programRules");
                             if( node == null ) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRule>());
@@ -850,15 +822,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<ProgramRule>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, update);
@@ -867,19 +839,16 @@ public class MetaDataLoader {
 
     private void loadProgramRuleVariables(boolean update) {
         Dhis2.postProgressMessage(context.getString(R.string.loading_programrulevariables));
-        final ResponseHolder<List<ProgramRuleVariable>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<ProgramRuleVariable>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadProgramRuleVariables);
-        event.setResponseHolder(holder);
         LoadProgramRuleVariablesTask task = new LoadProgramRuleVariablesTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<ProgramRuleVariable>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<ProgramRuleVariable>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("programRuleVariables");
                             if( node == null ) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRuleVariable>());
@@ -893,15 +862,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<ProgramRuleVariable>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, update);
@@ -910,19 +879,16 @@ public class MetaDataLoader {
 
     private void loadProgramRuleActions(boolean update) {
         Dhis2.postProgressMessage(context.getString(R.string.loading_programruleactions));
-        final ResponseHolder<List<ProgramRuleAction>> holder = new ResponseHolder<>();
         final MetaDataResponseEvent<List<ProgramRuleAction>> event = new
                 MetaDataResponseEvent<>
                 (BaseEvent.EventType.loadProgramRuleActions);
-        event.setResponseHolder(holder);
         LoadProgramRuleActionsTask task = new LoadProgramRuleActionsTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<List<ProgramRuleAction>>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<List<ProgramRuleAction>> holder) {
                         try {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                    readTree(response.getBody());
+                                    readTree(holder.getResponse().getBody());
                             node = node.get("programRuleActions");
                             if( node == null ) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRuleAction>());
@@ -936,15 +902,15 @@ public class MetaDataLoader {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         event.setResponseHolder(holder);
                         onResponse(event);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<List<ProgramRuleAction>> holder) {
+                        event.setResponseHolder(holder);
                         onResponse(event);
                     }
                 }, update);

@@ -29,9 +29,9 @@
 
 package org.hisp.dhis.android.sdk.network.http;
 
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 
 public interface ApiRequestCallback<T> {
-    public void onSuccess(Response response);
-    public void onFailure(APIException exception);
+    public void onSuccess(ResponseHolder<T> responseHolder);
+    public void onFailure(ResponseHolder<T> responseHolder);
 }

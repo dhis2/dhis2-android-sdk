@@ -27,24 +27,38 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.utils;
+package org.hisp.dhis.android.sdk.controllers.datavalues;
 
-import android.util.Log;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 
-public class Preconditions {
-    public static final String TAG = Preconditions.class.getSimpleName();
-    private Preconditions() {
-        // no instances
+import java.util.List;
+
+/**
+ * @author Simen Skogly Russnes on 09.07.15.
+ */
+public class TrackedEntityInstancesResultHolder {
+
+    private final List<TrackedEntityInstance> trackedEntityInstances;
+    private final List<Enrollment> enrollments;
+    private final List<Event> events;
+
+    public TrackedEntityInstancesResultHolder(List<TrackedEntityInstance> trackedEntityInstances, List<Enrollment> enrollments, List<Event> events) {
+        this.trackedEntityInstances = trackedEntityInstances;
+        this.enrollments = enrollments;
+        this.events = events;
     }
 
-    /* this is just convenience which allows
-    to reduce amount of boilerplate code */
-    public static <T> T isNull(T obj, String message) {
-        if (obj == null) {
-            Log.d(TAG, message);
-            throw new IllegalArgumentException(message);
-        }
+    public List<TrackedEntityInstance> getTrackedEntityInstances() {
+        return trackedEntityInstances;
+    }
 
-        return obj;
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 }

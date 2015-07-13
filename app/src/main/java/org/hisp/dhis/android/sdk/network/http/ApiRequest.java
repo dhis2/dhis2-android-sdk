@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.network.http;
 
 
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.managers.IHttpManager;
 import org.hisp.dhis.android.sdk.utils.APIException;
 
@@ -71,36 +72,46 @@ public final class ApiRequest<T> {
         try {
             response = networkManager.request(request);
         } catch (IOException networkException) {
-            taskCallback.onFailure(APIException.networkError(request.getUrl(),
+            ResponseHolder holder = new ResponseHolder<>();
+            holder.setApiException(APIException.networkError(request.getUrl(),
                     networkException));
+            taskCallback.onFailure(holder);
             return;
         } catch (Exception unknownException) {
-            taskCallback.onFailure(APIException.unexpectedError(request.getUrl(),
+            ResponseHolder holder = new ResponseHolder<>();
+            holder.setApiException(APIException.unexpectedError(request.getUrl(),
                     unknownException));
+            taskCallback.onFailure(holder);
             return;
         }
 
         if (response == null) {
-            taskCallback.onFailure(APIException.unexpectedError(request.getUrl(),
+            ResponseHolder holder = new ResponseHolder<>();
+            holder.setApiException(APIException.unexpectedError(request.getUrl(),
                     new RuntimeException("Response cannot be null")));
+            taskCallback.onFailure(holder);
             return;
         }
-
+        ResponseHolder holder = new ResponseHolder();
+        holder.setResponse(response);
         if (!isSuccessful(response.getStatus())) {
-            taskCallback.onFailure(APIException.httpError(request.getUrl(),
+
+            holder.setApiException(APIException.httpError(request.getUrl(),
                     response));
+            taskCallback.onFailure(holder);
             return;
         }
 
         try {
             String responseBody = new String(response.getBody());
         } catch (Exception conversionException) {
-            taskCallback.onFailure(APIException.conversionError(request.getUrl(),
+            holder.setApiException(APIException.conversionError(request.getUrl(),
                     response, conversionException));
+            taskCallback.onFailure(holder);
             return;
         }
 
-        taskCallback.onSuccess(response);
+        taskCallback.onSuccess(holder);
     }
 
     public static class Builder<BuilderType> {

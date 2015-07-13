@@ -80,7 +80,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
      * @param holder
      */
     private void onUpdateFailed(ResponseHolder holder) {
-        callback.onFailure(holder.getApiException());
+        callback.onFailure(holder);
     }
 
     /**
@@ -150,25 +150,22 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
      * @param id
      */
     private void loadTrackedEntityAttribute(String id) {
-        final ResponseHolder<TrackedEntityAttribute> holder = new ResponseHolder<>();
         LoadTrackedEntityAttributeTask task = new LoadTrackedEntityAttributeTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<TrackedEntityAttribute>() {
                     @Override
-                    public void onSuccess(Response response) {
-                        holder.setResponse(response);
+                    public void onSuccess(ResponseHolder<TrackedEntityAttribute> holder) {
                         try {
-                            TrackedEntityAttribute trackedEntityAttribute = Dhis2.getInstance().getObjectMapper().readValue(response.getBody(), TrackedEntityAttribute.class);
+                            TrackedEntityAttribute trackedEntityAttribute = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), TrackedEntityAttribute.class);
                             holder.setItem(trackedEntityAttribute);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                            holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
                         onLoadTrackedEntityAttributeFinished(holder);
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
-                        holder.setApiException(exception);
+                    public void onFailure(ResponseHolder<TrackedEntityAttribute> holder) {
                         onLoadTrackedEntityAttributeFinished(holder);
                     }
                 }, id);
@@ -186,19 +183,17 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
     public void execute() {
         new Thread() {
             public void run() {
-                final ResponseHolder<List<TrackedEntityAttribute>> holder = new ResponseHolder<>();
                 QueryUpdatedTrackedEntityAttributesTask task = new QueryUpdatedTrackedEntityAttributesTask(NetworkManager.getInstance(),
                         new ApiRequestCallback<List<TrackedEntityAttribute>>() {
                             @Override
-                            public void onSuccess(Response response) {
-                                holder.setResponse(response);
-                                if( response == null ) { /*if the response is null its most like
+                            public void onSuccess(ResponseHolder<List<TrackedEntityAttribute>> holder) {
+                                if( holder.getResponse() == null ) { /*if the response is null its most like
                                                         because nothing needs to be updated.*/
                                     holder.setItem(new ArrayList<TrackedEntityAttribute>());
                                 } else {
                                     try {
                                         JsonNode node = Dhis2.getInstance().getObjectMapper().
-                                                readTree(response.getBody());
+                                                readTree(holder.getResponse().getBody());
                                         node = node.get("trackedEntityAttributes");
                                         TypeReference<List<TrackedEntityAttribute>> typeRef =
                                                 new TypeReference<List<TrackedEntityAttribute>>(){};
@@ -207,7 +202,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
                                         holder.setItem(trackedEntityAttributes);
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                                        holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                                     }
                                 }
 
@@ -215,8 +210,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
                             }
 
                             @Override
-                            public void onFailure(APIException exception) {
-                                holder.setApiException(exception);
+                            public void onFailure(ResponseHolder<List<TrackedEntityAttribute>> holder) {
                                 onQueryUpdatedTrackedEntityAttributesTaskFinish(holder);
                             }
                         });

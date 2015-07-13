@@ -178,7 +178,6 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
-
         if(attributes == null)
         {
             attributes = new ArrayList<>();

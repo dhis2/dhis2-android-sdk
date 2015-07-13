@@ -25,7 +25,7 @@ public class TrackedEntityInstancesWrapper {
      * @param body
      * @return
      */
-    public static Object[] parseTrackedEntityInstances(byte[] body) throws IOException {
+    public static List<TrackedEntityInstance> parseTrackedEntityInstances(byte[] body) throws IOException {
 
             JsonNode node = Dhis2.getInstance().getObjectMapper().
                     readTree(body);
@@ -42,12 +42,13 @@ public class TrackedEntityInstancesWrapper {
 
             List<List<String>> rows = Dhis2.getInstance().getObjectMapper().readValue(rowsNode.traverse(), typeRefRows);
             List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
-            List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new ArrayList<>();
+
 
             for(List<String> row: rows) {
                 /*from 0-4 is hardcoded: instance, created, lastupdated, ou, te (trackedEntity),
                     * everything >4 is attribute*/
                 TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
+                List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new ArrayList<>();
                 trackedEntityInstance.trackedEntityInstance = row.get(0);
                 trackedEntityInstance.setCreated(row.get(1));
                 trackedEntityInstance.setLastUpdated(row.get(2));
@@ -62,8 +63,9 @@ public class TrackedEntityInstancesWrapper {
                     value.setValue(row.get(i));
                     trackedEntityAttributeValues.add(value);
                  }
+                trackedEntityInstance.setAttributes(trackedEntityAttributeValues);
             }
-            return new Object[] {trackedEntityInstances, trackedEntityAttributeValues};
+            return trackedEntityInstances;
     }
 
 }

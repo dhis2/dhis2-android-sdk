@@ -142,7 +142,6 @@
     <string name="save_and_close">Save and close</string>
     <string name="terminate">Terminate</string>
 
-
     <string-array name="update_frequencies">
         <item>1 Minute</item>
         <item>15 Minutes</item>
@@ -200,5 +199,8 @@
     <string name="validation_success">Validation successful!</string>
     <string name="last_updated">Last updated</string>
     <string name="failed_item">Failed item</string>
+    <string name="detailed_search">Detailed search</string>
+    <string name="select_to_load">Select to load to device</string>
+    <string name="query_tracked_entity_instances">Online Query Tracked Entity Instances</string>
 
 </resources>

@@ -35,6 +35,7 @@ import android.util.Log;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
@@ -326,13 +327,13 @@ public class DataValueController {
                 this.callback = parentCallback;
             }
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 loadDataValues(context, true, callback);
             }
 
             @Override
-            public void onFailure(APIException exception) {
-                callback.onFailure(exception);
+            public void onFailure(ResponseHolder holder) {
+                callback.onFailure(holder);
             }
         };
         sendLocalData(context, callback);

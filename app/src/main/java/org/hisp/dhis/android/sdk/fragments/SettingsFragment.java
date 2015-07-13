@@ -50,6 +50,7 @@ import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.events.LoadingEvent;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
@@ -132,12 +133,12 @@ public class SettingsFragment extends Fragment
 
                 ApiRequestCallback callback = new ApiRequestCallback() {
                     @Override
-                    public void onSuccess(Response response) {
+                    public void onSuccess(ResponseHolder holder) {
                         //do nothing
                     }
 
                     @Override
-                    public void onFailure(APIException exception) {
+                    public void onFailure(ResponseHolder holder) {
                         //do nothing
                     }
                 };

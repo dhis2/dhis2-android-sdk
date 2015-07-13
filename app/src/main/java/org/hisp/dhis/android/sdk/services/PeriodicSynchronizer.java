@@ -37,6 +37,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
@@ -78,12 +79,12 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
         NetworkManager.getInstance().setCredentials(credentials);
         ApiRequestCallback callback = new ApiRequestCallback() {
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 //do nothing
             }
 
             @Override
-            public void onFailure(APIException exception) {
+            public void onFailure(ResponseHolder holder) {
                 //do nothing
             }
         };

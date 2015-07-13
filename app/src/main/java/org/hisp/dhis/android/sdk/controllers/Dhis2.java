@@ -34,6 +34,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,8 +53,8 @@ import org.hisp.dhis.android.sdk.events.LoadingEvent;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.ResponseEvent;
 import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
+import org.hisp.dhis.android.sdk.fragments.ProgressDialogFragment;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
@@ -84,6 +85,7 @@ import org.hisp.dhis.android.sdk.services.PeriodicSynchronizer;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis.android.sdk.utils.GpsManager;
+import org.hisp.dhis.android.sdk.utils.ui.dialogs.QueryTrackedEntityInstancesResultDialogFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,6 +115,10 @@ public final class Dhis2 {
     private ObjectMapper objectMapper;
     private Context context; //beware when using this as it must be set explicitly
     private Activity activity;
+
+    public Activity getActivity() {
+        return activity;
+    }
 
     public Dhis2() {
         objectMapper = new ObjectMapper();
@@ -207,11 +213,11 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
 
-            editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
-            editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
-            editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
-            editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITH_REGISTRATION, true);
-            editor.putBoolean(LOAD + Program.MULTIPLE_EVENTS_WITH_REGISTRATION, true);
+            //editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
+            //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
+            //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
+            //editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITH_REGISTRATION, true);
+            //editor.putBoolean(LOAD + Program.MULTIPLE_EVENTS_WITH_REGISTRATION, true);
         }
         editor.commit();
     }
@@ -234,8 +240,8 @@ public final class Dhis2 {
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, false);
 
         editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
-        editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
-        editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
+        //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
+        //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
         editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, false);
         editor.commit();
     }
@@ -306,11 +312,11 @@ public final class Dhis2 {
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
         if (isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
             if (!DataValueLoader.isEventsLoaded(context)) return false;
-        } else if (isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
+        } /*else if (isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
             if (!DataValueLoader.isEnrollmentsLoaded(context)) return false;
         } else if (isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
             if (!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
-        }
+        }*/
         Log.d(CLASS_TAG, "data values are loaded.");
         return true;
     }
@@ -334,6 +340,48 @@ public final class Dhis2 {
     public DataValueController getDataValueController() {
         if (dataValueController == null) dataValueController = new DataValueController();
         return dataValueController;
+    }
+
+    /**
+     * Queries the server for TrackedEntityInstances and shows a Dialog containing the results
+     * @param orgUnit
+     * @param program can be null
+     * @param params can be null
+     */
+    public static void queryTrackedEntityInstances(final FragmentManager fragmentManager, final String orgUnit, String program, String queryString, TrackedEntityAttributeValue... params) {
+        final ProgressDialogFragment progressDialogFragment = ProgressDialogFragment.newInstance();
+        ApiRequestCallback callback = new ApiRequestCallback() {
+            @Override
+            public void onSuccess(ResponseHolder holder) {
+                List<TrackedEntityInstance> trackedEntityInstances = (List<TrackedEntityInstance>) holder.getItem();
+                for(TrackedEntityInstance tei: trackedEntityInstances) {
+                    for(TrackedEntityAttributeValue val: tei.getAttributes() ) {
+                        Log.d(CLASS_TAG, val.getValue());
+                    }
+                }
+                progressDialogFragment.dismiss();
+                showTrackedEntityInstanceQueryResultDialog(fragmentManager, trackedEntityInstances, orgUnit);
+            }
+
+            @Override
+            public void onFailure(ResponseHolder holder) {
+                //todo show feedback to user
+                progressDialogFragment.dismiss();
+                if(holder.getApiException() != null) {
+                    if(holder.getApiException().getResponse() != null) {
+                        Log.d(CLASS_TAG, holder.getApiException().getResponse().getReason());
+                    }
+                }
+
+            }
+        };
+        DataValueLoader.queryTrackedEntityInstances(callback, orgUnit, program, queryString, params);
+        progressDialogFragment.show(fragmentManager, CLASS_TAG);
+    }
+
+    public static void showTrackedEntityInstanceQueryResultDialog(FragmentManager fragmentManager, List<TrackedEntityInstance> trackedEntityInstances, String orgUnit) {
+        QueryTrackedEntityInstancesResultDialogFragment dialog = QueryTrackedEntityInstancesResultDialogFragment.newInstance(trackedEntityInstances, orgUnit, null);
+        dialog.show(fragmentManager);
     }
 
     /**
@@ -389,18 +437,16 @@ public final class Dhis2 {
     public void login(String username, String password) {
         // TODO first check if we already have User through persistence layer
         // TODO if yes, return it, if not call network
-        final ResponseHolder<User> holder = new ResponseHolder<>();
         new AuthUserTask(NetworkManager.getInstance(), new ApiRequestCallback<User>() {
             @Override
-            public void onSuccess(Response response) {
-                holder.setResponse(response);
+            public void onSuccess(ResponseHolder<User> holder) {
 
                 try {
-                    User user = objectMapper.readValue(response.getBody(), User.class);
+                    User user = objectMapper.readValue(holder.getResponse().getBody(), User.class);
                     holder.setItem(user);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    holder.setApiException(APIException.conversionError(response.getUrl(), response, e));
+                    holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                 }
                 ResponseEvent<User> event = new ResponseEvent<User>(ResponseEvent.EventType.onLogin);
                 event.setResponseHolder(holder);
@@ -408,8 +454,7 @@ public final class Dhis2 {
             }
 
             @Override
-            public void onFailure(APIException exception) {
-                holder.setApiException(exception);
+            public void onFailure(ResponseHolder<User> holder) {
                 ResponseEvent event = new ResponseEvent(ResponseEvent.EventType.onLogin);
                 event.setResponseHolder(holder);
                 Dhis2Application.bus.post(event);
@@ -491,14 +536,14 @@ public final class Dhis2 {
                 this.callback = parentCallback;
             }
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 loadInitialDataValues(callback);
             }
 
             @Override
-            public void onFailure(APIException exception) {
+            public void onFailure(ResponseHolder holder) {
                 //todo retry?
-                callback.onFailure(null);
+                callback.onFailure(holder);
             }
         };
         loadMetaData(getInstance().context, callback);
@@ -528,13 +573,13 @@ public final class Dhis2 {
                 this.callback = parentCallback;
             }
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 synchronizeDataValues(context, callback);
             }
 
             @Override
-            public void onFailure(APIException exception) {
-                callback.onFailure(exception);
+            public void onFailure(ResponseHolder holder) {
+                callback.onFailure(holder);
             }
         };
         synchronizeMetaData(context, callback);
@@ -579,19 +624,19 @@ public final class Dhis2 {
                 this.parentCallback = callback;
             }
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 Log.d(CLASS_TAG, "init loading datavalues");
                 if (!isDataValuesLoaded(getInstance().context)) {
                     Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
                     getInstance().getDataValueController().loadDataValues(getInstance().context, false, parentCallback);
                 } else {
-                    parentCallback.onFailure(null);
+                    parentCallback.onFailure(holder);
                 }
             }
 
             @Override
-            public void onFailure(APIException exception) {
-                parentCallback.onFailure(null);
+            public void onFailure(ResponseHolder holder) {
+                parentCallback.onFailure(holder);
             }
         };
         BlockThread blockThread = new BlockThread(observer, blockCallback);
@@ -607,7 +652,7 @@ public final class Dhis2 {
                 this.callback = parentCallback;
             }
             @Override
-            public void onSuccess(Response response) {
+            public void onSuccess(ResponseHolder holder) {
                 SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
                 event.success = true;
                 Dhis2Application.getEventBus().post(event); //is finished synchronizing
@@ -615,12 +660,11 @@ public final class Dhis2 {
             }
 
             @Override
-            public void onFailure(APIException exception) {
-                callback.onFailure(exception);
+            public void onFailure(ResponseHolder holder) {
+                callback.onFailure(holder);
             }
         };
         getInstance().getDataValueController().synchronizeDataValues(context, callback);
-
     }
 
 
@@ -703,6 +747,11 @@ public final class Dhis2 {
                 show(activity.getFragmentManager(), title);
     }
 
+    /**
+     * ???
+     * todo find out if this method does anything, and remove it if it doesn't
+     * @param enabled
+     */
     public static void postLoadingFlag(final boolean enabled)
     {
         new Thread(){

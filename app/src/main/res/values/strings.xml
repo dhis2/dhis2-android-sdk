@@ -202,5 +202,6 @@
     <string name="detailed_search">Detailed search</string>
     <string name="select_to_load">Select to load to device</string>
     <string name="query_tracked_entity_instances">Online Query Tracked Entity Instances</string>
+    <string name="unsynchronized_data_values">You need to synchronize your changes with the server before logging out. Please check your Internet connection and press the synchronization button</string>
 
 </resources>

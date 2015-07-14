@@ -109,7 +109,7 @@ public class DataValueSender {
 
         InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
         Dhis2Application.getEventBus().post(event);
-
+        Dhis2.hasUnSynchronizedDatavalues = false;
         sending = false;
         if(success) {
             callback.onSuccess(null);
@@ -406,6 +406,7 @@ public class DataValueSender {
             Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
         }
         if(apiException.isNetworkError()) {
+            Dhis2.hasUnSynchronizedDatavalues = true;
             return; //if item failed due to network error then there is no need to store error info
         }
         FailedItem failedItem = new FailedItem();

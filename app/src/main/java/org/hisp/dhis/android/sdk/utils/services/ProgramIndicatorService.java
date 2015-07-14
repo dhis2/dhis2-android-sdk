@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.utils.services;
 
 import android.util.Log;
 
+import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
@@ -67,7 +68,7 @@ import java.util.regex.Matcher;
  */
 public class ProgramIndicatorService
 {
-    public static final String CLASS_TAG = "ProgramIndicatorService";
+    public static final String CLASS_TAG = ProgramIndicatorService.class.getSimpleName();
     public static final String ZERO = "0";
 
     /**
@@ -546,7 +547,14 @@ public class ProgramIndicatorService
         }
 
         expression = TextUtils.appendTail( matcher, buffer );
-        return ExpressionUtils.evaluateToDouble(expression, null);
+        Double value;
+        try {
+            value = ExpressionUtils.evaluateToDouble(expression, null);
+        } catch (JexlException e) {
+            e.printStackTrace();
+            value = new Double(0);
+        }
+        return value;
     }
 
     private static boolean isZeroOrPositive( String value )

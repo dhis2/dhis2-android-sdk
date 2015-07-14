@@ -122,8 +122,7 @@ public class SettingsFragment extends Fragment
                     getString(R.string.logout_option), getString(R.string.cancel_option), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Log.d(TAG, "UNSYNCED: " + Dhis2.hasUnSynchronizedDatavalues);
-                            Log.d(TAG, "ISLOADING: " + Dhis2.isLoading());
+
                             if(Dhis2.hasUnSynchronizedDatavalues)
                             {
                                 //show error dialog

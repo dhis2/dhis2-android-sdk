@@ -53,6 +53,8 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
@@ -101,14 +103,14 @@ public class MetaDataController {
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
-        if(section==null) return null;
+        if (section == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
                 (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {
-        if(programStage==null) return null;
+        if (programStage == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
                 (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.id)).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
@@ -116,6 +118,7 @@ public class MetaDataController {
 
     /**
      * returns a tracked Entity object for the given ID
+     *
      * @param trackedEntity
      * @return
      */
@@ -126,6 +129,7 @@ public class MetaDataController {
 
     /**
      * Returns a list of ProgramTrackedEntityAttributes for the given program.
+     *
      * @param program
      * @return
      */
@@ -137,8 +141,9 @@ public class MetaDataController {
 
     /**
      * Returns a list of programs assigned to the given organisation unit id
+     *
      * @param organisationUnitId
-     * @param kinds set to null to get all programs. Else get kinds Strings from Program.
+     * @param kinds              set to null to get all programs. Else get kinds Strings from Program.
      * @return
      */
     public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
@@ -149,10 +154,9 @@ public class MetaDataController {
                                 is(organisationUnitId)).queryList();
 
         List<Program> programs = new ArrayList<Program>();
-        for(OrganisationUnitProgramRelationship oupr: organisationUnitProgramRelationships ) {
-            if(kinds!=null) {
-                for(String kind: kinds)
-                {
+        for (OrganisationUnitProgramRelationship oupr : organisationUnitProgramRelationships) {
+            if (kinds != null) {
+                for (String kind : kinds) {
                     List<Program> plist = new Select().from(Program.class).where(
                             Condition.column(Program$Table.ID).is(oupr.getProgramId())).and(
                             Condition.column(Program$Table.KIND).is(kind)).queryList();
@@ -171,6 +175,7 @@ public class MetaDataController {
 
     /**
      * Returns a program stage for a given program stage uid
+     *
      * @param programStageUid
      * @return
      */
@@ -182,6 +187,7 @@ public class MetaDataController {
     /**
      * todo: programTrackedEntityAttributes is not necessarily unique for a trackedEntityAttribute.
      * todo: implement program parameter
+     *
      * @param trackedEntityAttribute
      * @return
      */
@@ -198,6 +204,7 @@ public class MetaDataController {
 
     /**
      * Returns a constant with the given uid
+     *
      * @param id
      * @return
      */
@@ -208,6 +215,7 @@ public class MetaDataController {
 
     /**
      * returns a list of all constants
+     *
      * @return
      */
     public static List<Constant> getConstants() {
@@ -224,13 +232,15 @@ public class MetaDataController {
 
     /**
      * Returns a list of IDs for all assigned programs.
+     *
      * @return
      */
     public static List<String> getAssignedPrograms() {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships = new Select().from(OrganisationUnitProgramRelationship.class).queryList();
         List<String> assignedPrograms = new ArrayList<>();
-        for(OrganisationUnitProgramRelationship relationship: organisationUnitProgramRelationships) {
-            if(!assignedPrograms.contains(relationship.getProgramId())) assignedPrograms.add(relationship.getProgramId());
+        for (OrganisationUnitProgramRelationship relationship : organisationUnitProgramRelationships) {
+            if (!assignedPrograms.contains(relationship.getProgramId()))
+                assignedPrograms.add(relationship.getProgramId());
         }
         return assignedPrograms;
     }
@@ -250,6 +260,7 @@ public class MetaDataController {
 
     /**
      * Returns a list of organisation units assigned to the current user
+     *
      * @return
      */
     public static List<OrganisationUnit> getAssignedOrganisationUnits() {
@@ -259,6 +270,7 @@ public class MetaDataController {
 
     /**
      * Returns the data element for the given uid or null if the dataElement does not exist
+     *
      * @param dataElementId
      * @return
      */
@@ -269,6 +281,7 @@ public class MetaDataController {
 
     /**
      * Returns a User object for the currently logged in user.
+     *
      * @return
      */
     public static User getUser() {
@@ -277,6 +290,7 @@ public class MetaDataController {
 
     /**
      * Returns an option set for the given Id or null of the option set doesn't exist.
+     *
      * @param optionSetId
      * @return
      */
@@ -286,20 +300,46 @@ public class MetaDataController {
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsByProgram(String program) {
-        return new Select().from(ProgramIndicator.class).where(Condition.column(ProgramIndicator$Table.PROGRAM).is(program)).queryList();
+        return new Select()
+                .from(ProgramIndicator.class)
+                .where(Condition.column(ProgramIndicator$Table
+                        .PROGRAM).is(program))
+                .queryList();
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsByProgramStage(String programStage) {
-        return new Select().from(ProgramIndicator.class).where(Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).is(programStage)).queryList();
+        List<ProgramIndicatorToSectionRelationship> relations = new Select()
+                .from(ProgramIndicatorToSectionRelationship.class)
+                .where(Condition.column(ProgramIndicatorToSectionRelationship$Table
+                        .PROGRAMSECTION).is(programStage))
+                .queryList();
+        List<ProgramIndicator> indicators = new ArrayList<>();
+        if (relations != null && !relations.isEmpty()) {
+            for (ProgramIndicatorToSectionRelationship relation : relations) {
+                indicators.add(relation.getProgramIndicator());
+            }
+        }
+        return indicators;
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsBySection(String section) {
-        return new Select().from(ProgramIndicator.class).where(
-                Condition.column(ProgramIndicator$Table.SECTION).is(section)).queryList();
+        List<ProgramIndicatorToSectionRelationship> relations = new Select()
+                .from(ProgramIndicatorToSectionRelationship.class)
+                .where(Condition.column(ProgramIndicatorToSectionRelationship$Table
+                        .PROGRAMSECTION).is(section))
+                .queryList();
+        List<ProgramIndicator> indicators = new ArrayList<>();
+        if (relations != null && !relations.isEmpty()) {
+            for (ProgramIndicatorToSectionRelationship relation : relations) {
+                indicators.add(relation.getProgramIndicator());
+            }
+        }
+        return indicators;
     }
 
     /**
      * Synchronizes meta data by downloading newly changed data from the server.
+     *
      * @param context
      * @param callback
      */
@@ -310,6 +350,7 @@ public class MetaDataController {
     /**
      * Initiates loading of metadata from the server. To update existing data, rather use
      * synchronizeMetaData to save data.
+     *
      * @param context
      */
     public void loadMetaData(Context context, ApiRequestCallback callback) {
@@ -319,13 +360,13 @@ public class MetaDataController {
     /**
      * This method checks if all models that all UID references to other models are valid
      */
-    public void metaDataIntegrityCheck()
-    {
+    public void metaDataIntegrityCheck() {
         metaDataLoader.metaDataIntegrityCheck();
     }
 
     /**
      * Resets the value set for last updated
+     *
      * @param context
      */
     public void resetLastUpdated(Context context) {
@@ -335,6 +376,7 @@ public class MetaDataController {
     /**
      * Resets the loaded status of all meta data. This status is used to know whether or not
      * to update the data, or to load all of it.
+     *
      * @param context
      */
     public void clearMetaDataLoadedFlags(Context context) {
@@ -353,6 +395,7 @@ public class MetaDataController {
                 OrganisationUnitProgramRelationship.class,
                 Program.class,
                 ProgramIndicator.class,
+                ProgramIndicatorToSectionRelationship.class,
                 ProgramStage.class,
                 ProgramStageDataElement.class,
                 ProgramStageSection.class,

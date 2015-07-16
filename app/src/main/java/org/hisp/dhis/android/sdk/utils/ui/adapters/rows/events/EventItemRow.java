@@ -38,9 +38,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.events.OnRowClick;
+import org.hisp.dhis.android.sdk.events.OnTrackerItemClick;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.utils.OnEventClick;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
@@ -52,7 +53,7 @@ public final class EventItemRow implements EventRow {
     private String mFirstItem;
     private String mSecondItem;
     private String mThirdItem;
-    private EventItemStatus mStatus;
+    private OnRowClick.ITEM_STATUS mStatus;
 
     private Drawable mOfflineDrawable;
     private Drawable mErrorDrawable;
@@ -160,11 +161,11 @@ public final class EventItemRow implements EventRow {
         this.mFirstItem = firstItem;
     }
 
-    public void setStatus(EventItemStatus status) {
+    public void setStatus(OnRowClick.ITEM_STATUS status) {
         mStatus = status;
     }
 
-    public EventItemStatus getStatus() {
+    public OnRowClick.ITEM_STATUS getStatus() {
         return mStatus;
     }
 
@@ -193,13 +194,13 @@ public final class EventItemRow implements EventRow {
 
     private static class OnEventInternalClickListener implements View.OnClickListener {
         private Event event;
-        private EventItemStatus status;
+        private OnRowClick.ITEM_STATUS status;
 
         public void setEvent(Event event) {
             this.event = event;
         }
 
-        public void setStatus(EventItemStatus status) {
+        public void setStatus(OnRowClick.ITEM_STATUS status) {
             this.status = status;
         }
 
@@ -207,10 +208,10 @@ public final class EventItemRow implements EventRow {
         public void onClick(View view) {
             if (view.getId() == R.id.event_container) {
                 Dhis2Application.getEventBus()
-                        .post(new OnEventClick(event, status, true));
+                        .post(new OnTrackerItemClick(event, status, true));
             } else if (view.getId() == R.id.status_container) {
                 Dhis2Application.getEventBus()
-                        .post(new OnEventClick(event, status, false));
+                        .post(new OnTrackerItemClick(event, status, false));
             }
         }
     }

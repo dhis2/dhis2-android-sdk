@@ -51,12 +51,14 @@ import org.hisp.dhis.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis.android.sdk.events.BaseEvent;
 import org.hisp.dhis.android.sdk.events.LoadingEvent;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
+import org.hisp.dhis.android.sdk.events.OnRowClick;
 import org.hisp.dhis.android.sdk.events.ResponseEvent;
 import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
 import org.hisp.dhis.android.sdk.fragments.ProgressDialogFragment;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -86,6 +88,7 @@ import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.CustomDialogFragment;
 import org.hisp.dhis.android.sdk.utils.GpsManager;
 import org.hisp.dhis.android.sdk.utils.ui.dialogs.QueryTrackedEntityInstancesResultDialogFragment;
+import org.hisp.dhis.android.sdk.utils.ui.dialogs.ItemStatusDialogFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -392,6 +395,11 @@ public final class Dhis2 {
     public static void showTrackedEntityInstanceQueryResultDialog(FragmentManager fragmentManager, List<TrackedEntityInstance> trackedEntityInstances, String orgUnit) {
         QueryTrackedEntityInstancesResultDialogFragment dialog = QueryTrackedEntityInstancesResultDialogFragment.newInstance(trackedEntityInstances, orgUnit, null);
         dialog.show(fragmentManager);
+    }
+
+    public static void showStatusDialog(FragmentManager fragmentManager, BaseSerializableModel item) {
+        ItemStatusDialogFragment fragment = ItemStatusDialogFragment.newInstance(item);
+        fragment.show(fragmentManager);
     }
 
     /**

@@ -32,9 +32,12 @@ package org.hisp.dhis.android.sdk.controllers.tasks;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
+import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueSender;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
@@ -42,9 +45,16 @@ import org.hisp.dhis.android.sdk.network.http.Request;
 import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,6 +99,9 @@ public class RegisterEventTask implements INetworkTask {
         event.setDataValues(null);
         if(event.getLongitude()==null) event.setLongitude(new Double(0));
         if(event.getLatitude()==null) event.setLatitude(new Double(0));
+        if(Utils.isLocal(event.getEvent())) {
+            event.setEvent(null);
+        }
         byte[] body = null;
         try {
             body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(event);
@@ -100,10 +113,13 @@ public class RegisterEventTask implements INetworkTask {
         String url = networkManager.getServerUrl() + "/api/events";
         Request request = new Request(RestMethod.POST, url, headers, body);
 
+        RegisterEventCallback registerEventCallback = new RegisterEventCallback(callback, event.getLocalId());
+        ResponseBodyCallback responseBodyCallback = new ResponseBodyCallback(registerEventCallback);
+
         requestBuilder = new ApiRequest.Builder<>();
         requestBuilder.setRequest(request);
         requestBuilder.setNetworkManager(networkManager.getHttpManager());
-        requestBuilder.setRequestCallback(callback);
+        requestBuilder.setRequestCallback(responseBodyCallback);
     }
 
     @Override
@@ -113,5 +129,78 @@ public class RegisterEventTask implements INetworkTask {
                 requestBuilder.build().request();
             }
         }.start();
+    }
+
+    static class RegisterEventCallback implements ApiRequestCallback<ImportSummary> {
+
+        private final long localReferenceId;
+        private final ApiRequestCallback parentCallback;
+        public RegisterEventCallback(ApiRequestCallback parentCallback, long localReferenceId) {
+            this.parentCallback = parentCallback;
+            this.localReferenceId = localReferenceId;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder<ImportSummary> responseHolder) {
+            if(responseHolder.getApiException() != null) {
+                APIException apiException = responseHolder.getApiException();
+                DataValueSender.handleError(apiException, FailedItem.EVENT, localReferenceId);
+                parentCallback.onFailure(responseHolder);
+            } else {
+                ImportSummary importSummary = responseHolder.getItem();
+                if (importSummary!=null) {
+                    if( importSummary.getStatus().equals(ImportSummary.SUCCESS)) {
+                        new Update(DataValue.class).set(Condition.column
+                                (DataValue$Table.EVENT).is
+                                (importSummary.getReference())).where(Condition.column(DataValue$Table.LOCALEVENTID).is(localReferenceId)).async().execute();
+
+                        new Update(Event.class).set(Condition.column
+                                (Event$Table.EVENT).is
+                                (importSummary.getReference()), Condition.column(Event$Table.FROMSERVER).
+                                is(true)).where(Condition.column(Event$Table.LOCALID).is(localReferenceId)).async().execute();
+                        DataValueSender.clearFailedItem(FailedItem.EVENT, localReferenceId);
+                    } else if (importSummary.getStatus().equals((ImportSummary.ERROR)) ){
+                        Log.d(CLASS_TAG, "failed.. ");
+                        DataValueSender.handleError(importSummary, FailedItem.EVENT, 200, localReferenceId);
+                    }
+                }
+                parentCallback.onSuccess(responseHolder);
+            }
+        }
+
+        @Override
+        public void onFailure(ResponseHolder responseHolder) {
+            parentCallback.onFailure(responseHolder);
+        }
+    }
+
+    static class ResponseBodyCallback implements ApiRequestCallback {
+
+        private final ApiRequestCallback parentCallback;
+        public ResponseBodyCallback(ApiRequestCallback parentCallback) {
+            this.parentCallback = parentCallback;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder holder) {
+            Log.d(CLASS_TAG, "response: " + new String(holder.getResponse().getBody()));
+            try {
+                ResponseBody responseBody = Dhis2.getInstance().getObjectMapper().
+                        readValue(holder.getResponse().getBody(), ResponseBody.class);
+                if(responseBody!=null && responseBody.getImportSummaries()!=null && !responseBody.getImportSummaries().isEmpty()) {
+                    holder.setItem(responseBody.getImportSummaries().get(0));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
+            }
+            parentCallback.onSuccess(holder);
+        }
+
+        @Override
+        public void onFailure(ResponseHolder holder) {
+            parentCallback.onFailure(holder);
+        }
     }
 }

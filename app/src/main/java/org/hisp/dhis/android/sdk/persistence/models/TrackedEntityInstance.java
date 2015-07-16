@@ -39,15 +39,6 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     @JsonIgnore
     @Column
-    private boolean fromServer = true;
-
-    @JsonIgnore
-    @Column
-    @PrimaryKey(autoincrement = true)
-    public long localId = -1;
-
-    @JsonIgnore
-    @Column
     @Unique
     public String trackedEntityInstance;
 
@@ -62,9 +53,7 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
      */
     @JsonProperty("trackedEntityInstance")
     public String getTrackedEntityInstance() {
-        if(Utils.isLocal(trackedEntityInstance))
-            return null;
-        else return trackedEntityInstance;
+        return trackedEntityInstance;
     }
 
     @JsonProperty("trackedEntity")
@@ -139,14 +128,6 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @Override
     public void update() {
         save();
-    }
-
-    public boolean getFromServer() {
-        return fromServer;
-    }
-
-    public long getLocalId() {
-        return localId;
     }
 
     public String getTrackedEntity() {

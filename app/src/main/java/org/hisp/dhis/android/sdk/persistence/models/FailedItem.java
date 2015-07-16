@@ -74,8 +74,8 @@ public class FailedItem extends BaseModel {
      * Returns the item for the given FailedItem. Can be cast to either of the model types
      * @return
      */
-    public BaseModel getItem() {
-        BaseModel item = null;
+    public BaseSerializableModel getItem() {
+        BaseSerializableModel item = null;
         if(itemType.equals(EVENT)) {
             item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
         } else if (itemType.equals(ENROLLMENT)) {

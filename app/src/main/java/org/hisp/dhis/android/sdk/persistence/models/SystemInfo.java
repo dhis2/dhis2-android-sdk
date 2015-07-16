@@ -37,6 +37,10 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.DateUtils;
+
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * @author Simen Skogly Russnes on 26.02.15.
@@ -62,7 +66,9 @@ public class SystemInfo extends BaseModel {
     }
 
     public String getServerDate() {
-        return serverDate;
+        if(serverDate==null) return serverDate;
+        Date date = DateUtils.parseDate(serverDate);
+        return DateUtils.getLongDateString(date);
     }
 
     public void setId(int id) {

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.AbsTextWatcher;
 
@@ -190,9 +191,9 @@ public final class CoordinatesRow implements DataEntryRow {
                 if(newValue != value)
                 {
                     mEvent.setLatitude(Double.valueOf(newValue));
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setValue(""+ newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(baseValue));
+                    DataValue dataValue = new DataValue();
+                    dataValue.setValue(""+ newValue);
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue));
                 }
             }
         }
@@ -226,9 +227,9 @@ public final class CoordinatesRow implements DataEntryRow {
                 if(newValue != value)
                 {
                     mEvent.setLongitude(Double.valueOf(newValue));
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setValue(""+ newValue);
-                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(baseValue));
+                    DataValue dataValue = new DataValue();
+                    dataValue.setValue(""+ newValue);
+                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue));
                 }
             }
         }

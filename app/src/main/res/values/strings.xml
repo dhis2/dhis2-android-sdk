@@ -203,4 +203,10 @@
     <string name="select_to_load">Select to load to device</string>
     <string name="query_tracked_entity_instances">Online Query Tracked Entity Instances</string>
 
+    <string name="status_sent_description">This item has been successfully synchronized with the server.</string>
+    <string name="status_offline_description">This item has not yet been synchronized with the server.</string>
+    <string name="status_error_description">Something went wrong. Please, try to re-upload event or contact administrator.</string>
+    <string name="copied_text">Copied text to clipboard.</string>
+    <string name="network_error">Network error</string>
+
 </resources>

@@ -44,7 +44,7 @@ public class Utils {
 
     private static final String CLASS_TAG = "Utils";
     private static final String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-    public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    //public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static final int getDpPx(int dp, DisplayMetrics displayMetrics) {
         int px = (int) TypedValue.applyDimension(

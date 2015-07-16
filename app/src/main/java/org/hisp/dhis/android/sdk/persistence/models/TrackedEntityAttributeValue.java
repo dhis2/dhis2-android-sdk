@@ -48,7 +48,6 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
                 getTrackedEntityAttribute(trackedEntityAttributeId);
         if(tea.getValueType().equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
-            Log.d(CLASS_TAG, "optionSet: " + tea.getOptionSet());
             if(optionSet == null) return "";
             for(Option o: optionSet.getOptions()) {
                 if(o.name.equals(value)) {

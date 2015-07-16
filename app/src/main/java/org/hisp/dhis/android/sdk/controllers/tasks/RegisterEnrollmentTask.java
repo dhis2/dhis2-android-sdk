@@ -32,9 +32,12 @@ package org.hisp.dhis.android.sdk.controllers.tasks;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
+import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueSender;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
@@ -42,7 +45,13 @@ import org.hisp.dhis.android.sdk.network.http.Request;
 import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +87,10 @@ public class RegisterEnrollmentTask implements INetworkTask {
             headers.add(new Header("Authorization", networkManager.getCredentials()));
             headers.add(new Header("Content-Type", "application/json"));
 
+            if(Utils.isLocal(enrollment.getEnrollment())) {
+                enrollment.setEnrollment(null);
+            }
+
             byte[] body = null;
             try {
                 body = Dhis2.getInstance().getObjectMapper().writeValueAsBytes(enrollment);
@@ -89,6 +102,8 @@ public class RegisterEnrollmentTask implements INetworkTask {
             String url = networkManager.getServerUrl() + "/api/enrollments";
             RestMethod restMethod = RestMethod.POST;
 
+
+
             //updating if the enrollment has a valid UID
             if(enrollment.getEnrollment() != null) {
                 url += "/" + enrollment.getEnrollment();
@@ -96,9 +111,14 @@ public class RegisterEnrollmentTask implements INetworkTask {
             }
             Request request = new Request(restMethod, url, headers, body);
 
+            SendEnrollmentCallback sendEnrollmentCallback = new
+                    SendEnrollmentCallback(callback, enrollment.getLocalId());
+            RegisterTrackedEntityInstanceTask.ImportSummaryCallback importSummaryCallback = new
+                    RegisterTrackedEntityInstanceTask.ImportSummaryCallback(sendEnrollmentCallback);
+
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
-            requestBuilder.setRequestCallback(callback);
+            requestBuilder.setRequestCallback(importSummaryCallback);
         } catch(IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, CLASS_TAG, new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
@@ -115,5 +135,49 @@ public class RegisterEnrollmentTask implements INetworkTask {
                 requestBuilder.build().request();
             }
         }.start();
+    }
+
+    static class SendEnrollmentCallback implements ApiRequestCallback<ImportSummary> {
+
+        private final ApiRequestCallback parentCallback;
+        private final long localEnrollmentReference;
+        public SendEnrollmentCallback(ApiRequestCallback parentCallback, long localEnrollmentReference) {
+            this.parentCallback = parentCallback;
+            this.localEnrollmentReference = localEnrollmentReference;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder<ImportSummary> holder) {
+            if(holder.getApiException() != null) {
+                APIException apiException = holder.getApiException();
+                DataValueSender.handleError(apiException, FailedItem.ENROLLMENT, localEnrollmentReference);
+                parentCallback.onFailure(holder);
+            } else {
+                ImportSummary importSummary = holder.getItem();
+                if (importSummary.getStatus().equals(ImportSummary.SUCCESS)) {
+                    //updating any local events that had reference to local enrollment to new
+                    //reference from server.
+                    new Update(Event.class).set(Condition.column
+                            (Event$Table.ENROLLMENT).is
+                            (importSummary.getReference())).where(Condition.column(Event$Table.LOCALENROLLMENTID).is(localEnrollmentReference)).async().execute();
+
+                    new Update(Enrollment.class).set(Condition.column
+                            (Enrollment$Table.ENROLLMENT).is
+                            (importSummary.getReference()), Condition.column(Enrollment$Table.FROMSERVER)
+                            .is(true)).where(Condition.column(Enrollment$Table.LOCALID).is
+                            (localEnrollmentReference)).async().execute();
+                    DataValueSender.clearFailedItem(FailedItem.ENROLLMENT, localEnrollmentReference);
+                } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
+                    Log.d(CLASS_TAG, "failed.. ");
+                    DataValueSender.handleError(importSummary, FailedItem.ENROLLMENT, 200, localEnrollmentReference);
+                }
+                parentCallback.onSuccess(holder);
+            }
+        }
+
+        @Override
+        public void onFailure(ResponseHolder holder) {
+            parentCallback.onFailure(holder);
+        }
     }
 }

@@ -431,7 +431,7 @@ public class ProgramIndicatorService
                     if(programInstance == null) { //in case single event without reg
                         programStageInstance = event;
                     } else {
-                        programStageInstance = DataValueController.getEvent(programInstance.localId, programStage.id );
+                        programStageInstance = DataValueController.getEvent(programInstance.getLocalId(), programStage.id );
                     }
 
                     DataValue dataValue = null;

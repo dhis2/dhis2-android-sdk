@@ -96,6 +96,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.DateUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -103,6 +104,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -266,7 +268,7 @@ public class DataValueLoader {
         if(currentLoadingDate == null) {
             return;
         }
-        DateTime currentDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(currentLoadingDate);
+        DateTime currentDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(currentLoadingDate);
 
         //todo commented because TEI are now loaded explicitly.
         //todo might still need to automatically update the loaded TEIs.
@@ -375,7 +377,7 @@ public class DataValueLoader {
                         loadEvents(loadEventsCallback, currentOrganisationUnit, currentProgram);
                         return;
                     }
-                    DateTime updatedDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(lastUpdatedString);
+                    DateTime updatedDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(lastUpdatedString);
                     if(updatedDateTime.isBefore(currentDateTime)) {
                         loadEvents(loadEventsCallback, currentOrganisationUnit, currentProgram);
                         return;
@@ -395,7 +397,6 @@ public class DataValueLoader {
             if( success ) {
                 SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                LocalDate localDate = new LocalDate();
                 editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, systemInfo.getServerDate());
                 editor.commit();
             }
@@ -507,7 +508,7 @@ public class DataValueLoader {
             if(localEvent != null) {
                 event.setLocalId(localEvent.getLocalId());
                 event.setLocalEnrollmentId(localEvent.getLocalEnrollmentId());
-                if( localEvent.getFromServer() == true ) {
+                if( localEvent.isFromServer() == true ) {
                     event.update();
                 }
             } else {
@@ -517,7 +518,7 @@ public class DataValueLoader {
                 Enrollment enrollment = DataValueController.getEnrollment(event.getEnrollment());
 
                 if(enrollment!=null) {
-                    event.setLocalEnrollmentId(enrollment.localId);
+                    event.setLocalEnrollmentId(enrollment.getLocalId());
                 } else {//could be single event without registration
                 }
                 event.save();
@@ -548,7 +549,7 @@ public class DataValueLoader {
                     for (TrackedEntityAttributeValue value : tei.getAttributes()) {
                         if (tei != null) {
                             value.setTrackedEntityInstanceId(tei.getTrackedEntityInstance());
-                            value.setLocalTrackedEntityInstanceId(tei.localId);
+                            value.setLocalTrackedEntityInstanceId(tei.getLocalId());
                         }
                         value.async().save();
                     }
@@ -561,7 +562,7 @@ public class DataValueLoader {
             }
             enrollment.setOrgUnit(currentOrganisationUnit);
             TrackedEntityInstance tei = DataValueController.getTrackedEntityInstance(enrollment.trackedEntityInstance);
-            if(tei!=null) enrollment.setLocalTrackedEntityInstanceId(tei.localId);
+            if(tei!=null) enrollment.setLocalTrackedEntityInstanceId(tei.getLocalId());
             enrollment.save();
         }
 
@@ -610,7 +611,8 @@ public class DataValueLoader {
     private static String getLastUpdatedDateForDataValueItem(Context context, String item) {
         if(context == null) return null;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getString(Dhis2.UPDATED + item, null);
+        Date date = DateUtils.parseDate(prefs.getString(Dhis2.UPDATED + item, null));
+        return DateUtils.getLongDateString(date);
     }
 
     /**

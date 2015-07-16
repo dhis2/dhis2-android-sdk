@@ -83,7 +83,7 @@ public class Enrollment extends BaseSerializableModel{
                 String status = Event.STATUS_FUTURE_VISIT;
                 Event event = new Event(organisationUnit, status,
                         program.id, programStage,
-                        trackedEntityInstance, this);
+                        trackedEntityInstance, enrollment, dateOfEnrollment);
                 events.add(event);
             }
         }
@@ -92,15 +92,6 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {}
-
-    @JsonIgnore
-    @Column
-    public boolean fromServer = true;
-
-    @JsonIgnore
-    @Column
-    @PrimaryKey(autoincrement = true)
-    public long localId = -1;
 
     @JsonIgnore
     @Column
@@ -118,10 +109,7 @@ public class Enrollment extends BaseSerializableModel{
      */
     @JsonProperty("enrollment")
     public String getEnrollment() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if(enrollment.length() == randomUUID.length())
-            return null;
-        else return enrollment;
+        return enrollment;
     }
 
     @JsonProperty("orgUnit")
@@ -143,10 +131,7 @@ public class Enrollment extends BaseSerializableModel{
      */
     @JsonProperty("trackedEntityInstance")
     public String getTrackedEntityInstance() {
-        String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
-        if(trackedEntityInstance.length() == randomUUID.length())
-            return null;
-        else return trackedEntityInstance;
+        return trackedEntityInstance;
     }
 
     @JsonIgnore
@@ -268,22 +253,6 @@ public class Enrollment extends BaseSerializableModel{
     @Override
     public void update() {
         save();
-    }
-
-    public boolean getFromServer() {
-        return fromServer;
-    }
-
-    public void setFromServer(boolean fromServer) {
-        this.fromServer = fromServer;
-    }
-
-    public long getLocalId() {
-        return localId;
-    }
-
-    public void setLocalId(long localId) {
-        this.localId = localId;
     }
 
     public String getOrgUnit() {

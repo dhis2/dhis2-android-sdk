@@ -73,7 +73,7 @@ public class Event extends BaseSerializableModel {
     public void handleUnknown(String key, Object value) {}
 
     public Event(String organisationUnitId, String status, String programId, ProgramStage programStage,
-                 String trackedEntityInstanceId, Enrollment enrollment) {
+                 String trackedEntityInstanceId, String enrollment, String dateOfEnrollment) {
         this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
         this.fromServer = false;
         this.dueDate = DateUtils.getMediumDateString();
@@ -83,27 +83,15 @@ public class Event extends BaseSerializableModel {
         this.programStageId = programStage.getId();
         this.status = status;
         this.trackedEntityInstance = trackedEntityInstanceId;
-        if(enrollment!=null) {
-            this.enrollment = enrollment.getEnrollment();
-            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment()));
+        this.enrollment = enrollment;
+        if(dateOfEnrollment!=null) {
+            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(dateOfEnrollment));
             this.dueDate = currentDateTime.plusDays(programStage.getMinDaysFromStart()).toString();
         }
         dataValues = new ArrayList<DataValue>();
     }
 
     public Event() {}
-
-    /**
-     * used to tell whether or not an event has been updated locally and needs to be sent to server.
-     */
-    @JsonIgnore
-    @Column
-    private boolean fromServer = true;
-
-    @JsonIgnore
-    @Column
-    @PrimaryKey(autoincrement = true)
-    protected long localId = -1;
 
     @JsonIgnore
     @Column
@@ -121,9 +109,7 @@ public class Event extends BaseSerializableModel {
      */
     @JsonProperty("event")
     public String getEvent() {
-        if(Utils.isLocal(event))
-        return null;
-        else return event;
+        return event;
     }
 
     @JsonProperty("lastUpdated")
@@ -162,9 +148,7 @@ public class Event extends BaseSerializableModel {
     private String enrollment;
 
     public String getEnrollment() {
-        if(Utils.isLocal(enrollment))
-            return null;
-        else return enrollment;
+        return enrollment;
     }
 
     @JsonProperty("program")
@@ -262,22 +246,6 @@ public class Event extends BaseSerializableModel {
         if (dataValues == null) dataValues = new Select().from(DataValue.class).where(
                 Condition.column(DataValue$Table.LOCALEVENTID).is(localId)).queryList();
         return dataValues;
-    }
-
-    public boolean getFromServer() {
-        return fromServer;
-    }
-
-    public void setFromServer(boolean fromServer) {
-        this.fromServer = fromServer;
-    }
-
-    public long getLocalId() {
-        return localId;
-    }
-
-    public void setLocalId(long localId) {
-        this.localId = localId;
     }
 
     public String getLastUpdated() {

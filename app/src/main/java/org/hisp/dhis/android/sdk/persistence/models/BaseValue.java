@@ -30,13 +30,16 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 /**
  * @author Simen Skogly Russnes on 20.03.15.
  */
-public class BaseValue extends BaseSerializableModel {
+@JsonIgnoreProperties("modelAdapter")
+public abstract class BaseValue extends BaseModel {
 
     public static final String FALSE = "false";
     public static final String TRUE = "true";

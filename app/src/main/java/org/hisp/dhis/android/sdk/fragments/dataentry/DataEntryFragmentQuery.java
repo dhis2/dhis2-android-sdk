@@ -192,7 +192,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                            ProgramStage programStage, String username) {
         Event event;
         if (eventId < 0) {
-            event = new Event(orgUnitId, Event.STATUS_ACTIVE, programId, programStage, null, null);
+            event = new Event(orgUnitId, Event.STATUS_ACTIVE, programId, programStage, null, null, null);
             if (enrollmentId > 0) {
                 Enrollment enrollment = DataValueController.getEnrollment(enrollmentId);
                 if (enrollment != null) {

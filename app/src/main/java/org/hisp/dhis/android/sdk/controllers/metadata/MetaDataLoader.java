@@ -110,6 +110,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.User$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.DateUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -117,6 +118,7 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
@@ -258,7 +260,7 @@ public class MetaDataLoader {
         if(currentLoadingDate == null) {
             return;
         }
-        String pattern = Utils.DATE_FORMAT;
+        String pattern = DateUtils.LONG_DATE_FORMAT.toPattern();
         DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);//combinedFormatter.parseDateTime(currentLoadingDate).withZone(DateTimeZone.getDefault());
         if(Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(ASSIGNED_PROGRAMS);
@@ -1495,7 +1497,8 @@ public class MetaDataLoader {
     private String getLastUpdatedDateForMetaDataItem(String item) {
         if(context == null) return null;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getString(Dhis2.UPDATED + item, null);
+        Date date = DateUtils.parseDate(prefs.getString(Dhis2.UPDATED + item, null));
+        return DateUtils.getLongDateString(date);
     }
 
     /**

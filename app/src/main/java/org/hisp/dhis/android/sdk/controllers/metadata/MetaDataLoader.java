@@ -58,32 +58,18 @@ import org.hisp.dhis.android.sdk.events.BaseEvent;
 import org.hisp.dhis.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
-import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.persistence.models.ImportSummary$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
-import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
@@ -98,17 +84,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
-import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
-import org.hisp.dhis.android.sdk.persistence.models.User;
-import org.hisp.dhis.android.sdk.persistence.models.User$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.DateUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
@@ -126,6 +104,7 @@ import java.util.TimerTask;
 
 /**
  * Handles loading of MetaData, including synchronization efforts
+ *
  * @author Simen Skogly Russnes on 04.03.15.
  */
 public class MetaDataLoader {
@@ -157,7 +136,7 @@ public class MetaDataLoader {
      */
     void synchronizeMetaData(Context context, ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "loading: " + loading);
-        if( Dhis2.isLoading() ) return;
+        if (Dhis2.isLoading()) return;
         synchronizing = true;
         loadMetaData(context, callback);
     }
@@ -167,7 +146,7 @@ public class MetaDataLoader {
      * By default this method loads metaData required for data entry in Event Capture
      */
     void loadMetaData(Context context, ApiRequestCallback callback) {
-        if( loading ) {
+        if (loading) {
             callback.onFailure(null);
             return;
         }
@@ -193,19 +172,19 @@ public class MetaDataLoader {
      * Loads a metadata item that is scheduled to be loaded but has not yet been.
      */
     private void loadItem() {
-        if(synchronizing) {
+        if (synchronizing) {
             updateItem();
             return;
         }
         //some items depend on each other. Programs depend on AssignedPrograms because we need
         //the ids of programs to load.
-        if(Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
+        if (Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
             if (!isMetaDataItemLoaded(ASSIGNED_PROGRAMS)) {
                 loadAssignedPrograms();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMS)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMS)) {
             List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
@@ -216,37 +195,37 @@ public class MetaDataLoader {
                 }
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, OPTION_SETS)) {
+        if (Dhis2.isLoadFlagEnabled(context, OPTION_SETS)) {
             if (!isMetaDataItemLoaded(OPTION_SETS)) {
                 loadOptionSets();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_ATTRIBUTES)) {
+        if (Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_ATTRIBUTES)) {
             if (!isMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES)) {
                 loadTrackedEntityAttributes();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
+        if (Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
             if (!isMetaDataItemLoaded(CONSTANTS)) {
                 loadConstants();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
             if (!isMetaDataItemLoaded(PROGRAMRULES)) {
                 loadProgramRules(synchronizing);
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
             if (!isMetaDataItemLoaded(PROGRAMRULEVARIABLES)) {
                 loadProgramRuleVariables(synchronizing);
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
             if (!isMetaDataItemLoaded(PROGRAMRULEACTIONS)) {
                 loadProgramRuleActions(synchronizing);
                 return;
@@ -257,108 +236,108 @@ public class MetaDataLoader {
 
     private void updateItem() {
         String currentLoadingDate = systemInfo.getServerDate();
-        if(currentLoadingDate == null) {
+        if (currentLoadingDate == null) {
             return;
         }
         String pattern = DateUtils.LONG_DATE_FORMAT.toPattern();
         DateTime currentDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(currentLoadingDate);//combinedFormatter.parseDateTime(currentLoadingDate).withZone(DateTimeZone.getDefault());
-        if(Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
+        if (Dhis2.isLoadFlagEnabled(context, ASSIGNED_PROGRAMS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(ASSIGNED_PROGRAMS);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 loadAssignedPrograms();
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 loadAssignedPrograms();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMS)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMS)) {
             List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
             if (assignedPrograms != null) {
                 for (String program : assignedPrograms) {
                     String lastUpdatedString = getLastUpdatedDateForMetaDataItem(program);
-                    if(lastUpdatedString == null) {
+                    if (lastUpdatedString == null) {
                         updateProgram(program);
                         return;
                     }
                     DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-                    if(updatedDateTime.isBefore(currentDateTime)) {
+                    if (updatedDateTime.isBefore(currentDateTime)) {
                         updateProgram(program);
                         return;
                     }
                 }
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, OPTION_SETS)) {
+        if (Dhis2.isLoadFlagEnabled(context, OPTION_SETS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(OPTION_SETS);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 updateOptionSets();
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 updateOptionSets();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_ATTRIBUTES)) {
+        if (Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_ATTRIBUTES)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(TRACKED_ENTITY_ATTRIBUTES);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 updateTrackedEntityAttributes();
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 updateTrackedEntityAttributes();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
+        if (Dhis2.isLoadFlagEnabled(context, CONSTANTS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(CONSTANTS);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 updateConstants();
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 updateConstants();
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULES)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULES);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 loadProgramRules(synchronizing);
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 loadProgramRules(synchronizing);
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULEVARIABLES)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULEVARIABLES);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 loadProgramRuleVariables(synchronizing);
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 loadProgramRuleVariables(synchronizing);
                 return;
             }
         }
-        if(Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
+        if (Dhis2.isLoadFlagEnabled(context, PROGRAMRULEACTIONS)) {
             String lastUpdatedString = getLastUpdatedDateForMetaDataItem(PROGRAMRULEACTIONS);
-            if(lastUpdatedString == null) {
+            if (lastUpdatedString == null) {
                 loadProgramRuleActions(synchronizing);
                 return;
             }
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
-            if(updatedDateTime.isBefore(currentDateTime)) {
+            if (updatedDateTime.isBefore(currentDateTime)) {
                 loadProgramRuleActions(synchronizing);
                 return;
             }
@@ -369,6 +348,7 @@ public class MetaDataLoader {
 
     /**
      * resets the saved date for last updated meta data
+     *
      * @param context
      */
     void resetLastUpdated(Context context) {
@@ -420,12 +400,12 @@ public class MetaDataLoader {
                     @Override
                     public void onSuccess(ResponseHolder<List<OrganisationUnit>> holder) {
                         try {
-                            JsonNode node = Dhis2.getInstance().getObjectMapper().readTree( holder.getResponse().getBody() );
+                            JsonNode node = Dhis2.getInstance().getObjectMapper().readTree(holder.getResponse().getBody());
                             node = node.get("organisationUnits");
-                            if(node!=null) {
+                            if (node != null) {
                                 Iterator<JsonNode> elements = node.elements();
                                 List<OrganisationUnit> organisationUnits = new ArrayList<>();
-                                while(elements.hasNext()) {
+                                while (elements.hasNext()) {
                                     JsonNode orgUnit = elements.next();
                                     OrganisationUnit ou = Dhis2.getInstance().getObjectMapper().
                                             readValue(orgUnit.toString(), OrganisationUnit.class);
@@ -454,10 +434,11 @@ public class MetaDataLoader {
 
     /**
      * Loads a program from the server based on given id
+     *
      * @param id id of program
      */
     private void loadProgram(String id) {
-        if(id == null)
+        if (id == null)
             return; //todo unsafe behaviour. should continue loading sequence
 
         Dhis2.postProgressMessage(context.getString(R.string.loading_program) + ": " + id);
@@ -491,7 +472,7 @@ public class MetaDataLoader {
      * Queries the server and updates a program if it is necessary
      */
     private void updateProgram(String id) {
-        if(id == null)
+        if (id == null)
             return;
 
         final MetaDataResponseEvent<Program> event = new
@@ -504,13 +485,13 @@ public class MetaDataLoader {
                     public void onSuccess(ResponseHolder<Program> holder) {
                         try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), Program.class);
-                            if(program.id != null)
+                            if (program.id != null)
                                 holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                         }
-                        if(holder.getItem() == null) {
+                        if (holder.getItem() == null) {
                             holder.setItem(programBackup); //passing a reference in case there is no reference from server
                         }
                         event.setResponseHolder(holder);
@@ -569,19 +550,16 @@ public class MetaDataLoader {
                                     readTree(holder.getResponse().getBody());
                             node = node.get("optionSets");
 
-                            if(node == null)
-                            {
+                            if (node == null) {
                                 holder.setItem(new ArrayList<OptionSet>());
-                            }
-                            else
-                            {
+                            } else {
                                 TypeReference<List<OptionSet>> typeRef =
-                                        new TypeReference<List<OptionSet>>(){};
+                                        new TypeReference<List<OptionSet>>() {
+                                        };
                                 List<OptionSet> optionSets = Dhis2.getInstance().getObjectMapper().
-                                        readValue( node.traverse(), typeRef);
+                                        readValue(node.traverse(), typeRef);
                                 holder.setItem(optionSets);
                             }
-
 
 
                         } catch (IOException e) {
@@ -614,16 +592,14 @@ public class MetaDataLoader {
                                     readTree(holder.getResponse().getBody());
                             node = node.get("trackedEntities");
 
-                            if(node == null)
-                            {
+                            if (node == null) {
                                 holder.setItem(new ArrayList<TrackedEntity>());
-                            }
-                            else
-                            {
+                            } else {
                                 TypeReference<List<TrackedEntity>> typeRef =
-                                        new TypeReference<List<TrackedEntity>>(){};
+                                        new TypeReference<List<TrackedEntity>>() {
+                                        };
                                 List<TrackedEntity> trackedEntities = Dhis2.getInstance().getObjectMapper().
-                                        readValue( node.traverse(), typeRef);
+                                        readValue(node.traverse(), typeRef);
                                 holder.setItem(trackedEntities);
                             }
 
@@ -688,15 +664,14 @@ public class MetaDataLoader {
                                     readTree(holder.getResponse().getBody());
                             node = node.get("trackedEntityAttributes");
 
-                            if(node == null){
+                            if (node == null) {
                                 holder.setItem(new ArrayList<TrackedEntityAttribute>());
-                            }
-                            else
-                            {
+                            } else {
                                 TypeReference<List<TrackedEntityAttribute>> typeRef =
-                                        new TypeReference<List<TrackedEntityAttribute>>(){};
+                                        new TypeReference<List<TrackedEntityAttribute>>() {
+                                        };
                                 List<TrackedEntityAttribute> trackedEntityAttributes = Dhis2.getInstance().getObjectMapper().
-                                        readValue( node.traverse(), typeRef);
+                                        readValue(node.traverse(), typeRef);
                                 holder.setItem(trackedEntityAttributes);
                             }
 
@@ -730,7 +705,7 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(holder.getResponse().getBody());
                             node = node.get("constants");
-                            if( node == null ) { /* in case there are no enrollments */
+                            if (node == null) { /* in case there are no enrollments */
                                 holder.setItem(new ArrayList<Constant>());
                             } else {
                                 TypeReference<List<Constant>> typeRef =
@@ -770,16 +745,14 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(holder.getResponse().getBody());
                             node = node.get("constants");
-                            if(node == null)
-                            {
+                            if (node == null) {
                                 holder.setItem(new ArrayList<Constant>());
-                            }
-                            else
-                            {
+                            } else {
                                 TypeReference<List<Constant>> typeRef =
-                                        new TypeReference<List<Constant>>(){};
+                                        new TypeReference<List<Constant>>() {
+                                        };
                                 List<Constant> constants = Dhis2.getInstance().getObjectMapper().
-                                        readValue( node.traverse(), typeRef);
+                                        readValue(node.traverse(), typeRef);
                                 holder.setItem(constants);
                             }
                         } catch (IOException e) {
@@ -812,7 +785,7 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(holder.getResponse().getBody());
                             node = node.get("programRules");
-                            if( node == null ) { /* in case there are no items */
+                            if (node == null) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRule>());
                             } else {
                                 TypeReference<List<ProgramRule>> typeRef =
@@ -852,7 +825,7 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(holder.getResponse().getBody());
                             node = node.get("programRuleVariables");
-                            if( node == null ) { /* in case there are no items */
+                            if (node == null) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRuleVariable>());
                             } else {
                                 TypeReference<List<ProgramRuleVariable>> typeRef =
@@ -892,7 +865,7 @@ public class MetaDataLoader {
                             JsonNode node = Dhis2.getInstance().getObjectMapper().
                                     readTree(holder.getResponse().getBody());
                             node = node.get("programRuleActions");
-                            if( node == null ) { /* in case there are no items */
+                            if (node == null) { /* in case there are no items */
                                 holder.setItem(new ArrayList<ProgramRuleAction>());
                             } else {
                                 TypeReference<List<ProgramRuleAction>> typeRef =
@@ -921,18 +894,17 @@ public class MetaDataLoader {
 
     private void onFinishLoading(boolean success) {
         Log.d(CLASS_TAG, "onFinishLoading" + success);
-        if( success ) {
+        if (success) {
             SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             LocalDate localDate = new LocalDate();
             editor.putString(Dhis2.LAST_UPDATED_METADATA, localDate.toString());
             editor.commit();
-            if(systemInfo != null) {
+            if (systemInfo != null) {
                 List<SystemInfo> result = new Select().from(SystemInfo.class).queryList();
-                if( result != null && !result.isEmpty() ) {
+                if (result != null && !result.isEmpty()) {
                     systemInfo.async().update();
-                }
-                else {
+                } else {
                     systemInfo.async().save();
                 }
             }
@@ -943,8 +915,8 @@ public class MetaDataLoader {
         InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.metaDataLoaded);
         Dhis2Application.getEventBus().post(event);
 
-        if(callback!=null) {
-            if(success) {
+        if (callback != null) {
+            if (success) {
                 callback.onSuccess(null);
             } else {
                 callback.onFailure(null);
@@ -955,22 +927,18 @@ public class MetaDataLoader {
     /**
      * This method checks if all models that all UID references to other models are valid
      */
-    public void metaDataIntegrityCheck()
-    {
+    public void metaDataIntegrityCheck() {
         Log.d(CLASS_TAG, "Running meta data integrity check");
 
         List<OrganisationUnitProgramRelationship> relationships = new Select().from(OrganisationUnitProgramRelationship.class).
                 where(Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).isNull()).
                 or(Condition.column(OrganisationUnitProgramRelationship$Table.PROGRAMID).isNull()).queryList();
 
-        if(relationships == null || relationships.size() < 1 )
-        {
+        if (relationships == null || relationships.size() < 1) {
             Log.d(CLASS_TAG, "OrgUnitProgramRelationships are valid");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "orgUnitProgramRelationships are NOT valid");
-            for(OrganisationUnitProgramRelationship relationship : relationships)
+            for (OrganisationUnitProgramRelationship relationship : relationships)
                 relationship.delete();
         }
 //          THIS IS COMMENTED AT THE MOMENT DUE TO FIX ON PROGRAM.SETTRACKEDENTITY. ENABLE WHEN TRACKED ENTITY IS LOADED SEPARATE
@@ -992,32 +960,27 @@ public class MetaDataLoader {
 //            }
 //        }
 
-        List<ProgramIndicator> programIndicators = new Select().from(ProgramIndicator.class).where(
-                Condition.column(ProgramIndicator$Table.PROGRAM).isNull()).
-                or(Condition.column(ProgramIndicator$Table.PROGRAMSTAGE).isNull()).queryList();
+        List<ProgramIndicator> programIndicators = new Select()
+                .from(ProgramIndicator.class)
+                .where(Condition.column(ProgramIndicator$Table
+                        .PROGRAM).isNull())
+                .queryList();
 
-        if(programIndicators == null || programIndicators.size() < 1)
-        {
+        if (programIndicators == null || programIndicators.size() < 1) {
             Log.d(CLASS_TAG, "Valid program indicators");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program indicators are NOT valid");
-            for(ProgramIndicator programIndicator : programIndicators)
+            for (ProgramIndicator programIndicator : programIndicators)
                 programIndicator.delete();
         }
 
         List<ProgramRule> programRules = new Select().from(ProgramRule.class).where(
                 Condition.column(ProgramRule$Table.PROGRAM).isNull()).queryList();
-        if(programRules == null || programRules.size() < 1 )
-        {
+        if (programRules == null || programRules.size() < 1) {
             Log.d(CLASS_TAG, "Valid program rules");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program rules are NOT valid");
-            for(ProgramRule programRule : programRules)
-            {
+            for (ProgramRule programRule : programRules) {
                 programRule.delete();
                 Log.d(CLASS_TAG, "Program rules: Program: " + programRule.getProgram());
             }
@@ -1027,15 +990,11 @@ public class MetaDataLoader {
                 Condition.column(ProgramRuleAction$Table.PROGRAMRULE).isNull()).
                 or(Condition.column(ProgramRuleAction$Table.DATAELEMENT).isNull()).queryList();
 
-        if(programRuleActions == null || programRuleActions.size() < 1 )
-        {
+        if (programRuleActions == null || programRuleActions.size() < 1) {
             Log.d(CLASS_TAG, "Valid program rule actions");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program rule actions are NOT valid");
-            for(ProgramRuleAction programRuleAction : programRuleActions)
-            {
+            for (ProgramRuleAction programRuleAction : programRuleActions) {
                 programRuleAction.delete();
                 Log.d(CLASS_TAG, "Program rule action: Program Rule:" + programRuleAction.getProgramRule() + " Data element: " +
                         programRuleAction.getDataElement());
@@ -1046,27 +1005,21 @@ public class MetaDataLoader {
                 Condition.column(ProgramRuleVariable$Table.PROGRAM).isNull()).
                 or(Condition.column(ProgramRuleVariable$Table.DATAELEMENT).isNull()).queryList();
 
-        if(programRuleVariables == null || programRuleVariables.size() < 1)
-        {
+        if (programRuleVariables == null || programRuleVariables.size() < 1) {
             Log.d(CLASS_TAG, "Valid program rule variables");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program rule variables are NOT valid");
-            for(ProgramRuleVariable programRuleVariable : programRuleVariables)
+            for (ProgramRuleVariable programRuleVariable : programRuleVariables)
                 programRuleVariable.delete();
         }
 
         List<ProgramStage> programStages = new Select().from(ProgramStage.class).where(
                 Condition.column(ProgramStage$Table.PROGRAM).isNull()).queryList();
-        if(programStages == null || programStages.size() < 1 )
-        {
+        if (programStages == null || programStages.size() < 1) {
             Log.d(CLASS_TAG, "Valid program stages");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program stages are NOT valid");
-            for(ProgramStage programStage : programStages)
+            for (ProgramStage programStage : programStages)
                 programStage.delete();
         }
 
@@ -1074,31 +1027,24 @@ public class MetaDataLoader {
                 Condition.column(ProgramStageDataElement$Table.PROGRAMSTAGE).isNull()).
                 or(Condition.column(ProgramStageDataElement$Table.DATAELEMENT).isNull()).queryList();
 
-        if(programStageDataElements == null || programStageDataElements.size() < 1 )
-        {
+        if (programStageDataElements == null || programStageDataElements.size() < 1) {
             Log.d(CLASS_TAG, "Valid program stage data elements");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program stage data elements are NOT valid");
-            for(ProgramStageDataElement programStageDataElement : programStageDataElements)
-            {
+            for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                 programStageDataElement.delete();
                 Log.d(CLASS_TAG, "ProgramStageDataElement: ProgramStage: " + programStageDataElement.getProgramStage() +
-                         " DataElement: " + programStageDataElement.getDataelement());
+                        " DataElement: " + programStageDataElement.getDataelement());
             }
         }
 
         List<ProgramStageSection> programStageSections = new Select().from(ProgramStageSection.class).where(
                 Condition.column(ProgramStageSection$Table.PROGRAMSTAGE).isNull()).queryList();
-        if(programStageSections == null || programStageSections.size() < 1)
-        {
+        if (programStageSections == null || programStageSections.size() < 1) {
             Log.d(CLASS_TAG, "Valid program stage sections");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program stage sections are NOT valid");
-            for(ProgramStageSection programStageSection : programStageSections)
+            for (ProgramStageSection programStageSection : programStageSections)
                 programStageSection.delete();
         }
 
@@ -1106,14 +1052,11 @@ public class MetaDataLoader {
                 Condition.column(ProgramTrackedEntityAttribute$Table.PROGRAM).isNull()).
                 or(Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).isNull()).queryList();
 
-        if(programTrackedEntityAttributes == null || programTrackedEntityAttributes.size() < 1 )
-        {
+        if (programTrackedEntityAttributes == null || programTrackedEntityAttributes.size() < 1) {
             Log.d(CLASS_TAG, "Program tracked entity attributes are valid");
-        }
-        else
-        {
+        } else {
             Log.d(CLASS_TAG, "Program tracked entity attributes are NOT valid");
-            for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes)
+            for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes)
                 programTrackedEntityAttribute.delete();
         }
     }
@@ -1127,7 +1070,7 @@ public class MetaDataLoader {
                 Log.d(CLASS_TAG, "got system info " + systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadAssignedPrograms) {
-                List<OrganisationUnit> organisationUnits = ( List<OrganisationUnit> )
+                List<OrganisationUnit> organisationUnits = (List<OrganisationUnit>)
                         event.getResponseHolder().getItem();
 
                 ArrayList<String> assignedPrograms = new ArrayList<String>();
@@ -1139,17 +1082,17 @@ public class MetaDataLoader {
                  * OrganisationUnitProgramRelationships and save the new ones since there
                  * usually isn't that many.
                  */
-                if( synchronizing ) {
+                if (synchronizing) {
                     Delete.tables(OrganisationUnitProgramRelationship.class, OrganisationUnit.class);
                 }
-                for(OrganisationUnit ou: organisationUnits) {
-                    for(String programId : ou.getPrograms()) {
+                for (OrganisationUnit ou : organisationUnits) {
+                    for (String programId : ou.getPrograms()) {
                         OrganisationUnitProgramRelationship orgUnitProgram =
                                 new OrganisationUnitProgramRelationship();
                         orgUnitProgram.setOrganisationUnitId(ou.getId());
                         orgUnitProgram.setProgramId(programId);
                         orgUnitProgram.async().save();
-                        if(!assignedPrograms.contains(programId))
+                        if (!assignedPrograms.contains(programId))
                             assignedPrograms.add(programId);
                     }
                     ou.async().save();
@@ -1158,7 +1101,7 @@ public class MetaDataLoader {
                 flagMetaDataItemLoaded(ASSIGNED_PROGRAMS, true);
                 flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, systemInfo.getServerDate());
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadProgram ) {
+            } else if (event.eventType == BaseEvent.EventType.loadProgram) {
                 Program program = (Program) event.getResponseHolder().getItem();
 
 
@@ -1169,7 +1112,7 @@ public class MetaDataLoader {
                 int sortOrder = 0;
 
 
-                for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
+                for (ProgramTrackedEntityAttribute ptea : program.getProgramTrackedEntityAttributes()) {
                     ptea.setProgram(program.getId());
                     ptea.setSortOrder(sortOrder);
                     ptea.async().save();
@@ -1177,47 +1120,65 @@ public class MetaDataLoader {
                 }
 
                 program.async().save();
-                for( ProgramStage programStage: program.getProgramStages() ) {
+                for (ProgramStage programStage : program.getProgramStages()) {
                     programStage.async().save();
-                    if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
+                    if (programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                         // due to the way the WebAPI lists programStageSections we have to manually
                         // set id of programStageSection in programStageDataElements to be able to
                         // access it later when loading from local db
-                        for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                        for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
                             programStageSection.async().save();
-                            for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
+                            for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                                 programStageDataElement.setProgramStageSection(programStageSection.id);
                                 programStageDataElement.async().save();
                                 //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
                             }
-                            for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                programIndicator.setProgramStage(programStage.id);
-                                programIndicator.setSection(programStageSection.id);
-                                programIndicator.async().save();
+                            for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
+                                // we need to save program indicator synchronously in order to guarantee
+                                // its availability in database for ProgramIndicatorToSectionRelationship
+                                programIndicator.save();
+
+                                // relation to stage
+                                ProgramIndicatorToSectionRelationship stageRelation = new ProgramIndicatorToSectionRelationship();
+                                stageRelation.setProgramIndicator(programIndicator);
+                                stageRelation.setProgramSection(programStage.getId());
+                                stageRelation.async().save();
+
+                                // relation to section
+                                ProgramIndicatorToSectionRelationship sectionRelation = new ProgramIndicatorToSectionRelationship();
+                                sectionRelation.setProgramIndicator(programIndicator);
+                                sectionRelation.setProgramSection(programStageSection.getId());
+                                sectionRelation.async().save();
                             }
                         }
                     } else {
-                        for(ProgramStageDataElement programStageDataElement: programStage.
+                        for (ProgramStageDataElement programStageDataElement : programStage.
                                 getProgramStageDataElements()) {
                             programStageDataElement.async().save();
                         }
-                        for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                            programIndicator.setProgramStage(programStage.id);
-                            programIndicator.async().save();
+                        for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
+                            // we need to save program indicator synchronously in order to guarantee
+                            // its availability in database for ProgramIndicatorToSectionRelationship
+                            programIndicator.save();
+
+                            // relation to stage
+                            ProgramIndicatorToSectionRelationship stageRelation = new ProgramIndicatorToSectionRelationship();
+                            stageRelation.setProgramIndicator(programIndicator);
+                            stageRelation.setProgramSection(programStage.getId());
+                            stageRelation.async().save();
                         }
                     }
                 }
 
                 flagMetaDataItemLoaded(program.id, true);
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.updateProgram ) {
+            } else if (event.eventType == BaseEvent.EventType.updateProgram) {
                 Program program = (Program) event.getResponseHolder().getItem();
                 boolean noProgram = false;
-                if( program.getCreated() == null ) noProgram = true;
+                if (program.getCreated() == null) noProgram = true;
 
-                if(noProgram) {/*Means the program didn't need to be updated so we just do nothing*/}
-                else {
+                if (noProgram) {/*Means the program didn't need to be updated so we just do nothing*/} else {
 
 
                     /**Delete everything (except shared things like dataElement and
@@ -1236,21 +1197,21 @@ public class MetaDataLoader {
                       reference
                      */
                     Program oldProgram = MetaDataController.getProgram(program.getId());
-                    if(oldProgram != null) {
-                        for(ProgramTrackedEntityAttribute ptea: oldProgram.getProgramTrackedEntityAttributes()) {
+                    if (oldProgram != null) {
+                        for (ProgramTrackedEntityAttribute ptea : oldProgram.getProgramTrackedEntityAttributes()) {
                             ptea.async().delete();
                         }
-                        for( ProgramStage programStage: program.getProgramStages() ) {
-                            for(ProgramStageDataElement psde: programStage.getProgramStageDataElements() ) {
+                        for (ProgramStage programStage : program.getProgramStages()) {
+                            for (ProgramStageDataElement psde : programStage.getProgramStageDataElements()) {
                                 psde.async().delete();
                             }
-                            for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                            for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
                                 programStageSection.async().delete();
                             }
                             programStage.async().delete();
                         }
-                        for(ProgramIndicator programIndicator: program.getProgramIndicators()) {
-                            programIndicator.async().delete();
+                        for (ProgramIndicator programIndicator : program.getProgramIndicators()) {
+                            programIndicator.delete();
                         }
                     }
 
@@ -1261,47 +1222,65 @@ public class MetaDataLoader {
                     //Have to set program reference in ptea manually because it is not referenced in
                     //API JSON
                     int sortOrder = 0;
-                    for(ProgramTrackedEntityAttribute ptea: program.getProgramTrackedEntityAttributes()) {
+                    for (ProgramTrackedEntityAttribute ptea : program.getProgramTrackedEntityAttributes()) {
                         ptea.setProgram(program.getId());
                         ptea.setSortOrder(sortOrder);
                         ptea.async().save();
                         sortOrder++;
                     }
 
-                    if(oldProgram== null) {
+                    if (oldProgram == null) {
                         program.async().save();
-                    }
-                    else {
+                    } else {
                         program.async().update();
                     }
-                    for( ProgramStage programStage: program.getProgramStages() ) {
+                    for (ProgramStage programStage : program.getProgramStages()) {
                         programStage.async().save();
-                        if(programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
+                        if (programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                             // due to the way the WebAPI lists programStageSections we have to manually
                             // set id of programStageSection in programStageDataElements to be able to
                             // access it later when loading from local db
-                            for(ProgramStageSection programStageSection: programStage.getProgramStageSections()) {
+                            for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
                                 programStageSection.async().save();
-                                for(ProgramStageDataElement programStageDataElement: programStageSection.getProgramStageDataElements()) {
+                                for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                                     programStageDataElement.setProgramStageSection(programStageSection.id);
                                     programStageDataElement.async().save();
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
                                 }
-                                for(ProgramIndicator programIndicator: programStageSection.getProgramIndicators()) {
-                                    programIndicator.setProgramStage(programStage.id);
-                                    programIndicator.setSection(programStageSection.id);
-                                    programIndicator.async().save();
+                                for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
+                                    // we need to save program indicator synchronously in order to guarantee
+                                    // its availability in database for ProgramIndicatorToSectionRelationship
+                                    programIndicator.save();
+
+                                    // relation to stage
+                                    ProgramIndicatorToSectionRelationship stageRelation = new ProgramIndicatorToSectionRelationship();
+                                    stageRelation.setProgramIndicator(programIndicator);
+                                    stageRelation.setProgramSection(programStage.getId());
+                                    stageRelation.async().save();
+
+                                    // relation to section
+                                    ProgramIndicatorToSectionRelationship sectionRelation = new ProgramIndicatorToSectionRelationship();
+                                    sectionRelation.setProgramIndicator(programIndicator);
+                                    sectionRelation.setProgramSection(programStageSection.getId());
+                                    sectionRelation.async().save();
                                 }
                             }
                         } else {
-                            for(ProgramStageDataElement programStageDataElement: programStage.
+                            for (ProgramStageDataElement programStageDataElement : programStage.
                                     getProgramStageDataElements()) {
                                 programStageDataElement.async().save();
                             }
-                            for(ProgramIndicator programIndicator: programStage.getProgramIndicators()) {
-                                programIndicator.setProgramStage(programStage.id);
-                                programIndicator.async().save();
+                            for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
+                                // we need to save program indicator synchronously in order to guarantee
+                                // its availability in database for ProgramIndicatorToSectionRelationship
+                                programIndicator.save();
+
+                                // relation to stage
+                                ProgramIndicatorToSectionRelationship stageRelation = new ProgramIndicatorToSectionRelationship();
+                                stageRelation.setProgramIndicator(programIndicator);
+                                stageRelation.setProgramSection(programStage.getId());
+                                stageRelation.async().save();
                             }
                         }
                     }
@@ -1309,91 +1288,91 @@ public class MetaDataLoader {
 
                 flagMetaDataItemUpdated(program.id, systemInfo.getServerDate());
                 loadItem();
-            } else if( event.eventType == BaseEvent.EventType.loadOptionSets ) {
-                List<OptionSet> optionSets = ( List<OptionSet> ) event.getResponseHolder().getItem();
+            } else if (event.eventType == BaseEvent.EventType.loadOptionSets) {
+                List<OptionSet> optionSets = (List<OptionSet>) event.getResponseHolder().getItem();
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(OptionSet os: optionSets ) {
+                for (OptionSet os : optionSets) {
                     int index = 0;
-                    for( Option o: os.getOptions()) {
+                    for (Option o : os.getOptions()) {
                         o.setSortIndex(index);
-                        o.setOptionSet( os.getId() );
+                        o.setOptionSet(os.getId());
                         o.async().save();
-                        index ++;
+                        index++;
                     }
                     os.async().save();
                 }
                 flagMetaDataItemLoaded(OPTION_SETS, true);
                 loadItem();
-            } else if( event.eventType == BaseEvent.EventType.onUpdateOptionSets ) {
+            } else if (event.eventType == BaseEvent.EventType.onUpdateOptionSets) {
                 flagMetaDataItemUpdated(OPTION_SETS, systemInfo.getServerDate());
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes ) {
+            } else if (event.eventType == BaseEvent.EventType.loadTrackedEntityAttributes) {
                 List<TrackedEntityAttribute> trackedEntityAttributes = (List<TrackedEntityAttribute>) event.getResponseHolder().getItem();
 
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(TrackedEntityAttribute tea: trackedEntityAttributes) {
+                for (TrackedEntityAttribute tea : trackedEntityAttributes) {
                     tea.async().save();
                 }
                 flagMetaDataItemLoaded(TRACKED_ENTITY_ATTRIBUTES, true);
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes ) {
+            } else if (event.eventType == BaseEvent.EventType.onUpdateTrackedEntityAttributes) {
                 flagMetaDataItemUpdated(TRACKED_ENTITY_ATTRIBUTES, systemInfo.getServerDate());
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadConstants ) {
+            } else if (event.eventType == BaseEvent.EventType.loadConstants) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(Constant constant: constants) {
+                for (Constant constant : constants) {
                     constant.async().save();
                 }
                 flagMetaDataItemLoaded(CONSTANTS, true);
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.updateConstants ) {
+            } else if (event.eventType == BaseEvent.EventType.updateConstants) {
                 List<Constant> constants = (List<Constant>) event.getResponseHolder().getItem();
 
-                for(Constant constant: constants) {
+                for (Constant constant : constants) {
                     constant.async().save();
                 }
                 flagMetaDataItemUpdated(CONSTANTS, systemInfo.getServerDate());
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadProgramRules ) {
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRules) {
                 List<ProgramRule> programRules = (List<ProgramRule>) event.getResponseHolder().getItem();
 
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(ProgramRule programRule: programRules) {
+                for (ProgramRule programRule : programRules) {
                     programRule.async().save();
                 }
-                if(!synchronizing) {
+                if (!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULES, true);
                 } else {
                     flagMetaDataItemUpdated(PROGRAMRULES, systemInfo.getServerDate());
                 }
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables ) {
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleVariables) {
                 List<ProgramRuleVariable> programRuleVariables = (List<ProgramRuleVariable>) event.getResponseHolder().getItem();
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(ProgramRuleVariable programRuleVariable: programRuleVariables) {
+                for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
                     programRuleVariable.async().save();
                 }
-                if(!synchronizing) {
+                if (!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEVARIABLES, true);
                 } else {
                     flagMetaDataItemUpdated(PROGRAMRULEVARIABLES, systemInfo.getServerDate());
                 }
                 loadItem();
-            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions ) {
+            } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions) {
                 List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
 
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                for(ProgramRuleAction programRuleAction: programRuleActions) {
+                for (ProgramRuleAction programRuleAction : programRuleActions) {
                     programRuleAction.async().save();
                 }
-                if(!synchronizing) {
+                if (!synchronizing) {
                     flagMetaDataItemLoaded(PROGRAMRULEACTIONS, true);
                 } else {
                     flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.getServerDate());
@@ -1406,12 +1385,11 @@ public class MetaDataLoader {
             //todo handle more effectively
             Log.d(CLASS_TAG, "exception..");
             APIException exception = null;
-            if(event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null)
-            {
+            if (event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null) {
                 event.getResponseHolder().getApiException().printStackTrace();
                 Log.e(CLASS_TAG, event.getResponseHolder().getApiException().getLocalizedMessage());
                 exception = event.getResponseHolder().getApiException();
-                if(exception.isConversionError()) {
+                if (exception.isConversionError()) {
 
                 } else if (exception.isNetworkError()) {
 
@@ -1421,21 +1399,19 @@ public class MetaDataLoader {
 
                 }
             }
-            if(retries >= maxRetries)
-            {
+            if (retries >= maxRetries) {
                 retries = 0;
                 onFinishLoading(false);
-            }
-            else
+            } else
                 retry(exception);
         }
     }
 
     private void retry(APIException exception) {
         String message = "";
-        if(exception!=null) message = exception.getMessage();
+        if (exception != null) message = exception.getMessage();
         retries++;
-        if(!synchronizing) {
+        if (!synchronizing) {
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
@@ -1444,11 +1420,11 @@ public class MetaDataLoader {
             };
             long ms = 30 * 1000;
             Timer timer = new Timer();
-            Dhis2.postProgressMessage(context.getString(R.string.loading_failed )+": " + message + ". "
-                    +context.getString(R.string.retrying) +": " + context.getString(R.string.retry)
-                    + " " + retries + "/" + maxRetries );
+            Dhis2.postProgressMessage(context.getString(R.string.loading_failed) + ": " + message + ". "
+                    + context.getString(R.string.retrying) + ": " + context.getString(R.string.retry)
+                    + " " + retries + "/" + maxRetries);
             Log.d(CLASS_TAG, "Retry " + retries + "/" + maxRetries + ". Retrying in " +
-                    (ms/1000) + " seconds..");
+                    (ms / 1000) + " seconds..");
             timer.schedule(task, ms);
         } else {
             onFinishLoading(false);
@@ -1458,36 +1434,39 @@ public class MetaDataLoader {
     /**
      * Flags a MetaData item like Programs or OptionSets to indicate whether or not it has been loaded.
      * Can also be set for a UID for example for an individual Program.
+     *
      * @param item
      * @param loaded
      */
     private void flagMetaDataItemLoaded(String item, boolean loaded) {
-        if(this.context == null) return;
+        if (this.context == null) return;
         Log.d("METADATALOADERisLoaded,", item);
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(Dhis2.LOADED+item, loaded);
+        editor.putBoolean(Dhis2.LOADED + item, loaded);
         editor.commit();
     }
 
     /**
      * Returns a boolean indicating whether or not a MetaData item has been loaded successfully.
+     *
      * @param item
      * @return
      */
     private boolean isMetaDataItemLoaded(String item) {
-        if(context == null) return false;
+        if (context == null) return false;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
-        return prefs.getBoolean(Dhis2.LOADED+item, false);
+        return prefs.getBoolean(Dhis2.LOADED + item, false);
     }
 
     /**
      * sets the date of the last time a meta data item was loaded.
+     *
      * @param item
      * @param date
      */
     private void flagMetaDataItemUpdated(String item, String date) {
-        if(this.context == null) return;
+        if (this.context == null) return;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Dhis2.UPDATED + item, date);
@@ -1495,7 +1474,7 @@ public class MetaDataLoader {
     }
 
     private String getLastUpdatedDateForMetaDataItem(String item) {
-        if(context == null) return null;
+        if (context == null) return null;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         Date date = DateUtils.parseDate(prefs.getString(Dhis2.UPDATED + item, null));
         return DateUtils.getLongDateString(date);
@@ -1503,6 +1482,7 @@ public class MetaDataLoader {
 
     /**
      * Clears status and time of loaded meta data items
+     *
      * @param context
      */
     void clearMetaDataLoadedFlags(Context context) {
@@ -1511,7 +1491,7 @@ public class MetaDataLoader {
         flagMetaDataItemUpdated(ASSIGNED_PROGRAMS, null);
         List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
 
-        for(String program: assignedPrograms) {
+        for (String program : assignedPrograms) {
             Log.d(CLASS_TAG, "clearing program: " + program);
             flagMetaDataItemLoaded(program, false);
             flagMetaDataItemUpdated(program, null);

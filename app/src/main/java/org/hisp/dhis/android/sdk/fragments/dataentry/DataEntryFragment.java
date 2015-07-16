@@ -289,6 +289,7 @@ public class DataEntryFragment extends Fragment
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             if (validate()) {
                 submitEvent();
+                Dhis2.hasUnSynchronizedDatavalues = true;
             }
         }
 

@@ -122,8 +122,26 @@ public class SettingsFragment extends Fragment
                     getString(R.string.logout_option), getString(R.string.cancel_option), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Dhis2.logout(getActivity());
-                            getActivity().finish();
+
+                            if(Dhis2.hasUnSynchronizedDatavalues)
+                            {
+                                //show error dialog
+                                Dhis2.showErrorDialog(getActivity(), getString(R.string.error_message),
+                                       getString(R.string.unsynchronized_data_values),
+                                        new DialogInterface.OnClickListener(){
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which)
+                                            {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                            }
+                            else
+                            {
+                                Dhis2.logout(getActivity());
+                                getActivity().finish();
+                            }
                         }
                     });
         } else if (view.getId() == R.id.settings_sync_button) {

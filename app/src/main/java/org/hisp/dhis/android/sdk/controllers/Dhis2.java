@@ -113,6 +113,13 @@ public final class Dhis2 {
     private final static String SERVER = "server";
     private final static String CREDENTIALS = "credentials";
 
+    /**
+     * Variable hasUnSynchronizedDatavalues
+     * Is set to true when submitting changes in DataEntryFragment, TrackedEntityInstanceProfileFragment (in Tracker Capture) and when no network is available
+     * Is set to false when DataValueSender.onFinishSending(true)
+     */
+    public static boolean hasUnSynchronizedDatavalues;
+
     private MetaDataController metaDataController;
     private DataValueController dataValueController;
     private ObjectMapper objectMapper;
@@ -684,7 +691,6 @@ public final class Dhis2 {
         };
         getInstance().getDataValueController().synchronizeDataValues(context, callback);
     }
-
 
     public static String getLastSynchronizationSummary()
     {

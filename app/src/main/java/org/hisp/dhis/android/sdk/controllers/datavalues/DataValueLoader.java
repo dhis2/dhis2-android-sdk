@@ -651,7 +651,7 @@ public class DataValueLoader {
 
     public void dataValueIntegrityCheck()
     {
-        Log.d(CLASS_TAG, "Running data value integrity check");
+        /*Log.d(CLASS_TAG, "Running data value integrity check");
 
 
         List<DataValue> dataValues = new Select().from(DataValue.class).where(
@@ -738,7 +738,7 @@ public class DataValueLoader {
             Log.d(CLASS_TAG, "Trackedentity attribute values are NOT valid");
             for(TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues)
                 trackedEntityAttributeValue.delete();
-        }
+        }*/
     }
 
     /**

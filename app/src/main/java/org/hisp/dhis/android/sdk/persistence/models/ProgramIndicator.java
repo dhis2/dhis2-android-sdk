@@ -63,10 +63,10 @@ public class ProgramIndicator extends BaseNameableObject {
     public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
             INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?(\\w*)\\}";
 
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile( EXPRESSION_REGEXP );
-    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile( KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}" );
-    public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile( KEY_ATTRIBUTE + "\\{(\\w{11})\\}" );
-    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile( "V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}" );
+    public static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
+    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
+    public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})\\}");
+    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
 
     public static final String VALID = "valid";
 
@@ -74,56 +74,43 @@ public class ProgramIndicator extends BaseNameableObject {
 
     @JsonProperty("code")
     @Column
-    private String code;
+    String code;
 
     @JsonProperty("expression")
     @Column
-    private String expression;
+    String expression;
 
     @JsonProperty("displayDescription")
     @Column
-    private String displayDescription;
+    String displayDescription;
 
     @JsonProperty("rootDate")
     @Column
-    private String rootDate;
+    String rootDate;
 
     @JsonProperty("externalAccess")
     @Column
-    private boolean externalAccess;
+    boolean externalAccess;
 
     @JsonProperty("valueType")
     @Column
-    private String valueType;
+    String valueType;
 
     @JsonProperty("displayName")
     @Column
-    private String displayName;
+    String displayName;
 
     @JsonProperty("displayShortName")
     @Column
-    private String displayShortName;
+    String displayShortName;
 
     @Column
-    protected String program;
+    String program;
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
         this.program = (String) program.get("id");
     }
-
-    /**
-     * Can be null if not assigned to a programStage
-     */
-    @Column
-    private String programStage;
-
-    /**
-     * Can be null if not assigned to a specific section
-     */
-    @Column
-    private String section;
-
 
     public String getCode() {
         return code;
@@ -159,22 +146,6 @@ public class ProgramIndicator extends BaseNameableObject {
 
     public String getProgram() {
         return program;
-    }
-
-    public String getSection() {
-        return section;
-    }
-
-    public String getProgramStage() {
-        return programStage;
-    }
-
-    public void setSection(String section) {
-        this.section = section;
-    }
-
-    public void setProgramStage(String programStage) {
-        this.programStage = programStage;
     }
 
     public void setProgram(String program) {

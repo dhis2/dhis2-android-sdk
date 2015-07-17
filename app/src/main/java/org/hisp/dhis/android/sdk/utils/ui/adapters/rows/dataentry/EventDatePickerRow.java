@@ -41,6 +41,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -185,7 +186,7 @@ public class EventDatePickerRow implements DataEntryRow {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
         private Event event;
-        private BaseValue value;
+        private DataValue value;
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
@@ -198,6 +199,7 @@ public class EventDatePickerRow implements DataEntryRow {
         public void onDateSet(DatePicker view, int year,
                               int monthOfYear, int dayOfMonth) {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
+            if(value == null) value = new DataValue();
 
             if(event.getEventDate() != null)
                 value.setValue(event.getEventDate());

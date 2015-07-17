@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.network.managers;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
@@ -88,6 +89,20 @@ public class NetworkManager {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public static boolean isOnline()
+    {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8"); //ping Google's DNS servers to check for Internet
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
     }
 
     public String getServerUrl() {

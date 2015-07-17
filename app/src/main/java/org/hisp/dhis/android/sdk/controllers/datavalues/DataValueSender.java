@@ -83,6 +83,7 @@ public class DataValueSender {
 
     void sendLocalData(Context context, ApiRequestCallback callback) {
         if(Dhis2.isLoading()) return;
+        if(!NetworkManager.isOnline()) onFinishSending(false);
         this.callback = callback;
         sending = true;
         new Thread() {

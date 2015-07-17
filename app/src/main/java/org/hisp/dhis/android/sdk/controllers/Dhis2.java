@@ -612,6 +612,8 @@ public final class Dhis2 {
 
     }
 
+
+    @SuppressWarnings("Warning. Please be careful using this since it is not stable yet. May unintentionally delete some locally saved data")
     public static void dataIntegrityCheck(Context context)
     {
         getInstance().context = context;
@@ -681,7 +683,7 @@ public final class Dhis2 {
                 SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
                 event.success = true;
                 Dhis2Application.getEventBus().post(event); //is finished synchronizing
-                dataIntegrityCheck(context);
+                                                            // run dataIntegrityCheck when it is fixed
             }
 
             @Override

@@ -48,39 +48,34 @@ import org.hisp.dhis.android.sdk.utils.Utils;
 @Table(databaseName = Dhis2Database.NAME)
 public class DataValue extends BaseValue {
 
-    private static final String CLASS_TAG = DataValue.class.getSimpleName();
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
-
     @JsonIgnore
-    @Column
+    @Column(name = "localEventId")
     @PrimaryKey
-    protected long localEventId = -1; /* reference to local event object */
+    long localEventId = -1; /* reference to local event object */
 
     @JsonIgnore
-    @Column
-    private String event;
+    @Column(name = "event")
+    String event;
 
     @JsonProperty("dataElement")
-    @Column
+    @Column(name = "dataElement")
     @PrimaryKey
-    private String dataElement;
+    String dataElement;
 
     @JsonProperty("providedElsewhere")
-    @Column
-    private boolean providedElsewhere;
+    @Column(name = "providedElsewhere")
+    boolean providedElsewhere;
 
     @JsonProperty("storedBy")
-    @Column
-    private String storedBy;
+    @Column(name = "storedBy")
+    String storedBy;
 
 
     public DataValue() {
     }
 
-    public DataValue(Event event, String value, String dataElement, boolean providedElsewhere,
-                      String storedBy) {
+    public DataValue(Event event, String value, String dataElement,
+                     boolean providedElsewhere, String storedBy) {
         this.localEventId = event.getLocalId();
         this.event = event.getEvent();
         this.value = value;
@@ -89,8 +84,8 @@ public class DataValue extends BaseValue {
         this.storedBy = storedBy;
     }
 
-    private DataValue(long localEventId, String event, String value, String dataElement, boolean providedElsewhere,
-                     String storedBy) {
+    private DataValue(long localEventId, String event, String value,
+                      String dataElement, boolean providedElsewhere, String storedBy) {
         this.localEventId = localEventId;
         this.event = event;
         this.value = value;
@@ -109,6 +104,26 @@ public class DataValue extends BaseValue {
         DataValue dataValue = new DataValue(this.localEventId, this.event, this.getValue(),
                 this.dataElement, this.providedElsewhere, this.storedBy);
         return dataValue;
+    }
+
+    @Override
+    public void save() {
+        if (Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement) != null) {
+
+            //to avoid overwriting UID from server due to race conditions with autosyncing with server
+            //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created
+            updateManually();
+        } else
+            super.save();
+    }
+
+    @Override
+    public void update() {
+        save();
+    }
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
     }
 
     public long getLocalEventId() {
@@ -151,30 +166,11 @@ public class DataValue extends BaseValue {
         this.storedBy = storedBy;
     }
 
-
-
-
-    @Override
-    public void save() {
-        if(Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement)!=null) {
-
-            //to avoid overwriting UID from server due to race conditions with autosyncing with server
-            //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created
-            updateManually();
-        } else
-            super.save();
-    }
-
     public void updateManually() {
 
         new Update(DataValue.class).set(
                 Condition.column(DataValue$Table.VALUE).is(this.getValue()))
                 .where(Condition.column(DataValue$Table.LOCALEVENTID).is(localEventId),
                         Condition.column(DataValue$Table.DATAELEMENT).is(dataElement)).queryClose();
-    }
-
-    @Override
-    public void update() {
-        save();
     }
 }

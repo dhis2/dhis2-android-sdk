@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -25,32 +23,33 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
     private static final String CLASS_TAG = TrackedEntityAttributeValue.class.getSimpleName();
 
     @JsonProperty("attribute")
-    @Column
+    @Column(name = "trackedEntityAttributeId")
     @PrimaryKey
-    private String trackedEntityAttributeId;
+    String trackedEntityAttributeId;
 
     @JsonIgnore
-    @Column
+    @Column(name = "trackedEntityInstanceId")
     @PrimaryKey
-    private String trackedEntityInstanceId;
+    String trackedEntityInstanceId;
 
     @JsonIgnore
-    @Column
-    private long localTrackedEntityInstanceId;
+    @Column(name = "localTrackedEntityInstanceId")
+    long localTrackedEntityInstanceId;
 
     /**
      * workaround for sending code if attribute is option set.
-     * @return
+     *
+     * @return String value.
      */
     @JsonProperty("value")
     public String getValue() {
         TrackedEntityAttribute tea = MetaDataController.
                 getTrackedEntityAttribute(trackedEntityAttributeId);
-        if(tea.getValueType().equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
+        if (tea.getValueType().equals(TrackedEntityAttribute.TYPE_OPTION_SET)) {
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
-            if(optionSet == null) return "";
-            for(Option o: optionSet.getOptions()) {
-                if(o.name.equals(value)) {
+            if (optionSet == null) return "";
+            for (Option o : optionSet.getOptions()) {
+                if (o.name.equals(value)) {
                     return o.getCode();
                 }
             }
@@ -60,9 +59,9 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
 
     @Override
     public void save() {
-        if(Utils.isLocal(trackedEntityInstanceId) && DataValueController.
+        if (Utils.isLocal(trackedEntityInstanceId) && DataValueController.
                 getTrackedEntityAttributeValue(trackedEntityAttributeId,
-                        localTrackedEntityInstanceId)!=null) {
+                        localTrackedEntityInstanceId) != null) {
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie and not the other fields) if the currently in-memory event UID is locally created
             updateManually();
@@ -88,20 +87,20 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
         return trackedEntityAttributeId;
     }
 
-    public String getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
-    }
-
-    public long getLocalTrackedEntityInstanceId() {
-        return localTrackedEntityInstanceId;
-    }
-
     public void setTrackedEntityAttributeId(String trackedEntityAttributeId) {
         this.trackedEntityAttributeId = trackedEntityAttributeId;
     }
 
+    public String getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
+
     public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
         this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
+
+    public long getLocalTrackedEntityInstanceId() {
+        return localTrackedEntityInstanceId;
     }
 
     public void setLocalTrackedEntityInstanceId(long localTrackedEntityInstanceId) {

@@ -48,40 +48,32 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class OrganisationUnit extends BaseModel {
 
+    @JsonProperty("id")
+    @Column(name = "id")
+    @PrimaryKey
+    String id;
+
+    @JsonProperty("label")
+    @Column(name = "label")
+    String label;
+
+    @JsonProperty("level")
+    @Column(name = "level")
+    int level;
+
+    @JsonProperty("parent")
+    @Column(name = "parent")
+    String parent;
+
+    List<String> programs;
+
+    public OrganisationUnit() {
+    }
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
-
-    @JsonProperty("id")
-    @Column
-    @PrimaryKey
-    private String id;
-
-    @JsonProperty("label")
-    @Column
-    private String label;
-
-    @JsonProperty("level")
-    @Column
-    private int level;
-
-    @JsonProperty("parent")
-    @Column
-    private String parent;
-
-    @JsonProperty("programs")
-    public void setPrograms(List<Map<String, Object>> programs) {
-        List<String> tempPrograms = new ArrayList<String>();
-        for(Map<String, Object> program : programs) {
-            tempPrograms.add( (String) program.get("id") );
-        }
-        this.programs = tempPrograms;
-    }
-
-    private List<String> programs;
-
-    public OrganisationUnit() {}
 
     public String getParent() {
         return parent;
@@ -117,5 +109,14 @@ public class OrganisationUnit extends BaseModel {
 
     public List<String> getPrograms() {
         return programs;
+    }
+
+    @JsonProperty("programs")
+    public void setPrograms(List<Map<String, Object>> programs) {
+        List<String> tempPrograms = new ArrayList<>();
+        for (Map<String, Object> program : programs) {
+            tempPrograms.add((String) program.get("id"));
+        }
+        this.programs = tempPrograms;
     }
 }

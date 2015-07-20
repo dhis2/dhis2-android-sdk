@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -45,7 +44,6 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.LocalDate;
 
@@ -69,11 +67,76 @@ public class Event extends BaseSerializableModel {
     public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
     public static final String STATUS_SKIPPED = "SKIPPED";
 
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
+    @JsonIgnore
+    @Column(name = "event")
+    @Unique
+    String event;
 
-    public Event(String organisationUnitId, String status, String programId, ProgramStage programStage,
-                 String trackedEntityInstanceId, String enrollment, String dateOfEnrollment) {
+    @JsonProperty("lastUpdated")
+    @Column(name = "lastUpdated")
+    String lastUpdated;
+
+    @JsonProperty("created")
+    @Column(name = "created")
+    String created;
+
+    @JsonProperty("status")
+    @Column(name = "status")
+    String status;
+
+    @JsonIgnore
+    @Column(name = "latitude")
+    Double latitude;
+
+    @JsonIgnore
+    @Column(name = "longitude")
+    Double longitude;
+
+    @JsonProperty("trackedEntityInstance")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @Column(name = "trackedEntityInstance")
+    String trackedEntityInstance;
+
+    @JsonIgnore
+    @Column(name = "localEnrollmentId")
+    long localEnrollmentId;
+
+    @JsonProperty("enrollment")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @Column(name = "enrollment")
+    String enrollment;
+
+    @JsonProperty("program")
+    @Column(name = "programId")
+    String programId;
+
+    @JsonProperty("programStage")
+    @Column(name = "programStageId")
+    String programStageId;
+
+    @JsonProperty("orgUnit")
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    @Column(name = "organisationUnitId")
+    String organisationUnitId;
+
+    @JsonProperty("eventDate")
+    @Column(name = "eventDate")
+    String eventDate;
+
+    @JsonProperty("dueDate")
+    @Column(name = "dueDate")
+    String dueDate;
+
+    @JsonProperty("dataValues")
+    List<DataValue> dataValues;
+
+
+    public Event() {
+    }
+
+    public Event(String organisationUnitId, String status, String programId,
+                 ProgramStage programStage, String trackedEntityInstanceId,
+                 String enrollment, String dateOfEnrollment) {
         this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
         this.fromServer = false;
         this.dueDate = DateUtils.getMediumDateString();
@@ -84,19 +147,13 @@ public class Event extends BaseSerializableModel {
         this.status = status;
         this.trackedEntityInstance = trackedEntityInstanceId;
         this.enrollment = enrollment;
-        if(dateOfEnrollment!=null) {
+
+        if (dateOfEnrollment != null) {
             LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(dateOfEnrollment));
             this.dueDate = currentDateTime.plusDays(programStage.getMinDaysFromStart()).toString();
         }
-        dataValues = new ArrayList<DataValue>();
+        dataValues = new ArrayList<>();
     }
-
-    public Event() {}
-
-    @JsonIgnore
-    @Column
-    @Unique
-    private String event;
 
     @JsonProperty("event")
     public void setEvent(String event) {
@@ -112,74 +169,12 @@ public class Event extends BaseSerializableModel {
         return event;
     }
 
-    @JsonProperty("lastUpdated")
-    @Column
-    private String lastUpdated;
-
-    @JsonProperty("created")
-    @Column
-    private String created;
-
-    @JsonProperty("status")
-    @Column
-
-    private String status;
-
-    @JsonIgnore
-    @Column
-    private Double latitude;
-
-    @JsonIgnore
-    @Column
-    private Double longitude;
-
-    @JsonProperty("trackedEntityInstance")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    @Column
-    public String trackedEntityInstance;
-
-    @JsonIgnore
-    @Column
-    private long localEnrollmentId;
-
-    @JsonProperty("enrollment")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    @Column
-    private String enrollment;
-
-    public String getEnrollment() {
-        return enrollment;
-    }
-
-    @JsonProperty("program")
-    @Column
-    private String programId;
-
-    @JsonProperty("programStage")
-    @Column
-    private String programStageId;
-
-    @JsonProperty("orgUnit")
-    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-    @Column
-    private String organisationUnitId;
-
-    @JsonProperty("eventDate")
-    @Column
-    private String eventDate;
-
-    @JsonProperty("dueDate")
-    @Column
-    private String dueDate;
-
-    @JsonProperty("dataValues")
-    private List<DataValue> dataValues;
-
     @Override
     public void delete() {
         if (dataValues != null) {
-            for (DataValue dataValue : dataValues)
+            for (DataValue dataValue : dataValues) {
                 dataValue.delete();
+            }
         }
         super.delete();
     }
@@ -188,10 +183,10 @@ public class Event extends BaseSerializableModel {
     public void save() {
         /* check if there is an existing event with the same UID to avoid duplicates */
         Event existingEvent = DataValueController.getEventByUid(event);
-        if(existingEvent != null) {
+        if (existingEvent != null) {
             localId = existingEvent.localId;
         }
-        if(getEvent() == null && localId >= 0) { //means that the event is local and has been saved previously
+        if (getEvent() == null && localId >= 0) { //means that the event is local and has been saved previously
             //then we don't want to update the event reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
@@ -207,6 +202,10 @@ public class Event extends BaseSerializableModel {
                 dataValue.save();
             }
         }
+    }
+
+    public String getEnrollment() {
+        return enrollment;
     }
 
     /**
@@ -240,6 +239,10 @@ public class Event extends BaseSerializableModel {
         coordinate.put("latitude", latitude);
         coordinate.put("longitude", longitude);
         return coordinate;
+    }
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
     }
 
     public List<DataValue> getDataValues() {
@@ -351,6 +354,4 @@ public class Event extends BaseSerializableModel {
     public void setDataValues(List<DataValue> dataValues) {
         this.dataValues = dataValues;
     }
-
-
 }

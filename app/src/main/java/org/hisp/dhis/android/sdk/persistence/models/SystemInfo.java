@@ -39,7 +39,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.DateUtils;
 
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -48,31 +47,33 @@ import java.util.Date;
 @Table(databaseName = Dhis2Database.NAME)
 public class SystemInfo extends BaseModel {
 
+    @Column(name = "id")
+    @PrimaryKey
+    int id = 1; //there should only be one row of this which overwrites every time its reloaded
+
+    @JsonProperty("serverDate")
+    @Column(name = "serverDate")
+    String serverDate;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
-    @Column
-    @PrimaryKey
-    private int id = 1; //there should only be one row of this which overwrites every time its reloaded
-
-    @JsonProperty("serverDate")
-    @Column
-    private String serverDate;
-
     public int getId() {
         return id;
     }
 
-    public String getServerDate() {
-        if(serverDate==null) return serverDate;
-        Date date = DateUtils.parseDate(serverDate);
-        return DateUtils.getLongDateString(date);
-    }
-
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getServerDate() {
+        if (serverDate == null) {
+            return serverDate;
+        }
+        Date date = DateUtils.parseDate(serverDate);
+        return DateUtils.getLongDateString(date);
     }
 
     public void setServerDate(String serverDate) {

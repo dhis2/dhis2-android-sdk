@@ -38,27 +38,28 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
-public class BaseIdentifiableObject extends BaseModel{
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
+public class BaseIdentifiableObject extends BaseModel {
 
     @JsonProperty("id")
-    @Column
+    @Column(name = "id")
     @PrimaryKey
-    public String id;
+    String id;
 
     @JsonProperty("name")
-    @Column
-    protected String name;
+    @Column(name = "name")
+    String name;
 
     @JsonProperty("created")
-    @Column
-    protected String created;
+    @Column(name = "created")
+    String created;
 
     @JsonProperty("lastUpdated")
-    @Column
-    protected String lastUpdated;
+    @Column(name = "lastUpdated")
+    String lastUpdated;
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+    }
 
     public String getId() {
         return id;

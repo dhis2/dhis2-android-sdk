@@ -42,24 +42,24 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 @Table(databaseName = Dhis2Database.NAME)
 public class OrganisationUnitProgramRelationship extends BaseModel {
 
-    @Column
+    @Column(name = "organisationUnitId")
     @PrimaryKey
-    private String organisationUnitId;
+    String organisationUnitId;
 
-    @Column
+    @Column(name = "programId")
     @PrimaryKey
-    private String programId;
+    String programId;
 
     public String getOrganisationUnitId() {
         return organisationUnitId;
     }
 
-    public String getProgramId() {
-        return programId;
-    }
-
     public void setOrganisationUnitId(String organisationUnitId) {
         this.organisationUnitId = organisationUnitId;
+    }
+
+    public String getProgramId() {
+        return programId;
     }
 
     public void setProgramId(String programId) {

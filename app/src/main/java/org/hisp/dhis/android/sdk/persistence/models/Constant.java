@@ -42,18 +42,16 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 public class Constant extends BaseIdentifiableObject {
 
     @JsonProperty("value")
-    @Column
-    private double value;
+    @Column(name = "value")
+    double value;
 
     @JsonProperty("publicAccess")
-    @Column
-    private boolean externalAccess;
-
-
+    @Column(name = "externalAccess")
+    boolean externalAccess;
 
     @JsonProperty("displayName")
-    @Column
-    private String displayName;
+    @Column(name = "displayName")
+    String displayName;
 
     public double getValue() {
         return value;
@@ -78,6 +76,4 @@ public class Constant extends BaseIdentifiableObject {
     public void setValue(double value) {
         this.value = value;
     }
-
-
 }

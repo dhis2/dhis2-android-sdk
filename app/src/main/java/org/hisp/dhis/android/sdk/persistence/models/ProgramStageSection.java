@@ -17,36 +17,42 @@ import java.util.Map;
 public class ProgramStageSection extends BaseIdentifiableObject {
 
     @JsonProperty("sortOrder")
-    @Column
-    private int sortOrder;
+    @Column(name = "sortOrder")
+    int sortOrder;
 
     @JsonProperty("externalAccess")
-    @Column
-    private boolean externalAccess;
+    @Column(name = "externalAccess")
+    boolean externalAccess;
 
     @JsonProperty("displayName")
-    @Column
-    private String displayName;
+    @Column(name = "displayName")
+    String displayName;
+
+    @Column(name = "programStage")
+    String programStage;
+
+    @JsonProperty("programStageDataElements")
+    List<ProgramStageDataElement> programStageDataElements;
+
+    @JsonProperty("programIndicators")
+    List<ProgramIndicator> programIndicators;
 
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
 
-    @Column
-    protected String programStage;
-
-    @JsonProperty("programStageDataElements")
-    private List<ProgramStageDataElement> programStageDataElements;
-
     public List<ProgramStageDataElement> getProgramStageDataElements() {
-        if (programStageDataElements == null)
+        if (programStageDataElements == null) {
             programStageDataElements = MetaDataController.getProgramStageDataElements(this);
+        }
+
         return programStageDataElements;
     }
 
-    @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
+    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+        this.programStageDataElements = programStageDataElements;
+    }
 
     public List<ProgramIndicator> getProgramIndicators() {
         if (programIndicators == null)
@@ -54,16 +60,32 @@ public class ProgramStageSection extends BaseIdentifiableObject {
         return programIndicators;
     }
 
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
+    }
+
     public String getProgramStage() {
         return programStage;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public boolean getExternalAccess() {
         return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
     }
 
     public int getSortOrder() {
@@ -72,25 +94,5 @@ public class ProgramStageSection extends BaseIdentifiableObject {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setProgramStage(String programStage) {
-        this.programStage = programStage;
-    }
-
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
     }
 }

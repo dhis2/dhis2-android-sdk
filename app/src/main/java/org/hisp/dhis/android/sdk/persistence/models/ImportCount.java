@@ -44,11 +44,6 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 @Table(databaseName = Dhis2Database.NAME)
 public class ImportCount extends BaseModel{
 
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {
-        // do something: put to a Map; log a warning, whatever
-    }
-
     @Column
     @PrimaryKey(autoincrement = true)
     protected int id;
@@ -68,6 +63,11 @@ public class ImportCount extends BaseModel{
     @JsonProperty("deleted")
     @Column
     private int deleted;
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+        // do something: put to a Map; log a warning, whatever
+    }
 
     public int getId() {
         return id;

@@ -198,7 +198,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                 if (enrollment != null) {
                     event.setLocalEnrollmentId(enrollmentId);
                     event.setEnrollment(enrollment.getEnrollment());
-                    event.trackedEntityInstance = enrollment.trackedEntityInstance;
+                    event.setTrackedEntityInstance(enrollment.getTrackedEntityInstance());
                     LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment())).plusDays(programStage.getMinDaysFromStart());
                     event.setDueDate(dueDate.toString());
                 }

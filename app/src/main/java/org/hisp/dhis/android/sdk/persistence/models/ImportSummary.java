@@ -49,43 +49,52 @@ public class ImportSummary extends BaseModel {
     public static final String SUCCESS = "SUCCESS";
     public static final String ERROR = "ERROR";
 
+    @Column(name = "id")
+    @PrimaryKey(autoincrement = true)
+    int id;
+
+    @JsonProperty("status")
+    @Column(name = "status")
+    String status;
+
+    @JsonProperty("description")
+    @Column(name = "description")
+    String description;
+
+    @JsonProperty("importCount")
+    @Column
+    @ForeignKey(references = {
+            @ForeignKeyReference(columnName = "importCount", columnType = int.class, foreignColumnName = "id")
+    })
+    ImportCount importCount;
+
+    @JsonProperty("reference")
+    @Column(name = "reference")
+    String reference;
+
+    @JsonProperty("href")
+    @Column(name = "href")
+    String href;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
-    @Column
-    @PrimaryKey(autoincrement = true)
-    protected int id;
-
-    @JsonProperty("status")
-    @Column
-    private String status;
-
-    @JsonProperty("description")
-    @Column
-    private String description;
-
-    @JsonProperty("importCount")
-    @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "importCount",
-                    columnType = int.class, foreignColumnName = "id")})
-    protected ImportCount importCount;
-
-    @JsonProperty("reference")
-    @Column
-    private String reference;
-
-    @JsonProperty("href")
-    @Column
-    private String href;
-
     public String getReference() {
         return reference;
     }
 
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
     public String getHref() {
         return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
     }
 
     public ImportCount getImportCount() {
@@ -96,27 +105,19 @@ public class ImportSummary extends BaseModel {
         return description;
     }
 
-    public String getStatus() {
-        return status;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public int getId() {
-        return id;
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
+    public int getId() {
+        return id;
     }
 }

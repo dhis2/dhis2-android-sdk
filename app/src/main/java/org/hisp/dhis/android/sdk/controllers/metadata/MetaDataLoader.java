@@ -91,7 +91,6 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.DateUtils;
-import org.hisp.dhis.android.sdk.utils.Utils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
@@ -499,14 +498,14 @@ public class MetaDataLoader {
         final MetaDataResponseEvent<Program> event = new
                 MetaDataResponseEvent<>(BaseEvent.EventType.updateProgram);
         final Program programBackup = new Program();
-        programBackup.id = id;
+        programBackup.setId(id);
         LoadProgramTask task = new LoadProgramTask(NetworkManager.getInstance(),
                 new ApiRequestCallback<Program>() {
                     @Override
                     public void onSuccess(ResponseHolder<Program> holder) {
                         try {
                             Program program = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), Program.class);
-                            if (program.id != null)
+                            if (program.getId() != null)
                                 holder.setItem(program);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -1172,7 +1171,7 @@ public class MetaDataLoader {
                         for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
                             programStageSection.async().save();
                             for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
-                                programStageDataElement.setProgramStageSection(programStageSection.id);
+                                programStageDataElement.setProgramStageSection(programStageSection.getId());
                                 programStageDataElement.async().save();
                                 //todo[simen]: consider implementing override of save function rather
                                 //todo: than doing this manually
@@ -1214,7 +1213,7 @@ public class MetaDataLoader {
                     }
                 }
 
-                flagMetaDataItemLoaded(program.id, true);
+                flagMetaDataItemLoaded(program.getId(), true);
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.updateProgram) {
                 Program program = (Program) event.getResponseHolder().getItem();
@@ -1286,7 +1285,7 @@ public class MetaDataLoader {
                             for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
                                 programStageSection.async().save();
                                 for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
-                                    programStageDataElement.setProgramStageSection(programStageSection.id);
+                                    programStageDataElement.setProgramStageSection(programStageSection.getId());
                                     programStageDataElement.async().save();
                                     //todo: consider implementing override of save function rather
                                     //todo: than doing this manually
@@ -1329,7 +1328,7 @@ public class MetaDataLoader {
                     }
                 }
 
-                flagMetaDataItemUpdated(program.id, systemInfo.getServerDate());
+                flagMetaDataItemUpdated(program.getId(), systemInfo.getServerDate());
                 loadItem();
             } else if (event.eventType == BaseEvent.EventType.loadOptionSets) {
                 List<OptionSet> optionSets = (List<OptionSet>) event.getResponseHolder().getItem();
@@ -1420,12 +1419,12 @@ public class MetaDataLoader {
                     flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.getServerDate());
                 }
                 loadItem();
-            }  else if (event.eventType == BaseEvent.EventType.loadRelationshipTypes) {
+            } else if (event.eventType == BaseEvent.EventType.loadRelationshipTypes) {
                 List<RelationshipType> relationshipTypes = (List<RelationshipType>) event.getResponseHolder().getItem();
 
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
-                if(relationshipTypes!=null) {
-                    for (RelationshipType relationshipType: relationshipTypes) {
+                if (relationshipTypes != null) {
+                    for (RelationshipType relationshipType : relationshipTypes) {
                         relationshipType.async().save();
                     }
                 }

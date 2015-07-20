@@ -45,13 +45,13 @@ public abstract class BaseValue extends BaseModel {
     public static final String TRUE = "true";
     public static final String EMPTY_VALUE = "";
 
+    @JsonProperty("value")
+    @Column(name = "value")
+    String value;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
     }
-
-    @JsonProperty("value")
-    @Column
-    protected String value;
 
     public void setValue(String value) {
         this.value = value;

@@ -94,7 +94,7 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
             if( trackedEntityAttributes != null && trackedEntityAttributes.size() > 0 ) {
                 trackedEntityAttributesToLoad = new ArrayList<>();
                 for(TrackedEntityAttribute trackedEntityAttribute: trackedEntityAttributes) {
-                    trackedEntityAttributesToLoad.add(trackedEntityAttribute.id);
+                    trackedEntityAttributesToLoad.add(trackedEntityAttribute.getId());
                 }
                 loadTrackedEntityAttributes();
             } else {
@@ -124,12 +124,12 @@ public class UpdateTrackedEntityAttributesTask implements INetworkTask {
         if( holder.getItem() != null ) {
             TrackedEntityAttribute trackedEntityAttribute = holder.getItem();
             boolean noUpdate = false;
-            if(trackedEntityAttribute.id == null) noUpdate = true;
+            if(trackedEntityAttribute.getId() == null) noUpdate = true;
             if(noUpdate) {}
             else {
                 TrackedEntityAttribute result = new Select().from(TrackedEntityAttribute.class).where(
                         Condition.column(TrackedEntityAttribute$Table.ID).
-                                is(trackedEntityAttribute.id)).querySingle();
+                                is(trackedEntityAttribute.getId())).querySingle();
                 if(result != null)
                     trackedEntityAttribute.async().update();
                 else

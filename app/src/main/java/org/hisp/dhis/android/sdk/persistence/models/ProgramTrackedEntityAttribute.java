@@ -46,34 +46,34 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
 
-    @Column
-    private int sortOrder;
+    @Column(name = "trackedEntityAttribute")
+    @PrimaryKey
+    String trackedEntityAttribute;
+
+    @Column(name = "sortOrder")
+    int sortOrder;
 
     @JsonProperty("allowFutureDate")
-    @Column
-    private boolean allowFutureDate;
+    @Column(name = "allowFutureDate")
+    boolean allowFutureDate;
 
     @JsonProperty("displayInList")
-    @Column
-    private boolean displayInList;
+    @Column(name = "displayInList")
+    boolean displayInList;
 
     @JsonProperty("mandatory")
-    @Column
-    private boolean mandatory;
+    @Column(name = "mandatory")
+    boolean mandatory;
 
-    @Column
+    @Column(name = "program")
     @PrimaryKey
-    private String program;
+    String program;
 
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         trackedEntityAttribute.async().save();
         this.trackedEntityAttribute = trackedEntityAttribute.id;
     }
-
-    @Column
-    @PrimaryKey
-    public String trackedEntityAttribute;
 
     public boolean getAllowFutureDate() {
         return allowFutureDate;
@@ -111,8 +111,11 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
         return MetaDataController.getTrackedEntityAttribute(trackedEntityAttribute);
     }
 
-    public String getTrackedEntityAttributeId()
-    {
+    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public String getTrackedEntityAttributeId() {
         return trackedEntityAttribute;
     }
 
@@ -122,9 +125,5 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
     }
 }

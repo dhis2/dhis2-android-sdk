@@ -17,33 +17,33 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
     public static final String TYPE_HIDEFIELD = "HIDEFIELD";
     public static final String TYPE_HIDESECTION = "HIDESECTION";
 
-    @Column
-    private String programRuleActionType;
+    @Column(name = "programRule")
+    String programRule;
 
-    @Column
-    private boolean externalAccess;
+    @Column(name = "dataElement")
+    String dataElement;
 
-    @Column
-    private String displayName;
+    @Column(name = "programStageSection")
+    String programStageSection;
 
-    @Column
-    protected String programRule;
+    @Column(name = "programRuleActionType")
+    String programRuleActionType;
+
+    @Column(name = "externalAccess")
+    boolean externalAccess;
+
+    @Column(name = "displayName")
+    String displayName;
 
     @JsonProperty("programRule")
     public void setProgramRule(Map<String, Object> programRule) {
         this.programRule = (String) programRule.get("id");
     }
 
-    @Column
-    protected String dataElement;
-
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
     }
-
-    @Column
-    protected String programStageSection;
 
     @JsonProperty("programStageSection")
     public void setProgramStageSection(Map<String, Object> programStageSection) {
@@ -54,16 +54,32 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
         return programStageSection;
     }
 
+    public void setProgramStageSection(String programStageSection) {
+        this.programStageSection = programStageSection;
+    }
+
     public String getDataElement() {
         return dataElement;
+    }
+
+    public void setDataElement(String dataElement) {
+        this.dataElement = dataElement;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public String getProgramRule() {
         return programRule;
+    }
+
+    public void setProgramRule(String programRule) {
+        this.programRule = programRule;
     }
 
     public boolean getExternalAccess() {
@@ -84,21 +100,5 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
 
     public void setExternalAccess(boolean externalAccess) {
         this.externalAccess = externalAccess;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setProgramRule(String programRule) {
-        this.programRule = programRule;
-    }
-
-    public void setDataElement(String dataElement) {
-        this.dataElement = dataElement;
-    }
-
-    public void setProgramStageSection(String programStageSection) {
-        this.programStageSection = programStageSection;
     }
 }

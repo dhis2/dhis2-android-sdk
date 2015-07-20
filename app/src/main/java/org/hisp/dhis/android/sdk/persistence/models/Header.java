@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Header representation as seen in the webAPI endpoint trackedEntityInstances/
+ *
  * @author Simen Skogly Russnes on 03.03.15.
  */
 public class Header {
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
 
     @JsonProperty("name")
     private String name;
@@ -27,6 +25,9 @@ public class Header {
     @JsonProperty("meta")
     private boolean meta;
 
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+    }
 
     public boolean getMeta() {
         return meta;

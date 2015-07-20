@@ -36,56 +36,79 @@ public class ProgramRule extends BaseIdentifiableObject {
     public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
             INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?(\\w*)\\}";
 
-    public static final Pattern EXPRESSION_PATTERN = Pattern.compile( EXPRESSION_REGEXP );
-    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile( KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}" );
+    public static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
+    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
 
-    @Column
-    private String condition;
+    @Column(name = "programStage")
+    String programStage;
 
-    @Column
-    private boolean externalAction;
+    @Column(name = "program")
+    String program;
 
-    @Column
-    private String displayName;
+    @Column(name = "condition")
+    String condition;
 
-    @Column
-    protected String programStage;
+    @Column(name = "externalAction")
+    boolean externalAction;
+
+    @Column(name = "displayName")
+    String displayName;
+
+    @JsonIgnore
+    List<ProgramRuleAction> programRuleActions;
 
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
 
-    @Column
-    protected String program;
-
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
         this.program = (String) program.get("id");
     }
 
-    @JsonIgnore
-    private List<ProgramRuleAction> programRuleActions;
-
     public List<ProgramRuleAction> getProgramRuleActions() {
-        return new Select().from(ProgramRuleAction.class).where
-                (Condition.column(ProgramRuleAction$Table.PROGRAMRULE).is(id)).queryList();
+        return new Select()
+                .from(ProgramRuleAction.class)
+                .where(Condition.column(ProgramRuleAction$Table
+                        .PROGRAMRULE).is(id))
+                .queryList();
+    }
+
+    public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
+        this.programRuleActions = programRuleActions;
     }
 
     public String getProgram() {
         return program;
     }
 
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
     public String getProgramStage() {
         return programStage;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public boolean getExternalAction() {
         return externalAction;
+    }
+
+    public void setExternalAction(boolean externalAction) {
+        this.externalAction = externalAction;
     }
 
     public String getCondition() {
@@ -94,25 +117,5 @@ public class ProgramRule extends BaseIdentifiableObject {
 
     public void setCondition(String condition) {
         this.condition = condition;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setExternalAction(boolean externalAction) {
-        this.externalAction = externalAction;
-    }
-
-    public void setProgramStage(String programStage) {
-        this.programStage = programStage;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
-    }
-
-    public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
-        this.programRuleActions = programRuleActions;
     }
 }

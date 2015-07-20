@@ -39,42 +39,41 @@ import java.util.List;
  */
 public class ResponseBody {
 
+    @JsonProperty("imported")
+    int imported;
+
+    @JsonProperty("ignored")
+    int ignored;
+
+    @JsonProperty("importSummaries")
+    List<ImportSummary> importSummaries;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
-    @JsonProperty("imported")
-    private int imported;
-
-    @JsonProperty("ignored")
-    private int ignored;
-
-    @JsonProperty("importSummaries")
-    private List<ImportSummary> importSummaries;
-
-
     public int getImported() {
         return imported;
+    }
+
+    public void setImported(int imported) {
+        this.imported = imported;
     }
 
     public int getIgnored() {
         return ignored;
     }
 
-    public List<ImportSummary> getImportSummaries() {
-        return importSummaries;
-    }
-
     public void setIgnored(int ignored) {
         this.ignored = ignored;
     }
 
-    public void setImportSummaries(List<ImportSummary> importSummaries) {
-        this.importSummaries = importSummaries;
+    public List<ImportSummary> getImportSummaries() {
+        return importSummaries;
     }
 
-    public void setImported(int imported) {
-        this.imported = imported;
+    public void setImportSummaries(List<ImportSummary> importSummaries) {
+        this.importSummaries = importSummaries;
     }
 }

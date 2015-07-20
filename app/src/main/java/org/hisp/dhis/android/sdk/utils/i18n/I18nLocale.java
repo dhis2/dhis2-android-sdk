@@ -35,41 +35,35 @@ import java.util.Locale;
 
 /**
  * Wrapper for java.util.Locale for persistence purposes.
- * 
+ *
  * @author larshelg
  */
-public class I18nLocale
-    extends BaseIdentifiableObject
-{    
+public class I18nLocale extends BaseIdentifiableObject {
     private String locale;
 
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
 
-    public I18nLocale()
-    {        
-        this.name = "English (United Kingdom)";
+    public I18nLocale() {
+        setName("English (United Kingdom)");
         this.locale = "en_GB";
     }
 
-    public I18nLocale( Locale locale )
-    {
-        this.name = locale.getDisplayName();
+    public I18nLocale(Locale locale) {
+        setName(locale.getDisplayName());
         this.locale = locale.toString();
     }
-    
+
     // -------------------------------------------------------------------------
     // Getters and setters
     // -------------------------------------------------------------------------
 
-    public String getLocale()
-    {
+    public String getLocale() {
         return locale;
     }
-    
-    public void setLocale( String locale )
-    {
+
+    public void setLocale(String locale) {
         this.locale = locale;
     }
 }

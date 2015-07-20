@@ -55,60 +55,60 @@ public class TrackedEntityAttribute extends BaseNameableObject {
     public static final String TYPE_USERS = "users";
     public static final String TYPE_EMAIL = "email";
 
+    @Column(name = "optionSet")
+    String optionSet;
+
     @JsonProperty("unique")
-    @Column
-    private boolean isUnique;
+    @Column(name = "isUnique")
+    boolean isUnique;
 
     @JsonProperty("programScope")
-    @Column
-    private boolean programScope;
+    @Column(name = "programScope")
+    boolean programScope;
 
     @JsonProperty("orgunitScope")
-    @Column
-    private boolean orgunitScope;
+    @Column(name = "orgunitScope")
+    boolean orgunitScope;
 
     @JsonProperty("displayInListNoProgram")
-    @Column
-    private boolean displayInListNoProgram;
+    @Column(name = "displayInListNoProgram")
+    boolean displayInListNoProgram;
 
     @JsonProperty("displayOnVisitSchedule")
-    @Column
-    private boolean displayOnVisitSchedule;
+    @Column(name = "displayOnVisitSchedule")
+    boolean displayOnVisitSchedule;
 
     @JsonProperty("externalAccess")
-    @Column
-    private boolean externalAccess;
+    @Column(name = "externalAccess")
+    boolean externalAccess;
 
     @JsonProperty("valueType")
-    @Column
-    private String valueType;
+    @Column(name = "valueType")
+    String valueType;
 
     @JsonProperty("confidential")
-    @Column
-    private boolean confidential;
+    @Column(name = "confidential")
+    boolean confidential;
 
     @JsonProperty("inherit")
-    @Column
-    private boolean inherit;
+    @Column(name = "inherit")
+    boolean inherit;
 
     @JsonProperty("sortOrderVisitSchedule")
-    @Column
-    private int sortOrderVisitSchedule;
+    @Column(name = "sortOrderVisitSchedule")
+    int sortOrderVisitSchedule;
 
     @JsonProperty("dimension")
-    @Column
-    private String dimension;
+    @Column(name = "dimension")
+    String dimension;
 
     @JsonProperty("displayName")
-    @Column
-    private String displayName;
+    @Column(name = "displayName")
+    String displayName;
 
     @JsonProperty("sortOrderInListNoProgram")
-    @Column
-    private int sortOrderInListNoProgram;
-
-    @Column
-    protected String optionSet;
+    @Column(name = "sortOrderInListNoProgram")
+    int sortOrderInListNoProgram;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
@@ -119,111 +119,111 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         return optionSet;
     }
 
+    public void setOptionSet(String optionSet) {
+        this.optionSet = optionSet;
+    }
+
     public boolean getIsUnique() {
         return isUnique;
+    }
+
+    public void setIsUnique(boolean isUnique) {
+        this.isUnique = isUnique;
     }
 
     public boolean getProgramScope() {
         return programScope;
     }
 
+    public void setProgramScope(boolean programScope) {
+        this.programScope = programScope;
+    }
+
     public boolean getOrgunitScope() {
         return orgunitScope;
-    }
-
-    public boolean getDisplayInListNoProgram() {
-        return displayInListNoProgram;
-    }
-
-    public boolean getDisplayOnVisitSchedule() {
-        return displayOnVisitSchedule;
-    }
-
-    public boolean getExternalAccess() {
-        return externalAccess;
-    }
-
-    public String getValueType() {
-        return valueType;
-    }
-
-    public boolean getConfidential() {
-        return confidential;
-    }
-
-    public boolean getInherit() {
-        return inherit;
-    }
-
-    public int getSortOrderVisitSchedule() {
-        return sortOrderVisitSchedule;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public int getSortOrderInListNoProgram() {
-        return sortOrderInListNoProgram;
-    }
-
-    public void setOptionSet(String optionSet) {
-        this.optionSet = optionSet;
-    }
-
-    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
-        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
-    public void setSortOrderVisitSchedule(int sortOrderVisitSchedule) {
-        this.sortOrderVisitSchedule = sortOrderVisitSchedule;
-    }
-
-    public void setInherit(boolean inherit) {
-        this.inherit = inherit;
-    }
-
-    public void setConfidential(boolean confidential) {
-        this.confidential = confidential;
-    }
-
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
-    public void setDisplayOnVisitSchedule(boolean displayOnVisitSchedule) {
-        this.displayOnVisitSchedule = displayOnVisitSchedule;
-    }
-
-    public void setDisplayInListNoProgram(boolean displayInListNoProgram) {
-        this.displayInListNoProgram = displayInListNoProgram;
     }
 
     public void setOrgunitScope(boolean orgunitScope) {
         this.orgunitScope = orgunitScope;
     }
 
-    public void setProgramScope(boolean programScope) {
-        this.programScope = programScope;
+    public boolean getDisplayInListNoProgram() {
+        return displayInListNoProgram;
     }
 
-    public void setIsUnique(boolean isUnique) {
-        this.isUnique = isUnique;
+    public void setDisplayInListNoProgram(boolean displayInListNoProgram) {
+        this.displayInListNoProgram = displayInListNoProgram;
+    }
+
+    public boolean getDisplayOnVisitSchedule() {
+        return displayOnVisitSchedule;
+    }
+
+    public void setDisplayOnVisitSchedule(boolean displayOnVisitSchedule) {
+        this.displayOnVisitSchedule = displayOnVisitSchedule;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public boolean getConfidential() {
+        return confidential;
+    }
+
+    public void setConfidential(boolean confidential) {
+        this.confidential = confidential;
+    }
+
+    public boolean getInherit() {
+        return inherit;
+    }
+
+    public void setInherit(boolean inherit) {
+        this.inherit = inherit;
+    }
+
+    public int getSortOrderVisitSchedule() {
+        return sortOrderVisitSchedule;
+    }
+
+    public void setSortOrderVisitSchedule(int sortOrderVisitSchedule) {
+        this.sortOrderVisitSchedule = sortOrderVisitSchedule;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public int getSortOrderInListNoProgram() {
+        return sortOrderInListNoProgram;
+    }
+
+    public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
+        this.sortOrderInListNoProgram = sortOrderInListNoProgram;
     }
 }

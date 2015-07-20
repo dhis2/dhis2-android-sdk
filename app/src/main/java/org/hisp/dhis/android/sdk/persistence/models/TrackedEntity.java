@@ -42,23 +42,24 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class TrackedEntity extends BaseModel{
+public class TrackedEntity extends BaseModel {
 
     @JsonProperty("id")
-    @Column
+    @Column(name = "id")
     @PrimaryKey
-    protected String id;
+    String id;
 
     @JsonProperty("name")
-    @Column
-    private String name;
+    @Column(name = "name")
+    String name;
+
+    public TrackedEntity() {
+    }
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
-
-    public TrackedEntity() {}
 
     public String getId() {
         return id;

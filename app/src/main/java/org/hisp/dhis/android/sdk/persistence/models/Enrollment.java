@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -55,19 +54,60 @@ import java.util.UUID;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(databaseName = Dhis2Database.NAME)
-public class Enrollment extends BaseSerializableModel{
-
-    private static final String CLASS_TAG = Enrollment.class.getSimpleName();
+public class Enrollment extends BaseSerializableModel {
 
     public static final String ACTIVE = "ACTIVE";
     public static final String COMPLETED = "COMPLETED";
     public static final String CANCELLED = "CANCELLED"; //aka TERMINATED
+    private static final String CLASS_TAG = Enrollment.class.getSimpleName();
+
+    @JsonProperty("orgUnit")
+    @Column(name = "orgUnit")
+    String orgUnit;
+
+    @JsonIgnore
+    @Column(name = "trackedEntityInstance")
+    String trackedEntityInstance;
+
+    @JsonIgnore
+    @Column(name = "localTrackedEntityInstanceId")
+    long localTrackedEntityInstanceId;
+
+    @JsonProperty("program")
+    @Column(name = "program")
+    String program;
+
+    @JsonProperty("dateOfEnrollment")
+    @Column(name = "dateOfEnrollment")
+    String dateOfEnrollment;
+
+    @JsonProperty("dateOfIncident")
+    @Column(name = "dateOfIncident")
+    String dateOfIncident;
+
+    @JsonProperty("followup")
+    @Column(name = "followup")
+    boolean followup;
+
+    @JsonProperty("status")
+    @Column(name = "status")
+    String status;
+
+    @JsonIgnore
+    List<TrackedEntityAttributeValue> attributes;
+
+    @JsonIgnore
+    @Column(name = "enrollment")
+    @Unique
+    String enrollment;
+
+    @JsonIgnore
+    List<Event> events;
 
     public Enrollment() {
-
     }
 
-    public Enrollment (String organisationUnit, String trackedEntityInstance, Program program) {
+    public Enrollment(String organisationUnit, String trackedEntityInstance, Program program) {
         orgUnit = organisationUnit;
         status = Enrollment.ACTIVE;
         enrollment = Dhis2.QUEUED + UUID.randomUUID().toString();
@@ -78,8 +118,8 @@ public class Enrollment extends BaseSerializableModel{
         this.dateOfEnrollment = DateUtils.getMediumDateString();
         this.dateOfIncident = DateUtils.getMediumDateString();
         List<Event> events = new ArrayList<>();
-        for(ProgramStage programStage: program.getProgramStages()) {
-            if(programStage.getAutoGenerateEvent()) {
+        for (ProgramStage programStage : program.getProgramStages()) {
+            if (programStage.getAutoGenerateEvent()) {
                 String status = Event.STATUS_FUTURE_VISIT;
                 Event event = new Event(organisationUnit, status,
                         program.id, programStage,
@@ -87,20 +127,9 @@ public class Enrollment extends BaseSerializableModel{
                 events.add(event);
             }
         }
-        if(!events.isEmpty()) setEvents(events);
-    }
-
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
-
-    @JsonIgnore
-    @Column
-    @Unique
-    public String enrollment;
-
-    @JsonProperty("enrollment")
-    public void setEnrollment(String enrollment) {
-        this.enrollment = enrollment;
+        if (!events.isEmpty()) {
+            setEvents(events);
+        }
     }
 
     /**
@@ -112,17 +141,13 @@ public class Enrollment extends BaseSerializableModel{
         return enrollment;
     }
 
-    @JsonProperty("orgUnit")
-    @Column
-    public String orgUnit;
+    @JsonProperty("enrollment")
+    public void setEnrollment(String enrollment) {
+        this.enrollment = enrollment;
+    }
 
-    @JsonIgnore
-    @Column
-    public String trackedEntityInstance;
-
-    @JsonProperty("trackedEntityInstance")
-    public void setTrackedEntityInstance(String trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
     }
 
     /**
@@ -134,37 +159,14 @@ public class Enrollment extends BaseSerializableModel{
         return trackedEntityInstance;
     }
 
-    @JsonIgnore
-    @Column
-    public long localTrackedEntityInstanceId;
-
-    @JsonProperty("program")
-    @Column
-    public String program;
-
-    @JsonProperty("dateOfEnrollment")
-    @Column
-    public String dateOfEnrollment;
-
-    @JsonProperty("dateOfIncident")
-    @Column
-    public String dateOfIncident;
-
-    @JsonProperty("followup")
-    @Column
-    public boolean followup;
-
-    @JsonProperty("status")
-    @Column
-    public String status;
-
-    @JsonIgnore
-    public List<TrackedEntityAttributeValue> attributes;
+    @JsonProperty("trackedEntityInstance")
+    public void setTrackedEntityInstance(String trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
+    }
 
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
-        if(attributes == null)
-        {
+        if (attributes == null) {
             attributes = new ArrayList<>();
             List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
                     MetaDataController.getProgramTrackedEntityAttributes(program);
@@ -179,22 +181,20 @@ public class Enrollment extends BaseSerializableModel{
         return attributes;
     }
 
-    @JsonIgnore
-    List<Event> events;
+    public void setAttributes(List<TrackedEntityAttributeValue> attributes) {
+        this.attributes = attributes;
+    }
 
     /**
      * gets a list of events for this enrollment
+     *
      * @param reLoad true if you want to re-load from database. False if just use what's already
      *               loaded ( faster )
-     * @return
+     * @return List of events.
      */
     public List<Event> getEvents(boolean reLoad) {
-        if(events == null || reLoad) events = DataValueController.getEventsByEnrollment(localId);
+        if (events == null || reLoad) events = DataValueController.getEventsByEnrollment(localId);
         return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
     }
 
     @Override
@@ -202,33 +202,38 @@ public class Enrollment extends BaseSerializableModel{
         /* check if there is an existing enrollment with the same UID to avoid duplicates */
         Enrollment existingEnrollment = DataValueController.getEnrollment(enrollment);
         boolean exists = false;
-        if(existingEnrollment != null) {
+        if (existingEnrollment != null) {
             exists = true;
             localId = existingEnrollment.localId;
         }
-        if(getEnrollment() == null && DataValueController.getEnrollment(localId) != null) { //means that the enrollment is local and has previosuly been saved
+        if (getEnrollment() == null && DataValueController.getEnrollment(localId) != null) {
+            //means that the enrollment is local and has previosuly been saved
             //then we don't want to update the enrollment reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
             //unfortunately a bit of hard coding I suppose but it's important to verify data integrity
             updateManually();
         } else {
-            super.save(); //saving the enrollment first to get a autoincrement id from db
+            //saving the enrollment first to get a autoincrement id from db
+            super.save();
         }
-        if(events!=null) {
-            for(Event event: events) {
+        if (events != null) {
+            for (Event event : events) {
                 event.setLocalEnrollmentId(localId);
                 event.save();
             }
         }
 
-        if(attributes != null)
-        {
-            for(TrackedEntityAttributeValue value : attributes)
-            {
+        if (attributes != null) {
+            for (TrackedEntityAttributeValue value : attributes) {
                 value.setLocalTrackedEntityInstanceId(localTrackedEntityInstanceId);
                 value.save();
             }
         }
+    }
+
+    @Override
+    public void update() {
+        save();
     }
 
     /**
@@ -237,7 +242,7 @@ public class Enrollment extends BaseSerializableModel{
      * and has previously been saved, so that it has a localId.
      */
     public void updateManually() {
-        new Update(Enrollment.class).set(
+        new Update<>(Enrollment.class).set(
                 Condition.column(Enrollment$Table.STATUS).is(status),
                 Condition.column(Enrollment$Table.FROMSERVER).is(fromServer),
                 Condition.column(Enrollment$Table.FOLLOWUP).is(followup))
@@ -246,13 +251,15 @@ public class Enrollment extends BaseSerializableModel{
 
     @JsonIgnore
     public Program getProgram() {
-        if(program==null) return null;
-        else return MetaDataController.getProgram(program);
+        if (program == null) {
+            return null;
+        } else {
+            return MetaDataController.getProgram(program);
+        }
     }
 
-    @Override
-    public void update() {
-        save();
+    public void setProgram(String program) {
+        this.program = program;
     }
 
     public String getOrgUnit() {
@@ -269,10 +276,6 @@ public class Enrollment extends BaseSerializableModel{
 
     public void setLocalTrackedEntityInstanceId(long localTrackedEntityInstanceId) {
         this.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
     }
 
     public String getDateOfEnrollment() {
@@ -307,11 +310,11 @@ public class Enrollment extends BaseSerializableModel{
         this.status = status;
     }
 
-    public void setAttributes(List<TrackedEntityAttributeValue> attributes) {
-        this.attributes = attributes;
-    }
-
     public List<Event> getEvents() {
         return events;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 }

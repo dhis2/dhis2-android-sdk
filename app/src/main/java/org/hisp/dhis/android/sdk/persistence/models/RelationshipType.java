@@ -39,21 +39,22 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class RelationshipType extends BaseIdentifiableObject{
+public class RelationshipType extends BaseIdentifiableObject {
 
     @JsonProperty
-    @Column
+    @Column(name = "aIsToB")
     String aIsToB;
 
     @JsonProperty
-    @Column
+    @Column(name = "bIsToA")
     String bIsToA;
 
     @JsonProperty
-    @Column
+    @Column(name = "displayName")
     String displayName;
 
-    public RelationshipType() {}
+    public RelationshipType() {
+    }
 
     public String getId() {
         return id;

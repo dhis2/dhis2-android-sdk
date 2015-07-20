@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.controllers.tasks;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
@@ -68,10 +67,11 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
     /**
      * Task for initiating loading of all TrackedEntityInstances with full attributes, relationships, enrollments, and events
      * for a given OrganisationUnit. If desired, the number can be limited
+     *
      * @param networkManager
      * @param callback
      * @param organisationUnit
-     * @param limit the max number of TEIs to load. Pass 0 to load all
+     * @param limit            the max number of TEIs to load. Pass 0 to load all
      */
     public LoadTrackedEntityInstancesTask(NetworkManager networkManager,
                                           ApiRequestCallback<TrackedEntityInstancesResultHolder> callback,
@@ -93,11 +93,11 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             headers.add(new Header("Accept", "application/json"));
 
             String url = networkManager.getServerUrl() + "/api/trackedEntityInstances?ou="
-                    +organisationUnit;
-            if(limit<=0) {
+                    + organisationUnit;
+            if (limit <= 0) {
                 url += "&paging=false";
             } else {
-                url += "?page=0&pageSize="+limit;
+                url += "?page=0&pageSize=" + limit;
             }
 
             Request request = new Request(RestMethod.GET, url, headers, null);
@@ -105,7 +105,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(loadTrackedEntityInstancesCallback);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, CLASS_TAG, new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(loadTrackedEntityInstancesCallback);
@@ -115,6 +115,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
     /**
      * Task for initiating loading of a given list of TrackedEntityInstances, with full attributes,
      * relationships, enrollments, and events
+     *
      * @param networkManager
      * @param callback
      * @param trackedEntityInstances
@@ -145,22 +146,22 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             int current = 1;
             int length = trackedEntityInstances.size();
             String loading = "Loading Tracked Entity Instance";
-            if(Dhis2.getInstance().getActivity()!=null) {
+            if (Dhis2.getInstance().getActivity() != null) {
                 loading = Dhis2.getInstance().getActivity().getString(R.string.loading_tracked_entity_instances);
             }
             Dhis2.postProgressMessage(loading + " " + current + "/" + length);
-            String url = networkManager.getServerUrl() + "/api/trackedEntityInstances/"+trackedEntityInstanceIterator.next().getTrackedEntityInstance();
+            String url = networkManager.getServerUrl() + "/api/trackedEntityInstances/" + trackedEntityInstanceIterator.next().getTrackedEntityInstance();
 
             Request request = new Request(RestMethod.GET, url, headers, null);
 
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(loadTrackedEntityInstanceCallback);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, e.toString(), new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(loadTrackedEntityInstanceCallback);
-        } catch(IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, e.toString(), new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(loadTrackedEntityInstanceCallback);
@@ -186,6 +187,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         final List<Event> events;
         final ApiRequestCallback parentCallback;
         final boolean synchronizing;
+
         public LoadTrackedEntityInstancesCallback(ApiRequestCallback parentCallback, List<TrackedEntityInstance> trackedEntityInstances, List<Enrollment> enrollments, List<Event> events, boolean synchronizing) {
             this.parentCallback = parentCallback;
             this.trackedEntityInstances = trackedEntityInstances;
@@ -198,8 +200,8 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         public void onSuccess(ResponseHolder holder) {
             try {
                 List<TrackedEntityInstance> trackedEntityInstances = TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
-                if(trackedEntityInstances == null || trackedEntityInstances.isEmpty() ) {
-                    holder.setItem(new Object[] {this.trackedEntityInstances, enrollments, events});
+                if (trackedEntityInstances == null || trackedEntityInstances.isEmpty()) {
+                    holder.setItem(new Object[]{this.trackedEntityInstances, enrollments, events});
                     parentCallback.onSuccess(holder);
                 } else {
                     this.trackedEntityInstances.addAll(trackedEntityInstances);
@@ -220,6 +222,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
     /**
      * Initiates the loading sequences of a list of given TrackedEntityInstances
      * The loading sequence loads attributes and relationships, enrollments, and events for each passed TrackedEntityInstance
+     *
      * @param trackedEntityInstances
      * @param holder
      * @param callback
@@ -228,7 +231,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
      * @param synchronizing
      */
     public static void loadTrackedEntityInstances(List<TrackedEntityInstance> trackedEntityInstances, ResponseHolder holder, ApiRequestCallback callback, List<Enrollment> enrollments, List<Event> events, boolean synchronizing) {
-        if(trackedEntityInstances==null || trackedEntityInstances.isEmpty()) {
+        if (trackedEntityInstances == null || trackedEntityInstances.isEmpty()) {
             callback.onSuccess(holder);
             return;
         }
@@ -240,12 +243,13 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
     /**
      * Initiates the loading sequence of attributes and relationships, enrollments, and events for a given TrackedEntityInstance.
      * After the sequence is finished, the given onSuccess of the given callback is called.
+     *
      * @param callback
      * @param trackedEntityInstance
      * @param synchronizing
      */
     public static void loadTrackedEntityInstance(ApiRequestCallback callback, TrackedEntityInstance trackedEntityInstance, boolean synchronizing) {
-        LoadTrackedEntityInstanceTask task = new LoadTrackedEntityInstanceTask(NetworkManager.getInstance(), callback, trackedEntityInstance.trackedEntityInstance, synchronizing);
+        LoadTrackedEntityInstanceTask task = new LoadTrackedEntityInstanceTask(NetworkManager.getInstance(), callback, trackedEntityInstance.getTrackedEntityInstance(), synchronizing);
         task.execute();
     }
 
@@ -262,7 +266,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         final List<Event> events;
         final boolean synchronizing;
 
-        public LoadNextTrackedEntityInstanceCallback(List<TrackedEntityInstance> trackedEntityInstances, ListIterator<TrackedEntityInstance> trackedEntityInstanceIterator, ApiRequestCallback parentCallback, List <Enrollment> enrollments, List<Event> events, boolean synchronizing) {
+        public LoadNextTrackedEntityInstanceCallback(List<TrackedEntityInstance> trackedEntityInstances, ListIterator<TrackedEntityInstance> trackedEntityInstanceIterator, ApiRequestCallback parentCallback, List<Enrollment> enrollments, List<Event> events, boolean synchronizing) {
             this.trackedEntityInstances = trackedEntityInstances;
             this.trackedEntityInstanceIterator = trackedEntityInstanceIterator;
             this.parentCallback = parentCallback;
@@ -280,7 +284,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             List<Event> events = (List<Event>) items[2];
             this.enrollments.addAll(enrollments);
             this.events.addAll(events);
-            if(trackedEntityInstanceIterator.hasNext()) {
+            if (trackedEntityInstanceIterator.hasNext()) {
                 loadNext();
             } else {
                 finish(holder);
@@ -290,9 +294,9 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         @Override
         public void onFailure(ResponseHolder holder) {
             Log.d(TAG, "onFailure");
-            if(holder.getApiException().getResponse() == null) {
+            if (holder.getApiException().getResponse() == null) {
 
-            } else if(holder.getApiException().getResponse().getBody()!=null) {
+            } else if (holder.getApiException().getResponse().getBody() != null) {
                 Log.e(TAG, new String(holder.getApiException().getResponse().getBody()));
             } else {
                 Log.e(TAG, holder.getApiException().getResponse().getReason());
@@ -303,7 +307,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
-            if(trackedEntityInstanceIterator.hasNext()) {
+            if (trackedEntityInstanceIterator.hasNext()) {
                 loadNext();
             } else {
                 finish(holder);
@@ -321,7 +325,7 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
             int current = trackedEntityInstances.indexOf(tei) + 1;
 
             String loading = "Loading Tracked Entity Instance";
-            if(Dhis2.getInstance().getActivity()!=null) {
+            if (Dhis2.getInstance().getActivity() != null) {
                 loading = Dhis2.getInstance().getActivity().getString(R.string.loading_tracked_entity_instances);
             }
             Dhis2.postProgressMessage(loading + " " + current + "/" + length);

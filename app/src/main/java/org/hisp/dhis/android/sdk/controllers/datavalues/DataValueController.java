@@ -38,7 +38,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
@@ -56,14 +55,13 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
-import org.hisp.dhis.android.sdk.utils.APIException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
- * Handles management of data values
+ *         Handles management of data values
  */
 public class DataValueController {
 
@@ -98,6 +96,7 @@ public class DataValueController {
 
     /**
      * Returns a list of enrollments for a given program and tracked entity instance
+     *
      * @param program
      * @param trackedEntityInstance
      * @return
@@ -123,6 +122,7 @@ public class DataValueController {
     /**
      * Returns a list of Events that have dueDate between the given dates, and corresponds to
      * program and orgunit
+     *
      * @param programId
      * @param orgUnitId
      * @param startDate
@@ -141,6 +141,7 @@ public class DataValueController {
      * Returns a list of events for the given server-assigned UID. Note that if possible,
      * getEventsByEnrollment(long) should always be used if possible, as the UID may change if the
      * enrollment is created locally on the device, and then synced with the server.
+     *
      * @param enrollment
      * @return
      */
@@ -150,6 +151,7 @@ public class DataValueController {
 
     /**
      * returns a list of events for a given localEnrollmentId
+     *
      * @param localEnrollmentId
      * @return
      */
@@ -159,6 +161,7 @@ public class DataValueController {
 
     /**
      * Returns a list of events for a given org unit and program
+     *
      * @param organisationUnitId
      * @param programId
      * @return
@@ -172,6 +175,7 @@ public class DataValueController {
 
     /**
      * Returns an Event based on the given localId
+     *
      * @param localId
      * @return
      */
@@ -181,6 +185,7 @@ public class DataValueController {
 
     /**
      * Returns an Event for a given enrollment and program stage
+     *
      * @param localEnrollment
      * @param programStage
      * @return
@@ -195,6 +200,7 @@ public class DataValueController {
      * Returns an event based on UID generated on server. Note that this reference may change if
      * an event is created on the device, and then synced with the server. If possible, always use
      * getEvent(localId) which is safer.
+     *
      * @param event
      * @return
      */
@@ -209,6 +215,7 @@ public class DataValueController {
 
     /**
      * Returns a tracked entity instance based on the given id
+     *
      * @param trackedEntityInstance
      * @return
      */
@@ -227,15 +234,13 @@ public class DataValueController {
    * @param program
    * @return
    */
-    public static List<TrackedEntityAttributeValue> getProgramTrackedEntityAttributeValues(Program program, TrackedEntityInstance trackedEntityInstance)
-    {
+    public static List<TrackedEntityAttributeValue> getProgramTrackedEntityAttributeValues(Program program, TrackedEntityInstance trackedEntityInstance) {
         List<TrackedEntityAttributeValue> programTrackedEntityAttributeValues = new ArrayList<>();
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.id);
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(program.getId());
 
-        for(ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes)
-        {
+        for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {
             TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                    (ptea.trackedEntityAttribute, trackedEntityInstance.getLocalId());
+                    (ptea.getTrackedEntityAttributeId(), trackedEntityInstance.getLocalId());
             if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                 programTrackedEntityAttributeValues.add(v);
             }
@@ -246,6 +251,7 @@ public class DataValueController {
 
     /**
      * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance
+     *
      * @param trackedEntityAttribute
      * @param trackedEntityInstance
      * @return
@@ -260,6 +266,7 @@ public class DataValueController {
 
     /**
      * Returns a list of all trackedEntityAttributeValues for a given TEI
+     *
      * @param trackedEntityInstance
      * @return
      */
@@ -271,6 +278,7 @@ public class DataValueController {
 
     /**
      * Returns a tracked entity attribute value for a given trackedentityattribute and trackedEntityInstance
+     *
      * @param trackedEntityAttribute
      * @param trackedEntityInstance
      * @return
@@ -285,6 +293,7 @@ public class DataValueController {
 
     /**
      * Returns a list of all trackedEntityAttributeValues for a given TEI
+     *
      * @param trackedEntityInstance
      * @return
      */
@@ -297,11 +306,12 @@ public class DataValueController {
     /**
      * Returns a list of failed items from the database, or null if there are none.
      * Failed items are items that have failed to upload and sync with the server for some reason
+     *
      * @return
      */
     public static List<FailedItem> getFailedItems() {
         List<FailedItem> failedItems = new Select().from(FailedItem.class).queryList();
-        if(failedItems == null || failedItems.size() <= 0) return null;
+        if (failedItems == null || failedItems.size() <= 0) return null;
         else return failedItems;
     }
 
@@ -316,6 +326,7 @@ public class DataValueController {
     /**
      * Clear flags for loaded data values, deleting the status info for when data values were
      * last updated
+     *
      * @param context
      */
     public void clearDataValueLoadedFlags(Context context) {
@@ -330,9 +341,11 @@ public class DataValueController {
     public void synchronizeDataValues(final Context context, final ApiRequestCallback parentCallback) {
         ApiRequestCallback callback = new ApiRequestCallback() {
             private ApiRequestCallback callback;
+
             {
                 this.callback = parentCallback;
             }
+
             @Override
             public void onSuccess(ResponseHolder holder) {
                 loadDataValues(context, true, callback);
@@ -350,6 +363,7 @@ public class DataValueController {
      * Loads Tracker Related data including Tracked Entity Instances, Enrollments and Events
      * for the current user's assigned programs and organisation units. Set update to true if you only want to load new values.
      * False if you want it all.
+     *
      * @param context
      * @param update
      */
@@ -365,10 +379,11 @@ public class DataValueController {
         DataValueSender.sendLocalData(callback);
     }
 
-    public void dataValueIntegrityCheck()
-    {
+    public void dataValueIntegrityCheck() {
         dataValueLoader.dataValueIntegrityCheck();
     }
 
-    public boolean isLoading() { return dataValueLoader.loading; }
+    public boolean isLoading() {
+        return dataValueLoader.loading;
+    }
 }

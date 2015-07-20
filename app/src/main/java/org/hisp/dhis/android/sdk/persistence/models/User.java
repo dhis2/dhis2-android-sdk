@@ -44,15 +44,15 @@ import java.util.List;
 public class User extends BaseIdentifiableObject {
 
     @JsonProperty("firstName")
-    @Column
-    private String firstName;
+    @Column(name = "firstName")
+    String firstName;
 
     @JsonProperty("surName")
-    @Column
-    private String surName;
+    @Column(name = "surName")
+    String surName;
 
     @JsonProperty("organisationUnits")
-    private List<OrganisationUnit> organisationUnits;
+    List<OrganisationUnit> organisationUnits;
 
     public List<OrganisationUnit> getOrganisationUnits() {
         /*if(organisationUnits == null) {
@@ -66,12 +66,12 @@ public class User extends BaseIdentifiableObject {
         return firstName;
     }
 
-    public String getSurName() {
-        return surName;
-    }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getSurName() {
+        return surName;
     }
 
     public void setSurName(String surName) {

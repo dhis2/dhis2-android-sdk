@@ -45,17 +45,21 @@ import java.util.List;
 public class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")
-    @Column
-    private int version;
+    @Column(name = "version")
+    int version;
 
     @JsonProperty("options")
-    private List<Option> options;
+    List<Option> options;
 
     public List<Option> getOptions() {
-        if(options == null) {
+        if (options == null) {
             options = MetaDataController.getOptions(id);
         }
         return options;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
     }
 
     public int getVersion() {
@@ -64,9 +68,5 @@ public class OptionSet extends BaseIdentifiableObject {
 
     public void setVersion(int version) {
         this.version = version;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
     }
 }

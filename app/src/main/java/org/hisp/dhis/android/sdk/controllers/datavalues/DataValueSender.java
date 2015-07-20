@@ -65,7 +65,9 @@ public final class DataValueSender {
     public static DataValueSender getInstance() {
         return dataValueSender;
     }
+
     private static final DataValueSender dataValueSender;
+
     static {
         dataValueSender = new DataValueSender();
     }
@@ -76,12 +78,12 @@ public final class DataValueSender {
     private ApiRequestCallback callback;
 
     static void sendLocalData(ApiRequestCallback callback) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             callback.onSuccess(null);
             return;
         }
         getInstance().callback = callback;
-        if(!NetworkManager.isOnline()) {
+        if (!NetworkManager.isOnline()) {
             onFinishSending(false);
             return;
         }
@@ -144,7 +146,7 @@ public final class DataValueSender {
 
     public static void clearFailedItem(String type, long id) {
         FailedItem item = DataValueController.getFailedItem(type, id);
-        if(item!=null) {
+        if (item != null) {
             item.async().delete();
         }
     }
@@ -156,7 +158,7 @@ public final class DataValueSender {
         Dhis2Application.getEventBus().post(event);
         Dhis2.hasUnSynchronizedDatavalues = false;
         getInstance().sending = false;
-        if(success) {
+        if (success) {
             getInstance().callback.onSuccess(null);
         } else {
             getInstance().callback.onFailure(null);
@@ -164,8 +166,9 @@ public final class DataValueSender {
     }
 
     /**
-     *  Initiates a sequence that attempts sending all events in the local database that have not been synchronized to the server
-     *  @param callback called when the sequence is done
+     * Initiates a sequence that attempts sending all events in the local database that have not been synchronized to the server
+     *
+     * @param callback called when the sequence is done
      */
     private static void sendEvents(ApiRequestCallback callback) {
         List<Event> events = new Select().from(Event.class).where(Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
@@ -174,12 +177,13 @@ public final class DataValueSender {
 
     /**
      * Initiates a sequence that attemps sending the given list of events to the server
+     *
      * @param parentCallback called when the sequence is done
      * @param events
      */
     public static void initSendEvents(ApiRequestCallback parentCallback, List<Event> events) {
 
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             parentCallback.onSuccess(null);
             return;
         }
@@ -190,10 +194,10 @@ public final class DataValueSender {
 
     private static void sendEvents(ApiRequestCallback callback, List<Event> events) {
         ListIterator<Event> eventListIterator = null;
-        if(events != null) {
-            for(int i = 0; i<events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
+        if (events != null) {
+            for (int i = 0; i < events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
                 Event event = events.get(i);
-                if(Utils.isLocal(event.getEnrollment()) && event.getEnrollment()!=null/*if enrollments==null, then it is probably a single event without reg*/) {
+                if (Utils.isLocal(event.getEnrollment()) && event.getEnrollment() != null/*if enrollments==null, then it is probably a single event without reg*/) {
                     events.remove(i);
                     i--;
                     continue;
@@ -203,7 +207,7 @@ public final class DataValueSender {
             eventListIterator = events.listIterator();
         }
         SendNextEventCallback sendNextEventCallback = new SendNextEventCallback(callback, eventListIterator);
-        if(eventListIterator != null && eventListIterator.hasNext()) {
+        if (eventListIterator != null && eventListIterator.hasNext()) {
             sendEvent(sendNextEventCallback, eventListIterator.next());
         } else {
             callback.onSuccess(null);
@@ -214,6 +218,7 @@ public final class DataValueSender {
 
         private final ApiRequestCallback parentCallback;
         private final ListIterator<Event> eventListIterator;
+
         public SendNextEventCallback(ApiRequestCallback parentCallback, ListIterator<Event> eventListIterator) {
             this.eventListIterator = eventListIterator;
             this.parentCallback = parentCallback;
@@ -221,7 +226,7 @@ public final class DataValueSender {
 
         @Override
         public void onSuccess(ResponseHolder responseHolder) {
-            if(eventListIterator.hasNext()) {
+            if (eventListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -230,7 +235,7 @@ public final class DataValueSender {
 
         @Override
         public void onFailure(ResponseHolder responseHolder) {
-            if(eventListIterator.hasNext()) {
+            if (eventListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -250,11 +255,12 @@ public final class DataValueSender {
 
     /**
      * Attempts to register the given Event on the server
+     *
      * @param callback
      * @param event
      */
     public static void initSendEvent(ApiRequestCallback callback, Event event) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             callback.onSuccess(null);
             return;
         }
@@ -262,8 +268,9 @@ public final class DataValueSender {
         DoneSendingCallback callback1 = new DoneSendingCallback(callback);
         sendEvent(callback1, event);
     }
+
     private static void sendEvent(ApiRequestCallback callback, Event event) {
-        Log.d(CLASS_TAG, "sending event: "+ event.getEvent());
+        Log.d(CLASS_TAG, "sending event: " + event.getEvent());
 
         RegisterEventTask task = new RegisterEventTask(NetworkManager.getInstance(), callback
                 , event, event.getDataValues());
@@ -272,6 +279,7 @@ public final class DataValueSender {
 
     /**
      * Initiates a sequence that attemps sending all enrollments in the local database that has not yet been synchronized with server
+     *
      * @param callback called when the sequence is done
      */
     private static void sendEnrollments(ApiRequestCallback callback) {
@@ -281,11 +289,12 @@ public final class DataValueSender {
 
     /**
      * Initiates a sequence for sending the given list of enrollments
+     *
      * @param parentCallback called when the sequence is done
      * @param enrollments
      */
     public static void initSendEnrollments(ApiRequestCallback parentCallback, List<Enrollment> enrollments) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             parentCallback.onSuccess(null);
             return;
         }
@@ -296,10 +305,10 @@ public final class DataValueSender {
 
     private static void sendEnrollments(ApiRequestCallback callback, List<Enrollment> enrollments) {
         ListIterator<Enrollment> enrollmentListIterator = null;
-        if(enrollments!=null) {
-            for(int i = 0; i<enrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
+        if (enrollments != null) {
+            for (int i = 0; i < enrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
                 Enrollment enrollment = enrollments.get(i);
-                if(Utils.isLocal(enrollment.getTrackedEntityInstance())) {
+                if (Utils.isLocal(enrollment.getTrackedEntityInstance())) {
                     enrollments.remove(i);
                     i--;
                 }
@@ -308,7 +317,7 @@ public final class DataValueSender {
             enrollmentListIterator = enrollments.listIterator();
         }
         SendNextEnrollmentCallback sendNextEnrollmentCallback = new SendNextEnrollmentCallback(callback, enrollmentListIterator);
-        if(enrollmentListIterator != null && enrollmentListIterator.hasNext()) {
+        if (enrollmentListIterator != null && enrollmentListIterator.hasNext()) {
             sendEnrollment(sendNextEnrollmentCallback, enrollmentListIterator.next());
         } else {
             callback.onSuccess(null);
@@ -319,6 +328,7 @@ public final class DataValueSender {
 
         private final ApiRequestCallback parentCallback;
         private final ListIterator<Enrollment> enrollmentListIterator;
+
         public SendNextEnrollmentCallback(ApiRequestCallback parentCallback, ListIterator<Enrollment> enrollmentListIterator) {
             this.enrollmentListIterator = enrollmentListIterator;
             this.parentCallback = parentCallback;
@@ -326,7 +336,7 @@ public final class DataValueSender {
 
         @Override
         public void onSuccess(ResponseHolder responseHolder) {
-            if(enrollmentListIterator.hasNext()) {
+            if (enrollmentListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -335,7 +345,7 @@ public final class DataValueSender {
 
         @Override
         public void onFailure(ResponseHolder responseHolder) {
-            if(enrollmentListIterator.hasNext()) {
+            if (enrollmentListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -354,11 +364,12 @@ public final class DataValueSender {
 
     /**
      * Attempts registering the given enrollment on the server
+     *
      * @param parentCallback
      * @param enrollment
      */
     public static void initSendEnrollment(ApiRequestCallback parentCallback, Enrollment enrollment) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             parentCallback.onSuccess(null);
             return;
         }
@@ -368,7 +379,7 @@ public final class DataValueSender {
     }
 
     private static void sendEnrollment(ApiRequestCallback parentCallback, Enrollment enrollment) {
-        Log.d(CLASS_TAG, "sending enrollment: "+ enrollment.getEnrollment());
+        Log.d(CLASS_TAG, "sending enrollment: " + enrollment.getEnrollment());
         RegisterEnrollmentTask task = new RegisterEnrollmentTask(NetworkManager.getInstance(), parentCallback
                 , enrollment);
         task.execute();
@@ -376,11 +387,12 @@ public final class DataValueSender {
 
     /**
      * Initiates a sequence that attempts sending and registering the given list of Tracked Entity Instances to the server
-     * @param parentCallback called when the sequence is done
+     *
+     * @param parentCallback         called when the sequence is done
      * @param trackedEntityInstances
      */
     public static void initSendTrackedEntityInstances(ApiRequestCallback parentCallback, List<TrackedEntityInstance> trackedEntityInstances) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             parentCallback.onSuccess(null);
             return;
         }
@@ -391,6 +403,7 @@ public final class DataValueSender {
 
     /**
      * Initiates sending and registering of all locally created TrackedEntityInstance to the server.
+     *
      * @param callback called when the sequence is done
      */
     private static void sendTrackedEntityInstances(ApiRequestCallback callback) {
@@ -401,12 +414,12 @@ public final class DataValueSender {
     private static void sendTrackedEntityInstances(ApiRequestCallback callback, List<TrackedEntityInstance> trackedEntityInstances) {
         Log.d(CLASS_TAG, "got this many trackedEntityInstances to send:" + trackedEntityInstances.size());
         ListIterator<TrackedEntityInstance> trackedEntityInstanceListIterator = null;
-        if(trackedEntityInstances!=null) {
+        if (trackedEntityInstances != null) {
             trackedEntityInstanceListIterator = trackedEntityInstances.listIterator();
         }
         SendNextTrackedEntityInstanceCallback sendNextTrackedEntityInstanceCallback = new SendNextTrackedEntityInstanceCallback(callback, trackedEntityInstanceListIterator);
 
-        if(trackedEntityInstanceListIterator != null && trackedEntityInstanceListIterator.hasNext()) {
+        if (trackedEntityInstanceListIterator != null && trackedEntityInstanceListIterator.hasNext()) {
             sendTrackedEntityInstance(sendNextTrackedEntityInstanceCallback, trackedEntityInstanceListIterator.next());
         } else {
             callback.onSuccess(null);
@@ -417,6 +430,7 @@ public final class DataValueSender {
 
         private final ApiRequestCallback parentCallback;
         private final ListIterator<TrackedEntityInstance> trackedEntityInstanceListIterator;
+
         public SendNextTrackedEntityInstanceCallback(ApiRequestCallback parentCallback, ListIterator<TrackedEntityInstance> trackedEntityInstanceListIterator) {
             this.trackedEntityInstanceListIterator = trackedEntityInstanceListIterator;
             this.parentCallback = parentCallback;
@@ -424,7 +438,7 @@ public final class DataValueSender {
 
         @Override
         public void onSuccess(ResponseHolder responseHolder) {
-            if(trackedEntityInstanceListIterator.hasNext()) {
+            if (trackedEntityInstanceListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -433,7 +447,7 @@ public final class DataValueSender {
 
         @Override
         public void onFailure(ResponseHolder responseHolder) {
-            if(trackedEntityInstanceListIterator.hasNext()) {
+            if (trackedEntityInstanceListIterator.hasNext()) {
                 sendNext();
             } else {
                 finish(responseHolder);
@@ -451,7 +465,7 @@ public final class DataValueSender {
     }
 
     public static void initSendTrackedEntityInstance(ApiRequestCallback parentCallback, TrackedEntityInstance trackedEntityInstance) {
-        if(Dhis2.isLoading()) {
+        if (Dhis2.isLoading()) {
             parentCallback.onSuccess(null);
             return;
         }
@@ -484,7 +498,7 @@ public final class DataValueSender {
     }
 
     private static void sendTrackedEntityInstance(ApiRequestCallback parentCallback, TrackedEntityInstance trackedEntityInstance) {
-        Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.trackedEntityInstance);
+        Log.d(CLASS_TAG, "sending tei: " + trackedEntityInstance.getTrackedEntityInstance());
 
         RegisterTrackedEntityInstanceTask task = new RegisterTrackedEntityInstanceTask(NetworkManager.getInstance(),
                 parentCallback, trackedEntityInstance);
@@ -492,15 +506,15 @@ public final class DataValueSender {
     }
 
     public static void handleError(APIException apiException, String type, long id) {
-        if(apiException.getResponse() != null && apiException.getResponse().getBody()!=null) {
+        if (apiException.getResponse() != null && apiException.getResponse().getBody() != null) {
             Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
         }
-        if(apiException.isNetworkError()) {
+        if (apiException.isNetworkError()) {
             Dhis2.hasUnSynchronizedDatavalues = true;
             return; //if item failed due to network error then there is no need to store error info
         }
         FailedItem failedItem = new FailedItem();
-        if(apiException.getResponse() != null) {
+        if (apiException.getResponse() != null) {
             failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
             failedItem.setErrorMessage(new String(apiException.getResponse().getBody()));
         }
@@ -516,6 +530,6 @@ public final class DataValueSender {
         failedItem.setItemType(type);
         failedItem.setHttpStatusCode(code);
         failedItem.async().save();
-        Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId()+ ":" + failedItem.getItemType());
+        Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId() + ":" + failedItem.getItemType());
     }
 }

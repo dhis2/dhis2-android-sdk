@@ -41,42 +41,38 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 /**
  * Class for holding information on items that have failed to upload to the server.
+ *
  * @author Simen Skogly Russnes on 26.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
 public class FailedItem extends BaseModel {
 
-    private final static String CLASS_TAG = "FailedItem";
-
     public static final String EVENT = "Event";
     public static final String ENROLLMENT = "Enrollment";
     public static final String TRACKEDENTITYINSTANCE = "TrackedEntityInstance";
-
+    private final static String CLASS_TAG = "FailedItem";
+    @Column
+    @ForeignKey(references = {@ForeignKeyReference(columnName = "importSummary",
+            columnType = int.class, foreignColumnName = "id")})
+    protected ImportSummary importSummary;
     @Column
     @PrimaryKey
     private long itemId;
-
     @Column
     private String itemType;
-
     @Column
     private int httpStatusCode; // 401, 500 .. etc
-
     @Column
     private String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
 
-    @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "importSummary",
-                    columnType = int.class, foreignColumnName = "id")})
-    protected ImportSummary importSummary;
-
     /**
      * Returns the item for the given FailedItem. Can be cast to either of the model types
+     *
      * @return
      */
     public BaseSerializableModel getItem() {
         BaseSerializableModel item = null;
-        if(itemType.equals(EVENT)) {
+        if (itemType.equals(EVENT)) {
             item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
         } else if (itemType.equals(ENROLLMENT)) {
             item = Dhis2.getInstance().getDataValueController().getEnrollment(itemId);
@@ -90,39 +86,39 @@ public class FailedItem extends BaseModel {
         return importSummary;
     }
 
+    public void setImportSummary(ImportSummary importSummary) {
+        this.importSummary = importSummary;
+    }
+
     public long getItemId() {
         return itemId;
-    }
-
-    public String getItemType() {
-        return itemType;
-    }
-
-    public int getHttpStatusCode() {
-        return httpStatusCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     public void setItemId(long itemId) {
         this.itemId = itemId;
     }
 
+    public String getItemType() {
+        return itemType;
+    }
+
     public void setItemType(String itemType) {
         this.itemType = itemType;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
     }
 
     public void setHttpStatusCode(int httpStatusCode) {
         this.httpStatusCode = httpStatusCode;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setImportSummary(ImportSummary importSummary) {
-        this.importSummary = importSummary;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

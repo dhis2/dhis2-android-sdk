@@ -44,49 +44,63 @@ import static android.text.TextUtils.isEmpty;
  */
 @Table(databaseName = Dhis2Database.NAME)
 public class DataElement extends BaseNameableObject {
+    public static final String VALUE_TYPE_INT = "int";
+    public static final String VALUE_TYPE_STRING = "string";
+    public static final String VALUE_TYPE_USER_NAME = "username";
+    public static final String VALUE_TYPE_BOOL = "bool";
+    public static final String VALUE_TYPE_TRUE_ONLY = "trueOnly";
+    public static final String VALUE_TYPE_DATE = "date";
+    public static final String VALUE_TYPE_UNIT_INTERVAL = "unitInterval";
+    public static final String VALUE_TYPE_PERCENTAGE = "percentage";
+    public static final String VALUE_TYPE_NUMBER = "number";
+    public static final String VALUE_TYPE_POSITIVE_INT = "posInt";
+    public static final String VALUE_TYPE_NEGATIVE_INT = "negInt";
+    public static final String VALUE_TYPE_ZERO_OR_POSITIVE_INT = "zeroPositiveInt";
+    public static final String VALUE_TYPE_TEXT = "text";
+    public static final String VALUE_TYPE_LONG_TEXT = "longText";
 
     @JsonProperty("type")
-    @Column
-    private String type;
+    @Column(name = "type")
+    String type;
 
     @JsonProperty("zeroIsSignificant")
-    @Column
-    private boolean zeroIsSignificant;
+    @Column(name = "zeroIsSignificant")
+    boolean zeroIsSignificant;
 
     @JsonProperty("externalAccess")
-    @Column
-    private boolean externalAccess;
+    @Column(name = "externalAccess")
+    boolean externalAccess;
 
     @JsonProperty("aggregationOperator")
-    @Column
-    private String aggregationOperator;
+    @Column(name = "aggregationOperator")
+    String aggregationOperator;
 
     @JsonProperty("formName")
-    @Column
-    private String formName;
+    @Column(name = "formName")
+    String formName;
 
     @JsonProperty("numberType")
-    @Column
-    private String numberType;
+    @Column(name = "numberType")
+    String numberType;
 
     @JsonProperty("domainType")
-    @Column
-    private String domainType;
+    @Column(name = "domainType")
+    String domainType;
 
     @JsonProperty("dimension")
-    @Column
-    private String dimension;
+    @Column(name = "dimension")
+    String dimension;
 
     @JsonProperty("displayName")
-    @Column
-    private String displayName;
+    @Column(name = "displayName")
+    String displayName;
 
     @JsonProperty("displayFormName")
-    @Column
-    private String displayFormName;
+    @Column(name = "displayFormName")
+    String displayFormName;
 
-    @Column
-    protected String optionSet;
+    @Column(name = "optionSet")
+    String optionSet;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
@@ -184,35 +198,4 @@ public class DataElement extends BaseNameableObject {
     public void setDisplayFormName(String displayFormName) {
         this.displayFormName = displayFormName;
     }
-
-    /**
-     *
-     */
-    public static final String VALUE_TYPE_INT = "int";
-
-    public static final String VALUE_TYPE_STRING = "string";
-
-    public static final String VALUE_TYPE_USER_NAME = "username";
-
-    public static final String VALUE_TYPE_BOOL = "bool";
-
-    public static final String VALUE_TYPE_TRUE_ONLY = "trueOnly";
-
-    public static final String VALUE_TYPE_DATE = "date";
-
-    public static final String VALUE_TYPE_UNIT_INTERVAL = "unitInterval";
-
-    public static final String VALUE_TYPE_PERCENTAGE = "percentage";
-
-    public static final String VALUE_TYPE_NUMBER = "number";
-
-    public static final String VALUE_TYPE_POSITIVE_INT = "posInt";
-
-    public static final String VALUE_TYPE_NEGATIVE_INT = "negInt";
-
-    public static final String VALUE_TYPE_ZERO_OR_POSITIVE_INT = "zeroPositiveInt";
-
-    public static final String VALUE_TYPE_TEXT = "text";
-
-    public static final String VALUE_TYPE_LONG_TEXT = "longText";
 }

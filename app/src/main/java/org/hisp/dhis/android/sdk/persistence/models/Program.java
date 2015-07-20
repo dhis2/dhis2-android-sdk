@@ -50,97 +50,98 @@ import java.util.List;
 public class Program extends BaseIdentifiableObject {
 
     public static final String SINGLE_EVENT_WITH_REGISTRATION = "SINGLE_EVENT_WITH_REGISTRATION";
-
     public static final String SINGLE_EVENT_WITHOUT_REGISTRATION = "SINGLE_EVENT_WITHOUT_REGISTRATION";
-
     public static final String MULTIPLE_EVENTS_WITH_REGISTRATION = "MULTIPLE_EVENTS_WITH_REGISTRATION";
-
-    @JsonProperty("type")
-    @Column
-    private int type;
-
-    @JsonProperty("kind")
-    @Column
-    private String kind;
-
-    @JsonProperty("version")
-    @Column
-    private int version;
-
-    @JsonProperty("dateOfEnrollmentDescription")
-    @Column
-    private String dateOfEnrollmentDescription;
-
-    @JsonProperty("description")
-    @Column
-    private String description;
-
-    @JsonProperty("onlyEnrollOnce")
-    @Column
-    private boolean onlyEnrollOnce;
-
-    @JsonProperty("externalAccess")
-    @Column
-    private boolean extenalAccess;
-
-    @JsonProperty("displayIncidentDate")
-    @Column
-    private boolean displayIncidentDate;
-
-    @JsonProperty("dateOfIncidentDescription")
-    @Column
-    private String dateOfIncidentDescription;
-
-    @JsonProperty("registration")
-    @Column
-    private boolean registration;
-
-    @JsonProperty("selectEnrollmentDatesInFuture")
-    @Column
-    private boolean selectEnrollmentDatesInFuture;
-
-    @JsonProperty("dataEntryMethod")
-    @Column
-    private boolean dataEntryMethod;
-
-    @JsonProperty("singleEvent")
-    @Column
-    private boolean singleEvent;
-
-    @JsonProperty("ignoreOverdueEvents")
-    @Column
-    private boolean ignoreOverdueEvents;
-
-    @JsonProperty("relationshipFromA")
-    @Column
-    private boolean relationshipFromA;
-
-    @JsonProperty("displayName")
-    @Column
-    private String displayName;
-
-    @JsonProperty("selectIncidentDatesInFuture")
-    @Column
-    private boolean selectIncidentDatesInFuture;
 
     @JsonProperty("trackedEntity")
     @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "trackedEntity",
-            columnType = String.class, foreignColumnName = "id")})
-    protected TrackedEntity trackedEntity;
+    @ForeignKey(references = {
+            @ForeignKeyReference(columnName = "trackedEntity",
+                    columnType = String.class, foreignColumnName = "id")
+    })
+    TrackedEntity trackedEntity;
+
+    @JsonProperty("type")
+    @Column(name = "type")
+    int type;
+
+    @JsonProperty("kind")
+    @Column(name = "kind")
+    String kind;
+
+    @JsonProperty("version")
+    @Column(name = "version")
+    int version;
+
+    @JsonProperty("dateOfEnrollmentDescription")
+    @Column(name = "dateOfEnrollmentDescription")
+    String dateOfEnrollmentDescription;
+
+    @JsonProperty("description")
+    @Column(name = "description")
+    String description;
+
+    @JsonProperty("onlyEnrollOnce")
+    @Column(name = "onlyEnrollOnce")
+    boolean onlyEnrollOnce;
+
+    @JsonProperty("externalAccess")
+    @Column(name = "externalAccess")
+    boolean extenalAccess;
+
+    @JsonProperty("displayIncidentDate")
+    @Column(name = "displayIncidentDate")
+    boolean displayIncidentDate;
+
+    @JsonProperty("dateOfIncidentDescription")
+    @Column(name = "dateOfIncidentDescription")
+    String dateOfIncidentDescription;
+
+    @JsonProperty("registration")
+    @Column(name = "registration")
+    boolean registration;
+
+    @JsonProperty("selectEnrollmentDatesInFuture")
+    @Column(name = "selectEnrollmentDatesInFuture")
+    boolean selectEnrollmentDatesInFuture;
+
+    @JsonProperty("dataEntryMethod")
+    @Column(name = "dataEntryMethod")
+    boolean dataEntryMethod;
+
+    @JsonProperty("singleEvent")
+    @Column(name = "singleEvent")
+    boolean singleEvent;
+
+    @JsonProperty("ignoreOverdueEvents")
+    @Column(name = "ignoreOverdueEvents")
+    boolean ignoreOverdueEvents;
+
+    @JsonProperty("relationshipFromA")
+    @Column(name = "relationshipFromA")
+    boolean relationshipFromA;
+
+    @JsonProperty("displayName")
+    @Column(name = "displayName")
+    String displayName;
+
+    @JsonProperty("selectIncidentDatesInFuture")
+    @Column(name = "selectIncidentDatesInFuture")
+    boolean selectIncidentDatesInFuture;
 
     @JsonProperty("programStages")
-    private List<ProgramStage> programStages;
+    List<ProgramStage> programStages;
 
     @JsonProperty("programTrackedEntityAttributes")
-    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
+    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
+
+    public Program() {
+    }
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
-
-    public Program() {}
 
     public TrackedEntity getTrackedEntity() {
         return trackedEntity;
@@ -152,20 +153,29 @@ public class Program extends BaseIdentifiableObject {
 
     /**
      * Using lazy loading for one to many relationships
+     *
      * @return
      */
     public List<ProgramStage> getProgramStages() {
-        if(programStages == null) {
+        if (programStages == null) {
             programStages = MetaDataController.getProgramStages(id);
         }
         return programStages;
     }
 
+    public void setProgramStages(List<ProgramStage> programStages) {
+        this.programStages = programStages;
+    }
+
     public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {
-        if(programTrackedEntityAttributes == null) {
+        if (programTrackedEntityAttributes == null) {
             programTrackedEntityAttributes = MetaDataController.getProgramTrackedEntityAttributes(id);
         }
         return programTrackedEntityAttributes;
+    }
+
+    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
+        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
     }
 
     public List<ProgramIndicator> getProgramIndicators() {
@@ -180,143 +190,135 @@ public class Program extends BaseIdentifiableObject {
         return relationshipFromA;
     }
 
+    public void setRelationshipFromA(boolean relationshipFromA) {
+        this.relationshipFromA = relationshipFromA;
+    }
+
     public int getType() {
         return type;
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public String getDateOfEnrollmentDescription() {
-        return dateOfEnrollmentDescription;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean getOnlyEnrollOnce() {
-        return onlyEnrollOnce;
-    }
-
-    public boolean getExtenalAccess() {
-        return extenalAccess;
-    }
-
-    public boolean getDisplayIncidentDate() {
-        return displayIncidentDate;
-    }
-
-    public String getDateOfIncidentDescription() {
-        return dateOfIncidentDescription;
-    }
-
-    public boolean getRegistration() {
-        return registration;
-    }
-
-    public boolean getSelectEnrollmentDatesInFuture() {
-        return selectEnrollmentDatesInFuture;
-    }
-
-    public boolean getDataEntryMethod() {
-        return dataEntryMethod;
-    }
-
-    public boolean getSingleEvent() {
-        return singleEvent;
-    }
-
-    public boolean getIgnoreOverdueEvents() {
-        return ignoreOverdueEvents;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public boolean getSelectIncidentDatesInFuture() {
-        return selectIncidentDatesInFuture;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setRegistration(boolean registration) {
-        this.registration = registration;
-    }
-
-    public void setDataEntryMethod(boolean dataEntryMethod) {
-        this.dataEntryMethod = dataEntryMethod;
-    }
-
-    public void setSelectEnrollmentDatesInFuture(boolean selectEnrollmentDatesInFuture) {
-        this.selectEnrollmentDatesInFuture = selectEnrollmentDatesInFuture;
-    }
-
-    public void setDateOfIncidentDescription(String dateOfIncidentDescription) {
-        this.dateOfIncidentDescription = dateOfIncidentDescription;
-    }
-
-    public void setDisplayIncidentDate(boolean displayIncidentDate) {
-        this.displayIncidentDate = displayIncidentDate;
-    }
-
-    public void setExtenalAccess(boolean extenalAccess) {
-        this.extenalAccess = extenalAccess;
-    }
-
-    public void setOnlyEnrollOnce(boolean onlyEnrollOnce) {
-        this.onlyEnrollOnce = onlyEnrollOnce;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setDateOfEnrollmentDescription(String dateOfEnrollmentDescription) {
-        this.dateOfEnrollmentDescription = dateOfEnrollmentDescription;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
     }
 
     public void setType(int type) {
         this.type = type;
     }
 
-    public void setSelectIncidentDatesInFuture(boolean selectIncidentDatesInFuture) {
-        this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
+    public String getKind() {
+        return kind;
     }
 
-    public void setProgramStages(List<ProgramStage> programStages) {
-        this.programStages = programStages;
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 
-    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
-        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
+    public int getVersion() {
+        return version;
     }
 
-    public void setRelationshipFromA(boolean relationshipFromA) {
-        this.relationshipFromA = relationshipFromA;
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getDateOfEnrollmentDescription() {
+        return dateOfEnrollmentDescription;
+    }
+
+    public void setDateOfEnrollmentDescription(String dateOfEnrollmentDescription) {
+        this.dateOfEnrollmentDescription = dateOfEnrollmentDescription;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public boolean getOnlyEnrollOnce() {
+        return onlyEnrollOnce;
+    }
+
+    public void setOnlyEnrollOnce(boolean onlyEnrollOnce) {
+        this.onlyEnrollOnce = onlyEnrollOnce;
+    }
+
+    public boolean getExtenalAccess() {
+        return extenalAccess;
+    }
+
+    public void setExtenalAccess(boolean extenalAccess) {
+        this.extenalAccess = extenalAccess;
+    }
+
+    public boolean getDisplayIncidentDate() {
+        return displayIncidentDate;
+    }
+
+    public void setDisplayIncidentDate(boolean displayIncidentDate) {
+        this.displayIncidentDate = displayIncidentDate;
+    }
+
+    public String getDateOfIncidentDescription() {
+        return dateOfIncidentDescription;
+    }
+
+    public void setDateOfIncidentDescription(String dateOfIncidentDescription) {
+        this.dateOfIncidentDescription = dateOfIncidentDescription;
+    }
+
+    public boolean getRegistration() {
+        return registration;
+    }
+
+    public void setRegistration(boolean registration) {
+        this.registration = registration;
+    }
+
+    public boolean getSelectEnrollmentDatesInFuture() {
+        return selectEnrollmentDatesInFuture;
+    }
+
+    public void setSelectEnrollmentDatesInFuture(boolean selectEnrollmentDatesInFuture) {
+        this.selectEnrollmentDatesInFuture = selectEnrollmentDatesInFuture;
+    }
+
+    public boolean getDataEntryMethod() {
+        return dataEntryMethod;
+    }
+
+    public void setDataEntryMethod(boolean dataEntryMethod) {
+        this.dataEntryMethod = dataEntryMethod;
+    }
+
+    public boolean getSingleEvent() {
+        return singleEvent;
+    }
+
+    public void setSingleEvent(boolean singleEvent) {
+        this.singleEvent = singleEvent;
+    }
+
+    public boolean getIgnoreOverdueEvents() {
+        return ignoreOverdueEvents;
     }
 
     public void setIgnoreOverdueEvents(boolean ignoreOverdueEvents) {
         this.ignoreOverdueEvents = ignoreOverdueEvents;
     }
 
-    public void setSingleEvent(boolean singleEvent) {
-        this.singleEvent = singleEvent;
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public boolean getSelectIncidentDatesInFuture() {
+        return selectIncidentDatesInFuture;
+    }
+
+    public void setSelectIncidentDatesInFuture(boolean selectIncidentDatesInFuture) {
+        this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
     }
 }

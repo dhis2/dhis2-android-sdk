@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
@@ -24,27 +23,43 @@ import java.util.List;
 @Table(databaseName = Dhis2Database.NAME)
 public class TrackedEntityInstance extends BaseSerializableModel implements Serializable {
 
-    public TrackedEntityInstance() {
+    @JsonIgnore
+    @Column(name = "trackedEntityInstance")
+    @Unique
+    String trackedEntityInstance;
 
+    @JsonProperty("trackedEntity")
+    @Column(name = "trackedEntity")
+    String trackedEntity;
+
+    @JsonIgnore
+    @Column(name = "created")
+    String created;
+
+    @JsonIgnore
+    @Column(name = "lastUpdated")
+    String lastUpdated;
+
+    @JsonProperty("orgUnit")
+    @Column(name = "orgUnit")
+    String orgUnit;
+
+    @JsonProperty("attributes")
+    List<TrackedEntityAttributeValue> attributes;
+
+    @JsonProperty("relationships")
+    List<Relationship> relationships;
+
+    public TrackedEntityInstance() {
     }
 
-    public TrackedEntityInstance (Program program, String organisationUnit) {
+    public TrackedEntityInstance(Program program, String organisationUnit) {
         fromServer = false;
         trackedEntityInstance = Utils.getTempUid();
         trackedEntity = program.getTrackedEntity().getId();
         //created = Utils.getCurrentTime();
         //lastUpdated = Utils.getCurrentTime();
         orgUnit = organisationUnit;
-    }
-
-    @JsonIgnore
-    @Column
-    @Unique
-    public String trackedEntityInstance;
-
-    @JsonProperty("trackedEntityInstance")
-    public void setTrackedEntityInstance(String trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     /**
@@ -56,30 +71,14 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         return trackedEntityInstance;
     }
 
-    @JsonProperty("trackedEntity")
-    @Column
-    private String trackedEntity;
-
-    //@JsonProperty("created")
-    @JsonIgnore
-    @Column
-    private String created;
-
-    //@JsonProperty("lastUpdated")
-    @JsonIgnore
-    @Column
-    private String lastUpdated;
-
-    @JsonProperty("orgUnit")
-    @Column
-    private String orgUnit;
-
-    @JsonProperty("attributes")
-    private List<TrackedEntityAttributeValue> attributes;
+    @JsonProperty("trackedEntityInstance")
+    public void setTrackedEntityInstance(String trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
+    }
 
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
-        if(attributes == null) {
+        if (attributes == null) {
             attributes = DataValueController.getTrackedEntityAttributeValues(localId);
         }
         return attributes;
@@ -90,11 +89,8 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         this.attributes = attributes;
     }
 
-    @JsonProperty("relationships")
-    private List<Relationship> relationships;
-
     public List<Relationship> getRelationships() {
-        if(relationships==null) {
+        if (relationships == null) {
             relationships = DataValueController.getRelationships(trackedEntityInstance);
         }
         return relationships;
@@ -110,11 +106,11 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         TrackedEntityInstance existingTei = DataValueController.
                 getTrackedEntityInstance(trackedEntityInstance);
         boolean exists = false;
-        if(existingTei != null) {
+        if (existingTei != null) {
             localId = existingTei.localId;
             exists = true;
         }
-        if(getTrackedEntityInstance() == null && DataValueController.getTrackedEntityInstance(localId) != null) {
+        if (getTrackedEntityInstance() == null && DataValueController.getTrackedEntityInstance(localId) != null) {
             //means that the tei is local and has previosuly been saved
             //then we don't want to update the tei reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
@@ -131,9 +127,10 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
      * and has previously been saved, so that it has a localId.
      */
     public void updateManually() {
-        new Update(TrackedEntityInstance.class).set(
-                Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(fromServer))
-                .where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId)).queryClose();
+        new Update<>(TrackedEntityInstance.class)
+                .set(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(fromServer))
+                .where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(localId))
+                .queryClose();
     }
 
     @Override
@@ -145,16 +142,32 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         return trackedEntity;
     }
 
+    public void setTrackedEntity(String trackedEntity) {
+        this.trackedEntity = trackedEntity;
+    }
+
     public String getCreated() {
         return created;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
     }
 
     public String getLastUpdated() {
         return lastUpdated;
     }
 
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
     public String getOrgUnit() {
         return orgUnit;
+    }
+
+    public void setOrgUnit(String orgUnit) {
+        this.orgUnit = orgUnit;
     }
 
     public void setFromServer(boolean fromServer) {
@@ -163,21 +176,5 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     public void setLocalId(long localId) {
         this.localId = localId;
-    }
-
-    public void setTrackedEntity(String trackedEntity) {
-        this.trackedEntity = trackedEntity;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public void setOrgUnit(String orgUnit) {
-        this.orgUnit = orgUnit;
     }
 }

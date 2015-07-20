@@ -42,10 +42,9 @@ public class BaseNameableObject extends BaseIdentifiableObject {
     String shortName;
 
 
-
     @JsonProperty("description")
-    @Column
-    private String description;
+    @Column(name = "description")
+    String description;
 
 
     public String getDescription() {

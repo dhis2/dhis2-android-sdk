@@ -57,54 +57,49 @@ public class ProgramIndicator extends BaseNameableObject {
     public static final String VAR_ZERO_POS_VALUE_COUNT = "zero_pos_value_count";
     public static final String VALUE_TYPE_DATE = "date";
     public static final String VALUE_TYPE_INT = "int";
-
-    public static String SEP_OBJECT = ":";
-
     public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
             INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?(\\w*)\\}";
-
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
     public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
     public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})\\}");
     public static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
-
     public static final String VALID = "valid";
-
     public static final String EXPRESSION_NOT_WELL_FORMED = "expression_not_well_formed";
+    public static String SEP_OBJECT = ":";
 
     @JsonProperty("code")
-    @Column
+    @Column(name = "code")
     String code;
 
     @JsonProperty("expression")
-    @Column
+    @Column(name = "expression")
     String expression;
 
     @JsonProperty("displayDescription")
-    @Column
+    @Column(name = "displayDescription")
     String displayDescription;
 
     @JsonProperty("rootDate")
-    @Column
+    @Column(name = "rootDate")
     String rootDate;
 
     @JsonProperty("externalAccess")
-    @Column
+    @Column(name = "externalAccess")
     boolean externalAccess;
 
     @JsonProperty("valueType")
-    @Column
+    @Column(name = "valueType")
     String valueType;
 
     @JsonProperty("displayName")
-    @Column
+    @Column(name = "displayName")
     String displayName;
 
     @JsonProperty("displayShortName")
-    @Column
+    @Column(name = "displayShortName")
     String displayShortName;
 
-    @Column
+    @Column(name = "program")
     String program;
 
     @JsonProperty("program")
@@ -116,16 +111,32 @@ public class ProgramIndicator extends BaseNameableObject {
         return code;
     }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getExpression() {
         return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     public String getDisplayDescription() {
         return displayDescription;
     }
 
+    public void setDisplayDescription(String displayDescription) {
+        this.displayDescription = displayDescription;
+    }
+
     public String getRootDate() {
         return rootDate;
+    }
+
+    public void setRootDate(String rootDate) {
+        this.rootDate = rootDate;
     }
 
     public boolean getExternalAccess() {
@@ -136,12 +147,24 @@ public class ProgramIndicator extends BaseNameableObject {
         return valueType;
     }
 
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public String getDisplayShortName() {
         return displayShortName;
+    }
+
+    public void setDisplayShortName(String displayShortName) {
+        this.displayShortName = displayShortName;
     }
 
     public String getProgram() {
@@ -152,39 +175,11 @@ public class ProgramIndicator extends BaseNameableObject {
         this.program = program;
     }
 
-    public void setDisplayShortName(String displayShortName) {
-        this.displayShortName = displayShortName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
-    }
-
     public boolean isExternalAccess() {
         return externalAccess;
     }
 
     public void setExternalAccess(boolean externalAccess) {
         this.externalAccess = externalAccess;
-    }
-
-    public void setRootDate(String rootDate) {
-        this.rootDate = rootDate;
-    }
-
-    public void setDisplayDescription(String displayDescription) {
-        this.displayDescription = displayDescription;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 }

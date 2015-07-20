@@ -67,7 +67,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
 import org.hisp.dhis.android.sdk.persistence.models.RelationshipType$Table;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
@@ -116,14 +115,14 @@ public class MetaDataController {
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
         if (section == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.id)).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getId())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {
         if (programStage == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.id)).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getId())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
@@ -265,7 +264,7 @@ public class MetaDataController {
     }
 
     public static Program getProgram(String programId) {
-        if(programId==null) return null;
+        if (programId == null) return null;
         return new Select().from(Program.class).where(Condition.column(Program$Table.ID).
                 is(programId)).querySingle();
     }

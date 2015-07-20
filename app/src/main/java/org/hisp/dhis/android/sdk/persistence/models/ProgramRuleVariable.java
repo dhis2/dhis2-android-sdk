@@ -14,26 +14,26 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class ProgramRuleVariable extends BaseIdentifiableObject {
 
+    @Column(name = "dataElement")
+    String dataElement;
+
     @JsonProperty("programRuleVariableSourceType")
-    @Column
-    private String sourceType;
+    @Column(name = "sourceType")
+    String sourceType;
 
-    @Column
-    private boolean externalAccess;
+    @Column(name = "externalAccess")
+    boolean externalAccess;
 
-    @Column
-    private String displayName;
+    @Column(name = "displayName")
+    String displayName;
 
-    @Column
-    protected String program;
+    @Column(name = "program")
+    String program;
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
         this.program = (String) program.get("id");
     }
-
-    @Column
-    protected String dataElement;
 
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
@@ -44,16 +44,32 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
         return dataElement;
     }
 
+    public void setDataElement(String dataElement) {
+        this.dataElement = dataElement;
+    }
+
     public String getProgram() {
         return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public boolean getExternalAccess() {
         return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
     }
 
     public String getSourceType() {
@@ -62,21 +78,5 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
 
     public void setSourceType(String sourceType) {
         this.sourceType = sourceType;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
-    }
-
-    public void setDataElement(String dataElement) {
-        this.dataElement = dataElement;
     }
 }

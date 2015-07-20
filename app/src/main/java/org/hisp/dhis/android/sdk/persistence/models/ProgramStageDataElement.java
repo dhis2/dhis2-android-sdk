@@ -49,52 +49,52 @@ public class ProgramStageDataElement extends BaseModel {
 
     private static final String CLASS_TAG = "ProgramStageDataElement";
 
+    @Column(name = "programStage")
+    @PrimaryKey
+    String programStage;
+
+    @Column(name = "dataElement")
+    @PrimaryKey
+    String dataElement;
+
+    @JsonProperty("allowFutureDate")
+    @Column(name = "allowFutureDate")
+    boolean allowFutureDate;
+
+    @JsonProperty("sortOrder")
+    @Column(name = "sortOrder")
+    int sortOrder;
+
+    @JsonProperty("displayInReports")
+    @Column(name = "displayInReports")
+    boolean displayInReports;
+
+    @JsonProperty("allowProvidedElsewhere")
+    @Column(name = "allowProvidedElsewhere")
+    boolean allowProvidedElsewhere;
+
+    @JsonProperty("compulsory")
+    @Column(name = "compulsory")
+    boolean compulsory;
+
+    @Column(name = "programStageSection")
+    String programStageSection;
+
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
-
-    @JsonProperty("allowFutureDate")
-    @Column
-    private boolean allowFutureDate;
-
-    @JsonProperty("sortOrder")
-    @Column
-    private int sortOrder;
-
-    @JsonProperty("displayInReports")
-    @Column
-    private boolean displayInReports;
-
-    @JsonProperty("allowProvidedElsewhere")
-    @Column
-    private boolean allowProvidedElsewhere;
-
-    @JsonProperty("compulsory")
-    @Column
-    private boolean compulsory;
-
-    @Column
-    private String programStageSection;
 
     @JsonProperty("programStage")
     public void setProgramStage(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
 
-    @Column
-    @PrimaryKey
-    protected String programStage;
-
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.id;
         dataElement.async().save();
     }
-
-    @Column
-    @PrimaryKey
-    protected String dataElement;
 
     public boolean getAllowFutureDate() {
         return allowFutureDate;
@@ -114,10 +114,6 @@ public class ProgramStageDataElement extends BaseModel {
 
     public boolean getAllowProvidedElsewhere() {
         return allowProvidedElsewhere;
-    }
-
-    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
-        this.allowProvidedElsewhere = allowProvidedElsewhere;
     }
 
     public boolean getCompulsory() {
@@ -148,24 +144,27 @@ public class ProgramStageDataElement extends BaseModel {
         return programStageSection;
     }
 
-    public boolean getDisplayInReports() {
-        return displayInReports;
-    }
-
-    public boolean isAllowProvidedElsewhere() {
-        return allowProvidedElsewhere;
-    }
-
     public void setProgramStageSection(String programStageSection) {
         this.programStageSection = programStageSection;
+    }
+
+    public boolean getDisplayInReports() {
+        return displayInReports;
     }
 
     public void setDisplayInReports(boolean displayInReports) {
         this.displayInReports = displayInReports;
     }
 
-    public String getDataelement()
-    {
+    public boolean isAllowProvidedElsewhere() {
+        return allowProvidedElsewhere;
+    }
+
+    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
+        this.allowProvidedElsewhere = allowProvidedElsewhere;
+    }
+
+    public String getDataelement() {
         return dataElement;
     }
 }

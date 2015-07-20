@@ -45,123 +45,137 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class ProgramStage extends BaseIdentifiableObject {
 
+    @Column(name = "program")
+    String program;
+
+    @JsonProperty("dataEntryType")
+    @Column(name = "dataEntryType")
+    String dataEntryType;
+
+    @JsonProperty("blockEntryForm")
+    @Column(name = "blockEntryForm")
+    boolean blockEntryForm;
+
+    @JsonProperty("reportDateDescription")
+    @Column(name = "reportDateDescription")
+    String reportDateDescription;
+
+    @JsonProperty("displayGenerateEventBox")
+    @Column(name = "displayGenerateEventBox")
+    boolean displayGenerateEventBox;
+
+    @JsonProperty("description")
+    @Column(name = "description")
+    String description;
+
+    @JsonProperty("externalAccess")
+    @Column(name = "externalAccess")
+    boolean externalAccess;
+
+    @JsonProperty("openAfterEnrollment")
+    @Column(name = "openAfterEnrollment")
+    boolean openAfterEnrollment;
+
+    @JsonProperty("captureCoordinates")
+    @Column(name = "captureCoordinates")
+    boolean captureCoordinates;
+
+    @JsonProperty("defaultTemplateMessage")
+    @Column(name = "defaultTemplateMessage")
+    String defaultTemplateMessage;
+
+    @JsonProperty("remindCompleted")
+    @Column(name = "remindCompleted")
+    boolean remindCompleted;
+
+    @JsonProperty("validCompleteOnly")
+    @Column(name = "validCompleteOnly")
+    boolean validCompleteOnly;
+
+    @JsonProperty("sortOrder")
+    @Column(name = "sortOrder")
+    int sortOrder;
+
+    @JsonProperty("generatedByEnrollmentDate")
+    @Column(name = "generatedByEnrollmentDate")
+    boolean generatedByEnrollmentDate;
+
+    @JsonProperty("preGenerateUID")
+    @Column(name = "preGenerateUID")
+    boolean preGenerateUID;
+
+    @JsonProperty("autoGenerateEvent")
+    @Column(name = "autoGenerateEvent")
+    boolean autoGenerateEvent;
+
+    @JsonProperty("allowGenerateNextVisit")
+    @Column(name = "allowGenerateNextVisit")
+    boolean allowGenerateNextVisit;
+
+    @JsonProperty("repeatable")
+    @Column(name = "repeatable")
+    boolean repeatable;
+
+    @JsonProperty("minDaysFromStart")
+    @Column(name = "minDaysFromStart")
+    int minDaysFromStart;
+
+    @JsonProperty("displayName")
+    @Column(name = "displayName")
+    String displayName;
+
+    @JsonProperty("programStageDataElements")
+    List<ProgramStageDataElement> programStageDataElements;
+
+    @JsonProperty("programStageSections")
+    List<ProgramStageSection> programStageSections;
+
+    @JsonProperty("programIndicators")
+    List<ProgramIndicator> programIndicators;
+
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
         this.program = (String) program.get("id");
     }
 
-    @Column
-    protected String program;
-
-    @JsonProperty("dataEntryType")
-    @Column
-    private String dataEntryType;
-
-    @JsonProperty("blockEntryForm")
-    @Column
-    private boolean blockEntryForm;
-
-    @JsonProperty("reportDateDescription")
-    @Column
-    private String reportDateDescription;
-
-    @JsonProperty("displayGenerateEventBox")
-    @Column
-    private boolean displayGenerateEventBox;
-
-    @JsonProperty("description")
-    @Column
-    private String description;
-
-    @JsonProperty("externalAccess")
-    @Column
-    private boolean externalAccess;
-
-    @JsonProperty("openAfterEnrollment")
-    @Column
-    private boolean openAfterEnrollment;
-
-    @JsonProperty("captureCoordinates")
-    @Column
-    private boolean captureCoordinates;
-
-    @JsonProperty("defaultTemplateMessage")
-    @Column
-    private String defaultTemplateMessage;
-
-    @JsonProperty("remindCompleted")
-    @Column
-    private boolean remindCompleted;
-
-    @JsonProperty("validCompleteOnly")
-    @Column
-    private boolean validCompleteOnly;
-
-    @JsonProperty("sortOrder")
-    @Column
-    private int sortOrder;
-
-    @JsonProperty("generatedByEnrollmentDate")
-    @Column
-    private boolean generatedByEnrollmentDate;
-
-    @JsonProperty("preGenerateUID")
-    @Column
-    private boolean preGenerateUID;
-
-    @JsonProperty("autoGenerateEvent")
-    @Column
-    private boolean autoGenerateEvent;
-
-    @JsonProperty("allowGenerateNextVisit")
-    @Column
-    private boolean allowGenerateNextVisit;
-
-    @JsonProperty("repeatable")
-    @Column
-    private boolean repeatable;
-
-    @JsonProperty("minDaysFromStart")
-    @Column
-    private int minDaysFromStart;
-
-    @JsonProperty("displayName")
-    @Column
-    private String displayName;
-
-    @JsonProperty("programStageDataElements")
-    private List<ProgramStageDataElement> programStageDataElements;
-
     public List<ProgramStageDataElement> getProgramStageDataElements() {
-        if(programStageDataElements == null) {
+        if (programStageDataElements == null) {
             programStageDataElements = MetaDataController.getProgramStageDataElements(this);
         }
         return programStageDataElements;
     }
 
-    @JsonProperty("programStageSections")
-    private List<ProgramStageSection> programStageSections;
+    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+        this.programStageDataElements = programStageDataElements;
+    }
 
     public List<ProgramStageSection> getProgramStageSections() {
-        if(programStageSections == null)
+        if (programStageSections == null)
             programStageSections = MetaDataController.getProgramStageSections(id);
         return programStageSections;
     }
 
-    public ProgramStageDataElement getProgramStageDataElement(String dataElementId) {
-        if(getProgramStageDataElements()==null) return null;
-        for( ProgramStageDataElement programStageDataElement: getProgramStageDataElements() ) {
-            if(programStageDataElement.getDataElement().equals(dataElementId)) return programStageDataElement;
-        } return null;
+    public void setProgramStageSections(List<ProgramStageSection> programStageSections) {
+        this.programStageSections = programStageSections;
     }
 
-    @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
+    public ProgramStageDataElement getProgramStageDataElement(String dataElementId) {
+        if (getProgramStageDataElements() == null) return null;
+        for (ProgramStageDataElement programStageDataElement : getProgramStageDataElements()) {
+            if (programStageDataElement.getDataElement().equals(dataElementId))
+                return programStageDataElement;
+        }
+        return null;
+    }
 
     public List<ProgramIndicator> getProgramIndicators() {
-        if(programIndicators == null)
+        if (programIndicators == null)
             programIndicators = MetaDataController.getProgramIndicatorsByProgramStage(id);
         return programIndicators;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
     }
 
     public Program getProgram() {
@@ -176,163 +190,151 @@ public class ProgramStage extends BaseIdentifiableObject {
         return dataEntryType;
     }
 
-    public boolean getBlockEntryForm() {
-        return blockEntryForm;
-    }
-
-    public String getReportDateDescription() {
-        return reportDateDescription;
-    }
-
-    public boolean getDisplayGenerateEventBox() {
-        return displayGenerateEventBox;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public boolean getExternalAccess() {
-        return externalAccess;
-    }
-
-    public boolean getOpenAfterEnrollment() {
-        return openAfterEnrollment;
-    }
-
-    public String getDefaultTemplateMessage() {
-        return defaultTemplateMessage;
-    }
-
-    public boolean getCaptureCoordinates() {
-        return captureCoordinates;
-    }
-
-    public boolean getRemindCompleted() {
-        return remindCompleted;
-    }
-
-    public boolean getValidCompleteOnly() {
-        return validCompleteOnly;
-    }
-
-    public int getSortOrder() {
-        return sortOrder;
-    }
-
-    public boolean getGeneratedByEnrollmentDate() {
-        return generatedByEnrollmentDate;
-    }
-
-    public boolean getPreGenerateUID() {
-        return preGenerateUID;
-    }
-
-    public boolean getAutoGenerateEvent() {
-        return autoGenerateEvent;
-    }
-
-    public boolean getAllowGenerateNextVisit() {
-        return allowGenerateNextVisit;
-    }
-
-    public boolean getRepeatable() {
-        return repeatable;
-    }
-
-    public int getMinDaysFromStart() {
-        return minDaysFromStart;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
     public void setDataEntryType(String dataEntryType) {
         this.dataEntryType = dataEntryType;
+    }
+
+    public boolean getBlockEntryForm() {
+        return blockEntryForm;
     }
 
     public void setBlockEntryForm(boolean blockEntryForm) {
         this.blockEntryForm = blockEntryForm;
     }
 
+    public String getReportDateDescription() {
+        return reportDateDescription;
+    }
+
     public void setReportDateDescription(String reportDateDescription) {
         this.reportDateDescription = reportDateDescription;
+    }
+
+    public boolean getDisplayGenerateEventBox() {
+        return displayGenerateEventBox;
     }
 
     public void setDisplayGenerateEventBox(boolean displayGenerateEventBox) {
         this.displayGenerateEventBox = displayGenerateEventBox;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean getExternalAccess() {
+        return externalAccess;
     }
 
     public void setExternalAccess(boolean externalAccess) {
         this.externalAccess = externalAccess;
     }
 
-    public void setCaptureCoordinates(boolean captureCoordinates) {
-        this.captureCoordinates = captureCoordinates;
+    public boolean getOpenAfterEnrollment() {
+        return openAfterEnrollment;
     }
 
     public void setOpenAfterEnrollment(boolean openAfterEnrollment) {
         this.openAfterEnrollment = openAfterEnrollment;
     }
 
+    public String getDefaultTemplateMessage() {
+        return defaultTemplateMessage;
+    }
+
     public void setDefaultTemplateMessage(String defaultTemplateMessage) {
         this.defaultTemplateMessage = defaultTemplateMessage;
+    }
+
+    public boolean getCaptureCoordinates() {
+        return captureCoordinates;
+    }
+
+    public void setCaptureCoordinates(boolean captureCoordinates) {
+        this.captureCoordinates = captureCoordinates;
+    }
+
+    public boolean getRemindCompleted() {
+        return remindCompleted;
     }
 
     public void setRemindCompleted(boolean remindCompleted) {
         this.remindCompleted = remindCompleted;
     }
 
+    public boolean getValidCompleteOnly() {
+        return validCompleteOnly;
+    }
+
     public void setValidCompleteOnly(boolean validCompleteOnly) {
         this.validCompleteOnly = validCompleteOnly;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
     }
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
     }
 
+    public boolean getGeneratedByEnrollmentDate() {
+        return generatedByEnrollmentDate;
+    }
+
     public void setGeneratedByEnrollmentDate(boolean generatedByEnrollmentDate) {
         this.generatedByEnrollmentDate = generatedByEnrollmentDate;
+    }
+
+    public boolean getPreGenerateUID() {
+        return preGenerateUID;
     }
 
     public void setPreGenerateUID(boolean preGenerateUID) {
         this.preGenerateUID = preGenerateUID;
     }
 
+    public boolean getAutoGenerateEvent() {
+        return autoGenerateEvent;
+    }
+
     public void setAutoGenerateEvent(boolean autoGenerateEvent) {
         this.autoGenerateEvent = autoGenerateEvent;
+    }
+
+    public boolean getAllowGenerateNextVisit() {
+        return allowGenerateNextVisit;
     }
 
     public void setAllowGenerateNextVisit(boolean allowGenerateNextVisit) {
         this.allowGenerateNextVisit = allowGenerateNextVisit;
     }
 
+    public boolean getRepeatable() {
+        return repeatable;
+    }
+
     public void setRepeatable(boolean repeatable) {
         this.repeatable = repeatable;
+    }
+
+    public int getMinDaysFromStart() {
+        return minDaysFromStart;
     }
 
     public void setMinDaysFromStart(int minDaysFromStart) {
         this.minDaysFromStart = minDaysFromStart;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
-
-    public void setProgramStageSections(List<ProgramStageSection> programStageSections) {
-        this.programStageSections = programStageSections;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
     }
 }

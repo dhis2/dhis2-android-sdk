@@ -18,29 +18,30 @@ import java.io.Serializable;
 
 @Table(databaseName = Dhis2Database.NAME)
 @JsonIgnoreProperties("modelAdapter")
-public class Relationship extends BaseModel implements Serializable{
+public class Relationship extends BaseModel implements Serializable {
+
+    @JsonProperty
+    @Column(name = "relationship")
+    @PrimaryKey
+    String relationship;
+
+    @JsonProperty
+    @Column(name = "trackedEntityInstanceA")
+    @PrimaryKey
+    String trackedEntityInstanceA;
+
+    @JsonProperty
+    @Column(name = "trackedEntityInstanceB")
+    @PrimaryKey
+    String trackedEntityInstanceB;
+
+    @JsonProperty
+    @Column(name = "displayName")
+    String displayName;
 
     @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
-
-    @JsonProperty
-    @Column
-    @PrimaryKey
-    private String relationship;
-
-    @JsonProperty
-    @Column
-    @PrimaryKey
-    private String trackedEntityInstanceA;
-
-    @JsonProperty
-    @Column
-    @PrimaryKey
-    private String trackedEntityInstanceB;
-
-    @JsonProperty
-    @Column
-    private String displayName;
+    public void handleUnknown(String key, Object value) {
+    }
 
     public String getRelationship() {
         return relationship;

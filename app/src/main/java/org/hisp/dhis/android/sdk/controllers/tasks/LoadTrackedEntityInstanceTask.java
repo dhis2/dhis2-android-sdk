@@ -37,7 +37,6 @@ import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Header;
 import org.hisp.dhis.android.sdk.network.http.Request;
-import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -75,14 +74,14 @@ public class LoadTrackedEntityInstanceTask implements INetworkTask {
             headers.add(new Header("Authorization", networkManager.getCredentials()));
             headers.add(new Header("Accept", "application/json"));
 
-            String url = networkManager.getServerUrl() + "/api/trackedEntityInstances/"+UID;
+            String url = networkManager.getServerUrl() + "/api/trackedEntityInstances/" + UID;
 
             Request request = new Request(RestMethod.GET, url, headers, null);
 
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(callback);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, "dummy", new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(callback);
@@ -114,7 +113,7 @@ class LoadTrackedEntityInstanceCallback implements ApiRequestCallback {
         try {
             Log.d(TAG, "onsuccess");
             TrackedEntityInstance trackedEntityInstance = Dhis2.getInstance().getObjectMapper().readValue(holder.getResponse().getBody(), TrackedEntityInstance.class);
-            if(trackedEntityInstance.trackedEntityInstance != null) {
+            if (trackedEntityInstance.getTrackedEntityInstance() != null) {
                 LoadEnrollmentsTask task = new LoadEnrollmentsTask(NetworkManager.getInstance(), parentCallback, trackedEntityInstance, synchronizing);
                 task.execute();
             } else {
@@ -124,7 +123,7 @@ class LoadTrackedEntityInstanceCallback implements ApiRequestCallback {
 
         } catch (IOException e) {
             e.printStackTrace();
-            if(holder.getApiException()==null) {
+            if (holder.getApiException() == null) {
                 holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
             }
             parentCallback.onFailure(holder);

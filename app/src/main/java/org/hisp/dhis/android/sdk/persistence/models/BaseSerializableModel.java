@@ -13,13 +13,13 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 public abstract class BaseSerializableModel extends BaseModel {
 
     @JsonIgnore
-    @Column
-    protected boolean fromServer = true;
+    @Column(name = "fromServer")
+    boolean fromServer = true;
 
     @JsonIgnore
-    @Column
+    @Column(name = "localId")
     @PrimaryKey(autoincrement = true)
-    protected long localId = -1;
+    long localId = -1;
 
     public boolean isFromServer() {
         return fromServer;

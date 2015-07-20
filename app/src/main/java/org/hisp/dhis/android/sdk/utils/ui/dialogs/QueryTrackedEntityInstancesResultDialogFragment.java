@@ -73,7 +73,6 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     private EditText mFilter;
     private TextView mDialogLabel;
     private QueryTrackedEntityInstancesResultDialogAdapter mAdapter;
-    private OnTrackedEntityInstanceSelectedListener mListener;
     private int mDialogId;
     private ProgressDialogFragment progressDialogFragment;
 
@@ -81,8 +80,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     private static final String EXTRA_TRACKEDENTITYINSTANCESSELECTED = "extra:trackedEntityInstancesSelected";
     private static final String EXTRA_ORGUNIT = "extra:orgUnit";
 
-    public static QueryTrackedEntityInstancesResultDialogFragment newInstance(List<TrackedEntityInstance> trackedEntityInstances, String orgUnit,
-                                                                     OnTrackedEntityInstanceSelectedListener listener) {
+    public static QueryTrackedEntityInstancesResultDialogFragment newInstance(List<TrackedEntityInstance> trackedEntityInstances, String orgUnit) {
         QueryTrackedEntityInstancesResultDialogFragment dialogFragment = new QueryTrackedEntityInstancesResultDialogFragment();
         Bundle args = new Bundle();
         Parcel parcel1 = Parcel.obtain();
@@ -95,7 +93,6 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
         args.putParcelable(EXTRA_TRACKEDENTITYINSTANCESLIST, parcelable1);
         args.putString(EXTRA_ORGUNIT, orgUnit);
         dialogFragment.setArguments(args);
-        dialogFragment.setOnTrackedEntityInstanceSelectedListener(listener);
         Dhis2Application.getEventBus().register(dialogFragment);
         return dialogFragment;
     }
@@ -217,10 +214,6 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
 
     public QueryTrackedEntityInstancesResultDialogAdapter getAdapter() {
         return mAdapter;
-    }
-
-    public void setOnTrackedEntityInstanceSelectedListener(OnTrackedEntityInstanceSelectedListener listener) {
-        mListener = listener;
     }
 
     public void show(FragmentManager fragmentManager) {

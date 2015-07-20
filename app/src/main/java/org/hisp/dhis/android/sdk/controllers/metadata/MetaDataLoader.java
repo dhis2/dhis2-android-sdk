@@ -49,6 +49,7 @@ import org.hisp.dhis.android.sdk.controllers.tasks.LoadProgramRuleActionsTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadProgramRuleVariablesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadProgramRulesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadProgramTask;
+import org.hisp.dhis.android.sdk.controllers.tasks.LoadRelationshipTypesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadTrackedEntitiesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadTrackedEntityAttributesTask;
@@ -84,6 +85,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
@@ -120,6 +122,7 @@ public class MetaDataLoader {
     public static final String PROGRAMRULES = "programrules";
     public static final String PROGRAMRULEVARIABLES = "programrulevariables";
     public static final String PROGRAMRULEACTIONS = "programruleactions";
+    public static final String RELATIONSHIPTYPES = "relationshiptypes";
 
     private Context context;
     boolean loading = false;
@@ -231,6 +234,12 @@ public class MetaDataLoader {
                 return;
             }
         }
+        if (Dhis2.isLoadFlagEnabled(context, RELATIONSHIPTYPES)) {
+            if (!isMetaDataItemLoaded(RELATIONSHIPTYPES)) {
+                loadRelationshipTypes(synchronizing);
+                return;
+            }
+        }
         onFinishLoading(true); //called when everything is loaded.
     }
 
@@ -339,6 +348,18 @@ public class MetaDataLoader {
             DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
             if (updatedDateTime.isBefore(currentDateTime)) {
                 loadProgramRuleActions(synchronizing);
+                return;
+            }
+        }
+        if (Dhis2.isLoadFlagEnabled(context, RELATIONSHIPTYPES)) {
+            String lastUpdatedString = getLastUpdatedDateForMetaDataItem(RELATIONSHIPTYPES);
+            if (lastUpdatedString == null) {
+                loadRelationshipTypes(synchronizing);
+                return;
+            }
+            DateTime updatedDateTime = DateTimeFormat.forPattern(pattern).parseDateTime(lastUpdatedString);
+            if (updatedDateTime.isBefore(currentDateTime)) {
+                loadRelationshipTypes(synchronizing);
                 return;
             }
         }
@@ -892,6 +913,28 @@ public class MetaDataLoader {
         task.execute();
     }
 
+    private void loadRelationshipTypes(boolean update) {
+        Dhis2.postProgressMessage(context.getString(R.string.loading_relationshiptypes));
+        final MetaDataResponseEvent<List<ProgramRuleAction>> event = new
+                MetaDataResponseEvent<>
+                (BaseEvent.EventType.loadRelationshipTypes);
+        LoadRelationshipTypesTask task = new LoadRelationshipTypesTask(NetworkManager.getInstance(),
+                new ApiRequestCallback<List<RelationshipType>>() {
+                    @Override
+                    public void onSuccess(ResponseHolder<List<RelationshipType>> holder) {
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+
+                    @Override
+                    public void onFailure(ResponseHolder<List<RelationshipType>> holder) {
+                        event.setResponseHolder(holder);
+                        onResponse(event);
+                    }
+                }, update);
+        task.execute();
+    }
+
     private void onFinishLoading(boolean success) {
         Log.d(CLASS_TAG, "onFinishLoading" + success);
         if (success) {
@@ -1199,16 +1242,16 @@ public class MetaDataLoader {
                     Program oldProgram = MetaDataController.getProgram(program.getId());
                     if (oldProgram != null) {
                         for (ProgramTrackedEntityAttribute ptea : oldProgram.getProgramTrackedEntityAttributes()) {
-                            ptea.async().delete();
+                            ptea.delete();
                         }
                         for (ProgramStage programStage : program.getProgramStages()) {
                             for (ProgramStageDataElement psde : programStage.getProgramStageDataElements()) {
-                                psde.async().delete();
+                                psde.delete();
                             }
                             for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
-                                programStageSection.async().delete();
+                                programStageSection.delete();
                             }
-                            programStage.async().delete();
+                            programStage.delete();
                         }
                         for (ProgramIndicator programIndicator : program.getProgramIndicators()) {
                             programIndicator.delete();
@@ -1367,7 +1410,6 @@ public class MetaDataLoader {
             } else if (event.eventType == BaseEvent.EventType.loadProgramRuleActions) {
                 List<ProgramRuleAction> programRuleActions = (List<ProgramRuleAction>) event.getResponseHolder().getItem();
 
-
                 Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
                 for (ProgramRuleAction programRuleAction : programRuleActions) {
                     programRuleAction.async().save();
@@ -1376,6 +1418,22 @@ public class MetaDataLoader {
                     flagMetaDataItemLoaded(PROGRAMRULEACTIONS, true);
                 } else {
                     flagMetaDataItemUpdated(PROGRAMRULEACTIONS, systemInfo.getServerDate());
+                }
+                loadItem();
+            }  else if (event.eventType == BaseEvent.EventType.loadRelationshipTypes) {
+                List<RelationshipType> relationshipTypes = (List<RelationshipType>) event.getResponseHolder().getItem();
+
+                Dhis2.postProgressMessage(context.getString(R.string.saving_data_locally));
+                if(relationshipTypes!=null) {
+                    for (RelationshipType relationshipType: relationshipTypes) {
+                        relationshipType.async().save();
+                    }
+                }
+
+                if (!synchronizing) {
+                    flagMetaDataItemLoaded(RELATIONSHIPTYPES, true);
+                } else {
+                    flagMetaDataItemUpdated(RELATIONSHIPTYPES, systemInfo.getServerDate());
                 }
                 loadItem();
             } else {
@@ -1511,6 +1569,9 @@ public class MetaDataLoader {
 
         flagMetaDataItemLoaded(PROGRAMRULEACTIONS, false);
         flagMetaDataItemUpdated(PROGRAMRULEACTIONS, null);
+
+        flagMetaDataItemLoaded(RELATIONSHIPTYPES, false);
+        flagMetaDataItemUpdated(RELATIONSHIPTYPES, null);
     }
 
 

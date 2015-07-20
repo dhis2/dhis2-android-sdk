@@ -67,6 +67,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
+import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
+import org.hisp.dhis.android.sdk.persistence.models.RelationshipType$Table;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity$Table;
@@ -90,6 +93,14 @@ public class MetaDataController {
     public MetaDataController() {
         Dhis2Application.bus.register(this);
         metaDataLoader = new MetaDataLoader();
+    }
+
+    public static List<RelationshipType> getRelationshipTypes() {
+        return new Select().from(RelationshipType.class).queryList();
+    }
+
+    public static RelationshipType getRelationshipType(String relation) {
+        return new Select().from(RelationshipType.class).where(Condition.column(RelationshipType$Table.ID).is(relation)).querySingle();
     }
 
     public static List<Option> getOptions(String optionSetId) {
@@ -254,6 +265,7 @@ public class MetaDataController {
     }
 
     public static Program getProgram(String programId) {
+        if(programId==null) return null;
         return new Select().from(Program.class).where(Condition.column(Program$Table.ID).
                 is(programId)).querySingle();
     }
@@ -407,7 +419,8 @@ public class MetaDataController {
                 User.class,
                 ProgramRule.class,
                 ProgramRuleVariable.class,
-                ProgramRuleAction.class);
+                ProgramRuleAction.class,
+                RelationshipType.class);
     }
 
     public boolean isLoading() {

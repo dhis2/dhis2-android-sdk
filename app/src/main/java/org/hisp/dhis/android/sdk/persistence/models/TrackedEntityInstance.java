@@ -93,6 +93,17 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @JsonProperty("relationships")
     private List<Relationship> relationships;
 
+    public List<Relationship> getRelationships() {
+        if(relationships==null) {
+            relationships = DataValueController.getRelationships(trackedEntityInstance);
+        }
+        return relationships;
+    }
+
+    public void setRelationships(List<Relationship> relationships) {
+        this.relationships = relationships;
+    }
+
     @Override
     public void save() {
         /* check if there is an existing tei with the same UID to avoid duplicates */

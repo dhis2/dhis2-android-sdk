@@ -50,6 +50,8 @@ import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -68,13 +70,18 @@ public class DataValueController {
     private static final String CLASS_TAG = "DataValueController";
 
     private DataValueLoader dataValueLoader;
-    private DataValueSender dataValueSender;
 
 
     public DataValueController() {
         Dhis2Application.bus.register(this);
         dataValueLoader = new DataValueLoader();
-        dataValueSender = new DataValueSender();
+    }
+
+    public static List<Relationship> getRelationships(String trackedEntityInstance) {
+        return new Select().from(Relationship.class).where(Condition.column
+                (Relationship$Table.TRACKEDENTITYINSTANCEA).is(trackedEntityInstance)).
+                or(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEB).is
+                        (trackedEntityInstance)).queryList();
     }
 
     public static List<Enrollment> getEnrollments(String program, String organisationUnit) {
@@ -284,7 +291,7 @@ public class DataValueController {
     public static List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues
     (long trackedEntityInstance) {
         return new Select().from(TrackedEntityAttributeValue.class).where(Condition.column
-                (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).queryList();
+                (TrackedEntityAttributeValue$Table.LOCALTRACKEDENTITYINSTANCEID).is(trackedEntityInstance)).orderBy(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).queryList();
     }
 
     /**
@@ -336,7 +343,7 @@ public class DataValueController {
                 callback.onFailure(holder);
             }
         };
-        sendLocalData(context, callback);
+        sendLocalData(callback);
     }
 
     /**
@@ -353,9 +360,9 @@ public class DataValueController {
     /**
      * Tries to send locally stored data to the server
      */
-    public void sendLocalData(Context context, ApiRequestCallback callback) {
+    public void sendLocalData(ApiRequestCallback callback) {
         Log.d(CLASS_TAG, "sending local data");
-        dataValueSender.sendLocalData(context, callback);
+        DataValueSender.sendLocalData(callback);
     }
 
     public void dataValueIntegrityCheck()
@@ -363,8 +370,5 @@ public class DataValueController {
         dataValueLoader.dataValueIntegrityCheck();
     }
 
-    public boolean isSending() {
-        return dataValueSender.sending;
-    }
     public boolean isLoading() { return dataValueLoader.loading; }
 }

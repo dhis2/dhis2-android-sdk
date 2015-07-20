@@ -45,6 +45,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueLoader;
+import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueSender;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataLoader;
 import org.hisp.dhis.android.sdk.controllers.tasks.AuthUserTask;
@@ -78,6 +79,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
@@ -221,6 +223,7 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, true);
 
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
@@ -232,6 +235,7 @@ public final class Dhis2 {
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
             editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
+            editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, true);
 
             //editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
@@ -258,6 +262,7 @@ public final class Dhis2 {
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, false);
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, false);
         editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, false);
+        editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, false);
 
         editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
         //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
@@ -317,6 +322,9 @@ public final class Dhis2 {
                 return false;
         } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEACTIONS)) {
             if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEACTIONS, false))
+                return false;
+        } else if (isLoadFlagEnabled(context, MetaDataLoader.RELATIONSHIPTYPES)) {
+            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.RELATIONSHIPTYPES, false))
                 return false;
         }
         return true;
@@ -400,7 +408,7 @@ public final class Dhis2 {
     }
 
     public static void showTrackedEntityInstanceQueryResultDialog(FragmentManager fragmentManager, List<TrackedEntityInstance> trackedEntityInstances, String orgUnit) {
-        QueryTrackedEntityInstancesResultDialogFragment dialog = QueryTrackedEntityInstancesResultDialogFragment.newInstance(trackedEntityInstances, orgUnit, null);
+        QueryTrackedEntityInstancesResultDialogFragment dialog = QueryTrackedEntityInstancesResultDialogFragment.newInstance(trackedEntityInstances, orgUnit);
         dialog.show(fragmentManager);
     }
 
@@ -510,7 +518,7 @@ public final class Dhis2 {
         getInstance().context = context;
         new Thread() {
             public void run() {
-                getInstance().getDataValueController().sendLocalData(getInstance().context, callback);
+                getInstance().getDataValueController().sendLocalData(callback);
             }
         }.start();
     }
@@ -545,7 +553,7 @@ public final class Dhis2 {
     public static boolean isLoading() {
         if (Dhis2.getInstance().getMetaDataController().isLoading()) return true;
         if (Dhis2.getInstance().getDataValueController().isLoading()) return true;
-        if (Dhis2.getInstance().getDataValueController().isSending()) return true;
+        if (DataValueSender.isSending()) return true;
         return false;
     }
 
@@ -877,6 +885,7 @@ public final class Dhis2 {
         observer.registerForContentChanges(getInstance().context, ProgramRule.class);
         observer.registerForContentChanges(getInstance().context, ProgramRuleAction.class);
         observer.registerForContentChanges(getInstance().context, ProgramRuleVariable.class);
+        observer.registerForContentChanges(getInstance().context, RelationshipType.class);
         return observer;
     }
 

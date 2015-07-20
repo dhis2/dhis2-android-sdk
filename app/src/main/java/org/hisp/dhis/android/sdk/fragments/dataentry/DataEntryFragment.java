@@ -420,21 +420,21 @@ public class DataEntryFragment extends Fragment
         if (haveValuesChanged()) {
             Dhis2.getInstance().showConfirmDialog(getActivity(),
                     getString(R.string.discard), getString(R.string.discard_confirm_changes),
-                    getString(R.string.discard),
                     getString(R.string.save_and_close),
+                    getString(R.string.discard),
                     getString(R.string.cancel),
                     new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            getFragmentManager().popBackStack();
-                        }
-                    }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (validate()) {
                                 submitEvent();
                                 getFragmentManager().popBackStack();
                             }
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getFragmentManager().popBackStack();
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override

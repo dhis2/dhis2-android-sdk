@@ -27,31 +27,71 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.events;
+package org.hisp.dhis.android.sdk.persistence.models;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.Table;
+
+import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 /**
- * @author Simen Skogly Russnes on 20.02.15.
+ * @author Simen Skogly Russnes on 17.02.15.
  */
-public class BaseEvent {
+@Table(databaseName = Dhis2Database.NAME)
+public class RelationshipType extends BaseIdentifiableObject{
 
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, onLoadingMetaDataFinished,
-        showRegisterEventFragment, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished,
-        onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
-        onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets,
-        loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment,
-        showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants,
-        loadProgramRules, loadProgramRuleVariables, loadProgramRuleActions,
-        sendTrackedEntityInstance, loadProgram, showUpcomingEventsFragment, metaDataSyncFinished, loadRelationshipTypes, synchronizationFinished
+    @JsonProperty
+    @Column
+    String aIsToB;
+
+    @JsonProperty
+    @Column
+    String bIsToA;
+
+    @JsonProperty
+    @Column
+    String displayName;
+
+    public RelationshipType() {}
+
+    public String getId() {
+        return id;
     }
 
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
+    public void setId(String id) {
+        this.id = id;
     }
-    public BaseEvent() {}
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getaIsToB() {
+        return aIsToB;
+    }
+
+    public void setaIsToB(String aIsToB) {
+        this.aIsToB = aIsToB;
+    }
+
+    public String getbIsToA() {
+        return bIsToA;
+    }
+
+    public void setbIsToA(String bIsToA) {
+        this.bIsToA = bIsToA;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 }

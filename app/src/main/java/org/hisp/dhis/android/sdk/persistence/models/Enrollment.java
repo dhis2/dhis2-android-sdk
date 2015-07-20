@@ -170,7 +170,7 @@ public class Enrollment extends BaseSerializableModel{
                     MetaDataController.getProgramTrackedEntityAttributes(program);
             for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {
                 TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
-                        (ptea.trackedEntityAttribute, trackedEntityInstance);
+                        (ptea.trackedEntityAttribute, localTrackedEntityInstanceId);
                 if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                     attributes.add(v);
                 }

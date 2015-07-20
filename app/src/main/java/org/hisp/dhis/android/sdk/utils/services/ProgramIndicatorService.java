@@ -469,7 +469,7 @@ public class ProgramIndicatorService
 
                     if (attribute != null) {
                         TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
-                                attribute.id, programInstance.trackedEntityInstance);
+                                attribute.id, programInstance.localTrackedEntityInstanceId);
                         String value;
                         if (attributeValue == null || attributeValue.getValue()== null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;

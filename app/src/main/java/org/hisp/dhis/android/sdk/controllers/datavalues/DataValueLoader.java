@@ -88,6 +88,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
@@ -547,11 +548,18 @@ public class DataValueLoader {
                 tei.save();
                 if(tei.getAttributes()!=null) {
                     for (TrackedEntityAttributeValue value : tei.getAttributes()) {
-                        if (tei != null) {
+                        if (value != null) {
                             value.setTrackedEntityInstanceId(tei.getTrackedEntityInstance());
                             value.setLocalTrackedEntityInstanceId(tei.getLocalId());
                         }
                         value.async().save();
+                    }
+                }
+                if(tei.getRelationships()!=null) {
+                    for(Relationship relationship: tei.getRelationships()) {
+                        if(relationship!=null) {
+                            relationship.async().save();
+                        }
                     }
                 }
             }

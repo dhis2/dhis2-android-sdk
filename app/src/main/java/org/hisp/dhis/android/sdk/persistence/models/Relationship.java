@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -16,6 +17,7 @@ import java.io.Serializable;
  */
 
 @Table(databaseName = Dhis2Database.NAME)
+@JsonIgnoreProperties("modelAdapter")
 public class Relationship extends BaseModel implements Serializable{
 
     @JsonAnySetter

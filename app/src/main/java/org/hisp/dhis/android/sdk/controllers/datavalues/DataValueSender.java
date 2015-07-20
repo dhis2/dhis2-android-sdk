@@ -29,62 +29,56 @@
 
 package org.hisp.dhis.android.sdk.controllers.datavalues;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterEnrollmentTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterEventTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterTrackedEntityInstanceTask;
-import org.hisp.dhis.android.sdk.events.BaseEvent;
-import org.hisp.dhis.android.sdk.events.DataValueResponseEvent;
 import org.hisp.dhis.android.sdk.events.InvalidateEvent;
-import org.hisp.dhis.android.sdk.events.ResponseEvent;
-import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.ListIterator;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
  */
-public class DataValueSender {
+public final class DataValueSender {
+
+    public static DataValueSender getInstance() {
+        return dataValueSender;
+    }
+    private static final DataValueSender dataValueSender;
+    static {
+        dataValueSender = new DataValueSender();
+    }
 
     private static final String CLASS_TAG = "DataValueSender";
 
     boolean sending = false;
     private ApiRequestCallback callback;
 
-    void sendLocalData(Context context, ApiRequestCallback callback) {
+    static void sendLocalData(ApiRequestCallback callback) {
         if(Dhis2.isLoading()) return;
-        this.callback = callback;
-        sending = true;
+        getInstance().callback = callback;
+        getInstance().sending = true;
         new Thread() {
             public void run() {
                 final ApiRequestCallback finalSendCallback = new ApiRequestCallback() {
@@ -137,6 +131,10 @@ public class DataValueSender {
         }.start();
     }
 
+    public static boolean isSending() {
+        return getInstance().sending;
+    }
+
     public static void clearFailedItem(String type, long id) {
         FailedItem item = DataValueController.getFailedItem(type, id);
         if(item!=null) {
@@ -144,17 +142,17 @@ public class DataValueSender {
         }
     }
 
-    private void onFinishSending(boolean success) {
+    private static void onFinishSending(boolean success) {
         Log.d(CLASS_TAG, "onFinishSending" + success);
 
         InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
         Dhis2Application.getEventBus().post(event);
         Dhis2.hasUnSynchronizedDatavalues = false;
-        sending = false;
+        getInstance().sending = false;
         if(success) {
-            callback.onSuccess(null);
+            getInstance().callback.onSuccess(null);
         } else {
-            callback.onFailure(null);
+            getInstance().callback.onFailure(null);
         }
     }
 
@@ -169,13 +167,24 @@ public class DataValueSender {
 
     /**
      * Initiates a sequence that attemps sending the given list of events to the server
-     * @param callback called when the sequence is done
+     * @param parentCallback called when the sequence is done
      * @param events
      */
-    public static void sendEvents(ApiRequestCallback callback, List<Event> events) {
+    public static void initSendEvents(ApiRequestCallback parentCallback, List<Event> events) {
+
+        if(Dhis2.isLoading()) {
+            parentCallback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback = new DoneSendingCallback(parentCallback);
+        sendEvents(callback, events);
+    }
+
+    private static void sendEvents(ApiRequestCallback callback, List<Event> events) {
         ListIterator<Event> eventListIterator = null;
         if(events != null) {
-            for(int i = 0; i<events.size(); i++) {/* temporary workaround for not trying to upload events with local enrollment reference*/
+            for(int i = 0; i<events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
                 Event event = events.get(i);
                 if(Utils.isLocal(event.getEnrollment()) && event.getEnrollment()!=null/*if enrollments==null, then it is probably a single event without reg*/) {
                     events.remove(i);
@@ -231,12 +240,22 @@ public class DataValueSender {
         }
     }
 
+
     /**
      * Attempts to register the given Event on the server
      * @param callback
      * @param event
      */
-    public static void sendEvent(ApiRequestCallback callback, Event event) {
+    public static void initSendEvent(ApiRequestCallback callback, Event event) {
+        if(Dhis2.isLoading()) {
+            callback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback1 = new DoneSendingCallback(callback);
+        sendEvent(callback1, event);
+    }
+    private static void sendEvent(ApiRequestCallback callback, Event event) {
         Log.d(CLASS_TAG, "sending event: "+ event.getEvent());
 
         RegisterEventTask task = new RegisterEventTask(NetworkManager.getInstance(), callback
@@ -255,10 +274,20 @@ public class DataValueSender {
 
     /**
      * Initiates a sequence for sending the given list of enrollments
-     * @param callback called when the sequence is done
+     * @param parentCallback called when the sequence is done
      * @param enrollments
      */
-    public static void sendEnrollments(ApiRequestCallback callback, List<Enrollment> enrollments) {
+    public static void initSendEnrollments(ApiRequestCallback parentCallback, List<Enrollment> enrollments) {
+        if(Dhis2.isLoading()) {
+            parentCallback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback = new DoneSendingCallback(parentCallback);
+        sendEnrollments(callback, enrollments);
+    }
+
+    private static void sendEnrollments(ApiRequestCallback callback, List<Enrollment> enrollments) {
         ListIterator<Enrollment> enrollmentListIterator = null;
         if(enrollments!=null) {
             for(int i = 0; i<enrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
@@ -321,7 +350,17 @@ public class DataValueSender {
      * @param parentCallback
      * @param enrollment
      */
-    public static void sendEnrollment(ApiRequestCallback parentCallback, Enrollment enrollment) {
+    public static void initSendEnrollment(ApiRequestCallback parentCallback, Enrollment enrollment) {
+        if(Dhis2.isLoading()) {
+            parentCallback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback = new DoneSendingCallback(parentCallback);
+        sendEnrollment(callback, enrollment);
+    }
+
+    private static void sendEnrollment(ApiRequestCallback parentCallback, Enrollment enrollment) {
         Log.d(CLASS_TAG, "sending enrollment: "+ enrollment.getEnrollment());
         RegisterEnrollmentTask task = new RegisterEnrollmentTask(NetworkManager.getInstance(), parentCallback
                 , enrollment);
@@ -329,20 +368,30 @@ public class DataValueSender {
     }
 
     /**
-     * Initiates sending and registering of all locally created TrackedEntityInstance to the server.
-     * @param callback called when the sequence is done
+     * Initiates a sequence that attempts sending and registering the given list of Tracked Entity Instances to the server
+     * @param parentCallback called when the sequence is done
+     * @param trackedEntityInstances
      */
-    static private void sendTrackedEntityInstances(ApiRequestCallback callback) {
-        List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
+    public static void initSendTrackedEntityInstances(ApiRequestCallback parentCallback, List<TrackedEntityInstance> trackedEntityInstances) {
+        if(Dhis2.isLoading()) {
+            parentCallback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback = new DoneSendingCallback(parentCallback);
         sendTrackedEntityInstances(callback, trackedEntityInstances);
     }
 
     /**
-     * Initiates a sequence that attempts sending and registering the given list of Tracked Entity Instances to the server
+     * Initiates sending and registering of all locally created TrackedEntityInstance to the server.
      * @param callback called when the sequence is done
-     * @param trackedEntityInstances
      */
-    public static void sendTrackedEntityInstances(ApiRequestCallback callback, List<TrackedEntityInstance> trackedEntityInstances) {
+    private static void sendTrackedEntityInstances(ApiRequestCallback callback) {
+        List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
+        sendTrackedEntityInstances(callback, trackedEntityInstances);
+    }
+
+    private static void sendTrackedEntityInstances(ApiRequestCallback callback, List<TrackedEntityInstance> trackedEntityInstances) {
         Log.d(CLASS_TAG, "got this many trackedEntityInstances to send:" + trackedEntityInstances.size());
         ListIterator<TrackedEntityInstance> trackedEntityInstanceListIterator = null;
         if(trackedEntityInstances!=null) {
@@ -394,7 +443,40 @@ public class DataValueSender {
         }
     }
 
-    public static void sendTrackedEntityInstance(ApiRequestCallback parentCallback, TrackedEntityInstance trackedEntityInstance) {
+    public static void initSendTrackedEntityInstance(ApiRequestCallback parentCallback, TrackedEntityInstance trackedEntityInstance) {
+        if(Dhis2.isLoading()) {
+            parentCallback.onSuccess(null);
+            return;
+        }
+        getInstance().sending = true;
+        DoneSendingCallback callback = new DoneSendingCallback(parentCallback);
+        sendTrackedEntityInstance(callback, trackedEntityInstance);
+    }
+
+    /**
+     * Callback class to be used to set the sending flag to false after a sending task has finished
+     */
+    private static class DoneSendingCallback implements ApiRequestCallback {
+        final ApiRequestCallback parentCallback;
+
+        private DoneSendingCallback(ApiRequestCallback parentCallback) {
+            this.parentCallback = parentCallback;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder responseHolder) {
+            getInstance().sending = false;
+            parentCallback.onSuccess(responseHolder);
+        }
+
+        @Override
+        public void onFailure(ResponseHolder responseHolder) {
+            getInstance().sending = false;
+            parentCallback.onSuccess(responseHolder);
+        }
+    }
+
+    private static void sendTrackedEntityInstance(ApiRequestCallback parentCallback, TrackedEntityInstance trackedEntityInstance) {
         Log.d(CLASS_TAG, "sending tei: "+ trackedEntityInstance.trackedEntityInstance);
 
         RegisterTrackedEntityInstanceTask task = new RegisterTrackedEntityInstanceTask(NetworkManager.getInstance(),

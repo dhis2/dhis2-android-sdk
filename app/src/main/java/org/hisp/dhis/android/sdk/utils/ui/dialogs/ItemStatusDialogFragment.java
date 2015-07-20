@@ -245,7 +245,9 @@ public class ItemStatusDialogFragment extends DialogFragment
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.sync_dialog_button) {
+            Toast.makeText(getActivity(), getString(R.string.sending_data_server), Toast.LENGTH_LONG).show();
             sendToServer(mForm.getItem(), this);
+            ItemStatusDialogFragment.this.dismiss();
         } else if(v.getId() == R.id.close_dialog_button) {
             dismiss();
         } else if(v.getId() == R.id.item_detailed_info) {
@@ -277,8 +279,12 @@ public class ItemStatusDialogFragment extends DialogFragment
         List<Enrollment> enrollments = new ArrayList<>();
         List<Event> events = new ArrayList<>();
         ApiRequestCallback sendEventsCallback = new InitiateSendingEventsCallback(enrollments, events, callback);
-        ApiRequestCallback sendEnrollmentsCallback = new InitiateSendingEnrollmentsCallback(trackedEntityInstance, enrollments, sendEventsCallback);
-        DataValueSender.sendTrackedEntityInstance(sendEnrollmentsCallback, trackedEntityInstance);
+        final ApiRequestCallback sendEnrollmentsCallback = new InitiateSendingEnrollmentsCallback(trackedEntityInstance, enrollments, sendEventsCallback);
+        new Thread() {
+            @Override
+            public void run() {
+                DataValueSender.initSendTrackedEntityInstance(sendEnrollmentsCallback, trackedEntityInstance);
+            }}.start();
     }
 
     private static class InitiateSendingEventsCallback implements ApiRequestCallback {
@@ -306,7 +312,7 @@ public class ItemStatusDialogFragment extends DialogFragment
                     events.addAll(enrollmentEvents);
                 }
             }
-            DataValueSender.sendEvents(parentCallback, events);
+            DataValueSender.initSendEvents(parentCallback, events);
         }
 
         @Override
@@ -337,7 +343,7 @@ public class ItemStatusDialogFragment extends DialogFragment
             }
             List<Enrollment> tempEnrollments = DataValueController.getEnrollments(trackedEntityInstance);
             enrollments.addAll(tempEnrollments);
-            DataValueSender.sendEnrollments(parentCallback, enrollments);
+            DataValueSender.initSendEnrollments(parentCallback, enrollments);
         }
 
         @Override
@@ -346,16 +352,24 @@ public class ItemStatusDialogFragment extends DialogFragment
         }
     }
 
-    public static void sendEnrollment(ApiRequestCallback finalCallback, Enrollment enrollment) {
+    public static void sendEnrollment(ApiRequestCallback finalCallback, final Enrollment enrollment) {
         final List<Enrollment> enrollments = new ArrayList<>();
         final List<Event> events = new ArrayList<>();
         enrollments.add(enrollment);
-        ApiRequestCallback sendEventsCallback = new InitiateSendingEventsCallback(enrollments, events, finalCallback);
-        DataValueSender.sendEnrollment(sendEventsCallback, enrollment);
+        final ApiRequestCallback sendEventsCallback = new InitiateSendingEventsCallback(enrollments, events, finalCallback);
+        new Thread() {
+            @Override
+            public void run() {
+                DataValueSender.initSendEnrollment(sendEventsCallback, enrollment);
+            }}.start();
     }
 
-    public static void sendEvent(ApiRequestCallback finalCallback, Event event) {
-        DataValueSender.sendEvent(finalCallback, event);
+    public static void sendEvent(final ApiRequestCallback finalCallback, final Event event) {
+        new Thread() {
+            @Override
+            public void run() {
+                DataValueSender.initSendEvent(finalCallback, event);
+            }}.start();
     }
 
     static class DoneSendingCallback implements ApiRequestCallback {
@@ -368,7 +382,10 @@ public class ItemStatusDialogFragment extends DialogFragment
         public void onSuccess(ResponseHolder responseHolder) {
             Bundle argumentsBundle = new Bundle();
             argumentsBundle.putBundle(EXTRA_ARGUMENTS, fragment.getArguments());
-            fragment.getLoaderManager().restartLoader(LOADER_ID, argumentsBundle, fragment);
+            if(fragment.isAdded() && !fragment.getLoaderManager().getLoader(LOADER_ID).isAbandoned()
+                    && !fragment.getLoaderManager().getLoader(LOADER_ID).isStarted() ) {
+                fragment.getLoaderManager().restartLoader(LOADER_ID, argumentsBundle, fragment);
+            }
         }
 
         @Override

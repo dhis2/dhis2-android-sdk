@@ -84,8 +84,9 @@ public final class DataValueSender {
         }
         if(!NetworkManager.isOnline()) {
             ResponseHolder holder = new ResponseHolder<>();
-            holder.setApiException(APIException.networkError
-                    (NetworkManager.CONNECTION_TEST_URL, null));
+//            holder.setApiException(APIException.networkError
+//                    (NetworkManager.getInstance().getServerUrl(), null));
+            Log.d(CLASS_TAG, "NO internet!");
             callback.onFailure(null);
             return;
         }

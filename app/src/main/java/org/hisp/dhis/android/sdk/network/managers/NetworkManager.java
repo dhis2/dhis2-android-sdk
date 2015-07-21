@@ -29,10 +29,26 @@
 
 package org.hisp.dhis.android.sdk.network.managers;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.Log;
+
 import com.squareup.okhttp.OkHttpClient;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkManager {
@@ -43,6 +59,7 @@ public class NetworkManager {
 
     private String serverUrl;
     private String credentials;
+    public static final int CONNECTION_TIMEOUT= 10000; //10 secs
     public static final String CONNECTION_TEST_URL = "8.8.8.8";
 
     private Base64Manager base64Manager;
@@ -92,19 +109,21 @@ public class NetworkManager {
         }
     }
 
+
     public static boolean isOnline()
     {
-        Runtime runtime = Runtime.getRuntime();
         try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + CONNECTION_TEST_URL); //ping Google's DNS servers to check for Internet
-            int     exitValue = ipProcess.waitFor();
-            return (exitValue == 0);
-
-        } catch (IOException e)          { e.printStackTrace(); }
-        catch (InterruptedException e) { e.printStackTrace(); }
-
-        return false;
+            HttpURLConnection urlConnection = (HttpURLConnection) (new URL(getInstance().getServerUrl()).openConnection());
+            urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+            urlConnection.connect();
+            return (urlConnection.getResponseCode() == 200);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 
     public String getServerUrl() {
         return serverUrl;

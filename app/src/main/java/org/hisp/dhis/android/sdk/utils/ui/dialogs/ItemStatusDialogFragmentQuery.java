@@ -55,10 +55,10 @@ public class ItemStatusDialogFragmentQuery implements Query<ItemStatusDialogFrag
             failed = true;
         }
 
-        if (item.isFromServer()) {
-            form.setStatus(OnRowClick.ITEM_STATUS.SENT);
-        } else if (failed) {
+        if (failed) {
             form.setStatus(OnRowClick.ITEM_STATUS.ERROR);
+        } else if (item.isFromServer()) {
+            form.setStatus(OnRowClick.ITEM_STATUS.SENT);
         } else {
             form.setStatus(OnRowClick.ITEM_STATUS.OFFLINE);
         }

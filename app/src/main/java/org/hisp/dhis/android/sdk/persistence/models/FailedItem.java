@@ -57,6 +57,7 @@ public class FailedItem extends BaseModel {
     private long itemId;
 
     @Column
+    @PrimaryKey
     private String itemType;
 
     @Column

@@ -43,6 +43,7 @@ import org.hisp.dhis.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.Conflict;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
@@ -73,32 +74,23 @@ public final class DataValueSender {
     private static final String CLASS_TAG = "DataValueSender";
 
     boolean sending = false;
-    private ApiRequestCallback callback;
 
-    static void sendLocalData(ApiRequestCallback callback) {
+    static void sendLocalData(final ApiRequestCallback callback) {
         if(Dhis2.isLoading()) {
             callback.onSuccess(null);
             return;
         }
-        getInstance().callback = callback;
         if(!NetworkManager.isOnline()) {
-            onFinishSending(false);
+            ResponseHolder holder = new ResponseHolder<>();
+            holder.setApiException(APIException.networkError
+                    (NetworkManager.CONNECTION_TEST_URL, null));
+            callback.onFailure(null);
             return;
         }
         getInstance().sending = true;
         new Thread() {
             public void run() {
-                final ApiRequestCallback finalSendCallback = new ApiRequestCallback() {
-                    @Override
-                    public void onSuccess(ResponseHolder responseHolder) {
-                        onFinishSending(true);
-                    }
-
-                    @Override
-                    public void onFailure(ResponseHolder responseHolder) {
-                        onFinishSending(false);
-                    }
-                };
+                final OnFinishSendingCallback finalSendCallback = new OnFinishSendingCallback(callback);
                 final ApiRequestCallback initiateSendEventsCallback = new ApiRequestCallback() {
                     @Override
                     public void onSuccess(ResponseHolder responseHolder) {
@@ -113,7 +105,7 @@ public final class DataValueSender {
 
                     @Override
                     public void onFailure(ResponseHolder responseHolder) {
-                        onFinishSending(false);
+                        finalSendCallback.onFailure(responseHolder);
                     }
                 };
                 ApiRequestCallback initiateSendEnrollmentsCallback = new ApiRequestCallback() {
@@ -130,7 +122,7 @@ public final class DataValueSender {
 
                     @Override
                     public void onFailure(ResponseHolder responseHolder) {
-                        onFinishSending(false);
+                        initiateSendEventsCallback.onFailure(responseHolder);
                     }
                 };
                 sendTrackedEntityInstances(initiateSendEnrollmentsCallback);
@@ -149,17 +141,34 @@ public final class DataValueSender {
         }
     }
 
-    private static void onFinishSending(boolean success) {
-        Log.d(CLASS_TAG, "onFinishSending" + success);
+    private static class OnFinishSendingCallback implements ApiRequestCallback {
 
-        InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
-        Dhis2Application.getEventBus().post(event);
-        Dhis2.hasUnSynchronizedDatavalues = false;
-        getInstance().sending = false;
-        if(success) {
-            getInstance().callback.onSuccess(null);
-        } else {
-            getInstance().callback.onFailure(null);
+        private final ApiRequestCallback callback;
+
+        private OnFinishSendingCallback(ApiRequestCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder responseHolder) {
+            Log.d(CLASS_TAG, "onFinishSending" + true);
+
+            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
+            Dhis2Application.getEventBus().post(event);
+            Dhis2.hasUnSynchronizedDatavalues = false;
+            getInstance().sending = false;
+            callback.onSuccess(null);
+        }
+
+        @Override
+        public void onFailure(ResponseHolder responseHolder) {
+            Log.d(CLASS_TAG, "onFinishSending" + false);
+
+            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
+            Dhis2Application.getEventBus().post(event);
+            Dhis2.hasUnSynchronizedDatavalues = false;
+            getInstance().sending = false;
+            callback.onFailure(null);
         }
     }
 
@@ -506,7 +515,13 @@ public final class DataValueSender {
         }
         failedItem.setItemId(id);
         failedItem.setItemType(type);
-        failedItem.async().save();
+        failedItem.save();
+        if( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
+            for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {
+                conflict.setImportSummary( failedItem.getImportSummary().getId() );
+                conflict.save();
+            }
+        }
     }
 
     public static void handleError(ImportSummary importSummary, String type, int code, long id) {
@@ -515,7 +530,13 @@ public final class DataValueSender {
         failedItem.setItemId(id);
         failedItem.setItemType(type);
         failedItem.setHttpStatusCode(code);
-        failedItem.async().save();
+        failedItem.save();
+        if( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
+            for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {
+                conflict.setImportSummary( failedItem.getImportSummary().getId() );
+                conflict.save();
+            }
+        }
         Log.d(CLASS_TAG, "saved item: " + failedItem.getItemId()+ ":" + failedItem.getItemType());
     }
 }

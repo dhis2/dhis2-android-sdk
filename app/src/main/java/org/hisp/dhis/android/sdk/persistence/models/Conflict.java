@@ -49,19 +49,19 @@ public class Conflict extends BaseModel{
         // do something: put to a Map; log a warning, whatever
     }
 
-    @Column
+    @Column(name = "id")
     @PrimaryKey(autoincrement = true)
     protected int id;
 
-    @Column
+    @Column(name = "importSummary")
     int importSummary;
 
     @JsonProperty("object")
-    @Column
+    @Column(name = "object")
     String object;
 
     @JsonProperty("value")
-    @Column
+    @Column(name = "value")
     String value;
 
     public int getId() {

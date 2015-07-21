@@ -54,6 +54,7 @@ import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.ModelChangeObserver;
 import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
+import org.hisp.dhis.android.sdk.persistence.models.Conflict;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
@@ -185,12 +186,21 @@ public class ItemStatusDialogFragment extends DialogFragment
                     mStatus.setText(getString(R.string.status_error_description));
                     FailedItem failedItem = DataValueController.getFailedItem(data.getType(), data.getItem().getLocalId());
                     if(failedItem!= null) {
+                        String details = "";
                         if( failedItem.getErrorMessage() != null) {
-                            mDetails.setText(failedItem.getErrorMessage());
+                            details += failedItem.getErrorMessage() + '\n';
                         }
                         if ( failedItem.getImportSummary() != null && failedItem.getImportSummary().getDescription() != null ) {
-                            mDetails.setText(failedItem.getImportSummary().getDescription());
+                            details += failedItem.getImportSummary().getDescription() + '\n';
                         }
+                        if ( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
+                            for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {
+                                if( conflict != null ) {
+                                    details += conflict.getObject() + ": " + conflict.getValue() + "\n";
+                                }
+                            }
+                        }
+                        mDetails.setText(details);
                     }
                 }
                     break;

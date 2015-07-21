@@ -32,106 +32,67 @@ package org.hisp.dhis.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
-import java.util.List;
-
 /**
- * @author Simen Skogly Russnes on 24.02.15.
+ * @author Simen Skogly Russnes on 21.07.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ImportSummary extends BaseModel {
-
-    public static final String SUCCESS = "SUCCESS";
-    public static final String ERROR = "ERROR";
-
-    @Column(name = "id")
-    @PrimaryKey(autoincrement = true)
-    int id;
-
-    @JsonProperty("status")
-    @Column(name = "status")
-    String status;
-
-    @JsonProperty("description")
-    @Column(name = "description")
-    String description;
-
-    @JsonProperty("importCount")
-    @Column
-    @ForeignKey(references = {
-            @ForeignKeyReference(columnName = "importCount", columnType = int.class, foreignColumnName = "id")
-    })
-    ImportCount importCount;
-
-    @JsonProperty("reference")
-    @Column(name = "reference")
-    String reference;
-
-    @JsonProperty("href")
-    @Column(name = "href")
-    String href;
+public class Conflict extends BaseModel{
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
-    @JsonProperty("conflicts")
-    List<Conflict> conflicts;
+    @Column
+    @PrimaryKey(autoincrement = true)
+    protected int id;
 
-    public List<Conflict> getConflicts() {
-        if( conflicts == null ) {
-            conflicts = new Select().from(Conflict.class).where(Condition.column(Conflict$Table.IMPORTSUMMARY).is(id)).queryList();
-        }
-        return conflicts;
-    }
+    @Column
+    int importSummary;
 
-    public String getReference() {
-        return reference;
-    }
+    @JsonProperty("object")
+    @Column
+    String object;
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public ImportCount getImportCount() {
-        return importCount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    @JsonProperty("value")
+    @Column
+    String value;
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getImportSummary() {
+        return importSummary;
+    }
+
+    public void setImportSummary(int importSummary) {
+        this.importSummary = importSummary;
+    }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

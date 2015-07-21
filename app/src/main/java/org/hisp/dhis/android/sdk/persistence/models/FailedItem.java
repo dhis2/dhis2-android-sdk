@@ -59,6 +59,7 @@ public class FailedItem extends BaseModel {
     @PrimaryKey
     private long itemId;
     @Column
+    @PrimaryKey
     private String itemType;
     @Column
     private int httpStatusCode; // 401, 500 .. etc

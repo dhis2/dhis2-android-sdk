@@ -43,6 +43,7 @@ public class NetworkManager {
 
     private String serverUrl;
     private String credentials;
+    public static final String CONNECTION_TEST_URL = "8.8.8.8";
 
     private Base64Manager base64Manager;
     private IHttpManager httpManager;
@@ -95,7 +96,7 @@ public class NetworkManager {
     {
         Runtime runtime = Runtime.getRuntime();
         try {
-            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8"); //ping Google's DNS servers to check for Internet
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 " + CONNECTION_TEST_URL); //ping Google's DNS servers to check for Internet
             int     exitValue = ipProcess.waitFor();
             return (exitValue == 0);
 

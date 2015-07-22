@@ -497,7 +497,7 @@ public class DataEntryFragment extends Fragment
      * the results. This is for example used for hiding views if a rule contains skip logic
      */
     public void evaluateRules() {
-//        showLoadingDialog(); // loadingDialog contains bugs. Won't dismiss 1/10 times
+        showLoadingDialog(); // loadingDialog contains bugs. Won't dismiss 1/10 times
         new Thread() {
             public void run() {
                 List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
@@ -530,7 +530,7 @@ public class DataEntryFragment extends Fragment
                         activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
                     }
                 } else {
-//                    hideLoadingDialog(); // dialog.dismiss() won't work all times
+                    hideLoadingDialog(); // dialog.dismiss() won't work all times
                 }
             }
         }.start();
@@ -655,6 +655,7 @@ public class DataEntryFragment extends Fragment
                 refreshing = false;
             }
         });
+        hideLoadingDialog();
     }
 
     public void flagDataChanged(boolean changed) {

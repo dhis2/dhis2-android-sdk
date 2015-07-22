@@ -337,9 +337,15 @@ public final class Dhis2 {
      * @return
      */
     public static boolean isDataValuesLoaded(Context context) {
+        if(context==null && getInstance().context == null) {
+            return true;
+        }
+        if(context != null) {
+            getInstance().context = context;
+        }
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        if (isLoadFlagEnabled(context, DataValueLoader.EVENTS)) {
-            if (!DataValueLoader.isEventsLoaded(context)) return false;
+        if (isLoadFlagEnabled(getInstance().context, DataValueLoader.EVENTS)) {
+            if (!DataValueLoader.isEventsLoaded(getInstance().context)) return false;
         } /*else if (isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
             if (!DataValueLoader.isEnrollmentsLoaded(context)) return false;
         } else if (isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {

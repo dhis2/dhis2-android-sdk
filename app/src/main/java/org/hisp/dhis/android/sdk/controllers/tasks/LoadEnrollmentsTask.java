@@ -74,7 +74,7 @@ public class LoadEnrollmentsTask implements INetworkTask {
             headers.add(new Header("Authorization", networkManager.getCredentials()));
             headers.add(new Header("Accept", "application/json"));
 
-            String url = networkManager.getServerUrl() + "/api/enrollments?page=0&pageSize=200&orgUnit=" +
+            String url = networkManager.getServerUrl() + "/api/enrollments?page=0&pageSize=200&ou=" +
                     organisationUnitId + "&program=" + programId;
 
             Request request = new Request(RestMethod.GET, url, headers, null);
@@ -110,7 +110,7 @@ public class LoadEnrollmentsTask implements INetworkTask {
             headers.add(new Header("Accept", "application/json"));
 
 
-            String url = networkManager.getServerUrl() + "/api/enrollments?trackedEntityInstance=" + trackedEntityInstance.getTrackedEntityInstance();
+            String url = networkManager.getServerUrl() + "/api/enrollments?ouMode=ACCESSIBLE&trackedEntityInstance=" + trackedEntityInstance.getTrackedEntityInstance();
 
             Request request = new Request(RestMethod.GET, url, headers, null);
             requestBuilder.setRequest(request);

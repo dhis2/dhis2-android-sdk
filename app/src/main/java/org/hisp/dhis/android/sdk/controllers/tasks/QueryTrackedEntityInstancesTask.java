@@ -31,6 +31,10 @@ package org.hisp.dhis.android.sdk.controllers.tasks;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.wrappers.TrackedEntityInstancesWrapper;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
@@ -87,15 +91,25 @@ public class QueryTrackedEntityInstancesTask implements INetworkTask {
                 url += "&program="+program;
             }
 
-            if(queryString!=null && !queryString.isEmpty() && params==null || params.length <= 0) {
-                url+="&query=LIKE:"+queryString;
+            List<TrackedEntityAttributeValue> valueParams = new LinkedList<>();
+            if( params != null ) {
+                for(TrackedEntityAttributeValue teav: params ) {
+                    if( teav != null && teav.getValue() != null ) {
+                        if( !teav.getValue().isEmpty() ) {
+                            valueParams.add( teav );
+                        }
+                    }
+                }
             }
 
-            if(params!=null) {
-                for(TrackedEntityAttributeValue param: params) {
-                    if(param!=null && param.getValue()!=null && !param.getValue().isEmpty()) {
-                        url+="&filter="+param.getTrackedEntityAttributeId()+":LIKE:"+param.getValue();
-                    }
+            if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {
+                url+="&query=LIKE:"+queryString;
+            }
+            Log.d(CLASS_TAG, "queryString: " + queryString);
+
+            for(TrackedEntityAttributeValue param: valueParams) {
+                if(param!=null && param.getValue()!=null && !param.getValue().isEmpty()) {
+                    url+="&filter="+param.getTrackedEntityAttributeId()+":LIKE:"+param.getValue();
                 }
             }
 
@@ -132,7 +146,17 @@ public class QueryTrackedEntityInstancesTask implements INetworkTask {
         public void onSuccess(ResponseHolder holder) {
 
             try {
-                List<TrackedEntityInstance> trackedEntityInstances = TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
+                JsonNode node = Dhis2.getInstance().getObjectMapper().
+                        readTree(holder.getResponse().getBody());
+                node = node.get("trackedEntityInstances");
+                TypeReference<List<TrackedEntityInstance>> typeRef =
+                        new TypeReference<List<TrackedEntityInstance>>() {
+                        };
+                List<TrackedEntityInstance> trackedEntityInstances = null; // < DHIS2.20 TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
+                if(node != null) {
+                    trackedEntityInstances = Dhis2.getInstance().getObjectMapper().
+                            readValue(node.traverse(), typeRef);
+                }
                 holder.setItem(trackedEntityInstances);
                 parentCallback.onSuccess(holder);
             } catch (IOException e) {

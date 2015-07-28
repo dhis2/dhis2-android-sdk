@@ -30,14 +30,23 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+import org.hisp.dhis.android.sdk.controllers.Dhis2;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 24.02.15.
  */
-public class ResponseBody {
+public class ApiResponse {
+
+    public static final String RESPONSETYPE_IMPORTSUMMARIES = "ImportSummaries";
+    public static final String RESPONSETYPE_IMPORTSUMMARY = "ImportSummary";
 
     @JsonProperty("imported")
     int imported;
@@ -45,34 +54,40 @@ public class ResponseBody {
     @JsonProperty("ignored")
     int ignored;
 
-    @JsonProperty("importSummaries")
+    @JsonIgnore
     List<ImportSummary> importSummaries;
+
+    @JsonProperty("response")
+    public void setResponse(Map<String, Object> response) {
+        try {
+            String responseType = (String) response.get("responseType");
+            if (responseType.equals( RESPONSETYPE_IMPORTSUMMARIES )) {
+                TypeReference<List<ImportSummary>> typeRef =
+                        new TypeReference<List<ImportSummary>>() {
+                        };
+                List<ImportSummary> importSummaries = Dhis2.getInstance().getObjectMapper().
+                        convertValue(response.get("importSummaries"), typeRef);
+                this.importSummaries = importSummaries;
+            } else if (responseType.equals( RESPONSETYPE_IMPORTSUMMARY )) {
+                ImportSummary importSummary = Dhis2.getInstance().getObjectMapper().convertValue(response, ImportSummary.class);
+                importSummaries = new ArrayList<>();
+                importSummaries.add(importSummary);
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
 
-    public int getImported() {
-        return imported;
-    }
-
-    public void setImported(int imported) {
-        this.imported = imported;
-    }
-
-    public int getIgnored() {
-        return ignored;
-    }
-
-    public void setIgnored(int ignored) {
-        this.ignored = ignored;
-    }
-
     public List<ImportSummary> getImportSummaries() {
         return importSummaries;
     }
 
+    @JsonIgnore
     public void setImportSummaries(List<ImportSummary> importSummaries) {
         this.importSummaries = importSummaries;
     }

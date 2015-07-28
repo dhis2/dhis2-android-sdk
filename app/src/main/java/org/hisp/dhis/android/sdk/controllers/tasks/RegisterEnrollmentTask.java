@@ -113,12 +113,14 @@ public class RegisterEnrollmentTask implements INetworkTask {
 
             SendEnrollmentCallback sendEnrollmentCallback = new
                     SendEnrollmentCallback(callback, enrollment.getLocalId());
-            RegisterTrackedEntityInstanceTask.ImportSummaryCallback importSummaryCallback = new
-                    RegisterTrackedEntityInstanceTask.ImportSummaryCallback(sendEnrollmentCallback);
+            //RegisterTrackedEntityInstanceTask.ImportSummaryCallback importSummaryCallback = new
+            //        RegisterTrackedEntityInstanceTask.ImportSummaryCallback(sendEnrollmentCallback);
+            RegisterEventTask.ResponseBodyCallback responseBodyCallback =
+                    new RegisterEventTask.ResponseBodyCallback(sendEnrollmentCallback);
 
             requestBuilder.setRequest(request);
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
-            requestBuilder.setRequestCallback(importSummaryCallback);
+            requestBuilder.setRequestCallback(responseBodyCallback);
         } catch(IllegalArgumentException e) {
             requestBuilder.setRequest(new Request(RestMethod.POST, CLASS_TAG, new ArrayList<Header>(), null));
             requestBuilder.setNetworkManager(networkManager.getHttpManager());

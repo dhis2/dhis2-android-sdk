@@ -50,7 +50,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.utils.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
@@ -185,10 +185,10 @@ public class RegisterEventTask implements INetworkTask {
         public void onSuccess(ResponseHolder holder) {
             Log.d(CLASS_TAG, "response: " + new String(holder.getResponse().getBody()));
             try {
-                ResponseBody responseBody = Dhis2.getInstance().getObjectMapper().
-                        readValue(holder.getResponse().getBody(), ResponseBody.class);
-                if(responseBody!=null && responseBody.getImportSummaries()!=null && !responseBody.getImportSummaries().isEmpty()) {
-                    holder.setItem(responseBody.getImportSummaries().get(0));
+                ApiResponse apiResponse = Dhis2.getInstance().getObjectMapper().
+                        readValue(holder.getResponse().getBody(), ApiResponse.class);
+                if(apiResponse !=null && apiResponse.getImportSummaries()!=null && !apiResponse.getImportSummaries().isEmpty()) {
+                    holder.setItem(apiResponse.getImportSummaries().get(0));
                 }
 
             } catch (IOException e) {
@@ -200,7 +200,8 @@ public class RegisterEventTask implements INetworkTask {
 
         @Override
         public void onFailure(ResponseHolder holder) {
-            parentCallback.onFailure(holder);
+            Log.d(CLASS_TAG, "onFailure responsebody");
+            parentCallback.onSuccess(holder);
         }
     }
 }

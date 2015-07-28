@@ -227,6 +227,7 @@ public final class Dhis2 {
 
             editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
             editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
+            editor.putBoolean(LOAD + Program.WITHOUT_REGISTRATION, true);
         } else if (mode.equals(LOAD_TRACKER)) {
             editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
             editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
@@ -242,6 +243,7 @@ public final class Dhis2 {
             //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
             //editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITH_REGISTRATION, true);
             //editor.putBoolean(LOAD + Program.MULTIPLE_EVENTS_WITH_REGISTRATION, true);
+            //editor.putBoolean(LOAD + Program.WITH_REGISTRATION, true);
         }
         editor.commit();
     }
@@ -268,6 +270,7 @@ public final class Dhis2 {
         //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
         //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
         editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, false);
+        editor.putBoolean(LOAD + Program.WITHOUT_REGISTRATION, false);
         editor.commit();
     }
 
@@ -570,19 +573,15 @@ public final class Dhis2 {
     private static void loadInitialMetadata(final ApiRequestCallback parentCallback) {
         Log.d(CLASS_TAG, "loading initial metadata!");
         ApiRequestCallback callback = new ApiRequestCallback() {
-            final ApiRequestCallback callback;
-            {
-                this.callback = parentCallback;
-            }
             @Override
             public void onSuccess(ResponseHolder holder) {
-                loadInitialDataValues(callback);
+                loadInitialDataValues(parentCallback);
             }
 
             @Override
             public void onFailure(ResponseHolder holder) {
                 //todo retry?
-                callback.onFailure(holder);
+                parentCallback.onFailure(holder);
             }
         };
         loadMetaData(getInstance().context, callback);
@@ -607,18 +606,14 @@ public final class Dhis2 {
      */
     public static void synchronize(final Context context, final ApiRequestCallback parentCallback) {
         ApiRequestCallback callback = new ApiRequestCallback() {
-            private final ApiRequestCallback callback;
-            {
-                this.callback = parentCallback;
-            }
             @Override
             public void onSuccess(ResponseHolder holder) {
-                synchronizeDataValues(context, callback);
+                synchronizeDataValues(context, parentCallback);
             }
 
             @Override
             public void onFailure(ResponseHolder holder) {
-                callback.onFailure(holder);
+                parentCallback.onFailure(holder);
             }
         };
         synchronizeMetaData(context, callback);
@@ -660,24 +655,20 @@ public final class Dhis2 {
             message = getInstance().activity.getString(R.string.finishing_up);
         postProgressMessage(message);
         ApiRequestCallback blockCallback = new ApiRequestCallback() {
-            private final ApiRequestCallback parentCallback;
-            {
-                this.parentCallback = callback;
-            }
             @Override
             public void onSuccess(ResponseHolder holder) {
                 Log.d(CLASS_TAG, "init loading datavalues");
                 if (!isDataValuesLoaded(getInstance().context)) {
                     Log.d(CLASS_TAG, "init loadig datavalues trackerEnabled init loading");
-                    getInstance().getDataValueController().loadDataValues(getInstance().context, false, parentCallback);
+                    getInstance().getDataValueController().loadDataValues(getInstance().context, false, callback);
                 } else {
-                    parentCallback.onFailure(holder);
+                    callback.onFailure(holder);
                 }
             }
 
             @Override
             public void onFailure(ResponseHolder holder) {
-                parentCallback.onFailure(holder);
+                callback.onFailure(holder);
             }
         };
         BlockThread blockThread = new BlockThread(observer, blockCallback);
@@ -688,10 +679,6 @@ public final class Dhis2 {
 
     public static void synchronizeDataValues(final Context context, final ApiRequestCallback parentCallback) {
         ApiRequestCallback callback = new ApiRequestCallback() {
-            private final ApiRequestCallback callback;
-            {
-                this.callback = parentCallback;
-            }
             @Override
             public void onSuccess(ResponseHolder holder) {
                 SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
@@ -702,7 +689,7 @@ public final class Dhis2 {
 
             @Override
             public void onFailure(ResponseHolder holder) {
-                callback.onFailure(holder);
+                parentCallback.onFailure(holder);
             }
         };
         getInstance().getDataValueController().synchronizeDataValues(context, callback);

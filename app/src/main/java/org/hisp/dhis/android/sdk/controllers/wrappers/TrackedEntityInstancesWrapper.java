@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Wrapper class to support loading of TrackedEntityInstances due to the strange structure of
  * the JSON output from the server.
+ * Used for DHIS version < 2.20
  *
  * @author Simen Skogly Russnes on 03.03.15.
  */

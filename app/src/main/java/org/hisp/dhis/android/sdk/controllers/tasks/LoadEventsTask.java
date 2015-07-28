@@ -85,8 +85,6 @@ public class LoadEventsTask implements INetworkTask {
             requestBuilder.setNetworkManager(networkManager.getHttpManager());
             requestBuilder.setRequestCallback(callback);
         }
-
-
     }
 
     public LoadEventsTask(NetworkManager networkManager,
@@ -107,7 +105,7 @@ public class LoadEventsTask implements INetworkTask {
             headers.add(new Header("Authorization", networkManager.getCredentials()));
             headers.add(new Header("Accept", "application/json"));
 
-            String url = networkManager.getServerUrl() + "/api/events?program="+enrollment.getProgram().getId()+"&programStatus="+enrollment.getStatus()+"&trackedEntityInstance="+enrollment.getTrackedEntityInstance();
+            String url = networkManager.getServerUrl() + "/api/events?ouMode=ACCESSIBLE&program="+enrollment.getProgram().getId()+"&programStatus="+enrollment.getStatus()+"&trackedEntityInstance="+enrollment.getTrackedEntityInstance();
             if(synchronizing) {
                 SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
                 if( systemInfo != null && systemInfo.getServerDate()!= null ) {

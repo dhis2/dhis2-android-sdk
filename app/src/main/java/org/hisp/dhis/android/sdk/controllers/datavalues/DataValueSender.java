@@ -516,6 +516,7 @@ public final class DataValueSender {
     }
 
     public static void handleError(APIException apiException, String type, long id) {
+        Log.d(CLASS_TAG, "handleError..");
         if (apiException.getResponse() != null && apiException.getResponse().getBody() != null) {
             Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
         }

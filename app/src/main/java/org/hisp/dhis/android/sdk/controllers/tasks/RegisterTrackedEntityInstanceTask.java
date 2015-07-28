@@ -129,13 +129,15 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
 
         SendTrackedEntityInstanceCallback sendTrackedEntityInstanceCallback = new
                 SendTrackedEntityInstanceCallback(referenceId, referenceLocalId, callback);
-        ImportSummaryCallback importSummaryCallback = new
-                ImportSummaryCallback(sendTrackedEntityInstanceCallback);
+        //ImportSummaryCallback importSummaryCallback = new
+        //        ImportSummaryCallback(sendTrackedEntityInstanceCallback);
+        RegisterEventTask.ResponseBodyCallback responseBodyCallback =
+                new RegisterEventTask.ResponseBodyCallback(sendTrackedEntityInstanceCallback);
 
         requestBuilder = new ApiRequest.Builder<>();
         requestBuilder.setRequest(request);
         requestBuilder.setNetworkManager(networkManager.getHttpManager());
-        requestBuilder.setRequestCallback(importSummaryCallback);
+        requestBuilder.setRequestCallback(responseBodyCallback);
     }
 
     @Override

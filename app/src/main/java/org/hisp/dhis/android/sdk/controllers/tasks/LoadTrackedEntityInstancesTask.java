@@ -31,6 +31,9 @@ package org.hisp.dhis.android.sdk.controllers.tasks;
 
 import android.util.Log;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
@@ -199,7 +202,17 @@ public class LoadTrackedEntityInstancesTask implements INetworkTask {
         @Override
         public void onSuccess(ResponseHolder holder) {
             try {
-                List<TrackedEntityInstance> trackedEntityInstances = TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
+                JsonNode node = Dhis2.getInstance().getObjectMapper().
+                        readTree(holder.getResponse().getBody());
+                node = node.get("trackedEntityInstances");
+                TypeReference<List<TrackedEntityInstance>> typeRef =
+                        new TypeReference<List<TrackedEntityInstance>>() {
+                        };
+                List<TrackedEntityInstance> trackedEntityInstances = null; // < DHIS2.20 TrackedEntityInstancesWrapper.parseTrackedEntityInstances(holder.getResponse().getBody());
+                if(node != null) {
+                    trackedEntityInstances = Dhis2.getInstance().getObjectMapper().
+                            readValue(node.traverse(), typeRef);
+                }
                 if (trackedEntityInstances == null || trackedEntityInstances.isEmpty()) {
                     holder.setItem(new Object[]{this.trackedEntityInstances, enrollments, events});
                     parentCallback.onSuccess(holder);

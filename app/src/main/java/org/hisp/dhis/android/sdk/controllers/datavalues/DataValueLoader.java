@@ -183,10 +183,12 @@ public class DataValueLoader {
                     break;
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION) ||
+                        Dhis2.isLoadFlagEnabled(context, Program.WITHOUT_REGISTRATION)) {
                     List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                             (organisationUnit.getId(),
-                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                    Program.WITHOUT_REGISTRATION);
                     if (programsForOrgUnitSEWoR != null)
                         programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
                 }
@@ -305,10 +307,12 @@ public class DataValueLoader {
                     break;
                 currentOrganisationUnit = organisationUnit.getId();
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION) ||
+                        Dhis2.isLoadFlagEnabled(context, Program.WITHOUT_REGISTRATION)) {
                     List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                             (organisationUnit.getId(),
-                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                    Program.WITHOUT_REGISTRATION);
                     if (programsForOrgUnitSEWoR != null)
                         programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
                 }
@@ -606,20 +610,22 @@ public class DataValueLoader {
      */
     public static boolean isEventsLoaded(Context context) {
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-        for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-            if (organisationUnit.getId() == null)
+        for ( OrganisationUnit organisationUnit : assignedOrganisationUnits ) {
+            if ( organisationUnit.getId() == null )
                 break;
 
             List<Program> programsForOrgUnit = new ArrayList<>();
-            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+            if (Dhis2.isLoadFlagEnabled( context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION ) ||
+                    Dhis2.isLoadFlagEnabled( context, Program.WITHOUT_REGISTRATION ) ) {
                 List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                         (organisationUnit.getId(),
-                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
-                if (programsForOrgUnitSEWoR != null)
+                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                Program.WITHOUT_REGISTRATION);
+                if ( programsForOrgUnitSEWoR != null )
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
             }
 
-            for (Program program : programsForOrgUnit) {
+            for ( Program program : programsForOrgUnit ) {
                 if (program.getId() == null)
                     break;
 
@@ -737,10 +743,12 @@ public class DataValueLoader {
 
             String assignedOrganisationUnit = organisationUnit.getId();
             List<Program> programsForOrgUnit = new ArrayList<>();
-            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
+            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION) ||
+                    Dhis2.isLoadFlagEnabled(context, Program.WITHOUT_REGISTRATION)) {
                 List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                         (organisationUnit.getId(),
-                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
+                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                Program.WITHOUT_REGISTRATION);
                 if (programsForOrgUnitSEWoR != null)
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
             }

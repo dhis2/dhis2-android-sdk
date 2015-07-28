@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -11,6 +12,11 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  */
 @JsonIgnoreProperties("modelAdapter")
 public abstract class BaseSerializableModel extends BaseModel {
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+        // do something: put to a Map; log a warning, whatever
+    }
 
     @JsonIgnore
     @Column(name = "fromServer")

@@ -75,12 +75,14 @@ public final class ApiRequest<T> {
             ResponseHolder holder = new ResponseHolder<>();
             holder.setApiException(APIException.networkError(request.getUrl(),
                     networkException));
+            networkException.printStackTrace();
             taskCallback.onFailure(holder);
             return;
         } catch (Exception unknownException) {
             ResponseHolder holder = new ResponseHolder<>();
             holder.setApiException(APIException.unexpectedError(request.getUrl(),
                     unknownException));
+            unknownException.printStackTrace();
             taskCallback.onFailure(holder);
             return;
         }

@@ -33,10 +33,12 @@ import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
+import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
 import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueSender;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
@@ -50,6 +52,8 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship;
+import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -60,6 +64,7 @@ import org.hisp.dhis.android.sdk.utils.Utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
@@ -97,11 +102,22 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
         headers.add(new Header("Authorization", networkManager.getCredentials()));
         headers.add(new Header("Content-Type", "application/json"));
 
+        List<Relationship> relationships = trackedEntityInstance.getRelationships();
         String referenceId = trackedEntityInstance.getTrackedEntityInstance();
         long referenceLocalId = trackedEntityInstance.getLocalId();
         if(Utils.isLocal(trackedEntityInstance.getTrackedEntityInstance())) {
-            trackedEntityInstance.setTrackedEntityInstance(null); //to not send a local temporary uid
+            trackedEntityInstance.setTrackedEntityInstance(null);
         }
+        if(relationships != null) {
+            ListIterator<Relationship> it = relationships.listIterator();
+            while( it.hasNext() ) {
+                Relationship relationship = it.next();
+                if( Utils.isLocal(relationship.getTrackedEntityInstanceA()) || Utils.isLocal(relationship.getTrackedEntityInstanceB() ) ) {
+                    it.remove();
+                }
+            }
+        }
+        trackedEntityInstance.setRelationships(relationships);
 
         byte[] body = null;
         try {
@@ -112,8 +128,6 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
         Log.e(CLASS_TAG, new String(body));
 
         String url = networkManager.getServerUrl() + "/api/trackedEntityInstances";
-
-
 
         if(trackedEntityInstance.getTrackedEntityInstance() != null)
         {
@@ -181,10 +195,48 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
                             where(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).is
                                     (trackedEntityInstanceReference)).async().execute();
 
+                    long updated = new Update(Relationship.class).set(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEA
+                            ).is(importSummary.getReference())).where(Condition.
+                            column(Relationship$Table.TRACKEDENTITYINSTANCEA).is(trackedEntityInstanceReference)).count();
+
+                    updated += new Update(Relationship.class).set(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEB
+                    ).is(importSummary.getReference())).where(Condition.
+                            column(Relationship$Table.TRACKEDENTITYINSTANCEB).is(trackedEntityInstanceReference)).count();
+
+                    Log.d(CLASS_TAG, "updated relationships: " + updated);
+
+                    /* mechanism for triggering updating of relationships
+                    * a relationship can only be uploaded if both involved teis are sent to server
+                    * and have a valid UID.
+                    * So, we check if this tei was just updated with a valid reference, and if there now
+                    * exist >0 relationships that are valid. If >0 relationship is valid, it
+                    * should get uploaded, as it is the first time it has been valid. */
+                    boolean hasValidRelationship = false;
+                    if( Utils.isLocal( trackedEntityInstanceReference ) ) {
+                        List<Relationship> teiIsB = new Select().from(Relationship.class).where(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEB).is(importSummary.getReference())).queryList();
+                        List<Relationship> teiIsA = new Select().from(Relationship.class).where(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEA).is(importSummary.getReference())).queryList();
+                        if( teiIsB != null ) {
+                            for( Relationship relationship: teiIsB ) {
+                                if( !Utils.isLocal( relationship.getTrackedEntityInstanceA() ) ) {
+                                    hasValidRelationship = true;
+                                }
+                            }
+                        }
+                        if( teiIsA != null ) {
+                            for( Relationship relationship: teiIsA ) {
+                                if( !Utils.isLocal( relationship.getTrackedEntityInstanceB() ) ) {
+                                    hasValidRelationship = true;
+                                }
+                            }
+                        }
+                    }
+                    boolean fullySynced = !( hasValidRelationship && updated > 0 );
+
                     new Update(TrackedEntityInstance.class).set(Condition.column
                             (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
-                            (importSummary.getReference()), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(true)).
+                            (importSummary.getReference()), Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(fullySynced)).
                             where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstanceLocalIdReference)).async().execute();
+
                     DataValueSender.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstanceLocalIdReference);
                 } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");

@@ -32,10 +32,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_background"
     android:orientation="horizontal"
+    android:minHeight="48dp"
     android:padding="5dp"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
     <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
         android:id="@+id/current_tei_relationship_label"
@@ -58,5 +64,14 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         app:font="@string/regular_font_name" />
+    </LinearLayout>
+
+    <Button
+        android:layout_margin="5dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/delete_relationship"
+        android:text="X"
+        android:background="@drawable/rounded_imagebutton_red" />
 
 </LinearLayout>

@@ -91,6 +91,7 @@
     <string name="confirm">Confirm</string>
     <string name="confirm_relationship">Do you want to register this relationship?</string>
     <string name="please_select_relationshiptype">Please select a relationship type</string>
+    <string name="relationship_exists">Relationship already exists</string>
 
     <!-- Add Relative Fragment -->
     <string name="search">Search</string>

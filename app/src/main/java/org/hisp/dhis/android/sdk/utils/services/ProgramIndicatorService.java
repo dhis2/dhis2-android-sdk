@@ -42,7 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.utils.DateUtils;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;

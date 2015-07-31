@@ -37,7 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.utils.DateUtils;
+import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 
 import java.util.Date;
 

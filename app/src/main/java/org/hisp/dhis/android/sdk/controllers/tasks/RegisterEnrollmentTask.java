@@ -169,6 +169,9 @@ public class RegisterEnrollmentTask implements INetworkTask {
                             .is(true)).where(Condition.column(Enrollment$Table.LOCALID).is
                             (localEnrollmentReference)).async().execute();
                     DataValueSender.clearFailedItem(FailedItem.ENROLLMENT, localEnrollmentReference);
+                    Enrollment enrollment = new Enrollment();
+                    enrollment.save();
+                    enrollment.delete();//for triggering modelchangelistener
                 } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
                     DataValueSender.handleError(importSummary, FailedItem.ENROLLMENT, 200, localEnrollmentReference);

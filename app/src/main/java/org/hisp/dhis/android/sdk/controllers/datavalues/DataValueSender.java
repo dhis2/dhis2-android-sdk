@@ -73,6 +73,10 @@ public final class DataValueSender {
         dataValueSender = new DataValueSender();
     }
 
+    private DataValueSender() {
+
+    }
+
     private static final String CLASS_TAG = "DataValueSender";
 
     boolean sending = false;

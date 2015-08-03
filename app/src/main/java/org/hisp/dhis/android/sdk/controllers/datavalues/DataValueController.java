@@ -67,12 +67,8 @@ public class DataValueController {
 
     private static final String CLASS_TAG = "DataValueController";
 
-    private DataValueLoader dataValueLoader;
-
-
     public DataValueController() {
         Dhis2Application.bus.register(this);
-        dataValueLoader = new DataValueLoader();
     }
 
     public static List<Relationship> getRelationships(String trackedEntityInstance) {
@@ -330,7 +326,7 @@ public class DataValueController {
      * @param context
      */
     public void clearDataValueLoadedFlags(Context context) {
-        dataValueLoader.clearDataValueLoadedFlags(context);
+        DataValueLoader.clearDataValueLoadedFlags(context);
     }
 
     /**
@@ -368,7 +364,7 @@ public class DataValueController {
      * @param update
      */
     public void loadDataValues(Context context, boolean update, ApiRequestCallback callback) {
-        dataValueLoader.loadDataValues(context, update, callback);
+        DataValueLoader.loadDataValues(context, update, callback);
     }
 
     /**
@@ -380,10 +376,10 @@ public class DataValueController {
     }
 
     public void dataValueIntegrityCheck() {
-        dataValueLoader.dataValueIntegrityCheck();
+        DataValueLoader.dataValueIntegrityCheck();
     }
 
     public boolean isLoading() {
-        return dataValueLoader.loading;
+        return DataValueLoader.getInstance().loading;
     }
 }

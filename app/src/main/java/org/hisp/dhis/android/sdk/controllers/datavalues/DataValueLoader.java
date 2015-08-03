@@ -59,6 +59,7 @@ import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -66,32 +67,37 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
  */
-public class DataValueLoader {
+public final class DataValueLoader {
 
     private static final String CLASS_TAG = "DataValueLoader";
 
     public static final String EVENTS = "events";
     public static final String TRACKED_ENTITY_INSTANCES = "trackedentityinstances";
     public static final String ENROLLMENTS = "enrollments";
-    private String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString(); // for integrity check
+
+    private final static DataValueLoader dataValueLoader;
+
+    static {
+        dataValueLoader = new DataValueLoader();
+    }
+
+    private DataValueLoader() {
+
+    }
+
+    public static DataValueLoader getInstance() {
+        return dataValueLoader;
+    }
 
     boolean loading = false;
-    static boolean synchronizing = false;
-    private Context context;
-
-    /* Used to keep a reference to which orgunit/program datavalues is loaded for*/
-    private String currentOrganisationUnit;
-    private String currentProgram;
 
     private SystemInfo systemInfo;
-
-    private ApiRequestCallback callback;
 
     /**
      * Loads data values from server. Set update to true if you only want to load new values.
@@ -100,28 +106,51 @@ public class DataValueLoader {
      * @param context
      * @param update
      */
-    public void loadDataValues(Context context, boolean update, ApiRequestCallback callback) {
-        if (loading) return;
-        this.callback = callback;
-        this.context = context;
-        loading = true;
-        synchronizing = update;
-        ApiRequestCallback loadSystemInfoCallback = new ApiRequestCallback<SystemInfo>() {
-            @Override
-            public void onSuccess(ResponseHolder<SystemInfo> responseHolder) {
-                systemInfo = responseHolder.getItem();
-                Log.d(CLASS_TAG, "got system info " + systemInfo.getServerDate());
-                loadItem();
-            }
-
-            @Override
-            public void onFailure(ResponseHolder<SystemInfo> responseHolder) {
-                if (responseHolder != null && responseHolder.getApiException() != null)
-                    responseHolder.getApiException().printStackTrace();
-                onFinishLoading(false);
-            }
-        };
+    public static void loadDataValues(final Context context, final boolean update, ApiRequestCallback callback) {
+        if (Dhis2.isLoading()) {
+           callback.onSuccess(null);
+           return;
+        }
+        getInstance().systemInfo = null;
+        getInstance().loading = true;
+        final OnFinishLoadingCallback onFinishLoadingCallback = new OnFinishLoadingCallback(callback, context);
+        LoadSystemInfoCallback loadSystemInfoCallback = new LoadSystemInfoCallback(context, onFinishLoadingCallback, update);
         loadSystemInfo(loadSystemInfoCallback);
+    }
+
+    private static final class OnFinishLoadingCallback implements ApiRequestCallback {
+        private final ApiRequestCallback callback;
+        private final Context context;
+
+        private OnFinishLoadingCallback(ApiRequestCallback callback, Context context) {
+            this.callback = callback;
+            this.context = context;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder responseHolder) {
+            Log.e(CLASS_TAG, "onfinishloadingsuccess");
+            SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, getInstance().systemInfo.getServerDate());
+            editor.commit();
+
+            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
+            Dhis2Application.getEventBus().post(event);
+
+            getInstance().loading = false;
+            callback.onSuccess(responseHolder);
+        }
+
+        @Override
+        public void onFailure(ResponseHolder responseHolder) {
+            Log.e(CLASS_TAG, "onfinishloadingfailure");
+            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
+            Dhis2Application.getEventBus().post(event);
+
+            getInstance().loading = false;
+            callback.onFailure(responseHolder);
+        }
     }
 
     private static void loadSystemInfo(final ApiRequestCallback<SystemInfo> parentCallback) {
@@ -134,11 +163,12 @@ public class DataValueLoader {
                             SystemInfo systemInfo = Dhis2.getInstance().getObjectMapper().
                                     readValue(holder.getResponse().getBody(), SystemInfo.class);
                             holder.setItem(systemInfo);
+                            parentCallback.onSuccess(holder);
                         } catch (IOException e) {
                             e.printStackTrace();
                             holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
+                            parentCallback.onFailure(holder);
                         }
-                        parentCallback.onSuccess(holder);
                     }
 
                     @Override
@@ -147,6 +177,33 @@ public class DataValueLoader {
                     }
                 });
         task.execute();
+    }
+
+    private static class LoadSystemInfoCallback implements ApiRequestCallback<SystemInfo> {
+
+        private final Context context;
+        private final ApiRequestCallback callback;
+        private final boolean update;
+
+        private LoadSystemInfoCallback(Context context, ApiRequestCallback callback, boolean update) {
+            this.context = context;
+            this.callback = callback;
+            this.update = update;
+        }
+
+        @Override
+        public void onSuccess(ResponseHolder<SystemInfo> responseHolder) {
+            getInstance().systemInfo = responseHolder.getItem();
+            Log.d(CLASS_TAG, "got system info " + getInstance().systemInfo.getServerDate());
+            loadItem(context, update, callback);
+        }
+
+        @Override
+        public void onFailure(ResponseHolder<SystemInfo> responseHolder) {
+            if (responseHolder != null && responseHolder.getApiException() != null)
+                responseHolder.getApiException().printStackTrace();
+            callback.onFailure(responseHolder);
+        }
     }
 
     /**
@@ -167,20 +224,22 @@ public class DataValueLoader {
         task.execute();
     }
 
-    private void loadItem() {
-        if (synchronizing) {
-            updateItem();
-            return;
-        }
+    private static void loadItem(final Context context, final boolean synchronizing, final ApiRequestCallback callback) {
+
+        List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+        Hashtable<String, List<Program>> programsForOrganisationUnits = new Hashtable<>();
+
+        String currentLoadingDate = getInstance().systemInfo.getServerDate();
+        DateTime currentDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(currentLoadingDate);
 
         /**
          * Loading Single Events without registration
          */
         if (Dhis2.isLoadFlagEnabled(context, EVENTS)) {
-            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
+
             for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-                if (organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
-                    break;
+                if (organisationUnit.getId() == null || organisationUnit.getId().length() == Utils.randomUUID.length())
+                    continue;
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
@@ -190,213 +249,55 @@ public class DataValueLoader {
                     if (programsForOrgUnitSEWoR != null)
                         programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
                 }
+                programsForOrganisationUnits.put(organisationUnit.getId(), programsForOrgUnit);
+            }
 
-                for (Program program : programsForOrgUnit) {
-                    if (program.getId() == null || program.getId().length() == randomUUID.length())
-                        break;
+            for (final OrganisationUnit organisationUnit : assignedOrganisationUnits) {
+                if (organisationUnit.getId() == null || organisationUnit.getId().length() == Utils.randomUUID.length())
+                    continue;
 
-                    if (!isDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId())) {
+                for (final Program program : programsForOrganisationUnits.get(organisationUnit.getId())) {
+                    if (program.getId() == null || program.getId().length() == Utils.randomUUID.length())
+                        continue;
+                        
+                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
+                        EVENTS + organisationUnit.getId() + program.getId());
+                    DateTime updatedDateTime = null;
+                    if( lastUpdatedString != null ) {
+                        updatedDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(lastUpdatedString);
+                    }
+
+                    if (!isDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId())
+                            || ( synchronizing &&
+                            ( lastUpdatedString == null || updatedDateTime.isBefore(currentDateTime) ) ) ) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel() + ": " + program.getName());
-                        currentOrganisationUnit = organisationUnit.getId();
-                        currentProgram = program.getId();
+                                
                         ApiRequestCallback loadEventsCallback = new ApiRequestCallback<List<Event>>() {
                             @Override
                             public void onSuccess(ResponseHolder<List<Event>> responseHolder) {
                                 List<Event> events = responseHolder.getItem();
-                                saveEvents(events);
+                                saveEvents(events, synchronizing);
 
-                                flagDataValueItemUpdated(context, EVENTS + currentOrganisationUnit + currentProgram, systemInfo.getServerDate());
-                                flagDataValueItemLoaded(EVENTS + currentOrganisationUnit + currentProgram, true);
-                                loadItem();
+                                flagDataValueItemUpdated(context, EVENTS + organisationUnit.getId() + program.getId(), getInstance().systemInfo.getServerDate());
+                                flagDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId(), true);
+                                loadItem(context, synchronizing, callback);
                             }
 
                             @Override
                             public void onFailure(ResponseHolder<List<Event>> responseHolder) {
-                                onFinishLoading(false);
+                                callback.onFailure(responseHolder);
                                 //todo this may completely stop loading unnecessarily if it fails for one orgunit+program, implement a way to "continue"
                                 //todo loading probably using an iterator for the orgunits
                             }
                         };
-                        loadEvents(loadEventsCallback, currentOrganisationUnit, currentProgram);
+                        loadEvents(loadEventsCallback, organisationUnit.getId(), program.getId(), synchronizing);
                         return;
                     }
                 }
             }
         }
-        onFinishLoading(true);
-    }
-
-    private void updateItem() {
-        String currentLoadingDate = systemInfo.getServerDate();
-        if (currentLoadingDate == null) {
-            return;
-        }
-        DateTime currentDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(currentLoadingDate);
-
-        //todo commented because TEI are now loaded explicitly.
-        //todo might still need to automatically update the loaded TEIs.
-        /**
-         * Updating Tracked Entity Instances
-         */
-//        if(Dhis2.isLoadFlagEnabled(context, TRACKED_ENTITY_INSTANCES)) {
-//            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-//            for(OrganisationUnit organisationUnit: assignedOrganisationUnits) {
-//                if(organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
-//                    break;
-//                currentOrganisationUnit = organisationUnit.getId();
-//                List<Program> programsForOrgUnit = new ArrayList<>();
-//                if(Dhis2.isLoadFlagEnabled(context, Program.MULTIPLE_EVENTS_WITH_REGISTRATION)) {
-//                    List<Program> programsForOrgUnitMEWR = MetaDataController.getProgramsForOrganisationUnit
-//                            (organisationUnit.getId(),
-//                                    Program.MULTIPLE_EVENTS_WITH_REGISTRATION);
-//                    if (programsForOrgUnitMEWR != null)
-//                        programsForOrgUnit.addAll(programsForOrgUnitMEWR);
-//                }
-//                if(Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITH_REGISTRATION)) {
-//                    List<Program> programsForOrgUnitSEWR = MetaDataController.getProgramsForOrganisationUnit
-//                            (organisationUnit.getId(),
-//                                    Program.SINGLE_EVENT_WITH_REGISTRATION);
-//
-//                    if (programsForOrgUnitSEWR != null)
-//                        programsForOrgUnit.addAll(programsForOrgUnitSEWR);
-//                }
-//
-//                //for( Program program: programsForOrgUnit) {
-//                    //if(program.getId() == null || program.getId().length() == randomUUID.length())
-//                    //    break;
-//                    //
-//                    //currentProgram = program.id;
-//                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
-//                            TRACKED_ENTITY_INSTANCES+currentOrganisationUnit + currentProgram);
-//                    ApiRequestCallback teiCallback = new ApiRequestCallback() {
-//                        @Override
-//                        public void onSuccess(Response response) {
-//                            ResponseEvent event = (ResponseEvent) response.getItem();
-//                            onResponse(event);
-//                        }
-//
-//                        @Override
-//                        public void onFailure(APIException exception) {
-//                            ResponseEvent event = (ResponseEvent) exception.getResponse().getItem();
-//                            onResponse(event);
-//                        }
-//                    };
-//                    if(lastUpdatedString == null) {
-//                        loadTrackedEntityInstances(teiCallback, currentOrganisationUnit);
-//                        return;
-//                    }
-//                    DateTime updatedDateTime = DateTimeFormat.forPattern(Utils.DATE_FORMAT).parseDateTime(lastUpdatedString);
-//                    if(updatedDateTime.isBefore(currentDateTime)) {
-//                        loadTrackedEntityInstances(teiCallback, currentOrganisationUnit);
-//                        return;
-//                    }
-//                //}
-//            }
-//        }
-
-        /**
-         * Updating Events for Single Event without Registration
-         */
-        if (Dhis2.isLoadFlagEnabled(context, EVENTS)) {
-            List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
-            for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
-                if (organisationUnit.getId() == null || organisationUnit.getId().length() == randomUUID.length())
-                    break;
-                currentOrganisationUnit = organisationUnit.getId();
-                List<Program> programsForOrgUnit = new ArrayList<>();
-                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
-                    List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
-                            (organisationUnit.getId(),
-                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION);
-                    if (programsForOrgUnitSEWoR != null)
-                        programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
-                }
-
-                for (Program program : programsForOrgUnit) {
-                    if (program.getId() == null || program.getId().length() == randomUUID.length())
-                        break;
-
-                    currentProgram = program.getId();
-                    String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
-                            EVENTS + currentOrganisationUnit + currentProgram);
-                    ApiRequestCallback loadEventsCallback = new ApiRequestCallback<List<Event>>() {
-                        @Override
-                        public void onSuccess(ResponseHolder<List<Event>> responseHolder) {
-                            List<Event> events = responseHolder.getItem();
-                            saveEvents(events);
-
-                            flagDataValueItemUpdated(context, EVENTS + currentOrganisationUnit + currentProgram, systemInfo.getServerDate());
-                            flagDataValueItemLoaded(EVENTS + currentOrganisationUnit + currentProgram, true);
-                            loadItem();
-                        }
-
-                        @Override
-                        public void onFailure(ResponseHolder<List<Event>> responseHolder) {
-                            onFinishLoading(false);
-                            //todo this is unsafe, implement a way to "continue"
-                            //todo loading probably using an iterator for the orgunits
-                        }
-                    };
-                    if (lastUpdatedString == null) {
-                        loadEvents(loadEventsCallback, currentOrganisationUnit, currentProgram);
-                        return;
-                    }
-                    DateTime updatedDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(lastUpdatedString);
-                    if (updatedDateTime.isBefore(currentDateTime)) {
-                        loadEvents(loadEventsCallback, currentOrganisationUnit, currentProgram);
-                        return;
-                    }
-                }
-            }
-        }
-        onFinishLoading(true);
-    }
-
-    /**
-     * called when loading of data values has finished.
-     */
-    private void onFinishLoading(boolean success) {
-        Log.e(CLASS_TAG, "onfinishloading");
-        if (success) {
-            if (success) {
-                SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, systemInfo.getServerDate());
-                editor.commit();
-            }
-        }
-
-        InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
-        Dhis2Application.getEventBus().post(event);
-
-        synchronizing = false;
-        loading = false;
-        if (success) {
-            callback.onSuccess(null);
-        } else {
-            callback.onFailure(null);
-        }
-    }
-
-    private static void loadTrackedEntityInstances(final ApiRequestCallback<TrackedEntityInstancesResultHolder> parentCallback, String organisationUnit, int limit) {
-        final ResponseHolder<Object[]> holder = new ResponseHolder<>();
-        final DataValueResponseEvent<Object[]> event = new
-                DataValueResponseEvent<>(BaseEvent.EventType.loadTrackedEntityInstances);
-        event.setResponseHolder(holder);
-        LoadTrackedEntityInstancesTask task = new LoadTrackedEntityInstancesTask(NetworkManager.getInstance(),
-                new ApiRequestCallback<TrackedEntityInstancesResultHolder>() {
-                    @Override
-                    public void onSuccess(ResponseHolder<TrackedEntityInstancesResultHolder> holder) {
-                        parentCallback.onSuccess(holder);
-                    }
-
-                    @Override
-                    public void onFailure(ResponseHolder<TrackedEntityInstancesResultHolder> holder) {
-                        parentCallback.onSuccess(holder);
-                    }
-                }, organisationUnit, limit);
-        task.execute();
+        callback.onSuccess(null);
     }
 
     /**
@@ -405,7 +306,7 @@ public class DataValueLoader {
      * @param organisationUnitId
      * @param programId
      */
-    private static void loadEvents(final ApiRequestCallback callback, String organisationUnitId, String programId) {
+    private static void loadEvents(final ApiRequestCallback callback, String organisationUnitId, String programId, boolean synchronizing) {
         final ResponseHolder<List<Event>> holder = new ResponseHolder<>();
         final DataValueResponseEvent<List<Event>> event = new
                 DataValueResponseEvent<>(BaseEvent.EventType.loadEvents);
@@ -464,7 +365,7 @@ public class DataValueLoader {
      *
      * @param events
      */
-    public static void saveEvents(List<Event> events) {
+    public static void saveEvents(List<Event> events, boolean synchronizing) {
         for (Event event : events) {
             if (synchronizing) {
                 //todo: implement different handling if synchronizing than if doing 1st load
@@ -545,7 +446,7 @@ public class DataValueLoader {
             enrollment.save();
         }
 
-        saveEvents(events);
+        saveEvents(events, synchronizing);
     }
 
     /**
@@ -555,8 +456,7 @@ public class DataValueLoader {
      * @param item
      * @param loaded
      */
-    private void flagDataValueItemLoaded(String item, boolean loaded) {
-        if (this.context == null) return;
+    private static void flagDataValueItemLoaded(Context context, String item, boolean loaded) {
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(Dhis2.LOADED + item, loaded);
@@ -575,7 +475,7 @@ public class DataValueLoader {
         return prefs.getBoolean(Dhis2.LOADED + item, false);
     }
 
-    private void flagDataValueItemUpdated(Context context, String item, String dateTime) {
+    private static void flagDataValueItemUpdated(Context context, String item, String dateTime) {
         if (context == null) return;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -632,7 +532,7 @@ public class DataValueLoader {
         return true;
     }
 
-    public void dataValueIntegrityCheck() {
+    public static void dataValueIntegrityCheck() {
         /*Log.d(CLASS_TAG, "Running data value integrity check");
 
 
@@ -728,8 +628,7 @@ public class DataValueLoader {
      *
      * @param context
      */
-    void clearDataValueLoadedFlags(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
+    static void clearDataValueLoadedFlags(Context context) {
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
         for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
             if (organisationUnit.getId() == null)
@@ -750,7 +649,7 @@ public class DataValueLoader {
                     break;
 
                 String programId = program.getId();
-                flagDataValueItemLoaded(EVENTS + assignedOrganisationUnit + programId, false);
+                flagDataValueItemLoaded(context, EVENTS + assignedOrganisationUnit + programId, false);
                 //flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit/*+programId*/, false);
                 //flagDataValueItemLoaded(ENROLLMENTS+assignedOrganisationUnit+programId, false);
                 flagDataValueItemUpdated(context, EVENTS + assignedOrganisationUnit + programId, null);
@@ -758,9 +657,5 @@ public class DataValueLoader {
                 //flagDataValueItemUpdated(context, ENROLLMENTS+assignedOrganisationUnit+programId, null);
             }
         }
-    }
-
-    public static boolean isSynchronizing() {
-        return synchronizing;
     }
 }

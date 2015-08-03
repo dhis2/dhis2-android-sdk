@@ -159,6 +159,9 @@ public class RegisterEventTask implements INetworkTask {
                                 (importSummary.getReference()), Condition.column(Event$Table.FROMSERVER).
                                 is(true)).where(Condition.column(Event$Table.LOCALID).is(localReferenceId)).async().execute();
                         DataValueSender.clearFailedItem(FailedItem.EVENT, localReferenceId);
+                        Event event = new Event();
+                        event.save();
+                        event.delete();//for triggering modelchangelistener
                     } else if (importSummary.getStatus().equals((ImportSummary.ERROR)) ){
                         Log.d(CLASS_TAG, "failed.. ");
                         DataValueSender.handleError(importSummary, FailedItem.EVENT, 200, localReferenceId);

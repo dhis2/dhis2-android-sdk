@@ -105,6 +105,7 @@ public class Enrollment extends BaseSerializableModel {
     List<Event> events;
 
     public Enrollment() {
+        enrollment = Dhis2.QUEUED + UUID.randomUUID().toString();
     }
 
     public Enrollment(String organisationUnit, String trackedEntityInstance, Program program) {

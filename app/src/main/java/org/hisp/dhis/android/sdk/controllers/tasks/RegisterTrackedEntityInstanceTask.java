@@ -238,6 +238,9 @@ public class RegisterTrackedEntityInstanceTask implements INetworkTask {
                             where(Condition.column(TrackedEntityInstance$Table.LOCALID).is(trackedEntityInstanceLocalIdReference)).async().execute();
 
                     DataValueSender.clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstanceLocalIdReference);
+                    TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
+                    trackedEntityInstance.save();
+                    trackedEntityInstance.delete();//for triggering modelchangelistener
                 } else if (importSummary.getStatus().equals((ImportSummary.ERROR))) {
                     Log.d(CLASS_TAG, "failed.. ");
                     DataValueSender.handleError(importSummary, FailedItem.TRACKEDENTITYINSTANCE, 200, trackedEntityInstanceLocalIdReference);

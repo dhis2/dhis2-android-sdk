@@ -132,6 +132,7 @@ public class Event extends BaseSerializableModel {
 
 
     public Event() {
+        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
     }
 
     public Event(String organisationUnitId, String status, String programId,

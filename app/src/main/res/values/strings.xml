@@ -43,6 +43,8 @@
     <string name="enrollment">Enrollment</string>
     <string name="eventDate">Event date</string>
     <string name="date_format">yyyy-mm-dd</string>
+    <string name="dialog_organisation_units">Organisation units</string>
+    <string name="dialog_programs">Programs</string>
 
 
     <string name="description">ImageView description</string>
@@ -72,15 +74,6 @@
     <string name="unable_to_login">Unable to log in.</string>
     <string name="syncing">Synchronizing</string>
     <string name="please_wait">Please wait</string>
-
-
-    <!-- Pin Activity -->
-
-    <string name="initial_pin">Please choose a secret PIN code with 4 digits. The next time you start the application, use this PIN to login.</string>
-    <string name="please_enter_pin">Please enter 4 digits PIN code</string>
-    <string name="enter_pin">Enter PIN code</string>
-    <string name="pin_4_digits">PIN code must be 4 digits</string>
-    <string name="incorrect_pin">Incorrect PIN code</string>
 
     <!-- ProgramOverview Fragment -->
     <string name="profile">Profile</string>

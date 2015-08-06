@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.controllers.tasks;
 
+import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.http.ApiRequest;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
@@ -36,6 +37,7 @@ import org.hisp.dhis.android.sdk.network.http.Header;
 import org.hisp.dhis.android.sdk.network.http.Request;
 import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
+import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.utils.APIException;
 
@@ -51,7 +53,7 @@ public class LoadTrackedEntityAttributesTask implements INetworkTask {
     private final ApiRequest.Builder<List<TrackedEntityAttribute>> requestBuilder;
 
     public LoadTrackedEntityAttributesTask(NetworkManager networkManager,
-                                           ApiRequestCallback<List<TrackedEntityAttribute>> callback) {
+                                           ApiRequestCallback callback, boolean updating) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");
@@ -69,6 +71,12 @@ public class LoadTrackedEntityAttributesTask implements INetworkTask {
         headers.add(new Header("Accept", "application/json"));
 
         String url = networkManager.getServerUrl() + "/api/trackedEntityAttributes?paging=false&fields=[:all]";
+        if(updating) {
+            SystemInfo systemInfo = Dhis2.getInstance().getMetaDataController().getSystemInfo();
+            if( systemInfo != null && systemInfo.getServerDate()!= null ) {
+                url += "&filter=lastUpdated:gt:" + systemInfo.getServerDate();
+            }
+        }
 
         Request request = new Request(RestMethod.GET, url, headers, null);
 

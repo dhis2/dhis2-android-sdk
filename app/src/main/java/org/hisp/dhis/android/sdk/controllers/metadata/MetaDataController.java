@@ -86,12 +86,8 @@ import java.util.List;
 public class MetaDataController {
     private final static String CLASS_TAG = "MetaDataController";
 
-
-    private MetaDataLoader metaDataLoader;
-
     public MetaDataController() {
         Dhis2Application.bus.register(this);
-        metaDataLoader = new MetaDataLoader();
     }
 
     public static List<RelationshipType> getRelationshipTypes() {
@@ -157,7 +153,7 @@ public class MetaDataController {
      * @return
      */
     public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
-                                                               String... kinds) {
+                                                               Program.ProgramType... kinds) {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships =
                 new Select().from(OrganisationUnitProgramRelationship.class).where(
                         Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
@@ -166,10 +162,10 @@ public class MetaDataController {
         List<Program> programs = new ArrayList<Program>();
         for (OrganisationUnitProgramRelationship oupr : organisationUnitProgramRelationships) {
             if (kinds != null) {
-                for (String kind : kinds) {
+                for (Program.ProgramType kind : kinds) {
                     List<Program> plist = new Select().from(Program.class).where(
                             Condition.column(Program$Table.ID).is(oupr.getProgramId())).and(
-                            Condition.column(Program$Table.KIND).is(kind)).queryList();
+                            Condition.column(Program$Table.KIND).is(kind.toString())).queryList();
                     programs.addAll(plist);
                 }
             }
@@ -355,7 +351,7 @@ public class MetaDataController {
      * @param callback
      */
     public void synchronizeMetaData(Context context, ApiRequestCallback callback) {
-        metaDataLoader.synchronizeMetaData(context, callback);
+        MetaDataLoader.synchronizeMetaData(context, callback);
     }
 
     /**
@@ -365,14 +361,7 @@ public class MetaDataController {
      * @param context
      */
     public void loadMetaData(Context context, ApiRequestCallback callback) {
-        metaDataLoader.loadMetaData(context, callback);
-    }
-
-    /**
-     * This method checks if all models that all UID references to other models are valid
-     */
-    public void metaDataIntegrityCheck() {
-        metaDataLoader.metaDataIntegrityCheck();
+        MetaDataLoader.loadMetaData(context, callback, false);
     }
 
     /**
@@ -381,7 +370,7 @@ public class MetaDataController {
      * @param context
      */
     public void resetLastUpdated(Context context) {
-        metaDataLoader.resetLastUpdated(context);
+        MetaDataLoader.resetLastUpdated(context);
     }
 
     /**
@@ -391,7 +380,7 @@ public class MetaDataController {
      * @param context
      */
     public void clearMetaDataLoadedFlags(Context context) {
-        metaDataLoader.clearMetaDataLoadedFlags(context);
+        MetaDataLoader.clearMetaDataLoadedFlags(context);
     }
 
     /**
@@ -423,10 +412,10 @@ public class MetaDataController {
     }
 
     public boolean isLoading() {
-        return metaDataLoader.loading;
+        return MetaDataLoader.getInstance().loading;
     }
 
-    public boolean isSynchronizing() {
-        return metaDataLoader.synchronizing;
-    }
+    //public boolean isSynchronizing() {
+    //    return MetaDataLoader.synchronizing;
+    //}
 }

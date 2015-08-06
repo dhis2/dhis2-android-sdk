@@ -70,6 +70,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+import static org.hisp.dhis.android.sdk.controllers.LoadFlagContainer.LoadFlag;
+
 /**
  * @author Simen Skogly Russnes on 04.03.15.
  */
@@ -77,19 +79,13 @@ public final class DataValueLoader {
 
     private static final String CLASS_TAG = "DataValueLoader";
 
-    public static final String EVENTS = "events";
-    public static final String TRACKED_ENTITY_INSTANCES = "trackedentityinstances";
-    public static final String ENROLLMENTS = "enrollments";
-
     private final static DataValueLoader dataValueLoader;
 
     static {
         dataValueLoader = new DataValueLoader();
     }
 
-    private DataValueLoader() {
-
-    }
+    private DataValueLoader() {}
 
     public static DataValueLoader getInstance() {
         return dataValueLoader;
@@ -235,19 +231,18 @@ public final class DataValueLoader {
         /**
          * Loading Single Events without registration
          */
-        if (Dhis2.isLoadFlagEnabled(context, EVENTS)) {
+        if (Dhis2.isLoadFlagEnabled(context, LoadFlag.EVENTS)) {
 
             for (OrganisationUnit organisationUnit : assignedOrganisationUnits) {
                 if (organisationUnit.getId() == null || organisationUnit.getId().length() == Utils.randomUUID.length())
                     continue;
 
                 List<Program> programsForOrgUnit = new ArrayList<>();
-                if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION) ||
-                        Dhis2.isLoadFlagEnabled(context, Program.WITHOUT_REGISTRATION)) {
+                if (Dhis2.isLoadFlagEnabled(context, LoadFlag.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
                     List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                             (organisationUnit.getId(),
-                                    Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                                    Program.WITHOUT_REGISTRATION);
+                                    Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                    Program.ProgramType.WITHOUT_REGISTRATION);
                     if (programsForOrgUnitSEWoR != null)
                         programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
                 }
@@ -263,13 +258,13 @@ public final class DataValueLoader {
                         continue;
                         
                     String lastUpdatedString = getLastUpdatedDateForDataValueItem(context,
-                        EVENTS + organisationUnit.getId() + program.getId());
+                        LoadFlag.EVENTS, organisationUnit.getId(), program.getId());
                     DateTime updatedDateTime = null;
                     if( lastUpdatedString != null ) {
                         updatedDateTime = DateTimeFormat.forPattern(DateUtils.LONG_DATE_FORMAT.toPattern()).parseDateTime(lastUpdatedString);
                     }
 
-                    if (!isDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId())
+                    if (!isDataValueItemLoaded(context, LoadFlag.EVENTS, organisationUnit.getId(), program.getId())
                             || ( synchronizing &&
                             ( lastUpdatedString == null || updatedDateTime.isBefore(currentDateTime) ) ) ) {
                         Dhis2.postProgressMessage(context.getString(R.string.loading_events) + ": "
@@ -281,8 +276,8 @@ public final class DataValueLoader {
                                 List<Event> events = responseHolder.getItem();
                                 saveEvents(events, synchronizing);
 
-                                flagDataValueItemUpdated(context, EVENTS + organisationUnit.getId() + program.getId(), getInstance().systemInfo.getServerDate());
-                                flagDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId(), true);
+                                flagDataValueItemUpdated(context, getInstance().systemInfo.getServerDate(), LoadFlag.EVENTS, organisationUnit.getId(), program.getId());
+                                flagDataValueItemLoaded(context, true, LoadFlag.EVENTS, organisationUnit.getId(), program.getId());
                                 loadItem(context, synchronizing, callback);
                             }
 
@@ -455,14 +450,27 @@ public final class DataValueLoader {
      * Flags a DataValue item like Events or Enrollments to indicate whether or not it has been loaded.
      * Can also be set for a UID for example for an individual Program.
      *
-     * @param item
+     * @param context
      * @param loaded
+     * @param item
      */
-    private static void flagDataValueItemLoaded(Context context, String item, boolean loaded) {
+    private static void flagDataValueItemLoaded(Context context, boolean loaded, String item) {
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(Dhis2.LOADED + item, loaded);
         editor.commit();
+    }
+
+    /**
+     *
+     * @param context
+     * @param loaded
+     * @param item used as identifier for the flag
+     * @param extraIdentifiers are added to the flag
+     */
+    private static void flagDataValueItemLoaded(Context context, boolean loaded, LoadFlag item, String... extraIdentifiers) {
+        String identifier = createIdentifier(item, extraIdentifiers);
+        flagDataValueItemLoaded(context, loaded, identifier);
     }
 
     /**
@@ -477,12 +485,28 @@ public final class DataValueLoader {
         return prefs.getBoolean(Dhis2.LOADED + item, false);
     }
 
-    private static void flagDataValueItemUpdated(Context context, String item, String dateTime) {
+    /**
+     * Returns a boolean indicating whether or not a DataValue item has been loaded successfully.
+     *
+     * @param item
+     * @return
+     */
+    private static boolean isDataValueItemLoaded(Context context, LoadFlag item, String... extraIdentifiers) {
+        String identifier = createIdentifier(item, extraIdentifiers);
+        return isDataValueItemLoaded(context, identifier);
+    }
+
+    private static void flagDataValueItemUpdated(Context context, String dateTime, String item) {
         if (context == null) return;
         SharedPreferences prefs = context.getSharedPreferences(Dhis2.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Dhis2.UPDATED + item, dateTime);
         editor.commit();
+    }
+
+    private static void flagDataValueItemUpdated(Context context, String dateTime, LoadFlag item, String... extraIdentifiers) {
+        String identifier = createIdentifier(item, extraIdentifiers);
+        flagDataValueItemUpdated(context, dateTime, identifier);
     }
 
     /**
@@ -500,6 +524,18 @@ public final class DataValueLoader {
     }
 
     /**
+     * returns the date in a string for the last time an item was updated
+     *
+     * @param context
+     * @param item
+     * @return
+     */
+    private static String getLastUpdatedDateForDataValueItem(Context context, LoadFlag item, String... extraIdentifiers) {
+        String identifier = createIdentifier(item, extraIdentifiers);
+        return getLastUpdatedDateForDataValueItem(context, identifier);
+    }
+
+    /**
      * Goes through all assigned programs and checks if they are loaded if loading is enabled.
      * Returns false if some programs have not been loaded, but have been flagged to load.
      *
@@ -513,13 +549,12 @@ public final class DataValueLoader {
                 break;
 
             List<Program> programsForOrgUnit = new ArrayList<>();
-            if (Dhis2.isLoadFlagEnabled( context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION ) ||
-                    Dhis2.isLoadFlagEnabled( context, Program.WITHOUT_REGISTRATION ) ) {
+            if (Dhis2.isLoadFlagEnabled(context, LoadFlag.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
                 List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                         (organisationUnit.getId(),
-                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                                Program.WITHOUT_REGISTRATION);
-                if ( programsForOrgUnitSEWoR != null )
+                                Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                Program.ProgramType.WITHOUT_REGISTRATION);
+                if (programsForOrgUnitSEWoR != null)
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
             }
 
@@ -527,104 +562,13 @@ public final class DataValueLoader {
                 if (program.getId() == null)
                     break;
 
-                if (!isDataValueItemLoaded(context, EVENTS + organisationUnit.getId() + program.getId())) {
+                if (!isDataValueItemLoaded(context, LoadFlag.EVENTS, organisationUnit.getId(), program.getId())) {
                     return false;
                 }
             }
         }
 
         return true;
-    }
-
-    public static void dataValueIntegrityCheck() {
-        /*Log.d(CLASS_TAG, "Running data value integrity check");
-
-
-        List<DataValue> dataValues = new Select().from(DataValue.class).where(
-                Condition.column(DataValue$Table.DATAELEMENT).isNull()).
-                and(Condition.column(DataValue$Table.EVENT).isNull()).
-                and(Condition.column(DataValue$Table.LOCALEVENTID).isNull()).queryList();
-        if(dataValues == null || dataValues.size() < 1 )
-        {
-            Log.d(CLASS_TAG, "Data values are valid");
-        }
-        else
-        {
-            Log.d(CLASS_TAG, "Data values are NOT valid");
-            for(DataValue dataValue : dataValues)
-                dataValue.delete();
-        }
-
-        List<Enrollment> enrollments = new Select().from(Enrollment.class).where(
-                Condition.column(Enrollment$Table.ORGUNIT).isNull()).
-                or(Condition.column(Enrollment$Table.PROGRAM).isNull()).
-                and(Condition.column(Enrollment$Table.TRACKEDENTITYINSTANCE).isNull()).
-                and(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).isNull()).queryList();
-
-        if(enrollments == null || enrollments.size() < 1 )
-        {
-            Log.d(CLASS_TAG, "Enrollments are valid");
-        }
-        else
-        {
-            Log.d(CLASS_TAG, "Enrollments NOT valid");
-
-            for(Enrollment enrollment : enrollments)
-                enrollment.delete();
-        }
-
-        List<Event> events = new Select().from(Event.class).where(
-                Condition.column(Event$Table.ENROLLMENT).isNull()).
-                or(Condition.column(Event$Table.PROGRAMID).isNull()).
-                or(Condition.column(Event$Table.PROGRAMSTAGEID).isNull()).
-                or(Condition.column(Event$Table.ORGANISATIONUNITID).isNull()).
-                or(Condition.column(Event$Table.TRACKEDENTITYINSTANCE).isNull()).queryList();
-
-        if(events == null || events.size() < 1 )
-        {
-            Log.d(CLASS_TAG, "Events are valid ");
-        }
-        else
-        {
-            Log.d(CLASS_TAG, "Events are NOT valid");
-            for(Event event : events)
-            {
-                event.delete();
-                Log.d(CLASS_TAG, "Event: Enrollment: " + event.getEnrollment() + " ProgramID: " + event.getProgramId() +
-                " ProgramStageId: " + event.getProgramStageId() + " OrgUnitId: " + event.getOrganisationUnitId() +
-                        " TrackedEntityInstance: " + event.getTrackedEntityInstance());
-            }
-        }
-
-
-        List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(
-                Condition.column(TrackedEntityInstance$Table.TRACKEDENTITY).isNull()).
-                or(Condition.column(TrackedEntityInstance$Table.ORGUNIT).isNull()).queryList();
-        if(trackedEntityInstances == null || trackedEntityInstances.size() < 1 )
-        {
-            Log.d(CLASS_TAG, "Trackedentity instances are valid");
-        }
-        else
-        {
-            Log.d(CLASS_TAG, "Tracked entity instances are NOT valid");
-            for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances)
-                trackedEntityInstance.delete();
-        }
-
-        List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new Select().from(TrackedEntityAttributeValue.class).where(
-                Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYATTRIBUTEID).isNull()).
-                or(Condition.column(TrackedEntityAttributeValue$Table.TRACKEDENTITYINSTANCEID).isNull()).queryList();
-
-        if(trackedEntityAttributeValues == null || trackedEntityAttributeValues.size() < 1 )
-        {
-            Log.d(CLASS_TAG, "Trackedentity attribute values are valid");
-        }
-        else
-        {
-            Log.d(CLASS_TAG, "Trackedentity attribute values are NOT valid");
-            for(TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues)
-                trackedEntityAttributeValue.delete();
-        }*/
     }
 
     /**
@@ -640,12 +584,11 @@ public final class DataValueLoader {
 
             String assignedOrganisationUnit = organisationUnit.getId();
             List<Program> programsForOrgUnit = new ArrayList<>();
-            if (Dhis2.isLoadFlagEnabled(context, Program.SINGLE_EVENT_WITHOUT_REGISTRATION) ||
-                    Dhis2.isLoadFlagEnabled(context, Program.WITHOUT_REGISTRATION)) {
+            if (Dhis2.isLoadFlagEnabled(context, LoadFlag.SINGLE_EVENT_WITHOUT_REGISTRATION)) {
                 List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                         (organisationUnit.getId(),
-                                Program.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                                Program.WITHOUT_REGISTRATION);
+                                Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
+                                Program.ProgramType.WITHOUT_REGISTRATION);
                 if (programsForOrgUnitSEWoR != null)
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
             }
@@ -654,14 +597,19 @@ public final class DataValueLoader {
                 if (program.getId() == null)
                     break;
 
-                String programId = program.getId();
-                flagDataValueItemLoaded(context, EVENTS + assignedOrganisationUnit + programId, false);
-                //flagDataValueItemLoaded(TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit/*+programId*/, false);
-                //flagDataValueItemLoaded(ENROLLMENTS+assignedOrganisationUnit+programId, false);
-                flagDataValueItemUpdated(context, EVENTS + assignedOrganisationUnit + programId, null);
-                //flagDataValueItemUpdated(context, TRACKED_ENTITY_INSTANCES+assignedOrganisationUnit/*+programId*/, null);
-                //flagDataValueItemUpdated(context, ENROLLMENTS+assignedOrganisationUnit+programId, null);
+                flagDataValueItemLoaded(context, false, LoadFlag.EVENTS, assignedOrganisationUnit, program.getId());
+                flagDataValueItemUpdated(context, null, LoadFlag.EVENTS, assignedOrganisationUnit, program.getId());
             }
         }
+    }
+
+    private static String createIdentifier(LoadFlag item, String... extraIdentifiers) {
+        String identifier = item.name();
+        if( extraIdentifiers!= null ) {
+            for( String s: extraIdentifiers ) {
+                identifier += s;
+            }
+        }
+        return identifier;
     }
 }

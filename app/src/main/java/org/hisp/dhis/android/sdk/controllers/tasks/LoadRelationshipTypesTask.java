@@ -56,7 +56,7 @@ public class LoadRelationshipTypesTask implements INetworkTask {
     private final ApiRequest.Builder<List<RelationshipType>> requestBuilder;
 
     public LoadRelationshipTypesTask(NetworkManager networkManager,
-                                     ApiRequestCallback<List<RelationshipType>> callback, boolean updating) {
+                                     ApiRequestCallback callback, boolean updating) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");
@@ -82,14 +82,12 @@ public class LoadRelationshipTypesTask implements INetworkTask {
             }
         }
 
-        LoadRelationshipTypesCallback loadRelationshipTypesCallback = new LoadRelationshipTypesCallback(callback);
-
         Request request = new Request(RestMethod.GET, url, headers, null);
 
         requestBuilder = new ApiRequest.Builder<>();
         requestBuilder.setRequest(request);
         requestBuilder.setNetworkManager(networkManager.getHttpManager());
-        requestBuilder.setRequestCallback(loadRelationshipTypesCallback);
+        requestBuilder.setRequestCallback(callback);
     }
 
     @Override
@@ -99,41 +97,5 @@ public class LoadRelationshipTypesTask implements INetworkTask {
                 requestBuilder.build().request();
             }
         }.start();
-    }
-
-    class LoadRelationshipTypesCallback implements ApiRequestCallback {
-
-        final ApiRequestCallback parentCallback;
-        public LoadRelationshipTypesCallback(ApiRequestCallback parentCallback) {
-            this.parentCallback = parentCallback;
-        }
-
-        @Override
-        public void onSuccess(ResponseHolder holder) {
-            try {
-                JsonNode node = Dhis2.getInstance().getObjectMapper().
-                        readTree(holder.getResponse().getBody());
-                node = node.get("relationshipTypes");
-                if (node == null) {
-                    holder.setItem(new ArrayList<RelationshipType>());
-                } else {
-                    TypeReference<List<RelationshipType>> typeRef =
-                            new TypeReference<List<RelationshipType>>() {
-                            };
-                    List<RelationshipType> relationshipTypes = Dhis2.getInstance().getObjectMapper().
-                            readValue(node.traverse(), typeRef);
-                    holder.setItem(relationshipTypes);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
-            }
-            parentCallback.onSuccess(holder);
-        }
-
-        @Override
-        public void onFailure(ResponseHolder holder) {
-            parentCallback.onFailure(holder);
-        }
     }
 }

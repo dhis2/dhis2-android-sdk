@@ -49,7 +49,7 @@ public class LoadAssignedProgramsTask implements INetworkTask {
     private final ApiRequest.Builder<List<OrganisationUnit>> requestBuilder;
 
     public LoadAssignedProgramsTask(NetworkManager networkManager,
-                                    ApiRequestCallback<List<OrganisationUnit>> callback) {
+                                    ApiRequestCallback callback) {
 
         try {
             isNull(callback, "ApiRequestCallback must not be null");

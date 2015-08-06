@@ -49,9 +49,23 @@ import java.util.List;
 @Table(databaseName = Dhis2Database.NAME)
 public class Program extends BaseIdentifiableObject {
 
-    public static final String SINGLE_EVENT_WITH_REGISTRATION = "SINGLE_EVENT_WITH_REGISTRATION";
-    public static final String SINGLE_EVENT_WITHOUT_REGISTRATION = "SINGLE_EVENT_WITHOUT_REGISTRATION";
-    public static final String MULTIPLE_EVENTS_WITH_REGISTRATION = "MULTIPLE_EVENTS_WITH_REGISTRATION";
+    public enum ProgramType {
+        /* pre DHIS 2.20 */
+        SINGLE_EVENT_WITH_REGISTRATION("SINGLE_EVENT_WITH_REGISTRATION"),
+        SINGLE_EVENT_WITHOUT_REGISTRATION("SINGLE_EVENT_WITHOUT_REGISTRATION"),
+        MULTIPLE_EVENTS_WITH_REGISTRATION ("MULTIPLE_EVENTS_WITH_REGISTRATION"),
+        /* DHIS 2.20 and up */
+        WITH_REGISTRATION("WITH_REGISTRATION"),
+        WITHOUT_REGISTRATION("WITHOUT_REGISTRATION");
+        private final String value;
+        private ProgramType(String value) {
+            this.value = value;
+        }
+        @Override
+        public String toString() {
+            return ProgramType.this.value;
+        }
+    }
 
     @JsonProperty("trackedEntity")
     @Column

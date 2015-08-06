@@ -50,7 +50,7 @@ public class LoadProgramRulesTask implements INetworkTask {
     private final ApiRequest.Builder<List<ProgramRule>> requestBuilder;
 
     public LoadProgramRulesTask(NetworkManager networkManager,
-                                ApiRequestCallback<List<ProgramRule>> callback, boolean updating) {
+                                ApiRequestCallback callback, boolean updating) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");

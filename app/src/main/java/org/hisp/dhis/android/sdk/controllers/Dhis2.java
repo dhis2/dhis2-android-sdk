@@ -216,32 +216,26 @@ public final class Dhis2 {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (mode.equals(LOAD_EVENTCAPTURE)) {
-            editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.ASSIGNED_PROGRAMS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.OPTION_SETS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.CONSTANTS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULES, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULEVARIABLES, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULEACTIONS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.RELATIONSHIPTYPES, true);
 
-            editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
-            editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.EVENTS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.SINGLE_EVENT_WITHOUT_REGISTRATION, true);
         } else if (mode.equals(LOAD_TRACKER)) {
-            editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, true);
-            editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, true);
-            editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, true);
-
-            //editor.putBoolean(LOAD + DataValueLoader.EVENTS, true);
-            //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, true);
-            //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, true);
-            //editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITH_REGISTRATION, true);
-            //editor.putBoolean(LOAD + Program.MULTIPLE_EVENTS_WITH_REGISTRATION, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.ASSIGNED_PROGRAMS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.OPTION_SETS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.CONSTANTS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULES, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULEVARIABLES, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.PROGRAMRULEACTIONS, true);
+            editor.putBoolean(LOAD + LoadFlagContainer.LoadFlag.RELATIONSHIPTYPES, true);
         }
         editor.commit();
     }
@@ -254,20 +248,10 @@ public final class Dhis2 {
     public static void clearLoadFlags(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(LOAD + MetaDataLoader.ASSIGNED_PROGRAMS, false);
-        editor.putBoolean(LOAD + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false);
-        editor.putBoolean(LOAD + MetaDataLoader.CONSTANTS, false);
-        editor.putBoolean(LOAD + MetaDataLoader.OPTION_SETS, false);
-        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMS, false);
-        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULES, false);
-        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEVARIABLES, false);
-        editor.putBoolean(LOAD + MetaDataLoader.PROGRAMRULEACTIONS, false);
-        editor.putBoolean(LOAD + MetaDataLoader.RELATIONSHIPTYPES, false);
-
-        editor.putBoolean(LOAD + DataValueLoader.EVENTS, false);
-        //editor.putBoolean(LOAD + DataValueLoader.ENROLLMENTS, false);
-        //editor.putBoolean(LOAD + DataValueLoader.TRACKED_ENTITY_INSTANCES, false);
-        editor.putBoolean(LOAD + Program.SINGLE_EVENT_WITHOUT_REGISTRATION, false);
+        LoadFlagContainer.LoadFlag[] allLoadFlags = LoadFlagContainer.LoadFlag.values();
+        for( LoadFlagContainer.LoadFlag loadFlag: allLoadFlags ) {
+            editor.putBoolean(LOAD + loadFlag, false);
+        }
         editor.commit();
     }
 
@@ -278,7 +262,7 @@ public final class Dhis2 {
      * @param flag
      * @return
      */
-    public static boolean isLoadFlagEnabled(Context context, String flag) {
+    public static boolean isLoadFlagEnabled(Context context, LoadFlagContainer.LoadFlag flag) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         postLoadingFlag(sharedPreferences.getBoolean(LOAD + flag, false));
 
@@ -299,32 +283,32 @@ public final class Dhis2 {
      */
     public static boolean isMetaDataLoaded(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        if (isLoadFlagEnabled(context, MetaDataLoader.ASSIGNED_PROGRAMS)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.ASSIGNED_PROGRAMS, false))
+        if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.ASSIGNED_PROGRAMS)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.ASSIGNED_PROGRAMS, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.OPTION_SETS)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.OPTION_SETS, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.OPTION_SETS)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.OPTION_SETS, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMS)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMS, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.PROGRAMS)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.PROGRAMS, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.TRACKED_ENTITY_ATTRIBUTES, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.TRACKED_ENTITY_ATTRIBUTES)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.TRACKED_ENTITY_ATTRIBUTES, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.CONSTANTS)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.CONSTANTS, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.CONSTANTS)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.CONSTANTS, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULES)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULES, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.PROGRAMRULES)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.PROGRAMRULES, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEVARIABLES)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEVARIABLES, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.PROGRAMRULEVARIABLES)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.PROGRAMRULEVARIABLES, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.PROGRAMRULEACTIONS)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.PROGRAMRULEACTIONS, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.PROGRAMRULEACTIONS)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.PROGRAMRULEACTIONS, false))
                 return false;
-        } else if (isLoadFlagEnabled(context, MetaDataLoader.RELATIONSHIPTYPES)) {
-            if (!sharedPreferences.getBoolean(LOADED + MetaDataLoader.RELATIONSHIPTYPES, false))
+        } else if (isLoadFlagEnabled(context, LoadFlagContainer.LoadFlag.RELATIONSHIPTYPES)) {
+            if (!sharedPreferences.getBoolean(LOADED + LoadFlagContainer.LoadFlag.RELATIONSHIPTYPES, false))
                 return false;
         }
         return true;
@@ -344,13 +328,9 @@ public final class Dhis2 {
             getInstance().context = context;
         }
         Log.d(CLASS_TAG, "isdatavaluesloaded..");
-        if (isLoadFlagEnabled(getInstance().context, DataValueLoader.EVENTS)) {
+        if (isLoadFlagEnabled(getInstance().context, LoadFlagContainer.LoadFlag.EVENTS)) {
             if (!DataValueLoader.isEventsLoaded(getInstance().context)) return false;
-        } /*else if (isLoadFlagEnabled(context, DataValueLoader.ENROLLMENTS)) {
-            if (!DataValueLoader.isEnrollmentsLoaded(context)) return false;
-        } else if (isLoadFlagEnabled(context, DataValueLoader.TRACKED_ENTITY_INSTANCES)) {
-            if (!DataValueLoader.isTrackedEntityInstancesLoaded(context)) return false;
-        }*/
+        }
         Log.d(CLASS_TAG, "data values are loaded.");
         return true;
     }
@@ -625,21 +605,6 @@ public final class Dhis2 {
 
 
     }
-
-
-    @SuppressWarnings("Warning. Please be careful using this since it is not stable yet. May unintentionally delete some locally saved data")
-    public static void dataIntegrityCheck(Context context)
-    {
-        getInstance().context = context;
-        new Thread() {
-            public void run() {
-                getInstance().getMetaDataController().metaDataIntegrityCheck();
-                getInstance().getDataValueController().dataValueIntegrityCheck();
-            }
-        }.start();
-
-    }
-
 
     /**
      * initiates synchronization of metadata from server

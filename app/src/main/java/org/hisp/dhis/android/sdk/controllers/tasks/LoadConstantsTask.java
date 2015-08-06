@@ -50,7 +50,7 @@ public class LoadConstantsTask implements INetworkTask {
     private final ApiRequest.Builder<List<Constant>> requestBuilder;
 
     public LoadConstantsTask(NetworkManager networkManager,
-                             ApiRequestCallback<List<Constant>> callback, boolean updating) {
+                             ApiRequestCallback callback, boolean updating) {
 
         try {
         isNull(callback, "ApiRequestCallback must not be null");

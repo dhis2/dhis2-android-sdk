@@ -375,10 +375,6 @@ public class DataValueController {
         DataValueSender.sendLocalData(callback);
     }
 
-    public void dataValueIntegrityCheck() {
-        DataValueLoader.dataValueIntegrityCheck();
-    }
-
     public boolean isLoading() {
         return DataValueLoader.getInstance().loading;
     }

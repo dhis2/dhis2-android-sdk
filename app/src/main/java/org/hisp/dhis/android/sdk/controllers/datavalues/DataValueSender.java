@@ -73,9 +73,7 @@ public final class DataValueSender {
         dataValueSender = new DataValueSender();
     }
 
-    private DataValueSender() {
-
-    }
+    private DataValueSender() {}
 
     private static final String CLASS_TAG = "DataValueSender";
 
@@ -524,7 +522,7 @@ public final class DataValueSender {
             Log.e(CLASS_TAG, new String(apiException.getResponse().getBody()));
         }
         if (apiException.isNetworkError()) {
-            Dhis2.hasUnSynchronizedDatavalues = true;
+            Dhis2.hasUnSynchronizedDatavalues = true; //todo what is the logic here??
             return; //if item failed due to network error then there is no need to store error info
         }
         FailedItem failedItem = new FailedItem();

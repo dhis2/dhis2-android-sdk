@@ -51,7 +51,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.ResponseBody;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
 import java.io.IOException;

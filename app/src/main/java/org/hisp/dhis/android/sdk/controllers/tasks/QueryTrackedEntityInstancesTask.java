@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.RelationshipType;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 import java.io.IOException;
 import java.util.ArrayList;

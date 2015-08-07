@@ -58,7 +58,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
 import java.io.IOException;

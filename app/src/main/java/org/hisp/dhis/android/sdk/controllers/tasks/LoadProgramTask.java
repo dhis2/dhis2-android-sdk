@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.network.http.RestMethod;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 import java.util.ArrayList;
 import java.util.List;

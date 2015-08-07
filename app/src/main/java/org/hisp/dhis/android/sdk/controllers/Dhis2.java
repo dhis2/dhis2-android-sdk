@@ -51,7 +51,6 @@ import org.hisp.dhis.android.sdk.controllers.tasks.AuthUserTask;
 import org.hisp.dhis.android.sdk.events.BaseEvent;
 import org.hisp.dhis.android.sdk.events.LoadingEvent;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
-import org.hisp.dhis.android.sdk.events.ResponseEvent;
 import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
 import org.hisp.dhis.android.sdk.fragments.ProgressDialogFragment;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
@@ -451,7 +450,7 @@ public final class Dhis2 {
      * @param username
      * @param password
      */
-    public void login(String username, String password) {
+    public void login(final ApiRequestCallback callback, String username, String password) {
         // TODO first check if we already have User through persistence layer
         // TODO if yes, return it, if not call network
         new AuthUserTask(NetworkManager.getInstance(), new ApiRequestCallback<User>() {
@@ -465,16 +464,18 @@ public final class Dhis2 {
                     e.printStackTrace();
                     holder.setApiException(APIException.conversionError(holder.getResponse().getUrl(), holder.getResponse(), e));
                 }
-                ResponseEvent<User> event = new ResponseEvent<User>(ResponseEvent.EventType.onLogin);
+                /*ResponseEvent<User> event = new ResponseEvent<User>(ResponseEvent.EventType.onLogin);
                 event.setResponseHolder(holder);
-                Dhis2Application.bus.post(event);
+                Dhis2Application.bus.post(event);*/
+                callback.onSuccess(holder);
             }
 
             @Override
             public void onFailure(ResponseHolder<User> holder) {
-                ResponseEvent event = new ResponseEvent(ResponseEvent.EventType.onLogin);
+                /*ResponseEvent event = new ResponseEvent(ResponseEvent.EventType.onLogin);
                 event.setResponseHolder(holder);
-                Dhis2Application.bus.post(event);
+                Dhis2Application.bus.post(event);*/
+                callback.onFailure(holder);
             }
         }, username, password).execute();
     }
@@ -641,7 +642,7 @@ public final class Dhis2 {
         ApiRequestCallback callback = new ApiRequestCallback() {
             @Override
             public void onSuccess(ResponseHolder holder) {
-                SynchronizationFinishedEvent event = new SynchronizationFinishedEvent(BaseEvent.EventType.synchronizationFinished);
+                SynchronizationFinishedEvent event = new SynchronizationFinishedEvent();
                 event.success = true;
                 Dhis2Application.getEventBus().post(event); //is finished synchronizing
                                                             // run dataIntegrityCheck when it is fixed
@@ -744,7 +745,7 @@ public final class Dhis2 {
         new Thread(){
             @Override
             public void run() {
-                LoadingEvent event = new LoadingEvent(BaseEvent.EventType.loadEvents);
+                LoadingEvent event = new LoadingEvent();
                 event.success = enabled;
                 Dhis2Application.bus.post(event);
             }
@@ -760,7 +761,7 @@ public final class Dhis2 {
         new Thread() {
             @Override
             public void run() {
-                LoadingMessageEvent event = new LoadingMessageEvent(BaseEvent.EventType.showRegisterEventFragment);
+                LoadingMessageEvent event = new LoadingMessageEvent();
                 event.message = message;
                 Dhis2Application.bus.post(event);
             }

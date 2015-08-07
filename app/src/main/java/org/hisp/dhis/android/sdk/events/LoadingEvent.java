@@ -34,11 +34,5 @@ package org.hisp.dhis.android.sdk.events;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 public class LoadingEvent<T> extends BaseEvent{
-
     public boolean success;
-
-    public LoadingEvent(EventType eventType) {
-        super(eventType);
-    }
-
 }

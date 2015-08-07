@@ -35,10 +35,5 @@ package org.hisp.dhis.android.sdk.events;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 public class LoadingMessageEvent<T> extends BaseEvent {
-
     public String message;
-
-    public LoadingMessageEvent(EventType eventType) {
-        super(eventType);
-    }
 }

@@ -44,9 +44,6 @@ import org.hisp.dhis.android.sdk.controllers.tasks.LoadEventsTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadTrackedEntityInstancesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.QueryTrackedEntityInstancesTask;
-import org.hisp.dhis.android.sdk.events.BaseEvent;
-import org.hisp.dhis.android.sdk.events.DataValueResponseEvent;
-import org.hisp.dhis.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -131,9 +128,6 @@ public final class DataValueLoader {
             editor.putString(Dhis2.LAST_UPDATED_DATAVALUES, getInstance().systemInfo.getServerDate());
             editor.commit();
 
-            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
-            Dhis2Application.getEventBus().post(event);
-
             getInstance().loading = false;
             callback.onSuccess(responseHolder);
         }
@@ -141,8 +135,6 @@ public final class DataValueLoader {
         @Override
         public void onFailure(ResponseHolder responseHolder) {
             Log.e(CLASS_TAG, "onfinishloadingfailure");
-            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesLoaded);
-            Dhis2Application.getEventBus().post(event);
 
             getInstance().loading = false;
             callback.onFailure(responseHolder);
@@ -305,9 +297,6 @@ public final class DataValueLoader {
      */
     private static void loadEvents(final ApiRequestCallback callback, String organisationUnitId, String programId, boolean synchronizing) {
         final ResponseHolder<List<Event>> holder = new ResponseHolder<>();
-        final DataValueResponseEvent<List<Event>> event = new
-                DataValueResponseEvent<>(BaseEvent.EventType.loadEvents);
-        event.setResponseHolder(holder);
         LoadEventsTask task = new LoadEventsTask(NetworkManager.getInstance(),
                 new LoadEventsCallback(callback), organisationUnitId, programId, synchronizing);
         task.execute();

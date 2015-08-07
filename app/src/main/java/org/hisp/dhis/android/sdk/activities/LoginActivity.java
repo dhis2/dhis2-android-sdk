@@ -47,7 +47,8 @@ import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
-import org.hisp.dhis.android.sdk.events.ResponseEvent;
+import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
+import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.User;
@@ -145,23 +146,10 @@ public class LoginActivity extends Activity implements OnClickListener {
         NetworkManager.getInstance().setCredentials(NetworkManager.getInstance().getBase64Manager()
                 .toBase64(username, password));
         Dhis2.getInstance().saveCredentials(this, serverUrl, username, password);
-        Dhis2.getInstance().login(username, password);
-    }
-
-    private void showProgress() {
-        Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
-        viewsContainer.startAnimation(anim);
-        viewsContainer.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Subscribe
-    public void onReceiveResponse(ResponseEvent event) {
-        Log.e(CLASS_TAG, "on Login!");
-
-        if (event.getResponseHolder().getItem() != null) {
-            if (event.eventType == ResponseEvent.EventType.onLogin) {
-                User user = (User) event.getResponseHolder().getItem();
+        ApiRequestCallback onLoginCallback = new ApiRequestCallback() {
+            @Override
+            public void onSuccess(ResponseHolder responseHolder) {
+                User user = (User) responseHolder.getItem();
                 Log.e(CLASS_TAG, user.getName());
                 user.save();
                 runOnUiThread(new Runnable() {
@@ -170,12 +158,23 @@ public class LoginActivity extends Activity implements OnClickListener {
                     }
                 });
             }
-        } else {
-            if (event.getResponseHolder() != null && event.getResponseHolder().getApiException() != null) {
-                event.getResponseHolder().getApiException().printStackTrace();
-                onLoginFail(event.getResponseHolder().getApiException());
+
+            @Override
+            public void onFailure(ResponseHolder responseHolder) {
+                if( responseHolder != null && responseHolder.getApiException()!=null ) {
+                    responseHolder.getApiException().printStackTrace();
+                }
+                onLoginFail(responseHolder.getApiException());
             }
-        }
+        };
+        Dhis2.getInstance().login(onLoginCallback, username, password);
+    }
+
+    private void showProgress() {
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
+        viewsContainer.startAnimation(anim);
+        viewsContainer.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void onLoginFail(APIException e) {

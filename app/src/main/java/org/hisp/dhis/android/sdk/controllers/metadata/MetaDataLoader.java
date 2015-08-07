@@ -140,7 +140,6 @@ public final class MetaDataLoader {
             return;
         }
         Dhis2.postProgressMessage(context.getString(R.string.loading_metadata));
-        getInstance().systemInfo = null;
         FinishLoadingCallback finishLoadingCallback = new FinishLoadingCallback(callback, context);
         loadSystemInfo(finishLoadingCallback, context, update);
     }

@@ -42,7 +42,7 @@ import org.hisp.dhis.android.sdk.utils.MainThreadBus;
 /**
  *  Application for initiating the DbFlow Back end
  */
-public class Dhis2Application extends Application implements IDhis2Application {
+public abstract class Dhis2Application extends Application {
 
     public static Bus bus;
     public static Dhis2 dhis2;
@@ -64,11 +64,7 @@ public class Dhis2Application extends Application implements IDhis2Application {
         super.onTerminate();
         FlowManager.destroy();
     }
-
-    @Override
-    public Class<? extends Activity> getMainActivity() {
-        return null;
-    }
+    public abstract Class<? extends Activity> getMainActivity();
 
     public static Bus getEventBus() {
         return bus;

@@ -52,9 +52,6 @@ import org.hisp.dhis.android.sdk.controllers.tasks.LoadProgramTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadRelationshipTypesTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadSystemInfoTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.LoadTrackedEntityAttributesTask;
-import org.hisp.dhis.android.sdk.events.BaseEvent;
-import org.hisp.dhis.android.sdk.events.InvalidateEvent;
-import org.hisp.dhis.android.sdk.events.MetaDataResponseEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -181,8 +178,6 @@ public final class MetaDataLoader {
 
         private void finish() {
             getInstance().loading = false;
-            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.metaDataLoaded);
-            Dhis2Application.getEventBus().post(event);
         }
     }
 
@@ -309,8 +304,6 @@ public final class MetaDataLoader {
 
     static private void loadSystemInfo(ApiRequestCallback callback, Context context, boolean update) {
         Dhis2.postProgressMessage(context.getString(R.string.loading_server_info));
-        final MetaDataResponseEvent<SystemInfo> event = new
-                MetaDataResponseEvent<>(BaseEvent.EventType.loadSystemInfo);
         LoadSystemInfoItemCallback loadSystemInfoItemCallback = new
                 LoadSystemInfoItemCallback(callback, context, null, update);
         LoadSystemInfoTask task = new LoadSystemInfoTask(NetworkManager.getInstance(),

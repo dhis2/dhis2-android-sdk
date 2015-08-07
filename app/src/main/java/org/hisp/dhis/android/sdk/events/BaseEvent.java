@@ -33,25 +33,4 @@ package org.hisp.dhis.android.sdk.events;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 public class BaseEvent {
-
-    public static enum EventType {
-        onLogin, loadAssignedPrograms, onLoadingMetaDataFinished,
-        showRegisterEventFragment, showSelectProgramFragment,
-        sendEvent, updateProgram, loadTrackedEntities, loadSystemInfo, onUpdateOptionSets,
-        showFailedItemsFragment, logout, loadTrackedEntityInstances,
-        loadEnrollments, loadEvents, onLoadDataValuesFinished,
-        onUpdateDataValuesFinished, onLoadingInitialDataFinished, loadTrackedEntityAttributes,
-        onUpdateTrackedEntityAttributes, showDataEntryFragment, loadOptionSets,
-        loadInitialDataFailed, showProgramOverviewFragment, showPreviousFragment,
-        showEnrollmentFragment, sendEnrollment, loadConstants, updateConstants,
-        loadProgramRules, loadProgramRuleVariables, loadProgramRuleActions,
-        sendTrackedEntityInstance, loadProgram, showUpcomingEventsFragment, metaDataSyncFinished, loadRelationshipTypes, synchronizationFinished
-    }
-
-    public EventType eventType;
-
-    public BaseEvent(EventType eventType) {
-        this.eventType = eventType;
-    }
-    public BaseEvent() {}
 }

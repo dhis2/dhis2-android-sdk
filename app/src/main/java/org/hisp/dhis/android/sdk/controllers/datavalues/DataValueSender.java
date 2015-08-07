@@ -39,7 +39,6 @@ import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterEnrollmentTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterEventTask;
 import org.hisp.dhis.android.sdk.controllers.tasks.RegisterTrackedEntityInstanceTask;
-import org.hisp.dhis.android.sdk.events.InvalidateEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -157,9 +156,6 @@ public final class DataValueSender {
         @Override
         public void onSuccess(ResponseHolder responseHolder) {
             Log.d(CLASS_TAG, "onFinishSending" + true);
-
-            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
-            Dhis2Application.getEventBus().post(event);
             Dhis2.hasUnSynchronizedDatavalues = false;
             getInstance().sending = false;
             callback.onSuccess(null);
@@ -168,9 +164,6 @@ public final class DataValueSender {
         @Override
         public void onFailure(ResponseHolder responseHolder) {
             Log.d(CLASS_TAG, "onFinishSending" + false);
-
-            InvalidateEvent event = new InvalidateEvent(InvalidateEvent.EventType.dataValuesSent);
-            Dhis2Application.getEventBus().post(event);
             Dhis2.hasUnSynchronizedDatavalues = false;
             getInstance().sending = false;
             callback.onFailure(null);

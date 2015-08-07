@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 /**
  *	This class can be activated to periodically synchronize with a DHIS 2 server to fetch newly updated meta data and

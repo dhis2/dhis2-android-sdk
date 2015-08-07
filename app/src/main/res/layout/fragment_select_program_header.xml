@@ -47,7 +47,7 @@
         android:layout_marginBottom="4dp"
         app:hint="@string/choose_program" />
 
-    <org.hisp.dhis.android.eventcapture.views.FloatingActionButton
+    <org.hisp.dhis.android.sdk.utils.ui.views.FloatingActionButton
         android:id="@+id/register_new_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

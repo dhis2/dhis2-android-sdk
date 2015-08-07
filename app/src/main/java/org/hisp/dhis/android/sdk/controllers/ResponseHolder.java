@@ -30,7 +30,7 @@
 package org.hisp.dhis.android.sdk.controllers;
 
 import org.hisp.dhis.android.sdk.network.http.Response;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 public class ResponseHolder<T> {
     private T item;

@@ -57,7 +57,7 @@ import org.hisp.dhis.android.sdk.events.SynchronizationFinishedEvent;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.network.http.Response;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 /**
  * Basic settings Fragment giving users options to change update frequency to the server,

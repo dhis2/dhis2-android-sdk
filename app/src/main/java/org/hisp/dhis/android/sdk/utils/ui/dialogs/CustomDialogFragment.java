@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.utils;
+package org.hisp.dhis.android.sdk.utils.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
 import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 import java.io.IOException;
 import java.util.ArrayList;

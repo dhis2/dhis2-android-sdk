@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.utils;
+package org.hisp.dhis.android.sdk.network.http;
 
 import org.hisp.dhis.android.sdk.network.http.Response;
 

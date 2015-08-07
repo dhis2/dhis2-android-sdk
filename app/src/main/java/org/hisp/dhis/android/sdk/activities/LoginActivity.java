@@ -52,7 +52,7 @@ import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.preferences.AppPreferences;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 /**
  *

@@ -32,7 +32,7 @@ package org.hisp.dhis.android.sdk.network.http;
 
 import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.network.managers.IHttpManager;
-import org.hisp.dhis.android.sdk.utils.APIException;
+import org.hisp.dhis.android.sdk.network.http.APIException;
 
 import java.io.IOException;
 

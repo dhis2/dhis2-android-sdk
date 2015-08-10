@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.controllers.Dhis2;
@@ -25,6 +28,7 @@ import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
 import org.hisp.dhis.android.sdk.fragments.SettingsFragment;
 import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.AbsAdapter;
 import org.hisp.dhis.android.sdk.utils.ui.adapters.rows.events.EventRow;
@@ -150,19 +154,14 @@ public abstract class SelectProgramFragment extends Fragment
         mOrgUnitButton = (CardTextViewButton) header.findViewById(R.id.select_organisation_unit);
         mProgramButton = (CardTextViewButton) header.findViewById(R.id.select_program);
 
-        mOrgUnitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OrgUnitDialogFragment fragment = OrgUnitDialogFragment
-                        .newInstance(SelectProgramFragment.this);
-                fragment.show(getChildFragmentManager());
-            }
-        });
+        mOrgUnitButton.setOnClickListener(getOrgUnitButtonOnClickListener());
         mProgramButton.setOnClickListener(getProgramButtonOnClickListener());
 
         mOrgUnitButton.setEnabled(true);
         mProgramButton.setEnabled(false);
     }
+
+    protected abstract View.OnClickListener getOrgUnitButtonOnClickListener();
 
     protected abstract View.OnClickListener getProgramButtonOnClickListener();
 

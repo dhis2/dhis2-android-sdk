@@ -41,7 +41,9 @@ import org.hisp.dhis.android.sdk.controllers.Dhis2;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.utils.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
 import java.util.ArrayList;
@@ -53,8 +55,18 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
     public static final int ID = 450123;
     private static final int LOADER_ID = 1;
 
-    public static OrgUnitDialogFragment newInstance(OnOptionSelectedListener listener) {
+    public static OrgUnitDialogFragment newInstance(OnOptionSelectedListener listener,
+                                                    Program.ProgramType... programKinds) {
         OrgUnitDialogFragment fragment = new OrgUnitDialogFragment();
+        Bundle args = new Bundle();
+        if( programKinds != null ) {
+            String[] programKindStrings = new String[programKinds.length];
+            for(int i = 0; i<programKinds.length; i++) {
+                programKindStrings[i] = programKinds[i].name();
+            }
+            args.putStringArray(Program$Table.KIND, programKindStrings);
+        }
+        fragment.setArguments(args);
         fragment.setOnOptionSetListener(listener);
         return fragment;
     }
@@ -76,8 +88,16 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
     public Loader<List<OptionAdapterValue>> onCreateLoader(int id, Bundle args) {
         if (LOADER_ID == id && isAdded()) {
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
+            String[] kinds = args.getStringArray(Program$Table.KIND);
+            Program.ProgramType[] types = null;
+            if( kinds != null ) {
+                types = new Program.ProgramType[kinds.length];
+                for( int i = 0; i<kinds.length; i++ ) {
+                    types[i] = Program.ProgramType.valueOf(kinds[i]);
+                }
+            }
             return new DbLoader<>(
-                    getActivity().getBaseContext(), modelsToTrack, new OrgUnitQuery()
+                    getActivity().getBaseContext(), modelsToTrack, new OrgUnitQuery(types)
             );
         }
         return null;
@@ -98,12 +118,18 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
 
     static class OrgUnitQuery implements Query<List<OptionAdapterValue>> {
 
+        private final Program.ProgramType[] kinds;
+
+        public OrgUnitQuery(Program.ProgramType... kinds) {
+            this.kinds = kinds;
+        }
+
         @Override
         public List<OptionAdapterValue> query(Context context) {
             List<OrganisationUnit> orgUnits = queryUnits();
             List<OptionAdapterValue> values = new ArrayList<>();
             for (OrganisationUnit orgUnit : orgUnits) {
-                if (hasPrograms(orgUnit.getId())) {
+                if (hasPrograms(orgUnit.getId(), this.kinds)) {
                     values.add(new OptionAdapterValue(orgUnit.getId(), orgUnit.getLabel()));
                 }
             }
@@ -117,12 +143,11 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
                     .getAssignedOrganisationUnits();
         }
 
-        private boolean hasPrograms(String unitId) {
+        private boolean hasPrograms(String unitId, Program.ProgramType... kinds) {
             List<Program> programs = Dhis2.getInstance()
                     .getMetaDataController()
                     .getProgramsForOrganisationUnit(
-                            unitId, Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                            Program.ProgramType.WITHOUT_REGISTRATION
+                            unitId, kinds
                     );
             return (programs != null && !programs.isEmpty());
         }

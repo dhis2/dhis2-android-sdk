@@ -154,16 +154,30 @@ public abstract class SelectProgramFragment extends Fragment
         mOrgUnitButton = (CardTextViewButton) header.findViewById(R.id.select_organisation_unit);
         mProgramButton = (CardTextViewButton) header.findViewById(R.id.select_program);
 
-        mOrgUnitButton.setOnClickListener(getOrgUnitButtonOnClickListener());
-        mProgramButton.setOnClickListener(getProgramButtonOnClickListener());
+        mOrgUnitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OrgUnitDialogFragment fragment = OrgUnitDialogFragment
+                        .newInstance(SelectProgramFragment.this,
+                                getProgramTypes());
+                fragment.show(getChildFragmentManager());
+            }
+        });
+        mProgramButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProgramDialogFragment fragment = ProgramDialogFragment
+                        .newInstance(SelectProgramFragment.this, mState.getOrgUnitId(),
+                                getProgramTypes());
+                fragment.show(getChildFragmentManager());
+            }
+        });
 
         mOrgUnitButton.setEnabled(true);
         mProgramButton.setEnabled(false);
     }
 
-    protected abstract View.OnClickListener getOrgUnitButtonOnClickListener();
-
-    protected abstract View.OnClickListener getProgramButtonOnClickListener();
+    protected abstract Program.ProgramType[] getProgramTypes();
 
     @Override
     public void onPause() {

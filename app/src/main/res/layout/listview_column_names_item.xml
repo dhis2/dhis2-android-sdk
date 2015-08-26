@@ -36,9 +36,9 @@
     android:background="@color/navy_blue">
 
     <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        android:id="@+id/tracked_entity_title"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:text="@string/registered_events"
         android:textSize="@dimen/medium_text_size"
         android:textColor="@color/white"
         android:gravity="center"

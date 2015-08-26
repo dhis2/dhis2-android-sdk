@@ -41,7 +41,7 @@ import java.util.List;
 
 public abstract class SelectProgramFragment extends Fragment
         implements View.OnClickListener, AutoCompleteDialogFragment.OnOptionSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<List<EventRow>> {
+        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm> {
     public static final String TAG = SelectProgramFragment.class.getSimpleName();
     protected final String STATE;
     protected final int LOADER_ID;
@@ -229,24 +229,25 @@ public abstract class SelectProgramFragment extends Fragment
     }
 
     @Override
-    public abstract Loader<List<EventRow>> onCreateLoader(int id, Bundle args);
+    public abstract Loader<SelectProgramFragmentForm> onCreateLoader(int id, Bundle args);
 
     @Override
-    public void onLoadFinished(Loader<List<EventRow>> loader, List<EventRow> data) {
-        if (LOADER_ID == loader.getId()) {
-            mProgressBar.setVisibility(View.GONE);
-            mAdapter.swapData(data);
-            setRefreshing(false);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<EventRow>> loader) {
+    public void onLoaderReset(Loader<SelectProgramFragmentForm> loader) {
         mAdapter.swapData(null);
     }
 
     public void onRefreshFinished() {
         setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<SelectProgramFragmentForm> loader, SelectProgramFragmentForm data) {
+        if (LOADER_ID == loader.getId()) {
+            mProgressBar.setVisibility(View.GONE);
+            mAdapter.swapData(data.getEventRowList());
+            setRefreshing(false);
+
+        }
     }
 
     @Override

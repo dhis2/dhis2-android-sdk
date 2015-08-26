@@ -43,6 +43,7 @@ public class ColumnNamesRow implements EventRow {
     private String mFirstItem;
     private String mSecondItem;
     private String mThirdItem;
+    private String mTitle;
 
     @Override
     public View getView(LayoutInflater inflater, View convertView, ViewGroup container) {
@@ -52,6 +53,7 @@ public class ColumnNamesRow implements EventRow {
         if (convertView == null) {
             view = inflater.inflate(R.layout.listview_column_names_item, container, false);
             holder = new ViewHolder(
+                    (TextView) view.findViewById(R.id.tracked_entity_title),
                     (TextView) view.findViewById(R.id.first_column_name),
                     (TextView) view.findViewById(R.id.second_column_name),
                     (TextView) view.findViewById(R.id.third_column_name)
@@ -61,7 +63,7 @@ public class ColumnNamesRow implements EventRow {
             view = convertView;
             holder = (ViewHolder) view.getTag();
         }
-
+        holder.trackedEntityTitle.setText(mTitle);
         holder.firstItem.setText(mFirstItem);
         holder.secondItem.setText(mSecondItem);
         holder.thirdItem.setText(mThirdItem);
@@ -96,14 +98,21 @@ public class ColumnNamesRow implements EventRow {
         this.mFirstItem = firstItem;
     }
 
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
     private static class ViewHolder {
+        public final TextView trackedEntityTitle;
         public final TextView firstItem;
         public final TextView secondItem;
         public final TextView thirdItem;
 
-        private ViewHolder(TextView firstItem,
+        private ViewHolder(TextView trackedEntityTitle,
+                           TextView firstItem,
                            TextView secondItem,
-                           TextView thirdItem) {
+                           TextView thirdItem)  {
+            this.trackedEntityTitle = trackedEntityTitle;
             this.firstItem = firstItem;
             this.secondItem = secondItem;
             this.thirdItem = thirdItem;

@@ -47,7 +47,7 @@ import java.util.List;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class Program extends BaseIdentifiableObject {
+public class Program extends BaseMetaDataObject {
 
     public enum ProgramType {
         /* pre DHIS 2.20 */
@@ -138,10 +138,6 @@ public class Program extends BaseIdentifiableObject {
     @JsonProperty("relationshipFromA")
     @Column(name = "relationshipFromA")
     boolean relationshipFromA;
-
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
 
     @JsonProperty("selectIncidentDatesInFuture")
     @Column(name = "selectIncidentDatesInFuture")
@@ -322,14 +318,6 @@ public class Program extends BaseIdentifiableObject {
 
     public void setIgnoreOverdueEvents(boolean ignoreOverdueEvents) {
         this.ignoreOverdueEvents = ignoreOverdueEvents;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public boolean getSelectIncidentDatesInFuture() {

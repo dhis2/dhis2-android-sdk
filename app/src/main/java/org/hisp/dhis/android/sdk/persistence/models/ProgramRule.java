@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @author Simen Skogly Russnes on 29.04.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramRule extends BaseIdentifiableObject {
+public class ProgramRule extends BaseMetaDataObject {
 
     public static final String SEPARATOR_ID = "\\.";
     public static final String KEY_DATAELEMENT = "#";
@@ -50,9 +50,6 @@ public class ProgramRule extends BaseIdentifiableObject {
 
     @Column(name = "externalAction")
     boolean externalAction;
-
-    @Column(name = "displayName")
-    String displayName;
 
     @JsonIgnore
     List<ProgramRuleAction> programRuleActions;
@@ -93,14 +90,6 @@ public class ProgramRule extends BaseIdentifiableObject {
 
     public void setProgramStage(String programStage) {
         this.programStage = programStage;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public boolean getExternalAction() {

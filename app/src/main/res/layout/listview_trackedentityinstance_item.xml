@@ -38,7 +38,7 @@
     android:background="@drawable/white_selector"
     android:weightSum="1">
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/first_event_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -56,7 +56,7 @@
         android:layout_height="match_parent"
         android:background="@color/darker_grey"/>
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/second_event_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -74,7 +74,7 @@
         android:layout_height="match_parent"
         android:background="@color/darker_grey"/>
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/third_event_item"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -92,7 +92,7 @@
         android:layout_height="match_parent"
         android:background="@color/darker_grey"/>
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@+id/status_text_view"
         android:layout_width="0dp"
         android:layout_height="match_parent"

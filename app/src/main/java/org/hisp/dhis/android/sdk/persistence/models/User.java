@@ -41,7 +41,7 @@ import java.util.List;
  * @author Simen Skogly Russnes on 18.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class User extends BaseIdentifiableObject {
+public class User extends BaseMetaDataObject {
 
     @JsonProperty("firstName")
     @Column(name = "firstName")

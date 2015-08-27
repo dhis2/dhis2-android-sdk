@@ -43,7 +43,7 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -61,7 +61,7 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <org.hisp.dhis.android.sdk.utils.ui.views.FontEditText
+            <org.hisp.dhis.android.sdk.ui.views.FontEditText
                 android:id="@+id/latitude_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                 android:textSize="@dimen/medium_text_size"
                 app:font="@string/light_font_name"/>
 
-            <org.hisp.dhis.android.sdk.utils.ui.views.FontEditText
+            <org.hisp.dhis.android.sdk.ui.views.FontEditText
                 android:id="@+id/longitude_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

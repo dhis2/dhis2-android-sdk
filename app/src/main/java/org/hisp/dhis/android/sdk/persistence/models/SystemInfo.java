@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 
@@ -53,7 +54,7 @@ public class SystemInfo extends BaseModel {
 
     @JsonProperty("serverDate")
     @Column(name = "serverDate")
-    String serverDate;
+    DateTime serverDate;
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
@@ -68,15 +69,11 @@ public class SystemInfo extends BaseModel {
         this.id = id;
     }
 
-    public String getServerDate() {
-        if (serverDate == null) {
-            return serverDate;
-        }
-        Date date = DateUtils.parseDate(serverDate);
-        return DateUtils.getLongDateString(date);
+    public DateTime getServerDate() {
+        return serverDate;
     }
 
-    public void setServerDate(String serverDate) {
+    public void setServerDate(DateTime serverDate) {
         this.serverDate = serverDate;
     }
 }

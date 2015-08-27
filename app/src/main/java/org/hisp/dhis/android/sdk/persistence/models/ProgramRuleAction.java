@@ -2,6 +2,7 @@ package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.InheritedColumn;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author Simen Skogly Russnes on 29.04.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramRuleAction extends BaseIdentifiableObject {
+public class ProgramRuleAction extends BaseMetaDataObject{
 
     public static final String TYPE_HIDEFIELD = "HIDEFIELD";
     public static final String TYPE_HIDESECTION = "HIDESECTION";
@@ -31,9 +32,6 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
 
     @Column(name = "externalAccess")
     boolean externalAccess;
-
-    @Column(name = "displayName")
-    String displayName;
 
     @JsonProperty("programRule")
     public void setProgramRule(Map<String, Object> programRule) {
@@ -64,14 +62,6 @@ public class ProgramRuleAction extends BaseIdentifiableObject {
 
     public void setDataElement(String dataElement) {
         this.dataElement = dataElement;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public String getProgramRule() {

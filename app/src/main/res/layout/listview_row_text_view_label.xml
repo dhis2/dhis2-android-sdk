@@ -25,7 +25,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+<org.hisp.dhis.android.sdk.ui.views.FontTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/text_label"

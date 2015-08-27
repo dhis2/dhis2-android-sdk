@@ -30,13 +30,21 @@
 package org.hisp.dhis.android.sdk.controllers.metadata;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
+import org.hisp.dhis.android.sdk.controllers.LoadingController;
+import org.hisp.dhis.android.sdk.controllers.ResourceController;
+import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
+import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
+import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
+import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -76,18 +84,82 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
+import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
+import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.utils.DbUtils;
+import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.joda.time.DateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import retrofit.client.Response;
+import retrofit.converter.ConversionException;
+
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
 /**
  * @author Simen Skogly Russnes on 19.02.15.
  */
-public class MetaDataController {
+public final class MetaDataController extends ResourceController {
     private final static String CLASS_TAG = "MetaDataController";
 
-    public MetaDataController() {
-        Dhis2Application.bus.register(this);
+    private MetaDataController() {
+    }
+
+    /**
+     * Returns false if some meta data flags that have been enabled have not been downloaded.
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isDataLoaded(Context context) {
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ASSIGNEDPROGRAMS) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.OPTIONSETS) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.CONSTANTS) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULES) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEVARIABLES) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.PROGRAMRULEACTIONS) == null) {
+                return false;
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
+                return false;
+            }
+        }
+        Log.d(CLASS_TAG, "Meta data is loaded!");
+        return true;
     }
 
     public static List<RelationshipType> getRelationshipTypes() {
@@ -111,14 +183,14 @@ public class MetaDataController {
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStageSection section) {
         if (section == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getId())).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGESECTION).is(section.getUid())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
     public static List<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage) {
         if (programStage == null) return null;
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
-                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getId())).orderBy
+                (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getUid())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
@@ -190,22 +262,13 @@ public class MetaDataController {
                 Condition.column(ProgramStage$Table.ID).is(programStageUid)).querySingle();
     }
 
-    /**
-     * todo: programTrackedEntityAttributes is not necessarily unique for a trackedEntityAttribute.
-     * todo: implement program parameter
-     *
-     * @param trackedEntityAttribute
-     * @return
-     */
-    public static ProgramTrackedEntityAttribute getProgramTrackedEntityAttribute(String trackedEntityAttribute) {
-        return new Select().from(ProgramTrackedEntityAttribute.class).where
-                (Condition.column(ProgramTrackedEntityAttribute$Table.TRACKEDENTITYATTRIBUTE).is
-                        (trackedEntityAttribute)).querySingle();
-    }
-
     public static TrackedEntityAttribute getTrackedEntityAttribute(String trackedEntityAttributeId) {
         return new Select().from(TrackedEntityAttribute.class).where(Condition.column
                 (TrackedEntityAttribute$Table.ID).is(trackedEntityAttributeId)).querySingle();
+    }
+
+    public static List<TrackedEntityAttribute> getTrackedEntityAttributes() {
+        return new Select().from(TrackedEntityAttribute.class).queryList();
     }
 
     /**
@@ -226,6 +289,18 @@ public class MetaDataController {
      */
     public static List<Constant> getConstants() {
         return new Select().from(Constant.class).queryList();
+    }
+
+    public static List<ProgramRule> getProgramRules() {
+        return new Select().from(ProgramRule.class).queryList();
+    }
+
+    public static List<ProgramRuleVariable> getProgramRuleVariables() {
+        return new Select().from(ProgramRuleVariable.class).queryList();
+    }
+
+    public static List<ProgramRuleAction> getProgramRuleActions() {
+        return new Select().from(ProgramRuleAction.class).queryList();
     }
 
     public static ProgramRuleVariable getProgramRuleVariable(String id) {
@@ -275,6 +350,10 @@ public class MetaDataController {
         return organisationUnits;
     }
 
+    public static List<OrganisationUnitProgramRelationship> getOrganisationUnitProgramRelationships() {
+        return new Select().from(OrganisationUnitProgramRelationship.class).queryList();
+    }
+
     /**
      * Returns the data element for the given uid or null if the dataElement does not exist
      *
@@ -304,6 +383,10 @@ public class MetaDataController {
     public static OptionSet getOptionSet(String optionSetId) {
         return new Select().from(OptionSet.class).where(Condition.column(OptionSet$Table.ID).
                 is(optionSetId)).querySingle();
+    }
+
+    public static List<OptionSet> getOptionSets() {
+        return new Select().from(OptionSet.class).queryList();
     }
 
     public static List<ProgramIndicator> getProgramIndicatorsByProgram(String program) {
@@ -345,48 +428,27 @@ public class MetaDataController {
     }
 
     /**
-     * Synchronizes meta data by downloading newly changed data from the server.
-     *
-     * @param context
-     * @param callback
-     */
-    public void synchronizeMetaData(Context context, ApiRequestCallback callback) {
-        MetaDataLoader.synchronizeMetaData(context, callback);
-    }
-
-    /**
-     * Initiates loading of metadata from the server. To update existing data, rather use
-     * synchronizeMetaData to save data.
-     *
-     * @param context
-     */
-    public void loadMetaData(Context context, ApiRequestCallback callback) {
-        MetaDataLoader.loadMetaData(context, callback, false);
-    }
-
-    /**
-     * Resets the value set for last updated
-     *
-     * @param context
-     */
-    public void resetLastUpdated(Context context) {
-        MetaDataLoader.resetLastUpdated(context);
-    }
-
-    /**
-     * Resets the loaded status of all meta data. This status is used to know whether or not
-     * to update the data, or to load all of it.
-     *
-     * @param context
-     */
-    public void clearMetaDataLoadedFlags(Context context) {
-        MetaDataLoader.clearMetaDataLoadedFlags(context);
+      * Clears status and time of loaded meta data items
+      */
+    public static void clearMetaDataLoadedFlags() {
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
+        List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
+        for (String program : assignedPrograms) {
+            DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAM, program);
+        }
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.OPTIONSETS);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.CONSTANTS);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.RELATIONSHIPTYPES);
     }
 
     /**
      * Deletes all meta data from local database
      */
-    public void wipeMetaData() {
+    public static void wipe() {
         Delete.tables(Constant.class,
                 DataElement.class,
                 Option.class,
@@ -411,11 +473,193 @@ public class MetaDataController {
                 RelationshipType.class);
     }
 
-    public boolean isLoading() {
-        return MetaDataLoader.getInstance().loading;
+    /**
+     * Loads metaData from the server and stores it in local persistence.
+     */
+    public static void loadMetaData(Context context, DhisApi dhisApi) throws APIException {
+        Log.d(CLASS_TAG, "loadMetaData");
+        UiUtils.postProgressMessage(context.getString(R.string.loading_metadata));
+        updateMetaDataItems(context, dhisApi);
     }
 
-    //public boolean isSynchronizing() {
-    //    return MetaDataLoader.synchronizing;
-    //}
+    /**
+     * Loads a metadata item that is scheduled to be loaded but has not yet been.
+     */
+    private static void updateMetaDataItems(Context context, DhisApi dhisApi) throws APIException{
+        SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
+        DateTime serverDateTime = serverSystemInfo.getServerDate();
+        //some items depend on each other. Programs depend on AssignedPrograms because we need
+        //the ids of programs to load.
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ASSIGNEDPROGRAMS)) {
+            if ( shouldLoad(dhisApi, ResourceType.ASSIGNEDPROGRAMS) ) {
+                getAssignedProgramsDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMS)) {
+            List<String> assignedPrograms = MetaDataController.getAssignedPrograms();
+            if (assignedPrograms != null) {
+                for (String program : assignedPrograms) {
+                    if ( shouldLoad(dhisApi, ResourceType.PROGRAMS, program) ) {
+                        getProgramDataFromServer(dhisApi, program, serverDateTime);
+                    }
+                }
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.OPTIONSETS)) {
+            if ( shouldLoad(dhisApi, ResourceType.OPTIONSETS) ) {
+                getOptionSetDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.TRACKEDENTITYATTRIBUTES)) {
+            if ( shouldLoad(dhisApi, ResourceType.TRACKEDENTITYATTRIBUTES) ) {
+                getTrackedEntityAttributeDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.CONSTANTS)) {
+            if ( shouldLoad(dhisApi, ResourceType.CONSTANTS) ) {
+                getConstantsDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULES)) {
+            if ( shouldLoad(dhisApi, ResourceType.PROGRAMRULES) ) {
+                getProgramRulesDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEVARIABLES)) {
+            if ( shouldLoad(dhisApi, ResourceType.PROGRAMRULEVARIABLES) ) {
+                getProgramRuleVariablesDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.PROGRAMRULEACTIONS)) {
+            if ( shouldLoad(dhisApi, ResourceType.PROGRAMRULEACTIONS) ) {
+                getProgramRuleActionsDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
+            if ( shouldLoad(dhisApi, ResourceType.RELATIONSHIPTYPES) ) {
+                getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+    }
+
+    private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getAssignedProgramsDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.ASSIGNEDPROGRAMS);
+        Response response = dhisApi.getAssignedPrograms(getBasicQueryMap(lastUpdated));
+
+        List<OrganisationUnit> organisationUnits;
+        try {
+            organisationUnits = new AssignedProgramsWrapper().deserialize(response);
+        } catch (ConversionException e) {
+            e.printStackTrace();
+            return; //todo: handle
+        } catch (IOException e) {
+            e.printStackTrace();
+            return; //todo: handle
+        }
+        List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnits);
+
+        DbUtils.applyBatch(operations);
+        DateTimeManager.getInstance()
+                .setLastUpdated(ResourceType.ASSIGNEDPROGRAMS, serverDateTime);
+    }
+
+    private static void getProgramDataFromServer(DhisApi dhisApi, String uid, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getProgramDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.PROGRAM, uid);
+
+        Program program = updateProgram(dhisApi, uid, lastUpdated);
+        DateTimeManager.getInstance()
+                .setLastUpdated(ResourceType.PROGRAM, uid, serverDateTime);
+    }
+
+    private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
+        final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+
+        QUERY_MAP_FULL.put("fields",
+                "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
+                "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                "[*,trackedEntityAttribute[*]],!organisationUnits)");
+
+        if (lastUpdated != null) {
+            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+        }
+
+        // program with content.
+        Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
+        List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
+        DbUtils.applyBatch(operations);
+        return updatedProgram;
+    }
+
+    private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getOptionSetDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.OPTIONSETS);
+        List<OptionSet> optionSets = unwrapResponse(dhisApi
+                .getOptionSets(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.OPTION_SETS);
+        List<DbOperation> operations = OptionSetWrapper.getOperations(optionSets);
+        DbUtils.applyBatch(operations);
+        DateTimeManager.getInstance()
+                .setLastUpdated(ResourceType.OPTIONSETS, serverDateTime);
+    }
+
+    private static void getTrackedEntityAttributeDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getTrackedEntityAttributeDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
+        List<TrackedEntityAttribute> trackedEntityAttributes = unwrapResponse(dhisApi
+                .getTrackedEntityAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES);
+        saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTES, dhisApi, trackedEntityAttributes, getTrackedEntityAttributes(), serverDateTime);
+    }
+
+    private static void getConstantsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getConstantsDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.CONSTANTS);
+        List<Constant> constants = unwrapResponse(dhisApi
+                .getConstants(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.CONSTANTS);
+        saveResourceDataFromServer(ResourceType.CONSTANTS, dhisApi, constants, getConstants(), serverDateTime);
+    }
+
+    private static void getProgramRulesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getProgramRulesDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.PROGRAMRULES);
+        List<ProgramRule> programRules = unwrapResponse(dhisApi
+                .getProgramRules(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULES);
+        saveResourceDataFromServer(ResourceType.PROGRAMRULES, dhisApi, programRules, getProgramRules(), serverDateTime);
+    }
+
+    private static void getProgramRuleVariablesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getProgramRuleVariablesDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
+        List<ProgramRuleVariable> programRuleVariables = unwrapResponse(dhisApi
+                .getProgramRuleVariables(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULEVARIABLES);
+        saveResourceDataFromServer(ResourceType.PROGRAMRULEVARIABLES, dhisApi, programRuleVariables, getProgramRuleVariables(), serverDateTime);
+    }
+
+    private static void getProgramRuleActionsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getProgramRuleActionsDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.PROGRAMRULEACTIONS);
+        List<ProgramRuleAction> programRuleActions = unwrapResponse(dhisApi
+                .getProgramRuleActions(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.PROGRAMRULEACTIONS);
+        saveResourceDataFromServer(ResourceType.PROGRAMRULEACTIONS, dhisApi, programRuleActions, getProgramRuleActions(), serverDateTime);
+    }
+
+    private static void getRelationshipTypesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getRelationshipTypesDataFromServer");
+        ResourceType resource = ResourceType.RELATIONSHIPTYPES;
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(resource);
+        List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
+                .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
+        saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
+    }
 }

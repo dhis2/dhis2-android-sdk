@@ -51,6 +51,7 @@ import java.util.List;
 public class ImportSummary extends BaseModel {
 
     public static final String SUCCESS = "SUCCESS";
+    public static final String OK = "OK";
     public static final String ERROR = "ERROR";
 
     @Column(name = "id")

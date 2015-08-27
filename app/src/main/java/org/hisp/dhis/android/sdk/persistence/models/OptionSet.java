@@ -42,7 +42,7 @@ import java.util.List;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class OptionSet extends BaseIdentifiableObject {
+public class OptionSet extends BaseMetaDataObject {
 
     @JsonProperty("version")
     @Column(name = "version")

@@ -3,6 +3,7 @@ package org.hisp.dhis.android.sdk.persistence.models;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -11,12 +12,16 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
  * Created by Simen Skogly Russnes on 15.04.15.
  */
 @JsonIgnoreProperties("modelAdapter")
-public abstract class BaseSerializableModel extends BaseModel {
+public abstract class BaseSerializableModel extends BaseIdentifiableObject {
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
     }
+
+    @JsonProperty("id")
+    @Column(name = "id")
+    String id;
 
     @JsonIgnore
     @Column(name = "fromServer")
@@ -41,5 +46,15 @@ public abstract class BaseSerializableModel extends BaseModel {
 
     public void setLocalId(long localId) {
         this.localId = localId;
+    }
+
+    @Override
+    public String getUid() {
+        return id;
+    }
+
+    @Override
+    public void setUid(String id) {
+        this.id = id;
     }
 }

@@ -39,8 +39,8 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
-import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
@@ -105,16 +105,16 @@ public class Enrollment extends BaseSerializableModel {
     List<Event> events;
 
     public Enrollment() {
-        enrollment = Dhis2.QUEUED + UUID.randomUUID().toString();
+        enrollment = DhisController.QUEUED + UUID.randomUUID().toString();
     }
 
     public Enrollment(String organisationUnit, String trackedEntityInstance, Program program) {
         orgUnit = organisationUnit;
         status = Enrollment.ACTIVE;
-        enrollment = Dhis2.QUEUED + UUID.randomUUID().toString();
+        enrollment = DhisController.QUEUED + UUID.randomUUID().toString();
         followup = false;
         fromServer = false;
-        this.program = program.getId();
+        this.program = program.getUid();
         this.trackedEntityInstance = trackedEntityInstance;
         this.dateOfEnrollment = DateUtils.getMediumDateString();
         this.dateOfIncident = DateUtils.getMediumDateString();
@@ -172,7 +172,7 @@ public class Enrollment extends BaseSerializableModel {
             List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
                     MetaDataController.getProgramTrackedEntityAttributes(program);
             for (ProgramTrackedEntityAttribute ptea : programTrackedEntityAttributes) {
-                TrackedEntityAttributeValue v = DataValueController.getTrackedEntityAttributeValue
+                TrackedEntityAttributeValue v = TrackerController.getTrackedEntityAttributeValue
                         (ptea.trackedEntityAttribute, localTrackedEntityInstanceId);
                 if (v != null && v.getValue() != null && !v.getValue().isEmpty()) {
                     attributes.add(v);
@@ -194,20 +194,20 @@ public class Enrollment extends BaseSerializableModel {
      * @return List of events.
      */
     public List<Event> getEvents(boolean reLoad) {
-        if (events == null || reLoad) events = DataValueController.getEventsByEnrollment(localId);
+        if (events == null || reLoad) events = TrackerController.getEventsByEnrollment(localId);
         return events;
     }
 
     @Override
     public void save() {
         /* check if there is an existing enrollment with the same UID to avoid duplicates */
-        Enrollment existingEnrollment = DataValueController.getEnrollment(enrollment);
+        Enrollment existingEnrollment = TrackerController.getEnrollment(enrollment);
         boolean exists = false;
         if (existingEnrollment != null) {
             exists = true;
             localId = existingEnrollment.localId;
         }
-        if (getEnrollment() == null && DataValueController.getEnrollment(localId) != null) {
+        if (getEnrollment() == null && TrackerController.getEnrollment(localId) != null) {
             //means that the enrollment is local and has previosuly been saved
             //then we don't want to update the enrollment reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
@@ -317,5 +317,17 @@ public class Enrollment extends BaseSerializableModel {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUid() {
+        return enrollment;
+    }
+
+    @Override
+    @JsonIgnore
+    public void setUid(String uid) {
+        this.enrollment = uid;
     }
 }

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Simen Skogly Russnes on 30.03.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class Constant extends BaseIdentifiableObject {
+public class Constant extends BaseMetaDataObject {
 
     @JsonProperty("value")
     @Column(name = "value")
@@ -49,24 +49,12 @@ public class Constant extends BaseIdentifiableObject {
     @Column(name = "externalAccess")
     boolean externalAccess;
 
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
-
     public double getValue() {
         return value;
     }
 
     public boolean getExternalAccess() {
         return externalAccess;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public void setExternalAccess(boolean externalAccess) {

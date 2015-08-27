@@ -41,8 +41,8 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
-import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.LocalDate;
@@ -71,14 +71,6 @@ public class Event extends BaseSerializableModel {
     @Column(name = "event")
     @Unique
     String event;
-
-    @JsonProperty("lastUpdated")
-    @Column(name = "lastUpdated")
-    String lastUpdated;
-
-    @JsonProperty("created")
-    @Column(name = "created")
-    String created;
 
     @JsonProperty("status")
     @Column(name = "status")
@@ -132,19 +124,19 @@ public class Event extends BaseSerializableModel {
 
 
     public Event() {
-        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
+        this.event = DhisController.QUEUED + UUID.randomUUID().toString();
     }
 
     public Event(String organisationUnitId, String status, String programId,
                  ProgramStage programStage, String trackedEntityInstanceId,
                  String enrollment, String dateOfEnrollment) {
-        this.event = Dhis2.QUEUED + UUID.randomUUID().toString();
+        this.event = DhisController.QUEUED + UUID.randomUUID().toString();
         this.fromServer = false;
         this.dueDate = DateUtils.getMediumDateString();
         this.eventDate = DateUtils.getMediumDateString();
         this.organisationUnitId = organisationUnitId;
         this.programId = programId;
-        this.programStageId = programStage.getId();
+        this.programStageId = programStage.getUid();
         this.status = status;
         this.trackedEntityInstance = trackedEntityInstanceId;
         this.enrollment = enrollment;
@@ -183,7 +175,7 @@ public class Event extends BaseSerializableModel {
     @Override
     public void save() {
         /* check if there is an existing event with the same UID to avoid duplicates */
-        Event existingEvent = DataValueController.getEventByUid(event);
+        Event existingEvent = TrackerController.getEventByUid(event);
         if (existingEvent != null) {
             localId = existingEvent.localId;
         }
@@ -250,22 +242,6 @@ public class Event extends BaseSerializableModel {
         if (dataValues == null) dataValues = new Select().from(DataValue.class).where(
                 Condition.column(DataValue$Table.LOCALEVENTID).is(localId)).queryList();
         return dataValues;
-    }
-
-    public String getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
     }
 
     public String getStatus() {
@@ -354,5 +330,17 @@ public class Event extends BaseSerializableModel {
 
     public void setDataValues(List<DataValue> dataValues) {
         this.dataValues = dataValues;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUid() {
+        return event;
+    }
+
+    @Override
+    @JsonIgnore
+    public void setUid(String uid) {
+        this.event = uid;
     }
 }

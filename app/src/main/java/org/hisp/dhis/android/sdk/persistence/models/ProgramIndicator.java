@@ -91,10 +91,6 @@ public class ProgramIndicator extends BaseNameableObject {
     @Column(name = "valueType")
     String valueType;
 
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
-
     @JsonProperty("displayShortName")
     @Column(name = "displayShortName")
     String displayShortName;
@@ -149,14 +145,6 @@ public class ProgramIndicator extends BaseNameableObject {
 
     public void setValueType(String valueType) {
         this.valueType = valueType;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public String getDisplayShortName() {

@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.utils.ui.adapters.rows.events;
+package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 
 /**
  * Created by erling on 8/21/15.

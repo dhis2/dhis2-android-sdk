@@ -35,7 +35,7 @@
     android:orientation="horizontal"
     android:background="@color/white">
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontCheckBox
+    <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

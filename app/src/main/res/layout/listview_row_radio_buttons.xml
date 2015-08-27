@@ -41,21 +41,21 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.ui.views.FontRadioButton
             android:id="@+id/first_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/medium_text_size"
             app:font="@string/regular_font_name"/>
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.ui.views.FontRadioButton
             android:id="@+id/second_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/medium_text_size"
             app:font="@string/regular_font_name"/>
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontRadioButton
+        <org.hisp.dhis.android.sdk.ui.views.FontRadioButton
             android:id="@+id/third_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

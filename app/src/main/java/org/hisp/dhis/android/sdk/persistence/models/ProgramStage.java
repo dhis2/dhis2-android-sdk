@@ -43,7 +43,7 @@ import java.util.Map;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramStage extends BaseIdentifiableObject {
+public class ProgramStage extends BaseMetaDataObject {
 
     @Column(name = "program")
     String program;
@@ -119,10 +119,6 @@ public class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty("minDaysFromStart")
     @Column(name = "minDaysFromStart")
     int minDaysFromStart;
-
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
 
     @JsonProperty("programStageDataElements")
     List<ProgramStageDataElement> programStageDataElements;
@@ -328,13 +324,5 @@ public class ProgramStage extends BaseIdentifiableObject {
 
     public void setMinDaysFromStart(int minDaysFromStart) {
         this.minDaysFromStart = minDaysFromStart;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 }

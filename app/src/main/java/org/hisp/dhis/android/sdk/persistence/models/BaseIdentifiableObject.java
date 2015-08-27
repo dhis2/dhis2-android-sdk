@@ -30,44 +30,59 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Simen Skogly Russnes on 18.02.15.
  */
-public class BaseIdentifiableObject extends BaseModel {
+public abstract class BaseIdentifiableObject extends BaseModel {
 
-    @JsonProperty("id")
-    @Column(name = "id")
-    @PrimaryKey
-    String id;
+    //@JsonProperty("id")
+    //@Column(name = "id")
+    //protected String id;
 
     @JsonProperty("name")
     @Column(name = "name")
     String name;
 
-    @JsonProperty("created")
-    @Column(name = "created")
-    String created;
+    @JsonProperty("displayName")
+    @Column(name = "displayName")
+    String displayName;
 
-    @JsonProperty("lastUpdated")
+    //@JsonProperty("created")
+    @JsonIgnore
+    @Column(name = "created")
+    DateTime created;
+
+    //@JsonProperty("lastUpdated")
+    @JsonIgnore
     @Column(name = "lastUpdated")
-    String lastUpdated;
+    DateTime lastUpdated;
+
+    @JsonProperty("access")
+    @Column(name = "access")
+    Access access;
 
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
     }
 
-    public String getId() {
-        return id;
-    }
+    public abstract String getUid();
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public abstract void setUid(String id);
 
     public String getName() {
         return name;
@@ -77,19 +92,79 @@ public class BaseIdentifiableObject extends BaseModel {
         this.name = name;
     }
 
-    public String getCreated() {
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public DateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(DateTime created) {
         this.created = created;
     }
 
-    public String getLastUpdated() {
+    public DateTime getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(String lastUpdated) {
+    public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public Access getAccess() {
+        return access;
+    }
+
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public static <T extends BaseIdentifiableObject> List<T> merge(List<T> existingItems,
+                                                                   List<T> updatedItems,
+                                                                   List<T> persistedItems) {
+        Map<String, T> updatedItemsMap = toMap(updatedItems);
+        Map<String, T> persistedItemsMap = toMap(persistedItems);
+        Map<String, T> existingItemsMap = new HashMap<>();
+
+        if (existingItems == null || existingItems.isEmpty()) {
+            return new ArrayList<>(existingItemsMap.values());
+        }
+
+        for (T existingItem : existingItems) {
+            String id = existingItem.getUid();
+            T updatedItem = updatedItemsMap.get(id);
+            T persistedItem = persistedItemsMap.get(id);
+
+            if (updatedItem != null) {
+                if (persistedItem != null) {
+                    updatedItem.setUid(persistedItem.getUid());
+                }
+                existingItemsMap.put(id, updatedItem);
+                continue;
+            }
+
+            if (persistedItem != null) {
+                existingItemsMap.put(id, persistedItem);
+            }
+        }
+
+        return new ArrayList<>(existingItemsMap.values());
+    }
+
+    public static <T extends BaseIdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
+        Map<String, T> map = new HashMap<>();
+        if (objects != null && objects.size() > 0) {
+            for (T object : objects) {
+                if (object.getUid() != null) {
+                    map.put(object.getUid(), object);
+                }
+            }
+        }
+        return map;
     }
 }

@@ -36,7 +36,7 @@
 
     <include layout="@layout/listview_row_text_view_label"/>
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontEditText
+    <org.hisp.dhis.android.sdk.ui.views.FontEditText
         android:id="@+id/edit_text_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

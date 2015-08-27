@@ -39,7 +39,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Simen Skogly Russnes on 17.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class RelationshipType extends BaseIdentifiableObject {
+public class RelationshipType extends BaseMetaDataObject {
 
     @JsonProperty
     @Column(name = "aIsToB")
@@ -49,19 +49,7 @@ public class RelationshipType extends BaseIdentifiableObject {
     @Column(name = "bIsToA")
     String bIsToA;
 
-    @JsonProperty
-    @Column(name = "displayName")
-    String displayName;
-
     public RelationshipType() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -86,13 +74,5 @@ public class RelationshipType extends BaseIdentifiableObject {
 
     public void setbIsToA(String bIsToA) {
         this.bIsToA = bIsToA;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 }

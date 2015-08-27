@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 /**
  * @author Simen Skogly Russnes on 20.02.15.
  */
-public class BaseNameableObject extends BaseIdentifiableObject {
+public class BaseNameableObject extends BaseMetaDataObject {
 
     @JsonProperty("shortName")
     @Column(name = "shortName")

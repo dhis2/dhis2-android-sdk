@@ -35,7 +35,7 @@
     android:weightSum="1"
     android:background="@color/navy_blue">
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="@string/registered_events"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
             android:id="@+id/first_column_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -73,7 +73,7 @@
             android:layout_height="match_parent"
             android:background="@color/white" />
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
             android:id="@+id/second_column_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -92,7 +92,7 @@
             android:layout_height="match_parent"
             android:background="@color/white" />
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
             android:id="@+id/third_column_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -111,7 +111,7 @@
             android:layout_height="match_parent"
             android:background="@color/white" />
 
-        <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
             android:id="@+id/status_column"
             android:layout_width="0dp"
             android:layout_height="match_parent"

@@ -30,7 +30,7 @@
 package org.hisp.dhis.android.sdk.utils.services;
 
 import org.apache.commons.jexl2.JexlException;
-import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -296,7 +296,7 @@ public class ProgramIndicatorService {
             DataElement dataElement = MetaDataController.getDataElement(de);
 
             if (programStage != null && dataElement != null) {
-                elements.add(programStage.getProgramStageDataElement(dataElement.getId()));
+                elements.add(programStage.getProgramStageDataElement(dataElement.getUid()));
             }
         }
 
@@ -362,7 +362,7 @@ public class ProgramIndicatorService {
                     if (programInstance == null) { //in case single event without reg
                         programStageInstance = event;
                     } else {
-                        programStageInstance = DataValueController.getEvent(programInstance.getLocalId(), programStage.getId());
+                        programStageInstance = TrackerController.getEvent(programInstance.getLocalId(), programStage.getUid());
                     }
 
                     DataValue dataValue = null;
@@ -370,7 +370,7 @@ public class ProgramIndicatorService {
                         continue;
                     }
                     for (DataValue value : programStageInstance.getDataValues()) {
-                        if (value.getDataElement().equals(dataElement.getId())) dataValue = value;
+                        if (value.getDataElement().equals(dataElement.getUid())) dataValue = value;
                     }
 
                     String value;
@@ -396,8 +396,8 @@ public class ProgramIndicatorService {
                     TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(uid);
 
                     if (attribute != null) {
-                        TrackedEntityAttributeValue attributeValue = DataValueController.getTrackedEntityAttributeValue(
-                                attribute.getId(), programInstance.getLocalTrackedEntityInstanceId());
+                        TrackedEntityAttributeValue attributeValue = TrackerController.getTrackedEntityAttributeValue(
+                                attribute.getUid(), programInstance.getLocalTrackedEntityInstanceId());
                         String value;
                         if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;

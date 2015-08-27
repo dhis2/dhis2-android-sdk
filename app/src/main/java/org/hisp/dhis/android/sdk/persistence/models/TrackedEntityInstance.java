@@ -1,5 +1,7 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +11,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
@@ -31,14 +33,6 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @JsonProperty("trackedEntity")
     @Column(name = "trackedEntity")
     String trackedEntity;
-
-    @JsonIgnore
-    @Column(name = "created")
-    String created;
-
-    @JsonIgnore
-    @Column(name = "lastUpdated")
-    String lastUpdated;
 
     @JsonProperty("orgUnit")
     @Column(name = "orgUnit")
@@ -79,7 +73,7 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @JsonProperty("attributes")
     public List<TrackedEntityAttributeValue> getAttributes() {
         if (attributes == null) {
-            attributes = DataValueController.getTrackedEntityAttributeValues(localId);
+            attributes = TrackerController.getTrackedEntityAttributeValues(localId);
         }
         return attributes;
     }
@@ -91,7 +85,7 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     public List<Relationship> getRelationships() {
         if (relationships == null) {
-            relationships = DataValueController.getRelationships(trackedEntityInstance);
+            relationships = TrackerController.getRelationships(trackedEntityInstance);
         }
         return relationships;
     }
@@ -102,15 +96,16 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     @Override
     public void save() {
+        Log.d("TrackedEntityInstance", "save is actually being called..");
         /* check if there is an existing tei with the same UID to avoid duplicates */
-        TrackedEntityInstance existingTei = DataValueController.
+        TrackedEntityInstance existingTei = TrackerController.
                 getTrackedEntityInstance(trackedEntityInstance);
         boolean exists = false;
         if (existingTei != null) {
             localId = existingTei.localId;
             exists = true;
         }
-        if (getTrackedEntityInstance() == null && DataValueController.getTrackedEntityInstance(localId) != null) {
+        if (getTrackedEntityInstance() == null && TrackerController.getTrackedEntityInstance(localId) != null) {
             //means that the tei is local and has previosuly been saved
             //then we don't want to update the tei reference in fear of overwriting
             //an updated reference from server while the item has been loaded in memory
@@ -146,22 +141,6 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         this.trackedEntity = trackedEntity;
     }
 
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public String getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
     public String getOrgUnit() {
         return orgUnit;
     }
@@ -176,5 +155,17 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     public void setLocalId(long localId) {
         this.localId = localId;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUid() {
+        return trackedEntityInstance;
+    }
+
+    @Override
+    @JsonIgnore
+    public void setUid(String uid) {
+        this.trackedEntityInstance = uid;
     }
 }

@@ -38,7 +38,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.datavalues.DataValueController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.Utils;
 
@@ -108,7 +108,7 @@ public class DataValue extends BaseValue {
 
     @Override
     public void save() {
-        if (Utils.isLocal(event) && DataValueController.getDataValue(localEventId, dataElement) != null) {
+        if (Utils.isLocal(event) && TrackerController.getDataValue(localEventId, dataElement) != null) {
 
             //to avoid overwriting UID from server due to race conditions with autosyncing with server
             //we only update the value (ie not the other fields) if the currently in-memory event UID is locally created

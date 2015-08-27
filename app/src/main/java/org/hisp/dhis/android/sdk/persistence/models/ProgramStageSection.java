@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Simen Skogly Russnes on 26.03.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramStageSection extends BaseIdentifiableObject {
+public class ProgramStageSection extends BaseMetaDataObject {
 
     @JsonProperty("sortOrder")
     @Column(name = "sortOrder")
@@ -23,10 +23,6 @@ public class ProgramStageSection extends BaseIdentifiableObject {
     @JsonProperty("externalAccess")
     @Column(name = "externalAccess")
     boolean externalAccess;
-
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
 
     @Column(name = "programStage")
     String programStage;
@@ -70,14 +66,6 @@ public class ProgramStageSection extends BaseIdentifiableObject {
 
     public void setProgramStage(String programStage) {
         this.programStage = programStage;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public boolean getExternalAccess() {

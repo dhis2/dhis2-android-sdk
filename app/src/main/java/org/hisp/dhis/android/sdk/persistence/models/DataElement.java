@@ -91,10 +91,6 @@ public class DataElement extends BaseNameableObject {
     @Column(name = "dimension")
     String dimension;
 
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
-
     @JsonProperty("displayFormName")
     @Column(name = "displayFormName")
     String displayFormName;
@@ -105,14 +101,6 @@ public class DataElement extends BaseNameableObject {
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
         this.optionSet = (String) optionSet.get("id");
-    }
-
-    public String getDisplayName() {
-        if (!isEmpty(displayFormName)) {
-            return displayFormName;
-        } else {
-            return displayName;
-        }
     }
 
     public String getType() {
@@ -185,10 +173,6 @@ public class DataElement extends BaseNameableObject {
 
     public void setDimension(String dimension) {
         this.dimension = dimension;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public String getDisplayFormName() {

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +65,11 @@ public class ApiResponse {
                 TypeReference<List<ImportSummary>> typeRef =
                         new TypeReference<List<ImportSummary>>() {
                         };
-                List<ImportSummary> importSummaries = Dhis2.getInstance().getObjectMapper().
+                List<ImportSummary> importSummaries = DhisController.getInstance().getObjectMapper().
                         convertValue(response.get("importSummaries"), typeRef);
                 this.importSummaries = importSummaries;
             } else if (responseType.equals( RESPONSETYPE_IMPORTSUMMARY )) {
-                ImportSummary importSummary = Dhis2.getInstance().getObjectMapper().convertValue(response, ImportSummary.class);
+                ImportSummary importSummary = DhisController.getInstance().getObjectMapper().convertValue(response, ImportSummary.class);
                 importSummaries = new ArrayList<>();
                 importSummaries.add(importSummary);
             }

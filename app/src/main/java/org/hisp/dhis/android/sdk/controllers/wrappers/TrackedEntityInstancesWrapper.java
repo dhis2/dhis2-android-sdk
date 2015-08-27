@@ -3,10 +3,11 @@ package org.hisp.dhis.android.sdk.controllers.wrappers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.persistence.models.Header;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,13 +31,13 @@ public class TrackedEntityInstancesWrapper {
      */
     public static List<TrackedEntityInstance> parseTrackedEntityInstances(byte[] body) throws IOException {
 
-        JsonNode node = Dhis2.getInstance().getObjectMapper().
+        JsonNode node = DhisController.getInstance().getObjectMapper().
                 readTree(body);
         JsonNode headersNode = node.get("headers");
         TypeReference<List<Header>> typeRef =
                 new TypeReference<List<Header>>() {
                 };
-        List<Header> headers = Dhis2.getInstance().getObjectMapper().
+        List<Header> headers = DhisController.getInstance().getObjectMapper().
                 readValue(headersNode.traverse(), typeRef);
 
         JsonNode rowsNode = node.get("rows");
@@ -44,7 +45,7 @@ public class TrackedEntityInstancesWrapper {
         TypeReference<List<List<String>>> typeRefRows = new TypeReference<List<List<String>>>() {
         };
 
-        List<List<String>> rows = Dhis2.getInstance().getObjectMapper().readValue(rowsNode.traverse(), typeRefRows);
+        List<List<String>> rows = DhisController.getInstance().getObjectMapper().readValue(rowsNode.traverse(), typeRefRows);
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
 
 
@@ -54,8 +55,8 @@ public class TrackedEntityInstancesWrapper {
             TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
             List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new ArrayList<>();
             trackedEntityInstance.setTrackedEntityInstance(row.get(0));
-            trackedEntityInstance.setCreated(row.get(1));
-            trackedEntityInstance.setLastUpdated(row.get(2));
+            trackedEntityInstance.setCreated(DateTime.parse(row.get(1)));
+            trackedEntityInstance.setLastUpdated(DateTime.parse(row.get(2)));
             trackedEntityInstance.setOrgUnit(row.get(3));
             trackedEntityInstance.setTrackedEntity(row.get(4));
             trackedEntityInstances.add(trackedEntityInstance);

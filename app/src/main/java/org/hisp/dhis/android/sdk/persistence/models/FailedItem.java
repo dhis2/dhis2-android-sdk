@@ -36,7 +36,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 /**
@@ -74,11 +74,11 @@ public class FailedItem extends BaseModel {
     public BaseSerializableModel getItem() {
         BaseSerializableModel item = null;
         if (itemType.equals(EVENT)) {
-            item = Dhis2.getInstance().getDataValueController().getEvent(itemId);
+            item = TrackerController.getEvent(itemId);
         } else if (itemType.equals(ENROLLMENT)) {
-            item = Dhis2.getInstance().getDataValueController().getEnrollment(itemId);
+            item = TrackerController.getEnrollment(itemId);
         } else if (itemType.equals(TRACKEDENTITYINSTANCE)) {
-            item = Dhis2.getInstance().getDataValueController().getTrackedEntityInstance(itemId);
+            item = TrackerController.getTrackedEntityInstance(itemId);
         }
         return item;
     }

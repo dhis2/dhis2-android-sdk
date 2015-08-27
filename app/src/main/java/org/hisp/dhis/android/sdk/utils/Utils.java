@@ -32,7 +32,7 @@ package org.hisp.dhis.android.sdk.utils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.joda.time.DateTime;
 
 import java.util.UUID;
@@ -43,7 +43,7 @@ import java.util.UUID;
 public class Utils {
 
     private static final String CLASS_TAG = "Utils";
-    public static final String randomUUID = Dhis2.QUEUED + UUID.randomUUID().toString();
+    public static final String randomUUID = DhisController.QUEUED + UUID.randomUUID().toString();
 
     public static final int getDpPx(int dp, DisplayMetrics displayMetrics) {
         int px = (int) TypedValue.applyDimension(
@@ -60,7 +60,7 @@ public class Utils {
     }
 
     public static String getTempUid() {
-        return Dhis2.QUEUED + UUID.randomUUID().toString();
+        return DhisController.QUEUED + UUID.randomUUID().toString();
     }
 
     /**

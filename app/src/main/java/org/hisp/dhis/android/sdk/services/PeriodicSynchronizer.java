@@ -36,12 +36,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
-import org.hisp.dhis.android.sdk.controllers.ResponseHolder;
-import org.hisp.dhis.android.sdk.network.http.ApiRequestCallback;
-import org.hisp.dhis.android.sdk.network.http.Response;
-import org.hisp.dhis.android.sdk.network.managers.NetworkManager;
-import org.hisp.dhis.android.sdk.network.http.APIException;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
 
 /**
  *	This class can be activated to periodically synchronize with a DHIS 2 server to fetch newly updated meta data and
@@ -68,27 +65,11 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-        String serverUrl = Dhis2.getInstance().getServer(context);
-        String credentials = Dhis2.getInstance().getCredentials(context);
-        Log.d(CLASS_TAG, "serverUrl: " + serverUrl);
-        if(serverUrl == null || credentials == null) {
+        if(!DhisController.isUserLoggedIn()) {
             cancelPeriodicSynchronizer(context);
             return;
         }
-        NetworkManager.getInstance().setServerUrl(serverUrl);
-        NetworkManager.getInstance().setCredentials(credentials);
-        ApiRequestCallback callback = new ApiRequestCallback() {
-            @Override
-            public void onSuccess(ResponseHolder holder) {
-                //do nothing
-            }
-
-            @Override
-            public void onFailure(ResponseHolder holder) {
-                //do nothing
-            }
-        };
-        Dhis2.synchronize(context, callback);
+        DhisService.synchronize(context);
 	}
 
 	/**
@@ -133,7 +114,7 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
      * @return
      */
     public static int getInterval(Context context) {
-        int frequencyIndex = Dhis2.getUpdateFrequency(context);
+        int frequencyIndex = PeriodicSynchronizerController.getUpdateFrequency(context);
         int minutes;
         switch (frequencyIndex) {
             case FREQUENCY_ONE_MINUTE: //1 minutes

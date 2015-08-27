@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="horizontal">
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/up"

@@ -36,7 +36,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
-import org.hisp.dhis.android.sdk.controllers.Dhis2;
+import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.utils.MainThreadBus;
 
 /**
@@ -45,18 +45,18 @@ import org.hisp.dhis.android.sdk.utils.MainThreadBus;
 public abstract class Dhis2Application extends Application {
 
     public static Bus bus;
-    public static Dhis2 dhis2;
+    public static DhisController dhisController;
 
     static {
         bus = new MainThreadBus(ThreadEnforcer.ANY);
-        dhis2 = new Dhis2();
-        bus.register(dhis2);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         FlowManager.init(this);
+        dhisController = new DhisController(this);
+        bus.register(dhisController);
     }
 
     @Override

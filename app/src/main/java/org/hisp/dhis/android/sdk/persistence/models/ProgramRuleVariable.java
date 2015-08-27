@@ -12,7 +12,7 @@ import java.util.Map;
  * @author Simen Skogly Russnes on 29.04.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class ProgramRuleVariable extends BaseIdentifiableObject {
+public class ProgramRuleVariable extends BaseMetaDataObject {
 
     @Column(name = "dataElement")
     String dataElement;
@@ -23,9 +23,6 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
 
     @Column(name = "externalAccess")
     boolean externalAccess;
-
-    @Column(name = "displayName")
-    String displayName;
 
     @Column(name = "program")
     String program;
@@ -54,14 +51,6 @@ public class ProgramRuleVariable extends BaseIdentifiableObject {
 
     public void setProgram(String program) {
         this.program = program;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public boolean getExternalAccess() {

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Simen Skogly Russnes on 20.02.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class Option extends BaseIdentifiableObject {
+public class Option extends BaseMetaDataObject {
 
     @JsonIgnore
     @Column(name = "sortIndex")

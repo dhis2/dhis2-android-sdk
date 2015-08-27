@@ -102,10 +102,6 @@ public class TrackedEntityAttribute extends BaseNameableObject {
     @Column(name = "dimension")
     String dimension;
 
-    @JsonProperty("displayName")
-    @Column(name = "displayName")
-    String displayName;
-
     @JsonProperty("sortOrderInListNoProgram")
     @Column(name = "sortOrderInListNoProgram")
     int sortOrderInListNoProgram;
@@ -209,14 +205,6 @@ public class TrackedEntityAttribute extends BaseNameableObject {
 
     public void setDimension(String dimension) {
         this.dimension = dimension;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     public int getSortOrderInListNoProgram() {

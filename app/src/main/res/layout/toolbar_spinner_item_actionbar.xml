@@ -31,7 +31,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <org.hisp.dhis.android.sdk.utils.ui.views.FontTextView
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

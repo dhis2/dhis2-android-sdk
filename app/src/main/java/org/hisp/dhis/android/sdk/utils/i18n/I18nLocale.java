@@ -66,4 +66,14 @@ public class I18nLocale extends BaseIdentifiableObject {
     public void setLocale(String locale) {
         this.locale = locale;
     }
+
+    @Override
+    public String getUid() {
+        return null;
+    }
+
+    @Override
+    public void setUid(String id) {
+
+    }
 }

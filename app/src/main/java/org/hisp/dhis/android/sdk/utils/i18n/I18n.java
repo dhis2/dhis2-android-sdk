@@ -37,10 +37,9 @@ import java.util.ResourceBundle;
  * @author Nguyen Dang Quang
  * @author Anders Gjendem
  */
-public class I18n
-{
+public class I18n {
     final String ID = I18n.class.getName();
-    
+
     private ResourceBundle globalResourceBundle;
 
     private ResourceBundle specificResourceBundle;
@@ -49,8 +48,7 @@ public class I18n
     // Constructor
     // -------------------------------------------------------------------------
 
-    public I18n( ResourceBundle globalResourceBundle, ResourceBundle specificResourceBundle )
-    {
+    public I18n(ResourceBundle globalResourceBundle, ResourceBundle specificResourceBundle) {
         this.globalResourceBundle = globalResourceBundle;
         this.specificResourceBundle = specificResourceBundle;
     }
@@ -64,31 +62,22 @@ public class I18n
      *
      * @param key the key for a given translation
      * @return a translated String for a given key, or the key if no translation
-     *         is found
+     * is found
      */
-    public String getString( String key )
-    {
+    public String getString(String key) {
         String translation = key;
 
-        if ( specificResourceBundle != null )
-        {
-            try
-            {
-                translation = specificResourceBundle.getString( key );
-            }
-            catch ( MissingResourceException ignored )
-            {
+        if (specificResourceBundle != null) {
+            try {
+                translation = specificResourceBundle.getString(key);
+            } catch (MissingResourceException ignored) {
             }
         }
 
-        if ( translation.equals( key ) && globalResourceBundle != null )
-        {
-            try
-            {
-                translation = globalResourceBundle.getString( key );
-            }
-            catch ( MissingResourceException ignored )
-            {
+        if (translation.equals(key) && globalResourceBundle != null) {
+            try {
+                translation = globalResourceBundle.getString(key);
+            } catch (MissingResourceException ignored) {
             }
         }
 

@@ -29,45 +29,40 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-import java.util.Stack;
-
 import org.nfunk.jep.ParseException;
 import org.nfunk.jep.function.PostfixMathCommand;
 
+import java.util.Stack;
+
 /**
  * Abstract JEP function for a single, numerical argument.
- * 
+ *
  * @author Lars Helge Overland
  */
-public abstract class UnaryDoubleFunction
-    extends PostfixMathCommand
-{
-    public UnaryDoubleFunction()
-    {
+public abstract class UnaryDoubleFunction extends PostfixMathCommand {
+    public UnaryDoubleFunction() {
         super();
 
         numberOfParameters = 1;
     }
-    
+
     @Override
-    @SuppressWarnings( { "rawtypes", "unchecked" } )
-    public void run( Stack inStack ) throws ParseException 
-    {
-        checkStack( inStack );
-        
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void run(Stack inStack) throws ParseException {
+        checkStack(inStack);
+
         Object param = inStack.pop();
-        
-        if ( param == null || !( param instanceof Double ) )
-        {
-            throw new ParseException( "Invalid parameter type, must be double: " + param );
+
+        if (param == null || !(param instanceof Double)) {
+            throw new ParseException("Invalid parameter type, must be double: " + param);
         }
-        
-        double arg = ( (Double) param ).doubleValue();
-        
-        Double result = eval( arg );
-        
-        inStack.push( result );
+
+        double arg = ((Double) param).doubleValue();
+
+        Double result = eval(arg);
+
+        inStack.push(result);
     }
-    
-    public abstract Double eval( double arg );
+
+    public abstract Double eval(double arg);
 }

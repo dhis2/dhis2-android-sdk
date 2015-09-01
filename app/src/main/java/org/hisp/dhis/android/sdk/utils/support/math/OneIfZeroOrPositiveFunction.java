@@ -32,22 +32,18 @@ package org.hisp.dhis.android.sdk.utils.support.math;
 /**
  * JEP function which returns 1 if the argument is a zero or positive number, 0
  * otherwise.
- * 
+ *
  * @author Lars Helge Overland
  */
-public class OneIfZeroOrPositiveFunction
-    extends UnaryDoubleFunction
-{
+public class OneIfZeroOrPositiveFunction extends UnaryDoubleFunction {
     public static final String NAME = "oizp";
 
-    public OneIfZeroOrPositiveFunction()
-    {
+    public OneIfZeroOrPositiveFunction() {
         super();
     }
 
     @Override
-    public Double eval( double arg )
-    {
-        return ( arg >= 0d ) ? 1d : 0d;
+    public Double eval(double arg) {
+        return (arg >= 0d) ? 1d : 0d;
     }
 }

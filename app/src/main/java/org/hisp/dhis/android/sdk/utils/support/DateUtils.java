@@ -29,59 +29,58 @@
 
 package org.hisp.dhis.android.sdk.utils.support;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Months;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * @author Lars Helge Overland
  * @version $Id$
  */
-public class DateUtils
-{
+public class DateUtils {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
     public static final SimpleDateFormat[] SUPPORTED_DATE_FORMATS = new SimpleDateFormat[]{
-        new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" ),
-        new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ssZ" ),
-        new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss" ),
-        new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm" ),
-        new SimpleDateFormat( "yyyy-MM-dd'T'HH" ),
-        new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssZ" ),
-        new SimpleDateFormat( "yyyy-MM-dd" ),
-        new SimpleDateFormat( "yyyy-MM" ),
-        new SimpleDateFormat( "yyyy" )
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ"),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm"),
+            new SimpleDateFormat("yyyy-MM-dd'T'HH"),
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ"),
+            new SimpleDateFormat("yyyy-MM-dd"),
+            new SimpleDateFormat("yyyy-MM"),
+            new SimpleDateFormat("yyyy")
     };
 
     private static final String SEP = ", ";
-    
+
     public static final PeriodFormatter DAY_SECOND_FORMAT = new PeriodFormatterBuilder()
-        .appendDays().appendSuffix( " d" ).appendSeparator( SEP )
-        .appendHours().appendSuffix( " h" ).appendSeparator( SEP )
-        .appendMinutes().appendSuffix( " m" ).appendSeparator( SEP )
-        .appendSeconds().appendSuffix( " s" ).appendSeparator( SEP ).toFormatter();
+            .appendDays().appendSuffix(" d").appendSeparator(SEP)
+            .appendHours().appendSuffix(" h").appendSeparator(SEP)
+            .appendMinutes().appendSuffix(" m").appendSeparator(SEP)
+            .appendSeconds().appendSuffix(" s").appendSeparator(SEP).toFormatter();
 
     //TODO replace with FastDateParser, SimpleDateFormat is not thread-safe
 
     /**
      * Used by web API and utility methods.
      */
-    public static final String DATE_PATTERN = "yyyy-MM-dd";    
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
     public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
-    
-    public static final SimpleDateFormat LONG_DATE_FORMAT = new SimpleDateFormat( TIMESTAMP_PATTERN );
-    public static final SimpleDateFormat ACCESS_DATE_FORMAT = new SimpleDateFormat( "yyyy/MM/dd HH:mm:ss" );
-    public static final SimpleDateFormat HTTP_DATE_FORMAT = new SimpleDateFormat( "EEE, dd MMM yyyy HH:mm:ss" );
+
+    public static final SimpleDateFormat LONG_DATE_FORMAT = new SimpleDateFormat(TIMESTAMP_PATTERN);
+    public static final SimpleDateFormat ACCESS_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static final SimpleDateFormat HTTP_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
 
     public static final double DAYS_IN_YEAR = 365.0;
-    
+
     private static final long MS_PER_DAY = 86400000;
     private static final long MS_PER_S = 1000;
 
@@ -91,9 +90,8 @@ public class DateUtils
      * @param date the Date to parse.
      * @return a formatted date string.
      */
-    public static String getAccessDateString( Date date )
-    {
-        return date != null ? ACCESS_DATE_FORMAT.format( date ) : null;
+    public static String getAccessDateString(Date date) {
+        return date != null ? ACCESS_DATE_FORMAT.format(date) : null;
     }
 
     /**
@@ -102,16 +100,14 @@ public class DateUtils
      * @param date the Date to parse.
      * @return A formatted date string.
      */
-    public static String getLongGmtDateString( Date date )
-    {
-        if ( date == null )
-        {
+    public static String getLongGmtDateString(Date date) {
+        if (date == null) {
             return null;
         }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        simpleDateFormat.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
-        return simpleDateFormat.format( date );
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return simpleDateFormat.format(date);
     }
 
 
@@ -121,9 +117,8 @@ public class DateUtils
      * @param date the Date to parse.
      * @return A formatted date string.
      */
-    public static String getLongDateString( Date date )
-    {
-        return date != null ? LONG_DATE_FORMAT.format( date ) : null;
+    public static String getLongDateString(Date date) {
+        return date != null ? LONG_DATE_FORMAT.format(date) : null;
     }
 
     /**
@@ -131,9 +126,8 @@ public class DateUtils
      *
      * @return A formatted date string.
      */
-    public static String getLongDateString()
-    {
-        return getLongDateString( Calendar.getInstance().getTime() );
+    public static String getLongDateString() {
+        return getLongDateString(Calendar.getInstance().getTime());
     }
 
     /**
@@ -142,47 +136,42 @@ public class DateUtils
      * @param date the Date to parse.
      * @return A formatted date string. Null if argument is null.
      */
-    public static String getMediumDateString( Date date )
-    {
+    public static String getMediumDateString(Date date) {
         final SimpleDateFormat format = new SimpleDateFormat();
 
-        format.applyPattern( DEFAULT_DATE_FORMAT );
+        format.applyPattern(DEFAULT_DATE_FORMAT);
 
-        return date != null ? format.format( date ) : null;
+        return date != null ? format.format(date) : null;
     }
-    
+
     /**
      * Returns the latest of the two given dates.
-     * 
+     *
      * @param date1 the first date.
      * @param date2 the second date.
      * @return the latest of the two given dates.
      */
-    public static Date max( Date date1, Date date2 )
-    {
-        if ( date1 == null )
-        {
+    public static Date max(Date date1, Date date2) {
+        if (date1 == null) {
             return date2 != null ? date2 : null;
         }
-        
-        return date2 != null ? ( date1.after( date2 ) ? date1 : date2 ) : date1;        
+
+        return date2 != null ? (date1.after(date2) ? date1 : date2) : date1;
     }
 
     /**
      * Returns the latest of the given dates.
-     * 
+     *
      * @param date the dates.
      * @return the latest of the given dates.
      */
-    public static Date max( Date... date )
-    {
+    public static Date max(Date... date) {
         Date latest = null;
-        
-        for ( Date d : date )
-        {
-            latest = max( d, latest );
+
+        for (Date d : date) {
+            latest = max(d, latest);
         }
-        
+
         return latest;
     }
 
@@ -194,9 +183,8 @@ public class DateUtils
      * @return A formatted date string. The defaultValue argument if date
      * argument is null.
      */
-    public static String getMediumDateString( Date date, String defaultValue )
-    {
-        return date != null ? getMediumDateString( date ) : defaultValue;
+    public static String getMediumDateString(Date date, String defaultValue) {
+        return date != null ? getMediumDateString(date) : defaultValue;
     }
 
     /**
@@ -204,9 +192,8 @@ public class DateUtils
      *
      * @return A formatted date string.
      */
-    public static String getMediumDateString()
-    {
-        return getMediumDateString( Calendar.getInstance().getTime() );
+    public static String getMediumDateString() {
+        return getMediumDateString(Calendar.getInstance().getTime());
     }
 
     /**
@@ -215,24 +202,21 @@ public class DateUtils
      * @param date the Date to format.
      * @return a formatted string.
      */
-    public static String getHttpDateString( Date date )
-    {
-        return HTTP_DATE_FORMAT.format( date ) + " GMT";
+    public static String getHttpDateString(Date date) {
+        return HTTP_DATE_FORMAT.format(date) + " GMT";
     }
 
     /**
      * Returns yesterday's date formatted according to the HTTP specification
      * standard date format.
      *
-     * @param date the Date to format.
      * @return a formatted string.
      */
-    public static String getExpiredHttpDateString()
-    {
+    public static String getExpiredHttpDateString() {
         Calendar cal = Calendar.getInstance();
-        cal.add( Calendar.DAY_OF_YEAR, -1 );
+        cal.add(Calendar.DAY_OF_YEAR, -1);
 
-        return getHttpDateString( cal.getTime() );
+        return getHttpDateString(cal.getTime());
     }
 
     /**
@@ -242,14 +226,10 @@ public class DateUtils
      * @param dateString the date string.
      * @return a date.
      */
-    public static Date getDefaultDate( String dateString )
-    {
-        try
-        {
-            return new SimpleDateFormat( DEFAULT_DATE_FORMAT ).parse( dateString );
-        }
-        catch ( Exception ex )
-        {
+    public static Date getDefaultDate(String dateString) {
+        try {
+            return new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(dateString);
+        } catch (Exception ex) {
             return null;
         }
     }
@@ -260,19 +240,15 @@ public class DateUtils
      * @param dateString the String to parse.
      * @return a Date based on the given String.
      */
-    public static Date getMediumDate( String dateString )
-    {
-        try
-        {
+    public static Date getMediumDate(String dateString) {
+        try {
             final SimpleDateFormat format = new SimpleDateFormat();
 
-            format.applyPattern( DEFAULT_DATE_FORMAT );
+            format.applyPattern(DEFAULT_DATE_FORMAT);
 
-            return dateString != null && dateIsValid( dateString ) ? format.parse( dateString ) : null;
-        }
-        catch ( ParseException ex )
-        {
-            throw new RuntimeException( "Failed to parse medium date", ex );
+            return dateString != null && dateIsValid(dateString) ? format.parse(dateString) : null;
+        } catch (ParseException ex) {
+            throw new RuntimeException("Failed to parse medium date", ex);
         }
     }
 
@@ -286,16 +262,13 @@ public class DateUtils
      * @return <code>true</code> if the base date is between the start date
      * and end date, <code>false</code> otherwise.
      */
-    public static boolean between( Date baseDate, Date startDate, Date endDate )
-    {
-        if ( startDate.equals( endDate ) || endDate.before( startDate ) )
-        {
+    public static boolean between(Date baseDate, Date startDate, Date endDate) {
+        if (startDate.equals(endDate) || endDate.before(startDate)) {
             return false;
         }
 
-        if ( (startDate.before( baseDate ) || startDate.equals( baseDate ))
-            && (endDate.after( baseDate ) || endDate.equals( baseDate )) )
-        {
+        if ((startDate.before(baseDate) || startDate.equals(baseDate))
+                && (endDate.after(baseDate) || endDate.equals(baseDate))) {
             return true;
         }
 
@@ -312,15 +285,12 @@ public class DateUtils
      * @return <code>true</code> if the base date is between the start date
      * and end date, <code>false</code> otherwise.
      */
-    public static boolean strictlyBetween( Date baseDate, Date startDate, Date endDate )
-    {
-        if ( startDate.equals( endDate ) || endDate.before( startDate ) )
-        {
+    public static boolean strictlyBetween(Date baseDate, Date startDate, Date endDate) {
+        if (startDate.equals(endDate) || endDate.before(startDate)) {
             return false;
         }
 
-        if ( startDate.before( baseDate ) && endDate.after( baseDate ) )
-        {
+        if (startDate.before(baseDate) && endDate.after(baseDate)) {
             return true;
         }
 
@@ -334,8 +304,7 @@ public class DateUtils
      * @param date the date.
      * @return number of days since Epoch.
      */
-    public static long getDays( Date date )
-    {
+    public static long getDays(Date date) {
         return date.getTime() / MS_PER_DAY;
     }
 
@@ -348,8 +317,7 @@ public class DateUtils
      * @param endDate   the end-date.
      * @return the number of days between the start and end-date.
      */
-    public static long getDays( Date startDate, Date endDate )
-    {
+    public static long getDays(Date startDate, Date endDate) {
         return (endDate.getTime() - startDate.getTime()) / MS_PER_DAY;
     }
 
@@ -362,9 +330,8 @@ public class DateUtils
      * @param endDate   the end-date.
      * @return the number of days between the start and end-date.
      */
-    public static long getDaysInclusive( Date startDate, Date endDate )
-    {
-        return getDays( startDate, endDate ) + 1;
+    public static long getDaysInclusive(Date startDate, Date endDate) {
+        return getDays(startDate, endDate) + 1;
     }
 
     /**
@@ -376,9 +343,8 @@ public class DateUtils
      * @param endDate   the end date.
      * @return the number of days between the start and end date.
      */
-    public static int daysBetween( Date startDate, Date endDate )
-    {
-        final Days days = Days.daysBetween( new DateTime( startDate ), new DateTime( endDate ) );
+    public static int daysBetween(Date startDate, Date endDate) {
+        final Days days = Days.daysBetween(new DateTime(startDate), new DateTime(endDate));
 
         return days.getDays();
     }
@@ -392,9 +358,8 @@ public class DateUtils
      * @param endDate   the end date.
      * @return the number of months between the start and end date.
      */
-    public static int monthsBetween( Date startDate, Date endDate )
-    {
-        final Months days = Months.monthsBetween( new DateTime( startDate ), new DateTime( endDate ) );
+    public static int monthsBetween(Date startDate, Date endDate) {
+        final Months days = Months.monthsBetween(new DateTime(startDate), new DateTime(endDate));
 
         return days.getMonths();
     }
@@ -405,14 +370,13 @@ public class DateUtils
      * @param date the date.
      * @return the number of days between Epoch and the given date.
      */
-    public static int daysSince1900( Date date )
-    {
+    public static int daysSince1900(Date date) {
         final Calendar calendar = Calendar.getInstance();
 
         calendar.clear();
-        calendar.set( 1900, 0, 1 );
+        calendar.set(1900, 0, 1);
 
-        return daysBetween( calendar.getTime(), date );
+        return daysBetween(calendar.getTime(), date);
     }
 
     /**
@@ -420,12 +384,11 @@ public class DateUtils
      *
      * @return Epoch date, ie. 01/01/1970.
      */
-    public static Date getEpoch()
-    {
+    public static Date getEpoch() {
         final Calendar calendar = Calendar.getInstance();
 
         calendar.clear();
-        calendar.set( 1970, 0, 1 );
+        calendar.set(1970, 0, 1);
 
         return calendar.getTime();
     }
@@ -436,19 +399,18 @@ public class DateUtils
      * @param date the Date.
      * @return a date String.
      */
-    public static String getSqlDateString( Date date )
-    {
+    public static String getSqlDateString(Date date) {
         Calendar cal = Calendar.getInstance();
 
-        cal.setTime( date );
+        cal.setTime(date);
 
-        int year = cal.get( Calendar.YEAR );
-        int month = cal.get( Calendar.MONTH ) + 1;
-        int day = cal.get( Calendar.DAY_OF_MONTH );
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        String yearString = String.valueOf( year );
-        String monthString = month < 10 ? "0" + month : String.valueOf( month );
-        String dayString = day < 10 ? "0" + day : String.valueOf( day );
+        String yearString = String.valueOf(year);
+        String monthString = month < 10 ? "0" + month : String.valueOf(month);
+        String dayString = day < 10 ? "0" + day : String.valueOf(day);
 
         return yearString + "-" + monthString + "-" + dayString;
     }
@@ -462,9 +424,8 @@ public class DateUtils
      * @param dateString the string to be checked.
      * @return true/false depending on whether the string is a date according to the format "yyyy-MM-dd".
      */
-    public static boolean dateIsValid( String dateString )
-    {
-        return dateString.matches( DEFAULT_DATE_REGEX );
+    public static boolean dateIsValid(String dateString) {
+        return dateString.matches(DEFAULT_DATE_REGEX);
     }
 
     /**
@@ -499,12 +460,11 @@ public class DateUtils
      * @param date the date.
      * @param days the number of days to add.
      */
-    public static Date getDateAfterAddition( Date date, int days )
-    {
+    public static Date getDateAfterAddition(Date date, int days) {
         Calendar cal = Calendar.getInstance();
 
-        cal.setTime( date );
-        cal.add( Calendar.DATE, days );
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days);
 
         return cal.getTime();
     }
@@ -517,30 +477,23 @@ public class DateUtils
      * @param toDate
      * @return boolean
      */
-    public static boolean checkDates( String fromDate, String toDate )
-    {
+    public static boolean checkDates(String fromDate, String toDate) {
         String formatString = DEFAULT_DATE_FORMAT;
-        SimpleDateFormat sdf = new SimpleDateFormat( formatString );
+        SimpleDateFormat sdf = new SimpleDateFormat(formatString);
 
         Date date1 = null;
         Date date2 = null;
 
-        try
-        {
-            date1 = sdf.parse( fromDate );
-            date2 = sdf.parse( toDate );
-        }
-        catch ( ParseException e )
-        {
+        try {
+            date1 = sdf.parse(fromDate);
+            date2 = sdf.parse(toDate);
+        } catch (ParseException e) {
             return false; // The user hasn't specified any dates
         }
 
-        if ( !date1.before( date2 ) )
-        {
+        if (!date1.before(date2)) {
             return true; // Return true if date2 is earlier than date1
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -577,25 +530,23 @@ public class DateUtils
 
         return periods;
     }*/
-    
+
     /**
      * Returns a pretty string representing the interval between the given
      * start and end dates using a day, month, second format.
-     * 
+     *
      * @param start the start date.
-     * @param end the end date.
+     * @param end   the end date.
      * @return a string, or null if the given start or end date is null.
      */
-    public static String getPrettyInterval( Date start, Date end )
-    {
-        if ( start == null || end == null )
-        {
+    public static String getPrettyInterval(Date start, Date end) {
+        if (start == null || end == null) {
             return null;
         }
-        
+
         long diff = end.getTime() - start.getTime();
-        
-        return DAY_SECOND_FORMAT.print( new org.joda.time.Period( diff ) );
+
+        return DAY_SECOND_FORMAT.print(new org.joda.time.Period(diff));
     }
 
     /**
@@ -605,21 +556,15 @@ public class DateUtils
      * @param dateString the date string.
      * @return a date.
      */
-    public static Date parseDate( final String dateString )
-    {
-        if ( dateString == null )
-        {
+    public static Date parseDate(final String dateString) {
+        if (dateString == null) {
             return null;
         }
 
-        for ( SimpleDateFormat format : SUPPORTED_DATE_FORMATS )
-        {
-            try
-            {
-                return format.parse( dateString );
-            }
-            catch ( ParseException ignored )
-            {
+        for (SimpleDateFormat format : SUPPORTED_DATE_FORMATS) {
+            try {
+                return format.parse(dateString);
+            } catch (ParseException ignored) {
             }
         }
 

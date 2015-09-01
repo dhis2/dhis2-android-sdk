@@ -30,23 +30,20 @@
 package org.hisp.dhis.android.sdk.utils.support.math;
 
 /**
- * JEP function which returns the value if the argument is a zero or positive 
+ * JEP function which returns the value if the argument is a zero or positive
  * number, 0 otherwise.
- * 
+ *
  * @author Lars Helge Overland
  */
-public class ZeroIfNegativeFunction
-    extends UnaryDoubleFunction
-{
+public class ZeroIfNegativeFunction extends UnaryDoubleFunction {
     public static final String NAME = "zing";
-    public ZeroIfNegativeFunction()
-    {
+
+    public ZeroIfNegativeFunction() {
         super();
     }
 
     @Override
-    public Double eval( double arg )
-    {
-        return Math.max( 0d, arg );
+    public Double eval(double arg) {
+        return Math.max(0d, arg);
     }
 }

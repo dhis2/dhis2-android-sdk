@@ -24,32 +24,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.utils;
+package org.hisp.dhis.android.sdk.models.interpretation;
+
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 /**
- * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
+ * <p>
+ *     This model class is intended to represent content of Interpretation {map, chart,
+ *     reportTable, dataSet, period, organisationUnit}
  */
-public final class StringUtils {
-    private StringBuilder mBuilder;
+public final class InterpretationElement extends BaseIdentifiableObject {
+    public static final String TYPE_CHART = "chart";
+    public static final String TYPE_MAP = "map";
+    public static final String TYPE_REPORT_TABLE = "reportTable";
+    public static final String TYPE_DATA_SET = "dataSet";
+    public static final String TYPE_PERIOD = "period";
+    public static final String TYPE_ORGANISATION_UNIT = "organisationUnit";
 
-    private StringUtils() {
-        mBuilder = new StringBuilder();
+    private String type;
+
+    private Interpretation interpretation;
+
+    public InterpretationElement() {
+        // empty constructor
     }
 
-    public static StringUtils create() {
-        return new StringUtils();
+    public Interpretation getInterpretation() {
+        return interpretation;
     }
 
-    public <T> StringUtils append(T item) {
-        mBuilder.append(item);
-        return this;
+    public void setInterpretation(Interpretation interpretation) {
+        this.interpretation = interpretation;
     }
 
-    public String build() {
-        return mBuilder.toString();
+    public String getType() {
+        return type;
     }
 
-    public static boolean isEmpty(CharSequence sequence) {
-        return sequence == null || sequence.length() == 0;
+    public void setType(String type) {
+        this.type = type;
     }
 }

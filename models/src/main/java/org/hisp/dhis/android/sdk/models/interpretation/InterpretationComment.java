@@ -24,32 +24,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.utils;
+package org.hisp.dhis.android.sdk.models.interpretation;
 
-/**
- * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
- */
-public final class StringUtils {
-    private StringBuilder mBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private StringUtils() {
-        mBuilder = new StringBuilder();
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.user.User;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class InterpretationComment extends BaseIdentifiableObject {
+
+    @JsonProperty("text")
+    private String text;
+
+    @JsonProperty("user")
+    private User user;
+
+    private State state;
+
+    private Interpretation interpretation;
+
+    public InterpretationComment() {
+        state = State.SYNCED;
     }
 
-    public static StringUtils create() {
-        return new StringUtils();
+    public String getText() {
+        return text;
     }
 
-    public <T> StringUtils append(T item) {
-        mBuilder.append(item);
-        return this;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String build() {
-        return mBuilder.toString();
+    public User getUser() {
+        return user;
     }
 
-    public static boolean isEmpty(CharSequence sequence) {
-        return sequence == null || sequence.length() == 0;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public Interpretation getInterpretation() {
+        return interpretation;
+    }
+
+    public void setInterpretation(Interpretation interpretation) {
+        this.interpretation = interpretation;
     }
 }

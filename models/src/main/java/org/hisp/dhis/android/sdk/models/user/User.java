@@ -24,32 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.utils;
+package org.hisp.dhis.android.sdk.models.user;
+
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
  */
-public final class StringUtils {
-    private StringBuilder mBuilder;
+public final class User extends BaseIdentifiableObject {
+    // no additional fields
 
-    private StringUtils() {
-        mBuilder = new StringBuilder();
-    }
-
-    public static StringUtils create() {
-        return new StringUtils();
-    }
-
-    public <T> StringUtils append(T item) {
-        mBuilder.append(item);
-        return this;
-    }
-
-    public String build() {
-        return mBuilder.toString();
-    }
-
-    public static boolean isEmpty(CharSequence sequence) {
-        return sequence == null || sequence.length() == 0;
+    public User() {
+        // empty constructor
     }
 }

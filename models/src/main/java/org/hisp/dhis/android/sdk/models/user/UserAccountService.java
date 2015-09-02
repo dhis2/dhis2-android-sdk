@@ -32,9 +32,6 @@ import org.hisp.dhis.android.sdk.models.common.IModelsStore;
 
 import java.util.List;
 
-/**
- * Created by arazabishov on 8/27/15.
- */
 public class UserAccountService implements IUserAccountService {
     private final IUserAccountStore userAccountStore;
     private final IModelsStore modelsStore;

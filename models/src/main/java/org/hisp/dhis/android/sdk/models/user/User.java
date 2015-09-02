@@ -30,9 +30,6 @@ package org.hisp.dhis.android.sdk.models.user;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-/**
- * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
- */
 public final class User extends BaseIdentifiableObject {
     // no additional fields
 

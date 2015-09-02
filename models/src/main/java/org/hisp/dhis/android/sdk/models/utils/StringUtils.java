@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.sdk.models.utils;
 
-/**
- * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
- */
 public final class StringUtils {
     private StringBuilder mBuilder;
 

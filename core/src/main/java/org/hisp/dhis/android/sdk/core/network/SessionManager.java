@@ -26,49 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.converters;
+package org.hisp.dhis.android.sdk.core.network;
 
+import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.raizlabs.android.dbflow.converter.TypeConverter;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.Access;
+public final class SessionManager {
+    private static SessionManager mSessionManager;
+    private final Set<ResourceType> mResources;
 
-import java.io.IOException;
-
-@SuppressWarnings("unused")
-@com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class AccessConverter extends TypeConverter<String, Access> {
-
-    @Override
-    public String getDBValue(Access model) {
-        String access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().writeValueAsString(model);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return access;
+    private SessionManager() {
+        mResources = new HashSet<>();
     }
 
-    @Override
-    public Access getModelValue(String data) {
-        Access access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().readValue(data, Access.class);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static SessionManager getInstance() {
+        if (mSessionManager == null) {
+            mSessionManager = new SessionManager();
         }
 
-        return access;
+        return mSessionManager;
+    }
+
+    public void delete() {
+        mResources.clear();
+    }
+
+    public void setResourceTypeSynced(ResourceType resourceType) {
+        mResources.add(resourceType);
+    }
+
+    public boolean isResourceTypeSynced(ResourceType resourceType) {
+        return mResources.contains(resourceType);
     }
 }

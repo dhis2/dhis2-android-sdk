@@ -26,49 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.converters;
+package org.hisp.dhis.android.sdk.core.persistence.models.common;
 
+import com.raizlabs.android.dbflow.sql.language.Delete;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.raizlabs.android.dbflow.converter.TypeConverter;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItemContent$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.User$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.UserAccount$Flow;
+import org.hisp.dhis.android.sdk.models.common.IModelsStore;
 
-import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.Access;
+public class ModelsStore implements IModelsStore {
 
-import java.io.IOException;
-
-@SuppressWarnings("unused")
-@com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class AccessConverter extends TypeConverter<String, Access> {
-
-    @Override
-    public String getDBValue(Access model) {
-        String access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().writeValueAsString(model);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return access;
+    public ModelsStore() {
+        // empty constructor
     }
 
     @Override
-    public Access getModelValue(String data) {
-        Access access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().readValue(data, Access.class);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return access;
+    public void deleteAllTables() {
+        Delete.tables(
+                Dashboard$Flow.class,
+                DashboardItem$Flow.class,
+                DashboardElement$Flow.class,
+                DashboardItemContent$Flow.class,
+                Interpretation$Flow.class,
+                InterpretationComment$Flow.class,
+                InterpretationElement$Flow.class,
+                UserAccount$Flow.class,
+                User$Flow.class
+        );
     }
 }

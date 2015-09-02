@@ -150,7 +150,7 @@ public class BaseIdentifiableObject implements IdentifiableObject {
                 .build();
     }
 
-    public static <T extends BaseIdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
+    public static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
         Map<String, T> map = new HashMap<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -162,7 +162,7 @@ public class BaseIdentifiableObject implements IdentifiableObject {
         return map;
     }
 
-    public static <T extends BaseIdentifiableObject> List<String> toListIds(List<T> objects) {
+    public static <T extends IdentifiableObject> List<String> toListIds(List<T> objects) {
         List<String> ids = new ArrayList<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -172,7 +172,7 @@ public class BaseIdentifiableObject implements IdentifiableObject {
         return ids;
     }
 
-    public static <T extends BaseIdentifiableObject> List<T> merge(List<T> existingItems,
+    public static <T extends IdentifiableObject> List<T> merge(List<T> existingItems,
                                                                    List<T> updatedItems,
                                                                    List<T> persistedItems) {
         Map<String, T> updatedItemsMap = toMap(updatedItems);

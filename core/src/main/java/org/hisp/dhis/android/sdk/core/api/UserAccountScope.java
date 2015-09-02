@@ -26,49 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.converters;
+package org.hisp.dhis.android.sdk.core.api;
 
+import com.squareup.okhttp.HttpUrl;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.raizlabs.android.dbflow.converter.TypeConverter;
+import org.hisp.dhis.android.sdk.core.controllers.user.IUserAccountController;
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
+import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
+import org.hisp.dhis.android.sdk.models.user.User;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
-import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.Access;
+final class UserAccountScope implements IUserAccountController, IUserAccountService {
+    private final IUserAccountController userAccountController;
+    private final IUserAccountService userAccountService;
 
-import java.io.IOException;
-
-@SuppressWarnings("unused")
-@com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class AccessConverter extends TypeConverter<String, Access> {
-
-    @Override
-    public String getDBValue(Access model) {
-        String access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().writeValueAsString(model);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return access;
+    public UserAccountScope(IUserAccountController userAccountController,
+                            IUserAccountService userAccountService) {
+        this.userAccountController = userAccountController;
+        this.userAccountService = userAccountService;
     }
 
     @Override
-    public Access getModelValue(String data) {
-        Access access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().readValue(data, Access.class);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public UserAccount logIn(HttpUrl serverUrl, Credentials credentials) throws APIException {
+        return userAccountController.logIn(serverUrl, credentials);
+    }
 
-        return access;
+    @Override
+    public UserAccount updateAccount() throws APIException {
+        return userAccountController.updateAccount();
+    }
+
+    @Override
+    public UserAccount getCurrentUserAccount() {
+        return userAccountService.getCurrentUserAccount();
+    }
+
+    @Override
+    public User toUser(UserAccount userAccount) {
+        return userAccountService.toUser(userAccount);
+    }
+
+    @Override
+    public void logOut() {
+        userAccountService.logOut();
     }
 }

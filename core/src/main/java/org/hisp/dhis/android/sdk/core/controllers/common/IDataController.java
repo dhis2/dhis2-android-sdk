@@ -26,49 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.converters;
+package org.hisp.dhis.android.sdk.core.controllers.common;
 
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.raizlabs.android.dbflow.converter.TypeConverter;
-
-import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.Access;
-
-import java.io.IOException;
-
-@SuppressWarnings("unused")
-@com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class AccessConverter extends TypeConverter<String, Access> {
-
-    @Override
-    public String getDBValue(Access model) {
-        String access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().writeValueAsString(model);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return access;
-    }
-
-    @Override
-    public Access getModelValue(String data) {
-        Access access = null;
-        try {
-            access = ObjectMapperProvider
-                    .getInstance().readValue(data, Access.class);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return access;
-    }
+public interface IDataController<T extends IdentifiableObject> extends IController<T> {
+    void sync() throws APIException;
 }

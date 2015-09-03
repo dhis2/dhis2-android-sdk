@@ -225,5 +225,5 @@
     <string name="text_written_to_sd_card">Text written to SD Card</string>
     <string name="sd_card_error_message">Error! Is SD Card inserted?</string>
 
-
+    <string name="go_to_programoverview_fragment">Go to overview</string>
 </resources>

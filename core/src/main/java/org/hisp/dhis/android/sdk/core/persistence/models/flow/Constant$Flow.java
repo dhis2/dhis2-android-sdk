@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public class Constant$Flow extends BaseIdentifiableObject$Flow {
+public final class Constant$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
     double value;

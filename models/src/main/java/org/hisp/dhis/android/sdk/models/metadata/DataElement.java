@@ -23,7 +23,6 @@ public final class DataElement extends BaseIdentifiableObject {
     public static final String VALUE_TYPE_TEXT = "text";
     public static final String VALUE_TYPE_LONG_TEXT = "longText";
 
-
     @JsonProperty("type")
     String type;
 

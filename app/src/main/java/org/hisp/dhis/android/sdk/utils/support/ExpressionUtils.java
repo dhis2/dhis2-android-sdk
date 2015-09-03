@@ -43,106 +43,95 @@ import java.util.regex.Pattern;
 /**
  * @author Lars Helge Overland
  */
-public class ExpressionUtils
-{
+public class ExpressionUtils {
     private static final JexlEngine JEXL = new JexlEngine();
 
-    private static final Pattern NUMERIC_PATTERN = Pattern.compile( "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$" );
-    
-    static 
-    {
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile("^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$");
+
+    static {
         Map<String, Object> functions = new HashMap<>();
-        functions.put( ExpressionFunctions.NAMESPACE, ExpressionFunctions.class );
-        
-        JEXL.setFunctions( functions );
-        JEXL.setCache( 512 );
-        JEXL.setSilent( false );
-    }
-    
-    /**
-     * Evaluates the given expression. The given variables will be substituted 
-     * in the expression.
-     * 
-     * @param expression the expression.
-     * @param vars the variables, can be null.
-     * @return the result of the evaluation.
-     */
-    public static Object evaluate( String expression, Map<String, Object> vars )
-    {
-        Expression exp = JEXL.createExpression( expression );
-        
-        JexlContext context = vars != null ? new MapContext( vars ) : new MapContext();
-                
-        return exp.evaluate( context );
+        functions.put(ExpressionFunctions.NAMESPACE, ExpressionFunctions.class);
+
+        JEXL.setFunctions(functions);
+        JEXL.setCache(512);
+        JEXL.setSilent(false);
     }
 
     /**
-     * Evaluates the given expression. The given variables will be substituted 
+     * Evaluates the given expression. The given variables will be substituted
+     * in the expression.
+     *
+     * @param expression the expression.
+     * @param vars       the variables, can be null.
+     * @return the result of the evaluation.
+     */
+    public static Object evaluate(String expression, Map<String, Object> vars) {
+        Expression exp = JEXL.createExpression(expression);
+
+        JexlContext context = vars != null ? new MapContext(vars) : new MapContext();
+
+        return exp.evaluate(context);
+    }
+
+    /**
+     * Evaluates the given expression. The given variables will be substituted
      * in the expression. Converts the result of the evaluation to a Double.
      * Throws an IllegalStateException if the result could not be converted to
      * a Double
-     * 
+     *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public static Double evaluateToDouble( String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
-        
-        if ( result == null || !isNumeric( String.valueOf( result ) ) )
-        {
-            throw new IllegalStateException( "Result must be not null and numeric: " + result );
+    public static Double evaluateToDouble(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
+
+        if (result == null || !isNumeric(String.valueOf(result))) {
+            throw new IllegalStateException("Result must be not null and numeric: " + result);
         }
-        
-        return Double.valueOf( String.valueOf( result ) );
+
+        return Double.valueOf(String.valueOf(result));
     }
 
     /**
-     * Evaluates the given expression to true or false. The given variables will 
+     * Evaluates the given expression to true or false. The given variables will
      * be substituted in the expression.
-     * 
+     *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isTrue( String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
-        
-        return ( result != null && result instanceof Boolean ) ? (Boolean) result : false;
+    public static boolean isTrue(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
+
+        return (result != null && result instanceof Boolean) ? (Boolean) result : false;
     }
-    
+
     /**
      * Indicates whether the given expression is valid and evaluates to true or
      * false.
-     * 
+     *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public static boolean isBoolean( String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars );
-            
-            return ( result instanceof Boolean );
-        }
-        catch ( JexlException ex )
-        {
+    public static boolean isBoolean(String expression, Map<String, Object> vars) {
+        try {
+            Object result = evaluate(expression, vars);
+
+            return (result instanceof Boolean);
+        } catch (JexlException ex) {
             return false;
         }
     }
-    
+
     /**
      * Indicates whether the given value is numeric.
-     * 
+     *
      * @param value the value.
      * @return true or false.
      */
-    public static boolean isNumeric( String value )
-    {
-        return NUMERIC_PATTERN.matcher( value ).matches();
+    public static boolean isNumeric(String value) {
+        return NUMERIC_PATTERN.matcher(value).matches();
     }
 }

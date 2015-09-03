@@ -152,6 +152,11 @@
         <item>1 Day</item>
         <item>Disabled</item>
     </string-array>
+    
+    <string-array name="copy_store_error_message">
+        <item>Copy</item>
+        <item>Write to SD card</item>
+    </string-array>
 
     <string name="synchronize_with_server">Synchronize with server</string>
     <string name="event_sent">Sent</string>
@@ -212,5 +217,13 @@
     <string name="status_error_description">Something went wrong. Please, try to re-upload event or contact administrator.</string>
     <string name="copied_text">Copied text to clipboard.</string>
     <string name="network_error">Network error</string>
+    <string name="error_description">Error description</string>
 
+    <!--  Error log storage on device -->
+    <string name="directory">/dhis2/</string>
+    <string name="error_log_file_name">error-log.txt</string>
+    <string name="text_written_to_sd_card">Text written to SD Card</string>
+    <string name="sd_card_error_message">Error! Is SD Card inserted?</string>
+
+    <string name="go_to_programoverview_fragment">Go to overview</string>
 </resources>

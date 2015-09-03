@@ -30,16 +30,26 @@
 package org.hisp.dhis.android.sdk.ui.dialogs;
 
 import android.content.Context;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.internal.widget.AdapterViewCompat;
+import android.support.v7.widget.ActionMenuView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +62,7 @@ import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.job.JobExecutor;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
+
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
 import org.hisp.dhis.android.sdk.persistence.models.Conflict;
@@ -61,6 +72,7 @@ import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
+import org.hisp.dhis.android.sdk.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +145,7 @@ public class ItemStatusDialogFragment extends DialogFragment
         closeDialogButton.setOnClickListener(this);
         syncDialogButton.setOnClickListener(this);
         mDetails.setOnClickListener(this);
+        registerForContextMenu(mDetails);
 
         setDialogLabel(R.string.status);
     }
@@ -253,6 +266,40 @@ public class ItemStatusDialogFragment extends DialogFragment
         show(fragmentManager, TAG);
     }
 
+    public void copyToClipboard()
+    {
+        if(mDetails!=null && mDetails.getText().length()>0)
+        {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", mDetails.getText());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getActivity(), getString(R.string.copied_text), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void writeErrorToSDCard()
+    {
+        if(mDetails!=null && mDetails.getText().length()>0)
+        {
+
+            StringBuilder filePath = new StringBuilder();
+
+            String dir = getResources().getString(R.string.directory);
+            String fileName = getResources().getString(R.string.error_log_file_name);
+
+            filePath.append(Environment.getExternalStorageDirectory().getAbsolutePath());
+            filePath.append(dir);
+            filePath.append(fileName);
+
+            boolean success = LogUtils.writeErrorLogToSDCard(filePath.toString(), mDetails.getText().toString());
+            new MediaScanner(getActivity(), filePath.toString());
+
+            if(success)
+                Toast.makeText(getActivity(), getResources().getString(R.string.text_written_to_sd_card), Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getActivity(), getResources().getString(R.string.sd_card_error_message), Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.sync_dialog_button) {
@@ -263,10 +310,10 @@ public class ItemStatusDialogFragment extends DialogFragment
             dismiss();
         } else if(v.getId() == R.id.item_detailed_info) {
             if(mDetails!=null && mDetails.getText().length()>0) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", mDetails.getText());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getActivity(), getString(R.string.copied_text), Toast.LENGTH_SHORT).show();
+
+
+
+
             }
         }
     }
@@ -284,11 +331,55 @@ public class ItemStatusDialogFragment extends DialogFragment
         }
 
     }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if(v.getId() == R.id.item_detailed_info);
+        {
+            menu.setHeaderTitle(R.string.error_description);
+            String[] contextMenu = getResources().getStringArray(R.array.copy_store_error_message);
+
+            for(int i=0;i<contextMenu.length;i++)
+            {
+                menu.add(Menu.NONE, i, i, contextMenu[i]);
+            }
+
+            OnMenuItemClickListener listener = new OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    onContextItemSelected(item); // workaround for bug in Android that onContextItemSelected is never called automatically
+                    return true;
+                }
+            };
+
+            for (int i = 0, n = menu.size(); i < n; i++)
+                menu.getItem(i).setOnMenuItemClickListener(listener);
+        }
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        int menuItemIndex = item.getItemId();
+        String[] contextMenu = getResources().getStringArray(R.array.copy_store_error_message);
+        String menuItemName = contextMenu[menuItemIndex];
+
+
+        if(item.getTitle().toString().equalsIgnoreCase(contextMenu[0]))
+            copyToClipboard();
+        else if(item.getTitle().toString().equalsIgnoreCase(contextMenu[1]))
+            writeErrorToSDCard();
+
+
+
+        return super.onContextItemSelected(item);
+    }
 
     public static void sendTrackedEntityInstance(final TrackedEntityInstance trackedEntityInstance) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 ResourceType.TRACKEDENTITYINSTANCE) {
-
             @Override
             public Object execute() throws APIException {
                 TrackerController.sendTrackedEntityInstanceChanges(DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
@@ -297,6 +388,32 @@ public class ItemStatusDialogFragment extends DialogFragment
         });
     }
 
+        private class MediaScanner implements MediaScannerConnection.MediaScannerConnectionClient
+        {
+
+            private MediaScannerConnection mediaScannerConnection;
+            private String pathToFile;
+
+
+            public MediaScanner(Context context, String pathToFile)
+            {
+                this.pathToFile = pathToFile;
+                mediaScannerConnection = new MediaScannerConnection(context, this);
+                mediaScannerConnection.connect();
+            }
+
+            @Override
+            public void onMediaScannerConnected()
+            {
+                mediaScannerConnection.scanFile(pathToFile, null); // when passing null reference, grabbing extension from file path (.txt for a text file)
+            }
+
+            @Override
+            public void onScanCompleted(String path, Uri uri)
+            {
+                mediaScannerConnection.disconnect();
+            }
+        }
     public static void sendEnrollment(final Enrollment enrollment) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 ResourceType.ENROLLMENT) {

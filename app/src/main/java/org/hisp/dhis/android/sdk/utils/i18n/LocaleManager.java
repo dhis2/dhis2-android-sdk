@@ -36,11 +36,10 @@ import java.util.Locale;
  * @author Torgeir Lorange Ostby
  * @version $Id: LocaleManager.java 3151 2007-03-23 20:16:20Z oyvinfb $
  */
-public interface LocaleManager
-{
+public interface LocaleManager {
     final String ID = LocaleManager.class.getName();
 
-    final Locale DHIS_STANDARD_LOCALE = new Locale( "en" );
+    final Locale DHIS_STANDARD_LOCALE = new Locale("en");
 
     Locale getCurrentLocale();
 
@@ -49,6 +48,6 @@ public interface LocaleManager
     List<Locale> getLocalesOrderedByPriority();
 
     Locale getFallbackLocale();
-    
+
     List<Locale> getAvailableLocales();
 }

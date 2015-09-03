@@ -30,8 +30,8 @@
 package org.hisp.dhis.android.sdk.utils.services;
 
 import org.apache.commons.jexl2.JexlException;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;

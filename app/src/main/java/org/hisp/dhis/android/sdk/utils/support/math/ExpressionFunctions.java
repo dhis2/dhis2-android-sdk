@@ -29,40 +29,35 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-public class ExpressionFunctions
-{
+public class ExpressionFunctions {
     public static final String NAMESPACE = "d2";
-    
+
     /**
      * Function which will return zero if the argument is a negative number.
-     * 
+     *
      * @param value the value, must be a number.
      * @return a Double.
      */
-    public static Double zing( Number value )
-    {
-        if ( value == null )
-        {
-            throw new IllegalArgumentException( "Argument is null: " + value );
+    public static Double zing(Number value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Argument is null: " + value);
         }
-        
-        return Math.max( 0d, value.doubleValue() );
+
+        return Math.max(0d, value.doubleValue());
     }
 
     /**
-     * Function which will return one if the argument is zero or a positive 
+     * Function which will return one if the argument is zero or a positive
      * number, and zero if not.
-     * 
+     *
      * @param value the value, must be a number.
      * @return a Double.
      */
-    public static Double oizp( Number value )
-    {
-        if ( value == null )
-        {
-            throw new IllegalArgumentException( "Argument is null: " + value );
+    public static Double oizp(Number value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Argument is null: " + value);
         }
-        
-        return ( value.doubleValue() >= 0d ) ? 1d : 0d;
+
+        return (value.doubleValue() >= 0d) ? 1d : 0d;
     }
 }

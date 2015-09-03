@@ -29,9 +29,12 @@
 
 package org.hisp.dhis.android.sdk.utils.support;
 
-import android.util.Log;
-
-import static org.hisp.dhis.android.sdk.utils.i18n.LocaleManager.DHIS_STANDARD_LOCALE;
+import org.apache.commons.validator.routines.DoubleValidator;
+import org.apache.commons.validator.routines.IntegerValidator;
+import org.hisp.dhis.android.sdk.utils.Operator;
+import org.hisp.dhis.android.sdk.utils.support.math.OneIfZeroOrPositiveFunction;
+import org.hisp.dhis.android.sdk.utils.support.math.ZeroIfNegativeFunction;
+import org.nfunk.jep.JEP;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -40,22 +43,13 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.apache.commons.validator.routines.DoubleValidator;
-import org.apache.commons.validator.routines.IntegerValidator;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.utils.Operator;
-import org.hisp.dhis.android.sdk.utils.support.math.OneIfZeroOrPositiveFunction;
-import org.hisp.dhis.android.sdk.utils.support.math.ZeroIfNegativeFunction;
-import org.nfunk.jep.JEP;
-
 /**
  * @author Lars Helge Overland
  */
-public class MathUtils
-{
-    public static final Double ZERO = new Double( 0 );
+public class MathUtils {
+    public static final Double ZERO = new Double(0);
 
-    private static final Locale LOCALE = new Locale( "en" );
+    private static final Locale LOCALE = new Locale("en");
 
     private static DoubleValidator DOUBLE_VALIDATOR = new DoubleValidator();
     private static IntegerValidator INT_VALIDATOR = new IntegerValidator();
@@ -65,27 +59,26 @@ public class MathUtils
     public static final String NUMERIC_REGEXP = "^(-?0|-?[1-9]\\d*)(\\.\\d+)?(E(-)?\\d+)?$";
     public static final String NUMERIC_LENIENT_REGEXP = "^(-?[0-9]+)(\\.[0-9]+)?(E(-)?\\d+)?$";
 
-    private static final Pattern NUMERIC_PATTERN = Pattern.compile( NUMERIC_REGEXP );
-    private static final Pattern NUMERIC_LENIENT_PATTERN = Pattern.compile( NUMERIC_LENIENT_REGEXP );
-    private static final Pattern INT_PATTERN = Pattern.compile( "^(0|-?[1-9]\\d*)$" );
-    private static final Pattern POSITIVE_INT_PATTERN = Pattern.compile( "^[1-9]\\d*$" );
-    private static final Pattern POSITIVE_OR_ZERO_INT_PATTERN = Pattern.compile( "(^0$)|(^[1-9]\\d*$)" );
-    private static final Pattern NEGATIVE_INT_PATTERN = Pattern.compile( "^-[1-9]\\d*$" );
-    private static final Pattern ZERO_PATTERN = Pattern.compile( "^0(\\.0*)?$" );
+    private static final Pattern NUMERIC_PATTERN = Pattern.compile(NUMERIC_REGEXP);
+    private static final Pattern NUMERIC_LENIENT_PATTERN = Pattern.compile(NUMERIC_LENIENT_REGEXP);
+    private static final Pattern INT_PATTERN = Pattern.compile("^(0|-?[1-9]\\d*)$");
+    private static final Pattern POSITIVE_INT_PATTERN = Pattern.compile("^[1-9]\\d*$");
+    private static final Pattern POSITIVE_OR_ZERO_INT_PATTERN = Pattern.compile("(^0$)|(^[1-9]\\d*$)");
+    private static final Pattern NEGATIVE_INT_PATTERN = Pattern.compile("^-[1-9]\\d*$");
+    private static final Pattern ZERO_PATTERN = Pattern.compile("^0(\\.0*)?$");
 
     /**
      * Evaluates whether an expression is true or false.
      *
-     * @param leftSide The left side of the expression.
-     * @param operator The expression operator.
+     * @param leftSide  The left side of the expression.
+     * @param operator  The expression operator.
      * @param rightSide The right side of the expression.
      * @return True if the expression is true, false otherwise.
      */
-    public static boolean expressionIsTrue( double leftSide, Operator operator, double rightSide )
-    {
+    public static boolean expressionIsTrue(double leftSide, Operator operator, double rightSide) {
         final String expression = leftSide + operator.getMathematicalOperator() + rightSide;
 
-        return expressionIsTrue( expression );
+        return expressionIsTrue(expression);
     }
 
     /**
@@ -94,12 +87,11 @@ public class MathUtils
      * @param expression the expression to evaluate.
      * @return True if the expression is true, false otherwise.
      */
-    public static boolean expressionIsTrue( String expression )
-    {
+    public static boolean expressionIsTrue(String expression) {
         final JEP parser = getJep();
-        parser.parseExpression( expression );
+        parser.parseExpression(expression);
 
-        return ( parser.getValue() == 1.0 );
+        return (parser.getValue() == 1.0);
     }
 
     /**
@@ -108,8 +100,7 @@ public class MathUtils
      * @param expression The expression to calculate.
      * @return The result of the operation.
      */
-    public static double calculateExpression( String expression )
-    {
+    public static double calculateExpression(String expression) {
         final JEP parser = getJep();
         parser.parseExpression(expression);
 
@@ -123,9 +114,8 @@ public class MathUtils
      * @param d the double.
      * @return true if the given double is valid.
      */
-    public static boolean isValidDouble( Double d )
-    {
-        return d != null && !Double.isInfinite( d ) && !Double.isNaN( d );
+    public static boolean isValidDouble(Double d) {
+        return d != null && !Double.isInfinite(d) && !Double.isNaN(d);
     }
 
     /**
@@ -134,10 +124,9 @@ public class MathUtils
      * @param expression The expression to validate.
      * @return True if the expression has errors, false otherwise.
      */
-    public static boolean expressionHasErrors( String expression )
-    {
+    public static boolean expressionHasErrors(String expression) {
         final JEP parser = getJep();
-        parser.parseExpression( expression );
+        parser.parseExpression(expression);
 
         return parser.hasError();
     }
@@ -147,12 +136,11 @@ public class MathUtils
      *
      * @param expression The expression to validate.
      * @return The error information for an invalid expression, null if
-     *         the expression is valid.
+     * the expression is valid.
      */
-    public static String getExpressionErrorInfo( String expression )
-    {
+    public static String getExpressionErrorInfo(String expression) {
         final JEP parser = getJep();
-        parser.parseExpression( expression );
+        parser.parseExpression(expression);
 
         return parser.getErrorInfo();
     }
@@ -160,13 +148,12 @@ public class MathUtils
     /**
      * Returns an JEP parser instance.
      */
-    private static JEP getJep()
-    {
+    private static JEP getJep() {
         final JEP parser = new JEP();
         parser.addStandardFunctions();
         parser.addStandardConstants();
-        parser.addFunction( OneIfZeroOrPositiveFunction.NAME, new OneIfZeroOrPositiveFunction() );
-        parser.addFunction( ZeroIfNegativeFunction.NAME, new ZeroIfNegativeFunction() );
+        parser.addFunction(OneIfZeroOrPositiveFunction.NAME, new OneIfZeroOrPositiveFunction());
+        parser.addFunction(ZeroIfNegativeFunction.NAME, new ZeroIfNegativeFunction());
         return parser;
     }
 
@@ -176,28 +163,26 @@ public class MathUtils
      * @param value The value to round off
      * @return The rounded value
      */
-    public static double getFloor( double value )
-    {
-        return Math.floor( value );
+    public static double getFloor(double value) {
+        return Math.floor(value);
     }
 
     /**
      * Returns a number rounded off to the given number of decimals.
      *
-     * @param value the value to round off.
+     * @param value    the value to round off.
      * @param decimals the number of decimals.
      * @return a number rounded off to the given number of decimals.
      */
-    public static double getRounded( double value, int decimals )
-    {
-        final double factor = Math.pow( 10, decimals );
+    public static double getRounded(double value, int decimals) {
+        final double factor = Math.pow(10, decimals);
 
-        return Math.round( value * factor ) / factor;
+        return Math.round(value * factor) / factor;
     }
 
     /**
      * Returns a rounded off number.
-     *
+     * <p/>
      * <ul>
      * <li>If value is exclusively between 1 and -1 it will have 2 decimals.</li>
      * <li>If value if greater or equal to 1 the value will have 1 decimal.</li>
@@ -206,15 +191,11 @@ public class MathUtils
      * @param value the value to round off.
      * @return a rounded off number.
      */
-    public static double getRounded( double value )
-    {
-        if ( value < 1d && value > -1d )
-        {
-            return getRounded( value, 2 );
-        }
-        else
-        {
-            return getRounded( value, 1 );
+    public static double getRounded(double value) {
+        if (value < 1d && value > -1d) {
+            return getRounded(value, 2);
+        } else {
+            return getRounded(value, 1);
         }
     }
 
@@ -224,14 +205,13 @@ public class MathUtils
      *
      * @param value the value to return and potentially round off.
      */
-    public static Object getRoundedObject( Object value )
-    {
-        return value != null && Double.class.equals( value.getClass() ) ? getRounded( (Double) value ) : value;
+    public static Object getRoundedObject(Object value) {
+        return value != null && Double.class.equals(value.getClass()) ? getRounded((Double) value) : value;
     }
 
     /**
      * Rounds a number, keeping at least 3 significant digits.
-     *
+     * <p/>
      * <ul>
      * <li>If value is >= 10 or <= -10 it will have 1 decimal.</li>
      * <li>If value is between -10 and 10 it will have three significant digits.</li>
@@ -240,15 +220,11 @@ public class MathUtils
      * @param value the value to round off.
      * @return a rounded off number.
      */
-    public static double roundSignificant( double value )
-    {
-        if ( value >= 10.0 || value <= -10.0 )
-        {
-            return getRounded( value, 1 );
-        }
-        else
-        {
-            return roundToSignificantDigits( value, 3 );
+    public static double roundSignificant(double value) {
+        if (value >= 10.0 || value <= -10.0) {
+            return getRounded(value, 1);
+        } else {
+            return roundToSignificantDigits(value, 3);
         }
     }
 
@@ -259,21 +235,19 @@ public class MathUtils
      * will be 12300, whereas 0.12345 will be 0.123.
      *
      * @param value the value to round off.
-     * @param n the number of significant decimal digits desired.
+     * @param n     the number of significant decimal digits desired.
      * @return a rounded off number.
      */
-    public static double roundToSignificantDigits( double value, int n )
-    {
-        if( value == 0.0 )
-        {
+    public static double roundToSignificantDigits(double value, int n) {
+        if (value == 0.0) {
             return 0.0;
         }
 
-        final double d = Math.ceil( Math.log10( value < 0.0 ? - value: value ) );
+        final double d = Math.ceil(Math.log10(value < 0.0 ? -value : value));
         final int power = n - (int) d;
 
-        final double magnitude = Math.pow( 10.0, power );
-        final long shifted = Math.round( value * magnitude );
+        final double magnitude = Math.pow(10.0, power);
+        final long shifted = Math.round(value * magnitude);
         return shifted / magnitude;
     }
 
@@ -283,24 +257,22 @@ public class MathUtils
      *
      * @param value
      * @param significantFigures
-     * @return
+     * @return String.
      */
-    public static String roundToString( double value, int significantFigures )
-    {
-        MathContext mc = new MathContext( significantFigures );
-        BigDecimal num = new BigDecimal( value );
-        return num.round( mc ).toPlainString();
+    public static String roundToString(double value, int significantFigures) {
+        MathContext mc = new MathContext(significantFigures);
+        BigDecimal num = new BigDecimal(value);
+        return num.round(mc).toPlainString();
     }
 
     /**
      * Returns the given number if larger or equal to minimun, otherwise minimum.
      *
      * @param number the number.
-     * @param min the minimum.
+     * @param min    the minimum.
      * @return the given number if larger or equal to minimun, otherwise minimum.
      */
-    public static int getMin( int number, int min )
-    {
+    public static int getMin(int number, int min) {
         return number < min ? min : number;
     }
 
@@ -308,11 +280,10 @@ public class MathUtils
      * Returns the given number if smaller or equal to maximum, otherwise maximum.
      *
      * @param number the number.
-     * @param max the maximum.
+     * @param max    the maximum.
      * @return the the given number if smaller or equal to maximum, otherwise maximum.
      */
-    public static int getMax( int number, int max )
-    {
+    public static int getMax(int number, int max) {
         return number > max ? max : number;
     }
 
@@ -321,14 +292,13 @@ public class MathUtils
      * minimum, returns minimum, if higher than maximum, returns maximum.
      *
      * @param value the value.
-     * @param min the minimum value.
-     * @param max the maximum value.
+     * @param min   the minimum value.
+     * @param max   the maximum value.
      * @return an integer value.
      */
-    public static int getWithin( int value, int min, int max )
-    {
-        value = Math.max( value, min );
-        value = Math.min( value, max );
+    public static int getWithin(int value, int min, int max) {
+        value = Math.max(value, min);
+        value = Math.min(value, max);
         return value;
     }
 
@@ -338,9 +308,8 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is to be considered numeric.
      */
-    public static boolean isNumeric( String value )
-    {
-        return value != null && DOUBLE_VALIDATOR.isValid( value, LOCALE ) && NUMERIC_PATTERN.matcher( value ).matches();
+    public static boolean isNumeric(String value) {
+        return value != null && DOUBLE_VALIDATOR.isValid(value, LOCALE) && NUMERIC_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -350,9 +319,8 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is to be considered numeric.
      */
-    public static boolean isNumericLenient( String value )
-    {
-        return value != null && DOUBLE_VALIDATOR.isValid( value, LOCALE ) && NUMERIC_LENIENT_PATTERN.matcher( value ).matches();
+    public static boolean isNumericLenient(String value) {
+        return value != null && DOUBLE_VALIDATOR.isValid(value, LOCALE) && NUMERIC_LENIENT_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -363,14 +331,12 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is to be considered a unit interval.
      */
-    public static boolean isUnitInterval( String value )
-    {
-        if ( !isNumeric( value ) )
-        {
+    public static boolean isUnitInterval(String value) {
+        if (!isNumeric(value)) {
             return false;
         }
 
-        Double dbl = Double.parseDouble( value );
+        Double dbl = Double.parseDouble(value);
 
         return dbl >= 0d && dbl <= 1d;
     }
@@ -382,14 +348,12 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is a percentage.
      */
-    public static boolean isPercentage( String value )
-    {
-        if ( !isInteger( value ) )
-        {
+    public static boolean isPercentage(String value) {
+        if (!isInteger(value)) {
             return false;
         }
 
-        Integer integer = Integer.valueOf( value );
+        Integer integer = Integer.valueOf(value);
 
         return integer >= 0 && integer <= 100;
     }
@@ -400,9 +364,8 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is to be considered an integer.
      */
-    public static boolean isInteger( String value )
-    {
-        return value != null && INT_VALIDATOR.isValid( value ) && INT_PATTERN.matcher( value ).matches();
+    public static boolean isInteger(String value) {
+        return value != null && INT_VALIDATOR.isValid(value) && INT_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -411,11 +374,10 @@ public class MathUtils
      *
      * @param value the value.
      * @return true if the provided string argument is to be considered a positive
-     *         integer.
+     * integer.
      */
-    public static boolean isPositiveInteger( String value )
-    {
-        return value != null && INT_VALIDATOR.isValid( value ) && POSITIVE_INT_PATTERN.matcher( value ).matches();
+    public static boolean isPositiveInteger(String value) {
+        return value != null && INT_VALIDATOR.isValid(value) && POSITIVE_INT_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -424,11 +386,10 @@ public class MathUtils
      *
      * @param value the value.
      * @return true if the provided string argument is to be considered a positive
-     *         integer.
+     * integer.
      */
-    public static boolean isZeroOrPositiveInteger( String value )
-    {
-        return value != null && INT_VALIDATOR.isValid( value ) && POSITIVE_OR_ZERO_INT_PATTERN.matcher( value ).matches();
+    public static boolean isZeroOrPositiveInteger(String value) {
+        return value != null && INT_VALIDATOR.isValid(value) && POSITIVE_OR_ZERO_INT_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -437,11 +398,10 @@ public class MathUtils
      *
      * @param value the value.
      * @return true if the provided string argument is to be considered a negative
-     *         integer.
+     * integer.
      */
-    public static boolean isNegativeInteger( String value )
-    {
-        return value != null && INT_VALIDATOR.isValid( value ) && NEGATIVE_INT_PATTERN.matcher( value ).matches();
+    public static boolean isNegativeInteger(String value) {
+        return value != null && INT_VALIDATOR.isValid(value) && NEGATIVE_INT_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -450,9 +410,8 @@ public class MathUtils
      * @param value the value.
      * @return true if the provided string argument is to be considered a zero.
      */
-    public static boolean isZero( String value )
-    {
-        return value != null && ZERO_PATTERN.matcher( value ).matches();
+    public static boolean isZero(String value) {
+        return value != null && ZERO_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -462,9 +421,8 @@ public class MathUtils
      * @param value the value.
      * @return if the provided string argument is to be considered as a boolean.
      */
-    public static boolean isBool( String value )
-    {
-        return value != null && ( value.equals( "true" ) || value.equals( "false" ) );
+    public static boolean isBool(String value) {
+        return value != null && (value.equals("true") || value.equals("false"));
     }
 
     /**
@@ -475,14 +433,12 @@ public class MathUtils
      * @param d2 the second value.
      * @return true if the two decimal numbers are equal with a tolerance of 0.01.
      */
-    public static boolean isEqual( Double d1, Double d2 )
-    {
-        if ( d1 == null || d2 == null )
-        {
+    public static boolean isEqual(Double d1, Double d2) {
+        if (d1 == null || d2 == null) {
             return false;
         }
 
-        return Math.abs( d1 - d2 ) < TOLERANCE;
+        return Math.abs(d1 - d2) < TOLERANCE;
     }
 
     /**
@@ -492,9 +448,8 @@ public class MathUtils
      * @param d2 the second value.
      * @return true if the two decimal numbers are equal with a tolerance of 0.01.
      */
-    public static boolean isEqual( double d1, double d2 )
-    {
-        return Math.abs( d1 - d2 ) < TOLERANCE;
+    public static boolean isEqual(double d1, double d2) {
+        return Math.abs(d1 - d2) < TOLERANCE;
     }
 
     /**
@@ -503,9 +458,8 @@ public class MathUtils
      * @param value the value.
      * @return true or false.
      */
-    public static boolean isZero( double value )
-    {
-        return isEqual( value, 0d );
+    public static boolean isZero(double value) {
+        return isEqual(value, 0d);
     }
 
     /**
@@ -514,17 +468,15 @@ public class MathUtils
      * @param value the value.
      * @return a double.
      */
-    public static double zeroIfNull( Double value )
-    {
+    public static double zeroIfNull(Double value) {
         return value == null ? 0d : value;
     }
 
     /**
      * Returns a random int between 0 and 999.
      */
-    public static int getRandom()
-    {
-        return new Random().nextInt( 999 );
+    public static int getRandom() {
+        return new Random().nextInt(999);
     }
 
     /**
@@ -533,20 +485,16 @@ public class MathUtils
      * @param array the array of numbers.
      * @return the minimum value.
      */
-    public static Double getMin( double[] array )
-    {
-        if ( array == null || array.length == 0 )
-        {
+    public static Double getMin(double[] array) {
+        if (array == null || array.length == 0) {
             return null;
         }
 
-        double min = array[ 0 ];
+        double min = array[0];
 
-        for ( int i = 1; i < array.length; i++ )
-        {
-            if ( array[ i ] < min )
-            {
-                min = array[ i ];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < min) {
+                min = array[i];
             }
         }
 
@@ -559,20 +507,16 @@ public class MathUtils
      * @param array the array of numbers.
      * @return the maximum value.
      */
-    public static Double getMax( double[] array )
-    {
-        if ( array == null || array.length == 0 )
-        {
+    public static Double getMax(double[] array) {
+        if (array == null || array.length == 0) {
             return null;
         }
 
-        double max = array[ 0 ];
+        double max = array[0];
 
-        for ( int i = 1; i < array.length; i++ )
-        {
-            if ( array[ i ] > max )
-            {
-                max = array[ i ];
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] > max) {
+                max = array[i];
             }
         }
 
@@ -585,9 +529,8 @@ public class MathUtils
      * @param values the values.
      * @return the average.
      */
-    public static Double getAverage( List<Double> values )
-    {
-        Double sum = getSum( values );
+    public static Double getAverage(List<Double> values) {
+        Double sum = getSum(values);
 
         return sum / values.size();
     }
@@ -598,14 +541,11 @@ public class MathUtils
      * @param values the values.
      * @return the sum.
      */
-    public static Double getSum( List<Double> values )
-    {
+    public static Double getSum(List<Double> values) {
         Double sum = 0.0;
 
-        for ( Double value : values )
-        {
-            if ( value != null )
-            {
+        for (Double value : values) {
+            if (value != null) {
                 sum += value;
             }
         }
@@ -620,19 +560,14 @@ public class MathUtils
      * @param value the string value.
      * @return a double value.
      */
-    public static Double parseDouble( String value )
-    {
-        if ( value == null || value.trim().isEmpty() )
-        {
+    public static Double parseDouble(String value) {
+        if (value == null || value.trim().isEmpty()) {
             return null;
         }
 
-        try
-        {
-            return Double.parseDouble( value );
-        }
-        catch ( NumberFormatException ex )
-        {
+        try {
+            return Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
             return null;
         }
     }
@@ -644,19 +579,14 @@ public class MathUtils
      * @param string the string.
      * @return an Integer.
      */
-    public static Integer parseInt( String string )
-    {
-        if ( string == null || string.trim().isEmpty() )
-        {
+    public static Integer parseInt(String string) {
+        if (string == null || string.trim().isEmpty()) {
             return null;
         }
 
-        try
-        {
-            return Integer.parseInt( string );
-        }
-        catch ( NumberFormatException ex )
-        {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException ex) {
             return null;
         }
     }
@@ -665,13 +595,12 @@ public class MathUtils
      * Returns the lower bound for the given standard deviation, number of standard
      * deviations and average.
      *
-     * @param stdDev the standard deviation.
+     * @param stdDev   the standard deviation.
      * @param stdDevNo the number of standard deviations.
-     * @param average the average.
+     * @param average  the average.
      * @return a double.
      */
-    public static double getLowBound( double stdDev, double stdDevNo, double average )
-    {
+    public static double getLowBound(double stdDev, double stdDevNo, double average) {
         double deviation = stdDev * stdDevNo;
         return average - deviation;
     }
@@ -680,13 +609,12 @@ public class MathUtils
      * Returns the high bound for the given standard deviation, number of standard
      * deviations and average.
      *
-     * @param stdDev the standard deviation.
-     * @param stdDevNo the number of standard deviations.
-     * @param average the average.
+     * @param stdDev       the standard deviation.
+     * @param stdDevFactor the number of standard deviations.
+     * @param average      the average.
      * @return a double.
      */
-    public static double getHighBound( double stdDev, double stdDevFactor, double average )
-    {
+    public static double getHighBound(double stdDev, double stdDevFactor, double average) {
         double deviation = stdDev * stdDevFactor;
         return average + deviation;
     }
@@ -694,13 +622,12 @@ public class MathUtils
     /**
      * Performs a division and rounds upwards to the next integer.
      *
-     * @param numerator the numerator.
+     * @param numerator   the numerator.
      * @param denominator the denominator.
      * @return an integer value.
      */
-    public static int divideToCeil( int numerator, int denominator )
-    {
-        Double result = Math.ceil( (double) numerator / denominator );
+    public static int divideToCeil(int numerator, int denominator) {
+        Double result = Math.ceil((double) numerator / denominator);
 
         return result.intValue();
     }
@@ -708,13 +635,12 @@ public class MathUtils
     /**
      * Performs a division and rounds downwards to the next integer.
      *
-     * @param numerator the numerator.
+     * @param numerator   the numerator.
      * @param denominator the denominator.
      * @return an integer value.
      */
-    public static int divideToFloor( int numerator, int denominator )
-    {
-        Double result = Math.floor( (double) numerator / denominator );
+    public static int divideToFloor(int numerator, int denominator) {
+        Double result = Math.floor((double) numerator / denominator);
 
         return result.intValue();
     }

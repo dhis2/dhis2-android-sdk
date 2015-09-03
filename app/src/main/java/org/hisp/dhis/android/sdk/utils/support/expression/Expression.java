@@ -29,12 +29,12 @@
 
 package org.hisp.dhis.android.sdk.utils.support.expression;
 
+import org.apache.commons.lang3.Validate;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.lang3.Validate;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 
 /**
  * An Expression is the expression of e.g. a validation rule. It consist of a
@@ -52,10 +52,7 @@ import org.hisp.dhis.android.sdk.persistence.models.DataElement;
  *
  * @author Margrethe Store
  */
-public class Expression
-    implements Serializable
-{
-
+public class Expression implements Serializable {
     public static final String SEPARATOR = ".";
     public static final String EXP_OPEN = "#{";
     public static final String EXP_CLOSE = "}";
@@ -94,7 +91,7 @@ public class Expression
     // -------------------------------------------------------------------------
 
     private transient String explodedExpression;
-    
+
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -102,8 +99,7 @@ public class Expression
     /**
      * Default empty Expression
      */
-    public Expression()
-    {
+    public Expression() {
     }
 
     /**
@@ -113,8 +109,7 @@ public class Expression
      * @param description              A description of the Expression.
      * @param dataElementsInExpression A reference to the DataElements in the Expression.
      */
-    public Expression( String expression, String description, Set<DataElement> dataElementsInExpression )
-    {
+    public Expression(String expression, String description, Set<DataElement> dataElementsInExpression) {
         this.expression = expression;
         this.description = description;
         this.dataElementsInExpression = dataElementsInExpression;
@@ -127,56 +122,43 @@ public class Expression
     /**
      * Returns exploded expression, if null returns expression.
      */
-    public String getExplodedExpressionFallback()
-    {
+    public String getExplodedExpressionFallback() {
         return explodedExpression != null ? explodedExpression : expression;
     }
-    
+
     // -------------------------------------------------------------------------
     // Equals and hashCode
     // -------------------------------------------------------------------------
 
     @Override
-    public boolean equals( Object obj )
-    {
-        if ( this == obj )
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if ( obj == null )
-        {
+        if (obj == null) {
             return false;
         }
 
-        if ( getClass() != obj.getClass() )
-        {
+        if (getClass() != obj.getClass()) {
             return false;
         }
 
         final Expression other = (Expression) obj;
 
-        if ( description == null )
-        {
-            if ( other.description != null )
-            {
+        if (description == null) {
+            if (other.description != null) {
                 return false;
             }
-        }
-        else if ( !description.equals( other.description ) )
-        {
+        } else if (!description.equals(other.description)) {
             return false;
         }
 
-        if ( expression == null )
-        {
-            if ( other.expression != null )
-            {
+        if (expression == null) {
+            if (other.expression != null) {
                 return false;
             }
-        }
-        else if ( !expression.equals( other.expression ) )
-        {
+        } else if (!expression.equals(other.expression)) {
             return false;
         }
 
@@ -184,101 +166,86 @@ public class Expression
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + ( ( description == null ) ? 0 : description.hashCode() );
-        result = PRIME * result + ( ( expression == null ) ? 0 : expression.hashCode() );
+        result = PRIME * result + ((description == null) ? 0 : description.hashCode());
+        result = PRIME * result + ((expression == null) ? 0 : expression.hashCode());
 
         return result;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Expression{" +
-            "id=" + id +
-            ", expression='" + expression + '\'' +
-            ", explodedExpression='" + explodedExpression + '\'' +
-            ", description='" + description + '\'' +
-            ", dataElementsInExpression=" + dataElementsInExpression.size() +
-            '}';
+                "id=" + id +
+                ", expression='" + expression + '\'' +
+                ", explodedExpression='" + explodedExpression + '\'' +
+                ", description='" + description + '\'' +
+                ", dataElementsInExpression=" + dataElementsInExpression.size() +
+                '}';
     }
 
     // -------------------------------------------------------------------------
     // Getters and setters
     // -------------------------------------------------------------------------
 
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
-    public void setId( int id )
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getExpression()
-    {
+    public String getExpression() {
         return expression;
     }
 
-    public void setExpression( String expression )
-    {
+    public void setExpression(String expression) {
         this.expression = expression;
     }
 
-    public Set<DataElement> getDataElementsInExpression()
-    {
+    public Set<DataElement> getDataElementsInExpression() {
         return dataElementsInExpression;
     }
 
-    public void setDataElementsInExpression( Set<DataElement> dataElementsInExpression )
-    {
+    public void setDataElementsInExpression(Set<DataElement> dataElementsInExpression) {
         this.dataElementsInExpression = dataElementsInExpression;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public MissingValueStrategy getMissingValueStrategy()
-    {
+    public MissingValueStrategy getMissingValueStrategy() {
         return missingValueStrategy;
     }
 
-    public void setMissingValueStrategy( MissingValueStrategy missingValueStrategy )
-    {
+    public void setMissingValueStrategy(MissingValueStrategy missingValueStrategy) {
         this.missingValueStrategy = missingValueStrategy;
-    }    
+    }
 
-    public String getExplodedExpression()
-    {
+    public String getExplodedExpression() {
         return explodedExpression;
     }
-    
-    public void setExplodedExpression( String explodedExpression )
-    {
+
+    public void setExplodedExpression(String explodedExpression) {
         this.explodedExpression = explodedExpression;
     }
-    
-    public void mergeWith( Expression other )
-    {
-        Validate.notNull( other );
+
+    public void mergeWith(Expression other) {
+        Validate.notNull(other);
 
         expression = other.getExpression() == null ? expression : other.getExpression();
         description = other.getDescription() == null ? description : other.getDescription();
         missingValueStrategy = other.getMissingValueStrategy() == null ? missingValueStrategy : other.getMissingValueStrategy();
 
         dataElementsInExpression = other.getDataElementsInExpression() == null ?
-            dataElementsInExpression : new HashSet<>( other.getDataElementsInExpression() );
+                dataElementsInExpression : new HashSet<>(other.getDataElementsInExpression());
     }
 }

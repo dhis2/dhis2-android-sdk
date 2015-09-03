@@ -40,9 +40,11 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardStor
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ConstantStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
@@ -50,11 +52,15 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
+import org.hisp.dhis.android.sdk.models.metadata.Constant;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
 public final class Models {
     private static Models models;
+
+    // Meta data store objects
+    private final IStore<Constant> constantStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -76,6 +82,8 @@ public final class Models {
 
     public Models(Context context) {
         FlowManager.init(context);
+
+        constantStore = new ConstantStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -102,6 +110,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IStore<Constant> constants() {
+        return getInstance().constantStore;
     }
 
     public static IDashboardStore dashboards() {

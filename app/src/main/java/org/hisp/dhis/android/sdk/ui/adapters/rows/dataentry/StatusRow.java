@@ -41,7 +41,7 @@ import android.widget.Button;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
+import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -222,7 +222,7 @@ public final class StatusRow implements DataEntryRow {
 
         @Override
         public void onClick(View v) {
-            ArrayList<String> errors = DataEntryFragment.isEventValid(event,
+            ArrayList<String> errors = EventDataEntryFragment.getValidationErrors(event,
                     MetaDataController.getProgramStage(event.getProgramStageId()), context);
             if (!errors.isEmpty()) {
                 ValidationErrorDialog dialog = ValidationErrorDialog

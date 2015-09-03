@@ -30,8 +30,8 @@
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -47,155 +47,50 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 
-import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.ui.fragments.progressdialog.ProgressDialogFragment;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.controllers.GpsController;
-import org.hisp.dhis.android.sdk.utils.UiUtils;
-import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
-import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
-import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
+import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
-public class DataEntryFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<DataEntryFragmentForm>,
+public abstract class DataEntryFragment<D> extends Fragment
+        implements LoaderManager.LoaderCallbacks<D>,
         OnBackPressedListener, AdapterView.OnItemSelectedListener {
     public static final String TAG = DataEntryFragment.class.getSimpleName();
 
-    private static final int LOADER_ID = 1;
-    private static final int INITIAL_POSITION = 0;
-
-    private static final String EXTRA_ARGUMENTS = "extra:Arguments";
-    private static final String EXTRA_SAVED_INSTANCE_STATE = "extra:savedInstanceState";
-
-    private static final String ORG_UNIT_ID = "extra:orgUnitId";
-    private static final String PROGRAM_ID = "extra:ProgramId";
-    private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
-    private static final String EVENT_ID = "extra:EventId";
-    private static final String ENROLLMENT_ID = "extra:EnrollmentId";
-
-    private ListView mListView;
-    private ProgressBar mProgressBar;
-
-    private ImageView mPreviousSectionButton;
-    private ImageView mNextSectionButton;
-
-    private View mSpinnerContainer;
-    private Spinner mSpinner;
-    private SectionAdapter mSpinnerAdapter;
-    private DataValueAdapter mListViewAdapter;
-
-    private DataEntryFragmentForm mForm;
-    private ProgramRuleHelper mProgramRuleHelper;
-
-    private boolean refreshing = false;
+    protected static final int LOADER_ID = 17;
+    protected static final int INITIAL_POSITION = 0;
+    protected static final String EXTRA_ARGUMENTS = "extra:Arguments";
+    protected static final String EXTRA_SAVED_INSTANCE_STATE = "extra:savedInstanceState";
+    protected ListView listView;
+    protected ProgressBar progressBar;
+    protected DataValueAdapter listViewAdapter;
+    protected boolean refreshing = false;
+    protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
-    private boolean saving = false;
-
-    private ValidationErrorDialog validationErrorDialog;
-    private ProgressDialogFragment progressDialogFragment;
-
-    public static DataEntryFragment newInstance(String unitId, String programId, String programStageId) {
-        DataEntryFragment fragment = new DataEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ORG_UNIT_ID, unitId);
-        args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAM_STAGE_ID, programStageId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static DataEntryFragment newInstance(String unitId, String programId, String programStageId,
-                                                long eventId) {
-        DataEntryFragment fragment = new DataEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ORG_UNIT_ID, unitId);
-        args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAM_STAGE_ID, programStageId);
-        args.putLong(EVENT_ID, eventId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static DataEntryFragment newInstanceWithEnrollment(String unitId, String programId, String programStageId,
-                                                              long enrollmentId) {
-        DataEntryFragment fragment = new DataEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ORG_UNIT_ID, unitId);
-        args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAM_STAGE_ID, programStageId);
-        args.putLong(ENROLLMENT_ID, enrollmentId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public static DataEntryFragment newInstanceWithEnrollment(String unitId, String programId, String programStageId,
-                                                              long enrollmentId, long eventId) {
-        DataEntryFragment fragment = new DataEntryFragment();
-        Bundle args = new Bundle();
-        args.putString(ORG_UNIT_ID, unitId);
-        args.putString(PROGRAM_ID, programId);
-        args.putString(PROGRAM_STAGE_ID, programStageId);
-        args.putLong(EVENT_ID, eventId);
-        args.putLong(ENROLLMENT_ID, enrollmentId);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    private static Map<String, ProgramStageDataElement> toMap(List<ProgramStageDataElement> dataElements) {
-        Map<String, ProgramStageDataElement> dataElementMap = new HashMap<>();
-        if (dataElements != null && !dataElements.isEmpty()) {
-            for (ProgramStageDataElement dataElement : dataElements) {
-                dataElementMap.put(dataElement.getDataelement(), dataElement);
-            }
-        }
-        return dataElementMap;
-    }
+    private INavigationHandler navigationHandler;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
         if (activity instanceof AppCompatActivity) {
             getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
         }
-
         if (activity instanceof INavigationHandler) {
-            ((INavigationHandler) activity).setBackPressedListener(this);
+            navigationHandler = (INavigationHandler) activity;
+            navigationHandler.setBackPressedListener(this);
+        } else {
+            throw new IllegalArgumentException("Activity must implement INavigationHandler interface");
         }
     }
 
@@ -215,7 +110,7 @@ public class DataEntryFragment extends Fragment
             ((INavigationHandler) getActivity()).setBackPressedListener(null);
         }
 
-        GpsController.disableGps();
+        navigationHandler = null;
         super.onDetach();
     }
 
@@ -240,7 +135,6 @@ public class DataEntryFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_data_entry, menu);
-        Log.d(TAG, "onCreateOptionsMenu");
         MenuItem menuItem = menu.findItem(R.id.action_new_event);
         if (!hasDataChanged) {
             menuItem.setEnabled(false);
@@ -258,31 +152,25 @@ public class DataEntryFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        mProgressBar.setVisibility(View.GONE);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.GONE);
 
-        mListView = (ListView) view.findViewById(R.id.datavalues_listview);
+        listView = (ListView) view.findViewById(R.id.datavalues_listview);
         View upButton = getLayoutInflater(savedInstanceState)
-                .inflate(R.layout.up_button_layout, mListView, false);
-        mListViewAdapter = new DataValueAdapter(getChildFragmentManager(),
+                .inflate(R.layout.up_button_layout, listView, false);
+        listViewAdapter = new DataValueAdapter(getChildFragmentManager(),
                 getLayoutInflater(savedInstanceState));
 
-        mListView.addFooterView(upButton);
-        mListView.setVisibility(View.VISIBLE);
-        mListView.setAdapter(mListViewAdapter);
+        listView.addFooterView(upButton);
+        listView.setVisibility(View.VISIBLE);
+        listView.setAdapter(listViewAdapter);
 
         upButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListView.smoothScrollToPosition(INITIAL_POSITION);
+                listView.smoothScrollToPosition(INITIAL_POSITION);
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        detachSpinner();
-        super.onDestroyView();
     }
 
     @Override
@@ -291,12 +179,12 @@ public class DataEntryFragment extends Fragment
             doBack();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
-            if (validate()) {
-                submitEvent();
-                DhisController.hasUnSynchronizedDatavalues = true;
+            if (isValid()) {
+                save();
+            } else {
+                showValidationErrorDialog(getValidationErrors());
             }
         }
-
         return super.onOptionsItemSelected(menuItem);
     }
 
@@ -309,114 +197,8 @@ public class DataEntryFragment extends Fragment
         argumentsBundle.putBundle(EXTRA_SAVED_INSTANCE_STATE, savedInstanceState);
         getLoaderManager().initLoader(LOADER_ID, argumentsBundle, this);
 
-        mProgressBar.setVisibility(View.VISIBLE);
-        mListView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public Loader<DataEntryFragmentForm> onCreateLoader(int id, Bundle args) {
-        if (LOADER_ID == id && isAdded()) {
-            // Adding Tables for tracking here is dangerous (since MetaData updates in background
-            // can trigger reload of values from db which will reset all fields).
-            // Hence, it would be more safe not to track any changes in any tables
-            List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
-            Bundle fragmentArguments = args.getBundle(EXTRA_ARGUMENTS);
-            return new DbLoader<>(
-                    getActivity(), modelsToTrack, new DataEntryFragmentQuery(
-                    fragmentArguments.getString(ORG_UNIT_ID),
-                    fragmentArguments.getString(PROGRAM_ID),
-                    fragmentArguments.getString(PROGRAM_STAGE_ID),
-                    fragmentArguments.getLong(EVENT_ID, -1),
-                    fragmentArguments.getLong(ENROLLMENT_ID, -1)
-            )
-            );
-        }
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<DataEntryFragmentForm> loader, DataEntryFragmentForm data) {
-        if (loader.getId() == LOADER_ID && isAdded()) {
-            mProgressBar.setVisibility(View.GONE);
-            mListView.setVisibility(View.VISIBLE);
-
-            mForm = data;
-            mProgramRuleHelper = new ProgramRuleHelper(mForm.getStage().getProgram());
-            if (mForm.getStatusRow() != null) {
-                mForm.getStatusRow().setFragmentActivity(getActivity());
-            }
-
-            if (data.getStage() != null &&
-                    data.getStage().getCaptureCoordinates()) {
-                GpsController.activateGps(getActivity().getBaseContext());
-            }
-
-            if (!data.getSections().isEmpty()) {
-                if (data.getSections().size() > 1) {
-                    attachSpinner();
-                    mSpinnerAdapter.swapData(data.getSections());
-                } else {
-                    DataEntryFragmentSection section = data.getSections().get(0);
-                    mListViewAdapter.swapData(section.getRows());
-                    evaluateRules();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<DataEntryFragmentForm> loader) {
-        if (loader.getId() == LOADER_ID) {
-            if (mSpinnerAdapter != null) {
-                mSpinnerAdapter.swapData(null);
-            }
-            if (mListViewAdapter != null) {
-                mListViewAdapter.swapData(null);
-            }
-        }
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        selectSection(position);
-    }
-
-    private void selectSection(int position) {
-        if (hasDataChanged) {
-            submitEvent();
-        }
-        DataEntryFragmentSection section = (DataEntryFragmentSection)
-                mSpinnerAdapter.getItem(position);
-        mForm.setCurrentSection(section);
-
-        if (section != null) {
-            mListView.smoothScrollToPosition(INITIAL_POSITION);
-            mListViewAdapter.swapData(section.getRows());
-            evaluateRules();
-        }
-
-        if (mNextSectionButton != null && mPreviousSectionButton != null) {
-            if (position - 1 < 0) {
-                mPreviousSectionButton.setVisibility(View.INVISIBLE);
-            } else {
-                mPreviousSectionButton.setVisibility(View.VISIBLE);
-            }
-
-            if (position + 1 >= mSpinnerAdapter.getCount()) {
-                mNextSectionButton.setVisibility(View.INVISIBLE);
-            } else {
-                mNextSectionButton.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+        progressBar.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.GONE);
     }
 
     @Override
@@ -430,9 +212,12 @@ public class DataEntryFragment extends Fragment
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (validate()) {
-                                submitEvent();
+                            if (isValid()) {
+                                save();
                                 getFragmentManager().popBackStack();
+                            } else {
+                                dialog.dismiss();
+                                showValidationErrorDialog(getValidationErrors());
                             }
                         }
                     }, new DialogInterface.OnClickListener() {
@@ -451,261 +236,51 @@ public class DataEntryFragment extends Fragment
         }
     }
 
-    @Subscribe
-    public void onItemClick(final OnCompleteEventClick eventClick)
-    {
-        if(validate() && !eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED))
-        {
-            UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
-                    eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            flagDataChanged(true);
-                            eventClick.getComplete().setText(R.string.incomplete);
-                            eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
-                        }
-                    });
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 
-        }
-        else
-        {
-            eventClick.getComplete().setText(R.string.complete);
-            eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
-        }
-
+    public DataValueAdapter getListViewAdapter() {
+        return listViewAdapter;
     }
 
-    private boolean haveValuesChanged() {
+    protected void showLoadingDialog() {
+        UiUtils.showLoadingDialog(getChildFragmentManager(), R.string.please_wait);
+    }
+
+    public void hideLoadingDialog() {
+        UiUtils.hideLoadingDialog(getChildFragmentManager());
+    }
+
+    public static void refreshListView() {
+        RefreshListViewAsyncTask task = new RefreshListViewAsyncTask();
+        task.execute();
+    }
+
+    protected void flagDataChanged(boolean changed) {
+        if (hasDataChanged != changed) {
+            hasDataChanged = changed;
+            if(isAdded()) {
+                getActivity().invalidateOptionsMenu();
+            }
+        }
+    }
+
+    protected void showValidationErrorDialog(ArrayList<String> errors) {
+        validationErrorDialog = ValidationErrorDialog
+                .newInstance(errors);
+        validationErrorDialog.show(getChildFragmentManager());
+    }
+
+    protected boolean haveValuesChanged() {
         return hasDataChanged;
     }
 
-    public void showWarningHiddenValuesDialog(ArrayList<String> affectedValues) {
-        ArrayList<String> dataElementNames = new ArrayList<>();
-        for (String s : affectedValues) {
-            DataElement de = MetaDataController.getDataElement(s);
-            if (de != null) {
-                dataElementNames.add(de.getDisplayName());
-            }
-        }
-        if (validationErrorDialog == null || !validationErrorDialog.isVisible()) {
-            validationErrorDialog = ValidationErrorDialog
-                    .newInstance(getString(R.string.warning_hidefieldwithvalue), dataElementNames
-                    );
-            validationErrorDialog.show(getChildFragmentManager());
-        }
-    }
-
-    /**
-     * Evaluates the ProgramRules for the current program and the current data values and applies
-     * the results. This is for example used for hiding views if a rule contains skip logic
-     */
-    public void evaluateRules() {
-        showLoadingDialog(); // loadingDialog contains bugs. Won't dismiss 1/10 times
-        new Thread() {
-            public void run() {
-                List<ProgramRule> rules = mForm.getStage().getProgram().getProgramRules();
-                mListViewAdapter.resetHiding();
-                if (mSpinnerAdapter != null) {
-                    mSpinnerAdapter.resetHiding();
-                }
-                ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
-                boolean currentSelectedSectionRemoved = false;
-                for (ProgramRule programRule : rules) {
-                    boolean actionTrue = ProgramRuleService.evaluate(programRule.getCondition(), mForm.getEvent());
-                    if (actionTrue) {
-                        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-                            boolean applyActionResult = applyProgramRuleAction(programRuleAction, actionTrue);
-                            if (applyActionResult && programRuleAction.getProgramRuleActionType().equals(ProgramRuleAction.TYPE_HIDEFIELD)) {
-                                affectedFieldsWithValue.add(programRuleAction.getDataElement());
-                            } else if (applyActionResult && programRuleAction.getProgramRuleActionType().equals(ProgramRuleAction.TYPE_HIDESECTION)) {
-                                currentSelectedSectionRemoved = true;
-                            }
-                        }
-                    }
-                }
-                if (!affectedFieldsWithValue.isEmpty()) {
-                    showWarningHiddenValuesDialog(affectedFieldsWithValue);
-                }
-                refreshListView();
-                Activity activity = getActivity();
-                if (mSpinnerAdapter != null) {
-                    if (activity != null) {
-                        activity.runOnUiThread(new UpdateSectionThread(currentSelectedSectionRemoved));
-                    }
-                } else {
-                    hideLoadingDialog(); // dialog.dismiss() won't work all times
-                }
-            }
-        }.start();
-    }
-
-    private void showLoadingDialog() {
-        Activity activity = getActivity();
-        if (activity == null) return;
-        activity.runOnUiThread(new Thread() {
-            public void run() {
-                if (progressDialogFragment == null) {
-                    progressDialogFragment = ProgressDialogFragment.newInstance(R.string.please_wait);
-                }
-                if (!progressDialogFragment.isAdded())
-                    progressDialogFragment.show(getChildFragmentManager(), ProgressDialogFragment.TAG);
-            }
-        });
-    }
-
-    private void hideLoadingDialog() {
-        if (progressDialogFragment != null) {
-            if(progressDialogFragment.isAdded())
-            {
-                progressDialogFragment.dismiss();
-                getChildFragmentManager().beginTransaction().remove(progressDialogFragment).commit();
-//                getFragmentManager().beginTransaction().remove(progressDialogFragment).commit();
-            }
-            progressDialogFragment.dismiss(); // yolo
-        }
-    }
-
-    private class UpdateSectionThread extends Thread {
-        private final boolean refreshSelection;
-
-        public UpdateSectionThread(boolean refreshSelection) {
-            this.refreshSelection = refreshSelection;
-        }
-
-        @Override
-        public void run() {
-            mSpinnerAdapter.notifyDataSetChanged();
-            if (refreshSelection) {
-                selectSection(0);
-            }
-            hideLoadingDialog();
-        }
-    }
-
-    public boolean applyProgramRuleAction(ProgramRuleAction programRuleAction, boolean actionTrue) {
-        switch (programRuleAction.getProgramRuleActionType()) {
-            case ProgramRuleAction.TYPE_HIDEFIELD: {
-                if (actionTrue) {
-                    return hideField(programRuleAction.getDataElement());
-                }
-                break;
-            }
-
-            case ProgramRuleAction.TYPE_HIDESECTION: {
-                if (actionTrue) {
-                    return hideSection(programRuleAction.getProgramStageSection());
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Hides a programstagesection from being displayed in the list of sections
-     *
-     * @param programStageSection
-     * @return true if the section that's hidden is the one that's currently selected.
-     */
-    public boolean hideSection(String programStageSection) {
-        if (mSpinnerAdapter == null) return false;
-        DataEntryFragmentSection currentSection = mForm.getCurrentSection();
-        mSpinnerAdapter.hideSection(programStageSection);
-        if (currentSection.getId().equals(programStageSection)) {
-            return true;
+    protected Toolbar getActionBarToolbar() {
+        if (isAdded() && getActivity() != null) {
+            return (Toolbar) getActivity().findViewById(R.id.toolbar);
         } else {
-            return false;
+            throw new IllegalArgumentException("Fragment should be attached to MainActivity");
         }
-    }
-
-    /**
-     * Hides a field in the listView of dataEntryRows. Returns true if the hidden field contained
-     * a value
-     *
-     * @param dataElement
-     * @return
-     */
-    public boolean hideField(String dataElement) {
-        mListViewAdapter.hideIndex(dataElement);
-        DataValue dv = mForm.getDataValues().get(dataElement);
-        if (dv != null && dv.getValue() != null && !dv.getValue().isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void refreshListView() {
-        Activity activity = getActivity();
-        if (activity == null) {
-            refreshing = false;
-            return;
-        }
-        activity.runOnUiThread(new Thread() {
-            public void run() {
-                int start = mListView.getFirstVisiblePosition();
-                int end = mListView.getLastVisiblePosition();
-                for (int pos = 0; pos <= end - start; pos++) {
-                    View view = mListView.getChildAt(pos);
-                    if (view != null) {
-                        int adapterPosition = view.getId();
-                        if (adapterPosition < 0 || adapterPosition >= mListViewAdapter.getCount())
-                            continue;
-                        if (!view.hasFocus()) {
-                            mListViewAdapter.getView(adapterPosition, view, mListView);
-                        }
-                    }
-                }
-                refreshing = false;
-            }
-        });
-        hideLoadingDialog();
-    }
-
-    public void flagDataChanged(boolean changed) {
-        if (hasDataChanged != changed) {
-            hasDataChanged = changed;
-            getActivity().invalidateOptionsMenu();
-        }
-    }
-
-
-    @Subscribe
-    public void onRowValueChanged(final RowValueChangedEvent event) {
-        Log.d(TAG, "onRowValueChanged");
-        flagDataChanged(true);
-        if (mForm == null || mForm.getIndicatorRows() == null) {
-            return;
-        }
-        if (refreshing)
-            return; //we don't want to stack this up since it runs every time a character is entered for example
-        refreshing = true;
-
-        new Thread() {
-            public void run() {
-                /**
-                 * Updating views based on ProgramRules
-                 */
-                if (event.isDataValue() && mProgramRuleHelper.dataElementInRule(event.getId())) {
-                    evaluateRules();
-                }
-
-                /*
-                * updating indicator values in rows
-                * */
-                for (IndicatorRow indicatorRow : mForm.getIndicatorRows()) {
-                    String newValue = ProgramIndicatorService.
-                            getProgramIndicatorValue(mForm.getEvent(), indicatorRow.getIndicator());
-                    if (newValue == null) {
-                        newValue = "";
-                    }
-                    if (!newValue.equals(indicatorRow.getValue())) {
-                        indicatorRow.updateValue(newValue);
-                    }
-                }
-
-                refreshListView();
-            }
-        }.start();
     }
 
     private ActionBar getActionBar() {
@@ -717,147 +292,53 @@ public class DataEntryFragment extends Fragment
         }
     }
 
-    private Toolbar getActionBarToolbar() {
-        if (isAdded() && getActivity() != null) {
-            return (Toolbar) getActivity().findViewById(R.id.toolbar);
-        } else {
-            throw new IllegalArgumentException("Fragment should be attached to MainActivity");
-        }
+    @Subscribe
+    public void onRowValueChanged(final RowValueChangedEvent event) {
+        flagDataChanged(true);
     }
 
-    private void attachSpinner() {
-        if (!isSpinnerAttached()) {
-            final Toolbar toolbar = getActionBarToolbar();
-
-            final LayoutInflater inflater = LayoutInflater.from(getActivity());
-            mSpinnerContainer = inflater.inflate(
-                    R.layout.toolbar_spinner, toolbar, false);
-            mPreviousSectionButton = (ImageView) mSpinnerContainer
-                    .findViewById(R.id.previous_section);
-            mNextSectionButton = (ImageView) mSpinnerContainer
-                    .findViewById(R.id.next_section);
-            final ActionBar.LayoutParams lp = new ActionBar.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            toolbar.addView(mSpinnerContainer, lp);
-
-            mSpinnerAdapter = new SectionAdapter(inflater);
-
-            mSpinner = (Spinner) mSpinnerContainer.findViewById(R.id.toolbar_spinner);
-            mSpinner.setAdapter(mSpinnerAdapter);
-            mSpinner.setOnItemSelectedListener(this);
-
-            mPreviousSectionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int currentPosition = mSpinner.getSelectedItemPosition();
-                    if (!(currentPosition - 1 < 0)) {
-                        currentPosition = currentPosition - 1;
-                        mSpinner.setSelection(currentPosition);
-                    }
-                }
-            });
-
-            mNextSectionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int currentPosition = mSpinner.getSelectedItemPosition();
-                    if (!(currentPosition + 1 >= mSpinnerAdapter.getCount())) {
-                        currentPosition = currentPosition + 1;
-                        mSpinner.setSelection(currentPosition);
-                    }
-                }
-            });
-        }
-    }
-
-    private void detachSpinner() {
-        if (isSpinnerAttached()) {
-            if (mSpinnerContainer != null) {
-                ((ViewGroup) mSpinnerContainer.getParent()).removeView(mSpinnerContainer);
-                mSpinnerContainer = null;
-                mSpinner = null;
-                if (mSpinnerAdapter != null) {
-                    mSpinnerAdapter.swapData(null);
-                    mSpinnerAdapter = null;
+    @Subscribe
+    public void onRefreshListView(RefreshListViewEvent event) {
+        int start = listView.getFirstVisiblePosition();
+        int end = listView.getLastVisiblePosition();
+        for (int pos = 0; pos <= end - start; pos++) {
+            View view = listView.getChildAt(pos);
+            if (view != null) {
+                int adapterPosition = view.getId();
+                if (adapterPosition < 0 || adapterPosition >= listViewAdapter.getCount())
+                    continue;
+                if (!view.hasFocus()) {
+                    listViewAdapter.getView(adapterPosition, view, listView);
                 }
             }
         }
+        refreshing = false;
     }
 
-    private boolean isSpinnerAttached() {
-        return mSpinnerContainer != null;
+    @Subscribe
+    public void onHideLoadingDialog(HideLoadingDialogEvent event) {
+        hideLoadingDialog();
     }
 
-    public boolean validate() {
-        ArrayList<String> errors = isEventValid(mForm.getEvent(), mForm.getStage(), getActivity());
-        if (!errors.isEmpty()) {
-            ValidationErrorDialog dialog = ValidationErrorDialog
-                    .newInstance(errors);
-            dialog.show(getChildFragmentManager());
-            return false;
-        } else {
-            return true;
+    private static class RefreshListViewAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            Dhis2Application.getEventBus().post(new RefreshListViewEvent());
         }
     }
 
-    /**
-     * returns true if the event was successfully saved
-     *
-     * @return
-     */
-    public void submitEvent() {
-        if (saving) return;
-        flagDataChanged(false);
-        new Thread() {
-            public void run() {
-                saving = true;
-                if (mForm != null && isAdded()) {
-                    final Context context = getActivity().getBaseContext();
+    protected abstract ArrayList<String> getValidationErrors();
 
-                    mForm.getEvent().setFromServer(false);
-                    //mForm.getEvent().setLastUpdated(Utils.getCurrentTime());
-                    mForm.getEvent().save();
+    protected abstract boolean isValid();
 
-                    TimerTask timerTask = new TimerTask() {
-                        @Override
-                        public void run() {
-                            DhisService.sendData();
-                        }
-                    };
-                    Timer timer = new Timer();
-                    timer.schedule(timerTask, 5000);
-                }
-                saving = false;
-            }
+    protected abstract void save();
 
-        }.start();
-    }
-
-    public static ArrayList<String> isEventValid(Event event, ProgramStage programStage,
-                                                 Context context) {
-        ArrayList<String> errors = new ArrayList<>();
-
-        if (event == null || programStage == null) {
-            return errors;
-        }
-
-        if (isEmpty(event.getEventDate())) {
-            String reportDateDescription = programStage.getReportDateDescription() == null ?
-                    context.getString(R.string.report_date) : programStage.getReportDateDescription();
-            errors.add(reportDateDescription);
-        }
-
-        Map<String, ProgramStageDataElement> dataElements = toMap(
-                programStage.getProgramStageDataElements()
-        );
-
-        for (DataValue dataValue : event.getDataValues()) {
-            ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
-            if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
-                errors.add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
-            }
-        }
-
-        return errors;
-    }
+    @Override
+    public abstract void onLoadFinished(Loader<D> loader, D data);
 }

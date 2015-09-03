@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
@@ -98,6 +99,7 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
             }
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
             modelsToTrack.add(Program.class);
+            modelsToTrack.add(OrganisationUnitProgramRelationship.class);
             return new DbLoader<>(
                     getActivity().getBaseContext(), modelsToTrack, new ProgramQuery(organisationUnitId, types)
             );

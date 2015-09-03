@@ -47,17 +47,18 @@ import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
 /**
  * @author Chau Thu Tran
- * @author Simen Skogly Russnes
  */
 
 /**
@@ -298,6 +299,20 @@ public class ProgramIndicatorService {
             if (programStage != null && dataElement != null) {
                 elements.add(programStage.getProgramStageDataElement(dataElement.getUid()));
             }
+        }
+
+        return elements;
+    }
+
+    public static List<String> getDataElementsInExpression(ProgramIndicator indicator) {
+        List<String> elements = new ArrayList<>();
+
+        Matcher matcher = ProgramIndicator.DATAELEMENT_PATTERN.matcher(indicator.getExpression());
+
+        while (matcher.find()) {
+            String ps = matcher.group(1);
+            String de = matcher.group(2);
+            elements.add(de);
         }
 
         return elements;

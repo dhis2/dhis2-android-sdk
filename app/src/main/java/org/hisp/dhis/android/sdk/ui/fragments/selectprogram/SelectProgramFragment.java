@@ -272,7 +272,6 @@ public abstract class SelectProgramFragment extends Fragment
             mProgressBar.setVisibility(View.GONE);
             mAdapter.swapData(data.getEventRowList());
             setRefreshing(false);
-
         }
     }
 

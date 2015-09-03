@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
+package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -35,11 +35,12 @@ import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 
 import java.util.List;
 import java.util.Map;
 
-class DataEntryFragmentForm {
+class EventDataEntryFragmentForm {
     private Enrollment enrollment;
     private Event event;
     private ProgramStage stage;
@@ -49,6 +50,7 @@ class DataEntryFragmentForm {
     private Map<String, String> dataElementNames;
     private List<IndicatorRow> indicatorRows;
     private StatusRow statusRow;
+    private Map<String, IndicatorRow> indicatorToIndicatorRowMap;
 
     public Enrollment getEnrollment() {
         return enrollment;
@@ -120,5 +122,13 @@ class DataEntryFragmentForm {
 
     public void setStatusRow(StatusRow statusRow) {
         this.statusRow = statusRow;
+    }
+
+    public Map<String, IndicatorRow> getIndicatorToIndicatorRowMap() {
+        return indicatorToIndicatorRowMap;
+    }
+
+    public void setIndicatorToIndicatorRowMap(Map<String, IndicatorRow> indicatorToIndicatorRowMap) {
+        this.indicatorToIndicatorRowMap = indicatorToIndicatorRowMap;
     }
 }

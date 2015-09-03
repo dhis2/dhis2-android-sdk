@@ -27,9 +27,10 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
+package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
@@ -45,6 +46,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
@@ -63,13 +65,14 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.getDataElement;
 
-class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
+class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
-    private static final String CLASS_TAG = DataEntryFragmentQuery.class.getSimpleName();
+    private static final String CLASS_TAG = EventDataEntryFragmentQuery.class.getSimpleName();
 
     private static final String EMPTY_FIELD = "";
     private static final String DEFAULT_SECTION = "defaultSection";
@@ -80,7 +83,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
     private final long eventId;
     private final long enrollmentId;
 
-    DataEntryFragmentQuery(String orgUnitId, String programId, String programStageId, long eventId, long enrollmentId) {
+    EventDataEntryFragmentQuery(String orgUnitId, String programId, String programStageId, long eventId, long enrollmentId) {
         this.orgUnitId = orgUnitId;
         this.programId = programId;
         this.programStageId = programStageId;
@@ -89,9 +92,9 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
     }
 
     @Override
-    public DataEntryFragmentForm query(Context context) {
+    public EventDataEntryFragmentForm query(Context context) {
         final ProgramStage stage = MetaDataController.getProgramStage(programStageId);
-        final DataEntryFragmentForm form = new DataEntryFragmentForm();
+        final EventDataEntryFragmentForm form = new EventDataEntryFragmentForm();
 
         if (stage == null || stage.getProgramStageSections() == null) {
             return form;
@@ -108,6 +111,7 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         form.setDataElementNames(new HashMap<String, String>());
         form.setDataValues(new HashMap<String, DataValue>());
         form.setIndicatorRows(new ArrayList<IndicatorRow>());
+        form.setIndicatorToIndicatorRowMap(new HashMap<String, IndicatorRow>());
 
         if (stage.getProgramStageSections() == null || stage.getProgramStageSections().isEmpty()) {
             List<DataEntryRow> rows = new ArrayList<>();
@@ -135,11 +139,10 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
                 form.getSections().add(new DataEntryFragmentSection(section.getName(), section.getUid(), rows));
             }
         }
-
         return form;
     }
 
-    private static void addStatusRow(Context context, DataEntryFragmentForm form,
+    private static void addStatusRow(Context context, EventDataEntryFragmentForm form,
                                      List<DataEntryRow> rows) {
         Event event = form.getEvent();
         if(event==null) return;
@@ -148,46 +151,48 @@ class DataEntryFragmentQuery implements Query<DataEntryFragmentForm> {
         form.setStatusRow(row);
     }
 
-    private static void addEventDateRow(Context context, DataEntryFragmentForm form,
+    private static void addEventDateRow(Context context, EventDataEntryFragmentForm form,
                                         List<DataEntryRow> rows) {
         String reportDateDescription = form.getStage().getReportDateDescription()== null ?
                 context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
         rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
     }
 
-    private static void addCoordinateRow(DataEntryFragmentForm form, List<DataEntryRow> rows) {
+    private static void addCoordinateRow(EventDataEntryFragmentForm form, List<DataEntryRow> rows) {
         if (form.getStage() != null &&
                 form.getStage().getCaptureCoordinates()) {
             rows.add(new CoordinatesRow(form.getEvent()));
         }
     }
 
-    private static void populateDataEntryRows(DataEntryFragmentForm form,
+    private static void populateDataEntryRows(EventDataEntryFragmentForm form,
                                               List<ProgramStageDataElement> dataElements,
                                               List<DataEntryRow> rows, String username) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
-
             DataElement dataElement = getDataElement(stageDataElement.getDataelement());
             if (dataElement != null) {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
-
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
                 rows.add(createDataEntryRow(dataElement, dataValue));
             }
         }
     }
 
-    private static void populateIndicatorRows(DataEntryFragmentForm form,
+    private static void populateIndicatorRows(EventDataEntryFragmentForm form,
                                               List<ProgramIndicator> indicators,
                                               List<DataEntryRow> rows) {
         for (ProgramIndicator programIndicator : indicators) {
-            String value = ProgramIndicatorService
-                    .getProgramIndicatorValue(form.getEvent(), programIndicator);
-            IndicatorRow indicatorRow = new IndicatorRow(programIndicator, value);
+            IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
+            if(indicatorRow==null) {
+                String value = ProgramIndicatorService
+                        .getProgramIndicatorValue(form.getEvent(), programIndicator);
+                indicatorRow = new IndicatorRow(programIndicator, value);
+                form.getIndicatorToIndicatorRowMap().put(programIndicator.getUid(), indicatorRow);
+                form.getIndicatorRows().add(indicatorRow);
+            }
             rows.add(indicatorRow);
-            form.getIndicatorRows().add(indicatorRow);
         }
     }
 

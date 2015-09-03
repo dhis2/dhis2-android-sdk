@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
@@ -88,6 +89,7 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
     public Loader<List<OptionAdapterValue>> onCreateLoader(int id, Bundle args) {
         if (LOADER_ID == id && isAdded()) {
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
+            modelsToTrack.add(OrganisationUnitProgramRelationship.class);
             String[] kinds = args.getStringArray(Program$Table.KIND);
             Program.ProgramType[] types = null;
             if( kinds != null ) {

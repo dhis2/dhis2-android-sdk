@@ -47,7 +47,7 @@ public class ProgressDialogFragment extends DialogFragment {
 
     public static boolean DIALOG_INDETERMINATE = true;
     public static boolean DIALOG_NOT_INDETERMINATE;
-    public static boolean DIALOG_CANCELABLE = true;
+    public static boolean DIALOG_CANCELABLE = false;
 
     public static ProgressDialogFragment newInstance() {
         return newInstance(R.string.loading);

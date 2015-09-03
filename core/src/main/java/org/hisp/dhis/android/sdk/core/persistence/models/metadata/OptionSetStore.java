@@ -3,6 +3,8 @@ package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.api.Models;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Option$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IStore;
@@ -48,6 +50,9 @@ public final class OptionSetStore implements IStore<OptionSet>{
         List<OptionSet$Flow> optionSetFlows = new Select()
                 .from(OptionSet$Flow.class)
                 .queryList();
+        for(OptionSet$Flow optionSetFlow: optionSetFlows) {
+            optionSetFlow.setOptions(Option$Flow.fromModels(Models.options().query(OptionSet$Flow.toModel(optionSetFlow))));
+        }
         return OptionSet$Flow.toModels(optionSetFlows);
     }
 
@@ -57,6 +62,7 @@ public final class OptionSetStore implements IStore<OptionSet>{
                 .from(OptionSet$Flow.class)
                 .where(Condition.column(OptionSet$Flow$Table.ID).is(id))
                 .querySingle();
+        optionSetFlow.setOptions(Option$Flow.fromModels(Models.options().query(OptionSet$Flow.toModel(optionSetFlow))));
         return OptionSet$Flow.toModel(optionSetFlow);
     }
 
@@ -66,6 +72,7 @@ public final class OptionSetStore implements IStore<OptionSet>{
                 .from(OptionSet$Flow.class)
                 .where(Condition.column(OptionSet$Flow$Table.UID).is(uid))
                 .querySingle();
+        optionSetFlow.setOptions(Option$Flow.fromModels(Models.options().query(OptionSet$Flow.toModel(optionSetFlow))));
         return OptionSet$Flow.toModel(optionSetFlow);
     }
 }

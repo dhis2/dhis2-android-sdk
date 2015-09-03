@@ -17,12 +17,22 @@ public final class OptionSet$Flow extends BaseIdentifiableObject$Flow {
     @Column
     int version;
 
+    List<Option$Flow> options;
+
     public int getVersion() {
         return version;
     }
 
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    public List<Option$Flow> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Option$Flow> options) {
+        this.options = options;
     }
 
     public OptionSet$Flow() {
@@ -43,6 +53,7 @@ public final class OptionSet$Flow extends BaseIdentifiableObject$Flow {
         optionSet.setDisplayName(optionSetFlow.getDisplayName());
         optionSet.setAccess(optionSetFlow.getAccess());
         optionSet.setVersion(optionSetFlow.getVersion());
+        optionSet.setOptions(Option$Flow.toModels(optionSetFlow.getOptions()));
         return optionSet;
     }
 

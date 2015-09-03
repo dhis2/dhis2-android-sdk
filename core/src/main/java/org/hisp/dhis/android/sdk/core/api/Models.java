@@ -44,6 +44,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ConstantStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.DataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OrganisationUnitStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
@@ -59,6 +60,7 @@ import org.hisp.dhis.android.sdk.models.metadata.Constant;
 import org.hisp.dhis.android.sdk.models.metadata.DataElement;
 import org.hisp.dhis.android.sdk.models.metadata.IOptionStore;
 import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
+import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
@@ -70,6 +72,7 @@ public final class Models {
     private final IStore<DataElement> dataElementStore;
     private final IOptionStore optionStore;
     private final IStore<OptionSet> optionSetStore;
+    private final IStore<OrganisationUnit> organisationUnitStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -96,6 +99,7 @@ public final class Models {
         dataElementStore = new DataElementStore();
         optionStore = new OptionStore();
         optionSetStore = new OptionSetStore();
+        organisationUnitStore = new OrganisationUnitStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -122,6 +126,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IStore<OrganisationUnit> organisationUnits() {
+        return getInstance().organisationUnitStore;
     }
 
     public static IStore<OptionSet> optionSets() {

@@ -38,12 +38,14 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -55,6 +57,7 @@ import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceItemRow;
 import org.hisp.dhis.android.sdk.ui.fragments.settings.SettingsFragment;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
@@ -143,6 +146,7 @@ public abstract class SelectProgramFragment extends Fragment
         setStandardButtons(header);
         mListView.addHeaderView(header, TAG, false);
         mListView.setAdapter(mAdapter);
+        registerForContextMenu(mListView);
 
         if (savedInstanceState != null &&
                 savedInstanceState.getParcelable(STATE) != null) {
@@ -164,6 +168,12 @@ public abstract class SelectProgramFragment extends Fragment
 
         onRestoreState(true);
     }
+
+    @Override
+    public abstract void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo);
+
+    @Override
+    public abstract boolean onContextItemSelected(MenuItem item);
 
     protected abstract AbsAdapter getAdapter(Bundle savedInstanceState);
 
@@ -272,7 +282,6 @@ public abstract class SelectProgramFragment extends Fragment
             mProgressBar.setVisibility(View.GONE);
             mAdapter.swapData(data.getEventRowList());
             setRefreshing(false);
-
         }
     }
 

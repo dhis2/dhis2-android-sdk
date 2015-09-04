@@ -80,7 +80,6 @@ public final class GpsController implements LocationListener {
         if (mManager == null) {
             throw new IllegalArgumentException("You have to call init() method first");
         }
-
         return mManager;
     }
 
@@ -115,7 +114,9 @@ public final class GpsController implements LocationListener {
     }
 
     public void removeUpdates() {
-        mLocationManager.removeUpdates(this);
+        if(mLocationManager!=null) {
+            mLocationManager.removeUpdates(this);
+        }
     }
 
     @Override

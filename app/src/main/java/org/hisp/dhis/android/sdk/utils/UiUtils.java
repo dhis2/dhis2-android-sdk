@@ -33,16 +33,39 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 
+import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
 import org.hisp.dhis.android.sdk.ui.dialogs.CustomDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.ItemStatusDialogFragment;
+import org.hisp.dhis.android.sdk.ui.fragments.progressdialog.ProgressDialogFragment;
 
 /**
  * @author Simen Skogly Russnes on 25.08.15.
  */
 public final class UiUtils {
+
+    private static UiUtils uiUtils;
+    private ProgressDialogFragment progressDialogFragment;
+
+    static {
+        uiUtils = new UiUtils();
+    }
+
+    private ProgressDialogFragment getProgressDialogFragment() {
+        return progressDialogFragment;
+    }
+
+    private void setProgressDialogFragment(ProgressDialogFragment progressDialogFragment) {
+        this.progressDialogFragment = progressDialogFragment;
+    }
+
+    private static UiUtils getInstance() {
+        return uiUtils;
+    }
+
+    private UiUtils() {}
 
     public static void showErrorDialog(final Activity activity, final String title, final String message) {
         if (activity == null) return;
@@ -82,6 +105,13 @@ public final class UiUtils {
                                          final String confirmOption, final String cancelOption,
                                          DialogInterface.OnClickListener onClickListener) {
         new CustomDialogFragment(title, message, confirmOption, cancelOption, onClickListener).
+                show(activity.getFragmentManager(), title);
+    }
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
+                                         final String confirmOption, final String cancelOption,
+                                         final int iconId,
+                                         DialogInterface.OnClickListener onClickListener) {
+        new CustomDialogFragment(title, message, confirmOption, cancelOption,iconId ,  onClickListener).
                 show(activity.getFragmentManager(), title);
     }
 
@@ -125,4 +155,23 @@ public final class UiUtils {
         fragment.show(fragmentManager);
     }
 
+
+
+    public static void showLoadingDialog(final FragmentManager fragmentManager, int message) {
+        if (getInstance().getProgressDialogFragment() != null) {
+            getInstance().getProgressDialogFragment().dismissAllowingStateLoss();
+            getInstance().setProgressDialogFragment(null);
+        }
+        getInstance().setProgressDialogFragment(ProgressDialogFragment.newInstance(message));
+        getInstance().getProgressDialogFragment().show(fragmentManager, ProgressDialogFragment.TAG);
+    }
+
+    public static void hideLoadingDialog(final FragmentManager fragmentManager) {
+        if (getInstance().getProgressDialogFragment() != null) {
+            if(getInstance().getProgressDialogFragment().isAdded()) {
+                getInstance().getProgressDialogFragment().dismissAllowingStateLoss();
+            }
+            getInstance().setProgressDialogFragment(null);
+        }
+    }
 }

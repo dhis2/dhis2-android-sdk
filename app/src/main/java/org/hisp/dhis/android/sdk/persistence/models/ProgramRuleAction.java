@@ -46,6 +46,8 @@ public class ProgramRuleAction extends BaseMetaDataObject{
 
     public static final String TYPE_HIDEFIELD = "HIDEFIELD";
     public static final String TYPE_HIDESECTION = "HIDESECTION";
+    public static final String TYPE_SHOWWARNING = "SHOWWARNING";
+    public static final String TYPE_SHOWERROR = "SHOWERROR";
 
     @Column(name = "programRule")
     String programRule;

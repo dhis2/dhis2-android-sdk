@@ -5,12 +5,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
 
 import java.util.List;
 
-public final class OrganisationUnitStore implements IStore<OrganisationUnit>{
+public final class OrganisationUnitStore implements IIdentifiableObjectStore<OrganisationUnit> {
 
     public OrganisationUnitStore() {
         //empty constructor

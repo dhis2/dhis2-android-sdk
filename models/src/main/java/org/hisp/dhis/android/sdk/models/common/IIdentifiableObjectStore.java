@@ -26,19 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
-
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+package org.hisp.dhis.android.sdk.models.common;
 
 import java.util.List;
 
-public interface IDashboardElementStore extends IIdentifiableObjectStore<DashboardElement> {
-    List<DashboardElement> query(DashboardItem dashboardItem, State... states);
+/**
+ * Created by arazabishov on 8/18/15.
+ */
+public interface IIdentifiableObjectStore<T extends IdentifiableObject> extends IStore<T> {
 
-    List<DashboardElement> query(DashboardItem dashboardItem, List<State> states);
+    T query(long id);
 
-    List<DashboardElement> filter(DashboardItem dashboardItem, State state);
-
-    List<DashboardElement> filter(State state);
+    T query(String uid);
 }

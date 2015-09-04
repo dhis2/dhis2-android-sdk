@@ -5,12 +5,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataElement$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.DataElement;
 
 import java.util.List;
 
-public final class DataElementStore implements IStore<DataElement> {
+public final class DataElementStore implements IIdentifiableObjectStore<DataElement> {
 
     public DataElementStore() {
         //empty constructor

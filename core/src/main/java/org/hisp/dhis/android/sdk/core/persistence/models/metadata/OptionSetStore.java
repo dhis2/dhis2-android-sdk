@@ -7,12 +7,12 @@ import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Option$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
 
 import java.util.List;
 
-public final class OptionSetStore implements IStore<OptionSet>{
+public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet> {
 
     public OptionSetStore() {
         //empty constructor

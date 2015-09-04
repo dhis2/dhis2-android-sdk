@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.sdk.core.utils;
 
-import com.raizlabs.android.dbflow.structure.BaseModel;
-
 import org.hisp.dhis.android.sdk.core.network.APIException;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 
 import java.net.HttpURLConnection;
@@ -89,7 +87,7 @@ public class NetworkUtils {
      * 504 Gateway Timeout (we need to retry request later)
      */
     public static <T extends IdentifiableObject> void handleApiException(APIException apiException,
-                                                                         T model, IStore<T> store) throws APIException {
+                                                                         T model, IIdentifiableObjectStore<T> store) throws APIException {
         switch (apiException.getKind()) {
             case HTTP: {
                 switch (apiException.getResponse().getStatus()) {

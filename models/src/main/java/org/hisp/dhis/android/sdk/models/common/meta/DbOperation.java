@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.common.meta;
 
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
@@ -40,15 +40,15 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 public final class DbOperation<T extends IdentifiableObject> {
     private final DbAction mDbAction;
     private final T mModel;
-    private final IStore<T> mModelStore;
+    private final IIdentifiableObjectStore<T> mModelStore;
 
-    private DbOperation(DbAction dbAction, T model, IStore<T> store) {
+    private DbOperation(DbAction dbAction, T model, IIdentifiableObjectStore<T> store) {
         mModel = isNull(model, "IdentifiableObject object must nto be null,");
         mDbAction = isNull(dbAction, "BaseModel.DbAction object must not be null");
         mModelStore = isNull(store, "IStore object must not be null");
     }
 
-    public static <T extends IdentifiableObject> DbOperationBuilder<T> with(IStore<T> store) {
+    public static <T extends IdentifiableObject> DbOperationBuilder<T> with(IIdentifiableObjectStore<T> store) {
         return new DbOperationBuilder<>(store);
     }
 
@@ -60,7 +60,7 @@ public final class DbOperation<T extends IdentifiableObject> {
         return mDbAction;
     }
 
-    public IStore<T> getStore() {
+    public IIdentifiableObjectStore<T> getStore() {
         return mModelStore;
     }
 
@@ -86,9 +86,9 @@ public final class DbOperation<T extends IdentifiableObject> {
     }
 
     public static class DbOperationBuilder<T extends IdentifiableObject> {
-        private final IStore<T> mStore;
+        private final IIdentifiableObjectStore<T> mStore;
 
-        DbOperationBuilder(IStore<T> store) {
+        DbOperationBuilder(IIdentifiableObjectStore<T> store) {
             mStore = store;
         }
 

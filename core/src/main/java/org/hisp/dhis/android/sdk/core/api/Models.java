@@ -47,8 +47,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OrganisationUnitStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
-import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
@@ -68,11 +68,11 @@ public final class Models {
     private static Models models;
 
     // Meta data store objects
-    private final IStore<Constant> constantStore;
-    private final IStore<DataElement> dataElementStore;
+    private final IIdentifiableObjectStore<Constant> constantStore;
+    private final IIdentifiableObjectStore<DataElement> dataElementStore;
     private final IOptionStore optionStore;
-    private final IStore<OptionSet> optionSetStore;
-    private final IStore<OrganisationUnit> organisationUnitStore;
+    private final IIdentifiableObjectStore<OptionSet> optionSetStore;
+    private final IIdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -128,11 +128,11 @@ public final class Models {
         return models;
     }
 
-    public static IStore<OrganisationUnit> organisationUnits() {
+    public static IIdentifiableObjectStore<OrganisationUnit> organisationUnits() {
         return getInstance().organisationUnitStore;
     }
 
-    public static IStore<OptionSet> optionSets() {
+    public static IIdentifiableObjectStore<OptionSet> optionSets() {
         return getInstance().optionSetStore;
     }
 
@@ -140,11 +140,11 @@ public final class Models {
         return getInstance().optionStore;
     }
 
-    public static IStore<DataElement> dataElements() {
+    public static IIdentifiableObjectStore<DataElement> dataElements() {
         return getInstance().dataElementStore;
     }
 
-    public static IStore<Constant> constants() {
+    public static IIdentifiableObjectStore<Constant> constants() {
         return getInstance().constantStore;
     }
 

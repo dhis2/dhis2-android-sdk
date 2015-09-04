@@ -5,12 +5,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Constant$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Constant$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.Constant;
 
 import java.util.List;
 
-public final class ConstantStore implements IStore<Constant>{
+public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
 
     public ConstantStore() {
         //empty constructor

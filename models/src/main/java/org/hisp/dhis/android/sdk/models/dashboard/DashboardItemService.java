@@ -62,7 +62,7 @@ public final class DashboardItemService implements IDashboardItemService {
         item.setLastUpdated(lastUpdated);
         item.setState(State.TO_POST);
         item.setDashboard(dashboard);
-        item.setAccess(Access.provideDefaultAccess());
+        item.setAccess(Access.createDefaultAccess());
         item.setType(content.getType());
 
         return item;

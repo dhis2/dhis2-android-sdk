@@ -64,7 +64,7 @@ public final class InterpretationService implements IInterpretationService {
         InterpretationComment comment = new InterpretationComment();
         comment.setCreated(lastUpdated);
         comment.setLastUpdated(lastUpdated);
-        comment.setAccess(Access.provideDefaultAccess());
+        comment.setAccess(Access.createDefaultAccess());
         comment.setText(text);
         comment.setState(State.TO_POST);
         comment.setUser(user);
@@ -93,7 +93,7 @@ public final class InterpretationService implements IInterpretationService {
         Interpretation interpretation = new Interpretation();
         interpretation.setCreated(lastUpdated);
         interpretation.setLastUpdated(lastUpdated);
-        interpretation.setAccess(Access.provideDefaultAccess());
+        interpretation.setAccess(Access.createDefaultAccess());
         interpretation.setText(text);
         interpretation.setState(State.TO_POST);
         interpretation.setUser(user);

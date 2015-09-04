@@ -59,7 +59,7 @@ public final class Access {
      *
      * @return new Access object.
      */
-    public static Access provideDefaultAccess() {
+    public static Access createDefaultAccess() {
         Access access = new Access();
         access.setManage(true);
         access.setExternalize(true);

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.sdk.models.common.meta.State;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Dashboard extends BaseIdentifiableObject {
+public class Dashboard extends BaseIdentifiableObject {
     /**
      * Maximum amount of items dashboard can hold.
      */

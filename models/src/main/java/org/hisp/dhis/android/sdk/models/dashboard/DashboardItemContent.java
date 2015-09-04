@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-public final class DashboardItemContent extends BaseIdentifiableObject {
+public class DashboardItemContent extends BaseIdentifiableObject {
     public static final String TYPE_CHART = "chart";
     public static final String TYPE_EVENT_CHART = "eventChart";
     public static final String TYPE_MAP = "map";

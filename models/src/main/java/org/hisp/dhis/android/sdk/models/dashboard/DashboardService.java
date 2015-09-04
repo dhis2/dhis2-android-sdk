@@ -55,56 +55,73 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     * Creates and returns new Dashboard with given name.
+     * Factory method which creates new Dashboard with given name.
      *
      * @param name Name of new dashboard.
      * @return a dashboard.
      */
     @Override
     public Dashboard createDashboard(String name) {
-        /* DateTime lastUpdatedDateTime = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.DASHBOARDS); */
         DateTime lastUpdated = new DateTime();
 
         Dashboard dashboard = new Dashboard();
-        dashboard.setState(State.TO_POST);
         dashboard.setName(name);
         dashboard.setDisplayName(name);
         dashboard.setCreated(lastUpdated);
         dashboard.setLastUpdated(lastUpdated);
-        dashboard.setAccess(Access.provideDefaultAccess());
+        dashboard.setAccess(Access.createDefaultAccess());
+        dashboard.setState(State.TO_POST);
         return dashboard;
     }
 
     /**
-     * This method will change the name of dashboard along with the State.
-     * <p/>
-     * If the current state of model is State.TO_DELETE or State.TO_POST,
-     * state won't be changed. Otherwise, it will be set to State.TO_UPDATE.
      *
-     * @param name New name for dashboard.
+     *
+     * @param dashboard to be removed.
+     * @throws IllegalArgumentException in cases when dashboard is null.
+     *
      */
     @Override
-    public void updateDashboardName(Dashboard dashboard, String name) {
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
-
-        if (dashboard.getState() != State.TO_DELETE &&
-                dashboard.getState() != State.TO_POST) {
-            dashboard.setState(State.TO_UPDATE);
-        }
-
-        dashboardStore.update(dashboard);
-    }
-
-    @Override
     public void deleteDashboard(Dashboard dashboard) {
-        if (dashboard.getState() == State.TO_DELETE) {
+        isNull(dashboard, "dashboard argument must not be null");
+
+        if (State.TO_DELETE.equals(dashboard.getState())) {
+            dashboard.setState(State.TO_DELETE);
             dashboardStore.delete(dashboard);
         } else {
             dashboard.setState(State.TO_DELETE);
             dashboardStore.update(dashboard);
         }
+    }
+
+    /**
+     * Changes the name of dashboard along with the State.
+     * <p/>
+     * If the current state of model is State.TO_DELETE or State.TO_POST,
+     * state won't be changed. Otherwise, it will be set to State.TO_UPDATE.
+     *
+     * @param name Name for dashboard.
+     * @throws IllegalArgumentException in cases when dashboard is null.
+     */
+    @Override
+    public void updateDashboardName(Dashboard dashboard, String name) {
+        isNull(dashboard, "dashboard argument must not be null");
+
+        if (State.TO_DELETE.equals(dashboard.getState())) {
+            throw new IllegalArgumentException("The name of dashboard with State." +
+                    "TO_DELETE cannot be updated");
+        }
+
+        /* if dashboard was not posted to the server before,
+        you don't have anything to update */
+        if (dashboard.getState() != State.TO_POST) {
+            dashboard.setState(State.TO_UPDATE);
+        }
+
+        dashboard.setName(name);
+        dashboard.setDisplayName(name);
+
+        dashboardStore.update(dashboard);
     }
 
     /**
@@ -118,11 +135,14 @@ public final class DashboardService implements IDashboardService {
      * If the overall count of items in dashboard is bigger that Dashboard.MAX_ITEMS, method will not
      * add content and return false;
      *
-     * @param content
+     * @param dashboard dashboard to which we want add new content.
+     * @param content content which we want to add to given dashboard.
      * @return false if item count is bigger than MAX_ITEMS.
+     * @throws IllegalArgumentException if dashboard or content is null.
      */
     @Override
     public boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) {
+        isNull(dashboard, "Dashboard object must not be null");
         isNull(content, "DashboardItemContent object must not be null");
 
         DashboardItem item;
@@ -180,7 +200,8 @@ public final class DashboardService implements IDashboardService {
     }
 
     private int getDashboardItemCount(Dashboard dashboard) {
-        List<DashboardItem> items = dashboardItemStore.filter(dashboard, State.TO_DELETE);
+        List<DashboardItem> items = dashboardItemStore
+                .filter(dashboard, State.TO_DELETE);
         return items == null ? 0 : items.size();
     }
 

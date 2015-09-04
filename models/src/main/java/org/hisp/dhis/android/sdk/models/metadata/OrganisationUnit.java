@@ -38,13 +38,13 @@ import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 public final class OrganisationUnit extends BaseIdentifiableObject {
 
     @JsonProperty("label")
-    String label;
+    private String label;
 
     @JsonProperty("level")
-    int level;
+    private int level;
 
     @JsonProperty("parent")
-    String parent;
+    private String parent;
 
     public String getLabel() {
         return label;

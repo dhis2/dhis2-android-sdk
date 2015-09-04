@@ -37,19 +37,19 @@ import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Option extends BaseIdentifiableObject {
 
-    int sortIndex;
+    private int sortOrder;
 
-    String optionSet;
+    private String optionSet;
 
     @JsonProperty("code")
-    String code;
+    private String code;
 
-    public int getSortIndex() {
-        return sortIndex;
+    public int getSortOrder() {
+        return sortOrder;
     }
 
-    public void setSortIndex(int sortIndex) {
-        this.sortIndex = sortIndex;
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public String getOptionSet() {

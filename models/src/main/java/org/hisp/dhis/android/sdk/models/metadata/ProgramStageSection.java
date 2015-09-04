@@ -34,17 +34,68 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
+import java.util.List;
+import java.util.Map;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Constant extends BaseIdentifiableObject {
+public final class ProgramStageSection extends BaseIdentifiableObject {
 
-    @JsonProperty("value")
-    private double value;
+    @JsonProperty("sortOrder")
+    private int sortOrder;
 
-    public double getValue() {
-        return value;
+    @JsonProperty("externalAccess")
+    private boolean externalAccess;
+
+    private String programStage;
+
+    @JsonProperty("programStageDataElements")
+    private List<ProgramStageDataElement> programStageDataElements;
+
+    @JsonProperty("programIndicators")
+    private List<ProgramIndicator> programIndicators;
+
+    @JsonProperty("programStage")
+    public void setProgramStage(Map<String, Object> programStage) {
+        this.programStage = (String) programStage.get("id");
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public boolean isExternalAccess() {
+        return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
+    }
+
+    public String getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
+    }
+
+    public List<ProgramStageDataElement> getProgramStageDataElements() {
+        return programStageDataElements;
+    }
+
+    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+        this.programStageDataElements = programStageDataElements;
+    }
+
+    public List<ProgramIndicator> getProgramIndicators() {
+        return programIndicators;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
     }
 }

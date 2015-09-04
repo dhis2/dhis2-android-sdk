@@ -35,16 +35,5 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Constant extends BaseIdentifiableObject {
-
-    @JsonProperty("value")
-    private double value;
-
-    public double getValue() {
-        return value;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
-    }
+public final class TrackedEntity extends BaseIdentifiableObject {
 }

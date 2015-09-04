@@ -32,19 +32,74 @@ package org.hisp.dhis.android.sdk.models.metadata;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Constant extends BaseIdentifiableObject {
+public final class ProgramTrackedEntityAttribute {
 
-    @JsonProperty("value")
-    private double value;
+    private String trackedEntityAttribute;
 
-    public double getValue() {
-        return value;
+    private int sortOrder;
+
+    @JsonProperty("allowFutureDate")
+    private boolean allowFutureDate;
+
+    @JsonProperty("displayInList")
+    private boolean displayInList;
+
+    @JsonProperty("mandatory")
+    private boolean mandatory;
+
+    private String program;
+
+    @JsonProperty("trackedEntityAttribute")
+    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute.getUId();
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public String getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public boolean isAllowFutureDate() {
+        return allowFutureDate;
+    }
+
+    public void setAllowFutureDate(boolean allowFutureDate) {
+        this.allowFutureDate = allowFutureDate;
+    }
+
+    public boolean isDisplayInList() {
+        return displayInList;
+    }
+
+    public void setDisplayInList(boolean displayInList) {
+        this.displayInList = displayInList;
+    }
+
+    public boolean isMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        this.mandatory = mandatory;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
     }
 }

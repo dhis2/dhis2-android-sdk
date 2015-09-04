@@ -62,7 +62,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         option.setName(optionFlow.getName());
         option.setDisplayName(optionFlow.getDisplayName());
         option.setAccess(optionFlow.getAccess());
-        option.setSortIndex(optionFlow.getSortIndex());
+        option.setSortOrder(optionFlow.getSortIndex());
         option.setOptionSet(optionFlow.getOptionSet());
         option.setCode(optionFlow.getCode());
         return option;
@@ -81,7 +81,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         optionFlow.setName(option.getName());
         optionFlow.setDisplayName(option.getDisplayName());
         optionFlow.setAccess(option.getAccess());
-        optionFlow.setSortIndex(option.getSortIndex());
+        optionFlow.setSortIndex(option.getSortOrder());
         optionFlow.setOptionSet(option.getOptionSet());
         optionFlow.setCode(option.getCode());
         return optionFlow;

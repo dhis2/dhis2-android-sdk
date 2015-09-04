@@ -40,10 +40,10 @@ import java.util.List;
 public final class OptionSet extends BaseIdentifiableObject {
 
     @JsonProperty("version")
-    int version;
+    private int version;
 
     @JsonProperty("options")
-    List<Option> options;
+    private List<Option> options;
 
     public int getVersion() {
         return version;

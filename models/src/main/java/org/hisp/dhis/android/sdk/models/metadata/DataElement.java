@@ -2,11 +2,11 @@ package org.hisp.dhis.android.sdk.models.metadata;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.meta.BaseNameableObject;
 
 import java.util.Map;
 
-public final class DataElement extends BaseIdentifiableObject {
+public final class DataElement extends BaseNameableObject {
 
     public static final String VALUE_TYPE_INT = "int";
     public static final String VALUE_TYPE_STRING = "string";
@@ -24,30 +24,30 @@ public final class DataElement extends BaseIdentifiableObject {
     public static final String VALUE_TYPE_LONG_TEXT = "longText";
 
     @JsonProperty("type")
-    String type;
+    private String type;
 
     @JsonProperty("zeroIsSignificant")
-    boolean zeroIsSignificant;
+    private boolean zeroIsSignificant;
 
     @JsonProperty("aggregationOperator")
-    String aggregationOperator;
+    private String aggregationOperator;
 
     @JsonProperty("formName")
-    String formName;
+    private String formName;
 
     @JsonProperty("numberType")
-    String numberType;
+    private String numberType;
 
     @JsonProperty("domainType")
-    String domainType;
+    private String domainType;
 
     @JsonProperty("dimension")
-    String dimension;
+    private String dimension;
 
     @JsonProperty("displayFormName")
-    String displayFormName;
+    private String displayFormName;
 
-    String optionSet;
+    private String optionSet;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {

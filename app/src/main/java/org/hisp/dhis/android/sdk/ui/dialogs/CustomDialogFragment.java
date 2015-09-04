@@ -84,6 +84,15 @@ public class CustomDialogFragment
         this.secondOption = secondOption;
         this.firstOptionListener = firstOptionListener;
     }
+    public CustomDialogFragment(  String title, String message, String firstOption, String secondOption,int iconId, DialogInterface.OnClickListener firstOptionListener)
+    {
+        this.title = title;
+        this.message = message;
+        this.firstOption = firstOption;
+        this.secondOption = secondOption;
+        this.iconId = iconId;
+        this.firstOptionListener = firstOptionListener;
+    }
     
     public CustomDialogFragment(String title, String message, String firstOption, String secondOption, OnClickListener firstOptionListener,
     		OnClickListener secondOptionListener)
@@ -104,9 +113,9 @@ public class CustomDialogFragment
         this.message = message;
         this.firstOption = firstOption;
         this.secondOption = secondOption;
+        this.iconId = iconId;
         this.firstOptionListener = firstOptionListener;
         this.secondOptionListener = secondOptionListener;
-        this.iconId = iconId;
     }
 
     public CustomDialogFragment(String title, String message, String firstOption,

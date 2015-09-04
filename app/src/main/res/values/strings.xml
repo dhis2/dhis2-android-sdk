@@ -226,4 +226,8 @@
     <string name="sd_card_error_message">Error! Is SD Card inserted?</string>
 
     <string name="go_to_programoverview_fragment">Go to overview</string>
+    <string name="go_to_dataentry_fragment">Go to data entry</string>
+
+    <string name="warning_delete_unsent_tei">Warning! This item has not been synchronized with the server. If you delete this item, you will not be able to recover this data</string>
+
 </resources>

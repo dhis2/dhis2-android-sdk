@@ -92,6 +92,7 @@ public final class EventItemRow implements EventRow {
             );
             view.setTag(holder);
             view.setOnClickListener(holder.listener);
+            view.setOnLongClickListener(holder.listener);
             view.findViewById(R.id.status_container)
                     .setOnClickListener(holder.listener);
         } else {
@@ -149,6 +150,10 @@ public final class EventItemRow implements EventRow {
         mEvent = event;
     }
 
+    public Event getmEvent() {
+        return mEvent;
+    }
+
     public void setSecondItem(String secondItem) {
         this.mSecondItem = secondItem;
     }
@@ -192,7 +197,7 @@ public final class EventItemRow implements EventRow {
         }
     }
 
-    private static class OnEventInternalClickListener implements View.OnClickListener {
+    private static class OnEventInternalClickListener implements View.OnClickListener, View.OnLongClickListener {
         private Event event;
         private OnRowClick.ITEM_STATUS status;
 
@@ -213,6 +218,12 @@ public final class EventItemRow implements EventRow {
                 Dhis2Application.getEventBus()
                         .post(new OnTrackerItemClick(event, status, false));
             }
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            //empty implementation for registering context menu
+            return false;
         }
     }
 }

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
-import org.hisp.dhis.android.sdk.models.providers.DashboardMockProvider;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -38,20 +37,18 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public final class DashboardServiceTests {
-    private final DashboardMockProvider mockProvider;
     private final IDashboardService service;
 
     /* convenience static variable for setting dashboard name */
     private final static String DASHBOARD_NAME = "randomDashboardName";
 
     public DashboardServiceTests() {
-        mockProvider = new DashboardMockProvider();
         service = new DashboardService(
-                mockProvider.provideDashboardStore(),
-                mockProvider.provideDashboardItemStore(),
-                mockProvider.provideDashboardElementStore(),
-                mockProvider.getDashboardItemService(),
-                mockProvider.getDashboardElementService());
+                mock(IDashboardStore.class),
+                mock(IDashboardItemStore.class),
+                mock(IDashboardElementStore.class),
+                mock(IDashboardItemService.class),
+                mock(IDashboardElementService.class));
     }
 
     @Test

@@ -56,9 +56,9 @@ import static com.squareup.okhttp.Credentials.basic;
 
 
 public final class RepoManager {
-    static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000; // 15s
-    static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000; // 20s
-    static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000; // 20s
+    static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 60 * 1000; // 60s
+    static final int DEFAULT_READ_TIMEOUT_MILLIS = 60 * 1000; // 60s
+    static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 60 * 1000; // 60s
 
     private RepoManager() {
         // no instances

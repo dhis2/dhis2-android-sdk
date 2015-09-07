@@ -136,8 +136,9 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
     }
 
     public int getIndex(String dataElement) {
-        if (dataElementsToRowIndexMap.containsKey(dataElement))
+        if (dataElementsToRowIndexMap != null && dataElementsToRowIndexMap.containsKey(dataElement)) {
             return dataElementsToRowIndexMap.get(dataElement);
+        }
         else return -1;
     }
 }

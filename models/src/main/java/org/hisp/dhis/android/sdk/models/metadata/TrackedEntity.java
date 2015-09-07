@@ -27,22 +27,13 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.common;
+package org.hisp.dhis.android.sdk.models.metadata;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by arazabishov on 8/18/15.
- */
-public interface IStore<T> {
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-    void insert(T object);
-
-    void update(T object);
-
-    void save(T object);
-
-    void delete(T object);
-
-    List<T> query();
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class TrackedEntity extends BaseIdentifiableObject {
 }

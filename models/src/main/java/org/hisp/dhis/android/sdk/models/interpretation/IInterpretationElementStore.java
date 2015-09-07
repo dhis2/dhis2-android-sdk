@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 
 import java.util.List;
 
-public interface IInterpretationElementStore extends IStore<InterpretationElement> {
+public interface IInterpretationElementStore extends IIdentifiableObjectStore<InterpretationElement> {
     List<InterpretationElement> query(Interpretation interpretation);
 }

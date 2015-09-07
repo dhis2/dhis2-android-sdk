@@ -27,22 +27,37 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.common;
+package org.hisp.dhis.android.sdk.models.metadata;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 import java.util.List;
 
-/**
- * Created by arazabishov on 8/18/15.
- */
-public interface IStore<T> {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class OptionSet extends BaseIdentifiableObject {
 
-    void insert(T object);
+    @JsonProperty("version")
+    private int version;
 
-    void update(T object);
+    @JsonProperty("options")
+    private List<Option> options;
 
-    void save(T object);
+    public int getVersion() {
+        return version;
+    }
 
-    void delete(T object);
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
-    List<T> query();
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
+    }
 }

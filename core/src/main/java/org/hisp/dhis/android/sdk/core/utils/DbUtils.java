@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.utils;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 
@@ -82,7 +82,7 @@ public final class DbUtils {
      * @param oldModels List of models from local storage.
      * @param newModels List of models of distance instance of DHIS.
      */
-    public static <T extends IdentifiableObject> List<DbOperation> createOperations(IStore<T> modelStore,
+    public static <T extends IdentifiableObject> List<DbOperation> createOperations(IIdentifiableObjectStore<T> modelStore,
                                                                                     List<T> oldModels,
                                                                                     List<T> newModels) {
         List<DbOperation> ops = new ArrayList<>();

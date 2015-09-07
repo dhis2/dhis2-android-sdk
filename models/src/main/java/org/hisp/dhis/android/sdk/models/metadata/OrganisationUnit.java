@@ -27,22 +27,46 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.common;
+package org.hisp.dhis.android.sdk.models.metadata;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by arazabishov on 8/18/15.
- */
-public interface IStore<T> {
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-    void insert(T object);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class OrganisationUnit extends BaseIdentifiableObject {
 
-    void update(T object);
+    @JsonProperty("label")
+    private String label;
 
-    void save(T object);
+    @JsonProperty("level")
+    private int level;
 
-    void delete(T object);
+    @JsonProperty("parent")
+    private String parent;
 
-    List<T> query();
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
 }

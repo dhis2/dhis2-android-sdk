@@ -27,22 +27,24 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.common;
+package org.hisp.dhis.android.sdk.models.metadata;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by arazabishov on 8/18/15.
- */
-public interface IStore<T> {
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-    void insert(T object);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Constant extends BaseIdentifiableObject {
 
-    void update(T object);
+    @JsonProperty("value")
+    private double value;
 
-    void save(T object);
+    public double getValue() {
+        return value;
+    }
 
-    void delete(T object);
-
-    List<T> query();
+    public void setValue(double value) {
+        this.value = value;
+    }
 }

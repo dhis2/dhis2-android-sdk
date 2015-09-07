@@ -26,19 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.common.meta;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.android.sdk.models.common.Access;
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.utils.StringUtils;
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public interface IDashboardElementStore extends IIdentifiableObjectStore<DashboardElement> {
-    List<DashboardElement> query(DashboardItem dashboardItem, State... states);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class BaseNameableObject extends BaseIdentifiableObject {
 
-    List<DashboardElement> query(DashboardItem dashboardItem, List<State> states);
+    @JsonProperty("shortName")
+    String shortName;
 
-    List<DashboardElement> filter(DashboardItem dashboardItem, State state);
+    @JsonProperty("description")
+    String description;
 
-    List<DashboardElement> filter(State state);
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
 }

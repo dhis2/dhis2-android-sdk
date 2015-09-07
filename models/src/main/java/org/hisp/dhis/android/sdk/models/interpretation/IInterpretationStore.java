@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
 import java.util.List;
 
-public interface IInterpretationStore extends IStore<Interpretation> {
+public interface IInterpretationStore extends IIdentifiableObjectStore<Interpretation> {
     List<Interpretation> filter(State state);
 }

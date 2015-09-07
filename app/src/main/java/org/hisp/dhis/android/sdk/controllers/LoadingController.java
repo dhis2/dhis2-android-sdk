@@ -160,7 +160,7 @@ public final class LoadingController {
     static void loadDataValues(Context context, DhisApi dhisApi) throws APIException {
         Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_START));
         try {
-            TrackerController.synchronizeDataValues(context, dhisApi);
+            TrackerController.loadDataValues(context, dhisApi);
         } catch (APIException e) {
             //to make sure we stop showing loading indicator
             Dhis2Application.getEventBus().post(new UiEvent(UiEvent.UiEventType.SYNCING_END));

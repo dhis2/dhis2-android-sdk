@@ -102,8 +102,8 @@ public final class DhisController {
      */
     static void synchronize(final Context context)
             throws APIException, IllegalStateException {
-        loadData(context);
         sendData();
+        loadData(context);
     }
 
     static void loadData(Context context) throws APIException, IllegalStateException {

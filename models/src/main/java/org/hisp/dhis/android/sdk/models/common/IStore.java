@@ -31,9 +31,6 @@ package org.hisp.dhis.android.sdk.models.common;
 
 import java.util.List;
 
-/**
- * Created by arazabishov on 8/18/15.
- */
 public interface IStore<T> {
 
     void insert(T object);

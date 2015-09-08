@@ -48,7 +48,6 @@ public final class DashboardItem extends BaseIdentifiableObject {
     public static final String SHAPE_DOUBLE_WIDTH = "double_width";
     public static final String SHAPE_FULL_WIDTH = "full_width";
 
-
     @JsonIgnore
     State state;
 

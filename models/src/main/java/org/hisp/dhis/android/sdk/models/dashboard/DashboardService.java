@@ -75,11 +75,8 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     *
-     *
      * @param dashboard to be removed.
      * @throws IllegalArgumentException in cases when dashboard is null.
-     *
      */
     @Override
     public void deleteDashboard(Dashboard dashboard) {
@@ -136,7 +133,7 @@ public final class DashboardService implements IDashboardService {
      * add content and return false;
      *
      * @param dashboard dashboard to which we want add new content.
-     * @param content content which we want to add to given dashboard.
+     * @param content   content which we want to add to given dashboard.
      * @return false if item count is bigger than MAX_ITEMS.
      * @throws IllegalArgumentException if dashboard or content is null.
      */

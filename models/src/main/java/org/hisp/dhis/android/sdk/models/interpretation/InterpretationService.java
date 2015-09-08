@@ -37,6 +37,8 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
 public final class InterpretationService implements IInterpretationService {
     private final IInterpretationStore interpretationStore;
     private final IInterpretationElementService interpretationElementService;
@@ -57,8 +59,9 @@ public final class InterpretationService implements IInterpretationService {
      */
     @Override
     public InterpretationComment addComment(Interpretation interpretation, User user, String text) {
-        /* DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.INTERPRETATIONS); */
+        isNull(interpretation, "interpretation must not be null");
+        isNull(user, "user must not be null");
+
         DateTime lastUpdated = new DateTime();
 
         InterpretationComment comment = new InterpretationComment();
@@ -73,9 +76,10 @@ public final class InterpretationService implements IInterpretationService {
     }
 
     /**
-     * This method allows to create interpretation from: chart, map,
-     * reportTable. Please note, it won't work for data sets.
-     * <p/>
+     * Creates interpretation from: chart, map, reportTable.
+     * Please note, it won't work for data sets.
+     *
+     * <p>
      * Note, model won't be saved to database automatically. You have to call .save()
      * both on interpretation and interpretation elements of current object.
      *
@@ -86,8 +90,6 @@ public final class InterpretationService implements IInterpretationService {
      */
     @Override
     public Interpretation createInterpretation(DashboardItem item, User user, String text) {
-        /* DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.INTERPRETATIONS); */
         DateTime lastUpdated = new DateTime();
 
         Interpretation interpretation = new Interpretation();

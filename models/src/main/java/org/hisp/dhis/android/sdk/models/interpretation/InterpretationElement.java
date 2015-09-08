@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
  *     This model class is intended to represent content of Interpretation {map, chart,
  *     reportTable, dataSet, period, organisationUnit}
  */
-public final class InterpretationElement extends BaseIdentifiableObject {
+public class InterpretationElement extends BaseIdentifiableObject {
     public static final String TYPE_CHART = "chart";
     public static final String TYPE_MAP = "map";
     public static final String TYPE_REPORT_TABLE = "reportTable";

@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class DashboardElement extends BaseIdentifiableObject {
+public class DashboardElement extends BaseIdentifiableObject {
 
     @JsonIgnore
     State state;

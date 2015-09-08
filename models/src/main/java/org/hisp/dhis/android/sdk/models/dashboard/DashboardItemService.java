@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-public final class DashboardItemService implements IDashboardItemService {
+public class DashboardItemService implements IDashboardItemService {
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
 

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
-public final class InterpretationCommentService implements IInterpretationCommentService {
+public class InterpretationCommentService implements IInterpretationCommentService {
     private final IInterpretationCommentStore interpretationCommentStore;
 
     public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore) {

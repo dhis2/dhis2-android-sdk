@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 
-public final class InterpretationElementService implements IInterpretationElementService {
+public class InterpretationElementService implements IInterpretationElementService {
 
     public InterpretationElementService() {
         // empty constructor

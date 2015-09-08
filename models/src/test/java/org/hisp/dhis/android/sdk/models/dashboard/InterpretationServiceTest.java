@@ -40,6 +40,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 
@@ -137,17 +138,35 @@ public final class InterpretationServiceTest {
         assertNotNull(interpretationReportTable.getReportTable());
     }
 
-
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldThrowExceptionOnWrongDashboardItemType() {
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_EVENT_CHART);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_EVENT_REPORT);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_MESSAGES);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_REPORTS);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_RESOURCES);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_USERS);
+        shouldThrowExceptionOnWrongDashboardItemType(DashboardItemContent.TYPE_REPORT_TABLES);
+    }
+
+    private void shouldThrowExceptionOnWrongDashboardItemType(String type) {
         DashboardItem dashboardItem = new DashboardItem();
+        dashboardItem.setType(type);
+
         User user = mock(User.class);
         String text = anyString();
 
-        dashboardItem.setType(DashboardItemContent.TYPE_EVENT_CHART);
+        assertTrue(shouldThrowExceptionOnWrongDashboardItemType(dashboardItem, user, text));
+    }
 
-        Interpretation interpretation = service.createInterpretation(
-                dashboardItem, user, text);
+    private boolean shouldThrowExceptionOnWrongDashboardItemType(
+            DashboardItem dashboardItem, User user, String text) {
+        try {
+            service.createInterpretation(dashboardItem, user, text);
+        } catch (IllegalArgumentException exception) {
+            return true;
+        }
 
+        return false;
     }
 }

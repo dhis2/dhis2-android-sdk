@@ -36,7 +36,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-public final class DashboardService implements IDashboardService {
+public class DashboardService implements IDashboardService {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;

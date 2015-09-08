@@ -36,7 +36,7 @@ import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.user.User;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class InterpretationComment extends BaseIdentifiableObject {
+public class InterpretationComment extends BaseIdentifiableObject {
 
     @JsonProperty("text")
     private String text;

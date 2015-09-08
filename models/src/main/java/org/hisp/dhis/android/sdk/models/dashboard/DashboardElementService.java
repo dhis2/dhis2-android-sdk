@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
-public final class DashboardElementService implements IDashboardElementService {
+public class DashboardElementService implements IDashboardElementService {
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemService dashboardItemService;
 

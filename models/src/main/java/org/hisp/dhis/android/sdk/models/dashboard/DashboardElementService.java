@@ -30,6 +30,8 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
 public class DashboardElementService implements IDashboardElementService {
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemService dashboardItemService;
@@ -43,37 +45,45 @@ public class DashboardElementService implements IDashboardElementService {
     /**
      * Factory method for creating DashboardElement.
      *
-     * @param item    DashboardItem to associate with element.
-     * @param content Content from which element will be created.
+     * @param dashboardItem    DashboardItem to associate with element.
+     * @param dashboardItemContent Content from which element will be created.
      * @return new element.
+     *
+     * @throws IllegalArgumentException when dashboardItem or dashboardItemContent is null.
      */
     @Override
-    public DashboardElement createDashboardElement(DashboardItem item, DashboardItemContent content) {
+    public DashboardElement createDashboardElement(DashboardItem dashboardItem,
+                                                   DashboardItemContent dashboardItemContent) {
+        isNull(dashboardItem, "dashboardItem must not be null");
+        isNull(dashboardItemContent, "dashboardItemContent must not be null");
+
         DashboardElement element = new DashboardElement();
-        element.setUId(content.getUId());
-        element.setName(content.getName());
-        element.setCreated(content.getCreated());
-        element.setLastUpdated(content.getLastUpdated());
-        element.setDisplayName(content.getDisplayName());
+        element.setUId(dashboardItemContent.getUId());
+        element.setName(dashboardItemContent.getName());
+        element.setDisplayName(dashboardItemContent.getDisplayName());
+        element.setCreated(dashboardItemContent.getCreated());
+        element.setLastUpdated(dashboardItemContent.getLastUpdated());
         element.setState(State.TO_POST);
-        element.setDashboardItem(item);
+        element.setDashboardItem(dashboardItem);
 
         return element;
     }
 
     @Override
-    public void deleteDashboardElement(DashboardItem dashboardItem, DashboardElement dashboardElement) {
+    public void deleteDashboardElement(DashboardElement dashboardElement) {
+        isNull(dashboardElement, "dashboardElement must not be null");
+
+        dashboardElement.setState(State.TO_DELETE);
         if (State.TO_POST.equals(dashboardElement.getState())) {
             dashboardElementStore.delete(dashboardElement);
         } else {
-            dashboardElement.setState(State.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 
         /* if count of elements in item is zero, it means
         we don't need this item anymore */
-        if (!(dashboardItemService.getContentCount(dashboardItem) > 0)) {
-            dashboardItemService.deleteDashboardItem(dashboardItem);
+        if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
+            dashboardItemService.deleteDashboardItem(dashboardElement.getDashboardItem());
         }
     }
 }

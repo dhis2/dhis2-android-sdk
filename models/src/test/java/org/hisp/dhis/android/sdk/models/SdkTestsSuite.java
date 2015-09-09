@@ -26,14 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.user;
+package org.hisp.dhis.android.sdk.models;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardServiceTests;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationServiceTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class User extends BaseIdentifiableObject {
-    // no additional fields
-
-    public User() {
-        // empty constructor
-    }
+/**
+ * Entry point for all tests.
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        DashboardServiceTests.class,
+        InterpretationServiceTests.class,
+})
+public class SdkTestsSuite {
 }

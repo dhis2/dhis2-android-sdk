@@ -26,38 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementService;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
-import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
-import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
-import org.hisp.dhis.android.sdk.models.interpretation.InterpretationService;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.user.User;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public final class InterpretationServiceTest {
+public final class InterpretationServiceTests {
     private final IInterpretationService service;
 
-    public InterpretationServiceTest() {
+    public InterpretationServiceTests() {
+        InterpretationElementService elementServiceMock
+                = mock(InterpretationElementService.class);
+        when(elementServiceMock.createInterpretationElement(
+                any(Interpretation.class), any(DashboardElement.class),
+                anyString())).thenReturn(mock(InterpretationElement.class));
         service = new InterpretationService(
                 mock(IInterpretationStore.class),
-                mock(IInterpretationElementService.class));
+                elementServiceMock);
     }
 
     @Test
     public void shouldAddCommentToInterpretation() {
         Interpretation interpretation = mock(Interpretation.class);
         User user = mock(User.class);
-        String text = anyString();
+        String text = "Interpretation comment";
 
         InterpretationComment comment = service.addComment(
                 interpretation, user, text);
@@ -77,7 +81,7 @@ public final class InterpretationServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void addCommentShouldFailOnNullInterpretation() {
         User user = mock(User.class);
-        String text = anyString();
+        String text = "Interpretation comment";
 
         service.addComment(null, user, text);
     }
@@ -85,7 +89,7 @@ public final class InterpretationServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void addCommentShouldFailOnNullUser() {
         Interpretation interpretation = mock(Interpretation.class);
-        String text = anyString();
+        String text = "Interpretation comment";
 
         service.addComment(interpretation, null, text);
     }
@@ -110,7 +114,7 @@ public final class InterpretationServiceTest {
         dashboardItemReportTable.setType(DashboardItemContent.TYPE_REPORT_TABLE);
 
         User user = mock(User.class);
-        String text = anyString();
+        String text = "Interpretation text";
 
         Interpretation interpretationChart = service
                 .createInterpretation(dashboardItemChart, user, text);
@@ -123,10 +127,10 @@ public final class InterpretationServiceTest {
         assertNotNull(interpretationChart.getCreated());
         assertNotNull(interpretationChart.getLastUpdated());
         assertNotNull(interpretationChart.getAccess());
+
         assertEquals(interpretationChart.getText(), text);
         assertEquals(interpretationChart.getUser(), user);
         assertEquals(interpretationChart.getState(), State.TO_POST);
-
 
         assertEquals(interpretationChart.getType(), Interpretation.TYPE_CHART);
         assertNotNull(interpretationChart.getChart());
@@ -154,7 +158,7 @@ public final class InterpretationServiceTest {
         dashboardItem.setType(type);
 
         User user = mock(User.class);
-        String text = anyString();
+        String text = "Interpretation text";
 
         assertTrue(shouldThrowExceptionOnWrongDashboardItemType(dashboardItem, user, text));
     }

@@ -73,10 +73,11 @@ public class DashboardElementService implements IDashboardElementService {
     public void deleteDashboardElement(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
-        dashboardElement.setState(State.TO_DELETE);
         if (State.TO_POST.equals(dashboardElement.getState())) {
+            dashboardElement.setState(State.TO_DELETE);
             dashboardElementStore.delete(dashboardElement);
         } else {
+            dashboardElement.setState(State.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 

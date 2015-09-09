@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models;
 
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementServiceTests;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemServiceTests;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardServiceTests;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationServiceTests;
 import org.junit.runner.RunWith;
@@ -39,6 +41,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         DashboardServiceTests.class,
+        DashboardItemServiceTests.class,
+        DashboardElementServiceTests.class,
+
         InterpretationServiceTests.class,
 })
 public class SdkTestsSuite {

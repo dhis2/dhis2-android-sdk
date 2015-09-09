@@ -34,6 +34,8 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
 public class DashboardItemService implements IDashboardItemService {
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
@@ -53,8 +55,9 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public DashboardItem createDashboardItem(Dashboard dashboard, DashboardItemContent content) {
-        /* DateTime lastUpdatedDateTime = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.DASHBOARDS); */
+        isNull(dashboard, "dashboard must not be null");
+        isNull(content, "content must not be null");
+
         DateTime lastUpdated = new DateTime();
 
         DashboardItem item = new DashboardItem();
@@ -77,7 +80,8 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public void deleteDashboardItem(DashboardItem dashboardItem) {
-        if (dashboardItem.getState() == State.TO_POST) {
+        if (State.TO_POST.equals(dashboardItem.getState())) {
+            dashboardItem.setState(State.TO_DELETE);
             dashboardItemStore.delete(dashboardItem);
         } else {
             dashboardItem.setState(State.TO_DELETE);

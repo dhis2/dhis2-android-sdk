@@ -26,32 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models;
+package org.hisp.dhis.android.sdk.models.user;
 
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementServiceTests;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemServiceTests;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardServiceTests;
-import org.hisp.dhis.android.sdk.models.interpretation.InterpretationCommentServiceTests;
-import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElementServiceTests;
-import org.hisp.dhis.android.sdk.models.interpretation.InterpretationServiceTests;
-import org.hisp.dhis.android.sdk.models.user.UserAccountServiceTests;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * Entry point for all tests.
- */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        DashboardServiceTests.class,
-        DashboardItemServiceTests.class,
-        DashboardElementServiceTests.class,
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-        InterpretationServiceTests.class,
-        InterpretationCommentServiceTests.class,
-        InterpretationElementServiceTests.class,
+public final class UserAccountServiceTests {
+    private IUserAccountService service;
 
-        UserAccountServiceTests.class,
-})
-public class SdkTestsSuite {
+    @Before
+    public void setUp() {
+        service = new UserAccountService(
+                mock(IUserAccountStore.class),
+                mock(IModelsStore.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void toUserShouldFailOnNullUserAccountArgument() {
+        service.toUser(null);
+    }
+
+    @Test
+    public void toUserShouldCreateValidObject() {
+        DateTime lastUpdated = new DateTime();
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUId("aiufsd543f");
+        userAccount.setCreated(lastUpdated);
+        userAccount.setLastUpdated(lastUpdated);
+        userAccount.setName("SomeFancyName");
+        userAccount.setDisplayName("SomeFancyName");
+
+        User user = service.toUser(userAccount);
+        assertEquals(user.getUId(), userAccount.getUId());
+        assertEquals(user.getCreated(), userAccount.getCreated());
+        assertEquals(user.getLastUpdated(), userAccount.getLastUpdated());
+        assertEquals(user.getName(), userAccount.getName());
+        assertEquals(user.getDisplayName(), userAccount.getDisplayName());
+    }
 }

@@ -53,6 +53,7 @@ public class InterpretationElementService implements IInterpretationElementServi
                                                              String mimeType) {
         isNull(interpretation, "interpretation must not be null");
         isNull(dashboardElement, "dashboardElement must not be null");
+        isNull(mimeType, "mimeType must not be null");
 
         switch(mimeType) {
             case DashboardItemContent.TYPE_CHART:

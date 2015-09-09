@@ -88,9 +88,18 @@ public final class DashboardElementServiceTests {
         service.deleteDashboardElement(null);
     }
 
-    // TODO finish this test after finishing DashboardItemService
     @Test
     public void deleteDashboardElementShouldChangeTheState() {
+        DashboardElement dashboardElementWithPostState = new DashboardElement();
+        DashboardElement dashboardElementWithSyncedState = new DashboardElement();
 
+        dashboardElementWithPostState.setState(State.TO_POST);
+        dashboardElementWithSyncedState.setState(State.SYNCED);
+
+        service.deleteDashboardElement(dashboardElementWithPostState);
+        service.deleteDashboardElement(dashboardElementWithSyncedState);
+
+        assertEquals(dashboardElementWithPostState.getState(), State.TO_DELETE);
+        assertEquals(dashboardElementWithSyncedState.getState(), State.TO_DELETE);
     }
 }

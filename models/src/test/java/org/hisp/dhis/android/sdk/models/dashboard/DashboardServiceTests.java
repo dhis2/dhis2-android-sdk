@@ -131,6 +131,7 @@ public final class DashboardServiceTests {
         assertEquals(dashboardPost.getState(), State.TO_DELETE);
     }
 
+    // TODO finish this test after others for element and item services.
     @Test
     public void shouldAddContentToDashboard() {
 

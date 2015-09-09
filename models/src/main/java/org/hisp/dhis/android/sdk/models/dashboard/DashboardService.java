@@ -196,13 +196,13 @@ public class DashboardService implements IDashboardService {
         return null;
     }
 
-    private int getDashboardItemCount(Dashboard dashboard) {
+    int getDashboardItemCount(Dashboard dashboard) {
         List<DashboardItem> items = dashboardItemStore
                 .filter(dashboard, State.TO_DELETE);
         return items == null ? 0 : items.size();
     }
 
-    private static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
+    static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
         switch (content.getType()) {
             case DashboardItemContent.TYPE_CHART:
             case DashboardItemContent.TYPE_EVENT_CHART:

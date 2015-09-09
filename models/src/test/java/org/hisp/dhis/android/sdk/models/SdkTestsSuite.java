@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.models;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementServiceTests;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemServiceTests;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardServiceTests;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationCommentServiceTests;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElementServiceTests;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationServiceTests;
 import org.junit.runner.RunWith;
@@ -46,6 +47,7 @@ import org.junit.runners.Suite;
         DashboardElementServiceTests.class,
 
         InterpretationServiceTests.class,
+        InterpretationCommentServiceTests.class,
         InterpretationElementServiceTests.class,
 })
 public class SdkTestsSuite {

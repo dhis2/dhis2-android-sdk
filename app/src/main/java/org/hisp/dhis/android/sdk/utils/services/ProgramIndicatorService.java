@@ -362,6 +362,8 @@ public class ProgramIndicatorService {
 
         int valueCount = 0;
         int zeroPosValueCount = 0;
+        Event programStageInstance = null;
+        Map<String, DataValue> dataElementToDataValues = new HashMap<>();
 
         while (matcher.find()) {
             String key = matcher.group(1);
@@ -369,24 +371,36 @@ public class ProgramIndicatorService {
 
             if (ProgramIndicator.KEY_DATAELEMENT.equals(key)) {
                 String de = matcher.group(3);
-                ProgramStage programStage = MetaDataController.getProgramStage(uid);
+                String programStageUid = uid;
                 DataElement dataElement = MetaDataController.getDataElement(de);
 
-                if (programStage != null && dataElement != null) {
-                    Event programStageInstance;
+                if (programStageUid != null && dataElement != null) {
                     if (programInstance == null) { //in case single event without reg
-                        programStageInstance = event;
+                        if(programStageInstance == null) {
+                            programStageInstance = event;
+                            if (programStageInstance.getDataValues() != null) {
+                                for (DataValue dataValue : programStageInstance.getDataValues()) {
+                                    dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
+                                }
+                            }
+                        }
                     } else {
-                        programStageInstance = TrackerController.getEvent(programInstance.getLocalId(), programStage.getUid());
+                        if(programStageInstance == null || !programStageInstance.getUid().equals(programStageUid)) {
+                            programStageInstance = TrackerController.getEvent(programInstance.getLocalId(), programStageUid);
+                            dataElementToDataValues.clear();
+                            if(programStageInstance.getDataValues() != null) {
+                                for(DataValue dataValue: programStageInstance.getDataValues()) {
+                                    dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
+                                }
+                            }
+                        }
                     }
 
-                    DataValue dataValue = null;
+                    DataValue dataValue;
                     if (programStageInstance.getDataValues() == null) {
                         continue;
                     }
-                    for (DataValue value : programStageInstance.getDataValues()) {
-                        if (value.getDataElement().equals(dataElement.getUid())) dataValue = value;
-                    }
+                    dataValue = dataElementToDataValues.get(de);
 
                     String value;
                     if (dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
@@ -457,7 +471,6 @@ public class ProgramIndicatorService {
                     }
                 }
             }
-
         }
 
         expression = TextUtils.appendTail(matcher, buffer);

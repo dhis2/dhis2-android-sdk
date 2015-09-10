@@ -36,7 +36,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-public final class DashboardService implements IDashboardService {
+public class DashboardService implements IDashboardService {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
@@ -55,10 +55,7 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     * Factory method which creates new Dashboard with given name.
-     *
-     * @param name Name of new dashboard.
-     * @return a dashboard.
+     * {@inheritDoc}
      */
     @Override
     public Dashboard createDashboard(String name) {
@@ -75,8 +72,7 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     * @param dashboard to be removed.
-     * @throws IllegalArgumentException in cases when dashboard is null.
+     * {@inheritDoc}
      */
     @Override
     public void deleteDashboard(Dashboard dashboard) {
@@ -92,13 +88,7 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     * Changes the name of dashboard along with the State.
-     * <p/>
-     * If the current state of model is State.TO_DELETE or State.TO_POST,
-     * state won't be changed. Otherwise, it will be set to State.TO_UPDATE.
-     *
-     * @param name Name for dashboard.
-     * @throws IllegalArgumentException in cases when dashboard is null.
+     * {@inheritDoc}
      */
     @Override
     public void updateDashboardName(Dashboard dashboard, String name) {
@@ -122,20 +112,7 @@ public final class DashboardService implements IDashboardService {
     }
 
     /**
-     * Will try to append DashboardItemContent to current dashboard.
-     * If the type of DashboardItemContent is embedded (chart, eventChart, map, eventReport, reportTable),
-     * method will create a new item and append it to dashboard.
-     * <p/>
-     * If the type of DashboardItemContent is link type (users, reports, resources),
-     * method will try to append content to existing item. Otherwise it will create a new dashboard item.
-     * <p/>
-     * If the overall count of items in dashboard is bigger that Dashboard.MAX_ITEMS, method will not
-     * add content and return false;
-     *
-     * @param dashboard dashboard to which we want add new content.
-     * @param content   content which we want to add to given dashboard.
-     * @return false if item count is bigger than MAX_ITEMS.
-     * @throws IllegalArgumentException if dashboard or content is null.
+     * {@inheritDoc}
      */
     @Override
     public boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) {
@@ -169,16 +146,14 @@ public final class DashboardService implements IDashboardService {
         return true;
     }
 
-
     /**
-     * Returns an item from this dashboard of the given type which number of
-     * content is less than max. Returns null if no item matches the criteria.
-     *
-     * @param type the type of content to return.
-     * @return an item.
+     * {@inheritDoc}
      */
     @Override
     public DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
+        isNull(dashboard, "dashboard must not be null");
+        isNull(type, "type must not be null");
+
         List<DashboardItem> items = dashboardItemStore
                 .filter(dashboard, State.TO_DELETE);
 
@@ -196,13 +171,13 @@ public final class DashboardService implements IDashboardService {
         return null;
     }
 
-    private int getDashboardItemCount(Dashboard dashboard) {
+    int getDashboardItemCount(Dashboard dashboard) {
         List<DashboardItem> items = dashboardItemStore
                 .filter(dashboard, State.TO_DELETE);
         return items == null ? 0 : items.size();
     }
 
-    private static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
+    static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
         switch (content.getType()) {
             case DashboardItemContent.TYPE_CHART:
             case DashboardItemContent.TYPE_EVENT_CHART:

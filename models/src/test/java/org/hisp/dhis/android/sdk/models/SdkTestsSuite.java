@@ -26,13 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models;
 
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementServiceTests;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemServiceTests;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardServiceTests;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationCommentServiceTests;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElementServiceTests;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationServiceTests;
+import org.hisp.dhis.android.sdk.models.user.UserAccountServiceTests;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+/**
+ * Entry point for all tests.
+ */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        DashboardServiceTests.class,
+        DashboardItemServiceTests.class,
+        DashboardElementServiceTests.class,
 
-public interface IDashboardElementService extends IService {
-    DashboardElement createDashboardElement(DashboardItem item, DashboardItemContent content);
+        InterpretationServiceTests.class,
+        InterpretationCommentServiceTests.class,
+        InterpretationElementServiceTests.class,
 
-    void deleteDashboardElement(DashboardElement dashboardElement);
+        UserAccountServiceTests.class,
+})
+public class SdkTestsSuite {
 }

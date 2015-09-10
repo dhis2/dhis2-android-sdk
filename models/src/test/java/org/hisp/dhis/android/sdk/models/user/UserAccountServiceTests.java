@@ -26,13 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.user;
 
+import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.joda.time.DateTime;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-public interface IDashboardElementService extends IService {
-    DashboardElement createDashboardElement(DashboardItem item, DashboardItemContent content);
+public final class UserAccountServiceTests {
+    private IUserAccountService service;
 
-    void deleteDashboardElement(DashboardElement dashboardElement);
+    @Before
+    public void setUp() {
+        service = new UserAccountService(
+                mock(IUserAccountStore.class),
+                mock(IModelsStore.class));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void toUserShouldFailOnNullUserAccountArgument() {
+        service.toUser(null);
+    }
+
+    @Test
+    public void toUserShouldCreateValidObject() {
+        DateTime lastUpdated = new DateTime();
+
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUId("aiufsd543f");
+        userAccount.setCreated(lastUpdated);
+        userAccount.setLastUpdated(lastUpdated);
+        userAccount.setName("SomeFancyName");
+        userAccount.setDisplayName("SomeFancyName");
+
+        User user = service.toUser(userAccount);
+        assertEquals(user.getUId(), userAccount.getUId());
+        assertEquals(user.getCreated(), userAccount.getCreated());
+        assertEquals(user.getLastUpdated(), userAccount.getLastUpdated());
+        assertEquals(user.getName(), userAccount.getName());
+        assertEquals(user.getDisplayName(), userAccount.getDisplayName());
+    }
 }

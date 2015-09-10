@@ -39,7 +39,7 @@ import java.util.List;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-public final class InterpretationService implements IInterpretationService {
+public class InterpretationService implements IInterpretationService {
     private final IInterpretationStore interpretationStore;
     private final IInterpretationElementService interpretationElementService;
 

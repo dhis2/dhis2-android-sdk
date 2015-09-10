@@ -105,7 +105,7 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     }
 
     @Override
-    public void deleteDashboardElement(DashboardItem dashboardItem, DashboardElement dashboardElement) {
-        dashboardElementService.deleteDashboardElement(dashboardItem, dashboardElement);
+    public void deleteDashboardElement(DashboardElement dashboardElement) {
+        dashboardElementService.deleteDashboardElement(dashboardElement);
     }
 }

@@ -38,7 +38,7 @@ import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.joda.time.DateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class UserAccount implements IdentifiableObject {
+public class UserAccount implements IdentifiableObject {
 
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;

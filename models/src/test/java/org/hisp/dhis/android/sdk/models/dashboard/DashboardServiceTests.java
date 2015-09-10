@@ -29,20 +29,29 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public final class DashboardServiceTests {
-    private final IDashboardService service;
 
     /* convenience static variable for setting dashboard name */
     private final static String DASHBOARD_NAME = "randomDashboardName";
 
-    public DashboardServiceTests() {
+    private IDashboardService service;
+
+    @Before
+    public void setUp() {
         service = new DashboardService(
                 mock(IDashboardStore.class),
                 mock(IDashboardItemStore.class),
@@ -128,6 +137,7 @@ public final class DashboardServiceTests {
         assertEquals(dashboardPost.getState(), State.TO_DELETE);
     }
 
+    // TODO finish this test after others for element and item services.
     @Test
     public void shouldAddContentToDashboard() {
 
@@ -144,5 +154,83 @@ public final class DashboardServiceTests {
     public void addNullContentToDashboard() {
         Dashboard dashboard = mock(Dashboard.class);
         service.addDashboardContent(dashboard, null);
+    }
+
+    @Test
+    public void getAvailableItemByTypeShouldReturnNull() {
+        DashboardItem dashboardItemOne = mock(DashboardItem.class);
+        when(dashboardItemOne.getType()).thenReturn(DashboardItemContent.TYPE_CHART);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        dashboardItems.add(dashboardItemOne);
+
+        /* creating stub service which returns maximum count of items every time */
+        IDashboardItemService dashboardItemService = mock(IDashboardItemService.class);
+        when(dashboardItemService.getContentCount(any(DashboardItem.class)))
+                .thenReturn(DashboardItem.MAX_CONTENT);
+
+        IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
+        when(dashboardItemStore.filter(any(Dashboard.class),
+                any(State.class))).thenReturn(dashboardItems);
+
+        IDashboardService dashboardService = new DashboardService(
+                mock(IDashboardStore.class), dashboardItemStore,
+                mock(IDashboardElementStore.class), dashboardItemService,
+                mock(IDashboardElementService.class));
+
+        assertNull(dashboardService.getAvailableItemByType(
+                mock(Dashboard.class), DashboardItemContent.TYPE_CHART));
+    }
+
+    @Test
+    public void getAvailableItemByTypeShouldReturnNullBasedOnWrongType() {
+        DashboardItem dashboardItemOne = mock(DashboardItem.class);
+        when(dashboardItemOne.getType()).thenReturn(DashboardItemContent.TYPE_MAP);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        dashboardItems.add(dashboardItemOne);
+
+        /* creating stub service which returns maximum count of items every time */
+        IDashboardItemService dashboardItemService = mock(IDashboardItemService.class);
+        when(dashboardItemService.getContentCount(any(DashboardItem.class)))
+                .thenReturn(DashboardItem.MAX_CONTENT - 16);
+
+        IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
+        when(dashboardItemStore.filter(any(Dashboard.class),
+                any(State.class))).thenReturn(dashboardItems);
+
+        IDashboardService dashboardService = new DashboardService(
+                mock(IDashboardStore.class), dashboardItemStore,
+                mock(IDashboardElementStore.class), dashboardItemService,
+                mock(IDashboardElementService.class));
+
+        assertNull(dashboardService.getAvailableItemByType(
+                mock(Dashboard.class), DashboardItemContent.TYPE_CHART));
+    }
+
+    @Test
+    public void getAvailableItemByTypeShouldReturnItem() {
+        DashboardItem dashboardItemOne = mock(DashboardItem.class);
+        when(dashboardItemOne.getType()).thenReturn(DashboardItemContent.TYPE_MAP);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        dashboardItems.add(dashboardItemOne);
+
+        /* creating stub service which returns maximum count of items every time */
+        IDashboardItemService dashboardItemService = mock(IDashboardItemService.class);
+        when(dashboardItemService.getContentCount(any(DashboardItem.class)))
+                .thenReturn(DashboardItem.MAX_CONTENT - 16);
+
+        IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
+        when(dashboardItemStore.filter(any(Dashboard.class),
+                any(State.class))).thenReturn(dashboardItems);
+
+        IDashboardService dashboardService = new DashboardService(
+                mock(IDashboardStore.class), dashboardItemStore,
+                mock(IDashboardElementStore.class), dashboardItemService,
+                mock(IDashboardElementService.class));
+
+        assertEquals(dashboardService.getAvailableItemByType(
+                mock(Dashboard.class), DashboardItemContent.TYPE_MAP), dashboardItemOne);
     }
 }

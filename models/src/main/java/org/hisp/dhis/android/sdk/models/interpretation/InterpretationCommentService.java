@@ -30,7 +30,9 @@ package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 
-public final class InterpretationCommentService implements IInterpretationCommentService {
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
+public class InterpretationCommentService implements IInterpretationCommentService {
     private final IInterpretationCommentStore interpretationCommentStore;
 
     public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore) {
@@ -40,14 +42,19 @@ public final class InterpretationCommentService implements IInterpretationCommen
     /**
      * Performs soft delete of model. If State of object was SYNCED, it will be set to TO_DELETE.
      * If the model is persisted only in the local database, it will be removed immediately.
+     *
+     * @param interpretationComment comment to delete.
      */
     @Override
-    public void deleteComment(InterpretationComment comment) {
-        if (State.TO_POST.equals(comment.getState())) {
-            interpretationCommentStore.delete(comment);
+    public void deleteComment(InterpretationComment interpretationComment) {
+        isNull(interpretationComment, "interpretationComment should not be null");
+
+        if (State.TO_POST.equals(interpretationComment.getState())) {
+            interpretationComment.setState(State.TO_DELETE);
+            interpretationCommentStore.delete(interpretationComment);
         } else {
-            comment.setState(State.TO_DELETE);
-            interpretationCommentStore.save(comment);
+            interpretationComment.setState(State.TO_DELETE);
+            interpretationCommentStore.save(interpretationComment);
         }
     }
 
@@ -56,17 +63,23 @@ public final class InterpretationCommentService implements IInterpretationCommen
      * if the object was received from server. If the model was persisted only locally,
      * the State will be the TO_POST.
      *
-     * @param text Edited text of comment.
+     * @param interpretationComment comment which should be updated.
+     * @param text                  Edited text of comment.
      */
     @Override
-    public void updateCommentText(InterpretationComment comment, String text) {
-        comment.setText(text);
+    public void updateCommentText(InterpretationComment interpretationComment, String text) {
+        isNull(interpretationComment, "interpretationComment must not be null");
 
-        if (comment.getState() != State.TO_DELETE &&
-                comment.getState() != State.TO_POST) {
-            comment.setState(State.TO_UPDATE);
+        if (State.TO_DELETE.equals(interpretationComment.getState())) {
+            throw new IllegalArgumentException("The text of interpretation comment with State." +
+                    "TO_DELETE cannot be updated");
         }
 
-        interpretationCommentStore.save(comment);
+        if (!State.TO_POST.equals(interpretationComment.getState())) {
+            interpretationComment.setState(State.TO_UPDATE);
+        }
+
+        interpretationComment.setText(text);
+        interpretationCommentStore.save(interpretationComment);
     }
 }

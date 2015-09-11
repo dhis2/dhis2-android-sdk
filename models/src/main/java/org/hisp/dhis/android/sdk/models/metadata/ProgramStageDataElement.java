@@ -59,7 +59,7 @@ public final class ProgramStageDataElement {
     private String programStageSection;
 
     @JsonProperty("programStage")
-    public void setProgramStage(Map<String, Object> programStage) {
+    public void setProgramStageFromJSON(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
 

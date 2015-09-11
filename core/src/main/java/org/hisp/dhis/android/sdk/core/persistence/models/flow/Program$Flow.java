@@ -37,6 +37,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.metadata.Program;
+import org.hisp.dhis.android.sdk.models.metadata.ProgramStage;
+import org.hisp.dhis.android.sdk.models.metadata.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.metadata.TrackedEntity;
 
 import java.util.ArrayList;
@@ -100,6 +102,10 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
     boolean selectIncidentDatesInFuture;
+
+    private List<ProgramStage$Flow> programStages;
+
+    private List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes;
 
     public TrackedEntity$Flow getTrackedEntity() {
         return trackedEntity;
@@ -237,6 +243,22 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
     }
 
+    public List<ProgramStage$Flow> getProgramStages() {
+        return programStages;
+    }
+
+    public void setProgramStages(List<ProgramStage$Flow> programStages) {
+        this.programStages = programStages;
+    }
+
+    public List<ProgramTrackedEntityAttribute$Flow> getProgramTrackedEntityAttributes() {
+        return programTrackedEntityAttributes;
+    }
+
+    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes) {
+        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
+    }
+
     public Program$Flow() {
         // empty constructor
     }
@@ -271,6 +293,8 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
         program.setRelationshipFromA(programFlow.isRelationshipFromA());
         program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
+        program.setProgramStages(ProgramStage$Flow.toModels(programFlow.getProgramStages()));
+        program.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow.toModels(programFlow.getProgramTrackedEntityAttributes()));
         return program;
     }
 
@@ -304,6 +328,8 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
         programFlow.setRelationshipFromA(program.isRelationshipFromA());
         programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
+        programFlow.setProgramStages(ProgramStage$Flow.fromModels(program.getProgramStages()));
+        programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow.fromModels(program.getProgramTrackedEntityAttributes()));
         return programFlow;
     }
 

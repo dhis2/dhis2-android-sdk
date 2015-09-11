@@ -40,9 +40,24 @@ android {
         versionName "1.0"
     }
 
+    packagingOptions {
+        // gradle requires to exclude these files both
+        // with .txt extension and without.
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+
+        // without .txt
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

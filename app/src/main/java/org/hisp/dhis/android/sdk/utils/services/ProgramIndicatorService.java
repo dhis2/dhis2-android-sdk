@@ -472,6 +472,10 @@ public class ProgramIndicatorService {
                 }
             }
         }
+        if(valueCount <= 0) {
+            //returning null in case there are now values in the expression.
+            return null;
+        }
 
         expression = TextUtils.appendTail(matcher, buffer);
 

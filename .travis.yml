@@ -1,9 +1,16 @@
 language: android
 android:
   components:
+    # Build tools and android version.
     - build-tools-22.0.1
     - android-22
+
+    # Additional dependencies.
+    - extra-google-google_play_services
+    - extra-google-m2repository
     - extra-android-m2repository
+
+    # Emulator image.
     - sys-img-armeabi-v7a-android-22
   licenses:
     - android-sdk-license-5be876d5
@@ -16,3 +23,21 @@ branches:
 
 notifications:
   email: true
+
+# Environment variables.
+env:
+  global:
+    # Install timeout in minutes. 
+    - ADB_INSTALL_TIMEOUT=8
+
+# Emulator Management: Create, Start and Wait
+before_script:
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - adb wait-for-device
+  - adb shell input keyevent 82 &
+
+script:
+  - echo $ADB_INSTALL_TIMEOUT
+  - android list target
+  - ./gradlew connectedAndroidTest

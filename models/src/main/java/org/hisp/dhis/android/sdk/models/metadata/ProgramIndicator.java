@@ -56,7 +56,7 @@ public final class ProgramIndicator extends BaseNameableObject {
     private String program;
 
     @JsonProperty("program")
-    public void setProgram(Map<String, Object> program) {
+    public void setProgramFromJSON(Map<String, Object> program) {
         this.program = (String) program.get("id");
     }
 

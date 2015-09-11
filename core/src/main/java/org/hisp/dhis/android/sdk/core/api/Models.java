@@ -45,6 +45,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.metadata.DataElementSto
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OrganisationUnitStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
@@ -61,6 +62,7 @@ import org.hisp.dhis.android.sdk.models.metadata.DataElement;
 import org.hisp.dhis.android.sdk.models.metadata.IOptionStore;
 import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
 import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.metadata.Program;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
@@ -73,6 +75,7 @@ public final class Models {
     private final IOptionStore optionStore;
     private final IIdentifiableObjectStore<OptionSet> optionSetStore;
     private final IIdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private final IIdentifiableObjectStore<Program> programStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -100,6 +103,7 @@ public final class Models {
         optionStore = new OptionStore();
         optionSetStore = new OptionSetStore();
         organisationUnitStore = new OrganisationUnitStore();
+        programStore = new ProgramStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -126,6 +130,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IIdentifiableObjectStore<Program> programs() {
+        return getInstance().programStore;
     }
 
     public static IIdentifiableObjectStore<OrganisationUnit> organisationUnits() {

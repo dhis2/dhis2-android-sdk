@@ -32,8 +32,11 @@ package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.Program;
 
@@ -77,6 +80,10 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
         List<Program$Flow> programFlows = new Select()
                 .from(Program$Flow.class)
                 .queryList();
+        for(Program$Flow programFlow : programFlows) {
+            setProgramStages(programFlow);
+            setProgramTrackedEntityAttributes(programFlow);
+        }
         return Program$Flow.toModels(programFlows);
     }
 
@@ -86,6 +93,8 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
                 .from(Program$Flow.class)
                 .where(Condition.column(Program$Flow$Table.ID).is(id))
                 .querySingle();
+        setProgramStages(programFlow);
+        setProgramTrackedEntityAttributes(programFlow);
         return Program$Flow.toModel(programFlow);
     }
 
@@ -95,6 +104,26 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
                 .from(Program$Flow.class)
                 .where(Condition.column(Program$Flow$Table.UID).is(uid))
                 .querySingle();
+        setProgramStages(programFlow);
+        setProgramTrackedEntityAttributes(programFlow);
         return Program$Flow.toModel(programFlow);
+    }
+
+    private void setProgramStages(Program$Flow programFlow) {
+        if(programFlow == null) {
+            return;
+        }
+        programFlow.setProgramStages(ProgramStage$Flow
+                .fromModels(Models.programStages()
+                        .query(Program$Flow.toModel(programFlow))));
+    }
+
+    private void setProgramTrackedEntityAttributes(Program$Flow programFlow) {
+        if(programFlow == null) {
+            return;
+        }
+        programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow
+                .fromModels(Models.programTrackedEntityAttributes()
+                        .query(Program$Flow.toModel(programFlow))));
     }
 }

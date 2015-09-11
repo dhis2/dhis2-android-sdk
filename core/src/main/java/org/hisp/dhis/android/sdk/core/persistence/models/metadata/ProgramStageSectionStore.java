@@ -33,11 +33,16 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.api.Models;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Constant$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Constant$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow$Table;
+import org.hisp.dhis.android.sdk.models.metadata.Constant;
 import org.hisp.dhis.android.sdk.models.metadata.IProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.models.metadata.ProgramStage;
+import org.hisp.dhis.android.sdk.models.metadata.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.models.metadata.ProgramStageSection;
 
 import java.util.List;
@@ -80,6 +85,9 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
         List<ProgramStageSection$Flow> programStageSectionFlows = new Select()
                 .from(ProgramStageSection$Flow.class)
                 .queryList();
+        for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
+            setProgramStageDataElements(programStageSectionFlow);
+        }
         return ProgramStageSection$Flow.toModels(programStageSectionFlows);
     }
 
@@ -89,9 +97,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .from(ProgramStageSection$Flow.class)
                 .where(Condition.column(ProgramStageSection$Flow$Table.ID).is(id))
                 .querySingle();
-        programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
-                        .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
+        setProgramStageDataElements(programStageSectionFlow);
         return ProgramStageSection$Flow.toModel(programStageSectionFlow);
     }
 
@@ -101,9 +107,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .from(ProgramStageSection$Flow.class)
                 .where(Condition.column(ProgramStageSection$Flow$Table.UID).is(uid))
                 .querySingle();
-        programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
-                        .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
+        setProgramStageDataElements(programStageSectionFlow);
         return ProgramStageSection$Flow.toModel(programStageSectionFlow);
     }
 
@@ -115,10 +119,17 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                         .is(programStage.getUId()))
                 .queryList();
         for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
-            programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                    .fromModels(Models.programStageDataElements()
-                            .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
+            setProgramStageDataElements(programStageSectionFlow);
         }
         return ProgramStageSection$Flow.toModels(programStageSectionFlows);
+    }
+
+    private void setProgramStageDataElements(ProgramStageSection$Flow programStageSectionFlow) {
+        if(programStageSectionFlow == null) {
+            return;
+        }
+        programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
+                .fromModels(Models.programStageDataElements()
+                        .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
     }
 }

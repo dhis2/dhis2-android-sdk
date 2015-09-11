@@ -37,6 +37,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicator$F
 import org.hisp.dhis.android.sdk.models.metadata.IProgramIndicatorStore;
 import org.hisp.dhis.android.sdk.models.metadata.Program;
 import org.hisp.dhis.android.sdk.models.metadata.ProgramIndicator;
+import org.hisp.dhis.android.sdk.models.metadata.ProgramStage;
+import org.hisp.dhis.android.sdk.models.metadata.ProgramStageSection;
 
 import java.util.List;
 

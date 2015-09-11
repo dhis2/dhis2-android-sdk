@@ -36,4 +36,4 @@ before_script:
 
 # Launching build process.
 script:
-  - ./gradlew build connectedCheck
+  - ./gradlew build connectedCheck --stacktrace

@@ -1,4 +1,5 @@
 # dhis2-android-sdk
+[![Build Status](https://travis-ci.org/dhis2/dhis2-android-sdk.svg?branch=master)](https://travis-ci.org/dhis2/dhis2-android-sdk)
 
 Include this project in your Android application project to take advantage of existing implementations of components that may be common for DHIS 2 Android apps.
 

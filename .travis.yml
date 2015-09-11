@@ -1,0 +1,30 @@
+language: android
+android:
+  components:
+    # Build tools and android version.
+    - build-tools-22.0.1
+    - android-22
+
+    # Additional dependencies.
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+    # Emulator image.
+    - sys-img-armeabi-v7a-android-21
+    - sys-img-armeabi-v7a-android-22
+  licenses:
+    - android-sdk-license-5be876d5
+
+jdk:
+  - oraclejdk7
+
+branches:
+  - master 
+
+notifications:
+  email: false
+
+# Launching build process.
+script:
+  - ./gradlew build

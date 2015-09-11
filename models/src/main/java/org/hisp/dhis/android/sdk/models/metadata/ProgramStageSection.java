@@ -55,7 +55,7 @@ public final class ProgramStageSection extends BaseIdentifiableObject {
     private List<ProgramIndicator> programIndicators;
 
     @JsonProperty("programStage")
-    public void setProgramStage(Map<String, Object> programStage) {
+    public void setProgramStageFromJSON(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
     }
 

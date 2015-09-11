@@ -1,4 +1,4 @@
-# dhis2-android-sd
+# dhis2-android-sdk
 ==
 [![Build Status](https://travis-ci.org/dhis2/dhis2-android-sdk.svg?branch=master)](https://travis-ci.org/dhis2/dhis2-android-sdk)
 

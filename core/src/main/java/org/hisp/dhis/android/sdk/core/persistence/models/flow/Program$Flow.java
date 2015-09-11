@@ -254,7 +254,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         program.setName(programFlow.getName());
         program.setDisplayName(programFlow.getDisplayName());
         program.setAccess(programFlow.getAccess());
-        program.setTrackedEntity(programFlow.getTrackedEntity());
+        program.setTrackedEntity(TrackedEntity$Flow.toModel(programFlow.getTrackedEntity()));
         program.setType(programFlow.getType());
         program.setKind(programFlow.getKind());
         program.setVersion(programFlow.getVersion());
@@ -287,7 +287,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         programFlow.setName(program.getName());
         programFlow.setDisplayName(program.getDisplayName());
         programFlow.setAccess(program.getAccess());
-        programFlow.setTrackedEntity(program.getTrackedEntity());
+        programFlow.setTrackedEntity(TrackedEntity$Flow.fromModel(program.getTrackedEntity()));
         programFlow.setType(program.getType());
         programFlow.setKind(program.getKind());
         programFlow.setVersion(program.getVersion());
@@ -324,7 +324,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
         if (programFlows != null && !programFlows.isEmpty()) {
             for (Program program : programs) {
-                programFlows.add(fromModel(programs));
+                programFlows.add(fromModel(program));
             }
         }
 

@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.metadata.Program;
 

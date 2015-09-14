@@ -55,6 +55,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.programstagesection.Pro
 import org.hisp.dhis.android.sdk.core.persistence.models.programstage.ProgramStageStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityattribute.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.relationship.RelationshipStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.RelationshipTypeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
@@ -85,6 +86,7 @@ import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTr
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
@@ -118,6 +120,7 @@ public final class Models {
 
     //Tracker store objects
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private final IRelationshipStore relationshipStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -161,6 +164,7 @@ public final class Models {
         dataSetStore = new DataSetStore();
 
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore();
+        relationshipStore = new RelationshipStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -187,6 +191,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IRelationshipStore relationships() {
+        return getInstance().relationshipStore;
     }
 
     public static ITrackedEntityAttributeValueStore trackedEntityAttributeValues() {

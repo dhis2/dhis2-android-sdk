@@ -45,6 +45,14 @@ import org.hisp.dhis.android.sdk.core.persistence.models.metadata.DataElementSto
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OptionStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.metadata.OrganisationUnitStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramStageSectionStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramStageStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.TrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.metadata.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
@@ -59,8 +67,16 @@ import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
 import org.hisp.dhis.android.sdk.models.metadata.Constant;
 import org.hisp.dhis.android.sdk.models.metadata.DataElement;
 import org.hisp.dhis.android.sdk.models.metadata.IOptionStore;
+import org.hisp.dhis.android.sdk.models.metadata.IProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.models.metadata.IProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.models.metadata.IProgramStageSectionStore;
+import org.hisp.dhis.android.sdk.models.metadata.IProgramStageStore;
+import org.hisp.dhis.android.sdk.models.metadata.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
 import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.metadata.Program;
+import org.hisp.dhis.android.sdk.models.metadata.TrackedEntity;
+import org.hisp.dhis.android.sdk.models.metadata.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
@@ -73,6 +89,14 @@ public final class Models {
     private final IOptionStore optionStore;
     private final IIdentifiableObjectStore<OptionSet> optionSetStore;
     private final IIdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private final IIdentifiableObjectStore<Program> programStore;
+    private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
+    private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final IProgramStageDataElementStore programStageDataElementStore;
+    private final IProgramIndicatorStore programIndicatorStore;
+    private final IProgramStageSectionStore programStageSectionStore;
+    private final IProgramStageStore programStageStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -100,6 +124,14 @@ public final class Models {
         optionStore = new OptionStore();
         optionSetStore = new OptionSetStore();
         organisationUnitStore = new OrganisationUnitStore();
+        programStore = new ProgramStore();
+        trackedEntityStore = new TrackedEntityStore();
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore();
+        programStageDataElementStore = new ProgramStageDataElementStore();
+        programIndicatorStore = new ProgramIndicatorStore();
+        programStageSectionStore = new ProgramStageSectionStore();
+        programStageStore = new ProgramStageStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -126,6 +158,38 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IProgramStageStore programStages() {
+        return getInstance().programStageStore;
+    }
+
+    public static IProgramStageSectionStore programStageSections() {
+        return getInstance().programStageSectionStore;
+    }
+
+    public static IProgramIndicatorStore programIndicators() {
+        return getInstance().programIndicatorStore;
+    }
+
+    public static IProgramStageDataElementStore programStageDataElements() {
+        return getInstance().programStageDataElementStore;
+    }
+
+    public static IProgramTrackedEntityAttributeStore programTrackedEntityAttributes() {
+        return getInstance().programTrackedEntityAttributeStore;
+    }
+
+    public static IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributes() {
+        return getInstance().trackedEntityAttributeStore;
+    }
+
+    public static IIdentifiableObjectStore<TrackedEntity> trackedEntities() {
+        return getInstance().trackedEntityStore;
+    }
+
+    public static IIdentifiableObjectStore<Program> programs() {
+        return getInstance().programStore;
     }
 
     public static IIdentifiableObjectStore<OrganisationUnit> organisationUnits() {

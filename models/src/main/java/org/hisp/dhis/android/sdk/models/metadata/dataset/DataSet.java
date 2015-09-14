@@ -34,6 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.models.metadata.DataElement;
 import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.metadata.categoryCombo.CategoryCombo;
 
 import java.util.List;
 

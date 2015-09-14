@@ -26,32 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.categoryCombo;
+package org.hisp.dhis.android.sdk.models.metadata.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.metadata.category.Category;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class CategoryCombo extends BaseIdentifiableObject {
+public final class Category extends BaseIdentifiableObject {
+
+    @JsonProperty("dataDimension")
+    String dataDimension;
+
+    @JsonProperty("dataDimensionType")
+    String dataDimensionType;
+
+    @JsonProperty("dimension")
+    String dimension;
 
     @JsonProperty("displayName")
     String displayName;
 
-    @JsonProperty("dimensionType")
-    String dimensionType;
+    @JsonProperty("categoryOptions")
+    List<CategoryOption> categoryOptions;
 
-    @JsonProperty("skipTotal")
-    boolean skipTotal;
+    public Category() {
+    }
 
-    @JsonProperty("categories")
-    List<Category> categories;
+    public String getDataDimension() {
+        return dataDimension;
+    }
 
-    public CategoryCombo() {
+    public void setDataDimension(String dataDimension) {
+        this.dataDimension = dataDimension;
+    }
+
+    public String getDataDimensionType() {
+        return dataDimensionType;
+    }
+
+    public void setDataDimensionType(String dataDimensionType) {
+        this.dataDimensionType = dataDimensionType;
+    }
+
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
     }
 
     public String getDisplayName() {
@@ -62,27 +88,11 @@ public final class CategoryCombo extends BaseIdentifiableObject {
         this.displayName = displayName;
     }
 
-    public boolean isSkipTotal() {
-        return skipTotal;
+    public List<CategoryOption> getCategoryOptions() {
+        return categoryOptions;
     }
 
-    public void setSkipTotal(boolean skipTotal) {
-        this.skipTotal = skipTotal;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public String getDimensionType() {
-        return dimensionType;
-    }
-
-    public void setDimensionType(String dimensionType) {
-        this.dimensionType = dimensionType;
+    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
+        this.categoryOptions = categoryOptions;
     }
 }

@@ -41,7 +41,7 @@ import java.io.Serializable;
 public final class TrackedEntityAttributeValue implements Serializable {
 
     @JsonProperty("attribute")
-    private String trackedEntityAttributeId;
+    private String trackedEntityAttributeUId;
 
     @JsonIgnore
     private String trackedEntityInstanceUId;
@@ -67,12 +67,12 @@ public final class TrackedEntityAttributeValue implements Serializable {
         this.state = state;
     }
 
-    public String getTrackedEntityAttributeId() {
-        return trackedEntityAttributeId;
+    public String getTrackedEntityAttributeUId() {
+        return trackedEntityAttributeUId;
     }
 
-    public void setTrackedEntityAttributeId(String trackedEntityAttributeId) {
-        this.trackedEntityAttributeId = trackedEntityAttributeId;
+    public void setTrackedEntityAttributeUId(String trackedEntityAttributeUId) {
+        this.trackedEntityAttributeUId = trackedEntityAttributeUId;
     }
 
     public String getTrackedEntityInstanceUId() {

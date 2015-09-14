@@ -37,6 +37,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardElem
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItemContentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItemStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -64,6 +65,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
@@ -107,6 +109,8 @@ public final class Models {
     private final IProgramRuleActionStore programRuleActionStore;
     private final IProgramRuleVariableStore programRuleVariableStore;
 
+    private final IDataSetStore dataSetStore;
+
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
@@ -144,6 +148,8 @@ public final class Models {
         programRuleStore = new ProgramRuleStore();
         programRuleActionStore = new ProgramRuleActionStore();
         programRuleVariableStore = new ProgramRuleVariableStore();
+
+        dataSetStore = new DataSetStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -234,6 +240,10 @@ public final class Models {
 
     public static IIdentifiableObjectStore<Constant> constants() {
         return getInstance().constantStore;
+    }
+
+    public static IDataSetStore dataSets() {
+        return getInstance().dataSetStore;
     }
 
     public static IDashboardStore dashboards() {

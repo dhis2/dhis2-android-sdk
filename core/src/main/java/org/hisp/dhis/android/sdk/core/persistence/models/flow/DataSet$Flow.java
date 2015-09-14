@@ -107,7 +107,7 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
         this.periodType = periodType;
     }
 
-    public DataSet$Flow fromModel(DataSet dataSet) {
+    public static DataSet$Flow fromModel(DataSet dataSet) {
         if (dataSet == null) {
             return null;
         }
@@ -123,7 +123,7 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
         return dataSetFlow;
     }
 
-    public DataSet toModel(DataSet$Flow dataSetFlow) {
+    public static DataSet toModel(DataSet$Flow dataSetFlow) {
         if (dataSetFlow == null) {
             return null;
         }
@@ -139,7 +139,7 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
         return dataSet;
     }
 
-    public List<DataSet> toModels(List<DataSet$Flow> dataSetFlows) {
+    public static List<DataSet> toModels(List<DataSet$Flow> dataSetFlows) {
         List<DataSet> dataSets = new ArrayList<>();
 
         if (dataSetFlows != null && !dataSetFlows.isEmpty()) {
@@ -151,7 +151,7 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
         return dataSets;
     }
 
-    public List<DataSet$Flow> fromModels(List<DataSet> dataSets) {
+    public static List<DataSet$Flow> fromModels(List<DataSet> dataSets) {
         List<DataSet$Flow> dataSetFlows = new ArrayList<>();
 
         if (dataSets != null && !dataSets.isEmpty()) {

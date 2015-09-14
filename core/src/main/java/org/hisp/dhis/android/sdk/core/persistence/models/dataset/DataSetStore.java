@@ -28,6 +28,11 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.models.dataset;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataSet$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataSet$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
@@ -43,36 +48,54 @@ public final class DataSetStore implements IDataSetStore {
 
     @Override
     public DataSet query(long id) {
-        return null;
+        DataSet$Flow dataSetFlow = new Select()
+                .from(DataSet$Flow.class)
+                .where(Condition.column(DataSet$Flow$Table.ID).is(id))
+                .querySingle();
+        return DataSet$Flow.toModel(dataSetFlow);
     }
 
     @Override
     public DataSet query(String uid) {
-        return null;
-    }
-
-    @Override
-    public void insert(DataSet object) {
-
-    }
-
-    @Override
-    public void update(DataSet object) {
-
-    }
-
-    @Override
-    public void save(DataSet object) {
-
-    }
-
-    @Override
-    public void delete(DataSet object) {
-
+        DataSet$Flow dataSetFlow = new Select()
+                .from(DataSet$Flow.class)
+                .where(Condition.column(DataSet$Flow$Table.UID).is(uid))
+                .querySingle();
+        return DataSet$Flow.toModel(dataSetFlow);
     }
 
     @Override
     public List<DataSet> query() {
-        return null;
+        List<DataSet$Flow> dataSetFlows = new Select()
+                .from(DataSet$Flow.class).queryList();
+        return DataSet$Flow.toModels(dataSetFlows);
+    }
+
+    @Override
+    public void insert(DataSet object) {
+        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
+        dataSetFlow.insert();
+
+        object.setId(dataSetFlow.getId());
+    }
+
+    @Override
+    public void update(DataSet object) {
+        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
+        dataSetFlow.update();
+    }
+
+    @Override
+    public void save(DataSet object) {
+        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
+        dataSetFlow.save();
+
+        object.setId(dataSetFlow.getId());
+    }
+
+    @Override
+    public void delete(DataSet object) {
+        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
+        dataSetFlow.delete();
     }
 }

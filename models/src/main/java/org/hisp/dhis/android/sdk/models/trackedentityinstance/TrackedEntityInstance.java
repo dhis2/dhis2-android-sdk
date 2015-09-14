@@ -39,11 +39,12 @@ import org.hisp.dhis.android.sdk.models.relationship.Relationship;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrackedEntityInstance {
+public class TrackedEntityInstance implements Serializable {
 
     @JsonIgnore
     private long id;

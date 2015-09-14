@@ -26,59 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.category;
+package org.hisp.dhis.android.sdk.models.metadata.categoryOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.metadata.categoryOption.CategoryOption;
-
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Category extends BaseIdentifiableObject {
-
-    @JsonProperty("dataDimension")
-    String dataDimension;
-
-    @JsonProperty("dataDimensionType")
-    String dataDimensionType;
-
-    @JsonProperty("dimension")
-    String dimension;
+public final class CategoryOption extends BaseIdentifiableObject {
 
     @JsonProperty("displayName")
     String displayName;
 
-    @JsonProperty("categoryOptions")
-    List<CategoryOption> categoryOptions;
-
-    public Category() {
-    }
-
-    public String getDataDimension() {
-        return dataDimension;
-    }
-
-    public void setDataDimension(String dataDimension) {
-        this.dataDimension = dataDimension;
-    }
-
-    public String getDataDimensionType() {
-        return dataDimensionType;
-    }
-
-    public void setDataDimensionType(String dataDimensionType) {
-        this.dataDimensionType = dataDimensionType;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
+    public CategoryOption() {
     }
 
     public String getDisplayName() {
@@ -87,13 +48,5 @@ public final class Category extends BaseIdentifiableObject {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public List<CategoryOption> getCategoryOptions() {
-        return categoryOptions;
-    }
-
-    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
-        this.categoryOptions = categoryOptions;
     }
 }

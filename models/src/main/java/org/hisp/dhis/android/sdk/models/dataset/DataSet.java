@@ -26,15 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.dataset;
+package org.hisp.dhis.android.sdk.models.dataset;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.metadata.DataElement;
-import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
-import org.hisp.dhis.android.sdk.models.metadata.categoryCombo.CategoryCombo;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.models.categoryCombo.CategoryCombo;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
 

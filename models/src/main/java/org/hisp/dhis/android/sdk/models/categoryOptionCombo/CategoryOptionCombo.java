@@ -26,26 +26,43 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.categoryOption;
+package org.hisp.dhis.android.sdk.models.categoryOptionCombo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.categoryOption.CategoryOption;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class CategoryOption extends BaseIdentifiableObject {
+import java.util.List;
+
+public final class CategoryOptionCombo extends BaseIdentifiableObject {
 
     @JsonProperty("displayName")
     String displayName;
 
-    public CategoryOption() {
+    @JsonProperty("categoryOptions")
+    List<CategoryOption> categoryOptions;
+
+    public CategoryOptionCombo() {
     }
 
+    @JsonIgnore
+    public List<CategoryOption> getCategoryOptions() {
+        return categoryOptions;
+    }
+
+    @JsonIgnore
+    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
+        this.categoryOptions = categoryOptions;
+    }
+
+    @JsonIgnore
     public String getDisplayName() {
         return displayName;
     }
 
+    @JsonIgnore
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }

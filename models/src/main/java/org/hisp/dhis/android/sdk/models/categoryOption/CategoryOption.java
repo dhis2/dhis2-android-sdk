@@ -26,32 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.categoryCombo;
+package org.hisp.dhis.android.sdk.models.categoryOption;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.metadata.category.Category;
-
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class CategoryCombo extends BaseIdentifiableObject {
+public final class CategoryOption extends BaseIdentifiableObject {
 
     @JsonProperty("displayName")
     String displayName;
 
-    @JsonProperty("dimensionType")
-    String dimensionType;
-
-    @JsonProperty("skipTotal")
-    boolean skipTotal;
-
-    @JsonProperty("categories")
-    List<Category> categories;
-
-    public CategoryCombo() {
+    public CategoryOption() {
     }
 
     public String getDisplayName() {
@@ -60,29 +48,5 @@ public final class CategoryCombo extends BaseIdentifiableObject {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public boolean isSkipTotal() {
-        return skipTotal;
-    }
-
-    public void setSkipTotal(boolean skipTotal) {
-        this.skipTotal = skipTotal;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    public String getDimensionType() {
-        return dimensionType;
-    }
-
-    public void setDimensionType(String dimensionType) {
-        this.dimensionType = dimensionType;
     }
 }

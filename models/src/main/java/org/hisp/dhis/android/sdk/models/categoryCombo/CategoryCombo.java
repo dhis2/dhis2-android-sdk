@@ -26,44 +26,63 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.metadata.categoryOptionCombo;
+package org.hisp.dhis.android.sdk.models.categoryCombo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.metadata.categoryOption.CategoryOption;
+import org.hisp.dhis.android.sdk.models.category.Category;
 
 import java.util.List;
 
-public final class CategoryOptionCombo extends BaseIdentifiableObject {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class CategoryCombo extends BaseIdentifiableObject {
 
     @JsonProperty("displayName")
     String displayName;
 
-    @JsonProperty("categoryOptions")
-    List<CategoryOption> categoryOptions;
+    @JsonProperty("dimensionType")
+    String dimensionType;
 
-    public CategoryOptionCombo() {
+    @JsonProperty("skipTotal")
+    boolean skipTotal;
+
+    @JsonProperty("categories")
+    List<Category> categories;
+
+    public CategoryCombo() {
     }
 
-    @JsonIgnore
-    public List<CategoryOption> getCategoryOptions() {
-        return categoryOptions;
-    }
-
-    @JsonIgnore
-    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
-        this.categoryOptions = categoryOptions;
-    }
-
-    @JsonIgnore
     public String getDisplayName() {
         return displayName;
     }
 
-    @JsonIgnore
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public boolean isSkipTotal() {
+        return skipTotal;
+    }
+
+    public void setSkipTotal(boolean skipTotal) {
+        this.skipTotal = skipTotal;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public String getDimensionType() {
+        return dimensionType;
+    }
+
+    public void setDimensionType(String dimensionType) {
+        this.dimensionType = dimensionType;
     }
 }

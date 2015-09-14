@@ -60,6 +60,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.Relati
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattributevalue.TrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityinstance.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
@@ -91,6 +92,7 @@ import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.ITrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.ITrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
@@ -121,6 +123,7 @@ public final class Models {
     //Tracker store objects
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final IRelationshipStore relationshipStore;
+    private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -165,6 +168,7 @@ public final class Models {
 
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore();
         relationshipStore = new RelationshipStore();
+        trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore, trackedEntityAttributeValueStore);
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -191,6 +195,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static ITrackedEntityInstanceStore trackedEntityInstances() {
+        return getInstance().trackedEntityInstanceStore;
     }
 
     public static IRelationshipStore relationships() {

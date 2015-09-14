@@ -58,6 +58,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityatt
 import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.RelationshipTypeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattributevalue.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
@@ -87,6 +88,7 @@ import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
@@ -113,6 +115,9 @@ public final class Models {
     private final IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
     private final IDataSetStore dataSetStore;
+
+    //Tracker store objects
+    private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -155,6 +160,8 @@ public final class Models {
 
         dataSetStore = new DataSetStore();
 
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore();
+
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
         dashboardElementStore = new DashboardElementStore();
@@ -180,6 +187,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static ITrackedEntityAttributeValueStore trackedEntityAttributeValues() {
+        return getInstance().trackedEntityAttributeValueStore;
     }
 
     public static IIdentifiableObjectStore<RelationshipType> relationshipTypes() {

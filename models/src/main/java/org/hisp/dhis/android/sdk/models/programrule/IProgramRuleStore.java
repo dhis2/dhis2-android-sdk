@@ -35,6 +35,6 @@ import org.hisp.dhis.android.sdk.models.programruleaction.ProgramRuleAction;
 
 import java.util.List;
 
-public interface IProgramRuleStore extends IIdentifiableObjectStore<ProgramRuleAction> {
-    List<ProgramRuleAction> query(Program program);
+public interface IProgramRuleStore extends IIdentifiableObjectStore<ProgramRule> {
+    List<ProgramRule> query(Program program);
 }

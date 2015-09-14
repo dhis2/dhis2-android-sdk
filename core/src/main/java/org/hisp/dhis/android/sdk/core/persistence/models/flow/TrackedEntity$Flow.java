@@ -29,11 +29,10 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
-import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.metadata.TrackedEntity;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.ArrayList;
 import java.util.List;

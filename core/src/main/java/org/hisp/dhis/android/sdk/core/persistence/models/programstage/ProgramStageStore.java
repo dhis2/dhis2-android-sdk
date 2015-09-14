@@ -27,20 +27,18 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
+package org.hisp.dhis.android.sdk.core.persistence.models.programstage;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.api.Models;
-import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow;
-import org.hisp.dhis.android.sdk.models.metadata.IProgramStageStore;
-import org.hisp.dhis.android.sdk.models.metadata.Program;
-import org.hisp.dhis.android.sdk.models.metadata.ProgramStage;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
 
 import java.util.List;
 

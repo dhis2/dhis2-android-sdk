@@ -1,13 +1,13 @@
-package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
+package org.hisp.dhis.android.sdk.core.persistence.models.option;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Option$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Option$Flow$Table;
-import org.hisp.dhis.android.sdk.models.metadata.IOptionStore;
-import org.hisp.dhis.android.sdk.models.metadata.Option;
-import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
+import org.hisp.dhis.android.sdk.models.option.IOptionStore;
+import org.hisp.dhis.android.sdk.models.option.Option;
+import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 

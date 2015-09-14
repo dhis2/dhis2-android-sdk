@@ -27,17 +27,17 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
+package org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityattribute;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramTrackedEntityAttribute$Flow$Table;
-import org.hisp.dhis.android.sdk.models.metadata.IProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.sdk.models.metadata.Program;
-import org.hisp.dhis.android.sdk.models.metadata.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.models.metadata.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 
 import java.util.List;
 

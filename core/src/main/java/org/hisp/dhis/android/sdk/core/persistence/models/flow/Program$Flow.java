@@ -36,10 +36,7 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.metadata.Program;
-import org.hisp.dhis.android.sdk.models.metadata.ProgramStage;
-import org.hisp.dhis.android.sdk.models.metadata.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.models.metadata.TrackedEntity;
+import org.hisp.dhis.android.sdk.models.program.Program;
 
 import java.util.ArrayList;
 import java.util.List;

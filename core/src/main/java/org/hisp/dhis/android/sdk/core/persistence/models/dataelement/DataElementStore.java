@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
+package org.hisp.dhis.android.sdk.core.persistence.models.dataelement;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -6,7 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataElement$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.metadata.DataElement;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 
 import java.util.List;
 

@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.models.metadata;
+package org.hisp.dhis.android.sdk.core.persistence.models.trackedentity;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntity$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntity$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.metadata.TrackedEntity;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
 

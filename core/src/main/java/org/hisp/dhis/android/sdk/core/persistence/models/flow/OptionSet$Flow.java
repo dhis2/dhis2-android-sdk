@@ -4,9 +4,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.metadata.Constant;
-import org.hisp.dhis.android.sdk.models.metadata.Option;
-import org.hisp.dhis.android.sdk.models.metadata.OptionSet;
+import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 
 import java.util.ArrayList;
 import java.util.List;

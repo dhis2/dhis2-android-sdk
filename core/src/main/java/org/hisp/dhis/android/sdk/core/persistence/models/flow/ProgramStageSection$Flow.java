@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.metadata.ProgramStageSection;
+import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
 
 import java.util.ArrayList;
 import java.util.List;

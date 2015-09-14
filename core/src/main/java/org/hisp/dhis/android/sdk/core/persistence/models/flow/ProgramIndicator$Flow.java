@@ -196,7 +196,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     public static List<ProgramIndicator$Flow> fromModels(List<ProgramIndicator> programIndicators) {
         List<ProgramIndicator$Flow> programIndicatorFlows = new ArrayList<>();
 
-        if (programIndicatorFlows != null && !programIndicatorFlows.isEmpty()) {
+        if (programIndicators != null && !programIndicators.isEmpty()) {
             for (ProgramIndicator programIndicator : programIndicators) {
                 programIndicatorFlows.add(fromModel(programIndicator));
             }

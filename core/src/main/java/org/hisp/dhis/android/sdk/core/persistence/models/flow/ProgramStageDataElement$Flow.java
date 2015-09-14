@@ -186,7 +186,7 @@ public final class ProgramStageDataElement$Flow extends BaseModel {
     public static List<ProgramStageDataElement$Flow> fromModels(List<ProgramStageDataElement> programStageDataElements) {
         List<ProgramStageDataElement$Flow> programStageDataElementFlows = new ArrayList<>();
 
-        if (programStageDataElementFlows != null && !programStageDataElementFlows.isEmpty()) {
+        if (programStageDataElements != null && !programStageDataElements.isEmpty()) {
             for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                 programStageDataElementFlows.add(fromModel(programStageDataElement));
             }

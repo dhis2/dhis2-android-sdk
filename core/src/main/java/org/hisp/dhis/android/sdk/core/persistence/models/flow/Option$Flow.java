@@ -102,7 +102,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
     public static List<Option$Flow> fromModels(List<Option> options) {
         List<Option$Flow> optionFlows = new ArrayList<>();
 
-        if (optionFlows != null && !optionFlows.isEmpty()) {
+        if (options != null && !options.isEmpty()) {
             for (Option option : options) {
                 optionFlows.add(fromModel(option));
             }

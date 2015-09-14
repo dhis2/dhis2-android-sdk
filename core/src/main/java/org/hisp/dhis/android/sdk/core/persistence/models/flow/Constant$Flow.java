@@ -76,7 +76,7 @@ public final class Constant$Flow extends BaseIdentifiableObject$Flow {
     public static List<Constant$Flow> fromModels(List<Constant> constants) {
         List<Constant$Flow> constantFlows = new ArrayList<>();
 
-        if (constantFlows != null && !constantFlows.isEmpty()) {
+        if (constants != null && !constants.isEmpty()) {
             for (Constant constant : constants) {
                 constantFlows.add(fromModel(constant));
             }

@@ -160,7 +160,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel {
     public static List<ProgramTrackedEntityAttribute$Flow> fromModels(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
         List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new ArrayList<>();
 
-        if (programTrackedEntityAttributeFlows != null && !programTrackedEntityAttributeFlows.isEmpty()) {
+        if (programTrackedEntityAttributes != null && !programTrackedEntityAttributes.isEmpty()) {
             for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
                 programTrackedEntityAttributeFlows.add(fromModel(programTrackedEntityAttribute));
             }

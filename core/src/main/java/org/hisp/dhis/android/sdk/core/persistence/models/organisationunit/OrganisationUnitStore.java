@@ -18,7 +18,8 @@ public final class OrganisationUnitStore implements IIdentifiableObjectStore<Org
 
     @Override
     public void insert(OrganisationUnit object) {
-        OrganisationUnit$Flow organisationUnitFlow = OrganisationUnit$Flow.fromModel(object);
+        OrganisationUnit$Flow organisationUnitFlow
+                = OrganisationUnit$Flow.fromModel(object);
         organisationUnitFlow.insert();
 
         object.setId(organisationUnitFlow.getId());
@@ -31,8 +32,8 @@ public final class OrganisationUnitStore implements IIdentifiableObjectStore<Org
 
     @Override
     public void save(OrganisationUnit object) {
-        OrganisationUnit$Flow organisationUnitFlow =
-                OrganisationUnit$Flow.fromModel(object);
+        OrganisationUnit$Flow organisationUnitFlow
+                = OrganisationUnit$Flow.fromModel(object);
         organisationUnitFlow.save();
 
         object.setId(organisationUnitFlow.getId());

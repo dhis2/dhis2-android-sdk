@@ -33,50 +33,50 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.ModelsStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.constant.ConstantStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItemContentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItemStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.constant.ConstantStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElementStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.optionset.OptionSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.option.OptionStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.optionset.OptionSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programindicator.ProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.programstage.ProgramStageStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programstagedataelement.ProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programstagesection.ProgramStageSectionStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.programstage.ProgramStageStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityattribute.ProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
-import org.hisp.dhis.android.sdk.models.constant.Constant;
-import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.option.IOptionStore;
+import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
+import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programindicator.IProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programstagedataelement.IProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSectionStore;
-import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
@@ -90,7 +90,7 @@ public final class Models {
     private final IIdentifiableObjectStore<DataElement> dataElementStore;
     private final IOptionStore optionStore;
     private final IIdentifiableObjectStore<OptionSet> optionSetStore;
-    private final IIdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
+    private final IOrganisationUnitStore organisationUnitStore;
     private final IIdentifiableObjectStore<Program> programStore;
     private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
     private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
@@ -198,7 +198,7 @@ public final class Models {
         return getInstance().programStore;
     }
 
-    public static IIdentifiableObjectStore<OrganisationUnit> organisationUnits() {
+    public static IOrganisationUnitStore organisationUnits() {
         return getInstance().organisationUnitStore;
     }
 

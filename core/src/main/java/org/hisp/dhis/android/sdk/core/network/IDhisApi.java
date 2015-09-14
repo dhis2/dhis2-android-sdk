@@ -33,6 +33,12 @@ import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
+import org.hisp.dhis.android.sdk.models.metadata.DataElement;
+import org.hisp.dhis.android.sdk.models.metadata.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.metadata.category.Category;
+import org.hisp.dhis.android.sdk.models.metadata.categoryCombo.CategoryCombo;
+import org.hisp.dhis.android.sdk.models.metadata.categoryOption.CategoryOption;
+import org.hisp.dhis.android.sdk.models.metadata.dataset.DataSet;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 import java.util.List;
@@ -185,4 +191,27 @@ public interface IDhisApi {
     @DELETE("/interpretations/{interpretationUid}/comments/{commentUid}")
     Response deleteInterpretationComment(@Path("interpretationUid") String interpretationUid,
                                          @Path("commentUid") String commentUid);
+
+
+    /////////////////////////////////////////////////////////////////////////
+    // Methods for working with data capture meta data
+    /////////////////////////////////////////////////////////////////////////
+
+    @GET("/organisationUnits?paging=false")
+    Map<String, List<OrganisationUnit>> getOrganisationUnits(@QueryMap Map<String, String> queryParams);
+
+    @GET("/dataSets?paging=false")
+    Map<String, List<DataSet>> getDataSets(@QueryMap Map<String, String> queryParams);
+
+    @GET("/dataElements?paging=false")
+    Map<String, List<DataElement>> getDataElements(@QueryMap Map<String, String> queryParams);
+
+    @GET("/categoryCombos?paging=false")
+    Map<String, List<CategoryCombo>> getCategoryCombos(@QueryMap Map<String, String> queryParams);
+
+    @GET("/categories?paging=false")
+    Map<String, List<Category>> getCategories(@QueryMap Map<String, String> queryMap);
+
+    @GET("/categoryOptions?paging=false")
+    Map<String, List<CategoryOption>> getCategoryOptions(@QueryMap Map<String, String> queryMap);
 }

@@ -28,96 +28,58 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.datacapture.sdk.persistence.DbDhis;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 
 @Table(databaseName = DbDhis.NAME)
-public final class Category$Flow extends BaseIdentifiableObject implements DisplayNameModel {
-    @JsonProperty("dataDimension") @Column
+public final class Category$Flow extends BaseIdentifiableObject$Flow {
+
+    @Column
     String dataDimension;
-    @JsonProperty("dataDimensionType") @Column
+
+    @Column
     String dataDimensionType;
-    @JsonProperty("dimension") @Column
+
+    @Column
     String dimension;
-    @JsonProperty("displayName") @Column
+
+    @Column
     String displayName;
-    @JsonProperty("categoryOptions")
-    List<CategoryOption> categoryOptions;
 
     public Category$Flow() {
     }
 
-    @JsonIgnore
     public String getDataDimension() {
         return dataDimension;
     }
 
-    @JsonIgnore
     public void setDataDimension(String dataDimension) {
         this.dataDimension = dataDimension;
     }
 
-    @JsonIgnore
     public String getDataDimensionType() {
         return dataDimensionType;
     }
 
-    @JsonIgnore
     public void setDataDimensionType(String dataDimensionType) {
         this.dataDimensionType = dataDimensionType;
     }
 
-    @JsonIgnore
     public String getDimension() {
         return dimension;
     }
 
-    @JsonIgnore
     public void setDimension(String dimension) {
         this.dimension = dimension;
     }
 
-    @JsonIgnore
     public String getDisplayName() {
         return displayName;
     }
 
-    @JsonIgnore
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    @JsonIgnore
-    public List<CategoryOption> getCategoryOptions() {
-        return categoryOptions;
-    }
-
-    @JsonIgnore
-    public void setCategoryOptions(List<CategoryOption> categoryOptions) {
-        this.categoryOptions = categoryOptions;
-    }
-
-    public static List<CategoryOption> getRelatedOptions(String catId) {
-        List<CategoryToCategoryOptionRelation> relations = new Select()
-                .from(CategoryToCategoryOptionRelation.class)
-                .where(Condition.column(CategoryToCategoryOptionRelation$Table
-                        .CATEGORY_CATEGORY).is(catId))
-                .queryList();
-        List<CategoryOption> categoryOptions = new ArrayList<>();
-        if (relations != null && !relations.isEmpty()) {
-            for (CategoryToCategoryOptionRelation relation : relations) {
-                categoryOptions.add(relation.getCategoryOption());
-            }
-        }
-        return categoryOptions;
     }
 }

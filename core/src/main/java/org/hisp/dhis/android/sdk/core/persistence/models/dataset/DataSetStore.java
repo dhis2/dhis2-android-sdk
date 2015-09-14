@@ -33,17 +33,33 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataSet$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.UnitToDataSetRelationShip$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.UnitToDataSetRelationShip$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class DataSetStore implements IDataSetStore {
 
     @Override
     public List<OrganisationUnit> query(DataSet dataSet) {
-        return null;
+        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
+                .from(UnitToDataSetRelationShip$Flow.class)
+                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
+                        .DATASET_DATASET).is(dataSet.getUId()))
+                .queryList();
+
+        List<OrganisationUnit> organisationUnits = new ArrayList<>();
+        for (UnitToDataSetRelationShip$Flow relationShipFlow : relationShipFlows) {
+            OrganisationUnit$Flow organisationUnitFlow = relationShipFlow.getOrganisationUnit();
+            organisationUnits.add(OrganisationUnit$Flow.toModel(organisationUnitFlow));
+        }
+
+        return organisationUnits;
     }
 
     @Override

@@ -3,14 +3,19 @@ package org.hisp.dhis.android.sdk.core.persistence.models.organisationunit;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.UnitToDataSetRelationShip$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.UnitToDataSetRelationShip$Flow$Table;
+import org.hisp.dhis.android.sdk.models.dataset.DataSet;
+import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public final class OrganisationUnitStore implements IIdentifiableObjectStore<OrganisationUnit> {
+public final class OrganisationUnitStore implements IOrganisationUnitStore {
 
     public OrganisationUnitStore() {
         //empty constructor
@@ -68,5 +73,22 @@ public final class OrganisationUnitStore implements IIdentifiableObjectStore<Org
                 .where(Condition.column(OrganisationUnit$Flow$Table.UID).is(uid))
                 .querySingle();
         return OrganisationUnit$Flow.toModel(organisationUnitFlow);
+    }
+
+    @Override
+    public List<DataSet> query(OrganisationUnit organisationUnit) {
+        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
+                .from(UnitToDataSetRelationShip$Flow.class)
+                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
+                        .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+                .queryList();
+
+        List<DataSet> dataSets = new ArrayList<>();
+        for (UnitToDataSetRelationShip$Flow relationShip : relationShipFlows) {
+            DataSet$Flow dataSetFlow = relationShip.getDataSet();
+            dataSets.add(DataSet$Flow.toModel(dataSetFlow));
+        }
+
+        return dataSets;
     }
 }

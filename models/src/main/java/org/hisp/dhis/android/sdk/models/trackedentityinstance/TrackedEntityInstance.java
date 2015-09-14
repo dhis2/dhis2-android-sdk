@@ -77,6 +77,14 @@ public class TrackedEntityInstance implements Serializable {
         state = State.SYNCED;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getTrackedEntityInstance() {
         return trackedEntityInstance;
     }

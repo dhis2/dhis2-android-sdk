@@ -55,6 +55,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.programstagesection.Pro
 import org.hisp.dhis.android.sdk.core.persistence.models.programstage.ProgramStageStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityattribute.ProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.RelationshipTypeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
@@ -83,6 +84,7 @@ import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTr
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
@@ -108,6 +110,7 @@ public final class Models {
     private final IProgramRuleStore programRuleStore;
     private final IProgramRuleActionStore programRuleActionStore;
     private final IProgramRuleVariableStore programRuleVariableStore;
+    private final IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
     private final IDataSetStore dataSetStore;
 
@@ -148,6 +151,7 @@ public final class Models {
         programRuleStore = new ProgramRuleStore();
         programRuleActionStore = new ProgramRuleActionStore();
         programRuleVariableStore = new ProgramRuleVariableStore();
+        relationshipTypeStore = new RelationshipTypeStore();
 
         dataSetStore = new DataSetStore();
 
@@ -176,6 +180,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IIdentifiableObjectStore<RelationshipType> relationshipTypes() {
+        return getInstance().relationshipTypeStore;
     }
 
     public static IProgramRuleStore programRules() {

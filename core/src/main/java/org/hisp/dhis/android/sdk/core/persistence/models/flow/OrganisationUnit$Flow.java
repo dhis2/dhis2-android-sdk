@@ -102,7 +102,7 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
     public static List<OrganisationUnit$Flow> fromModels(List<OrganisationUnit> organisationUnits) {
         List<OrganisationUnit$Flow> organisationUnitFlows = new ArrayList<>();
 
-        if (organisationUnitFlows != null && !organisationUnitFlows.isEmpty()) {
+        if (organisationUnits != null && !organisationUnits.isEmpty()) {
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 organisationUnitFlows.add(fromModel(organisationUnit));
             }

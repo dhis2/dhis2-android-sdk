@@ -261,7 +261,7 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     public static List<TrackedEntityAttribute$Flow> fromModels(List<TrackedEntityAttribute> trackedEntityAttributes) {
         List<TrackedEntityAttribute$Flow> trackedEntityAttributeFlows = new ArrayList<>();
 
-        if (trackedEntityAttributeFlows != null && !trackedEntityAttributeFlows.isEmpty()) {
+        if (trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
             for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
                 trackedEntityAttributeFlows.add(fromModel(trackedEntityAttribute));
             }

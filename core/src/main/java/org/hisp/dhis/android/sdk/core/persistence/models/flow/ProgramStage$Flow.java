@@ -381,7 +381,7 @@ public final class ProgramStage$Flow extends BaseIdentifiableObject$Flow {
     public static List<ProgramStage$Flow> fromModels(List<ProgramStage> programStages) {
         List<ProgramStage$Flow> programStageFlows = new ArrayList<>();
 
-        if (programStageFlows != null && !programStageFlows.isEmpty()) {
+        if (programStages != null && !programStages.isEmpty()) {
             for (ProgramStage programStage : programStages) {
                 programStageFlows.add(fromModel(programStage));
             }

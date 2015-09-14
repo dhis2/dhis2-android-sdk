@@ -35,6 +35,10 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
+import org.hisp.dhis.android.sdk.models.dataset.DataSet;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
@@ -55,7 +59,7 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = CATEGORY_COMBO_KEY, columnType = String.class, foreignColumnName = "id")
+                    @ForeignKeyReference(columnName = CATEGORY_COMBO_KEY, columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     CategoryCombo$Flow categoryCombo;
@@ -101,5 +105,61 @@ public final class DataSet$Flow extends BaseIdentifiableObject$Flow {
 
     public void setPeriodType(String periodType) {
         this.periodType = periodType;
+    }
+
+    public DataSet$Flow fromModel(DataSet dataSet) {
+        if (dataSet == null) {
+            return null;
+        }
+
+        DataSet$Flow dataSetFlow = fromModel(dataSet);
+        dataSetFlow.setVersion(dataSet.getVersion());
+        dataSetFlow.setExpiryDays(dataSet.getExpiryDays());
+        dataSetFlow.setAllowFuturePeriods(dataSet.isAllowFuturePeriods());
+        dataSetFlow.setPeriodType(dataSet.getPeriodType());
+
+        dataSetFlow.setCategoryCombo(null);
+
+        return dataSetFlow;
+    }
+
+    public DataSet toModel(DataSet$Flow dataSetFlow) {
+        if (dataSetFlow == null) {
+            return null;
+        }
+
+        DataSet dataSet = toModel(dataSetFlow);
+        dataSet.setVersion(dataSetFlow.getVersion());
+        dataSet.setExpiryDays(dataSetFlow.getExpiryDays());
+        dataSet.setAllowFuturePeriods(dataSetFlow.isAllowFuturePeriods());
+        dataSet.setPeriodType(dataSetFlow.getPeriodType());
+
+        dataSet.setCategoryCombo(null);
+
+        return dataSet;
+    }
+
+    public List<DataSet> toModels(List<DataSet$Flow> dataSetFlows) {
+        List<DataSet> dataSets = new ArrayList<>();
+
+        if (dataSetFlows != null && !dataSetFlows.isEmpty()) {
+            for (DataSet$Flow dataSetFlow : dataSetFlows) {
+                dataSets.add(toModel(dataSetFlow));
+            }
+        }
+
+        return dataSets;
+    }
+
+    public List<DataSet$Flow> fromModels(List<DataSet> dataSets) {
+        List<DataSet$Flow> dataSetFlows = new ArrayList<>();
+
+        if (dataSets != null && !dataSets.isEmpty()) {
+            for (DataSet dataSet : dataSets) {
+                dataSetFlows.add(fromModel(dataSet));
+            }
+        }
+
+        return dataSetFlows;
     }
 }

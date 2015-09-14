@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 
 @Table(databaseName = DbDhis.NAME)
-public final class CategoryOptionCombo$Flow {
+public final class CategoryOptionCombo$Flow extends BaseIdentifiableObject$Flow {
 
     public CategoryOptionCombo$Flow() {
     }

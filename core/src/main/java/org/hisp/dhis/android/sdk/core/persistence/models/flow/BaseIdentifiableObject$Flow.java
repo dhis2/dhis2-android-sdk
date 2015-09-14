@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.joda.time.DateTime;
 
@@ -144,5 +145,39 @@ public class BaseIdentifiableObject$Flow extends BaseModel implements Identifiab
             }
         }
         return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BaseIdentifiableObject$Flow> T fromModel(BaseIdentifiableObject object) {
+        if (object == null) {
+            return null;
+        }
+
+        BaseIdentifiableObject$Flow flow = new BaseIdentifiableObject$Flow();
+        flow.setId(object.getId());
+        flow.setUId(object.getUId());
+        flow.setCreated(object.getCreated());
+        flow.setLastUpdated(object.getLastUpdated());
+        flow.setName(object.getName());
+        flow.setDisplayName(object.getDisplayName());
+        flow.setAccess(object.getAccess());
+        return (T) flow;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BaseIdentifiableObject> T toModel(BaseIdentifiableObject$Flow flow) {
+        if (flow == null) {
+            return null;
+        }
+
+        BaseIdentifiableObject object = new BaseIdentifiableObject();
+        object.setId(flow.getId());
+        object.setUId(flow.getUId());
+        object.setCreated(flow.getCreated());
+        object.setLastUpdated(flow.getLastUpdated());
+        object.setName(flow.getName());
+        object.setDisplayName(flow.getDisplayName());
+        object.setAccess(flow.getAccess());
+        return (T) object;
     }
 }

@@ -26,49 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.models.flow;
+package org.hisp.dhis.android.sdk.core.persistence.models.dataset;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Table;
+import org.hisp.dhis.android.sdk.models.dataset.DataSet;
+import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
+import java.util.List;
 
-@Table(databaseName = DbDhis.NAME)
-public final class Category$Flow extends BaseIdentifiableObject$Flow {
+public final class DataSetStore implements IDataSetStore {
 
-    @Column
-    String dataDimension;
-
-    @Column
-    String dataDimensionType;
-
-    @Column
-    String dimension;
-
-    public Category$Flow() {
+    @Override
+    public List<OrganisationUnit> query(DataSet dataSet) {
+        return null;
     }
 
-    public String getDataDimension() {
-        return dataDimension;
+    @Override
+    public DataSet query(long id) {
+        return null;
     }
 
-    public void setDataDimension(String dataDimension) {
-        this.dataDimension = dataDimension;
+    @Override
+    public DataSet query(String uid) {
+        return null;
     }
 
-    public String getDataDimensionType() {
-        return dataDimensionType;
+    @Override
+    public void insert(DataSet object) {
+
     }
 
-    public void setDataDimensionType(String dataDimensionType) {
-        this.dataDimensionType = dataDimensionType;
+    @Override
+    public void update(DataSet object) {
+
     }
 
-    public String getDimension() {
-        return dimension;
+    @Override
+    public void save(DataSet object) {
+
     }
 
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
+    @Override
+    public void delete(DataSet object) {
+
+    }
+
+    @Override
+    public List<DataSet> query() {
+        return null;
     }
 }

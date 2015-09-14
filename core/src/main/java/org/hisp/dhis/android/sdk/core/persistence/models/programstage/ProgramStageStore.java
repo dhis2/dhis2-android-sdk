@@ -38,6 +38,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow$
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
 
 import java.util.List;

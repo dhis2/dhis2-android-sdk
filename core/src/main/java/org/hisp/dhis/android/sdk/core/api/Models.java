@@ -46,6 +46,9 @@ import org.hisp.dhis.android.sdk.core.persistence.models.optionset.OptionSetStor
 import org.hisp.dhis.android.sdk.core.persistence.models.option.OptionStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programindicator.ProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.programrule.ProgramRuleStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.programruleaction.ProgramRuleActionStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.programrulevariable.ProgramRuleVariableStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programstagedataelement.ProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programstagesection.ProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.programstage.ProgramStageStore;
@@ -68,6 +71,9 @@ import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.option.IOptionStore;
 import org.hisp.dhis.android.sdk.models.programindicator.IProgramIndicatorStore;
+import org.hisp.dhis.android.sdk.models.programrule.IProgramRuleStore;
+import org.hisp.dhis.android.sdk.models.programruleaction.IProgramRuleActionStore;
+import org.hisp.dhis.android.sdk.models.programrulevariable.IProgramRuleVariableStore;
 import org.hisp.dhis.android.sdk.models.programstagedataelement.IProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
@@ -97,6 +103,9 @@ public final class Models {
     private final IProgramIndicatorStore programIndicatorStore;
     private final IProgramStageSectionStore programStageSectionStore;
     private final IProgramStageStore programStageStore;
+    private final IProgramRuleStore programRuleStore;
+    private final IProgramRuleActionStore programRuleActionStore;
+    private final IProgramRuleVariableStore programRuleVariableStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -132,6 +141,9 @@ public final class Models {
         programIndicatorStore = new ProgramIndicatorStore();
         programStageSectionStore = new ProgramStageSectionStore();
         programStageStore = new ProgramStageStore();
+        programRuleStore = new ProgramRuleStore();
+        programRuleActionStore = new ProgramRuleActionStore();
+        programRuleVariableStore = new ProgramRuleVariableStore();
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -158,6 +170,18 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IProgramRuleStore programRules() {
+        return getInstance().programRuleStore;
+    }
+
+    public static IProgramRuleVariableStore programRuleVariables() {
+        return getInstance().programRuleVariableStore;
+    }
+
+    public static IProgramRuleActionStore programRuleActions() {
+        return getInstance().programRuleActionStore;
     }
 
     public static IProgramStageStore programStages() {

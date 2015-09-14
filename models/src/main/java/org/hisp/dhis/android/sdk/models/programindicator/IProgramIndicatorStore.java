@@ -27,46 +27,14 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.programindicator;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programindicator.ProgramIndicator;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class OrganisationUnit extends BaseIdentifiableObject {
-
-    @JsonProperty("label")
-    private String label;
-
-    @JsonProperty("level")
-    private int level;
-
-    @JsonProperty("parent")
-    private String parent;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
+public interface IProgramIndicatorStore extends IIdentifiableObjectStore<ProgramIndicator> {
+    List<ProgramIndicator> query(Program program);
 }

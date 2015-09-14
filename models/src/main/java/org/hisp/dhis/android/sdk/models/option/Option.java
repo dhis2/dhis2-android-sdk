@@ -27,41 +27,22 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.option;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramTrackedEntityAttribute {
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-    private String trackedEntityAttribute;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Option extends BaseIdentifiableObject {
 
     private int sortOrder;
 
-    @JsonProperty("allowFutureDate")
-    private boolean allowFutureDate;
+    private String optionSet;
 
-    @JsonProperty("displayInList")
-    private boolean displayInList;
-
-    @JsonProperty("mandatory")
-    private boolean mandatory;
-
-    private String program;
-
-    @JsonProperty("trackedEntityAttribute")
-    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute.getUId();
-    }
-
-    public String getTrackedEntityAttribute() {
-        return trackedEntityAttribute;
-    }
-
-    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
-        this.trackedEntityAttribute = trackedEntityAttribute;
-    }
+    @JsonProperty("code")
+    private String code;
 
     public int getSortOrder() {
         return sortOrder;
@@ -71,35 +52,19 @@ public final class ProgramTrackedEntityAttribute {
         this.sortOrder = sortOrder;
     }
 
-    public boolean isAllowFutureDate() {
-        return allowFutureDate;
+    public String getOptionSet() {
+        return optionSet;
     }
 
-    public void setAllowFutureDate(boolean allowFutureDate) {
-        this.allowFutureDate = allowFutureDate;
+    public void setOptionSet(String optionSet) {
+        this.optionSet = optionSet;
     }
 
-    public boolean isDisplayInList() {
-        return displayInList;
+    public String getCode() {
+        return code;
     }
 
-    public void setDisplayInList(boolean displayInList) {
-        this.displayInList = displayInList;
-    }
-
-    public boolean isMandatory() {
-        return mandatory;
-    }
-
-    public void setMandatory(boolean mandatory) {
-        this.mandatory = mandatory;
-    }
-
-    public String getProgram() {
-        return program;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
+    public void setCode(String code) {
+        this.code = code;
     }
 }

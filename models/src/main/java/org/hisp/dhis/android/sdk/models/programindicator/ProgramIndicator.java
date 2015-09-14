@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.programindicator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

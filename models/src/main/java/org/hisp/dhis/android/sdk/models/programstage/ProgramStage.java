@@ -27,12 +27,15 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.programstage;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.programstagedataelement.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
+import org.hisp.dhis.android.sdk.models.programindicator.ProgramIndicator;
 
 import java.util.List;
 import java.util.Map;

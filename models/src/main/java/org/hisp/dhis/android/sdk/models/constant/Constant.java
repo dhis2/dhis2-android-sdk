@@ -27,12 +27,24 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.constant;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-public interface IProgramIndicatorStore extends IIdentifiableObjectStore<ProgramIndicator> {
-    List<ProgramIndicator> query(Program program);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Constant extends BaseIdentifiableObject {
+
+    @JsonProperty("value")
+    private double value;
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
 }

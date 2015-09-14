@@ -27,75 +27,46 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.organisationunit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-import java.util.List;
-import java.util.Map;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStageSection extends BaseIdentifiableObject {
+public final class OrganisationUnit extends BaseIdentifiableObject {
 
-    @JsonProperty("sortOrder")
-    private int sortOrder;
+    @JsonProperty("label")
+    private String label;
 
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
+    @JsonProperty("level")
+    private int level;
 
-    private String programStage;
+    @JsonProperty("parent")
+    private String parent;
 
-    @JsonProperty("programStageDataElements")
-    private List<ProgramStageDataElement> programStageDataElements;
-
-    @JsonProperty("programIndicators")
-    private List<ProgramIndicator> programIndicators;
-
-    @JsonProperty("programStage")
-    public void setProgramStageFromJSON(Map<String, Object> programStage) {
-        this.programStage = (String) programStage.get("id");
+    public String getLabel() {
+        return label;
     }
 
-    public int getSortOrder() {
-        return sortOrder;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public void setSortOrder(int sortOrder) {
-        this.sortOrder = sortOrder;
+    public int getLevel() {
+        return level;
     }
 
-    public boolean isExternalAccess() {
-        return externalAccess;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
+    public String getParent() {
+        return parent;
     }
 
-    public String getProgramStage() {
-        return programStage;
-    }
-
-    public void setProgramStage(String programStage) {
-        this.programStage = programStage;
-    }
-
-    public List<ProgramStageDataElement> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
-
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
-
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

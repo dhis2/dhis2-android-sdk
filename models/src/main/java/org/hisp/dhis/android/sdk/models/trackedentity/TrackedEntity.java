@@ -27,12 +27,13 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.trackedentity;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-public interface IProgramStageSectionStore extends IIdentifiableObjectStore<ProgramStageSection> {
-    List<ProgramStageSection> query(ProgramStage programStage);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class TrackedEntity extends BaseIdentifiableObject {
 }

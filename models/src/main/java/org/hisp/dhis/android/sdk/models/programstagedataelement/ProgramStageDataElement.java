@@ -27,10 +27,12 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.programstagedataelement;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 
 import java.util.Map;
 

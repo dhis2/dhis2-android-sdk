@@ -1,6 +1,9 @@
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.programstagedataelement;
 
 import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
+import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
 
 import java.util.List;
 

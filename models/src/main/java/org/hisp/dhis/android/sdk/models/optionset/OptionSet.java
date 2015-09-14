@@ -27,13 +27,38 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.models.metadata;
+package org.hisp.dhis.android.sdk.models.optionset;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.option.Option;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntity extends BaseIdentifiableObject {
+public final class OptionSet extends BaseIdentifiableObject {
+
+    @JsonProperty("version")
+    private int version;
+
+    @JsonProperty("options")
+    private List<Option> options;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public List<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
+    }
 }

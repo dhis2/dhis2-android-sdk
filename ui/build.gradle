@@ -50,4 +50,5 @@ dependencies {
 
     // UI libraries
     compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

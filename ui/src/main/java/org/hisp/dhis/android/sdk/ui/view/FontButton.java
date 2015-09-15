@@ -26,30 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.views;
+package org.hisp.dhis.android.sdk.ui.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.widget.Button;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
 
-public class FontEditText extends EditText {
+public class FontButton extends Button {
 
-    public FontEditText(Context context) {
+    public FontButton(Context context) {
         super(context);
     }
 
-    public FontEditText(Context context, AttributeSet attrs) {
+    public FontButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
 
-    public FontEditText(Context context, AttributeSet attrs, int defStyle) {
+    public FontButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context, attrs);
     }

@@ -86,7 +86,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
                         .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstance())).and(Condition
+                        .getTrackedEntityInstanceUid())).and(Condition
                         .column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                         .is(trackedEntityAttribute.getUId())).querySingle();
         return TrackedEntityAttributeValue$Flow.toModel(trackedEntityInstanceFlow);
@@ -98,7 +98,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
                         .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstance())).queryList();
+                        .getTrackedEntityInstanceUid())).queryList();
         return TrackedEntityAttributeValue$Flow.toModels(trackedEntityInstanceFlows);
     }
 }

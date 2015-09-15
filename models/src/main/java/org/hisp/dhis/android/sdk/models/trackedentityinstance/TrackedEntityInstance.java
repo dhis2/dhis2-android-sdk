@@ -49,8 +49,8 @@ public class TrackedEntityInstance implements Serializable {
     @JsonIgnore
     private long id;
 
-    @JsonProperty("trackedEntityInstance")
-    private String trackedEntityInstance;
+    @JsonProperty("trackedEntityInstanceUid")
+    private String trackedEntityInstanceUid;
 
     @JsonProperty("trackedEntity")
     private String trackedEntity;
@@ -85,12 +85,12 @@ public class TrackedEntityInstance implements Serializable {
         this.id = id;
     }
 
-    public String getTrackedEntityInstance() {
-        return trackedEntityInstance;
+    public String getTrackedEntityInstanceUid() {
+        return trackedEntityInstanceUid;
     }
 
-    public void setTrackedEntityInstance(String trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
+        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
 
     public String getTrackedEntity() {

@@ -88,10 +88,10 @@ public final class Event implements Serializable {
     private String organisationUnitId;
 
     @JsonProperty("eventDate")
-    private String eventDate;
+    private DateTime eventDate;
 
     @JsonProperty("dueDate")
-    private String dueDate;
+    private DateTime dueDate;
 
     @JsonProperty("dataValues")
     private List<TrackedEntityDataValue> trackedEntityDataValues;
@@ -236,19 +236,19 @@ public final class Event implements Serializable {
         this.organisationUnitId = organisationUnitId;
     }
 
-    public String getEventDate() {
+    public DateTime getEventDate() {
         return eventDate;
     }
 
-    public void setEventDate(String eventDate) {
+    public void setEventDate(DateTime eventDate) {
         this.eventDate = eventDate;
     }
 
-    public String getDueDate() {
+    public DateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(DateTime dueDate) {
         this.dueDate = dueDate;
     }
 

@@ -26,28 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.ui.utils;
 
-android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+public final class TypefaceManager {
+    private static final String FONTS_PATH = "fonts/";
+
+    private TypefaceManager() {
     }
 
-    lintOptions {
-        abortOnError false
+    public static Typeface getTypeface(AssetManager assetManager, final String fontName) {
+        if (assetManager == null) {
+            throw new IllegalArgumentException("AssetManager must not be null");
+        }
+
+        if (fontName == null) {
+            throw new IllegalArgumentException("AssetManager must not be null");
+        }
+
+        return Typeface.createFromAsset(assetManager, FONTS_PATH + fontName);
     }
-}
-
-dependencies {
-    // Android support libraries
-    compile 'com.android.support:appcompat-v7:22.2.1'
-
-    // UI libraries
-    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
 }

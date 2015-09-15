@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.activities;
+package org.hisp.dhis.android.sdk.ui.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,11 +38,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.hisp.dhis.android.sdk.ui.R;
+import org.hisp.dhis.android.sdk.ui.views.callbacks.AbsTextWatcher;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 import static android.text.TextUtils.isEmpty;
@@ -50,36 +47,45 @@ import static android.text.TextUtils.isEmpty;
 public class LoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
-    // @Bind(R.id.log_in_views_container)
-    View mViewsContainer;
-
-    //@Bind(R.id.progress_bar_circular_white)
-    CircularProgressBar mProgressBar;
-
-    //@Bind(R.id.server_url)
-    EditText mServerUrl;
-
-    //@Bind(R.id.username)
-    EditText mUsername;
-
-    //@Bind(R.id.password)
-    EditText mPassword;
-
-    // @Bind(R.id.log_in_button)
-    Button mLogInButton;
+    private View mViewsContainer;
+    private CircularProgressBar mProgressBar;
+    private EditText mServerUrl;
+    private EditText mUsername;
+    private EditText mPassword;
+    private Button mLogInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+
+        mViewsContainer = findViewById(R.id.log_in_views_container);
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_white);
+        mLogInButton = (Button) findViewById(R.id.log_in_button);
+
+        mServerUrl = (EditText) findViewById(R.id.server_url);
+        mUsername = (EditText) findViewById(R.id.username);
+        mPassword = (EditText) findViewById(R.id.password);
+
+        FieldTextWatcher watcher = new FieldTextWatcher();
+        mServerUrl.addTextChangedListener(watcher);
+        mUsername.addTextChangedListener(watcher);
+        mPassword.addTextChangedListener(watcher);
 
         hideProgress(false);
-        checkEditTextFields();
+        onTextChanged();
 
         mServerUrl.setText("https://apps.dhis2.org/demo");
         mUsername.setText("admin");
         mPassword.setText("district");
+    }
+
+    class FieldTextWatcher extends AbsTextWatcher {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            LoginActivity.this.onTextChanged();
+        }
     }
 
     @Override
@@ -99,8 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    //@OnTextChanged(value = {R.id.server_url, R.id.username, R.id.password})
-    public void checkEditTextFields() {
+    private void onTextChanged() {
         mLogInButton.setEnabled(
                 !isEmpty(mServerUrl.getText()) &&
                         !isEmpty(mUsername.getText()) &&

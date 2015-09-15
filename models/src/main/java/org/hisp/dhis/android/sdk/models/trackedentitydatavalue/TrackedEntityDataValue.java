@@ -41,9 +41,6 @@ import java.io.Serializable;
 public final class TrackedEntityDataValue implements Serializable {
 
     @JsonIgnore
-    private long id;
-
-    @JsonIgnore
     private String eventUid;
 
     @JsonProperty("dataElement")
@@ -71,14 +68,6 @@ public final class TrackedEntityDataValue implements Serializable {
 
     public void setState(State state) {
         this.state = state;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getEventUid() {

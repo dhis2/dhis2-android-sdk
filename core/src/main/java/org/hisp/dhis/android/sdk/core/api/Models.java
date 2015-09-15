@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItem
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -73,6 +74,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
+import org.hisp.dhis.android.sdk.models.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
@@ -127,6 +129,7 @@ public final class Models {
     private final IRelationshipStore relationshipStore;
     private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final IEventStore eventStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -175,6 +178,7 @@ public final class Models {
         trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore,
                 trackedEntityAttributeValueStore);
         trackedEntityDataValueStore = new TrackedEntityDataValueStore();
+        eventStore = new EventStore(trackedEntityDataValueStore);
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -201,6 +205,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IEventStore events() {
+        return getInstance().eventStore;
     }
 
     public static ITrackedEntityDataValueStore trackedEntityDataValues() {

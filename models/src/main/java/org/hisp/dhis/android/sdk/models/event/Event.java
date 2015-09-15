@@ -64,6 +64,9 @@ public final class Event implements Serializable {
     @JsonIgnore
     private Double longitude;
 
+    @JsonIgnore
+    private long trackedEntityInstanceId;
+
     @JsonProperty("trackedEntityInstance")
     private String trackedEntityInstanceUid;
 
@@ -159,6 +162,14 @@ public final class Event implements Serializable {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public long getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
+
+    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
+        this.trackedEntityInstanceId = trackedEntityInstanceId;
     }
 
     public String getTrackedEntityInstanceUid() {

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.ProgramTra
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Program extends BaseIdentifiableObject {
@@ -66,8 +67,7 @@ public final class Program extends BaseIdentifiableObject {
 
     }
 
-    @JsonProperty("trackedEntity")
-    private TrackedEntity trackedEntity;
+    private String trackedEntity;
 
     @JsonProperty("type")
     private int type;
@@ -123,11 +123,16 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("programTrackedEntityAttributes")
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
-    public TrackedEntity getTrackedEntity() {
+    @JsonProperty("trackedEntity")
+    public void setTrackedEntityFromJSON(Map<String, Object> trackedEntity) {
+        this.trackedEntity = (String) trackedEntity.get("id");
+    }
+
+    public String getTrackedEntity() {
         return trackedEntity;
     }
 
-    public void setTrackedEntity(TrackedEntity trackedEntity) {
+    public void setTrackedEntity(String trackedEntity) {
         this.trackedEntity = trackedEntity;
     }
 

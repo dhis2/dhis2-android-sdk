@@ -69,10 +69,10 @@ public final class Enrollment implements Serializable {
     private String program;
 
     @JsonProperty("dateOfEnrollment")
-    private String dateOfEnrollment;
+    private DateTime dateOfEnrollment;
 
     @JsonProperty("dateOfIncident")
-    private String dateOfIncident;
+    private DateTime dateOfIncident;
 
     @JsonProperty("followup")
     private boolean followup;
@@ -96,7 +96,7 @@ public final class Enrollment implements Serializable {
     private Access access;
 
     @JsonProperty("attributes")
-    private List<TrackedEntityAttributeValue> attributes;
+    private List<TrackedEntityAttributeValue> trackedEntityAttributeValues;
 
     @JsonIgnore
     private List<Event> events;
@@ -156,19 +156,19 @@ public final class Enrollment implements Serializable {
         this.program = program;
     }
 
-    public String getDateOfEnrollment() {
+    public DateTime getDateOfEnrollment() {
         return dateOfEnrollment;
     }
 
-    public void setDateOfEnrollment(String dateOfEnrollment) {
+    public void setDateOfEnrollment(DateTime dateOfEnrollment) {
         this.dateOfEnrollment = dateOfEnrollment;
     }
 
-    public String getDateOfIncident() {
+    public DateTime getDateOfIncident() {
         return dateOfIncident;
     }
 
-    public void setDateOfIncident(String dateOfIncident) {
+    public void setDateOfIncident(DateTime dateOfIncident) {
         this.dateOfIncident = dateOfIncident;
     }
 
@@ -228,12 +228,12 @@ public final class Enrollment implements Serializable {
         this.access = access;
     }
 
-    public List<TrackedEntityAttributeValue> getAttributes() {
-        return attributes;
+    public List<TrackedEntityAttributeValue> getTrackedEntityAttributeValues() {
+        return trackedEntityAttributeValues;
     }
 
-    public void setAttributes(List<TrackedEntityAttributeValue> attributes) {
-        this.attributes = attributes;
+    public void setTrackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
+        this.trackedEntityAttributeValues = trackedEntityAttributeValues;
     }
 
     public List<Event> getEvents() {

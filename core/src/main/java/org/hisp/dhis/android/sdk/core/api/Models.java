@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardItem
 import org.hisp.dhis.android.sdk.core.persistence.models.dashboard.DashboardStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
@@ -74,6 +75,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
+import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
@@ -130,6 +132,7 @@ public final class Models {
     private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
     private final IEventStore eventStore;
+    private final IEnrollmentStore enrollmentStore;
 
     // Dashboard store objects
     private final IDashboardStore dashboardStore;
@@ -173,12 +176,13 @@ public final class Models {
 
         dataSetStore = new DataSetStore();
 
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore();
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(programStore);
         relationshipStore = new RelationshipStore();
         trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore,
                 trackedEntityAttributeValueStore);
         trackedEntityDataValueStore = new TrackedEntityDataValueStore();
         eventStore = new EventStore(trackedEntityDataValueStore);
+        enrollmentStore = new EnrollmentStore(eventStore, trackedEntityAttributeValueStore);
 
         dashboardStore = new DashboardStore();
         dashboardItemStore = new DashboardItemStore();
@@ -205,6 +209,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IEnrollmentStore enrollments() {
+        return getInstance().enrollmentStore;
     }
 
     public static IEventStore events() {

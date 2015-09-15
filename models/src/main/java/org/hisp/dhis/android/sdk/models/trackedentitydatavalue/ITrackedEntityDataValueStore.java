@@ -32,11 +32,10 @@ package org.hisp.dhis.android.sdk.models.trackedentitydatavalue;
 import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.event.Event;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 
 import java.util.List;
 
-public interface ITrackedEntityDataValueStore extends IStore<TrackedEntityAttributeValue> {
+public interface ITrackedEntityDataValueStore extends IStore<TrackedEntityDataValue> {
     List<TrackedEntityDataValue> query(Event event);
     TrackedEntityDataValue query(DataElement dataElement, Event event);
 }

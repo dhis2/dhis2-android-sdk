@@ -32,21 +32,23 @@ package org.hisp.dhis.android.sdk.core.persistence.models.programrule;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramRule$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramRule$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramRuleAction$Flow;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programrule.IProgramRuleStore;
 import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
+import org.hisp.dhis.android.sdk.models.programruleaction.IProgramRuleActionStore;
 import org.hisp.dhis.android.sdk.models.programruleaction.ProgramRuleAction;
 
 import java.util.List;
 
 public final class ProgramRuleStore implements IProgramRuleStore {
 
-    public ProgramRuleStore() {
-        //empty constructor
+    private final IProgramRuleActionStore programRuleActionStore;
+
+    public ProgramRuleStore(IProgramRuleActionStore programRuleActionStore) {
+        this.programRuleActionStore = programRuleActionStore;
     }
 
     @Override
@@ -123,7 +125,8 @@ public final class ProgramRuleStore implements IProgramRuleStore {
         if(programRuleFlow == null) {
             return;
         }
-        programRuleFlow.setProgramRuleActions(ProgramRuleAction$Flow.fromModels(Models.
-                programRuleActions().query(ProgramRule$Flow.toModel(programRuleFlow))));
+        programRuleFlow.setProgramRuleActions(ProgramRuleAction$Flow.
+                fromModels(programRuleActionStore.
+                        query(ProgramRule$Flow.toModel(programRuleFlow))));
     }
 }

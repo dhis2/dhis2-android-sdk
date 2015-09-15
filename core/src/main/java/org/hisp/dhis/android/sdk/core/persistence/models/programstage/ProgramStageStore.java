@@ -32,7 +32,6 @@ package org.hisp.dhis.android.sdk.core.persistence.models.programstage;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
@@ -40,13 +39,20 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSectio
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
+import org.hisp.dhis.android.sdk.models.programstagedataelement.IProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSectionStore;
 
 import java.util.List;
 
 public final class ProgramStageStore implements IProgramStageStore {
 
-    public ProgramStageStore() {
-        //empty constructor
+    private final IProgramStageDataElementStore programStageDataElementStore;
+    private final IProgramStageSectionStore programStageSectionStore;
+
+    public ProgramStageStore(IProgramStageDataElementStore programStageDataElementStore,
+                             IProgramStageSectionStore programStageSectionStore) {
+        this.programStageDataElementStore = programStageDataElementStore;
+        this.programStageSectionStore = programStageSectionStore;
     }
 
     @Override
@@ -94,9 +100,6 @@ public final class ProgramStageStore implements IProgramStageStore {
                 .from(ProgramStage$Flow.class)
                 .where(Condition.column(ProgramStage$Flow$Table.ID).is(id))
                 .querySingle();
-        programStageFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
-                        .query(ProgramStage$Flow.toModel(programStageFlow))));
         setProgramStageDataElements(programStageFlow);
         setProgramStageSections(programStageFlow);
         return ProgramStage$Flow.toModel(programStageFlow);
@@ -108,9 +111,6 @@ public final class ProgramStageStore implements IProgramStageStore {
                 .from(ProgramStage$Flow.class)
                 .where(Condition.column(ProgramStage$Flow$Table.UID).is(uid))
                 .querySingle();
-        programStageFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
-                        .query(ProgramStage$Flow.toModel(programStageFlow))));
         setProgramStageDataElements(programStageFlow);
         setProgramStageSections(programStageFlow);
         return ProgramStage$Flow.toModel(programStageFlow);
@@ -135,7 +135,7 @@ public final class ProgramStageStore implements IProgramStageStore {
             return;
         }
         programStageFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
+                .fromModels(programStageDataElementStore
                         .query(ProgramStage$Flow.toModel(programStageFlow))));
     }
 
@@ -144,7 +144,7 @@ public final class ProgramStageStore implements IProgramStageStore {
             return;
         }
         programStageFlow.setProgramStageSections(ProgramStageSection$Flow
-                .fromModels(Models.programStageSections()
+                .fromModels(programStageSectionStore
                         .query(ProgramStage$Flow.toModel(programStageFlow))));
     }
 

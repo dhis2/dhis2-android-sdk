@@ -32,10 +32,10 @@ package org.hisp.dhis.android.sdk.core.persistence.models.programstagesection;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow$Table;
+import org.hisp.dhis.android.sdk.models.programstagedataelement.IProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
 import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
@@ -44,8 +44,10 @@ import java.util.List;
 
 public final class ProgramStageSectionStore implements IProgramStageSectionStore {
 
-    public ProgramStageSectionStore() {
-        //empty constructor
+    private final IProgramStageDataElementStore programStageDataElementStore;
+
+    public ProgramStageSectionStore(IProgramStageDataElementStore programStageDataElementStore) {
+        this.programStageDataElementStore = programStageDataElementStore;
     }
 
     @Override
@@ -124,7 +126,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
             return;
         }
         programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(Models.programStageDataElements()
+                .fromModels(programStageDataElementStore
                         .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
     }
 }

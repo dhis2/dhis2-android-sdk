@@ -39,7 +39,9 @@ import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityData
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Event implements Serializable {
@@ -114,6 +116,20 @@ public final class Event implements Serializable {
 
     public Event() {
         state = State.SYNCED;
+    }
+
+    @JsonProperty("coordinate")
+    public void setCoordinate(Map<String, Object> coordinate) {
+        this.latitude = (double) coordinate.get("latitude");
+        this.longitude = (double) coordinate.get("longitude");
+    }
+
+    @JsonProperty("coordinate")
+    public Map<String, Object> getCoordinate() {
+        Map<String, Object> coordinate = new HashMap<>();
+        coordinate.put("latitude", latitude);
+        coordinate.put("longitude", longitude);
+        return coordinate;
     }
 
     public State getState() {

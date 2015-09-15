@@ -36,8 +36,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.meta.State;
-import org.hisp.dhis.android.sdk.models.relationship.Relationship;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
@@ -52,7 +50,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
     long id;
 
     @Column
-    String trackedEntityInstance;
+    String trackedEntityInstanceUid;
 
     @Column
     String trackedEntity;
@@ -81,12 +79,12 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
         this.id = id;
     }
 
-    public String getTrackedEntityInstance() {
-        return trackedEntityInstance;
+    public String getTrackedEntityInstanceUid() {
+        return trackedEntityInstanceUid;
     }
 
-    public void setTrackedEntityInstance(String trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
+        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
     }
 
     public String getTrackedEntity() {
@@ -156,7 +154,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
 
         TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
         trackedEntityInstance.setId(trackedEntityInstanceFlow.getId());
-        trackedEntityInstance.setTrackedEntityInstance(trackedEntityInstanceFlow.getTrackedEntityInstance());
+        trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceFlow.getTrackedEntityInstanceUid());
         trackedEntityInstance.setTrackedEntity(trackedEntityInstanceFlow.getTrackedEntity());
         trackedEntityInstance.setOrgUnit(trackedEntityInstanceFlow.getOrgUnit());
         trackedEntityInstance.setAttributes(TrackedEntityAttributeValue$Flow.toModels(trackedEntityInstanceFlow.getAttributes()));
@@ -173,7 +171,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
 
         TrackedEntityInstance$Flow trackedEntityInstanceFlow = new TrackedEntityInstance$Flow();
         trackedEntityInstanceFlow.setId(trackedEntityInstance.getId());
-        trackedEntityInstanceFlow.setTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance());
+        trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance.getTrackedEntityInstanceUid());
         trackedEntityInstanceFlow.setTrackedEntity(trackedEntityInstance.getTrackedEntity());
         trackedEntityInstanceFlow.setOrgUnit(trackedEntityInstance.getOrgUnit());
         trackedEntityInstanceFlow.setAttributes(TrackedEntityAttributeValue$Flow.fromModels(trackedEntityInstance.getAttributes()));

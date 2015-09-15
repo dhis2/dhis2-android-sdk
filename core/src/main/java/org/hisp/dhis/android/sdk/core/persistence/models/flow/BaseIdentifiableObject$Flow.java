@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BaseIdentifiableObject$Flow extends BaseModel implements IdentifiableObject {
+public abstract class BaseIdentifiableObject$Flow extends BaseModel implements IdentifiableObject {
 
     @Column(name = "id")
     @PrimaryKey(autoincrement = true)
@@ -145,23 +145,6 @@ public class BaseIdentifiableObject$Flow extends BaseModel implements Identifiab
             }
         }
         return map;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends BaseIdentifiableObject$Flow> T fromModel(BaseIdentifiableObject object) {
-        if (object == null) {
-            return null;
-        }
-
-        BaseIdentifiableObject$Flow flow = new BaseIdentifiableObject$Flow();
-        flow.setId(object.getId());
-        flow.setUId(object.getUId());
-        flow.setCreated(object.getCreated());
-        flow.setLastUpdated(object.getLastUpdated());
-        flow.setName(object.getName());
-        flow.setDisplayName(object.getDisplayName());
-        flow.setAccess(object.getAccess());
-        return (T) flow;
     }
 
     @SuppressWarnings("unchecked")

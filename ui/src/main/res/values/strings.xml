@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ui</string>
+    <!-- Stub strings -->
+    <string name="image_description">Image description</string>
+
+    <!-- LoginActivity strings -->
+    <string name="server_url">Server URL</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+
+    <!-- Font names -->
+    <string name="font_light">Roboto-Light.ttf</string>
+    <string name="font_regular">Roboto-Regular.ttf</string>
+    <string name="font_medium">Roboto-Medium.ttf</string>
+    <string name="font_bold">Roboto-Bold.ttf</string>
+    <string name="font_condensed">Roboto-Condensed.ttf</string>
+
 </resources>

@@ -45,12 +45,7 @@ import java.util.List;
 public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = "trackedEntity", columnType = long.class, foreignColumnName = "id")
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
-    )
-    TrackedEntity$Flow trackedEntity;
+    String trackedEntity;
 
     @Column
     int type;
@@ -104,11 +99,11 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
     private List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes;
 
-    public TrackedEntity$Flow getTrackedEntity() {
+    public String getTrackedEntity() {
         return trackedEntity;
     }
 
-    public void setTrackedEntity(TrackedEntity$Flow trackedEntity) {
+    public void setTrackedEntity(String trackedEntity) {
         this.trackedEntity = trackedEntity;
     }
 
@@ -273,7 +268,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         program.setName(programFlow.getName());
         program.setDisplayName(programFlow.getDisplayName());
         program.setAccess(programFlow.getAccess());
-        program.setTrackedEntity(TrackedEntity$Flow.toModel(programFlow.getTrackedEntity()));
+        program.setTrackedEntity(programFlow.getTrackedEntity());
         program.setType(programFlow.getType());
         program.setKind(programFlow.getKind());
         program.setVersion(programFlow.getVersion());
@@ -308,7 +303,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         programFlow.setName(program.getName());
         programFlow.setDisplayName(program.getDisplayName());
         programFlow.setAccess(program.getAccess());
-        programFlow.setTrackedEntity(TrackedEntity$Flow.fromModel(program.getTrackedEntity()));
+        programFlow.setTrackedEntity(program.getTrackedEntity());
         programFlow.setType(program.getType());
         programFlow.setKind(program.getKind());
         programFlow.setVersion(program.getVersion());

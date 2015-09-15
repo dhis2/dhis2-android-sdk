@@ -149,18 +149,19 @@ public final class Models {
         constantStore = new ConstantStore();
         dataElementStore = new DataElementStore();
         optionStore = new OptionStore();
-        optionSetStore = new OptionSetStore();
+        optionSetStore = new OptionSetStore(optionStore);
         organisationUnitStore = new OrganisationUnitStore();
-        programStore = new ProgramStore();
         trackedEntityStore = new TrackedEntityStore();
         trackedEntityAttributeStore = new TrackedEntityAttributeStore();
         programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore();
         programStageDataElementStore = new ProgramStageDataElementStore();
         programIndicatorStore = new ProgramIndicatorStore();
-        programStageSectionStore = new ProgramStageSectionStore();
-        programStageStore = new ProgramStageStore();
-        programRuleStore = new ProgramRuleStore();
+        programStageSectionStore = new ProgramStageSectionStore(programStageDataElementStore);
+        programStageStore = new ProgramStageStore(programStageDataElementStore,
+                programStageSectionStore);
+        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore);
         programRuleActionStore = new ProgramRuleActionStore();
+        programRuleStore = new ProgramRuleStore(programRuleActionStore);
         programRuleVariableStore = new ProgramRuleVariableStore();
         relationshipTypeStore = new RelationshipTypeStore();
 

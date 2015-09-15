@@ -32,20 +32,26 @@ package org.hisp.dhis.android.sdk.core.persistence.models.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
+import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
 
 import java.util.List;
 
 public final class ProgramStore implements IIdentifiableObjectStore<Program> {
 
-    public ProgramStore() {
-        //empty constructor
+    private final IProgramStageStore programStageStore;
+    private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+
+    public ProgramStore(IProgramStageStore programStageStore,
+                        IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore) {
+        this.programStageStore = programStageStore;
+        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
     }
 
     @Override
@@ -114,7 +120,7 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
             return;
         }
         programFlow.setProgramStages(ProgramStage$Flow
-                .fromModels(Models.programStages()
+                .fromModels(programStageStore
                         .query(Program$Flow.toModel(programFlow))));
     }
 
@@ -123,7 +129,7 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
             return;
         }
         programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow
-                .fromModels(Models.programTrackedEntityAttributes()
+                .fromModels(programTrackedEntityAttributeStore
                         .query(Program$Flow.toModel(programFlow))));
     }
 }

@@ -45,9 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.86"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:padding="12dp">
-
+        android:orientation="vertical">
         <include layout="@layout/listview_row_text_view_label"/>
 
         <org.hisp.dhis.android.sdk.ui.views.FontTextView

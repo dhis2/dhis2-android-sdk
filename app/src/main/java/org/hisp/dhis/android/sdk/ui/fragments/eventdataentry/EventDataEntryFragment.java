@@ -669,7 +669,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public void onUpdateSectionsSpinner(UpdateSectionsEvent event) {
         if(spinnerAdapter != null) {
             spinnerAdapter.notifyDataSetChanged();
-            if (form.getCurrentSection().isHidden()) {
+            if (form != null && form.getCurrentSection() != null && form.getCurrentSection()
+                    .isHidden()) {
                 selectSection(0);
             }
         }

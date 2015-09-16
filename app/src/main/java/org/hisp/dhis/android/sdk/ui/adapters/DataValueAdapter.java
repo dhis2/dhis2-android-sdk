@@ -30,21 +30,27 @@
 package org.hisp.dhis.android.sdk.ui.adapters;
 
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
+import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
+public final class DataValueAdapter extends AbsAdapter<Row> {
 
     private static final String CLASS_TAG = DataValueAdapter.class.getSimpleName();
 
@@ -60,11 +66,12 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (getData() != null) {
-            DataEntryRow dataEntryRow = getData().get(position);
+            Row dataEntryRow = (Row) getData().get(position);
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
                     AbsListView.LayoutParams.WRAP_CONTENT));
+
             view.setId(position);
             if (dataEntryRow.isHidden()) {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -96,7 +103,7 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
     }
 
     @Override
-    public void swapData(List<DataEntryRow> data) {
+    public void swapData(List<Row> data) {
         boolean notifyAdapter = mData != data;
         mData = data;
         if (dataElementsToRowIndexMap == null)
@@ -106,8 +113,8 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
         }
         if (mData != null) {
             for (int i = 0; i < mData.size(); i++) {
-                DataEntryRow dataEntryRow = mData.get(i);
-                BaseValue baseValue = dataEntryRow.getBaseValue();
+                Row dataEntryRow = mData.get(i);
+                BaseValue baseValue = dataEntryRow.getValue();
                 if (baseValue instanceof DataValue) {
                     dataElementsToRowIndexMap.put(((DataValue) baseValue).getDataElement(), i);
                 }
@@ -125,13 +132,13 @@ public final class DataValueAdapter extends AbsAdapter<DataEntryRow> {
 
     public void hideIndex(int pos) {
         if (pos < 0) return;
-        getData().get(pos).setHidden(true);
+        getData().get(pos).setIsHidden(true);
     }
 
     public void resetHiding() {
         if (mData == null) return;
-        for (DataEntryRow row : mData) {
-            row.setHidden(false);
+        for (Row row : mData) {
+            row.setIsHidden(false);
         }
     }
 

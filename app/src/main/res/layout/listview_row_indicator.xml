@@ -34,12 +34,21 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:baselineAligned="false"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="@color/white">
 
-    <include layout="@layout/listview_row_text_view_label"/>
+    <include layout="@layout/listview_row_info_button"/>
 
-    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/listview_row_text_view_label"/>
+
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:background="@color/light_grey_transparent"
         android:id="@+id/indicator_row"
         android:layout_width="match_parent"
@@ -52,5 +61,6 @@
         android:paddingTop="11dp"
         android:paddingBottom="11dp"
         app:font="@string/light_font_name"/>
+    </LinearLayout>
 
 </LinearLayout>

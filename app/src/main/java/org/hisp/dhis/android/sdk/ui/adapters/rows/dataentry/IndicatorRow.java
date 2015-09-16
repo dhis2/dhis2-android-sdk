@@ -33,20 +33,22 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
-public final class IndicatorRow implements DataEntryRow {
+public final class IndicatorRow extends Row {
     private static final String EMPTY_FIELD = "";
 
     private final ProgramIndicator mIndicator;
     private String mValue;
 
-    private boolean hidden = false;
-    private boolean editable = true;
+
 
     public IndicatorRow(ProgramIndicator indicator, String value) {
         mIndicator = indicator;
@@ -65,9 +67,11 @@ public final class IndicatorRow implements DataEntryRow {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_indicator, container, false);
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
             holder = new IndicatorViewHolder(
                     (TextView) root.findViewById(R.id.text_label),
-                    (TextView) root.findViewById(R.id.indicator_row)
+                    (TextView) root.findViewById(R.id.indicator_row),
+                    detailedInfoButton
             );
 
             root.setTag(holder);
@@ -87,6 +91,8 @@ public final class IndicatorRow implements DataEntryRow {
         else
             holder.textValue.setEnabled(true);
 
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this)); // add this when support for indicator.getDescription
+
         holder.textValue.setText(mValue);
         return view;
     }
@@ -96,16 +102,11 @@ public final class IndicatorRow implements DataEntryRow {
         return DataEntryRowTypes.INDICATOR.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return null;
-    }
-
     public void updateValue(String value) {
         mValue = value;
     }
 
-    public String getValue() {
+    public String getStringValue() {
         return mValue;
     }
 
@@ -116,31 +117,15 @@ public final class IndicatorRow implements DataEntryRow {
     public static class IndicatorViewHolder {
         final TextView textLabel;
         final TextView textValue;
+        final View detailedInfoButton;
 
         public IndicatorViewHolder(TextView textLabel,
-                                   TextView textValue) {
+                                   TextView textValue,
+                                   View detailedInfoButton) {
             this.textLabel = textLabel;
             this.textValue = textValue;
+            this.detailedInfoButton = detailedInfoButton;
+
         }
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 }

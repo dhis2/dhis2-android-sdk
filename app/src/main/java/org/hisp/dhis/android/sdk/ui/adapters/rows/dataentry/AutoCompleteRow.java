@@ -36,10 +36,12 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -58,18 +60,12 @@ import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 
-public final class AutoCompleteRow implements DataEntryRow {
+public final class AutoCompleteRow extends Row {
     private static final String EMPTY_FIELD = "";
-
-    private final String mLabel;
-    private final BaseValue mValue;
 
     private final Map<String, String> mCodeToNameMap;
     private final Map<String, String> mNameToCodeMap;
     private final ArrayList<String> mOptions;
-
-    private boolean hidden = false;
-    private boolean editable = true;
 
     public AutoCompleteRow(String label, BaseValue value,
                            OptionSet optionSet) {
@@ -100,12 +96,13 @@ public final class AutoCompleteRow implements DataEntryRow {
             holder = (ViewHolder) view.getTag();
         } else {
             view = inflater.inflate(R.layout.listview_row_autocomplete, container, false);
-            holder = new ViewHolder(view);
+            detailedInfoButton =  view.findViewById(R.id.detailed_info_button_layout);
+            holder = new ViewHolder(view, detailedInfoButton);
             view.setTag(holder);
         }
 
         holder.textView.setText(mLabel);
-
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.onTextChangedListener.setBaseValue(mValue);
         holder.onTextChangedListener.setOptions(mNameToCodeMap);
 
@@ -144,43 +141,21 @@ public final class AutoCompleteRow implements DataEntryRow {
         return DataEntryRowTypes.AUTO_COMPLETE.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return mValue;
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
 
     private static class ViewHolder {
         public final TextView textView;
         public final TextView valueTextView;
         public final ImageButton clearButton;
+        public final View detailedInfoButton;
         public final OnClearButtonListener onClearButtonListener;
         public final OnTextChangedListener onTextChangedListener;
         public final DropDownButtonListener onDropDownButtonListener;
 
-        private ViewHolder(View view) {
+        private ViewHolder(View view, View detailedInfoButton) {
             textView = (TextView) view.findViewById(R.id.text_label);
             valueTextView = (TextView) view.findViewById(R.id.choose_option);
             clearButton = (ImageButton) view.findViewById(R.id.clear_option_value);
+            this.detailedInfoButton = detailedInfoButton;
 
             OnOptionSelectedListener onOptionListener
                     = new OnOptionItemSelectedListener(valueTextView);

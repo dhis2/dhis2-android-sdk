@@ -64,6 +64,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.HideLoadingDialogEvent;
@@ -677,6 +678,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Subscribe
     public void onRefreshListView(RefreshListViewEvent event) {
         super.onRefreshListView(event);
+    }
+
+    @Subscribe
+    public void onDetailedInfoClick(OnDetailedInfoButtonClick eventClick)
+    {
+        super.onShowDetailedInfo(eventClick);
     }
 
     @Subscribe

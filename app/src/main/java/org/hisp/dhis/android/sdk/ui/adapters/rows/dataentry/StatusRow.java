@@ -38,9 +38,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -50,13 +53,11 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 
 import java.util.ArrayList;
 
-public final class StatusRow implements DataEntryRow {
+public final class StatusRow extends Row {
     public static final String CLASS_TAG = StatusRow.class.getSimpleName();
 
     private final Event mEvent;
     private Context context;
-    private boolean mHidden = false;
-    private boolean editable = true;
     private StatusViewHolder holder;
     private FragmentActivity fragmentActivity;
 
@@ -80,13 +81,15 @@ public final class StatusRow implements DataEntryRow {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_status, container, false);
-            holder = new StatusViewHolder(context, root, mEvent);
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+            holder = new StatusViewHolder(context, root, mEvent, detailedInfoButton);
 
             root.setTag(holder);
             view = root;
         }
         holder.onValidateButtonClickListener.setFragmentActivity(fragmentActivity);
         holder.onCompleteButtonClickListener.setActivity(fragmentActivity);
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         if(!isEditable())
         {
@@ -107,30 +110,6 @@ public final class StatusRow implements DataEntryRow {
         return DataEntryRowTypes.COORDINATES.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return null;
-    }
-
-    @Override
-    public boolean isHidden() {
-        return mHidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        mHidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
 
     private static class StatusViewHolder {
         private final Button complete;
@@ -138,14 +117,16 @@ public final class StatusRow implements DataEntryRow {
         private final OnCompleteClickListener onCompleteButtonClickListener;
         private final OnValidateClickListener onValidateButtonClickListener;
         private final Event event;
+        private final View detailedInfoButton;
 
-        public StatusViewHolder(Context context, View view, Event event) {
+        public StatusViewHolder(Context context, View view, Event event, View detailedInfoButton) {
 
             this.event = event;
 
             /* views */
             complete = (Button) view.findViewById(R.id.complete);
             validate = (Button) view.findViewById(R.id.validate);
+            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
             onCompleteButtonClickListener = new OnCompleteClickListener(context, complete, this.event);

@@ -32,22 +32,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
     android:baselineAligned="false"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="@color/white">
 
-    <include layout="@layout/listview_row_text_view_label"/>
+    <include layout="@layout/listview_row_info_button"/>
 
-    <org.hisp.dhis.android.sdk.ui.views.FontEditText
-        android:id="@+id/edit_text_row"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="6dp"
-        android:textSize="@dimen/medium_text_size"
-        android:paddingTop="11dp"
-        android:paddingBottom="11dp"
-        app:font="@string/light_font_name"/>
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/listview_row_text_view_label"/>
+
+        <org.hisp.dhis.android.sdk.ui.views.FontEditText
+            android:id="@+id/edit_text_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/medium_text_size"
+            app:font="@string/light_font_name"/>
+    </LinearLayout>
+
+
+
+
+
 
 </LinearLayout>

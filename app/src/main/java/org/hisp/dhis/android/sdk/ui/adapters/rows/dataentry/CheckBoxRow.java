@@ -36,28 +36,29 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
 import static android.text.TextUtils.isEmpty;
 
-public class CheckBoxRow implements DataEntryRow {
+public class CheckBoxRow extends Row {
     private static final String TRUE = "true";
     private static final String EMPTY_FIELD = "";
 
     private final String mLabel;
-    private final BaseValue mBaseValue;
 
-    private boolean hidden = false;
-    private boolean editable = true;
 
-    public CheckBoxRow(String label, BaseValue baseValue) {
+
+    public CheckBoxRow(String label, BaseValue mValue) {
         mLabel = label;
-        mBaseValue = baseValue;
+        this.mValue = mValue;
     }
 
     @Override
@@ -73,11 +74,14 @@ public class CheckBoxRow implements DataEntryRow {
             View root = inflater.inflate(R.layout.listview_row_checkbox, container, false);
             TextView textLabel = (TextView) root.findViewById(R.id.text_label);
             CheckBox checkBox = (CheckBox) root.findViewById(R.id.checkbox);
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             CheckBoxListener listener = new CheckBoxListener();
-            holder = new CheckBoxHolder(textLabel, checkBox, listener);
+            holder = new CheckBoxHolder(textLabel, checkBox, detailedInfoButton ,listener);
 
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
+            holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
+
 
             if(!isEditable())
             {
@@ -94,9 +98,9 @@ public class CheckBoxRow implements DataEntryRow {
         }
 
         holder.textLabel.setText(mLabel);
-        holder.listener.setValue(mBaseValue);
+        holder.listener.setValue(mValue);
 
-        String stringValue = mBaseValue.getValue();
+        String stringValue = mValue.getValue();
         if (TRUE.equalsIgnoreCase(stringValue)) {
             holder.checkBox.setChecked(true);
         } else if (isEmpty(stringValue)) {
@@ -111,10 +115,6 @@ public class CheckBoxRow implements DataEntryRow {
         return DataEntryRowTypes.TRUE_ONLY.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return mBaseValue;
-    }
 
     private static class CheckBoxListener implements OnCheckedChangeListener {
         private BaseValue value;
@@ -143,35 +143,19 @@ public class CheckBoxRow implements DataEntryRow {
     private static class CheckBoxHolder {
         final TextView textLabel;
         final CheckBox checkBox;
+        final View detailedInfoButton;
         final CheckBoxListener listener;
 
-        public CheckBoxHolder(TextView textLabel, CheckBox checkBox,
+        public CheckBoxHolder(TextView textLabel, CheckBox checkBox, View detailedInfoButton,
                               CheckBoxListener listener) {
             this.textLabel = textLabel;
             this.checkBox = checkBox;
+            this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
         }
     }
 
-    @Override
-    public boolean isHidden() {
-        return hidden;
-    }
 
-    @Override
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
 }
 
 

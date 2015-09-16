@@ -108,6 +108,12 @@ public final class UiUtils {
                 show(activity.getFragmentManager(), title);
     }
     public static void showConfirmDialog(final Activity activity, final String title, final String message,
+                                         final String confirmOption,
+                                         DialogInterface.OnClickListener onClickListener) {
+        new CustomDialogFragment(title, message, confirmOption, onClickListener).
+                show(activity.getFragmentManager(), title);
+    }
+    public static void showConfirmDialog(final Activity activity, final String title, final String message,
                                          final String confirmOption, final String cancelOption,
                                          final int iconId,
                                          DialogInterface.OnClickListener onClickListener) {

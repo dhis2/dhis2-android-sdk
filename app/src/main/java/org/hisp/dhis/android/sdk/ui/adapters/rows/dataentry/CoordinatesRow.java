@@ -36,9 +36,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
@@ -47,12 +49,10 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 
-public final class CoordinatesRow implements DataEntryRow {
+public final class CoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
-
     private final Event mEvent;
-    private boolean mHidden = false;
-    private boolean editable = true;
+
     public CoordinatesRow(Event event) {
         mEvent = event;
     }
@@ -69,11 +69,13 @@ public final class CoordinatesRow implements DataEntryRow {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_coordinate_picker, container, false);
-            holder = new CoordinateViewHolder(root);
+            detailedInfoButton =  root.findViewById(R.id.detailed_info_button_layout);
+            holder = new CoordinateViewHolder(root, detailedInfoButton);
 
             root.setTag(holder);
             view = root;
         }
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         holder.updateViews(mEvent);
 
@@ -98,40 +100,18 @@ public final class CoordinatesRow implements DataEntryRow {
         return DataEntryRowTypes.COORDINATES.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return null;
-    }
 
-    @Override
-    public boolean isHidden() {
-        return mHidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        mHidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
-    }
 
     private static class CoordinateViewHolder {
         private final EditText latitude;
         private final EditText longitude;
         private final ImageButton captureCoords;
+        private final View detailedInfoButton;
         private final LatitudeWatcher latitudeWatcher;
         private final LongitudeWatcher longitudeWatcher;
         private final OnCaptureCoordsClickListener onButtonClickListener;
 
-        public CoordinateViewHolder(View view) {
+        public CoordinateViewHolder(View view, View detailedInfoButton) {
             final String latitudeMessage = view.getContext()
                     .getString(R.string.latitude_error_message);
             final String longitudeMessage = view.getContext()
@@ -141,6 +121,7 @@ public final class CoordinatesRow implements DataEntryRow {
             latitude = (EditText) view.findViewById(R.id.latitude_edittext);
             longitude = (EditText) view.findViewById(R.id.longitude_edittext);
             captureCoords = (ImageButton) view.findViewById(R.id.capture_coordinates);
+            this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
             latitudeWatcher = new LatitudeWatcher(latitude, latitudeMessage);

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
   ~ Copyright (c) 2015, University of Oslo
   ~
   ~ All rights reserved.
@@ -27,18 +26,10 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <color name="white">#FFFFFFFF</color>
-    <color name="white_translucent">#BBFFFFFF</color>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <color name="navy_blue">#FF1F70C3</color>
-    <color name="navy_blue_dark">#FF1D5288</color>
+    <solid android:color="@color/white" />
+    <corners android:radius="1dp" />
 
-    <!-- TODO change color names (follow different naming pattern) -->
-    <color name="button_login_state_enabled_false">#FF223F5C</color>
-    <color name="button_login_state_unpressed">#FF113151</color>
-    <color name="button_login_state_pressed">#FF0C243C</color>
-
-    <color name="color_primary">@color/navy_blue</color>
-    <color name="color_primary_dark">@color/navy_blue_dark</color>
-</resources>
+</shape> 

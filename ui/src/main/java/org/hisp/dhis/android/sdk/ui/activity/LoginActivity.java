@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mViewsContainer = findViewById(R.id.log_in_views_container);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_white);
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
         mLogInButton = (Button) findViewById(R.id.log_in_button);
 
         mServerUrl = (EditText) findViewById(R.id.server_url);
@@ -78,6 +78,13 @@ public class LoginActivity extends AppCompatActivity {
         mServerUrl.setText("https://apps.dhis2.org/demo");
         mUsername.setText("admin");
         mPassword.setText("district");
+
+        mLogInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logIn();
+            }
+        });
     }
 
     class FieldTextWatcher extends AbsTextWatcher {
@@ -113,8 +120,6 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
-    //@OnClick(R.id.log_in_button)
-    @SuppressWarnings("unused")
     public void logIn() {
         showProgress(true);
 

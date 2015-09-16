@@ -41,6 +41,7 @@ android {
 
     lintOptions {
         abortOnError false
+        disable 'RtlSymmetry', 'RtlHardcoded', 'ContentDescription'
     }
 }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2015, University of Oslo
-  ~
   ~ All rights reserved.
+  ~
   ~ Redistribution and use in source and binary forms, with or without
   ~ modification, are permitted provided that the following conditions are met:
   ~ Redistributions of source code must retain the above copyright notice, this
@@ -31,19 +31,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="@dimen/padding_default">
 
-    <fr.castorflex.android.circularprogressbar.CircularProgressBar
-        android:id="@+id/progress_bar_circular_white"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:indeterminate="true"
-        app:cpb_color="@color/white_translucent"
-        app:cpb_max_sweep_angle="300"
-        app:cpb_min_sweep_angle="10"
-        app:cpb_rotation_speed="0.8"
-        app:cpb_stroke_width="6dp"
-        app:cpb_sweep_speed="1.0" />
+    <include layout="@layout/progress_bar_circular" />
 
     <LinearLayout
         android:id="@+id/log_in_views_container"
@@ -61,13 +51,15 @@
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_dhis_logo" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
+        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
             android:id="@+id/server_url"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
+            android:background="@drawable/edittext_custom_shape"
+            android:drawableLeft="@drawable/ic_server"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/server_url"
@@ -76,13 +68,15 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
+        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
+            android:background="@drawable/edittext_custom_shape"
+            android:drawableLeft="@drawable/ic_username"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/username"
@@ -91,13 +85,15 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontEditText
+        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
+            android:background="@drawable/edittext_custom_shape"
+            android:drawableLeft="@drawable/ic_password"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:hint="@string/password"
@@ -106,7 +102,7 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.sdk.ui.views.FontButton
+        <org.hisp.dhis.android.dashboard.ui.views.FontButton
             android:id="@+id/log_in_button"
             android:layout_width="180dp"
             android:layout_height="40dp"

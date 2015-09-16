@@ -28,27 +28,23 @@
   -->
 
 <resources>
-    <color name="white">#FFFFFFFF</color>
-    <color name="white_translucent">#BBFFFFFF</color>
 
-    <color name="navy_blue">#FF1D5288</color>
-    <color name="navy_blue_light">#FF1F70C3</color>
-    <color name="navy_blue_dark">#FF123354</color>
+    <!-- Base application theme. -->
+    <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
 
-    <color name="grey">#FFBDBDBD</color>
-    <color name="grey_light">#FFE5E5E5</color>
-    <color name="grey_dark">#FF757575</color>
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/color_primary</item>
+        <item name="colorControlActivated">@color/color_primary_dark</item>
 
-    <!-- TODO change color names (follow different naming pattern) -->
-    <color name="button_login_state_enabled_false">#FF223F5C</color>
-    <color name="button_login_state_unpressed">#FF113151</color>
-    <color name="button_login_state_pressed">#FF0C243C</color>
+        <!-- TextView colors -->
+        <item name="android:textColor">@color/color_text</item>
+        <item name="android:textColorPrimary">@color/color_text</item>
+        <item name="android:textColorHint">@color/color_text_hint</item>
 
-    <!-- Theme colors -->
-    <color name="color_primary">@color/navy_blue_light</color>
-    <color name="color_primary_dark">@color/navy_blue</color>
-    <color name="color_accent">@color/navy_blue_dark</color>
+        <item name="android:windowBackground">@color/grey_light</item>
+    </style>
 
-    <color name="color_text">@color/grey_dark</color>
-    <color name="color_text_hint">@color/grey</color>
 </resources>

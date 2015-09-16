@@ -42,7 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:padding="12dp"
         android:orientation="horizontal">
 
         <include layout="@layout/listview_row_text_view_label"/>
@@ -52,6 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
         android:textSize="@dimen/medium_text_size"
         app:font="@string/condensed_font_name"/>
 

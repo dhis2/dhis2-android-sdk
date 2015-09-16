@@ -83,6 +83,8 @@ public final class AutoCompleteRow extends Row {
         }
 
         mOptions = new ArrayList<>(mNameToCodeMap.keySet());
+
+        checkNeedsForDescriptionButton();
     }
 
     @Override
@@ -132,6 +134,8 @@ public final class AutoCompleteRow extends Row {
             holder.clearButton.setEnabled(true);
 
         }
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
     }

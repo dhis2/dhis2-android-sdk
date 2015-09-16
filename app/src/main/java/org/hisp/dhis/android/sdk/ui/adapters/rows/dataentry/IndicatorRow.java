@@ -53,6 +53,8 @@ public final class IndicatorRow extends Row {
     public IndicatorRow(ProgramIndicator indicator, String value) {
         mIndicator = indicator;
         mValue = value;
+
+        checkNeedsForDescriptionButton();
     }
 
     @Override
@@ -92,8 +94,11 @@ public final class IndicatorRow extends Row {
             holder.textValue.setEnabled(true);
 
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this)); // add this when support for indicator.getDescription
-
         holder.textValue.setText(mValue);
+
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+
         return view;
     }
 

@@ -332,25 +332,8 @@ public abstract class DataEntryFragment<D> extends Fragment
             message = getResources().getString(R.string.detailed_info_status_row);
         else if(eventClick.getRow() instanceof IndicatorRow)
             message = ""; // need to change ProgramIndicator to extend BaseValue for this to work
-
-        // rest of the rows can either be of data element or tracked entity instance attribute
-
-        DataElement dataElement = MetaDataController.getDataElement(eventClick.getRow().getDataElementId());
-
-        if(dataElement != null)
-            message = dataElement.getDescription();
-        else
-        {
-            TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(eventClick.getRow().getDataElementId());
-            if(attribute != null)
-                message = attribute.getDescription();
-        }
-
-
-
-        if(message == null || message.equals(""))
-            message = getResources().getString(R.string.no_detailed_info_for_dataelement);
-
+        else         // rest of the rows can either be of data element or tracked entity instance attribute
+            message = eventClick.getRow().getDescription();
 
         UiUtils.showConfirmDialog(getActivity(),
                 getResources().getString(R.string.detailed_info_dataelement),

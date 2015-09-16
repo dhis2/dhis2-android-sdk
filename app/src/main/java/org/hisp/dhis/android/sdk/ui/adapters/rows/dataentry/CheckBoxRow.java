@@ -59,6 +59,8 @@ public class CheckBoxRow extends Row {
     public CheckBoxRow(String label, BaseValue mValue) {
         mLabel = label;
         this.mValue = mValue;
+
+        checkNeedsForDescriptionButton();
     }
 
     @Override
@@ -106,6 +108,9 @@ public class CheckBoxRow extends Row {
         } else if (isEmpty(stringValue)) {
             holder.checkBox.setChecked(false);
         }
+
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
     }

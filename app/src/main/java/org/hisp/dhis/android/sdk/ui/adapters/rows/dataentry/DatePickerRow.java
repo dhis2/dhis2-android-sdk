@@ -56,6 +56,8 @@ public class DatePickerRow extends Row {
     public DatePickerRow(String label, BaseValue value) {
         mLabel = label;
         mValue = value;
+
+        checkNeedsForDescriptionButton();
     }
 
     @Override
@@ -89,6 +91,10 @@ public class DatePickerRow extends Row {
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
+
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+
         return view;
     }
 

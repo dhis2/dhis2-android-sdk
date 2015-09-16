@@ -378,9 +378,9 @@ public class ProgramIndicatorService {
             if (ProgramIndicator.KEY_DATAELEMENT.equals(key)) {
                 String de = matcher.group(3);
                 String programStageUid = uid;
-                DataElement dataElement = MetaDataController.getDataElement(de);
+                //DataElement dataElement = MetaDataController.getDataElement(de);
 
-                if (programStageUid != null && dataElement != null) {
+                if (programStageUid != null && de != null) {
                     if (programInstance == null) { //in case single event without reg
                         if(programStageInstance == null) {
                             programStageInstance = event;
@@ -418,21 +418,16 @@ public class ProgramIndicatorService {
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
 
-                    if (DataElement.VALUE_TYPE_DATE.equals(dataElement.getType())) {
-                        value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
-                    }
-
                     matcher.appendReplacement(buffer, value);
                 } else {
                     continue;
                 }
             } else if (ProgramIndicator.KEY_ATTRIBUTE.equals(key)) {
                 if (programInstance != null) { //in case single event without reg
-                    TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(uid);
 
-                    if (attribute != null) {
+                    if (uid != null) {
                         TrackedEntityAttributeValue attributeValue = TrackerController.getTrackedEntityAttributeValue(
-                                attribute.getUid(), programInstance.getLocalTrackedEntityInstanceId());
+                                uid, programInstance.getLocalTrackedEntityInstanceId());
                         String value;
                         if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;
@@ -441,10 +436,6 @@ public class ProgramIndicatorService {
 
                             valueCount++;
                             zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
-                        }
-
-                        if (TrackedEntityAttribute.TYPE_DATE.equals(attribute.getValueType())) {
-                            value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                         }
                         matcher.appendReplacement(buffer, value);
                     } else {

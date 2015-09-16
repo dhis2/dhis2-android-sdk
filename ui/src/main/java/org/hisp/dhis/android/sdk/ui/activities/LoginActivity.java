@@ -26,11 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.ui.activity;
+package org.hisp.dhis.android.sdk.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -44,7 +45,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 import static android.text.TextUtils.isEmpty;
 
-public class LoginActivity extends AppCompatActivity {
+public abstract class LoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
     private View mViewsContainer;
@@ -55,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mLogInButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         mUsername.addTextChangedListener(watcher);
         mPassword.addTextChangedListener(watcher);
 
-        hideProgress(false);
+        hideProgressBar(false);
         onTextChanged();
 
         mServerUrl.setText("https://apps.dhis2.org/demo");
@@ -80,34 +81,27 @@ public class LoginActivity extends AppCompatActivity {
         mPassword.setText("district");
 
         mLogInButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                logIn();
+                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(), mPassword.getText());
             }
         });
     }
 
-    class FieldTextWatcher extends AbsTextWatcher {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            LoginActivity.this.onTextChanged();
-        }
-    }
-
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    protected final void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IS_LOADING, mProgressBar.isShown());
         super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
+    protected final void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null &&
                 savedInstanceState.getBoolean(IS_LOADING, false)) {
-            showProgress(false);
+            showProgressBar(false);
         } else {
-            hideProgress(false);
+            hideProgressBar(false);
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -120,36 +114,7 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
-    public void logIn() {
-        showProgress(true);
-
-        String serverUrl = mServerUrl.getText().toString();
-        String username = mUsername.getText().toString();
-        String password = mPassword.getText().toString();
-
-        /* HttpUrl serverUri = HttpUrl.parse(serverUrl);
-        getDhisService().logInUser(
-                serverUri, new Credentials(username, password)
-        ); */
-    }
-
-    /* @Subscribe
-    @SuppressWarnings("unused")
-    public void onResultReceived(NetworkJob.NetworkJobResult<UserAccount> jobResult) {
-        if (ResourceType.USERS.equals(jobResult.getResourceType())) {
-            ResponseHolder<UserAccount> responseHolder = jobResult.getResponseHolder();
-
-            if (responseHolder.getApiException() == null) {
-                startActivity(new Intent(this, MenuActivity.class));
-                finish();
-            } else {
-                hideProgress(true);
-                showApiExceptionMessage(responseHolder.getApiException());
-            }
-        }
-    } */
-
-    private void showProgress(boolean withAnimation) {
+    private void showProgressBar(boolean withAnimation) {
         if (withAnimation) {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
             mViewsContainer.startAnimation(anim);
@@ -158,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void hideProgress(boolean withAnimation) {
+    private void hideProgressBar(boolean withAnimation) {
         if (withAnimation) {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
             mViewsContainer.startAnimation(anim);
@@ -166,4 +131,28 @@ public class LoginActivity extends AppCompatActivity {
         mViewsContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
     }
+
+    private class FieldTextWatcher extends AbsTextWatcher {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            LoginActivity.this.onTextChanged();
+        }
+    }
+
+    /**
+     * Should be called in order to show progressbar.
+     */
+    protected final void onStartLoading() {
+        showProgressBar(true);
+    }
+
+    /**
+     * Should be called after the loading is complete.
+     */
+    protected final void onFinishLoading() {
+        hideProgressBar(true);
+    }
+
+    protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username, Editable password);
 }

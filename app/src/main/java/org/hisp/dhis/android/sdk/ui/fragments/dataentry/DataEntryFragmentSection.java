@@ -30,17 +30,18 @@
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 
 import java.util.List;
 
 public final class DataEntryFragmentSection {
     private final String label;
     private final String id;
-    private final List<DataEntryRow> rows;
+    private final List<Row> rows;
     private boolean hidden = false;
 
     public DataEntryFragmentSection(String label, String id,
-                                    List<DataEntryRow> rows) {
+                                    List<Row> rows) {
         this.label = label;
         this.id = id;
         this.rows = rows;
@@ -50,7 +51,7 @@ public final class DataEntryFragmentSection {
         return label;
     }
 
-    public List<DataEntryRow> getRows() {
+    public List<Row> getRows() {
         return rows;
     }
 

@@ -37,24 +37,21 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-public class DatePickerRow implements DataEntryRow {
+public class DatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
 
-    private final String mLabel;
-    private final BaseValue mValue;
-
-    private boolean hidden = false;
-    private boolean editable = true;
 
     public DatePickerRow(String label, BaseValue value) {
         mLabel = label;
@@ -73,7 +70,8 @@ public class DatePickerRow implements DataEntryRow {
         } else {
             View root = inflater.inflate(
                     R.layout.listview_row_datepicker, container, false);
-            holder = new DatePickerRowHolder(root, inflater.getContext());
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+            holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton);
 
             root.setTag(holder);
             view = root;
@@ -89,7 +87,7 @@ public class DatePickerRow implements DataEntryRow {
             holder.clearButton.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
-
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
         return view;
     }
@@ -99,23 +97,21 @@ public class DatePickerRow implements DataEntryRow {
         return DataEntryRowTypes.DATE.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return mValue;
-    }
 
     private class DatePickerRowHolder {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
+        final View detailedInfoButton;
         final DateSetListener dateSetListener;
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
 
-        public DatePickerRowHolder(View root, Context context) {
+        public DatePickerRowHolder(View root, Context context, View detailedInfoButton) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
+            this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
             invokerListener = new OnEditTextClickListener(context, dateSetListener);
@@ -198,25 +194,5 @@ public class DatePickerRow implements DataEntryRow {
             Dhis2Application.getEventBus()
                     .post(new RowValueChangedEvent(value));
         }
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 }

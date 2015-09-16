@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.models.trackedentityattributevalue;
 
 import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
@@ -38,4 +39,5 @@ import java.util.List;
 public interface ITrackedEntityAttributeValueStore extends IStore<TrackedEntityAttributeValue> {
     TrackedEntityAttributeValue query(TrackedEntityInstance trackedEntityInstance, TrackedEntityAttribute trackedEntityAttribute);
     List<TrackedEntityAttributeValue> query(TrackedEntityInstance trackedEntityInstance);
+    List<TrackedEntityAttributeValue> query(Enrollment enrollment);
 }

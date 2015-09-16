@@ -33,19 +33,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:background="@color/white">
 
+    <include layout="@layout/listview_row_info_button"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="12dp"
+        android:orientation="horizontal">
+
+        <include layout="@layout/listview_row_text_view_label"/>
+
     <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:textSize="@dimen/medium_text_size"
         app:font="@string/condensed_font_name"/>
 
-    <include layout="@layout/listview_row_text_view_label"/>
-
+    </LinearLayout>
 </LinearLayout>

@@ -38,6 +38,8 @@
     android:orientation="horizontal"
     android:background="@color/transparent_blue">
 
+    <include layout="@layout/listview_row_info_button"/>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"

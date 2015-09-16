@@ -27,17 +27,21 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
+package org.hisp.dhis.android.sdk.models.enrollment;
 
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import java.util.List;
 
-public interface DataEntryRow {
-    View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container);
-    int getViewType();
+public interface IEnrollmentStore extends IStore<Enrollment> {
+
+    Enrollment query(long id);
+
+    Enrollment query(String uid);
+
+    List<Enrollment> query(Program program, TrackedEntityInstance trackedEntityInstance);
+
+    Enrollment queryActiveEnrollment(Program program, TrackedEntityInstance trackedEntityInstance);
 }

@@ -84,6 +84,7 @@ public class CustomDialogFragment
         this.secondOption = secondOption;
         this.firstOptionListener = firstOptionListener;
     }
+
     public CustomDialogFragment(  String title, String message, String firstOption, String secondOption,int iconId, DialogInterface.OnClickListener firstOptionListener)
     {
         this.title = title;

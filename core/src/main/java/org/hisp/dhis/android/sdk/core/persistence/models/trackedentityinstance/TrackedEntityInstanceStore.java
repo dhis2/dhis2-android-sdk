@@ -102,7 +102,7 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     @Override
     public TrackedEntityInstance query(String uid) {
         TrackedEntityInstance$Flow trackedEntityInstanceFlow = new Select().from(TrackedEntityInstance$Flow
-                .class).where(Condition.column(TrackedEntityInstance$Flow$Table.TRACKEDENTITYINSTANCE).is(uid))
+                .class).where(Condition.column(TrackedEntityInstance$Flow$Table.TRACKEDENTITYINSTANCEUID).is(uid))
                 .querySingle();
         setRelationships(trackedEntityInstanceFlow);
         setTrackedEntityAttributeValuess(trackedEntityInstanceFlow);

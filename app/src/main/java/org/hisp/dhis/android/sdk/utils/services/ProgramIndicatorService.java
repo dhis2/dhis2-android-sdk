@@ -78,12 +78,15 @@ public class ProgramIndicatorService {
      * @return Indicator value
      */
     public static String getProgramIndicatorValue(Enrollment programInstance, ProgramIndicator programIndicator) {
+        if(programIndicator == null) {
+            return null;
+        }
         Double value = getValue(programInstance, null, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
 
-            if (programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE)) {
+            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
                 Date baseDate = new Date();
 
                 if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) {
@@ -111,12 +114,15 @@ public class ProgramIndicatorService {
      * @return Indicator value
      */
     public static String getProgramIndicatorValue(Event event, ProgramIndicator programIndicator) {
+        if(programIndicator == null) {
+            return null;
+        }
         Double value = getValue(null, event, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
 
-            if (programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE)) {
+            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
                 Date baseDate = new Date();
 
                 if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) { //todo: ignoring in case of single event event without registration
@@ -199,13 +205,13 @@ public class ProgramIndicatorService {
                     matcher.appendReplacement(description, constant.getDisplayName());
                 }
             } else if (ProgramIndicator.KEY_PROGRAM_VARIABLE.equals(key)) {
-                if (uid.equals(ProgramIndicator.CURRENT_DATE)) {
+                if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Current date");
-                } else if (uid.equals(ProgramIndicator.ENROLLMENT_DATE)) {
+                } else if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Enrollment date");
-                } else if (uid.equals(ProgramIndicator.INCIDENT_DATE)) {
+                } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Incident date");
-                } else if (uid.equals(ProgramIndicator.VALUE_COUNT)) {
+                } else if (ProgramIndicator.VALUE_COUNT.equals(uid)) {
                     matcher.appendReplacement(description, "Value count");
                 }
             }
@@ -372,9 +378,9 @@ public class ProgramIndicatorService {
             if (ProgramIndicator.KEY_DATAELEMENT.equals(key)) {
                 String de = matcher.group(3);
                 String programStageUid = uid;
-                DataElement dataElement = MetaDataController.getDataElement(de);
+                //DataElement dataElement = MetaDataController.getDataElement(de);
 
-                if (programStageUid != null && dataElement != null) {
+                if (programStageUid != null && de != null) {
                     if (programInstance == null) { //in case single event without reg
                         if(programStageInstance == null) {
                             programStageInstance = event;
@@ -412,21 +418,16 @@ public class ProgramIndicatorService {
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
 
-                    if (dataElement.getType().equals(DataElement.VALUE_TYPE_DATE)) {
-                        value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
-                    }
-
                     matcher.appendReplacement(buffer, value);
                 } else {
                     continue;
                 }
             } else if (ProgramIndicator.KEY_ATTRIBUTE.equals(key)) {
                 if (programInstance != null) { //in case single event without reg
-                    TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(uid);
 
-                    if (attribute != null) {
+                    if (uid != null) {
                         TrackedEntityAttributeValue attributeValue = TrackerController.getTrackedEntityAttributeValue(
-                                attribute.getUid(), programInstance.getLocalTrackedEntityInstanceId());
+                                uid, programInstance.getLocalTrackedEntityInstanceId());
                         String value;
                         if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
                             value = ZERO;
@@ -435,10 +436,6 @@ public class ProgramIndicatorService {
 
                             valueCount++;
                             zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
-                        }
-
-                        if (attribute.getValueType().equals(TrackedEntityAttribute.TYPE_DATE)) {
-                            value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                         }
                         matcher.appendReplacement(buffer, value);
                     } else {
@@ -458,11 +455,11 @@ public class ProgramIndicatorService {
                     Date currentDate = new Date();
                     Date date = null;
 
-                    if (uid.equals(ProgramIndicator.ENROLLMENT_DATE)) {
+                    if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
                         date = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
-                    } else if (uid.equals(ProgramIndicator.INCIDENT_DATE)) {
+                    } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                         date = DateUtils.getMediumDate(programInstance.getDateOfIncident());
-                    } else if (uid.equals(ProgramIndicator.CURRENT_DATE)) {
+                    } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     }
 

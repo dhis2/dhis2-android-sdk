@@ -27,17 +27,15 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
+package org.hisp.dhis.android.sdk.models.trackedentitydatavalue;
 
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.models.event.Event;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import java.util.List;
 
-public interface DataEntryRow {
-    View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container);
-    int getViewType();
+public interface ITrackedEntityDataValueStore extends IStore<TrackedEntityDataValue> {
+    List<TrackedEntityDataValue> query(Event event);
+    TrackedEntityDataValue query(DataElement dataElement, Event event);
 }

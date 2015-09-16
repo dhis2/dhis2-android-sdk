@@ -27,17 +27,18 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
+package org.hisp.dhis.android.sdk.models.event;
 
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import java.util.List;
 
-public interface DataEntryRow {
-    View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container);
-    int getViewType();
+public interface IEventStore extends IStore<Event> {
+
+    Event query(long id);
+
+    Event query(String uid);
+
+    List<Event> query(Enrollment enrollment);
 }

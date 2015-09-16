@@ -34,17 +34,24 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityAttributeValue$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityAttributeValue$Flow$Table;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class TrackedEntityAttributeValueStore implements ITrackedEntityAttributeValueStore {
 
-    public TrackedEntityAttributeValueStore() {
-        //empty constructor
+    private final IIdentifiableObjectStore<Program> programStore;
+
+    public TrackedEntityAttributeValueStore(IIdentifiableObjectStore<Program> programStore) {
+        this.programStore = programStore;
     }
 
     @Override
@@ -82,11 +89,14 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
     @Override
     public TrackedEntityAttributeValue query(TrackedEntityInstance trackedEntityInstance,
                                              TrackedEntityAttribute trackedEntityAttribute) {
+        if(trackedEntityInstance == null || trackedEntityAttribute == null) {
+            return null;
+        }
         TrackedEntityAttributeValue$Flow trackedEntityInstanceFlow = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
                         .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstance())).and(Condition
+                        .getTrackedEntityInstanceUid())).and(Condition
                         .column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                         .is(trackedEntityAttribute.getUId())).querySingle();
         return TrackedEntityAttributeValue$Flow.toModel(trackedEntityInstanceFlow);
@@ -94,11 +104,40 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
 
     @Override
     public List<TrackedEntityAttributeValue> query(TrackedEntityInstance trackedEntityInstance) {
+        if(trackedEntityInstance == null) {
+            return null;
+        }
         List<TrackedEntityAttributeValue$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
                         .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstance())).queryList();
+                        .getTrackedEntityInstanceUid())).queryList();
         return TrackedEntityAttributeValue$Flow.toModels(trackedEntityInstanceFlows);
+    }
+
+    @Override
+    public List<TrackedEntityAttributeValue> query(Enrollment enrollment) {
+        if(enrollment == null) {
+            return null;
+        }
+        Program program = programStore.query(enrollment.getProgram());
+        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                program.getProgramTrackedEntityAttributes();
+        if(programTrackedEntityAttributes == null) {
+            return null;
+        }
+        List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlows = new ArrayList<>();
+        for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
+            TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new Select()
+                    .from(TrackedEntityAttributeValue$Flow.class)
+                    .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
+                            .TRACKEDENTITYINSTANCEUID).is(enrollment.getTrackedEntityInstanceUid()))
+                    .and(Condition.column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
+                            .is(programTrackedEntityAttribute.getTrackedEntityAttribute())).querySingle();
+            if(trackedEntityAttributeValueFlow != null) {
+                trackedEntityAttributeValueFlows.add(trackedEntityAttributeValueFlow);
+            }
+        }
+        return TrackedEntityAttributeValue$Flow.toModels(trackedEntityAttributeValueFlows);
     }
 }

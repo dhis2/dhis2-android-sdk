@@ -87,9 +87,9 @@ public final class RelationshipStore implements IRelationshipStore {
         List<Relationship$Flow> relationshipFlow = new Select()
                 .from(Relationship$Flow.class).where(Condition.column(Relationship$Flow$Table
                         .TRACKEDENTITYINSTANCEA).is(trackedEntityInstance
-                        .getTrackedEntityInstance())).or(Condition.column(Relationship$Flow$Table
+                        .getTrackedEntityInstanceUid())).or(Condition.column(Relationship$Flow$Table
                         .TRACKEDENTITYINSTANCEB).is(trackedEntityInstance
-                        .getTrackedEntityInstance()))
+                        .getTrackedEntityInstanceUid()))
                 .queryList();
         return Relationship$Flow.toModels(relationshipFlow);
     }

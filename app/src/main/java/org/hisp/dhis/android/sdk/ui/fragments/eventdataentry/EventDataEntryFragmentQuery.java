@@ -46,6 +46,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
@@ -114,7 +115,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         form.setIndicatorToIndicatorRowMap(new HashMap<String, IndicatorRow>());
 
         if (stage.getProgramStageSections() == null || stage.getProgramStageSections().isEmpty()) {
-            List<DataEntryRow> rows = new ArrayList<>();
+            List<Row> rows = new ArrayList<>();
             addStatusRow(context, form, rows);
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);
@@ -128,7 +129,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     continue;
                 }
 
-                List<DataEntryRow> rows = new ArrayList<>();
+                List<Row> rows = new ArrayList<>();
                 if (i == 0) {
                     addStatusRow(context, form, rows);
                     addEventDateRow(context, form, rows);
@@ -143,7 +144,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     }
 
     private static void addStatusRow(Context context, EventDataEntryFragmentForm form,
-                                     List<DataEntryRow> rows) {
+                                     List<Row> rows) {
         Event event = form.getEvent();
         if(event==null) return;
         StatusRow row = new StatusRow(context, event);
@@ -152,13 +153,13 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
     }
 
     private static void addEventDateRow(Context context, EventDataEntryFragmentForm form,
-                                        List<DataEntryRow> rows) {
+                                        List<Row> rows) {
         String reportDateDescription = form.getStage().getReportDateDescription()== null ?
                 context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
         rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
     }
 
-    private static void addCoordinateRow(EventDataEntryFragmentForm form, List<DataEntryRow> rows) {
+    private static void addCoordinateRow(EventDataEntryFragmentForm form, List<Row> rows) {
         if (form.getStage() != null &&
                 form.getStage().getCaptureCoordinates()) {
             rows.add(new CoordinatesRow(form.getEvent()));
@@ -167,7 +168,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
     private static void populateDataEntryRows(EventDataEntryFragmentForm form,
                                               List<ProgramStageDataElement> dataElements,
-                                              List<DataEntryRow> rows, String username) {
+                                              List<Row> rows, String username) {
         for (ProgramStageDataElement stageDataElement : dataElements) {
             DataValue dataValue = getDataValue(stageDataElement.getDataelement(), form.getEvent(), username);
             DataElement dataElement = getDataElement(stageDataElement.getDataelement());
@@ -182,7 +183,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
     private static void populateIndicatorRows(EventDataEntryFragmentForm form,
                                               List<ProgramIndicator> indicators,
-                                              List<DataEntryRow> rows) {
+                                              List<Row> rows) {
         for (ProgramIndicator programIndicator : indicators) {
             IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
             if(indicatorRow==null) {
@@ -226,8 +227,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         return event;
     }
 
-    private static DataEntryRow createDataEntryRow(DataElement dataElement, DataValue dataValue) {
-        DataEntryRow row;
+    private static Row createDataEntryRow(DataElement dataElement, DataValue dataValue) {
+        Row row;
 
         String dataElementName;
         if (!isEmpty(dataElement.getDisplayFormName())) {

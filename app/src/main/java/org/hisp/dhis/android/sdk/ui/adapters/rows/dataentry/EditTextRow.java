@@ -38,29 +38,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 
-public class EditTextRow implements DataEntryRow {
+public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
     private static int LONG_TEXT_LINE_COUNT = 3;
 
-    private final String mLabel;
-    private final BaseValue mValue;
-    private final DataEntryRowTypes mRowType;
 
-    private boolean hidden = false;
-    private boolean editable = true;
+
 
     public EditTextRow(String label, BaseValue baseValue, DataEntryRowTypes rowType) {
         mLabel = label;
         mValue = baseValue;
         mRowType = rowType;
+
 
         if (!DataEntryRowTypes.TEXT.equals(rowType) &&
                 !DataEntryRowTypes.LONG_TEXT.equals(rowType) &&
@@ -86,6 +87,7 @@ public class EditTextRow implements DataEntryRow {
             View root = inflater.inflate(R.layout.listview_row_edit_text, container, false);
             TextView label = (TextView) root.findViewById(R.id.text_label);
             EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             if (DataEntryRowTypes.TEXT.equals(mRowType)) {
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -125,7 +127,7 @@ public class EditTextRow implements DataEntryRow {
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
-            holder = new ValueEntryHolder(label, editText, listener);
+            holder = new ValueEntryHolder(label, editText, detailedInfoButton, listener );
             holder.editText.addTextChangedListener(listener);
 
             if(!isEditable())
@@ -141,6 +143,7 @@ public class EditTextRow implements DataEntryRow {
 
         holder.textLabel.setText(mLabel);
         holder.listener.setBaseValue(mValue);
+        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         holder.editText.setText(mValue.getValue());
         holder.editText.clearFocus();
@@ -155,24 +158,22 @@ public class EditTextRow implements DataEntryRow {
         return mRowType.ordinal();
     }
 
-    @Override
-    public BaseValue getBaseValue() {
-        return mValue;
-    }
-
 
 
     private static class ValueEntryHolder {
         final TextView textLabel;
         final EditText editText;
+        final View detailedInfoButton;
         final OnTextChangeListener listener;
 
 
         public ValueEntryHolder(TextView textLabel,
                                 EditText editText,
+                                View detailedInfoButton,
                                 OnTextChangeListener listener) {
             this.textLabel = textLabel;
             this.editText = editText;
+            this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;
         }
     }
@@ -240,25 +241,5 @@ public class EditTextRow implements DataEntryRow {
 
             return str;
         }
-    }
-
-    @Override
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
-    @Override
-    public boolean isEditable() {
-        return editable;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        this.editable = editable;
     }
 }

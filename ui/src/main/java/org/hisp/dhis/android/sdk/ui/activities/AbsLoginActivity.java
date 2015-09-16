@@ -45,7 +45,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 import static android.text.TextUtils.isEmpty;
 
-public abstract class LoginActivity extends AppCompatActivity {
+public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
     private View mViewsContainer;
@@ -56,7 +56,7 @@ public abstract class LoginActivity extends AppCompatActivity {
     private Button mLogInButton;
 
     @Override
-    protected final void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -136,7 +136,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            LoginActivity.this.onTextChanged();
+            AbsLoginActivity.this.onTextChanged();
         }
     }
 

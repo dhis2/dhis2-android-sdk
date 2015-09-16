@@ -31,7 +31,7 @@
     <!-- Stub strings -->
     <string name="image_description">Image description</string>
 
-    <!-- LoginActivity strings -->
+    <!-- AbsLoginActivity strings -->
     <string name="server_url">Server URL</string>
     <string name="username">Username</string>
     <string name="password">Password</string>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015, University of Oslo
   ~ All rights reserved.
   ~
@@ -30,6 +29,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_primary_dark"
     android:gravity="center"
     android:padding="@dimen/padding_default">
 
@@ -51,7 +51,7 @@
             android:contentDescription="@string/image_description"
             android:src="@drawable/ic_dhis_logo" />
 
-        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
+        <org.hisp.dhis.android.sdk.ui.views.FontEditText
             android:id="@+id/server_url"
             android:layout_width="match_parent"
             android:layout_height="42dp"
@@ -68,7 +68,7 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
+        <org.hisp.dhis.android.sdk.ui.views.FontEditText
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="42dp"
@@ -85,7 +85,7 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.dashboard.ui.views.FontEditText
+        <org.hisp.dhis.android.sdk.ui.views.FontEditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="42dp"
@@ -102,7 +102,7 @@
             android:singleLine="true"
             app:font="@string/font_regular" />
 
-        <org.hisp.dhis.android.dashboard.ui.views.FontButton
+        <org.hisp.dhis.android.sdk.ui.views.FontButton
             android:id="@+id/log_in_button"
             android:layout_width="180dp"
             android:layout_height="40dp"

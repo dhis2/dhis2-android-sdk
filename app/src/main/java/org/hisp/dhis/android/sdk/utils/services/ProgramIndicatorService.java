@@ -111,12 +111,15 @@ public class ProgramIndicatorService {
      * @return Indicator value
      */
     public static String getProgramIndicatorValue(Event event, ProgramIndicator programIndicator) {
+        if(programIndicator == null) {
+            return null;
+        }
         Double value = getValue(null, event, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
 
-            if (programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE)) {
+            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
                 Date baseDate = new Date();
 
                 if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) { //todo: ignoring in case of single event event without registration

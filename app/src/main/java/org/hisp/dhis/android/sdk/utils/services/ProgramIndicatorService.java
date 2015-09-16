@@ -78,12 +78,15 @@ public class ProgramIndicatorService {
      * @return Indicator value
      */
     public static String getProgramIndicatorValue(Enrollment programInstance, ProgramIndicator programIndicator) {
+        if(programIndicator == null) {
+            return null;
+        }
         Double value = getValue(programInstance, null, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
 
-            if (programIndicator.getValueType().equals(ProgramIndicator.VALUE_TYPE_DATE)) {
+            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
                 Date baseDate = new Date();
 
                 if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) {
@@ -202,13 +205,13 @@ public class ProgramIndicatorService {
                     matcher.appendReplacement(description, constant.getDisplayName());
                 }
             } else if (ProgramIndicator.KEY_PROGRAM_VARIABLE.equals(key)) {
-                if (uid.equals(ProgramIndicator.CURRENT_DATE)) {
+                if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Current date");
-                } else if (uid.equals(ProgramIndicator.ENROLLMENT_DATE)) {
+                } else if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Enrollment date");
-                } else if (uid.equals(ProgramIndicator.INCIDENT_DATE)) {
+                } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                     matcher.appendReplacement(description, "Incident date");
-                } else if (uid.equals(ProgramIndicator.VALUE_COUNT)) {
+                } else if (ProgramIndicator.VALUE_COUNT.equals(uid)) {
                     matcher.appendReplacement(description, "Value count");
                 }
             }
@@ -415,7 +418,7 @@ public class ProgramIndicatorService {
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                     }
 
-                    if (dataElement.getType().equals(DataElement.VALUE_TYPE_DATE)) {
+                    if (DataElement.VALUE_TYPE_DATE.equals(dataElement.getType())) {
                         value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                     }
 
@@ -440,7 +443,7 @@ public class ProgramIndicatorService {
                             zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
                         }
 
-                        if (attribute.getValueType().equals(TrackedEntityAttribute.TYPE_DATE)) {
+                        if (TrackedEntityAttribute.TYPE_DATE.equals(attribute.getValueType())) {
                             value = DateUtils.daysBetween(new Date(), DateUtils.getDefaultDate(value)) + " ";
                         }
                         matcher.appendReplacement(buffer, value);
@@ -461,11 +464,11 @@ public class ProgramIndicatorService {
                     Date currentDate = new Date();
                     Date date = null;
 
-                    if (uid.equals(ProgramIndicator.ENROLLMENT_DATE)) {
+                    if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
                         date = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
-                    } else if (uid.equals(ProgramIndicator.INCIDENT_DATE)) {
+                    } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
                         date = DateUtils.getMediumDate(programInstance.getDateOfIncident());
-                    } else if (uid.equals(ProgramIndicator.CURRENT_DATE)) {
+                    } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     }
 

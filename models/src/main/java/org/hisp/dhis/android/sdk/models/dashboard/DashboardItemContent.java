@@ -33,16 +33,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 public class DashboardItemContent extends BaseIdentifiableObject {
-    public static final String TYPE_CHART = "CHART";
-    public static final String TYPE_EVENT_CHART = "EVENT_CHART";
-    public static final String TYPE_MAP = "MAP";
-    public static final String TYPE_REPORT_TABLE = "REPORT_TABLE";
-    public static final String TYPE_EVENT_REPORT = "EVENT_REPORT";
-    public static final String TYPE_USERS = "USERS";
-    public static final String TYPE_REPORTS = "REPORTS";
-    public static final String TYPE_RESOURCES = "RESOURCES";
-    public static final String TYPE_REPORT_TABLES = "REPORT_TABLES";
-    public static final String TYPE_MESSAGES = "MESSAGES";
+    public static final String TYPE_CHART = "chart";
+    public static final String TYPE_EVENT_CHART = "eventChart";
+    public static final String TYPE_MAP = "map";
+    public static final String TYPE_REPORT_TABLE = "reportTable";
+    public static final String TYPE_EVENT_REPORT = "eventReport";
+    public static final String TYPE_USERS = "users";
+    public static final String TYPE_REPORTS = "reports";
+    public static final String TYPE_RESOURCES = "resources";
+    public static final String TYPE_REPORT_TABLES = "reportTables";
+    public static final String TYPE_MESSAGES = "messages";
 
     @JsonIgnore
     String type;

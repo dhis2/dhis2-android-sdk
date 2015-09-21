@@ -597,7 +597,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         and dashboard items */
         List<DashboardItemContent> dashboardItemContent =
                 updateApiResources(lastUpdated);
-        Queue<DbOperation> operations = new LinkedList<>();
+        Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(dashboardItemContentStore,
                 dashboardItemContentStore.query(), dashboardItemContent));
         DbUtils.applyBatch(operations);

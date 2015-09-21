@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.common.meta;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.common.IStore;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -54,18 +52,17 @@ public final class DbOperation<T extends IModel> implements IDbOperation<T> {
         return new DbOperationBuilder<>(store);
     }
 
+    @Override
     public T getModel() {
         return mModel;
     }
 
+    @Override
     public DbAction getAction() {
         return mDbAction;
     }
 
-    public IStore<T> getStore() {
-        return mModelStore;
-    }
-
+    @Override
     public void execute() {
         switch (mDbAction) {
             case INSERT: {
@@ -85,6 +82,10 @@ public final class DbOperation<T extends IModel> implements IDbOperation<T> {
                 break;
             }
         }
+    }
+
+    public IStore<T> getStore() {
+        return mModelStore;
     }
 
     public static class DbOperationBuilder<T extends IModel> {

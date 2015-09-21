@@ -57,7 +57,7 @@ public final class OptionStore implements IOptionStore{
         Option$Flow optionFlow = new Select()
                 .from(Option$Flow.class)
                 .where(Condition.column(Option$Flow$Table.ID).is(id))
-                .orderBy(Option$Flow$Table.SORTINDEX)
+                .orderBy(Option$Flow$Table.SORTORDER)
                 .querySingle();
         return Option$Flow.toModel(optionFlow);
     }

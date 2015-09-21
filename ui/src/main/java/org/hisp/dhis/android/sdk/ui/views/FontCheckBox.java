@@ -26,30 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.ui.views;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.widget.CheckBox;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+import org.hisp.dhis.android.sdk.ui.R;
+import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
+
+public class FontCheckBox extends CheckBox {
+    public FontCheckBox(Context context) {
+        super(context);
     }
 
-    lintOptions {
-        abortOnError false
-        disable 'RtlSymmetry', 'RtlHardcoded', 'ContentDescription'
+    public FontCheckBox(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
     }
-}
 
-dependencies {
-    // Android support libraries
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:23.0.1'
+    public FontCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
 
-    // UI libraries
-    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
+    private void init(Context context, AttributeSet attributeSet) {
+        if (!isInEditMode()) {
+            TypedArray attrs = context.obtainStyledAttributes(
+                    attributeSet, R.styleable.ViewFont);
+            setFont(attrs.getString(R.styleable.ViewFont_font));
+            attrs.recycle();
+        }
+    }
+
+    private void setFont(final String fontName) {
+        if (getContext() != null && getContext().getAssets() != null && fontName != null) {
+            Typeface typeface = TypefaceManager.getTypeface(
+                    getContext().getAssets(), fontName);
+            if (typeface != null) {
+                setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+                setTypeface(typeface);
+            }
+        }
+    }
 }

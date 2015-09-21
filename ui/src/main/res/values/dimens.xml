@@ -28,11 +28,6 @@
   -->
 
 <resources>
-    <declare-styleable name="ViewFont">
-        <attr name="font" format="reference"/>
-    </declare-styleable>
-
-    <declare-styleable name="ButtonHint">
-        <attr name="hint" format="string"/>
-    </declare-styleable>
+    <dimen name="padding_default">16dp</dimen>
+    <dimen name="margin_default">16dp</dimen>
 </resources>

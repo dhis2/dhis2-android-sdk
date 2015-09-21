@@ -4,13 +4,14 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
+import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
 /**
  * Created by erling on 9/9/15.
@@ -20,8 +21,10 @@ public abstract class Row implements DataEntryRow
 
     protected String mLabel;
     protected BaseValue mValue;
+    protected String mDescription;
     protected DataEntryRowTypes mRowType;
     protected View detailedInfoButton;
+    private boolean hideDetailedInfoButton;
     private boolean hidden = false;
     private boolean editable = true;
 
@@ -57,7 +60,7 @@ public abstract class Row implements DataEntryRow
     @Override
     public abstract int getViewType();
 
-    public String getDataElementId()
+    public String getItemId()
     {
         if(mValue instanceof DataValue)
             return ((DataValue) mValue).getDataElement();
@@ -65,5 +68,40 @@ public abstract class Row implements DataEntryRow
             return ((TrackedEntityAttributeValue) mValue).getTrackedEntityAttributeId();
         else
             return "";
+    }
+
+    public String getDescription() {
+        if(this instanceof CoordinatesRow)
+            mDescription =  "";
+        else if (this instanceof StatusRow)
+            mDescription = "";
+        else if(this instanceof IndicatorRow)
+            mDescription = "";
+
+        String itemId = getItemId();
+        DataElement dataElement = MetaDataController.getDataElement(itemId);
+        if(dataElement != null)
+            mDescription = dataElement.getDescription();
+        else
+        {
+            TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(itemId);
+            if(attribute != null)
+                mDescription = attribute.getDescription();
+        }
+
+        return mDescription;
+    }
+    public void checkNeedsForDescriptionButton()
+    {
+        mDescription = getDescription();
+        if(mDescription == null || mDescription.equals(""))
+            setHideDetailedInfoButton(true);
+    }
+    public boolean isDetailedInfoButtonHidden() {
+        return hideDetailedInfoButton;
+    }
+
+    public void setHideDetailedInfoButton(boolean hideDetailedInfoButton) {
+        this.hideDetailedInfoButton = hideDetailedInfoButton;
     }
 }

@@ -41,3 +41,15 @@ allprojects {
         jcenter()
     }
 }
+
+ext {
+    // SDK version.
+    versionCode = 1
+    versionName = "1.0"
+
+    // Compilation configuration.
+    minSdkVersion = 15
+    compileSdkVersion = 22
+    targetSdkVersion = 22
+    buildToolsVersion = "22.0.1"
+}

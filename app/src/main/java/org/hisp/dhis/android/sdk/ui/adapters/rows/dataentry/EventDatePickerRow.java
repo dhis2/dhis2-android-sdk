@@ -62,6 +62,8 @@ public class EventDatePickerRow extends Row {
     public EventDatePickerRow(String label, Event event) {
         mLabel = label;
         mEvent = event;
+
+        checkNeedsForDescriptionButton();
     }
 
 
@@ -93,6 +95,10 @@ public class EventDatePickerRow extends Row {
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mEvent);
+
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+
         return view;
     }
 
@@ -150,6 +156,8 @@ public class EventDatePickerRow extends Row {
                                        DateSetListener listener) {
             this.context = context;
             this.listener = listener;
+
+
         }
 
         @Override

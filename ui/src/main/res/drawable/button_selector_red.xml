@@ -27,12 +27,26 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <declare-styleable name="ViewFont">
-        <attr name="font" format="reference"/>
-    </declare-styleable>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <declare-styleable name="ButtonHint">
-        <attr name="hint" format="string"/>
-    </declare-styleable>
-</resources>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_enabled_false"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_unpressed"/>
+        </shape>
+    </item>
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_pressed"/>
+        </shape>
+    </item>
+</selector>

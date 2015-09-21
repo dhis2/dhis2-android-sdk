@@ -28,11 +28,23 @@
   -->
 
 <resources>
-    <declare-styleable name="ViewFont">
-        <attr name="font" format="reference"/>
-    </declare-styleable>
 
-    <declare-styleable name="ButtonHint">
-        <attr name="hint" format="string"/>
-    </declare-styleable>
+    <!-- Base application theme. -->
+    <style name="Base.AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/color_primary</item>
+        <item name="colorControlActivated">@color/color_primary_dark</item>
+
+        <!-- TextView colors -->
+        <item name="android:textColor">@color/color_text</item>
+        <item name="android:textColorPrimary">@color/color_text</item>
+        <item name="android:textColorHint">@color/color_text_hint</item>
+
+        <item name="android:windowBackground">@color/grey_light</item>
+    </style>
+
 </resources>

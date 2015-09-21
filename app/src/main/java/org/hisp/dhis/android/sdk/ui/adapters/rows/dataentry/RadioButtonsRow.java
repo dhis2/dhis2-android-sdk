@@ -66,6 +66,7 @@ public class RadioButtonsRow extends Row {
         mValue = baseValue;
         mRowType = type;
 
+        checkNeedsForDescriptionButton();
     }
 
     @Override
@@ -129,6 +130,10 @@ public class RadioButtonsRow extends Row {
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
+
+        if(isDetailedInfoButtonHidden())
+            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+
         return view;
     }
 

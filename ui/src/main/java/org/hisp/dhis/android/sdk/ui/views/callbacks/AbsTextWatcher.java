@@ -26,30 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.ui.views.callbacks;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import android.text.Editable;
+import android.text.TextWatcher;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+public class AbsTextWatcher implements TextWatcher {
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // default implementation
     }
 
-    lintOptions {
-        abortOnError false
-        disable 'RtlSymmetry', 'RtlHardcoded', 'ContentDescription'
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // default implementation
     }
-}
 
-dependencies {
-    // Android support libraries
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:23.0.1'
-
-    // UI libraries
-    compile 'com.github.castorflex.smoothprogressbar:library-circular:1.1.0'
+    @Override
+    public void afterTextChanged(Editable s) {
+        // default implementation
+    }
 }

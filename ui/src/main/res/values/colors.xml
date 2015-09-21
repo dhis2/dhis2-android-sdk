@@ -28,12 +28,30 @@
   -->
 
 <resources>
-  <color name="white">#FFFFFFFF</color>
-  <color name="white_translucent">#BBFFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_translucent">#BBFFFFFF</color>
 
+    <color name="navy_blue">#FF1D5288</color>
+    <color name="navy_blue_light">#FF1F70C3</color>
+    <color name="navy_blue_dark">#FF123354</color>
 
-  <!-- TODO change color names (follow different naming pattern) -->
-  <color name="button_login_state_enabled_false">#FF223F5C</color>
-  <color name="button_login_state_unpressed">#FF113151</color>
-  <color name="button_login_state_pressed">#FF0C243C</color>
+    <color name="grey">#FF757575</color>
+    <color name="grey_light">#FFE5E5E5</color>
+    <color name="grey_dark">#FF424242</color>
+
+    <color name="button_login_state_enabled_false">#FF223F5C</color>
+    <color name="button_login_state_unpressed">#FF113151</color>
+    <color name="button_login_state_pressed">#FF0C243C</color>
+
+    <color name="button_log_out_state_enabled_false">#EF9A9A</color>
+    <color name="button_log_out_state_unpressed">#F44336</color>
+    <color name="button_log_out_state_pressed">#D32F2F</color>
+
+    <!-- Theme colors -->
+    <color name="color_primary">@color/navy_blue_light</color>
+    <color name="color_primary_dark">@color/navy_blue</color>
+    <color name="color_accent">@color/navy_blue_dark</color>
+
+    <color name="color_text">@color/grey_dark</color>
+    <color name="color_text_hint">@color/grey</color>
 </resources>

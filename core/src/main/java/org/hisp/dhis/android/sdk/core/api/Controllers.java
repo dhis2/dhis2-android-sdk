@@ -28,14 +28,24 @@
 
 package org.hisp.dhis.android.sdk.core.api;
 
+import org.hisp.dhis.android.sdk.core.controllers.AssignedProgramsController;
 import org.hisp.dhis.android.sdk.core.controllers.DashboardController;
+import org.hisp.dhis.android.sdk.core.controllers.IOrganisationUnitController;
+import org.hisp.dhis.android.sdk.core.controllers.IProgramController;
 import org.hisp.dhis.android.sdk.core.controllers.InterpretationController;
+import org.hisp.dhis.android.sdk.core.controllers.OptionSetController;
+import org.hisp.dhis.android.sdk.core.controllers.OrganisationUnitController;
+import org.hisp.dhis.android.sdk.core.controllers.ProgramController;
+import org.hisp.dhis.android.sdk.core.controllers.RelationshipTypeController;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.controllers.user.IUserAccountController;
 import org.hisp.dhis.android.sdk.core.controllers.user.UserAccountController;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
+import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 
 final class Controllers {
     private static Controllers controllers;
@@ -43,6 +53,11 @@ final class Controllers {
     private final IDataController<Dashboard> dashboardController;
     private final IDataController<Interpretation> interpretationController;
     private final IUserAccountController userAccountController;
+    private final IDataController<RelationshipType> relationshipTypeController;
+    private final IDataController<OptionSet> optionSetController;
+    private final IProgramController programController;
+    private final IOrganisationUnitController organisationUnitController;
+    private final IDataController<Program> assignedProgramsController;
 
     private Controllers(IDhisApi dhisApi) {
         dashboardController = new DashboardController(dhisApi, Models.dashboards(),
@@ -50,6 +65,12 @@ final class Controllers {
         interpretationController = new InterpretationController(dhisApi,
                 Services.interpretations(), Services.userAccount());
         userAccountController = new UserAccountController(dhisApi, Models.userAccount());
+        relationshipTypeController = new RelationshipTypeController(dhisApi);
+        optionSetController = new OptionSetController(dhisApi);
+        programController = new ProgramController(dhisApi);
+        organisationUnitController = new OrganisationUnitController(dhisApi);
+        assignedProgramsController = new AssignedProgramsController(dhisApi,
+                programController, organisationUnitController);
     }
 
     public static void init(IDhisApi dhisApi) {
@@ -64,6 +85,26 @@ final class Controllers {
         }
 
         return controllers;
+    }
+
+    public static IDataController assignedPrograms() {
+        return getInstance().assignedProgramsController;
+    }
+
+    public static IOrganisationUnitController organisationUnits() {
+        return getInstance().organisationUnitController;
+    }
+
+    public static IProgramController programs() {
+        return getInstance().programController;
+    }
+
+    public static IDataController<OptionSet> optionSets() {
+        return getInstance().optionSetController;
+    }
+
+    public static IDataController<RelationshipType> relationshipTypes() {
+        return getInstance().relationshipTypeController;
     }
 
     public static IDataController<Dashboard> dashboards() {

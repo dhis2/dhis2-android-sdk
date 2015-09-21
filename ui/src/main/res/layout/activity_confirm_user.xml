@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2015, University of Oslo
   ~
   ~ All rights reserved.
@@ -27,8 +26,7 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,7 +37,7 @@
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/view"
@@ -50,29 +48,14 @@
         android:layout_margin="8dp"
         app:cardCornerRadius="2dp">
 
-        <fr.castorflex.android.circularprogressbar.CircularProgressBar
-            android:id="@+id/progress_bar_circular_navy"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_gravity="center"
-            android:indeterminate="true"
-            app:cpb_color="@color/navy_blue"
-            app:cpb_max_sweep_angle="300"
-            app:cpb_min_sweep_angle="10"
-            app:cpb_rotation_speed="0.8"
-            app:cpb_stroke_width="6dp"
-            app:cpb_sweep_speed="1.0"/>
+        <include layout="@layout/progress_bar_circular_blue" />
 
         <LinearLayout
-            android:id="@+id/re_log_in_views_container"
+            android:id="@+id/container_re_log_in_views"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
+            android:padding="@dimen/padding_default"
             android:weightSum="1.0">
 
             <LinearLayout
@@ -82,50 +65,50 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <org.hisp.dhis.android.dashboard.ui.views.FontEditText
-                    android:id="@+id/username"
+                <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                    android:id="@+id/edittext_username"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:background="@drawable/editbox_background_normal"
-                    android:drawableLeft="@mipmap/ic_username"
+                    android:background="@drawable/edittext_custom_shape"
+                    android:drawableLeft="@drawable/ic_username"
                     android:drawablePadding="8dp"
                     android:hint="@string/username"
                     android:inputType="text"
                     android:paddingLeft="6dp"
                     android:singleLine="true"
-                    app:font="@string/font_regular"/>
+                    app:font="@string/font_regular" />
 
-                <org.hisp.dhis.android.dashboard.ui.views.FontEditText
-                    android:id="@+id/password"
+                <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                    android:id="@+id/edittext_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginBottom="6dp"
-                    android:background="@drawable/editbox_background_normal"
-                    android:drawableLeft="@mipmap/ic_password"
+                    android:background="@drawable/edittext_custom_shape"
+                    android:drawableLeft="@drawable/ic_password"
                     android:drawablePadding="8dp"
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:paddingLeft="6dp"
                     android:singleLine="true"
-                    app:font="@string/font_regular"/>
+                    app:font="@string/font_regular" />
 
-                <org.hisp.dhis.android.dashboard.ui.views.FontButton
-                    android:id="@+id/re_log_in_button"
+                <org.hisp.dhis.android.sdk.ui.views.FontButton
+                    android:id="@+id/button_re_log_in"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@drawable/button_blue_selector"
+                    android:background="@drawable/button_selector_blue_dark"
                     android:singleLine="true"
                     android:text="@string/re_log_in"
                     android:textColor="@color/white"
-                    app:font="@string/font_medium"/>
+                    app:font="@string/font_medium" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2px"
-                android:background="@color/dark_grey"/>
+                android:layout_height="1px"
+                android:background="@color/grey_dark" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,15 +117,15 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <org.hisp.dhis.android.dashboard.ui.views.FontButton
-                    android:id="@+id/delete_and_log_out_button"
+                <org.hisp.dhis.android.sdk.ui.views.FontButton
+                    android:id="@+id/button_clear_and_log_out"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:background="@drawable/button_red_selector"
+                    android:background="@drawable/button_selector_red"
                     android:singleLine="true"
-                    android:text="@string/clear_and_log_out"
+                    android:text="@string/clear_and_logout"
                     android:textColor="@color/white"
-                    app:font="@string/font_medium"/>
+                    app:font="@string/font_medium" />
 
             </LinearLayout>
 

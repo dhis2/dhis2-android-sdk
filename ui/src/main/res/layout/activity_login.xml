@@ -33,10 +33,10 @@
     android:gravity="center"
     android:padding="@dimen/padding_default">
 
-    <include layout="@layout/progress_bar_circular" />
+    <include layout="@layout/progress_bar_circular_white" />
 
     <LinearLayout
-        android:id="@+id/log_in_views_container"
+        android:id="@+id/container_log_in_views"
         android:layout_width="390dp"
         android:layout_height="340dp"
         android:gravity="center"
@@ -52,7 +52,7 @@
             android:src="@drawable/ic_dhis_logo" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/server_url"
+            android:id="@+id/edittext_server_url"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
@@ -69,7 +69,7 @@
             app:font="@string/font_regular" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/username"
+            android:id="@+id/edittext_username"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
@@ -86,7 +86,7 @@
             app:font="@string/font_regular" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/password"
+            android:id="@+id/edittext_password"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="8dp"
@@ -103,7 +103,7 @@
             app:font="@string/font_regular" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontButton
-            android:id="@+id/log_in_button"
+            android:id="@+id/button_log_in"
             android:layout_width="180dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"

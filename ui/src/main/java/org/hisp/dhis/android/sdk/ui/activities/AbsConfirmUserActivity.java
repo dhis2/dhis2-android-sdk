@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.sdk.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -45,7 +47,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import static android.text.TextUtils.isEmpty;
 
 
-public class AbsConfirmUserActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class AbsConfirmUserActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String IS_LOADING = "state:isLoading";
 
     private Toolbar mToolbar;
@@ -54,7 +56,7 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
     private EditText mUsername;
     private EditText mPassword;
     private Button mReLogIn;
-    private Button mLogOut;
+    private Button mClearAndLogoutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +64,14 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_confirm_user);
 
         setSupportActionBar(mToolbar);
-        // setTitle(R.string.app_name);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_navy);
-        mViewsContainer = findViewById(R.id.re_log_in_views_container);
-        mUsername = (EditText) findViewById(R.id.username);
-        mPassword = (EditText) findViewById(R.id.password);
-        mReLogIn = (Button) findViewById(R.id.re_log_in_button);
-        mLogOut = (Button) findViewById(R.id.delete_and_log_out_button);
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
+        mViewsContainer = findViewById(R.id.container_re_log_in_views);
+        mUsername = (EditText) findViewById(R.id.edittext_username);
+        mPassword = (EditText) findViewById(R.id.edittext_password);
+        mReLogIn = (Button) findViewById(R.id.button_re_log_in);
+        mClearAndLogoutButton = (Button) findViewById(R.id.button_clear_and_log_out);
 
         AbsTextWatcher textWatcher = new AbsTextWatcher() {
 
@@ -83,7 +84,10 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
         mUsername.addTextChangedListener(textWatcher);
         mPassword.addTextChangedListener(textWatcher);
 
-        hideProgress(false);
+        mReLogIn.setOnClickListener(this);
+        mClearAndLogoutButton.setOnClickListener(this);
+
+        hideProgressBar(false);
         checkEditTextFields();
     }
 
@@ -94,14 +98,25 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null &&
                 savedInstanceState.getBoolean(IS_LOADING)) {
-            showProgress(false);
+            showProgressBar(false);
         } else {
-            hideProgress(false);
+            hideProgressBar(false);
         }
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.button_re_log_in) {
+            onLogInButtonClicked(mUsername.getText(), mPassword.getText());
+        }
+
+        if (v.getId() == R.id.button_clear_and_log_out) {
+            onClearButtonClicked();
+        }
     }
 
     private void checkEditTextFields() {
@@ -110,7 +125,7 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
                         !isEmpty(mPassword.getText()));
     }
 
-    protected void showProgress(boolean withAnimation) {
+    protected void showProgressBar(boolean withAnimation) {
         if (withAnimation) {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
             mViewsContainer.startAnimation(anim);
@@ -119,7 +134,7 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-    protected void hideProgress(boolean withAnimation) {
+    protected void hideProgressBar(boolean withAnimation) {
         if (withAnimation) {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
             mViewsContainer.startAnimation(anim);
@@ -129,15 +144,22 @@ public class AbsConfirmUserActivity extends AppCompatActivity implements View.On
         mProgressBar.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.re_log_in_button) {
-
-        }
-
-        if (v.getId() == R.id.delete_and_log_out_button) {
-
-        }
+    /**
+     * Should be called in order to show progressbar.
+     */
+    protected final void onStartLoading() {
+        showProgressBar(true);
     }
+
+    /**
+     * Should be called after the loading is complete.
+     */
+    protected final void onFinishLoading() {
+        hideProgressBar(true);
+    }
+
+    protected abstract void onLogInButtonClicked(Editable username, Editable password);
+
+    protected abstract void onClearButtonClicked();
 }
 

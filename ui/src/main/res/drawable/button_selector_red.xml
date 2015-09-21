@@ -27,25 +27,26 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <!-- Stub strings -->
-    <string name="image_description">Image description</string>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- AbsLoginActivity strings -->
-    <string name="server_url">Server URL</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_enabled_false"/>
+        </shape>
+    </item>
 
-    <!-- AbsConfirmUserActivity -->
-    <string name="re_log_in">Re-Log in</string>
-    <string name="clear_and_logout">Clear and log out</string>
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_unpressed"/>
+        </shape>
+    </item>
 
-    <!-- Font names -->
-    <string name="font_light">Roboto-Light.ttf</string>
-    <string name="font_regular">Roboto-Regular.ttf</string>
-    <string name="font_medium">Roboto-Medium.ttf</string>
-    <string name="font_bold">Roboto-Bold.ttf</string>
-    <string name="font_condensed">Roboto-Condensed.ttf</string>
-
-</resources>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/button_log_out_state_pressed"/>
+        </shape>
+    </item>
+</selector>

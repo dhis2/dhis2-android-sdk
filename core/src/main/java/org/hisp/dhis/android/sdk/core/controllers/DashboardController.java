@@ -41,12 +41,15 @@ import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,14 +71,17 @@ public final class DashboardController implements IDataController<Dashboard> {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
+    private final IDashboardItemContentStore dashboardItemContentStore;
 
     public DashboardController(IDhisApi dhisApi, IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
-                               IDashboardElementStore dashboardElementStore) {
+                               IDashboardElementStore dashboardElementStore,
+                               IDashboardItemContentStore dashboardItemContentStore) {
         this.dhisApi = dhisApi;
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
+        this.dashboardItemContentStore = dashboardItemContentStore;
     }
 
     /* this method subtracts content of bList from aList */
@@ -575,5 +581,100 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         /* now we can try to send changes made locally to server */
         sendLocalChanges();
+
+        /* sync content */
+        syncDashboardContent();
+    }
+
+    public void syncDashboardContent() throws APIException {
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.DASHBOARDS_CONTENT);
+        DateTime serverDateTime = dhisApi
+                .getSystemInfo().getServerDate();
+
+        /* first we need to update api resources, dashboards
+        and dashboard items */
+        List<DashboardItemContent> dashboardItemContent =
+                updateApiResources(lastUpdated);
+        Queue<DbOperation> operations = new LinkedList<>();
+        operations.addAll(DbUtils.createOperations(dashboardItemContentStore,
+                dashboardItemContentStore.query(), dashboardItemContent));
+        DbUtils.applyBatch(operations);
+        DateTimeManager.getInstance()
+                .setLastUpdated(ResourceType.DASHBOARDS_CONTENT, serverDateTime);
+    }
+
+    private List<DashboardItemContent> updateApiResources(DateTime lastUpdated) throws APIException {
+        List<DashboardItemContent> dashboardItemContent = new ArrayList<>();
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_CHART, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_EVENT_CHART, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_MAP, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_REPORT_TABLES, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_EVENT_REPORT, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_USERS, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_REPORTS, lastUpdated));
+        dashboardItemContent.addAll(updateApiResourceByType(
+                DashboardItemContent.TYPE_RESOURCES, lastUpdated));
+        return dashboardItemContent;
+    }
+
+    private List<DashboardItemContent> updateApiResourceByType(final String type,
+                                                               final DateTime lastUpdated) throws APIException {
+        final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
+        final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+
+        QUERY_MAP_BASIC.put("fields", "id");
+        QUERY_MAP_FULL.put("fields", "id,created,lastUpdated,name,displayName");
+
+        if (lastUpdated != null) {
+            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+        }
+
+        List<DashboardItemContent> actualItems
+                = getApiResourceByType(type, QUERY_MAP_BASIC);
+
+        List<DashboardItemContent> updatedItems =
+                getApiResourceByType(type, QUERY_MAP_FULL);
+        if (updatedItems != null && !updatedItems.isEmpty()) {
+            for (DashboardItemContent element : updatedItems) {
+                element.setType(type);
+            }
+        }
+
+
+        List<DashboardItemContent> persistedItems =
+                dashboardItemContentStore.query(Arrays.asList(type));
+
+        return merge(actualItems, updatedItems, persistedItems);
+    }
+
+    private List<DashboardItemContent> getApiResourceByType(String type, Map<String, String> queryParams) throws APIException {
+        switch (type) {
+            case DashboardItemContent.TYPE_CHART:
+                return unwrapResponse(dhisApi.getCharts(queryParams), "charts");
+            case DashboardItemContent.TYPE_EVENT_CHART:
+                return unwrapResponse(dhisApi.getEventCharts(queryParams), "eventCharts");
+            case DashboardItemContent.TYPE_MAP:
+                return unwrapResponse(dhisApi.getMaps(queryParams), "maps");
+            case DashboardItemContent.TYPE_REPORT_TABLES:
+                return unwrapResponse(dhisApi.getReportTables(queryParams), "reportTables");
+            case DashboardItemContent.TYPE_EVENT_REPORT:
+                return unwrapResponse(dhisApi.getEventReports(queryParams), "eventReports");
+            case DashboardItemContent.TYPE_USERS:
+                return unwrapResponse(dhisApi.getUsers(queryParams), "users");
+            case DashboardItemContent.TYPE_REPORTS:
+                return unwrapResponse(dhisApi.getReports(queryParams), "reports");
+            case DashboardItemContent.TYPE_RESOURCES:
+                return unwrapResponse(dhisApi.getResources(queryParams), "documents");
+            default:
+                throw new IllegalArgumentException("Unsupported DashboardItemContent type");
+        }
     }
 }

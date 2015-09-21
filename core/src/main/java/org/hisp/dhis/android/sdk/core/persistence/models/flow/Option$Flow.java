@@ -13,7 +13,7 @@ import java.util.List;
 public final class Option$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
-    int sortIndex;
+    int sortOrder;
 
     @Column
     String optionSet;
@@ -21,12 +21,12 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
     @Column
     String code;
 
-    public int getSortIndex() {
-        return sortIndex;
+    public int getSortOrder() {
+        return sortOrder;
     }
 
-    public void setSortIndex(int sortIndex) {
-        this.sortIndex = sortIndex;
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public String getOptionSet() {
@@ -62,7 +62,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         option.setName(optionFlow.getName());
         option.setDisplayName(optionFlow.getDisplayName());
         option.setAccess(optionFlow.getAccess());
-        option.setSortOrder(optionFlow.getSortIndex());
+        option.setSortOrder(optionFlow.getSortOrder());
         option.setOptionSet(optionFlow.getOptionSet());
         option.setCode(optionFlow.getCode());
         return option;
@@ -81,7 +81,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         optionFlow.setName(option.getName());
         optionFlow.setDisplayName(option.getDisplayName());
         optionFlow.setAccess(option.getAccess());
-        optionFlow.setSortIndex(option.getSortOrder());
+        optionFlow.setSortOrder(option.getSortOrder());
         optionFlow.setOptionSet(option.getOptionSet());
         optionFlow.setCode(option.getCode());
         return optionFlow;

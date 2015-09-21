@@ -378,7 +378,6 @@ public class ProgramIndicatorService {
             if (ProgramIndicator.KEY_DATAELEMENT.equals(key)) {
                 String de = matcher.group(3);
                 String programStageUid = uid;
-                //DataElement dataElement = MetaDataController.getDataElement(de);
 
                 if (programStageUid != null && de != null) {
                     if (programInstance == null) { //in case single event without reg

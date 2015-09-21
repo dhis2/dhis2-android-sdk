@@ -83,6 +83,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
 import org.hisp.dhis.android.sdk.models.option.IOptionStore;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programindicator.IProgramIndicatorStore;
 import org.hisp.dhis.android.sdk.models.programrule.IProgramRuleStore;
@@ -111,7 +112,7 @@ public final class Models {
     private final IOptionStore optionStore;
     private final IIdentifiableObjectStore<OptionSet> optionSetStore;
     private final IOrganisationUnitStore organisationUnitStore;
-    private final IIdentifiableObjectStore<Program> programStore;
+    private final IProgramStore programStore;
     private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
     private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
     private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -279,7 +280,7 @@ public final class Models {
         return getInstance().trackedEntityStore;
     }
 
-    public static IIdentifiableObjectStore<Program> programs() {
+    public static IProgramStore programs() {
         return getInstance().programStore;
     }
 

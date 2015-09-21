@@ -27,25 +27,33 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.controllers;
+package org.hisp.dhis.android.sdk.core.controllers.common;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+
+import okio.ByteString;
+import retrofit.converter.ConversionException;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedInput;
+import retrofit.mime.TypedOutput;
+import retrofit.mime.TypedString;
 
 /**
- * @author Simen Skogly Russnes on 05.08.15.
+ * @author Simen Skogly Russnes on 20.08.15.
  */
-public final class ApiEndpointContainer {
+public class StringConverter implements Converter {
+    @Override public String fromBody(TypedInput body, Type type) throws ConversionException {
+        try {
+            return ByteString.read(body.in(), (int) body.length()).utf8();
+        } catch (IOException e) {
+            throw new ConversionException("Problem when convert string", e);
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
 
-    private ApiEndpointContainer() {}
-
-    public static final String ORGANISATIONUNITS = "organisationUnits";
-    public static final String PROGRAMS = "programs";
-    public static final String OPTION_SETS = "optionSets";
-    public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
-    public static final String CONSTANTS = "constants";
-    public static final String PROGRAMRULES = "programRules";
-    public static final String PROGRAMRULEVARIABLES = "programRuleVariables";
-    public static final String PROGRAMRULEACTIONS = "programRuleActions";
-    public static final String RELATIONSHIPTYPES = "relationshipTypes";
-    public static final String EVENTS = "events";
-    public static final String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
-    public static final String ENROLLMENTS = "enrollments";
+    @Override public TypedOutput toBody(Object object) {
+        return new TypedString((String) object);
+    }
 }

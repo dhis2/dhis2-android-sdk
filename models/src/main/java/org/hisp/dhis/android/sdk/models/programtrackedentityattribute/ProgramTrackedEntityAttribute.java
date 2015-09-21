@@ -32,10 +32,11 @@ package org.hisp.dhis.android.sdk.models.programtrackedentityattribute;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramTrackedEntityAttribute {
+public final class ProgramTrackedEntityAttribute implements IModel{
 
     private String trackedEntityAttribute;
 

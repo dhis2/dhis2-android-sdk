@@ -34,6 +34,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +59,7 @@ public final class DbUtils {
      *
      * @param operations List of DbOperations to be performed.
      */
-    public static void applyBatch(final Collection<DbOperation> operations) {
+    public static void applyBatch(final Collection<IDbOperation> operations) {
         isNull(operations, "List<DbOperation> object must not be null");
 
         if (operations.isEmpty()) {
@@ -68,7 +69,7 @@ public final class DbUtils {
         TransactionManager.transact(DbDhis.NAME, new Runnable() {
             @Override
             public void run() {
-                for (DbOperation operation : operations) {
+                for (IDbOperation operation : operations) {
                     operation.execute();
                 }
             }

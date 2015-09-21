@@ -38,7 +38,10 @@ import org.hisp.dhis.android.sdk.models.category.Category;
 import org.hisp.dhis.android.sdk.models.categoryCombo.CategoryCombo;
 import org.hisp.dhis.android.sdk.models.categoryOption.CategoryOption;
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
+import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 import java.util.List;
@@ -58,6 +61,23 @@ import retrofit.mime.TypedString;
 
 
 public interface IDhisApi {
+
+    /////////////////////////////////////////////////////////////////////////
+    // Strings for referencing endpoints in the DHIS 2 Web API
+    /////////////////////////////////////////////////////////////////////////
+
+    public static final String ORGANISATIONUNITS = "organisationUnits";
+    public static final String PROGRAMS = "programs";
+    public static final String OPTIONSETS = "optionSets";
+    public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";
+    public static final String CONSTANTS = "constants";
+    public static final String PROGRAMRULES = "programRules";
+    public static final String PROGRAMRULEVARIABLES = "programRuleVariables";
+    public static final String PROGRAMRULEACTIONS = "programRuleActions";
+    public static final String RELATIONSHIPTYPES = "relationshipTypes";
+    public static final String EVENTS = "events";
+    public static final String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
+    public static final String ENROLLMENTS = "enrollments";
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting user information
@@ -214,4 +234,24 @@ public interface IDhisApi {
 
     @GET("/categoryOptions?paging=false")
     Map<String, List<CategoryOption>> getCategoryOptions(@QueryMap Map<String, String> queryMap);
+
+    /////////////////////////////////////////////////////////////////////////
+    // Methods for working with tracker meta data
+    /////////////////////////////////////////////////////////////////////////
+
+    @GET("/" + RELATIONSHIPTYPES + "?paging=false")
+    Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + OPTIONSETS + "?paging=false")
+    Map<String, List<OptionSet>> getOptionSets(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + PROGRAMS + "/{programUid}")
+    Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
+
+    @GET("/" + PROGRAMS + "/?paging=false")
+    Map<String, List<Program>> getPrograms(@QueryMap Map<String, String> queryMap);
+
+    @GET("/me/programs/")
+    Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
+
 }

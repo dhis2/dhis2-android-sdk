@@ -32,18 +32,28 @@ package org.hisp.dhis.android.sdk.core.persistence.models.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.persistence.models.common.DbFlowOperation;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnitToProgramRelation$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnitToProgramRelation$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Program$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStage$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramTrackedEntityAttribute$Flow;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public final class ProgramStore implements IIdentifiableObjectStore<Program> {
+public final class ProgramStore implements IProgramStore {
 
     private final IProgramStageStore programStageStore;
     private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
@@ -131,5 +141,41 @@ public final class ProgramStore implements IIdentifiableObjectStore<Program> {
         programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow
                 .fromModels(programTrackedEntityAttributeStore
                         .query(Program$Flow.toModel(programFlow))));
+    }
+
+    @Override
+    public List<Program> query(OrganisationUnit organisationUnit) {
+        List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
+                new Select().from(OrganisationUnitToProgramRelation$Flow.class).
+                        where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
+                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(OrganisationUnit$Flow
+                                .fromModel(organisationUnit))).queryList();
+        List<Program> programs = new ArrayList<>();
+        for(OrganisationUnitToProgramRelation$Flow relationFlows : organisationUnitToProgramRelations) {
+            programs.add(Program$Flow.toModel(relationFlows.getProgram()));
+        }
+        return programs;
+    }
+
+    @Override
+    public void assign(Program program, List<OrganisationUnit> organisationUnits) {
+        List<IDbOperation> operations = new ArrayList<>();
+        List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select().from(OrganisationUnitToProgramRelation$Flow.class).
+                where(Condition.column
+                (OrganisationUnitToProgramRelation$Flow$Table.PROGRAM_PROGRAM).
+                is(Program$Flow.fromModel(program))).queryList();
+        Map<String, OrganisationUnitToProgramRelation$Flow> relationFlowMap = new HashMap<>();
+        for(OrganisationUnitToProgramRelation$Flow relationFlow : relationFlows) {
+            relationFlowMap.put(relationFlow.getOrganisationUnit().getUId(), relationFlow);
+        }
+        for(OrganisationUnit organisationUnit : organisationUnits) {
+            if(!relationFlowMap.containsValue(organisationUnit.getUId())) {
+                OrganisationUnitToProgramRelation$Flow newRelationFlow = new OrganisationUnitToProgramRelation$Flow();
+                newRelationFlow.setOrganisationUnit(OrganisationUnit$Flow.fromModel(organisationUnit));
+                newRelationFlow.setProgram(Program$Flow.fromModel(program));
+                operations.add(DbFlowOperation.insert(newRelationFlow));
+            }
+        }
+        DbUtils.applyBatch(operations);
     }
 }

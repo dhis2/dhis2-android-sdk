@@ -26,12 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.common.meta;
+package org.hisp.dhis.android.sdk.core.persistence.models.common;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.common.IStore;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import org.hisp.dhis.android.sdk.models.common.meta.DbAction;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -39,19 +39,13 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
  * This class is intended to implement partial
  * functionality of ContentProviderOperation for DbFlow.
  */
-public final class DbOperation<T extends IModel> implements IDbOperation<T> {
+public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<T> {
     private final DbAction mDbAction;
     private final T mModel;
-    private final IStore<T> mModelStore;
 
-    private DbOperation(DbAction dbAction, T model, IStore<T> store) {
+    private DbFlowOperation(DbAction dbAction, T model) {
         mModel = isNull(model, "IdentifiableObject object must nto be null,");
         mDbAction = isNull(dbAction, "BaseModel.DbAction object must not be null");
-        mModelStore = isNull(store, "IStore object must not be null");
-    }
-
-    public static <T extends IModel> DbOperationBuilder<T> with(IStore<T> store) {
-        return new DbOperationBuilder<>(store);
     }
 
     public T getModel() {
@@ -62,52 +56,40 @@ public final class DbOperation<T extends IModel> implements IDbOperation<T> {
         return mDbAction;
     }
 
-    public IStore<T> getStore() {
-        return mModelStore;
-    }
-
     public void execute() {
-        switch (mDbAction) {
+        switch (getAction()) {
             case INSERT: {
-                mModelStore.insert(mModel);
+                mModel.insert();
                 break;
             }
             case UPDATE: {
-                mModelStore.update(mModel);
+                mModel.update();
                 break;
             }
             case SAVE: {
-                mModelStore.save(mModel);
+                mModel.save();
                 break;
             }
             case DELETE: {
-                mModelStore.delete(mModel);
+                mModel.delete();
                 break;
             }
         }
     }
 
-    public static class DbOperationBuilder<T extends IModel> {
-        private final IStore<T> mStore;
+    public static DbFlowOperation insert(BaseModel model) {
+        return new DbFlowOperation<>(DbAction.INSERT, model);
+    }
 
-        DbOperationBuilder(IStore<T> store) {
-            mStore = store;
-        }
+    public static DbFlowOperation update(BaseModel model) {
+        return new DbFlowOperation<>(DbAction.UPDATE, model);
+    }
 
-        public DbOperation insert(T model) {
-            return new DbOperation<>(DbAction.INSERT, model, mStore);
-        }
+    public static DbFlowOperation save(BaseModel model) {
+        return new DbFlowOperation<>(DbAction.SAVE, model);
+    }
 
-        public DbOperation update(T model) {
-            return new DbOperation<>(DbAction.UPDATE, model, mStore);
-        }
-
-        public DbOperation save(T model) {
-            return new DbOperation<>(DbAction.SAVE, model, mStore);
-        }
-
-        public DbOperation delete(T model) {
-            return new DbOperation<>(DbAction.DELETE, model, mStore);
-        }
+    public static DbFlowOperation delete(BaseModel model) {
+        return new DbFlowOperation<>(DbAction.DELETE, model);
     }
 }

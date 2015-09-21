@@ -63,8 +63,6 @@ public abstract class AbsConfirmUserActivity extends AppCompatActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_user);
 
-        setSupportActionBar(mToolbar);
-
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
         mViewsContainer = findViewById(R.id.container_re_log_in_views);
@@ -86,6 +84,9 @@ public abstract class AbsConfirmUserActivity extends AppCompatActivity implement
 
         mReLogIn.setOnClickListener(this);
         mClearAndLogoutButton.setOnClickListener(this);
+
+        setSupportActionBar(mToolbar);
+        setTitle(R.string.activity_confirm_user);
 
         hideProgressBar(false);
         checkEditTextFields();

@@ -38,6 +38,7 @@
     <string name="log_in">Log in</string>
 
     <!-- AbsConfirmUserActivity -->
+    <string name="activity_confirm_user">Confirm user</string>
     <string name="re_log_in">Re-Log in</string>
     <string name="clear_and_logout">Clear and log out</string>
 

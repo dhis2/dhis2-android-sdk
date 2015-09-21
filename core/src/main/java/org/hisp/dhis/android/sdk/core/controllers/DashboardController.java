@@ -37,6 +37,7 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
@@ -101,7 +102,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<Dashboard> dashboards = updateDashboards(lastUpdated);
         List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
 
-        Queue<DbOperation> operations = new LinkedList<>();
+        Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(dashboardStore,
                 dashboardStore.filter(State.TO_POST), dashboards));
         operations.addAll(DbUtils.createOperations(dashboardItemStore,

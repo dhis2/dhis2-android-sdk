@@ -38,6 +38,7 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
@@ -357,7 +358,7 @@ public final class InterpretationController implements IDataController<Interpret
         List<InterpretationComment> comments = updateInterpretationComments(interpretations);
         List<User> users = updateInterpretationUsers(interpretations, comments);
 
-        Queue<DbOperation> operations = new LinkedList<>();
+        Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(
                 Models.users(), Models.users().query(), users));
         operations.addAll(createOperations(

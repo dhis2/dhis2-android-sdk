@@ -33,12 +33,9 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow$Table;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DashboardItemStore implements IDashboardItemStore {
@@ -99,7 +96,7 @@ public class DashboardItemStore implements IDashboardItemStore {
         return DashboardItem$Flow.toModel(dashboardItem);
     }
 
-    @Override
+    /* @Override
     public List<DashboardItem> query(Action... actions) {
         return query(Arrays.asList(actions));
     }
@@ -198,10 +195,10 @@ public class DashboardItemStore implements IDashboardItemStore {
             }
         }
         return combinedCondition;
-    }
+    } */
 
-    private static Condition isState(Action action) {
+    /* private static Condition isState(Action action) {
         return Condition.column(DashboardItem$Flow$Table
                 .ACTION).is(action.toString());
-    }
+    } */
 }

@@ -61,7 +61,7 @@ final class Controllers {
 
     private Controllers(IDhisApi dhisApi) {
         dashboardController = new DashboardController(dhisApi, Models.dashboards(),
-                Models.dashboardItems(), Models.dashboardElements(), Models.dashboardItemContent());
+                Models.dashboardItems(), Models.dashboardElements(), Models.dashboardItemContent(), null, null);
         interpretationController = new InterpretationController(dhisApi,
                 Services.interpretations(), Services.userAccount());
         userAccountController = new UserAccountController(dhisApi, Models.userAccount());

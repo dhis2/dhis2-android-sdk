@@ -29,26 +29,33 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateService;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardElementService implements IDashboardElementService {
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemService dashboardItemService;
+    private final IStateService stateService;
+    private final IStateStore stateStore;
 
     public DashboardElementService(IDashboardElementStore dashboardElementStore,
-                                   IDashboardItemService dashboardItemService) {
+                                   IDashboardItemService dashboardItemService,
+                                   IStateService stateService,
+                                   IStateStore stateStore) {
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemService = dashboardItemService;
+        this.stateService = stateService;
+        this.stateStore = stateStore;
     }
 
     /**
      * Factory method for creating DashboardElement.
      *
-     * @param dashboardItem    DashboardItem to associate with element.
+     * @param dashboardItem        DashboardItem to associate with element.
      * @param dashboardItemContent Content from which element will be created.
      * @return new element.
-     *
      * @throws IllegalArgumentException when dashboardItem or dashboardItemContent is null.
      */
     @Override
@@ -63,9 +70,10 @@ public class DashboardElementService implements IDashboardElementService {
         element.setDisplayName(dashboardItemContent.getDisplayName());
         element.setCreated(dashboardItemContent.getCreated());
         element.setLastUpdated(dashboardItemContent.getLastUpdated());
+        element.setDashboardItem(dashboardItem);
 
         // element.setAction(Action.TO_POST);
-        element.setDashboardItem(dashboardItem);
+        stateService.save(element, Action.TO_POST);
 
         return element;
     }
@@ -74,13 +82,16 @@ public class DashboardElementService implements IDashboardElementService {
     public void deleteDashboardElement(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
-        /* if (Action.TO_POST.equals(dashboardElement.getAction())) {
-            dashboardElement.setAction(Action.TO_DELETE);
+        Action action = stateStore.queryAction(dashboardElement);
+        if (Action.TO_POST.equals(action)) {
+            // dashboardElement.setAction(Action.TO_DELETE);
+            stateStore.delete(dashboardElement);
             dashboardElementStore.delete(dashboardElement);
-        } else {
-            dashboardElement.setAction(Action.TO_DELETE);
+        }else{
+            // dashboardElement.setAction(Action.TO_DELETE);
+            stateService.save(dashboardElement, Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
-        } */
+        }
 
         /* if count of elements in item is zero, it means
         we don't need this item anymore */

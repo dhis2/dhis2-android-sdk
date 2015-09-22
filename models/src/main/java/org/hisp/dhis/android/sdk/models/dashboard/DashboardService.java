@@ -30,6 +30,8 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateService;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -44,14 +46,22 @@ public class DashboardService implements IDashboardService {
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
 
+    private final IStateService stateService;
+    private final IStateStore stateStore;
+
     public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
-                            IDashboardItemService dashboardItemService, IDashboardElementService dashboardElementService) {
+                            IDashboardItemService dashboardItemService,
+                            IDashboardElementService dashboardElementService,
+                            IStateService stateService,
+                            IStateStore stateStore) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemService = dashboardItemService;
         this.dashboardElementService = dashboardElementService;
+        this.stateService = stateService;
+        this.stateStore = stateStore;
     }
 
     /**
@@ -78,13 +88,16 @@ public class DashboardService implements IDashboardService {
     public void deleteDashboard(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        /* if (Action.TO_DELETE.equals(dashboard.getAction())) {
-            dashboard.setAction(Action.TO_DELETE);
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
+            // dashboard.setAction(Action.TO_DELETE);
+            stateStore.delete(dashboard);
             dashboardStore.delete(dashboard);
         } else {
-            dashboard.setAction(Action.TO_DELETE);
+            // dashboard.setAction(Action.TO_DELETE);
+            stateService.save(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
-        } */
+        }
     }
 
     /**
@@ -94,16 +107,18 @@ public class DashboardService implements IDashboardService {
     public void updateDashboardName(Dashboard dashboard, String name) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        /* if (Action.TO_DELETE.equals(dashboard.getAction())) {
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
             throw new IllegalArgumentException("The name of dashboard with Action." +
                     "TO_DELETE cannot be updated");
-        } */
+        }
 
         /* if dashboard was not posted to the server before,
         you don't have anything to update */
-        /* if (dashboard.getAction() != Action.TO_POST) {
-            dashboard.setAction(Action.TO_UPDATE);
-        } */
+        if (!Action.TO_POST.equals(action)) {
+            // dashboard.setAction(Action.TO_UPDATE);
+            stateService.save(dashboard, Action.TO_UPDATE);
+        }
 
         dashboard.setName(name);
         dashboard.setDisplayName(name);

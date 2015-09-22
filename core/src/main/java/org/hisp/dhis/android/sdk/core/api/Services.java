@@ -61,10 +61,10 @@ final class Services {
     private Services(Context context) {
         Models.init(context);
 
-        dashboardItemService = new DashboardItemService(Models.dashboardItems(), Models.dashboardElements());
-        dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService);
+        dashboardItemService = new DashboardItemService(Models.dashboardItems(), Models.dashboardElements(), null, null);
+        dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService, null, null);
         dashboardService = new DashboardService(Models.dashboards(), Models.dashboardItems(),
-                Models.dashboardElements(), dashboardItemService, dashboardElementService);
+                Models.dashboardElements(), dashboardItemService, dashboardElementService, null, null);
 
         interpretationElementService = new InterpretationElementService();
         interpretationCommentService = new InterpretationCommentService(Models.interpretationComments());

@@ -30,6 +30,8 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateService;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -39,11 +41,17 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 public class DashboardItemService implements IDashboardItemService {
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
+    private final IStateService stateService;
+    private final IStateStore stateStore;
 
     public DashboardItemService(IDashboardItemStore dashboardItemStore,
-                                IDashboardElementStore dashboardElementStore) {
+                                IDashboardElementStore dashboardElementStore,
+                                IStateService stateService,
+                                IStateStore stateStore) {
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
+        this.stateService = stateService;
+        this.stateStore = stateStore;
     }
 
     /**
@@ -53,6 +61,7 @@ public class DashboardItemService implements IDashboardItemService {
      * @param content   Content for dashboard item.
      * @return new item.
      */
+    // TODO revise the use of Factory method ().
     @Override
     public DashboardItem createDashboardItem(Dashboard dashboard, DashboardItemContent content) {
         isNull(dashboard, "dashboard must not be null");
@@ -63,10 +72,12 @@ public class DashboardItemService implements IDashboardItemService {
         DashboardItem item = new DashboardItem();
         item.setCreated(lastUpdated);
         item.setLastUpdated(lastUpdated);
-        // item.setAction(Action.TO_POST);
         item.setDashboard(dashboard);
         item.setAccess(Access.createDefaultAccess());
         item.setType(content.getType());
+
+        // item.setAction(Action.TO_POST);
+        stateService.save(item, Action.TO_POST);
 
         return item;
     }
@@ -80,13 +91,16 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public void deleteDashboardItem(DashboardItem dashboardItem) {
-        /* if (Action.TO_POST.equals(dashboardItem.getAction())) {
-            dashboardItem.setAction(Action.TO_DELETE);
+        Action action = stateStore.queryAction(dashboardItem);
+        if (Action.TO_POST.equals(action)) {
+            // dashboardItem.setAction(Action.TO_DELETE);
+            stateStore.delete(dashboardItem);
             dashboardItemStore.delete(dashboardItem);
         } else {
-            dashboardItem.setAction(Action.TO_DELETE);
+            // dashboardItem.setAction(Action.TO_DELETE);
+            stateService.save(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
-        } */
+        }
     }
 
     @Override

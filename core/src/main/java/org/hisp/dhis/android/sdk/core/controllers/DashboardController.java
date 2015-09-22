@@ -614,7 +614,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         dashboardItemContent.addAll(updateApiResourceByType(
                 DashboardItemContent.TYPE_MAP, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
-                DashboardItemContent.TYPE_REPORT_TABLES, lastUpdated));
+                DashboardItemContent.TYPE_REPORT_TABLE, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
                 DashboardItemContent.TYPE_EVENT_REPORT, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
@@ -664,7 +664,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 return unwrapResponse(dhisApi.getEventCharts(queryParams), "eventCharts");
             case DashboardItemContent.TYPE_MAP:
                 return unwrapResponse(dhisApi.getMaps(queryParams), "maps");
-            case DashboardItemContent.TYPE_REPORT_TABLES:
+            case DashboardItemContent.TYPE_REPORT_TABLE:
                 return unwrapResponse(dhisApi.getReportTables(queryParams), "reportTables");
             case DashboardItemContent.TYPE_EVENT_REPORT:
                 return unwrapResponse(dhisApi.getEventReports(queryParams), "eventReports");

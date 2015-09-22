@@ -88,6 +88,7 @@ public final class Dhis2 {
     }
 
     public static void logOut() throws APIException {
+
         getInstance().userAccountScope.logOut();
 
         // fetch meta data from disk

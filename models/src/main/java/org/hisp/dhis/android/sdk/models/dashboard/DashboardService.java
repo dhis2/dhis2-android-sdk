@@ -193,6 +193,7 @@ public class DashboardService implements IDashboardService {
             }
         }
 
-        throw new IllegalArgumentException("Unsupported DashboardItemContent type");
+        throw new IllegalArgumentException("Unsupported DashboardItemContent type: " +
+                content.getType() + " name: " + content.getDisplayName());
     }
 }

@@ -37,11 +37,23 @@ public class DashboardItemContent extends BaseIdentifiableObject {
     public static final String TYPE_EVENT_CHART = "eventChart";
     public static final String TYPE_MAP = "map";
     public static final String TYPE_REPORT_TABLE = "reportTable";
-    public static final String TYPE_EVENT_REPORT = "eventReport";
+
+    /* have to implement user fragment for this */
     public static final String TYPE_USERS = "users";
+
+    /* we can use data entry fragment for this: have to implement read-only mode */
     public static final String TYPE_REPORTS = "reports";
+
+    /* not supported on server side */
+    public static final String TYPE_EVENT_REPORT = "eventReport";
+
+    /* resource can be anything (like pdf or binary file. Will look into this later */
     public static final String TYPE_RESOURCES = "resources";
+
+    /* unknown type: ask core team about this one */
     public static final String TYPE_REPORT_TABLES = "reportTables";
+
+    /* won't be supported until implementation of messaging application */
     public static final String TYPE_MESSAGES = "messages";
 
     @JsonIgnore

@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.state.Action;
 
 import java.util.List;
 
@@ -44,23 +42,23 @@ public class Dashboard extends BaseIdentifiableObject {
      */
     public static int MAX_ITEMS = 40;
 
-    @JsonIgnore
-    private Action action;
+    /* @JsonIgnore
+    private Action action; */
 
     @JsonProperty("dashboardItems")
     private List<DashboardItem> dashboardItems;
 
     public Dashboard() {
-        action = Action.SYNCED;
+        // action = Action.SYNCED;
     }
 
-    public Action getAction() {
+    /* public Action getAction() {
         return action;
     }
 
     public void setAction(Action action) {
         this.action = action;
-    }
+    } */
 
     public List<DashboardItem> getDashboardItems() {
         return dashboardItems;

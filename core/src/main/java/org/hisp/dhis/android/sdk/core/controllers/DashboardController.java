@@ -310,7 +310,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (Dashboard dashboard : dashboards) {
-            switch (dashboard.getAction()) {
+            /* switch (dashboard.getAction()) {
                 case TO_POST: {
                     postDashboard(dashboard);
                     break;
@@ -323,7 +323,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                     deleteDashboard(dashboard);
                     break;
                 }
-            }
+            } */
         }
     }
 
@@ -337,7 +337,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             String dashboardId = Uri.parse(header.getValue()).getLastPathSegment();
             // set UUID, change state and save dashboard
             dashboard.setUId(dashboardId);
-            dashboard.setAction(Action.SYNCED);
+            // dashboard.setAction(Action.SYNCED);
 
             dashboardStore.save(dashboard);
 
@@ -351,7 +351,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         try {
             dhisApi.putDashboard(dashboard.getUId(), dashboard);
 
-            dashboard.setAction(Action.SYNCED);
+            // dashboard.setAction(Action.SYNCED);
             dashboardStore.save(dashboard);
 
             updateDashboardTimeStamp(dashboard);
@@ -379,7 +379,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (DashboardItem dashboardItem : dashboardItems) {
-            switch (dashboardItem.getAction()) {
+            /* switch (dashboardItem.getAction()) {
                 case TO_POST: {
                     postDashboardItem(dashboardItem);
                     break;
@@ -388,14 +388,14 @@ public final class DashboardController implements IDataController<Dashboard> {
                     deleteDashboardItem(dashboardItem);
                     break;
                 }
-            }
+            } */
         }
     }
 
     private void postDashboardItem(DashboardItem dashboardItem) throws APIException {
         Dashboard dashboard = dashboardItem.getDashboard();
 
-        if (dashboard != null && dashboard.getAction() != null) {
+        /* if (dashboard != null && dashboard.getAction() != null) {
             boolean isDashboardSynced = (dashboard.getAction().equals(Action.SYNCED) ||
                     dashboard.getAction().equals(Action.TO_UPDATE));
 
@@ -403,12 +403,6 @@ public final class DashboardController implements IDataController<Dashboard> {
                 return;
             }
 
-            /* List<DashboardElement> elements = new Select().from(DashboardElement.class)
-                    .where(Condition.column(DashboardElement$Table
-                            .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()))
-                    .and(Condition.column(DashboardItem$Table
-                            .STATE).is(Action.TO_POST.toString()))
-                    .queryList(); */
             List<DashboardElement> elements =
                     dashboardElementStore.query(dashboardItem, Action.TO_POST);
 
@@ -437,13 +431,13 @@ public final class DashboardController implements IDataController<Dashboard> {
             } catch (APIException apiException) {
                 handleApiException(apiException, dashboardItem, dashboardItemStore);
             }
-        }
+        } */
     }
 
     private void deleteDashboardItem(DashboardItem dashboardItem) throws APIException {
         Dashboard dashboard = dashboardItem.getDashboard();
 
-        if (dashboard != null && dashboard.getAction() != null) {
+        /* if (dashboard != null && dashboard.getAction() != null) {
             boolean isDashboardSynced = (dashboard.getAction().equals(Action.SYNCED) ||
                     dashboard.getAction().equals(Action.TO_UPDATE));
 
@@ -461,7 +455,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             } catch (APIException apiException) {
                 handleApiException(apiException, dashboardItem, dashboardItemStore);
             }
-        }
+        } */
     }
 
     private void sendDashboardElements() throws APIException {
@@ -477,7 +471,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             return;
         }
 
-        for (DashboardElement element : elements) {
+        /* for (DashboardElement element : elements) {
             switch (element.getAction()) {
                 case TO_POST: {
                     postDashboardElement(element);
@@ -488,12 +482,12 @@ public final class DashboardController implements IDataController<Dashboard> {
                     break;
                 }
             }
-        }
+        } */
     }
 
     private void postDashboardElement(DashboardElement element) throws APIException {
         DashboardItem item = element.getDashboardItem();
-        if (item == null || item.getAction() == null) {
+        /* if (item == null || item.getAction() == null) {
             return;
         }
 
@@ -520,12 +514,12 @@ public final class DashboardController implements IDataController<Dashboard> {
             } catch (APIException apiException) {
                 handleApiException(apiException, element, dashboardElementStore);
             }
-        }
+        } */
     }
 
     private void deleteDashboardElement(DashboardElement element) throws APIException {
         DashboardItem item = element.getDashboardItem();
-        if (item == null || item.getAction() == null) {
+        /* if (item == null || item.getAction() == null) {
             return;
         }
 
@@ -554,7 +548,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             } catch (APIException apiException) {
                 handleApiException(apiException, element, dashboardElementStore);
             }
-        }
+        } */
     }
 
     private void updateDashboardTimeStamp(Dashboard dashboard) throws APIException {

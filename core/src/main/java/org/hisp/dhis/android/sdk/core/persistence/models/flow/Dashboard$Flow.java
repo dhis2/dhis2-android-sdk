@@ -74,7 +74,7 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboardFlow.setAccess(dashboard.getAccess());
         dashboardFlow.setName(dashboard.getName());
         dashboardFlow.setDisplayName(dashboard.getDisplayName());
-        dashboardFlow.setAction(dashboard.getAction());
+        // dashboardFlow.setAction(dashboard.getAction());
         return dashboardFlow;
     }
 
@@ -91,7 +91,7 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboard.setAccess(dashboardFlow.getAccess());
         dashboard.setName(dashboardFlow.getName());
         dashboard.setDisplayName(dashboardFlow.getDisplayName());
-        dashboard.setAction(dashboardFlow.getAction());
+        // dashboard.setAction(dashboardFlow.getAction());
         return dashboard;
     }
 

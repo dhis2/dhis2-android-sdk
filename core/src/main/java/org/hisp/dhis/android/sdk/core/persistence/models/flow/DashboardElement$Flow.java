@@ -93,7 +93,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
         dashboardElementFlow.setDashboardItem(DashboardItem$Flow
                 .fromModel(dashboardElement.getDashboardItem()));
-        dashboardElementFlow.setAction(dashboardElement.getAction());
+        // dashboardElementFlow.setAction(dashboardElement.getAction());
         return dashboardElementFlow;
     }
 
@@ -112,7 +112,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
         dashboardElement.setDashboardItem(DashboardItem$Flow
                 .toModel(dashboardElementFlow.getDashboardItem()));
-        dashboardElement.setAction(dashboardElementFlow.getAction());
+        // dashboardElement.setAction(dashboardElementFlow.getAction());
         return dashboardElement;
     }
 

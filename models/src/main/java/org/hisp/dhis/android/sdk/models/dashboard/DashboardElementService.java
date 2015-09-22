@@ -63,7 +63,8 @@ public class DashboardElementService implements IDashboardElementService {
         element.setDisplayName(dashboardItemContent.getDisplayName());
         element.setCreated(dashboardItemContent.getCreated());
         element.setLastUpdated(dashboardItemContent.getLastUpdated());
-        element.setAction(Action.TO_POST);
+
+        // element.setAction(Action.TO_POST);
         element.setDashboardItem(dashboardItem);
 
         return element;
@@ -73,13 +74,13 @@ public class DashboardElementService implements IDashboardElementService {
     public void deleteDashboardElement(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
-        if (Action.TO_POST.equals(dashboardElement.getAction())) {
+        /* if (Action.TO_POST.equals(dashboardElement.getAction())) {
             dashboardElement.setAction(Action.TO_DELETE);
             dashboardElementStore.delete(dashboardElement);
         } else {
             dashboardElement.setAction(Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
-        }
+        } */
 
         /* if count of elements in item is zero, it means
         we don't need this item anymore */

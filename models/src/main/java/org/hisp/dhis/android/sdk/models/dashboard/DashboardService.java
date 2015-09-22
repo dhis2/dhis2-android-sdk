@@ -67,7 +67,7 @@ public class DashboardService implements IDashboardService {
         dashboard.setCreated(lastUpdated);
         dashboard.setLastUpdated(lastUpdated);
         dashboard.setAccess(Access.createDefaultAccess());
-        dashboard.setAction(Action.TO_POST);
+        // dashboard.setAction(Action.TO_POST);
         return dashboard;
     }
 
@@ -78,13 +78,13 @@ public class DashboardService implements IDashboardService {
     public void deleteDashboard(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        if (Action.TO_DELETE.equals(dashboard.getAction())) {
+        /* if (Action.TO_DELETE.equals(dashboard.getAction())) {
             dashboard.setAction(Action.TO_DELETE);
             dashboardStore.delete(dashboard);
         } else {
             dashboard.setAction(Action.TO_DELETE);
             dashboardStore.update(dashboard);
-        }
+        } */
     }
 
     /**
@@ -94,16 +94,16 @@ public class DashboardService implements IDashboardService {
     public void updateDashboardName(Dashboard dashboard, String name) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        if (Action.TO_DELETE.equals(dashboard.getAction())) {
+        /* if (Action.TO_DELETE.equals(dashboard.getAction())) {
             throw new IllegalArgumentException("The name of dashboard with Action." +
                     "TO_DELETE cannot be updated");
-        }
+        } */
 
         /* if dashboard was not posted to the server before,
         you don't have anything to update */
-        if (dashboard.getAction() != Action.TO_POST) {
+        /* if (dashboard.getAction() != Action.TO_POST) {
             dashboard.setAction(Action.TO_UPDATE);
-        }
+        } */
 
         dashboard.setName(name);
         dashboard.setDisplayName(name);

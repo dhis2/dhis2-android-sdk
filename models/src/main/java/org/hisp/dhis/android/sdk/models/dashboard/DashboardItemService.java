@@ -63,7 +63,7 @@ public class DashboardItemService implements IDashboardItemService {
         DashboardItem item = new DashboardItem();
         item.setCreated(lastUpdated);
         item.setLastUpdated(lastUpdated);
-        item.setAction(Action.TO_POST);
+        // item.setAction(Action.TO_POST);
         item.setDashboard(dashboard);
         item.setAccess(Access.createDefaultAccess());
         item.setType(content.getType());
@@ -80,13 +80,13 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public void deleteDashboardItem(DashboardItem dashboardItem) {
-        if (Action.TO_POST.equals(dashboardItem.getAction())) {
+        /* if (Action.TO_POST.equals(dashboardItem.getAction())) {
             dashboardItem.setAction(Action.TO_DELETE);
             dashboardItemStore.delete(dashboardItem);
         } else {
             dashboardItem.setAction(Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
-        }
+        } */
     }
 
     @Override

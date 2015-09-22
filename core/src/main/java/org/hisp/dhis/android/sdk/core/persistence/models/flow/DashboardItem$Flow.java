@@ -114,7 +114,7 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItemFlow.setDashboard(Dashboard$Flow.fromModel(dashboardItem.getDashboard()));
         dashboardItemFlow.setType(dashboardItem.getType());
         dashboardItemFlow.setShape(dashboardItem.getShape());
-        dashboardItemFlow.setAction(dashboardItem.getAction());
+        // dashboardItemFlow.setAction(dashboardItem.getAction());
         return dashboardItemFlow;
     }
 
@@ -134,7 +134,7 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItem.setDashboard(Dashboard$Flow.toModel(dashboardItemFlow.getDashboard()));
         dashboardItem.setType(dashboardItemFlow.getType());
         dashboardItem.setShape(dashboardItemFlow.getShape());
-        dashboardItem.setAction(dashboardItemFlow.getAction());
+        // dashboardItem.setAction(dashboardItemFlow.getAction());
         return dashboardItem;
     }
 

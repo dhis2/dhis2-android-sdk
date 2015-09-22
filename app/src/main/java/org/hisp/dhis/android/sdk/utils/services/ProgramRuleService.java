@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.utils.services;
 
+import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
@@ -92,8 +93,16 @@ public class ProgramRuleService {
         }
 
         String conditionReplaced = TextUtils.appendTail(matcher, buffer);
-
-        return ExpressionUtils.isTrue(conditionReplaced, null);
+        boolean isTrue = false;
+        try
+        {
+             isTrue = ExpressionUtils.isTrue(conditionReplaced, null);
+        }
+        catch(JexlException jxlException)
+        {
+            jxlException.printStackTrace();
+        }
+        return isTrue;
     }
 
     public static List<String> getDataElementsInRule(ProgramRule programRule) {

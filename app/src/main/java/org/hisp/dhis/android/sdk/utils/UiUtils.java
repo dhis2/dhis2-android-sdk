@@ -31,7 +31,9 @@ package org.hisp.dhis.android.sdk.utils;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
@@ -156,9 +158,13 @@ public final class UiUtils {
         }.start();
     }
 
+    @Deprecated
+    /**
+     * @deprecated due to abstraction of status dialog fragment
+     */
     public static void showStatusDialog(FragmentManager fragmentManager, BaseSerializableModel item) {
-        ItemStatusDialogFragment fragment = ItemStatusDialogFragment.newInstance(item);
-        fragment.show(fragmentManager);
+//        ItemStatusDialogFragment fragment = new ItemStatusDialogFragment(item).newInstance(item);
+//        fragment.show(fragmentManager);
     }
 
 
@@ -179,5 +185,18 @@ public final class UiUtils {
             }
             getInstance().setProgressDialogFragment(null);
         }
+    }
+
+    public static void showSnackBar(View parentLayout, String text, int duration)
+    {
+        Snackbar.make(parentLayout, text, duration).show();
+    }
+    public static void showSnackBarWithAction(View parentLayout, String text, int duration, int resId, View.OnClickListener onClickListener )
+    {
+        Snackbar.make(parentLayout, text, duration).setAction(resId, onClickListener).show();
+    }
+    public static void showSnackBarWithAction(View parentLayout, String text, int duration, String actionText, View.OnClickListener onClickListener )
+    {
+        Snackbar.make(parentLayout, text, duration).setAction(actionText, onClickListener).show();
     }
 }

@@ -77,7 +77,7 @@ import org.hisp.dhis.android.sdk.utils.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemStatusDialogFragment extends DialogFragment
+public abstract class ItemStatusDialogFragment extends DialogFragment
         implements View.OnClickListener, LoaderManager.LoaderCallbacks<ItemStatusDialogFragmentForm> {
     private static final String TAG = ItemStatusDialogFragment.class.getSimpleName();
 
@@ -90,27 +90,12 @@ public class ItemStatusDialogFragment extends DialogFragment
     private FontTextView mStatus;
     private int mDialogId;
 
-    private static final String EXTRA_ID = "extra:id";
-    private static final String EXTRA_TYPE = "extra:type";
-    private static final String EXTRA_ARGUMENTS = "extra:Arguments";
-    private static final String EXTRA_SAVED_INSTANCE_STATE = "extra:savedInstanceState";
+    public static final String EXTRA_ID = "extra:id";
+    public static final String EXTRA_TYPE = "extra:type";
+    public static final String EXTRA_ARGUMENTS = "extra:Arguments";
+    public static final String EXTRA_SAVED_INSTANCE_STATE = "extra:savedInstanceState";
 
-    public static ItemStatusDialogFragment newInstance(BaseSerializableModel item) {
-        ItemStatusDialogFragment dialogFragment = new ItemStatusDialogFragment();
-        Bundle args = new Bundle();
-
-        args.putLong(EXTRA_ID, item.getLocalId());
-        if(item instanceof TrackedEntityInstance) {
-            args.putString(EXTRA_TYPE, FailedItem.TRACKEDENTITYINSTANCE);
-        } else if (item instanceof Enrollment) {
-            args.putString(EXTRA_TYPE, FailedItem.ENROLLMENT);
-        } else if (item instanceof Event) {
-            args.putString(EXTRA_TYPE, FailedItem.EVENT);
-        }
-
-        dialogFragment.setArguments(args);
-        return dialogFragment;
-    }
+//    public abstract ItemStatusDialogFragment newInstance(BaseSerializableModel item);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -318,19 +303,9 @@ public class ItemStatusDialogFragment extends DialogFragment
         }
     }
 
-    public static void sendToServer(final BaseSerializableModel item, ItemStatusDialogFragment fragment) {
-        if(item instanceof TrackedEntityInstance) {
-            TrackedEntityInstance trackedEntityInstance = (TrackedEntityInstance) item;
-            sendTrackedEntityInstance(trackedEntityInstance);
-        } else if(item instanceof Enrollment) {
-            Enrollment enrollment = (Enrollment) item;
-            sendEnrollment(enrollment);
-        } else if(item instanceof Event) {
-            Event event = (Event) item;
-            sendEvent(event);
-        }
+    public abstract void sendToServer(final BaseSerializableModel item, ItemStatusDialogFragment fragment);
 
-    }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
@@ -377,16 +352,7 @@ public class ItemStatusDialogFragment extends DialogFragment
         return super.onContextItemSelected(item);
     }
 
-    public static void sendTrackedEntityInstance(final TrackedEntityInstance trackedEntityInstance) {
-        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
-                ResourceType.TRACKEDENTITYINSTANCE) {
-            @Override
-            public Object execute() throws APIException {
-                TrackerController.sendTrackedEntityInstanceChanges(DhisController.getInstance().getDhisApi(), trackedEntityInstance, true);
-                return new Object();
-            }
-        });
-    }
+
 
         private class MediaScanner implements MediaScannerConnection.MediaScannerConnectionClient
         {
@@ -414,17 +380,7 @@ public class ItemStatusDialogFragment extends DialogFragment
                 mediaScannerConnection.disconnect();
             }
         }
-    public static void sendEnrollment(final Enrollment enrollment) {
-        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
-                ResourceType.ENROLLMENT) {
 
-            @Override
-            public Object execute() throws APIException {
-                TrackerController.sendEnrollmentChanges(DhisController.getInstance().getDhisApi(), enrollment, true);
-                return new Object();
-            }
-        });
-    }
 
     public static void sendEvent(final Event event) {
         JobExecutor.enqueueJob(new NetworkJob<Object>(0,

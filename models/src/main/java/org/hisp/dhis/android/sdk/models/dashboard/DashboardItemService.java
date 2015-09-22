@@ -105,8 +105,10 @@ public class DashboardItemService implements IDashboardItemService {
 
     @Override
     public int getContentCount(DashboardItem dashboardItem) {
-        List<DashboardElement> dashboardElements = dashboardElementStore
-                .filter(dashboardItem, Action.TO_DELETE);
+        /* List<DashboardElement> dashboardElements = dashboardElementStore
+                .filter(dashboardItem, Action.TO_DELETE); */
+        List<DashboardElement> dashboardElements = stateStore
+                .filterByAction(DashboardElement.class, Action.TO_DELETE);
         return dashboardElements == null ? 0 : dashboardElements.size();
     }
 }

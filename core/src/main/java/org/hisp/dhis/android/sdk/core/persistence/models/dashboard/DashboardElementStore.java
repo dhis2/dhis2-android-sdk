@@ -97,7 +97,7 @@ public class DashboardElementStore implements IDashboardElementStore {
         return DashboardElement$Flow.toModel(dashboardElementFlow);
     }
 
-    @Override
+    /* @Override
     public List<DashboardElement> query(DashboardItem dashboardItem, Action... actions) {
         return query(dashboardItem, Arrays.asList(actions));
     }
@@ -155,9 +155,9 @@ public class DashboardElementStore implements IDashboardElementStore {
 
         // converting flow models to Dashboard
         return DashboardElement$Flow.toModels(elementFlows);
-    }
+    } */
 
-    private static Condition.CombinedCondition buildCombinedCondition(List<Action> actions) {
+    /* private static Condition.CombinedCondition buildCombinedCondition(List<Action> actions) {
         Condition.CombinedCondition combinedCondition = null;
         for (Action action : actions) {
             if (combinedCondition == null) {
@@ -167,7 +167,7 @@ public class DashboardElementStore implements IDashboardElementStore {
             }
         }
         return combinedCondition;
-    }
+    } */
 
     private static Condition isState(Action action) {
         return Condition.column(DashboardElement$Flow$Table

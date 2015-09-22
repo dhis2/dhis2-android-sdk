@@ -34,7 +34,7 @@ import org.hisp.dhis.android.sdk.models.state.Action;
 import java.util.List;
 
 public interface IDashboardItemStore extends IIdentifiableObjectStore<DashboardItem> {
-    List<DashboardItem> query(Action... actions);
+    /* List<DashboardItem> query(Action... actions);
 
     List<DashboardItem> query(List<Action> actions);
 
@@ -44,5 +44,5 @@ public interface IDashboardItemStore extends IIdentifiableObjectStore<DashboardI
 
     List<DashboardItem> filter(Dashboard dashboard, Action action);
 
-    List<DashboardItem> filter(Dashboard dashboard, Action action, String type);
+    List<DashboardItem> filter(Dashboard dashboard, Action action, String type); */
 }

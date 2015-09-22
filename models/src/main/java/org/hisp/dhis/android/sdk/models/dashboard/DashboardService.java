@@ -169,8 +169,9 @@ public class DashboardService implements IDashboardService {
         isNull(dashboard, "dashboard must not be null");
         isNull(type, "type must not be null");
 
-        List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, Action.TO_DELETE);
+        /* List<DashboardItem> items = dashboardItemStore
+                .filter(dashboard, Action.TO_DELETE); */
+        List<DashboardItem> items = null; // dumb replacement
 
         if (items == null || items.isEmpty()) {
             return null;
@@ -187,8 +188,10 @@ public class DashboardService implements IDashboardService {
     }
 
     int getDashboardItemCount(Dashboard dashboard) {
-        List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, Action.TO_DELETE);
+        /* List<DashboardItem> items = dashboardItemStore
+                .filter(dashboard, Action.TO_DELETE); */
+        List<DashboardItem> items = stateStore
+                .filterByAction(DashboardItem.class, Action.TO_DELETE);
         return items == null ? 0 : items.size();
     }
 

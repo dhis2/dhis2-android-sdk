@@ -38,6 +38,8 @@ public interface IStateStore extends IStore<State> {
 
     <T extends IdentifiableObject> List<State> query(Class<T> clazz);
 
+    <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action);
+
     <T extends IdentifiableObject> Action queryAction(T object);
 
     <T extends IdentifiableObject> void delete(T object);

@@ -61,14 +61,36 @@ public final class DateTimeManager {
     }
 
     public void setLastUpdated(ResourceType type, DateTime dateTime) {
+        setLastUpdated(type, null, dateTime);
+    }
+
+    public void setLastUpdated(ResourceType type, String extraIdentifier, DateTime dateTime) {
         isNull(type, "ResourceType object must not be null");
         isNull(dateTime, "DateTime object must not be null");
 
-        putString(METADATA_UPDATE_DATETIME + type.toString(), dateTime.toString());
+        String identifier = METADATA_UPDATE_DATETIME + type.toString();
+        if( extraIdentifier != null ) {
+            identifier += extraIdentifier;
+        }
+        putString(identifier, dateTime.toString());
     }
 
     public DateTime getLastUpdated(ResourceType type) {
-        String dateTimeString = getString(METADATA_UPDATE_DATETIME + type.toString());
+        return getLastUpdated(type, null);
+    }
+
+    /**
+     *
+     * @param type
+     * @param extraIdentifier add some extra info for a specific resource. For example an UID
+     * @return
+     */
+    public DateTime getLastUpdated(ResourceType type, String extraIdentifier) {
+        String identifier = METADATA_UPDATE_DATETIME + type.toString();
+        if( extraIdentifier != null ) {
+            identifier += extraIdentifier;
+        }
+        String dateTimeString = getString(identifier);
         if (dateTimeString != null) {
             return DateTime.parse(dateTimeString);
         }

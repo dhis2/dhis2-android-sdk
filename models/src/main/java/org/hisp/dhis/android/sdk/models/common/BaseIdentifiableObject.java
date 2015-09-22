@@ -172,6 +172,16 @@ public class BaseIdentifiableObject implements IdentifiableObject {
         return ids;
     }
 
+    /**
+     * Returns a list of items taken from updatedItems and persistedItems, based on the items in
+     * the passed existingItems List. Items that are not present in existingItems will not be
+     * included.
+     * @param existingItems
+     * @param updatedItems
+     * @param persistedItems
+     * @param <T>
+     * @return
+     */
     public static <T extends IdentifiableObject> List<T> merge(List<T> existingItems,
                                                                    List<T> updatedItems,
                                                                    List<T> persistedItems) {

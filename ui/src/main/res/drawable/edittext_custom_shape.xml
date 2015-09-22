@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Copyright (c) 2015, University of Oslo
   ~
@@ -27,26 +27,10 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <!-- Stub strings -->
-    <string name="image_description">Image description</string>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
 
-    <!-- AbsLoginActivity strings -->
-    <string name="server_url">Server URL</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
+    <solid android:color="@color/white"/>
+    <corners android:radius="1dp"/>
 
-    <!-- AbsConfirmUserActivity -->
-    <string name="activity_confirm_user">Confirm user</string>
-    <string name="re_log_in">Re-Log in</string>
-    <string name="clear_and_logout">Clear and log out</string>
-
-    <!-- Font names -->
-    <string name="font_light">Roboto-Light.ttf</string>
-    <string name="font_regular">Roboto-Regular.ttf</string>
-    <string name="font_medium">Roboto-Medium.ttf</string>
-    <string name="font_bold">Roboto-Bold.ttf</string>
-    <string name="font_condensed">Roboto-Condensed.ttf</string>
-
-</resources>
+</shape> 

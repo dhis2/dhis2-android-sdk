@@ -32,6 +32,9 @@ package org.hisp.dhis.android.sdk.core.persistence.models.programstagesection;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicator$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicatorToProgramStageSectionRelation$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ProgramStageSection$Flow$Table;
@@ -40,6 +43,7 @@ import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSection
 import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
 import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ProgramStageSectionStore implements IProgramStageSectionStore {
@@ -56,6 +60,19 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
         programStageSectionFlow.insert();
 
         object.setId(programStageSectionFlow.getId());
+
+        //saving programindicator programstagesection relationship
+        List<ProgramIndicator$Flow> programIndicatorFlows = programStageSectionFlow
+                .getProgramIndicators();
+        if(programIndicatorFlows != null) {
+            for(ProgramIndicator$Flow programIndicatorFlow : programIndicatorFlows) {
+                ProgramIndicatorToProgramStageSectionRelation$Flow relationFlow = new
+                        ProgramIndicatorToProgramStageSectionRelation$Flow();
+                relationFlow.setProgramIndicator(programIndicatorFlow);
+                relationFlow.setProgramStageSection(programStageSectionFlow);
+                relationFlow.insert();
+            }
+        }
     }
 
     @Override
@@ -70,10 +87,33 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
         programStageSectionFlow.save();
 
         object.setId(programStageSectionFlow.getId());
+
+        //saving programindicator programstagesection relationship
+        List<ProgramIndicator$Flow> programIndicatorFlows = programStageSectionFlow
+                .getProgramIndicators();
+        if(programIndicatorFlows != null) {
+            for(ProgramIndicator$Flow programIndicatorFlow : programIndicatorFlows) {
+                ProgramIndicatorToProgramStageSectionRelation$Flow relationFlow = new
+                        ProgramIndicatorToProgramStageSectionRelation$Flow();
+                relationFlow.setProgramIndicator(programIndicatorFlow);
+                relationFlow.setProgramStageSection(programStageSectionFlow);
+                relationFlow.save();
+            }
+        }
     }
 
     @Override
     public void delete(ProgramStageSection object) {
+        List<ProgramIndicatorToProgramStageSectionRelation$Flow>
+                programIndicatorToProgramStageSectionRelationFlows = new Select()
+                .from(ProgramIndicatorToProgramStageSectionRelation$Flow.class)
+                .where(Condition.column(ProgramIndicatorToProgramStageSectionRelation$Flow$Table
+                        .PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(object.getUId())).queryList();
+        for(ProgramIndicatorToProgramStageSectionRelation$Flow
+                programIndicatorToProgramStageSectionRelationFlow
+                : programIndicatorToProgramStageSectionRelationFlows) {
+            programIndicatorToProgramStageSectionRelationFlow.delete();
+        }
         ProgramStageSection$Flow.fromModel(object).delete();
     }
 
@@ -84,6 +124,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .queryList();
         for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
             setProgramStageDataElements(programStageSectionFlow);
+            setProgramIndicators(programStageSectionFlow);
         }
         return ProgramStageSection$Flow.toModels(programStageSectionFlows);
     }
@@ -95,6 +136,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .where(Condition.column(ProgramStageSection$Flow$Table.ID).is(id))
                 .querySingle();
         setProgramStageDataElements(programStageSectionFlow);
+        setProgramIndicators(programStageSectionFlow);
         return ProgramStageSection$Flow.toModel(programStageSectionFlow);
     }
 
@@ -105,6 +147,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .where(Condition.column(ProgramStageSection$Flow$Table.UID).is(uid))
                 .querySingle();
         setProgramStageDataElements(programStageSectionFlow);
+        setProgramIndicators(programStageSectionFlow);
         return ProgramStageSection$Flow.toModel(programStageSectionFlow);
     }
 
@@ -117,6 +160,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 .queryList();
         for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
             setProgramStageDataElements(programStageSectionFlow);
+            setProgramIndicators(programStageSectionFlow);
         }
         return ProgramStageSection$Flow.toModels(programStageSectionFlows);
     }
@@ -128,5 +172,26 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
         programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
                 .fromModels(programStageDataElementStore
                         .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
+    }
+
+    private void setProgramIndicators(ProgramStageSection$Flow programStageSectionFlow) {
+        if(programStageSectionFlow == null) {
+            return;
+        }
+        List<ProgramIndicatorToProgramStageSectionRelation$Flow>
+                programIndicatorToProgramStageSectionRelationFlows = new Select()
+                .from(ProgramIndicatorToProgramStageSectionRelation$Flow.class)
+                .where(Condition.column(ProgramIndicatorToProgramStageSectionRelation$Flow$Table
+                        .PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSectionFlow.getUId())).queryList();
+        List<ProgramIndicator$Flow> programIndicatorFlows = new ArrayList<>();
+        for(ProgramIndicatorToProgramStageSectionRelation$Flow
+                programIndicatorToProgramStageSectionRelationFlow :
+                programIndicatorToProgramStageSectionRelationFlows) {
+            ProgramIndicator$Flow programIndicatorFlow = programIndicatorToProgramStageSectionRelationFlow.getProgramIndicator();
+            if(programIndicatorFlow != null) {
+                programIndicatorFlows.add(programIndicatorFlow);
+            }
+        }
+        programStageSectionFlow.setProgramIndicators(programIndicatorFlows);
     }
 }

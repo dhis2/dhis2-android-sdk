@@ -32,12 +32,13 @@ package org.hisp.dhis.android.sdk.models.programstagedataelement;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStageDataElement {
+public final class ProgramStageDataElement implements IModel{
 
     private String programStage;
 

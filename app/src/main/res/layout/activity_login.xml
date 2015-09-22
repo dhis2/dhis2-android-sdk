@@ -37,7 +37,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.hisp.dhis.android.sdk.ui.activities.LoginActivity">
+    tools:context="org.hisp.dhis.android.sdk.ui.activities.AbsLoginActivity">
 
     <include layout="@layout/progress_bar_light" />
 

@@ -26,8 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.preferences;
+package org.hisp.dhis.android.sdk.core.controllers;
 
-public enum ResourceType {
-    DASHBOARDS_CONTENT, DASHBOARDS, INTERPRETATIONS, USERS, RELATIONSHIPTYPES, OPTIONSETS, PROGRAM, PROGRAMS, ASSIGNEDPROGRAMS, ORGANISATIONUNITS
+import org.hisp.dhis.android.sdk.core.controllers.common.IController;
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+
+import java.util.List;
+
+public interface IOrganisationUnitController extends IController<OrganisationUnit> {
+    void sync() throws APIException;
+    void sync(List<OrganisationUnit> organisationUnits);
 }

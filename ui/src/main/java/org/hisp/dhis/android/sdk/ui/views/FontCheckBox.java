@@ -26,8 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.preferences;
+package org.hisp.dhis.android.sdk.ui.views;
 
-public enum ResourceType {
-    DASHBOARDS_CONTENT, DASHBOARDS, INTERPRETATIONS, USERS, RELATIONSHIPTYPES, OPTIONSETS, PROGRAM, PROGRAMS, ASSIGNEDPROGRAMS, ORGANISATIONUNITS
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.widget.CheckBox;
+
+import org.hisp.dhis.android.sdk.ui.R;
+import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
+
+public class FontCheckBox extends CheckBox {
+    public FontCheckBox(Context context) {
+        super(context);
+    }
+
+    public FontCheckBox(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
+
+    public FontCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attributeSet) {
+        if (!isInEditMode()) {
+            TypedArray attrs = context.obtainStyledAttributes(
+                    attributeSet, R.styleable.ViewFont);
+            setFont(attrs.getString(R.styleable.ViewFont_font));
+            attrs.recycle();
+        }
+    }
+
+    private void setFont(final String fontName) {
+        if (getContext() != null && getContext().getAssets() != null && fontName != null) {
+            Typeface typeface = TypefaceManager.getTypeface(
+                    getContext().getAssets(), fontName);
+            if (typeface != null) {
+                setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+                setTypeface(typeface);
+            }
+        }
+    }
 }

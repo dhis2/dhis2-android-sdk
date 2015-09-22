@@ -68,13 +68,14 @@ public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow
         dashboardItemContent.setLastUpdated(contentFlow.getLastUpdated());
         dashboardItemContent.setName(contentFlow.getName());
         dashboardItemContent.setDisplayName(contentFlow.getDisplayName());
+        dashboardItemContent.setType(contentFlow.getType());
         return dashboardItemContent;
     }
 
     public static List<DashboardItemContent> toModels(List<DashboardItemContent$Flow> flows) {
         List<DashboardItemContent> dashboardItemContents = new ArrayList<>();
 
-        if (flows != null && flows.isEmpty()) {
+        if (flows != null && !flows.isEmpty()) {
             for (DashboardItemContent$Flow flow : flows) {
                 dashboardItemContents.add(toModel(flow));
             }
@@ -95,6 +96,7 @@ public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow
         flowModel.setLastUpdated(content.getLastUpdated());
         flowModel.setName(content.getName());
         flowModel.setDisplayName(content.getDisplayName());
+        flowModel.setType(content.getType());
         return flowModel;
     }
 }

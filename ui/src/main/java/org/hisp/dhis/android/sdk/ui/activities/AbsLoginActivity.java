@@ -45,7 +45,7 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 
 import static android.text.TextUtils.isEmpty;
 
-public abstract class LoginActivity extends AppCompatActivity {
+public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
     private View mViewsContainer;
@@ -56,17 +56,17 @@ public abstract class LoginActivity extends AppCompatActivity {
     private Button mLogInButton;
 
     @Override
-    protected final void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mViewsContainer = findViewById(R.id.log_in_views_container);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
-        mLogInButton = (Button) findViewById(R.id.log_in_button);
+        mViewsContainer = findViewById(R.id.container_log_in_views);
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_white);
+        mLogInButton = (Button) findViewById(R.id.button_log_in);
 
-        mServerUrl = (EditText) findViewById(R.id.server_url);
-        mUsername = (EditText) findViewById(R.id.username);
-        mPassword = (EditText) findViewById(R.id.password);
+        mServerUrl = (EditText) findViewById(R.id.edittext_server_url);
+        mUsername = (EditText) findViewById(R.id.edittext_username);
+        mPassword = (EditText) findViewById(R.id.edittext_password);
 
         FieldTextWatcher watcher = new FieldTextWatcher();
         mServerUrl.addTextChangedListener(watcher);
@@ -136,7 +136,7 @@ public abstract class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            LoginActivity.this.onTextChanged();
+            AbsLoginActivity.this.onTextChanged();
         }
     }
 

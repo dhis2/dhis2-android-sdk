@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateService;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
@@ -41,16 +40,13 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 public class DashboardItemService implements IDashboardItemService {
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
-    private final IStateService stateService;
     private final IStateStore stateStore;
 
     public DashboardItemService(IDashboardItemStore dashboardItemStore,
                                 IDashboardElementStore dashboardElementStore,
-                                IStateService stateService,
                                 IStateStore stateStore) {
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
-        this.stateService = stateService;
         this.stateStore = stateStore;
     }
 
@@ -77,7 +73,7 @@ public class DashboardItemService implements IDashboardItemService {
         item.setType(content.getType());
 
         // item.setAction(Action.TO_POST);
-        stateService.save(item, Action.TO_POST);
+        stateStore.save(item, Action.TO_POST);
 
         return item;
     }
@@ -98,7 +94,7 @@ public class DashboardItemService implements IDashboardItemService {
             dashboardItemStore.delete(dashboardItem);
         } else {
             // dashboardItem.setAction(Action.TO_DELETE);
-            stateService.save(dashboardItem, Action.TO_DELETE);
+            stateStore.save(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
     }

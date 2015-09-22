@@ -36,7 +36,6 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
@@ -47,7 +46,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
-import org.hisp.dhis.android.sdk.models.state.IStateService;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
@@ -77,13 +76,11 @@ public final class DashboardController implements IDataController<Dashboard> {
     private final IDashboardItemContentStore dashboardItemContentStore;
 
     private final IStateStore stateStore;
-    private final IStateService stateService;
 
     public DashboardController(IDhisApi dhisApi, IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,
-                               IStateService stateService,
                                IStateStore stateStore) {
         this.dhisApi = dhisApi;
         this.dashboardStore = dashboardStore;
@@ -91,7 +88,6 @@ public final class DashboardController implements IDataController<Dashboard> {
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemContentStore = dashboardItemContentStore;
         this.stateStore = stateStore;
-        this.stateService = stateService;
     }
 
     /* this method subtracts content of bList from aList */

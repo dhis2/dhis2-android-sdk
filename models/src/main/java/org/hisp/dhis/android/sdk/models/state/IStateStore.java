@@ -43,4 +43,6 @@ public interface IStateStore extends IStore<State> {
     <T extends IdentifiableObject> Action queryAction(T object);
 
     <T extends IdentifiableObject> void delete(T object);
+
+    <T extends IdentifiableObject> void save(T object, Action action);
 }

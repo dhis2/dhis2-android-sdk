@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateService;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
@@ -46,21 +45,18 @@ public class DashboardService implements IDashboardService {
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
 
-    private final IStateService stateService;
     private final IStateStore stateStore;
 
     public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService,
-                            IStateService stateService,
                             IStateStore stateStore) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemService = dashboardItemService;
         this.dashboardElementService = dashboardElementService;
-        this.stateService = stateService;
         this.stateStore = stateStore;
     }
 
@@ -95,7 +91,7 @@ public class DashboardService implements IDashboardService {
             dashboardStore.delete(dashboard);
         } else {
             // dashboard.setAction(Action.TO_DELETE);
-            stateService.save(dashboard, Action.TO_DELETE);
+            stateStore.save(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
         }
     }
@@ -117,7 +113,7 @@ public class DashboardService implements IDashboardService {
         you don't have anything to update */
         if (!Action.TO_POST.equals(action)) {
             // dashboard.setAction(Action.TO_UPDATE);
-            stateService.save(dashboard, Action.TO_UPDATE);
+            stateStore.save(dashboard, Action.TO_UPDATE);
         }
 
         dashboard.setName(name);

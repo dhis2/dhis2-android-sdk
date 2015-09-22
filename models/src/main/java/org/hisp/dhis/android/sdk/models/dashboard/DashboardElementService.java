@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateService;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
@@ -37,16 +36,13 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 public class DashboardElementService implements IDashboardElementService {
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemService dashboardItemService;
-    private final IStateService stateService;
     private final IStateStore stateStore;
 
     public DashboardElementService(IDashboardElementStore dashboardElementStore,
                                    IDashboardItemService dashboardItemService,
-                                   IStateService stateService,
                                    IStateStore stateStore) {
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemService = dashboardItemService;
-        this.stateService = stateService;
         this.stateStore = stateStore;
     }
 
@@ -73,7 +69,7 @@ public class DashboardElementService implements IDashboardElementService {
         element.setDashboardItem(dashboardItem);
 
         // element.setAction(Action.TO_POST);
-        stateService.save(element, Action.TO_POST);
+        stateStore.save(element, Action.TO_POST);
 
         return element;
     }
@@ -89,7 +85,7 @@ public class DashboardElementService implements IDashboardElementService {
             dashboardElementStore.delete(dashboardElement);
         }else{
             // dashboardElement.setAction(Action.TO_DELETE);
-            stateService.save(dashboardElement, Action.TO_DELETE);
+            stateStore.save(dashboardElement, Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 

@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.Action;
+import org.hisp.dhis.android.sdk.models.state.Action;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardElement extends BaseIdentifiableObject {

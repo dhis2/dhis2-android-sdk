@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.common.meta;
+package org.hisp.dhis.android.sdk.models.state;
 
 public enum Action {
     SYNCED, TO_POST, TO_UPDATE, TO_DELETE,

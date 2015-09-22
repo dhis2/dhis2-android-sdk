@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.meta.Action;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.junit.Before;
 import org.junit.Test;
 

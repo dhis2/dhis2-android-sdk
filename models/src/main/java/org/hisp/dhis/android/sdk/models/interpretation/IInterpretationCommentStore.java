@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.Action;
+import org.hisp.dhis.android.sdk.models.state.Action;
 
 import java.util.List;
 

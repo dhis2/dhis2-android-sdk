@@ -94,7 +94,7 @@ public final class Enrollment$Flow extends BaseModel {
     Access access;
 
     @Column
-    org.hisp.dhis.android.sdk.models.common.meta.Action action;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     List<Event$Flow> events;
 
@@ -220,11 +220,11 @@ public final class Enrollment$Flow extends BaseModel {
         this.access = access;
     }
 
-    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
         this.action = action;
     }
 

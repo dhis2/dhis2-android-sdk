@@ -43,21 +43,21 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
 
     @Column(name = "action")
     @NotNull
-    org.hisp.dhis.android.sdk.models.common.meta.Action action;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public Dashboard$Flow() {
-        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
     /////////////////////////////////////////////////////////////////////////
     // Getters and setters
     /////////////////////////////////////////////////////////////////////////
 
-    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
         this.action = action;
     }
 

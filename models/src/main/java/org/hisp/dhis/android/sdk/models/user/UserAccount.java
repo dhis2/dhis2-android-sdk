@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.Action;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.joda.time.DateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

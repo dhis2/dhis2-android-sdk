@@ -71,7 +71,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     Access access;
 
     @Column(name = "action")
-    org.hisp.dhis.android.sdk.models.common.meta.Action action;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     @Column(name = "firstName")
     String firstName;
@@ -110,7 +110,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     String phoneNumber;
 
     public UserAccount$Flow() {
-        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
     @Override
@@ -183,11 +183,11 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         this.access = access;
     }
 
-    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
         this.action = action;
     }
 

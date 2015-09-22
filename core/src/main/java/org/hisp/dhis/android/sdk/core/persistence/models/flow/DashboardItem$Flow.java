@@ -46,7 +46,7 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
 
     @Column(name = "action")
     @NotNull
-    org.hisp.dhis.android.sdk.models.common.meta.Action action;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     @Column(name = "type")
     String type;
@@ -63,14 +63,14 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
     Dashboard$Flow dashboard;
 
     public DashboardItem$Flow() {
-        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
-    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
         this.action = action;
     }
 

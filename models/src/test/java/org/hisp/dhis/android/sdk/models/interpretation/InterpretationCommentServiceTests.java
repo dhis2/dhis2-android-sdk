@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -49,14 +49,14 @@ public final class InterpretationCommentServiceTests {
         InterpretationComment interpretationCommentStateToPost = new InterpretationComment();
         InterpretationComment interpretationCommentStateSynced = new InterpretationComment();
 
-        interpretationCommentStateToPost.setState(State.TO_POST);
-        interpretationCommentStateSynced.setState(State.SYNCED);
+        interpretationCommentStateToPost.setAction(Action.TO_POST);
+        interpretationCommentStateSynced.setAction(Action.SYNCED);
 
         service.deleteComment(interpretationCommentStateToPost);
         service.deleteComment(interpretationCommentStateSynced);
 
-        assertEquals(interpretationCommentStateToPost.getState(), State.TO_DELETE);
-        assertEquals(interpretationCommentStateSynced.getState(), State.TO_DELETE);
+        assertEquals(interpretationCommentStateToPost.getAction(), Action.TO_DELETE);
+        assertEquals(interpretationCommentStateSynced.getAction(), Action.TO_DELETE);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -78,16 +78,16 @@ public final class InterpretationCommentServiceTests {
         InterpretationComment commentSynced = new InterpretationComment();
 
         commentToPost.setText("Some fancy comment");
-        commentToPost.setState(State.TO_POST);
+        commentToPost.setAction(Action.TO_POST);
 
         commentSynced.setText("Some fancy comment");
-        commentSynced.setState(State.SYNCED);
+        commentSynced.setAction(Action.SYNCED);
 
         service.updateCommentText(commentToPost, newComment);
         service.updateCommentText(commentSynced, newComment);
 
-        assertEquals(commentToPost.getState(), State.TO_POST);
-        assertEquals(commentSynced.getState(), State.TO_UPDATE);
+        assertEquals(commentToPost.getAction(), Action.TO_POST);
+        assertEquals(commentSynced.getAction(), Action.TO_UPDATE);
 
         assertEquals(commentToPost.getText(), newComment);
         assertEquals(commentSynced.getText(), newComment);
@@ -96,7 +96,7 @@ public final class InterpretationCommentServiceTests {
     @Test(expected = IllegalArgumentException.class)
     public void updateCommentTextShouldFailOnWrongState() {
         InterpretationComment commentToDelete = new InterpretationComment();
-        commentToDelete.setState(State.TO_DELETE);
+        commentToDelete.setAction(Action.TO_DELETE);
 
         String commentText = "comment";
 

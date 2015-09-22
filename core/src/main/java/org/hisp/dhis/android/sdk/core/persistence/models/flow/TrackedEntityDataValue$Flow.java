@@ -35,7 +35,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
     String value;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     public String getEventUid() {
         return eventUid;
@@ -104,12 +103,12 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         this.value = value;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public TrackedEntityDataValue$Flow() {
@@ -127,7 +126,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
         trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());
         trackedEntityDataValue.setValue(trackedEntityDataValueFlow.getValue());
-        trackedEntityDataValue.setState(trackedEntityDataValueFlow.getState());
+        trackedEntityDataValue.setAction(trackedEntityDataValueFlow.getAction());
         return trackedEntityDataValue;
     }
 
@@ -142,7 +141,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
         trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
         trackedEntityDataValueFlow.setValue(trackedEntityDataValue.getValue());
-        trackedEntityDataValueFlow.setState(trackedEntityDataValue.getState());
+        trackedEntityDataValueFlow.setAction(trackedEntityDataValue.getAction());
         return trackedEntityDataValueFlow;
     }
 

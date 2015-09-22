@@ -31,19 +31,19 @@ package org.hisp.dhis.android.sdk.core.persistence.converters;
 
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 @SuppressWarnings("unused")
 @com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class StateConverter extends TypeConverter<String, State> {
+public final class StateConverter extends TypeConverter<String, Action> {
 
     @Override
-    public String getDBValue(State model) {
+    public String getDBValue(Action model) {
         return model.toString();
     }
 
     @Override
-    public State getModelValue(String data) {
-        return State.valueOf(data);
+    public Action getModelValue(String data) {
+        return Action.valueOf(data);
     }
 }

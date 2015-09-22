@@ -35,7 +35,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
     String value;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     public String getTrackedEntityAttributeUId() {
         return trackedEntityAttributeUId;
@@ -93,12 +92,12 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         this.value = value;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public TrackedEntityAttributeValue$Flow() {
@@ -115,7 +114,7 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         trackedEntityAttributeValue.setTrackedEntityInstanceId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceId());
         trackedEntityAttributeValue.setTrackedEntityInstanceUId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceUId());
         trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
-        trackedEntityAttributeValue.setState(trackedEntityAttributeValueFlow.getState());
+        trackedEntityAttributeValue.setAction(trackedEntityAttributeValueFlow.getAction());
         return trackedEntityAttributeValue;
     }
 
@@ -129,7 +128,7 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         trackedEntityAttributeValueFlow.setTrackedEntityInstanceId(trackedEntityAttributeValue.getTrackedEntityInstanceId());
         trackedEntityAttributeValueFlow.setTrackedEntityInstanceUId(trackedEntityAttributeValue.getTrackedEntityInstanceUId());
         trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
-        trackedEntityAttributeValueFlow.setState(trackedEntityAttributeValue.getState());
+        trackedEntityAttributeValueFlow.setAction(trackedEntityAttributeValue.getAction());
         return trackedEntityAttributeValueFlow;
     }
 

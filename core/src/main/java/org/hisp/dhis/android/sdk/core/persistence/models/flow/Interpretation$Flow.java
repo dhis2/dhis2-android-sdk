@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 
 import java.util.ArrayList;
@@ -51,9 +50,9 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
     @Column(name = "type")
     String type;
 
-    @Column(name = "state")
+    @Column(name = "action")
     @NotNull
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     @Column
     @ForeignKey(
@@ -64,7 +63,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
     User$Flow user;
 
     public Interpretation$Flow() {
-        state = State.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
     }
 
     public String getText() {
@@ -83,12 +82,12 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
         this.type = type;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public User$Flow getUser() {
@@ -114,7 +113,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
         interpretation.setAccess(interpretationFlow.getAccess());
         interpretation.setText(interpretationFlow.getText());
         interpretation.setType(interpretationFlow.getType());
-        interpretation.setState(interpretationFlow.getState());
+        interpretation.setAction(interpretationFlow.getAction());
         interpretation.setUser(User$Flow.toModel(interpretationFlow.getUser()));
         return interpretation;
     }
@@ -134,7 +133,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
         interpretationFlow.setAccess(interpretation.getAccess());
         interpretationFlow.setText(interpretation.getText());
         interpretationFlow.setType(interpretation.getType());
-        interpretationFlow.setState(interpretation.getState());
+        interpretationFlow.setAction(interpretation.getAction());
         interpretationFlow.setUser(User$Flow.fromModel(interpretation.getUser()));
         return interpretationFlow;
     }

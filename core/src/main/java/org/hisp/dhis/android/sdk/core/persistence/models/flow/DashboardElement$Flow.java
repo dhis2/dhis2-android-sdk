@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
     @NotNull
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     @Column
     @NotNull
@@ -60,15 +59,15 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
     DashboardItem$Flow dashboardItem;
 
     public DashboardElement$Flow() {
-        state = State.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public DashboardItem$Flow getDashboardItem() {
@@ -94,7 +93,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
         dashboardElementFlow.setDashboardItem(DashboardItem$Flow
                 .fromModel(dashboardElement.getDashboardItem()));
-        dashboardElementFlow.setState(dashboardElement.getState());
+        dashboardElementFlow.setAction(dashboardElement.getAction());
         return dashboardElementFlow;
     }
 
@@ -113,7 +112,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
         dashboardElement.setDashboardItem(DashboardItem$Flow
                 .toModel(dashboardElementFlow.getDashboardItem()));
-        dashboardElement.setState(dashboardElementFlow.getState());
+        dashboardElement.setAction(dashboardElementFlow.getAction());
         return dashboardElement;
     }
 

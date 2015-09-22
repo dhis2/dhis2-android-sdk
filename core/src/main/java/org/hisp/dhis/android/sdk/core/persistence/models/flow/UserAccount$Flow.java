@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
 
@@ -71,8 +70,8 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     @Column(name = "access")
     Access access;
 
-    @Column(name = "state")
-    State state;
+    @Column(name = "action")
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     @Column(name = "firstName")
     String firstName;
@@ -111,7 +110,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     String phoneNumber;
 
     public UserAccount$Flow() {
-        state = State.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
     }
 
     @Override
@@ -184,12 +183,12 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         this.access = access;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public String getFirstName() {
@@ -303,7 +302,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         flowAccount.setName(userAccount.getName());
         flowAccount.setDisplayName(userAccount.getDisplayName());
         flowAccount.setAccess(userAccount.getAccess());
-        flowAccount.setState(userAccount.getState());
+        flowAccount.setAction(userAccount.getAction());
         flowAccount.setFirstName(userAccount.getFirstName());
         flowAccount.setSurname(userAccount.getSurname());
         flowAccount.setGender(userAccount.getGender());
@@ -332,7 +331,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         account.setName(flowAccount.getName());
         account.setDisplayName(flowAccount.getDisplayName());
         account.setAccess(flowAccount.getAccess());
-        account.setState(flowAccount.getState());
+        account.setAction(flowAccount.getAction());
         account.setFirstName(flowAccount.getFirstName());
         account.setSurname(flowAccount.getSurname());
         account.setGender(flowAccount.getGender());

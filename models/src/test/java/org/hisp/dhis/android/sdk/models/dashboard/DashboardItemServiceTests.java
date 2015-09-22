@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,7 +72,7 @@ public final class DashboardItemServiceTests {
         assertEquals(item.getCreated(), item.getLastUpdated());
 
         assertEquals(item.getDashboard(), dashboard);
-        assertEquals(item.getState(), State.TO_POST);
+        assertEquals(item.getAction(), Action.TO_POST);
         assertEquals(item.getType(), DashboardItemContent.TYPE_MAP);
 
         assertNotNull(item.getAccess());
@@ -83,13 +83,13 @@ public final class DashboardItemServiceTests {
         DashboardItem dashboardItemWithPostState = new DashboardItem();
         DashboardItem dashboardItemWithSyncedState = new DashboardItem();
 
-        dashboardItemWithPostState.setState(State.TO_POST);
-        dashboardItemWithSyncedState.setState(State.SYNCED);
+        dashboardItemWithPostState.setAction(Action.TO_POST);
+        dashboardItemWithSyncedState.setAction(Action.SYNCED);
 
         service.deleteDashboardItem(dashboardItemWithPostState);
         service.deleteDashboardItem(dashboardItemWithSyncedState);
 
-        assertEquals(dashboardItemWithPostState.getState(), State.TO_DELETE);
-        assertEquals(dashboardItemWithSyncedState.getState(), State.TO_DELETE);
+        assertEquals(dashboardItemWithPostState.getAction(), Action.TO_DELETE);
+        assertEquals(dashboardItemWithSyncedState.getAction(), Action.TO_DELETE);
     }
 }

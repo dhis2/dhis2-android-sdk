@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.hisp.dhis.android.sdk.models.relationship.Relationship;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
 import org.joda.time.DateTime;
@@ -71,10 +71,10 @@ public class TrackedEntityInstance implements Serializable {
     private DateTime lastUpdated;
 
     @JsonIgnore
-    private State state;
+    private Action action;
 
     public TrackedEntityInstance() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
     public long getId() {
@@ -141,11 +141,11 @@ public class TrackedEntityInstance implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 }

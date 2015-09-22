@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class DashboardItemService implements IDashboardItemService {
         DashboardItem item = new DashboardItem();
         item.setCreated(lastUpdated);
         item.setLastUpdated(lastUpdated);
-        item.setState(State.TO_POST);
+        item.setAction(Action.TO_POST);
         item.setDashboard(dashboard);
         item.setAccess(Access.createDefaultAccess());
         item.setType(content.getType());
@@ -72,7 +72,7 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     /**
-     * This method will change the state of the model to TO_DELETE
+     * This method will change the action of the model to TO_DELETE
      * if the model was already synced to the server.
      * <p/>
      * If model was created only locally, it will delete it
@@ -80,11 +80,11 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public void deleteDashboardItem(DashboardItem dashboardItem) {
-        if (State.TO_POST.equals(dashboardItem.getState())) {
-            dashboardItem.setState(State.TO_DELETE);
+        if (Action.TO_POST.equals(dashboardItem.getAction())) {
+            dashboardItem.setAction(Action.TO_DELETE);
             dashboardItemStore.delete(dashboardItem);
         } else {
-            dashboardItem.setState(State.TO_DELETE);
+            dashboardItem.setAction(Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
     }
@@ -92,7 +92,7 @@ public class DashboardItemService implements IDashboardItemService {
     @Override
     public int getContentCount(DashboardItem dashboardItem) {
         List<DashboardElement> dashboardElements = dashboardElementStore
-                .filter(dashboardItem, State.TO_DELETE);
+                .filter(dashboardItem, Action.TO_DELETE);
         return dashboardElements == null ? 0 : dashboardElements.size();
     }
 }

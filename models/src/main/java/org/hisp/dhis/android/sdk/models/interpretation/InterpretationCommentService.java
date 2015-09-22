@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -40,7 +40,7 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     }
 
     /**
-     * Performs soft delete of model. If State of object was SYNCED, it will be set to TO_DELETE.
+     * Performs soft delete of model. If Action of object was SYNCED, it will be set to TO_DELETE.
      * If the model is persisted only in the local database, it will be removed immediately.
      *
      * @param interpretationComment comment to delete.
@@ -49,11 +49,11 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     public void deleteComment(InterpretationComment interpretationComment) {
         isNull(interpretationComment, "interpretationComment should not be null");
 
-        if (State.TO_POST.equals(interpretationComment.getState())) {
-            interpretationComment.setState(State.TO_DELETE);
+        if (Action.TO_POST.equals(interpretationComment.getAction())) {
+            interpretationComment.setAction(Action.TO_DELETE);
             interpretationCommentStore.delete(interpretationComment);
         } else {
-            interpretationComment.setState(State.TO_DELETE);
+            interpretationComment.setAction(Action.TO_DELETE);
             interpretationCommentStore.save(interpretationComment);
         }
     }
@@ -61,7 +61,7 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     /**
      * Method modifies the original comment text and sets TO_UPDATE as state,
      * if the object was received from server. If the model was persisted only locally,
-     * the State will be the TO_POST.
+     * the Action will be the TO_POST.
      *
      * @param interpretationComment comment which should be updated.
      * @param text                  Edited text of comment.
@@ -70,13 +70,13 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     public void updateCommentText(InterpretationComment interpretationComment, String text) {
         isNull(interpretationComment, "interpretationComment must not be null");
 
-        if (State.TO_DELETE.equals(interpretationComment.getState())) {
-            throw new IllegalArgumentException("The text of interpretation comment with State." +
+        if (Action.TO_DELETE.equals(interpretationComment.getAction())) {
+            throw new IllegalArgumentException("The text of interpretation comment with Action." +
                     "TO_DELETE cannot be updated");
         }
 
-        if (!State.TO_POST.equals(interpretationComment.getState())) {
-            interpretationComment.setState(State.TO_UPDATE);
+        if (!Action.TO_POST.equals(interpretationComment.getAction())) {
+            interpretationComment.setAction(Action.TO_UPDATE);
         }
 
         interpretationComment.setText(text);

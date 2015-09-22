@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 import java.util.List;
 
 public interface IInterpretationCommentStore extends IIdentifiableObjectStore<InterpretationComment> {
-    List<InterpretationComment> filter(State state);
+    List<InterpretationComment> filter(Action action);
 
-    List<InterpretationComment> filter(Interpretation interpretation, State state);
+    List<InterpretationComment> filter(Interpretation interpretation, Action action);
 }

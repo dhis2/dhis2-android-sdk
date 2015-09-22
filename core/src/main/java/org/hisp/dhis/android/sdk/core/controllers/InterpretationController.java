@@ -37,9 +37,9 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
@@ -86,7 +86,7 @@ public final class InterpretationController implements IDataController<Interpret
 
     private void sendInterpretationChanges() throws APIException {
         List<Interpretation> interpretations =
-                Models.interpretations().filter(State.SYNCED);
+                Models.interpretations().filter(Action.SYNCED);
 
         if (interpretations == null || interpretations.isEmpty()) {
             return;
@@ -99,7 +99,7 @@ public final class InterpretationController implements IDataController<Interpret
         }
 
         for (Interpretation interpretation : interpretations) {
-            switch (interpretation.getState()) {
+            switch (interpretation.getAction()) {
                 case TO_POST: {
                     postInterpretation(interpretation);
                     break;
@@ -144,7 +144,7 @@ public final class InterpretationController implements IDataController<Interpret
             String interpretationUid = Uri.parse(header
                     .getValue()).getLastPathSegment();
             interpretation.setUId(interpretationUid);
-            interpretation.setState(State.SYNCED);
+            interpretation.setAction(Action.SYNCED);
             Models.interpretations().save(interpretation);
 
             updateInterpretationTimeStamp(interpretation);
@@ -158,7 +158,7 @@ public final class InterpretationController implements IDataController<Interpret
         try {
             mDhisApi.putInterpretationText(interpretation.getUId(),
                     new TypedString(interpretation.getText()));
-            interpretation.setState(State.SYNCED);
+            interpretation.setAction(Action.SYNCED);
 
             Models.interpretations().save(interpretation);
 
@@ -180,14 +180,14 @@ public final class InterpretationController implements IDataController<Interpret
 
     private void sendInterpretationCommentChanges() throws APIException {
         List<InterpretationComment> comments =
-                Models.interpretationComments().filter(State.SYNCED);
+                Models.interpretationComments().filter(Action.SYNCED);
 
         if (comments == null || comments.isEmpty()) {
             return;
         }
 
         for (InterpretationComment comment : comments) {
-            switch (comment.getState()) {
+            switch (comment.getAction()) {
                 case TO_POST: {
                     postInterpretationComment(comment);
                     break;
@@ -207,9 +207,9 @@ public final class InterpretationController implements IDataController<Interpret
     public void postInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getState() != null) {
-            boolean isInterpretationSynced = (interpretation.getState().equals(State.SYNCED) ||
-                    interpretation.getState().equals(State.TO_UPDATE));
+        if (interpretation != null && interpretation.getAction() != null) {
+            boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
+                    interpretation.getAction().equals(Action.TO_UPDATE));
 
             if (!isInterpretationSynced) {
                 return;
@@ -223,7 +223,7 @@ public final class InterpretationController implements IDataController<Interpret
                 String commentUid = Uri.parse(locationHeader
                         .getValue()).getLastPathSegment();
                 comment.setUId(commentUid);
-                comment.setState(State.SYNCED);
+                comment.setAction(Action.SYNCED);
 
                 Models.interpretations().save(interpretation);
 
@@ -237,9 +237,9 @@ public final class InterpretationController implements IDataController<Interpret
     public void putInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getState() != null) {
-            boolean isInterpretationSynced = (interpretation.getState().equals(State.SYNCED) ||
-                    interpretation.getState().equals(State.TO_UPDATE));
+        if (interpretation != null && interpretation.getAction() != null) {
+            boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
+                    interpretation.getAction().equals(Action.TO_UPDATE));
 
             if (!isInterpretationSynced) {
                 return;
@@ -249,7 +249,7 @@ public final class InterpretationController implements IDataController<Interpret
                 mDhisApi.putInterpretationComment(interpretation.getUId(),
                         comment.getUId(), new TypedString(comment.getText()));
 
-                comment.setState(State.SYNCED);
+                comment.setAction(Action.SYNCED);
 
                 Models.interpretationComments().save(comment);
 
@@ -263,17 +263,17 @@ public final class InterpretationController implements IDataController<Interpret
     public void deleteInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getState() != null) {
-            boolean isInterpretationSynced = (interpretation.getState().equals(State.SYNCED) ||
-                    interpretation.getState().equals(State.TO_UPDATE));
+        if (interpretation != null && interpretation.getAction() != null) {
+            boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
+                    interpretation.getAction().equals(Action.TO_UPDATE));
 
-            // 1) If State of Interpretation is TO_DELETE,
+            // 1) If Action of Interpretation is TO_DELETE,
             //    there is no meaning to remove its comments by hand.
             //    They will be removed automatically when interpretation is removed.
-            // 2) If State of Interpretation is TO_POST,
+            // 2) If Action of Interpretation is TO_POST,
             //    we cannot create comment on server, since we don't have
             //    interpretation UUID to associate comment with.
-            // In all other State cases (TO_UPDATE, SYNCED), we can delete comments
+            // In all other Action cases (TO_UPDATE, SYNCED), we can delete comments
             if (!isInterpretationSynced) {
                 return;
             }
@@ -362,9 +362,9 @@ public final class InterpretationController implements IDataController<Interpret
         operations.addAll(DbUtils.createOperations(
                 Models.users(), Models.users().query(), users));
         operations.addAll(createOperations(
-                Models.interpretations().filter(State.TO_POST), interpretations));
+                Models.interpretations().filter(Action.TO_POST), interpretations));
         operations.addAll(DbUtils.createOperations(
-                Models.interpretationComments(), Models.interpretationComments().filter(State.TO_POST), comments));
+                Models.interpretationComments(), Models.interpretationComments().filter(Action.TO_POST), comments));
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -451,7 +451,7 @@ public final class InterpretationController implements IDataController<Interpret
         }
 
         List<Interpretation> persistedInterpretations =
-                Models.interpretations().filter(State.TO_POST);
+                Models.interpretations().filter(Action.TO_POST);
         if (persistedInterpretations != null
                 && !persistedInterpretations.isEmpty()) {
             for (Interpretation interpretation : persistedInterpretations) {
@@ -460,7 +460,7 @@ public final class InterpretationController implements IDataController<Interpret
                 mInterpretationService.setInterpretationElements(interpretation, elements);
 
                 List<InterpretationComment> comments =
-                        Models.interpretationComments().filter(interpretation, State.TO_POST);
+                        Models.interpretationComments().filter(interpretation, Action.TO_POST);
                 interpretation.setComments(comments);
             }
         }

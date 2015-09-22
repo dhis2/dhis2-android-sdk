@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 
@@ -108,22 +108,22 @@ public final class DashboardStore implements IDashboardStore {
     }
 
     @Override
-    public List<Dashboard> query(State... states) {
-        return query(Arrays.asList(states));
+    public List<Dashboard> query(Action... actions) {
+        return query(Arrays.asList(actions));
     }
 
     @Override
-    public List<Dashboard> query(List<State> states) {
-        if (states == null || states.isEmpty()) {
-            throw new IllegalArgumentException("Please, provide at least one State");
+    public List<Dashboard> query(List<Action> actions) {
+        if (actions == null || actions.isEmpty()) {
+            throw new IllegalArgumentException("Please, provide at least one Action");
         }
 
         CombinedCondition combinedCondition = null;
-        for (State state : states) {
+        for (Action action : actions) {
             if (combinedCondition == null) {
-                combinedCondition = CombinedCondition.begin(isState(state));
+                combinedCondition = CombinedCondition.begin(isState(action));
             } else {
-                combinedCondition = combinedCondition.or(isState(state));
+                combinedCondition = combinedCondition.or(isState(action));
             }
         }
 
@@ -137,23 +137,23 @@ public final class DashboardStore implements IDashboardStore {
     }
 
     @Override
-    public List<Dashboard> filter(State state) {
-        if (state == null) {
-            throw new IllegalArgumentException("Please, provide State");
+    public List<Dashboard> filter(Action action) {
+        if (action == null) {
+            throw new IllegalArgumentException("Please, provide Action");
         }
 
         List<Dashboard$Flow> dashboardFlows = new Select()
                 .from(Dashboard$Flow.class)
                 .where(Condition.column(Dashboard$Flow$Table
-                        .STATE).isNot(state.toString()))
+                        .ACTION).isNot(action.toString()))
                 .queryList();
 
         // converting flow models to Dashboard
         return Dashboard$Flow.toModels(dashboardFlows);
     }
 
-    private static Condition isState(State state) {
+    private static Condition isState(Action action) {
         return Condition.column(Dashboard$Flow$Table
-                .STATE).is(state.toString());
+                .ACTION).is(action.toString());
     }
 }

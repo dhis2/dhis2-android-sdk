@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.user.User;
 import org.joda.time.DateTime;
@@ -69,7 +69,7 @@ public class InterpretationService implements IInterpretationService {
         comment.setLastUpdated(lastUpdated);
         comment.setAccess(Access.createDefaultAccess());
         comment.setText(text);
-        comment.setState(State.TO_POST);
+        comment.setAction(Action.TO_POST);
         comment.setUser(user);
         comment.setInterpretation(interpretation);
         return comment;
@@ -97,7 +97,7 @@ public class InterpretationService implements IInterpretationService {
         interpretation.setLastUpdated(lastUpdated);
         interpretation.setAccess(Access.createDefaultAccess());
         interpretation.setText(text);
-        interpretation.setState(State.TO_POST);
+        interpretation.setAction(Action.TO_POST);
         interpretation.setUser(user);
 
         switch (item.getType()) {
@@ -134,9 +134,9 @@ public class InterpretationService implements IInterpretationService {
     public void updateInterpretationText(Interpretation interpretation, String text) {
         interpretation.setText(text);
 
-        if (interpretation.getState() != State.TO_DELETE &&
-                interpretation.getState() != State.TO_POST) {
-            interpretation.setState(State.TO_UPDATE);
+        if (interpretation.getAction() != Action.TO_DELETE &&
+                interpretation.getAction() != Action.TO_POST) {
+            interpretation.setAction(Action.TO_UPDATE);
         }
 
         interpretationStore.save(interpretation);
@@ -144,10 +144,10 @@ public class InterpretationService implements IInterpretationService {
 
     @Override
     public void deleteInterpretation(Interpretation interpretation) {
-        if (State.TO_POST.equals(interpretation.getState())) {
+        if (Action.TO_POST.equals(interpretation.getAction())) {
             interpretationStore.delete(interpretation);
         } else {
-            interpretation.setState(State.TO_DELETE);
+            interpretation.setAction(Action.TO_DELETE);
             interpretationStore.save(interpretation);
         }
     }

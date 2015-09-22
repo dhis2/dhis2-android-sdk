@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class DashboardItem extends BaseIdentifiableObject {
     public static final String SHAPE_FULL_WIDTH = "full_width";
 
     @JsonIgnore
-    State state;
+    Action action;
 
     @JsonProperty("type")
     String type;
@@ -89,16 +89,16 @@ public class DashboardItem extends BaseIdentifiableObject {
     boolean messages;
 
     public DashboardItem() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
         shape = SHAPE_NORMAL;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public String getType() {

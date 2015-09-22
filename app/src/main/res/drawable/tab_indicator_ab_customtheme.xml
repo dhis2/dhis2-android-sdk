@@ -29,20 +29,20 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Non focused states -->
+    <!-- Non focused actions -->
     <item android:state_focused="false" android:state_selected="false" android:state_pressed="false" android:drawable="@drawable/tab_unselected_customtheme" />
     <item android:state_focused="false" android:state_selected="true"  android:state_pressed="false" android:drawable="@drawable/tab_selected_customtheme" />
 
-    <!-- Focused states -->
+    <!-- Focused actions -->
     <item android:state_focused="true" android:state_selected="false" android:state_pressed="false" android:drawable="@drawable/tab_unselected_focused_customtheme" />
     <item android:state_focused="true" android:state_selected="true"  android:state_pressed="false" android:drawable="@drawable/tab_selected_focused_customtheme" />
 
     <!-- Pressed -->
-    <!--    Non focused states -->
+    <!--    Non focused actions -->
     <item android:state_focused="false" android:state_selected="false" android:state_pressed="true" android:drawable="@drawable/tab_unselected_pressed_customtheme" />
     <item android:state_focused="false" android:state_selected="true"  android:state_pressed="true" android:drawable="@drawable/tab_selected_pressed_customtheme" />
 
-    <!--    Focused states -->
+    <!--    Focused actions -->
     <item android:state_focused="true" android:state_selected="false" android:state_pressed="true" android:drawable="@drawable/tab_unselected_pressed_customtheme" />
     <item android:state_focused="true" android:state_selected="true"  android:state_pressed="true" android:drawable="@drawable/tab_selected_pressed_customtheme" />
 </selector>

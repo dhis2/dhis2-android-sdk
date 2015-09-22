@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.sdk.models.common.meta;
 
-public enum State {
+public enum Action {
     SYNCED, TO_POST, TO_UPDATE, TO_DELETE,
 }

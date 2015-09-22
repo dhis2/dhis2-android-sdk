@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -63,7 +63,7 @@ public class DashboardElementService implements IDashboardElementService {
         element.setDisplayName(dashboardItemContent.getDisplayName());
         element.setCreated(dashboardItemContent.getCreated());
         element.setLastUpdated(dashboardItemContent.getLastUpdated());
-        element.setState(State.TO_POST);
+        element.setAction(Action.TO_POST);
         element.setDashboardItem(dashboardItem);
 
         return element;
@@ -73,11 +73,11 @@ public class DashboardElementService implements IDashboardElementService {
     public void deleteDashboardElement(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
-        if (State.TO_POST.equals(dashboardElement.getState())) {
-            dashboardElement.setState(State.TO_DELETE);
+        if (Action.TO_POST.equals(dashboardElement.getAction())) {
+            dashboardElement.setAction(Action.TO_DELETE);
             dashboardElementStore.delete(dashboardElement);
         } else {
-            dashboardElement.setState(State.TO_DELETE);
+            dashboardElement.setAction(Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 

@@ -33,7 +33,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
 import java.util.ArrayList;
@@ -42,24 +41,24 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
 
-    @Column(name = "state")
+    @Column(name = "action")
     @NotNull
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     public Dashboard$Flow() {
-        state = State.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.common.meta.Action.SYNCED;
     }
 
     /////////////////////////////////////////////////////////////////////////
     // Getters and setters
     /////////////////////////////////////////////////////////////////////////
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public static Dashboard$Flow fromModel(Dashboard dashboard) {
@@ -75,7 +74,7 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboardFlow.setAccess(dashboard.getAccess());
         dashboardFlow.setName(dashboard.getName());
         dashboardFlow.setDisplayName(dashboard.getDisplayName());
-        dashboardFlow.setState(dashboard.getState());
+        dashboardFlow.setAction(dashboard.getAction());
         return dashboardFlow;
     }
 
@@ -92,7 +91,7 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboard.setAccess(dashboardFlow.getAccess());
         dashboard.setName(dashboardFlow.getName());
         dashboard.setDisplayName(dashboardFlow.getDisplayName());
-        dashboard.setState(dashboardFlow.getState());
+        dashboard.setAction(dashboardFlow.getAction());
         return dashboard;
     }
 

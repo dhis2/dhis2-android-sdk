@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 
 import java.util.List;
 
@@ -45,21 +45,21 @@ public class Dashboard extends BaseIdentifiableObject {
     public static int MAX_ITEMS = 40;
 
     @JsonIgnore
-    private State state;
+    private Action action;
 
     @JsonProperty("dashboardItems")
     private List<DashboardItem> dashboardItems;
 
     public Dashboard() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public List<DashboardItem> getDashboardItems() {

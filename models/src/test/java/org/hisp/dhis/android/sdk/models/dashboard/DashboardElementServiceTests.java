@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.common.meta.Action;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -79,7 +79,7 @@ public final class DashboardElementServiceTests {
         assertEquals(dashboardElement.getDisplayName(), dashboardItemContent.getDisplayName());
         assertEquals(dashboardElement.getCreated(), dashboardItemContent.getCreated());
         assertEquals(dashboardElement.getLastUpdated(), dashboardItemContent.getLastUpdated());
-        assertEquals(dashboardElement.getState(), State.TO_POST);
+        assertEquals(dashboardElement.getAction(), Action.TO_POST);
         assertEquals(dashboardElement.getDashboardItem(), dashboardItem);
     }
 
@@ -93,13 +93,13 @@ public final class DashboardElementServiceTests {
         DashboardElement dashboardElementWithPostState = new DashboardElement();
         DashboardElement dashboardElementWithSyncedState = new DashboardElement();
 
-        dashboardElementWithPostState.setState(State.TO_POST);
-        dashboardElementWithSyncedState.setState(State.SYNCED);
+        dashboardElementWithPostState.setAction(Action.TO_POST);
+        dashboardElementWithSyncedState.setAction(Action.SYNCED);
 
         service.deleteDashboardElement(dashboardElementWithPostState);
         service.deleteDashboardElement(dashboardElementWithSyncedState);
 
-        assertEquals(dashboardElementWithPostState.getState(), State.TO_DELETE);
-        assertEquals(dashboardElementWithSyncedState.getState(), State.TO_DELETE);
+        assertEquals(dashboardElementWithPostState.getAction(), Action.TO_DELETE);
+        assertEquals(dashboardElementWithSyncedState.getAction(), Action.TO_DELETE);
     }
 }

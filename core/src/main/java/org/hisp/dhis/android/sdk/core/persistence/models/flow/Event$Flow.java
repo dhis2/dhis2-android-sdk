@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
@@ -105,7 +104,7 @@ public final class Event$Flow extends BaseModel {
     Access access;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.common.meta.Action action;
 
     List<TrackedEntityDataValue$Flow> trackedEntityDataValues;
 
@@ -269,12 +268,12 @@ public final class Event$Flow extends BaseModel {
         this.access = access;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.common.meta.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.common.meta.Action action) {
+        this.action = action;
     }
 
     public Event$Flow() {
@@ -307,7 +306,7 @@ public final class Event$Flow extends BaseModel {
         event.setCreated(eventFlow.getCreated());
         event.setLastUpdated(eventFlow.getLastUpdated());
         event.setAccess(eventFlow.getAccess());
-        event.setState(eventFlow.getState());
+        event.setAction(eventFlow.getAction());
         return event;
     }
 
@@ -337,7 +336,7 @@ public final class Event$Flow extends BaseModel {
         eventFlow.setCreated(event.getCreated());
         eventFlow.setLastUpdated(event.getLastUpdated());
         eventFlow.setAccess(event.getAccess());
-        eventFlow.setState(event.getState());
+        eventFlow.setAction(event.getAction());
         return eventFlow;
     }
 

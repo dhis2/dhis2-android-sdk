@@ -42,10 +42,10 @@ public interface IDashboardService extends IService {
 
 
     /**
-     * Changes the name of dashboard along with the State.
+     * Changes the name of dashboard along with the Action.
      * <p/>
-     * If the current state of model is State.TO_DELETE or State.TO_POST,
-     * state won't be changed. Otherwise, it will be set to State.TO_UPDATE.
+     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
+     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
      *
      * @param name Name for dashboard.
      * @throws IllegalArgumentException in cases when dashboard is null.

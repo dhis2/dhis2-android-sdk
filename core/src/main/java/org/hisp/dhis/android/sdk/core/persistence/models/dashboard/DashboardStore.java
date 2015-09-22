@@ -29,16 +29,13 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.dashboard;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.builder.Condition.CombinedCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow$Table;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class DashboardStore implements IDashboardStore {
@@ -107,8 +104,8 @@ public final class DashboardStore implements IDashboardStore {
         return Dashboard$Flow.toModel(dashboardFlow);
     }
 
-    @Override
-    public List<Dashboard> query(Action... actions) {
+    /* @Override
+    public List<Dashboard> query(Action... actions)  {
         return query(Arrays.asList(actions));
     }
 
@@ -155,5 +152,5 @@ public final class DashboardStore implements IDashboardStore {
     private static Condition isState(Action action) {
         return Condition.column(Dashboard$Flow$Table
                 .ACTION).is(action.toString());
-    }
+    } */
 }

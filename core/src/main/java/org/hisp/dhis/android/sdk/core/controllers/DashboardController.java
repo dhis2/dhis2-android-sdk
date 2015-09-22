@@ -118,8 +118,10 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
 
         Queue<IDbOperation> operations = new LinkedList<>();
+        /* operations.addAll(DbUtils.createOperations(dashboardStore,
+                dashboardStore.filter(Action.TO_POST), dashboards)); */
         operations.addAll(DbUtils.createOperations(dashboardStore,
-                dashboardStore.filter(Action.TO_POST), dashboards));
+                stateStore.filterByAction(Dashboard.class, Action.TO_POST), dashboards));
         /* operations.addAll(DbUtils.createOperations(dashboardItemStore,
                 dashboardItemStore.filter(Action.TO_POST), dashboardItems)); */
         operations.addAll(DbUtils.createOperations(dashboardItemStore,
@@ -176,7 +178,8 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         // List of persisted dashboards.
-        List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
+        // List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
+        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST);
         if (persistedDashboards != null && !persistedDashboards.isEmpty()) {
             for (Dashboard dashboard : persistedDashboards) {
                 /* List<DashboardItem> items = dashboardItemStore
@@ -321,7 +324,9 @@ public final class DashboardController implements IDataController<Dashboard> {
         // we need to sort dashboards in natural order.
         // In order they were inserted in local database.
 
-        List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
+        // List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
+        List<Dashboard> dashboards = stateStore
+                .filterByAction(Dashboard.class, Action.SYNCED);
         if (dashboards == null || dashboards.isEmpty()) {
             return;
         }

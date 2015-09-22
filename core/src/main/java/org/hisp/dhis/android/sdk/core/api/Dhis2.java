@@ -35,6 +35,7 @@ import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.DhisApi;
+import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.network.RepositoryManager;
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
@@ -124,6 +125,10 @@ public final class Dhis2 {
     @Nullable
     public static Credentials getUserCredentials() {
         return getSession().getCredentials();
+    }
+
+    public static IDhisApi getServiceApi() {
+        return getInstance().dhisApi.getApi();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////

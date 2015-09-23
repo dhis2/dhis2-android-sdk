@@ -36,23 +36,11 @@ import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardElement extends BaseIdentifiableObject {
 
-    /* @JsonIgnore
-    Action action; */
-
     @JsonIgnore
     DashboardItem dashboardItem;
 
     public DashboardElement() {
-        // action = Action.SYNCED;
     }
-
-    /* public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    } */
 
     public DashboardItem getDashboardItem() {
         return dashboardItem;

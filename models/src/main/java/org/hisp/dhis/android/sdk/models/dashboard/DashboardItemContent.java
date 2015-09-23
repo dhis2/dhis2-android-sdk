@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardItemContent extends BaseIdentifiableObject {
     public static final String TYPE_CHART = "chart";
     public static final String TYPE_EVENT_CHART = "eventChart";

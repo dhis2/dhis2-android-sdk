@@ -42,23 +42,11 @@ public class Dashboard extends BaseIdentifiableObject {
      */
     public static int MAX_ITEMS = 40;
 
-    /* @JsonIgnore
-    private Action action; */
-
     @JsonProperty("dashboardItems")
     private List<DashboardItem> dashboardItems;
 
     public Dashboard() {
-        // action = Action.SYNCED;
     }
-
-    /* public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    } */
 
     public List<DashboardItem> getDashboardItems() {
         return dashboardItems;

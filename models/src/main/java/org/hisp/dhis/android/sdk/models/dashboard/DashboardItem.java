@@ -47,9 +47,6 @@ public class DashboardItem extends BaseIdentifiableObject {
     public static final String SHAPE_DOUBLE_WIDTH = "double_width";
     public static final String SHAPE_FULL_WIDTH = "full_width";
 
-    /* @JsonIgnore
-    Action action; */
-
     @JsonProperty("type")
     String type;
 
@@ -88,17 +85,8 @@ public class DashboardItem extends BaseIdentifiableObject {
     boolean messages;
 
     public DashboardItem() {
-        // action = Action.SYNCED;
         shape = SHAPE_NORMAL;
     }
-
-    /* public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    } */
 
     public String getType() {
         return type;

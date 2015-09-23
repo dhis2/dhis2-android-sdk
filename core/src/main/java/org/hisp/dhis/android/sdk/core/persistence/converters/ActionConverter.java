@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.models.state.Action;
 
 @SuppressWarnings("unused")
 @com.raizlabs.android.dbflow.annotation.TypeConverter
-public final class StateConverter extends TypeConverter<String, Action> {
+public final class ActionConverter extends TypeConverter<String, Action> {
 
     @Override
     public String getDBValue(Action model) {

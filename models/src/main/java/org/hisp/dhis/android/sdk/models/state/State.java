@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.models.state;
 
 public final class State {
-    private int itemId;
+    private long itemId;
     private Class<?> itemType;
     private Action action;
 
@@ -37,11 +37,11 @@ public final class State {
         // empty constructor
     }
 
-    public int getItemId() {
+    public long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(long itemId) {
         this.itemId = itemId;
     }
 

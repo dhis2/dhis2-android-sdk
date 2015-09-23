@@ -28,7 +28,20 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.models.state;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Join;
+import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.Model;
+
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.state.State;
@@ -39,56 +52,139 @@ public class StateStore implements IStateStore {
 
     @Override
     public <T extends IdentifiableObject> State query(T object) {
-        return null;
+        if (object == null) {
+            return null;
+        }
+
+        State$Flow stateFlow = new Select()
+                .from(State$Flow.class)
+                .where(Condition.column(State$Flow$Table
+                        .ITEMTYPE).is(State$Flow.getItemType(object.getClass())))
+                .and(Condition.column(State$Flow$Table
+                        .ITEMID).is(object.getId()))
+                .querySingle();
+
+        return State$Flow.toModel(stateFlow);
     }
 
     @Override
     public <T extends IdentifiableObject> List<State> query(Class<T> clazz) {
-        return null;
+        List<State$Flow> stateFlows = new Select()
+                .from(State$Flow.class)
+                .where(Condition.column(State$Flow$Table
+                        .ITEMTYPE).is(State$Flow.getItemType(clazz)))
+                .queryList();
+        return State$Flow.toModels(stateFlows);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
+        /* Creating left join on State and destination table in order to perform filtering  */
+        List<? extends Model> objects = new Select()
+                .from(State$Flow.getFlowClass(clazz))
+                .join(State$Flow.class, Join.JoinType.LEFT)
+                .using(State$Flow$Table.ITEMTYPE)
+                .where(Condition.column(State$Flow$Table
+                        .ACTION).isNot(action.toString()))
+                .queryList();
+
+        if (Dashboard.class.equals(clazz)) {
+            List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) objects;
+            return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
+        }
+
+        if (DashboardItem.class.equals(clazz)) {
+            List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) objects;
+            return (List<T>) DashboardItem$Flow.toModels(dashboardItemFlows);
+        }
+
+        if (DashboardElement.class.equals(clazz)) {
+            List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) objects;
+            return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
+        }
+
         return null;
     }
 
     @Override
     public <T extends IdentifiableObject> Action queryAction(T object) {
-        return null;
+        State state = query(object);
+
+        if (state == null) {
+            return null;
+        }
+
+        return state.getAction();
     }
 
     @Override
     public <T extends IdentifiableObject> void delete(T object) {
+        State state = query(object);
 
+        if (state == null) {
+            return;
+        }
+
+        State$Flow state$Flow = State$Flow.fromModel(state);
+        state$Flow.delete();
     }
 
     @Override
     public <T extends IdentifiableObject> void save(T object, Action action) {
+        if (object == null) {
+            return;
+        }
 
+        State state = new State();
+        state.setItemId(object.getId());
+        state.setAction(action);
+        state.setItemType(object.getClass());
+
+        save(state);
     }
 
     @Override
     public void insert(State object) {
+        State$Flow stateFlow = State$Flow.fromModel(object);
 
+        if (stateFlow != null) {
+            stateFlow.insert();
+        }
     }
 
     @Override
     public void update(State object) {
+        State$Flow stateFlow = State$Flow.fromModel(object);
 
+        if (stateFlow != null) {
+            stateFlow.update();
+        }
     }
 
     @Override
-    public void save(State object) {
+    public void save(State state) {
+        State$Flow stateFlow = State$Flow.fromModel(state);
 
+        if (stateFlow != null) {
+            stateFlow.save();
+        }
     }
 
     @Override
     public void delete(State object) {
+        State$Flow stateFlow = State$Flow.fromModel(object);
 
+        if (stateFlow != null) {
+            stateFlow.delete();
+        }
     }
 
     @Override
     public List<State> query() {
-        return null;
+        List<State$Flow> statesFlows = new Select()
+                .from(State$Flow.class)
+                .queryList();
+        return State$Flow.toModels(statesFlows);
     }
 }

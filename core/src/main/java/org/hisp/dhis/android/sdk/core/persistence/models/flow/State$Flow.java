@@ -35,9 +35,19 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
+import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.state.State;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 @Table(databaseName = DbDhis.NAME,
         uniqueColumnGroups = {
@@ -50,12 +60,12 @@ public final class State$Flow extends BaseModel {
     @Column
     @PrimaryKey
     @Unique(unique = false, uniqueGroups = {UNIQUE_GROUP_NUMBER})
-    int itemId;
+    long itemId;
 
     @Column
     @PrimaryKey
     @Unique(unique = false, uniqueGroups = {UNIQUE_GROUP_NUMBER})
-    Class<?> itemType;
+    String itemType;
 
     // We need to specify FQCN in order to avoid collision with BaseMode.Action class.
     @Column
@@ -65,20 +75,21 @@ public final class State$Flow extends BaseModel {
         // empty constructor
     }
 
-    public int getItemId() {
+    public long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public void setItemId(long itemId) {
         this.itemId = itemId;
     }
 
-    public Class<?> getItemType() {
+    public String getItemType() {
         return itemType;
     }
 
-    public void setItemType(Class<?> itemType) {
+    public void setItemType(String itemType) {
         this.itemType = itemType;
+
     }
 
     public org.hisp.dhis.android.sdk.models.state.Action getAction() {
@@ -96,10 +107,24 @@ public final class State$Flow extends BaseModel {
 
         State state = new State();
         state.setItemId(stateFlow.getItemId());
-        state.setItemType(stateFlow.getItemType());
+        state.setItemType(getItemClass(stateFlow.getItemType()));
         state.setAction(stateFlow.getAction());
 
         return state;
+    }
+
+    public static List<State> toModels(List<State$Flow> stateFlows) {
+        List<State> states = new ArrayList<>();
+
+        if (stateFlows == null || stateFlows.isEmpty()) {
+            return states;
+        }
+
+        for (State$Flow stateFlow : stateFlows) {
+            states.add(toModel(stateFlow));
+        }
+
+        return states;
     }
 
     public static State$Flow fromModel(State state) {
@@ -109,9 +134,63 @@ public final class State$Flow extends BaseModel {
 
         State$Flow stateFlow = new State$Flow();
         stateFlow.setItemId(state.getItemId());
-        stateFlow.setItemType(state.getItemType());
+        stateFlow.setItemType(getItemType(state.getItemType()));
         stateFlow.setAction(state.getAction());
 
         return stateFlow;
+    }
+
+    public static List<State$Flow> fromModels(List<State> states) {
+        List<State$Flow> stateFlows = new ArrayList<>();
+
+        if (states == null || states.isEmpty()) {
+            return stateFlows;
+        }
+
+        for (State state : states) {
+            stateFlows.add(fromModel(state));
+        }
+
+        return stateFlows;
+    }
+
+    public static Class<? extends IdentifiableObject> getItemClass(String type) {
+        isNull(type, "type must not be null");
+
+        if (Dashboard.class.getSimpleName().equals(type)) {
+            return Dashboard.class;
+        }
+
+        if (DashboardItem.class.getSimpleName().equals(type)) {
+            return Dashboard.class;
+        }
+
+        if (DashboardElement.class.getSimpleName().equals(type)) {
+            return Dashboard.class;
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + type);
+    }
+
+    public static Class<? extends Model> getFlowClass(Class<?> objectClass){
+        isNull(objectClass, "Class object must not be null");
+
+        if (Dashboard.class.equals(objectClass)) {
+            return Dashboard$Flow.class;
+        }
+
+        if (DashboardItem.class.equals(objectClass)) {
+            return DashboardItem$Flow.class;
+        }
+
+        if (DashboardElement.class.equals(objectClass)) {
+            return DashboardElement$Flow.class;
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());
+    }
+
+    public static String getItemType(Class<?> clazz) {
+        return clazz.getSimpleName();
     }
 }

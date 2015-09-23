@@ -31,6 +31,10 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardElementService implements IDashboardElementService {
@@ -55,8 +59,7 @@ public class DashboardElementService implements IDashboardElementService {
      * @throws IllegalArgumentException when dashboardItem or dashboardItemContent is null.
      */
     @Override
-    public DashboardElement createDashboardElement(DashboardItem dashboardItem,
-                                                   DashboardItemContent dashboardItemContent) {
+    public DashboardElement add(DashboardItem dashboardItem, DashboardItemContent dashboardItemContent) {
         isNull(dashboardItem, "dashboardItem must not be null");
         isNull(dashboardItemContent, "dashboardItemContent must not be null");
 
@@ -75,7 +78,7 @@ public class DashboardElementService implements IDashboardElementService {
     }
 
     @Override
-    public void deleteDashboardElement(DashboardElement dashboardElement) {
+    public void remove(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
         Action action = stateStore.queryAction(dashboardElement);
@@ -83,7 +86,7 @@ public class DashboardElementService implements IDashboardElementService {
             // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.delete(dashboardElement);
             dashboardElementStore.delete(dashboardElement);
-        }else{
+        } else {
             // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.save(dashboardElement, Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
@@ -94,5 +97,22 @@ public class DashboardElementService implements IDashboardElementService {
         if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
             dashboardItemService.remove(dashboardElement.getDashboardItem());
         }
+    }
+
+    @Override
+    public List<DashboardElement> query(DashboardItem dashboardItem) {
+        List<DashboardElement> allDashboardElements = dashboardElementStore.query(dashboardItem);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
+
+        List<DashboardElement> dashboardElements = new ArrayList<>();
+        for (DashboardElement dashboardElement : allDashboardElements) {
+            Action action = actionMap.get(dashboardElement.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardElements.add(dashboardElement);
+            }
+        }
+
+        return dashboardElements;
     }
 }

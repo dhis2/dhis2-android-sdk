@@ -36,8 +36,11 @@ import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
@@ -109,38 +112,67 @@ public class StateStore implements IStateStore {
     private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
-        From<? extends Model> from = new Select()
+        /* From<? extends Model> from = new Select()
                 .from(State$Flow.getFlowClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
-                .on(Condition.column(State$Flow$Table.ITEMTYPE)
-                        .eq(State$Flow.getItemType(clazz)));
+                .on(Condition.column(State$Flow$Table.ITEMID)
+                        .eq(State$Flow.getItemType(clazz))); */
 
-        Where<? extends Model> where;
+        /* Join<?, ?> join = new Select()
+                .from(State$Flow.getFlowClass(clazz))
+                .join(State$Flow.class, Join.JoinType.LEFT); */
+
+        /* Where<? extends Model> where;
         if (withAction) {
             where = from.where(Condition.column(State$Flow$Table
                     .ACTION).is(action.toString()));
         } else {
             where = from.where(Condition.column(State$Flow$Table
                     .ACTION).isNot(action.toString()));
-        }
+        } */
 
-        List<? extends Model> objects = where.queryList();
+        // List<? extends Model> objects = where.queryList();
         if (Dashboard.class.equals(clazz)) {
-            List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) objects;
+            List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
+                    clazz, action, withAction, Dashboard$Flow$Table.ID);
             return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
         }
 
         if (DashboardItem.class.equals(clazz)) {
-            List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) objects;
+            List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) queryModels(
+                    clazz, action, withAction, DashboardItem$Flow$Table.ID);
             return (List<T>) DashboardItem$Flow.toModels(dashboardItemFlows);
         }
 
         if (DashboardElement.class.equals(clazz)) {
-            List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) objects;
+            List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
+                    clazz, action, withAction, DashboardElement$Flow$Table.ID);
             return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
         }
 
         return null;
+    }
+
+    private List<? extends Model> queryModels(Class<?> clazz, Action action,
+                                              boolean withAction, String columnName) {
+        From<? extends Model> from = new Select()
+                .from(State$Flow.getFlowClass(clazz))
+                .join(State$Flow.class, Join.JoinType.LEFT)
+                .on(Condition.column(State$Flow$Table.ITEMID)
+                        .eq(columnName));
+
+        /* Where<? extends Model> where;
+        if (withAction) {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).is(action.toString()));
+        } else {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).isNot(action.toString()));
+        } */
+
+        List<? extends Model> list = from.queryList();
+        System.out.println("LIST: " + list.size());
+        return list;
     }
 
     @Override

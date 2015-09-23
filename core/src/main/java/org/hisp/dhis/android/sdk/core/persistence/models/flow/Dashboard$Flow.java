@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
@@ -41,25 +39,12 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
 
-    @Column(name = "action")
-    @NotNull
-    org.hisp.dhis.android.sdk.models.state.Action action;
-
     public Dashboard$Flow() {
-        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
     /////////////////////////////////////////////////////////////////////////
     // Getters and setters
     /////////////////////////////////////////////////////////////////////////
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
-    }
 
     public static Dashboard$Flow fromModel(Dashboard dashboard) {
         if (dashboard == null) {
@@ -74,7 +59,6 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboardFlow.setAccess(dashboard.getAccess());
         dashboardFlow.setName(dashboard.getName());
         dashboardFlow.setDisplayName(dashboard.getDisplayName());
-        // dashboardFlow.setAction(dashboard.getAction());
         return dashboardFlow;
     }
 
@@ -91,7 +75,6 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         dashboard.setAccess(dashboardFlow.getAccess());
         dashboard.setName(dashboardFlow.getName());
         dashboard.setDisplayName(dashboardFlow.getDisplayName());
-        // dashboard.setAction(dashboardFlow.getAction());
         return dashboard;
     }
 

@@ -30,10 +30,22 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
 
+import java.util.List;
+
 public interface IDashboardItemService extends IService {
     DashboardItem add(Dashboard dashboard, DashboardItemContent content);
 
     boolean remove(DashboardItem dashboardItem);
+
+    List<DashboardItem> query();
+
+    List<DashboardItem> query(Dashboard dashboard);
+
+    DashboardItem query(long id);
+
+    DashboardItem query(String uid);
+
+    List<DashboardItem> filterByType(Dashboard dashboard, String type);
 
     int getContentCount(DashboardItem dashboardItem);
 }

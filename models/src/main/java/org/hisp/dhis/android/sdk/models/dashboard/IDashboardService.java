@@ -63,6 +63,7 @@ public interface IDashboardService extends IService {
      */
     boolean remove(Dashboard dashboard);
 
+    Dashboard query(long id);
 
     List<Dashboard> query();
 

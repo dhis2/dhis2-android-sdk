@@ -41,7 +41,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 public final class Dhis2 {
@@ -52,7 +53,6 @@ public final class Dhis2 {
     private final DhisApi dhisApi;
 
     private final DashboardScope dashboardScope;
-    private final DashboardItemScope dashboardItemScope;
     private final InterpretationScope interpretationScope;
     private final UserAccountScope userAccountScope;
 
@@ -67,8 +67,6 @@ public final class Dhis2 {
         DateTimeManager.init(context);
 
         dashboardScope = new DashboardScope(Controllers.dashboards(), Services.dashboards());
-        dashboardItemScope = new DashboardItemScope(Services.dashboardItems(),
-                Models.dashboardItems(), Models.stateStore());
         interpretationScope = new InterpretationScope(Controllers.interpretations(),
                 Services.interpretations(), Services.interpretationElements(), Services.interpretationComments());
         userAccountScope = new UserAccountScope(Controllers.userAccount(), Services.userAccount());
@@ -185,8 +183,12 @@ public final class Dhis2 {
         return getInstance().dashboardScope;
     }
 
-    public static DashboardItemScope dashboarditems() {
-        return getInstance().dashboardItemScope;
+    public static IDashboardItemService dashboardItems() {
+        return Services.dashboardItems();
+    }
+
+    public static IDashboardElementService dashboardElements() {
+        return Services.dashboardElements();
     }
 
     public static InterpretationScope interpretations() {

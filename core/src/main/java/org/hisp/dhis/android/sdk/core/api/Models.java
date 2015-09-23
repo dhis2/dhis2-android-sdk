@@ -315,7 +315,7 @@ public final class Models {
         return getInstance().dataSetStore;
     }
 
-    public static IIdentifiableObjectStore dashboards() {
+    public static IIdentifiableObjectStore<Dashboard> dashboards() {
         return getInstance().dashboardStore;
     }
 

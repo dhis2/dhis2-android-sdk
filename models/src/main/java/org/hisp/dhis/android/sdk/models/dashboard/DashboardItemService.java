@@ -33,7 +33,9 @@ import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -101,11 +103,95 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     @Override
+    public List<DashboardItem> query() {
+        return null;
+    }
+
+    @Override
+    public List<DashboardItem> query(Dashboard dashboard) {
+        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+
+        List<DashboardItem> filteredItems = new ArrayList<>();
+        if (dashboardItems != null && !dashboardItems.isEmpty()) {
+            for (DashboardItem dashboardItem : dashboardItems) {
+                if (!Action.TO_DELETE.equals(actionMap.get(dashboardItem.getId()))) {
+                    filteredItems.add(dashboardItem);
+                }
+            }
+        }
+
+        return filteredItems;
+    }
+
+    @Override
+    public List<DashboardItem> filterByType(Dashboard dashboard, String type) {
+        List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+
+        List<DashboardItem> filteredItems = new ArrayList<>();
+        if (dashboardItems != null && !dashboardItems.isEmpty()) {
+            for (DashboardItem dashboardItem : dashboardItems) {
+                if (!Action.TO_DELETE.equals(actionMap.get(dashboardItem.getId()))) {
+                    filteredItems.add(dashboardItem);
+                }
+            }
+        }
+
+        return filteredItems;
+    }
+
+    @Override
+    public DashboardItem query(long id) {
+        DashboardItem dashboardItem = dashboardItemStore.query(id);
+
+        if (dashboardItem != null) {
+            Action action = stateStore.queryAction(dashboardItem);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return dashboardItem;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public DashboardItem query(String uid) {
+        DashboardItem dashboardItem = dashboardItemStore.query(uid);
+
+        if (dashboardItem != null) {
+            Action action = stateStore.queryAction(dashboardItem);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return dashboardItem;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public int getContentCount(DashboardItem dashboardItem) {
-        /* List<DashboardElement> dashboardElements = dashboardElementStore
-                .filter(dashboardItem, Action.TO_DELETE); */
-        List<DashboardElement> dashboardElements = stateStore
-                .filterByAction(DashboardElement.class, Action.TO_DELETE);
+        List<DashboardElement> dashboardElements = queryRelatedElements(dashboardItem);
         return dashboardElements == null ? 0 : dashboardElements.size();
+    }
+
+    private List<DashboardElement> queryRelatedElements(DashboardItem dashboardItem) {
+        List<DashboardElement> allDashboardElements = dashboardElementStore.query(dashboardItem);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
+
+        List<DashboardElement> dashboardElements = new ArrayList<>();
+        if (allDashboardElements != null && !allDashboardElements.isEmpty()) {
+            for (DashboardElement dashboardElement : dashboardElements) {
+                Action action = actionMap.get(dashboardElement.getId());
+
+                if (!Action.TO_DELETE.equals(action)) {
+                    dashboardElements.add(dashboardElement);
+                }
+            }
+        }
+
+        return dashboardElements;
     }
 }

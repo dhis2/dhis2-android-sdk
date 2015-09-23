@@ -47,10 +47,6 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
 
     @Column
     @NotNull
-    org.hisp.dhis.android.sdk.models.state.Action action;
-
-    @Column
-    @NotNull
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = DASHBOARD_ITEM_KEY, columnType = long.class, foreignColumnName = "id")
@@ -59,15 +55,6 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
     DashboardItem$Flow dashboardItem;
 
     public DashboardElement$Flow() {
-        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
-    }
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
     }
 
     public DashboardItem$Flow getDashboardItem() {
@@ -93,7 +80,6 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
         dashboardElementFlow.setDashboardItem(DashboardItem$Flow
                 .fromModel(dashboardElement.getDashboardItem()));
-        // dashboardElementFlow.setAction(dashboardElement.getAction());
         return dashboardElementFlow;
     }
 
@@ -112,7 +98,6 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
         dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
         dashboardElement.setDashboardItem(DashboardItem$Flow
                 .toModel(dashboardElementFlow.getDashboardItem()));
-        // dashboardElement.setAction(dashboardElementFlow.getAction());
         return dashboardElement;
     }
 

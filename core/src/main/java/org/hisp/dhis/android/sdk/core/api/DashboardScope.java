@@ -51,28 +51,33 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     }
 
     @Override
-    public void add(Dashboard dashboard) {
-        dashboardService.add(dashboard);
+    public boolean add(Dashboard dashboard) {
+        return dashboardService.add(dashboard);
     }
 
     @Override
-    public void save(Dashboard object) {
-
+    public boolean save(Dashboard object) {
+        return dashboardService.save(object);
     }
 
     @Override
-    public void update(Dashboard dashboard) {
-        dashboardService.update(dashboard);
+    public boolean update(Dashboard dashboard) {
+        return dashboardService.update(dashboard);
     }
 
     @Override
-    public void remove(Dashboard dashboard) {
-        dashboardService.remove(dashboard);
+    public boolean remove(Dashboard dashboard) {
+        return dashboardService.remove(dashboard);
+    }
+
+    @Override
+    public Dashboard query(long id) {
+        return dashboardService.query(id);
     }
 
     @Override
     public List<Dashboard> query() {
-        return null;
+        return dashboardService.query();
     }
 
     @Override

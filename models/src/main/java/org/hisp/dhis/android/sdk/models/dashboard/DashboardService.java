@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardService implements IDashboardService {
-    private final IStore<Dashboard> dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
 
@@ -46,7 +49,7 @@ public class DashboardService implements IDashboardService {
 
     private final IStateStore stateStore;
 
-    public DashboardService(IStore<Dashboard> dashboardStore, IDashboardItemStore dashboardItemStore,
+    public DashboardService(IIdentifiableObjectStore<Dashboard> dashboardStore, IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService,
@@ -89,14 +92,20 @@ public class DashboardService implements IDashboardService {
         dashboardStore.save(object);
 
         // TODO check if dashboard was created earlier (then set correct flag)
-        stateStore.save(object, Action.TO_POST);
+        Action action = stateStore.queryAction(object);
+
+        if (action == null) {
+            stateStore.save(object, Action.TO_POST);
+        } else {
+            stateStore.save(object, Action.TO_UPDATE);
+        }
 
         return true;
     }
 
     @Override
     public List<Dashboard> query() {
-        return null;
+        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
     }
 
 
@@ -119,6 +128,18 @@ public class DashboardService implements IDashboardService {
         }
 
         return true;
+    }
+
+    @Override
+    public Dashboard query(long id) {
+        Dashboard dashboard = dashboardStore.query(id);
+        Action action = stateStore.queryAction(dashboard);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return dashboard;
+        }
+
+        return null;
     }
 
     /**
@@ -163,7 +184,7 @@ public class DashboardService implements IDashboardService {
 
         if (isItemContentTypeEmbedded(content)) {
             item = dashboardItemService.add(dashboard, content);
-            element = dashboardElementService.createDashboardElement(item, content);
+            element = dashboardElementService.add(item, content);
             itemsCount += 1;
         } else {
             item = getAvailableItemByType(dashboard, content.getType());
@@ -171,7 +192,7 @@ public class DashboardService implements IDashboardService {
                 item = dashboardItemService.add(dashboard, content);
                 itemsCount += 1;
             }
-            element = dashboardElementService.createDashboardElement(item, content);
+            element = dashboardElementService.add(item, content);
         }
 
         if (itemsCount > Dashboard.MAX_ITEMS) {
@@ -192,15 +213,13 @@ public class DashboardService implements IDashboardService {
         isNull(dashboard, "dashboard must not be null");
         isNull(type, "type must not be null");
 
-        /* List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, Action.TO_DELETE); */
-        List<DashboardItem> items = null; // dumb replacement
+        List<DashboardItem> dashboardItems = queryRelateDashboardItems(dashboard);
 
-        if (items == null || items.isEmpty()) {
+        if (dashboardItems.isEmpty()) {
             return null;
         }
 
-        for (DashboardItem item : items) {
+        for (DashboardItem item : dashboardItems) {
             if (type.equals(item.getType()) &&
                     dashboardItemService.getContentCount(item) < DashboardItem.MAX_CONTENT) {
                 return item;
@@ -211,11 +230,24 @@ public class DashboardService implements IDashboardService {
     }
 
     int getDashboardItemCount(Dashboard dashboard) {
-        /* List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, Action.TO_DELETE); */
-        List<DashboardItem> items = stateStore
-                .filterByAction(DashboardItem.class, Action.TO_DELETE);
-        return items == null ? 0 : items.size();
+        List<DashboardItem> dashboardItems = queryRelateDashboardItems(dashboard);
+        return dashboardItems == null ? 0 : dashboardItems.size();
+    }
+
+    private List<DashboardItem> queryRelateDashboardItems(Dashboard dashboard) {
+        List<DashboardItem> allDashboardItems = dashboardItemStore.query(dashboard);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        for (DashboardItem dashboardItem : allDashboardItems) {
+            Action action = actionMap.get(dashboardItem.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardItems.add(dashboardItem);
+            }
+        }
+
+        return dashboardItems;
     }
 
     static boolean isItemContentTypeEmbedded(DashboardItemContent content) {

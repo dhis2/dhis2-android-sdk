@@ -32,7 +32,6 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
@@ -43,10 +42,6 @@ import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
-
-    @Column(name = "action")
-    @NotNull
-    org.hisp.dhis.android.sdk.models.state.Action action;
 
     @Column(name = "type")
     String type;
@@ -63,15 +58,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
     Dashboard$Flow dashboard;
 
     public DashboardItem$Flow() {
-        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
-    }
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
     }
 
     public String getType() {
@@ -114,7 +100,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItemFlow.setDashboard(Dashboard$Flow.fromModel(dashboardItem.getDashboard()));
         dashboardItemFlow.setType(dashboardItem.getType());
         dashboardItemFlow.setShape(dashboardItem.getShape());
-        // dashboardItemFlow.setAction(dashboardItem.getAction());
         return dashboardItemFlow;
     }
 
@@ -134,7 +119,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItem.setDashboard(Dashboard$Flow.toModel(dashboardItemFlow.getDashboard()));
         dashboardItem.setType(dashboardItemFlow.getType());
         dashboardItem.setShape(dashboardItemFlow.getShape());
-        // dashboardItem.setAction(dashboardItemFlow.getAction());
         return dashboardItem;
     }
 

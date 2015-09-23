@@ -33,13 +33,13 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow$Table;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardElementStore implements IDashboardElementStore {
 
@@ -95,6 +95,20 @@ public class DashboardElementStore implements IDashboardElementStore {
                 .where(Condition.column(DashboardElement$Flow$Table.UID).is(uid))
                 .querySingle();
         return DashboardElement$Flow.toModel(dashboardElementFlow);
+    }
+
+    @Override
+    public List<DashboardElement> query(DashboardItem dashboardItem) {
+        isNull(dashboardItem, "dashboard item must not be null");
+
+        List<DashboardElement$Flow> elementFlows = new Select()
+                .from(DashboardElement$Flow.class)
+                .where(Condition.column(DashboardElement$Flow$Table
+                        .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()))
+                .queryList();
+
+        // converting flow models to Dashboard
+        return DashboardElement$Flow.toModels(elementFlows);
     }
 
     /* @Override
@@ -169,8 +183,8 @@ public class DashboardElementStore implements IDashboardElementStore {
         return combinedCondition;
     } */
 
-    private static Condition isState(Action action) {
+    /* private static Condition isState(Action action) {
         return Condition.column(DashboardElement$Flow$Table
                 .ACTION).is(action.toString());
-    }
+    } */
 }

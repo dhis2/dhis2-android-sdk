@@ -29,9 +29,6 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.state.Action;
-
-import java.util.List;
 
 public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
     /* List<Dashboard> query(Action... actions);

@@ -33,10 +33,13 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow$Table;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 
 import java.util.List;
+
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardItemStore implements IDashboardItemStore {
 
@@ -94,6 +97,35 @@ public class DashboardItemStore implements IDashboardItemStore {
                         .UID).is(uid))
                 .querySingle();
         return DashboardItem$Flow.toModel(dashboardItem);
+    }
+
+    @Override
+    public List<DashboardItem> query(Dashboard dashboard) {
+        isNull(dashboard, "Dashboard must not be null");
+
+        List<DashboardItem$Flow> dashboardItemFlows = new Select()
+                .from(DashboardItem$Flow.class)
+                .where(Condition.column(DashboardItem$Flow$Table
+                        .DASHBOARD_DASHBOARD).is(dashboard.getId()))
+                .queryList();
+
+        return DashboardItem$Flow.toModels(dashboardItemFlows);
+    }
+
+    @Override
+    public List<DashboardItem> filterByType(Dashboard dashboard, String type) {
+        isNull(dashboard, "Dashboard object must not be null");
+
+        List<DashboardItem$Flow> dashboardItemFlows = new Select()
+                .from(DashboardItem$Flow.class)
+                .where(Condition.CombinedCondition
+                        .begin(Condition.column(DashboardItem$Flow$Table
+                                .DASHBOARD_DASHBOARD).is(dashboard.getId()))
+                        .and(Condition.column(DashboardItem$Flow$Table
+                                .TYPE).isNot(type)))
+                .queryList();
+
+        return DashboardItem$Flow.toModels(dashboardItemFlows);
     }
 
     /* @Override

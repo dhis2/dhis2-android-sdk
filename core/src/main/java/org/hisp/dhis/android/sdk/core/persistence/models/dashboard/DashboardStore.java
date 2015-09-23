@@ -33,12 +33,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow$Table;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 
 import java.util.List;
 
-public final class DashboardStore implements IDashboardStore {
+public final class DashboardStore implements IIdentifiableObjectStore<Dashboard> {
 
     @Override
     public void insert(Dashboard object) {

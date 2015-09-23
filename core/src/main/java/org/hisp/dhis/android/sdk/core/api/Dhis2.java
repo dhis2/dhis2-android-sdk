@@ -51,6 +51,7 @@ public final class Dhis2 {
     private final DhisApi dhisApi;
 
     private final DashboardScope dashboardScope;
+    private final DashboardItemScope dashboardItemScope;
     private final InterpretationScope interpretationScope;
     private final UserAccountScope userAccountScope;
 
@@ -64,8 +65,9 @@ public final class Dhis2 {
         LastUpdatedManager.init(context);
         DateTimeManager.init(context);
 
-        dashboardScope = new DashboardScope(Controllers.dashboards(),
-                Services.dashboards(), Services.dashboardItems(), Services.dashboardElements());
+        dashboardScope = new DashboardScope(Controllers.dashboards(), Services.dashboards());
+        dashboardItemScope = new DashboardItemScope(Services.dashboardItems(),
+                Models.dashboardItems(), Models.stateStore());
         interpretationScope = new InterpretationScope(Controllers.interpretations(),
                 Services.interpretations(), Services.interpretationElements(), Services.interpretationComments());
         userAccountScope = new UserAccountScope(Controllers.userAccount(), Services.userAccount());
@@ -180,6 +182,10 @@ public final class Dhis2 {
 
     public static DashboardScope dashboards() {
         return getInstance().dashboardScope;
+    }
+
+    public static DashboardItemScope dashboarditems() {
+        return getInstance().dashboardItemScope;
     }
 
     public static InterpretationScope interpretations() {

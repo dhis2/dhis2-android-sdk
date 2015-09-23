@@ -38,35 +38,41 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardService;
 
-public final class DashboardScope implements IDataController<Dashboard>, IDashboardService, IDashboardItemService, IDashboardElementService {
+import java.util.List;
+
+public final class DashboardScope implements IDataController<Dashboard>, IDashboardService {
     private final IDataController<Dashboard> dataController;
     private final IDashboardService dashboardService;
-    private final IDashboardItemService dashboardItemService;
-    private final IDashboardElementService dashboardElementService;
 
     public DashboardScope(IDataController<Dashboard> dataController,
-                          IDashboardService dashboardService,
-                          IDashboardItemService dashboardItemService,
-                          IDashboardElementService dashboardElementService) {
+                          IDashboardService dashboardService) {
         this.dataController = dataController;
         this.dashboardService = dashboardService;
-        this.dashboardItemService = dashboardItemService;
-        this.dashboardElementService = dashboardElementService;
     }
 
     @Override
-    public Dashboard createDashboard(String name) {
-        return dashboardService.createDashboard(name);
+    public void add(Dashboard dashboard) {
+        dashboardService.add(dashboard);
     }
 
     @Override
-    public void updateDashboardName(Dashboard dashboard, String name) {
-        dashboardService.updateDashboardName(dashboard, name);
+    public void save(Dashboard object) {
+
     }
 
     @Override
-    public void deleteDashboard(Dashboard dashboard) {
-        dashboardService.deleteDashboard(dashboard);
+    public void update(Dashboard dashboard) {
+        dashboardService.update(dashboard);
+    }
+
+    @Override
+    public void remove(Dashboard dashboard) {
+        dashboardService.remove(dashboard);
+    }
+
+    @Override
+    public List<Dashboard> query() {
+        return null;
     }
 
     @Override
@@ -82,30 +88,5 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     @Override
     public void sync() throws APIException {
         dataController.sync();
-    }
-
-    @Override
-    public DashboardItem createDashboardItem(Dashboard dashboard, DashboardItemContent content) {
-        return dashboardItemService.createDashboardItem(dashboard, content);
-    }
-
-    @Override
-    public void deleteDashboardItem(DashboardItem dashboardItem) {
-        dashboardItemService.deleteDashboardItem(dashboardItem);
-    }
-
-    @Override
-    public int getContentCount(DashboardItem dashboardItem) {
-        return dashboardItemService.getContentCount(dashboardItem);
-    }
-
-    @Override
-    public DashboardElement createDashboardElement(DashboardItem item, DashboardItemContent content) {
-        return dashboardElementService.createDashboardElement(item, content);
-    }
-
-    @Override
-    public void deleteDashboardElement(DashboardElement dashboardElement) {
-        dashboardElementService.deleteDashboardElement(dashboardElement);
     }
 }

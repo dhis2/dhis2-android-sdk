@@ -26,14 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.common;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import java.util.List;
 
-public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
-    /* List<Dashboard> query(Action... actions);
+public interface IDataRepository<T> {
+    boolean add(T object);
 
-    List<Dashboard> query(List<Action> actions);
+    boolean save(T object);
 
-    List<Dashboard> filter(Action action); */
+    boolean update(T object);
+
+    boolean remove(T object);
+
+    List<T> query();
 }

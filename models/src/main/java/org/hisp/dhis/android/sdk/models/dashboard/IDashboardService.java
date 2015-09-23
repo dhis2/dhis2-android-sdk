@@ -28,46 +28,18 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.IDataRepository;
 
-public interface IDashboardService extends IService {
-
-    /**
-     * Factory method which creates new Dashboard with given name.
-     *
-     * @param name String name of new dashboard.
-     * @return a dashboard.
-     */
-    Dashboard createDashboard(String name);
-
-
-    /**
-     * Changes the name of dashboard along with the Action.
-     * <p/>
-     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
-     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
-     *
-     * @param name Name for dashboard.
-     * @throws IllegalArgumentException in cases when dashboard is null.
-     */
-    void updateDashboardName(Dashboard dashboard, String name);
-
-
-    /**
-     * @param dashboard to be removed.
-     * @throws IllegalArgumentException in cases when dashboard is null.
-     */
-    void deleteDashboard(Dashboard dashboard) throws IllegalArgumentException;
-
+public interface IDashboardService extends IDataRepository<Dashboard> {
 
     /**
      * Will try to append DashboardItemContent to current dashboard.
      * If the type of DashboardItemContent is embedded (chart, eventChart, map, eventReport, reportTable),
      * method will create a new item and append it to dashboard.
-     * <p/>
+     * <p>
      * If the type of DashboardItemContent is link type (users, reports, resources),
      * method will try to append content to existing item. Otherwise it will create a new dashboard item.
-     * <p/>
+     * <p>
      * If the overall count of items in dashboard is bigger that Dashboard.MAX_ITEMS, method will not
      * add content and return false;
      *

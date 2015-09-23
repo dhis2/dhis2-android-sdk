@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.Access;
+import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.joda.time.DateTime;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardService implements IDashboardService {
-    private final IDashboardStore dashboardStore;
+    private final IStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
 
@@ -47,7 +46,7 @@ public class DashboardService implements IDashboardService {
 
     private final IStateStore stateStore;
 
-    public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
+    public DashboardService(IStore<Dashboard> dashboardStore, IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService,
@@ -61,11 +60,14 @@ public class DashboardService implements IDashboardService {
     }
 
     /**
-     * {@inheritDoc}
+     * Factory method which creates new Dashboard with given name.
+     *
+     * @param dashboard dashbaord to create on server.
      */
+    // TODO substitute timestamp for dashboard
     @Override
-    public Dashboard createDashboard(String name) {
-        DateTime lastUpdated = new DateTime();
+    public boolean add(Dashboard dashboard) {
+        /* DateTime lastUpdated = new DateTime();
 
         Dashboard dashboard = new Dashboard();
         dashboard.setName(name);
@@ -74,14 +76,35 @@ public class DashboardService implements IDashboardService {
         dashboard.setLastUpdated(lastUpdated);
         dashboard.setAccess(Access.createDefaultAccess());
         // dashboard.setAction(Action.TO_POST);
-        return dashboard;
+        return dashboard; */
+
+        dashboardStore.insert(dashboard);
+        stateStore.save(dashboard, Action.TO_POST);
+
+        return true;
+    }
+
+    @Override
+    public boolean save(Dashboard object) {
+        dashboardStore.save(object);
+
+        // TODO check if dashboard was created earlier (then set correct flag)
+        stateStore.save(object, Action.TO_POST);
+
+        return true;
+    }
+
+    @Override
+    public List<Dashboard> query() {
+        return null;
     }
 
     /**
-     * {@inheritDoc}
+     * @param dashboard to be removed.
+     * @throws IllegalArgumentException in cases when dashboard is null.
      */
     @Override
-    public void deleteDashboard(Dashboard dashboard) {
+    public boolean remove(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
         Action action = stateStore.queryAction(dashboard);
@@ -94,13 +117,21 @@ public class DashboardService implements IDashboardService {
             stateStore.save(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
         }
+
+        return true;
     }
 
     /**
-     * {@inheritDoc}
+     * Changes the name of dashboard along with the Action.
+     * <p>
+     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
+     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
+     *
+     * @param dashboard to update.
+     * @throws IllegalArgumentException in cases when dashboard is null.
      */
     @Override
-    public void updateDashboardName(Dashboard dashboard, String name) {
+    public boolean update(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
         Action action = stateStore.queryAction(dashboard);
@@ -116,10 +147,12 @@ public class DashboardService implements IDashboardService {
             stateStore.save(dashboard, Action.TO_UPDATE);
         }
 
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
+        /* dashboard.setName(name);
+        dashboard.setDisplayName(name); */
 
         dashboardStore.update(dashboard);
+
+        return true;
     }
 
     /**

@@ -62,7 +62,7 @@ public final class DashboardServiceTests {
 
     @Test
     public void shouldCreateValidDashboard() {
-        Dashboard dashboard = service.createDashboard(DASHBOARD_NAME);
+        Dashboard dashboard = service.add(DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
@@ -81,7 +81,7 @@ public final class DashboardServiceTests {
         Dashboard dashboard = new Dashboard();
         dashboard.setAction(Action.SYNCED);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
@@ -93,7 +93,7 @@ public final class DashboardServiceTests {
         Dashboard dashboard = new Dashboard();
         dashboard.setAction(Action.TO_POST);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
@@ -102,7 +102,7 @@ public final class DashboardServiceTests {
 
     @Test(expected = IllegalArgumentException.class)
     public void updateNullDashboard() {
-        service.updateDashboardName(null, DASHBOARD_NAME);
+        service.update(null, DASHBOARD_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -110,12 +110,12 @@ public final class DashboardServiceTests {
         Dashboard dashboard = new Dashboard();
         dashboard.setAction(Action.TO_DELETE);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteNullDashboard() {
-        service.deleteDashboard(null);
+        service.delete(null);
     }
 
     @Test
@@ -128,9 +128,9 @@ public final class DashboardServiceTests {
         dashboardUpdated.setAction(Action.TO_UPDATE);
         dashboardPost.setAction(Action.TO_POST);
 
-        service.deleteDashboard(dashboardSynced);
-        service.deleteDashboard(dashboardUpdated);
-        service.deleteDashboard(dashboardPost);
+        service.delete(dashboardSynced);
+        service.delete(dashboardUpdated);
+        service.delete(dashboardPost);
 
         assertEquals(dashboardSynced.getAction(), Action.TO_DELETE);
         assertEquals(dashboardUpdated.getAction(), Action.TO_DELETE);

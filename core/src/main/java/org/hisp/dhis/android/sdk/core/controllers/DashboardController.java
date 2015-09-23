@@ -36,6 +36,7 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
@@ -70,14 +70,14 @@ import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toM
 
 public final class DashboardController implements IDataController<Dashboard> {
     private final IDhisApi dhisApi;
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
 
     private final IStateStore stateStore;
 
-    public DashboardController(IDhisApi dhisApi, IDashboardStore dashboardStore,
+    public DashboardController(IDhisApi dhisApi, IIdentifiableObjectStore<Dashboard> dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,

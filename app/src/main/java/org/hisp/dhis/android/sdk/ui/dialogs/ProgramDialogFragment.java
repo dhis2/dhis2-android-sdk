@@ -48,6 +48,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ProgramDialogFragment extends AutoCompleteDialogFragment
@@ -141,7 +142,7 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
                     values.add(new OptionAdapterValue(program.getUid(), program.getName()));
                 }
             }
-
+            Collections.sort(values);
             return values;
         }
     }

@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.state;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.From;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
@@ -46,7 +48,9 @@ import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.state.State;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StateStore implements IStateStore {
 
@@ -78,17 +82,49 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz) {
+        List<State> states = query(clazz);
+        Map<Long, Action> actionMap = new HashMap<>();
+
+        if (states != null && !states.isEmpty()) {
+            for (State state : states) {
+                actionMap.put(state.getItemId(), state.getAction());
+            }
+        }
+
+        return actionMap;
+    }
+
+    @Override
     public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, false);
+    }
+
+    @Override
+    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
         /* Creating left join on State and destination table in order to perform filtering  */
-        List<? extends Model> objects = new Select()
+        /* Joining tables based on mime type and then filtering resulting table by action */
+        From<? extends Model> from = new Select()
                 .from(State$Flow.getFlowClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
-                .using(State$Flow$Table.ITEMTYPE)
-                .where(Condition.column(State$Flow$Table
-                        .ACTION).isNot(action.toString()))
-                .queryList();
+                .on(Condition.column(State$Flow$Table.ITEMTYPE)
+                        .eq(State$Flow.getItemType(clazz)));
 
+        Where<? extends Model> where;
+        if (withAction) {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).is(action.toString()));
+        } else {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).isNot(action.toString()));
+        }
+
+        List<? extends Model> objects = where.queryList();
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) objects;
             return (List<T>) Dashboard$Flow.toModels(dashboardFlows);

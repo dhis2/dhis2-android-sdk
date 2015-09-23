@@ -41,6 +41,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 public final class Dhis2 {

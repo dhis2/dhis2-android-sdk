@@ -59,7 +59,7 @@ public class DashboardItemService implements IDashboardItemService {
      */
     // TODO revise the use of Factory method ().
     @Override
-    public DashboardItem createDashboardItem(Dashboard dashboard, DashboardItemContent content) {
+    public DashboardItem add(Dashboard dashboard, DashboardItemContent content) {
         isNull(dashboard, "dashboard must not be null");
         isNull(content, "content must not be null");
 
@@ -86,7 +86,7 @@ public class DashboardItemService implements IDashboardItemService {
      * from embedded database.
      */
     @Override
-    public void deleteDashboardItem(DashboardItem dashboardItem) {
+    public boolean remove(DashboardItem dashboardItem) {
         Action action = stateStore.queryAction(dashboardItem);
         if (Action.TO_POST.equals(action)) {
             // dashboardItem.setAction(Action.TO_DELETE);
@@ -97,6 +97,7 @@ public class DashboardItemService implements IDashboardItemService {
             stateStore.save(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
+        return true;
     }
 
     @Override

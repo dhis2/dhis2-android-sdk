@@ -36,16 +36,4 @@ public interface IDashboardItemStore extends IIdentifiableObjectStore<DashboardI
     List<DashboardItem> query(Dashboard dashboard);
 
     List<DashboardItem> filterByType(Dashboard dashboard, String type);
-
-    /* List<DashboardItem> query(Action... actions);
-
-    List<DashboardItem> query(List<Action> actions);
-
-
-
-    List<DashboardItem> filter(Action action);
-
-    List<DashboardItem> filter(Dashboard dashboard, Action action);
-
-    List<DashboardItem> filter(Dashboard dashboard, Action action, String type); */
 }

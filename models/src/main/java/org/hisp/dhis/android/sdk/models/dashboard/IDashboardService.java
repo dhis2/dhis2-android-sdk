@@ -28,9 +28,43 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.IDataRepository;
+import org.hisp.dhis.android.sdk.models.common.IService;
 
-public interface IDashboardService extends IDataRepository<Dashboard> {
+import java.util.List;
+
+public interface IDashboardService extends IService {
+
+    /**
+     * Factory method which creates new Dashboard with given name.
+     *
+     * @param dashboard dashbaord to create on server.
+     */
+    // TODO substitute timestamp for dashboard
+    boolean add(Dashboard dashboard);
+
+
+    boolean save(Dashboard object);
+
+
+    /**
+     * Changes the name of dashboard along with the Action.
+     * <p>
+     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
+     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
+     *
+     * @param dashboard to update.
+     * @throws IllegalArgumentException in cases when dashboard is null.
+     */
+    boolean update(Dashboard dashboard);
+
+    /**
+     * @param dashboard to be removed.
+     * @throws IllegalArgumentException in cases when dashboard is null.
+     */
+    boolean remove(Dashboard dashboard);
+
+
+    List<Dashboard> query();
 
     /**
      * Will try to append DashboardItemContent to current dashboard.
@@ -48,7 +82,7 @@ public interface IDashboardService extends IDataRepository<Dashboard> {
      * @return false if item count is bigger than MAX_ITEMS.
      * @throws IllegalArgumentException if dashboard or content is null.
      */
-    boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) throws IllegalArgumentException;
+    boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content);
 
 
     /**
@@ -59,5 +93,5 @@ public interface IDashboardService extends IDataRepository<Dashboard> {
      * @return an item.
      * @throws IllegalArgumentException if dashboard or type is null.
      */
-    DashboardItem getAvailableItemByType(Dashboard dashboard, String type) throws IllegalArgumentException;
+    DashboardItem getAvailableItemByType(Dashboard dashboard, String type);
 }

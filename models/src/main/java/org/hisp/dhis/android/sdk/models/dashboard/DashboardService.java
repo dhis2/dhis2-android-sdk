@@ -60,11 +60,8 @@ public class DashboardService implements IDashboardService {
     }
 
     /**
-     * Factory method which creates new Dashboard with given name.
-     *
-     * @param dashboard dashbaord to create on server.
+     * {@inheritDoc}
      */
-    // TODO substitute timestamp for dashboard
     @Override
     public boolean add(Dashboard dashboard) {
         /* DateTime lastUpdated = new DateTime();
@@ -84,6 +81,9 @@ public class DashboardService implements IDashboardService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean save(Dashboard object) {
         dashboardStore.save(object);
@@ -99,9 +99,9 @@ public class DashboardService implements IDashboardService {
         return null;
     }
 
+
     /**
-     * @param dashboard to be removed.
-     * @throws IllegalArgumentException in cases when dashboard is null.
+     * {@inheritDoc}
      */
     @Override
     public boolean remove(Dashboard dashboard) {
@@ -122,13 +122,7 @@ public class DashboardService implements IDashboardService {
     }
 
     /**
-     * Changes the name of dashboard along with the Action.
-     * <p>
-     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
-     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
-     *
-     * @param dashboard to update.
-     * @throws IllegalArgumentException in cases when dashboard is null.
+     * {@inheritDoc}
      */
     @Override
     public boolean update(Dashboard dashboard) {
@@ -168,13 +162,13 @@ public class DashboardService implements IDashboardService {
         int itemsCount = getDashboardItemCount(dashboard);
 
         if (isItemContentTypeEmbedded(content)) {
-            item = dashboardItemService.createDashboardItem(dashboard, content);
+            item = dashboardItemService.add(dashboard, content);
             element = dashboardElementService.createDashboardElement(item, content);
             itemsCount += 1;
         } else {
             item = getAvailableItemByType(dashboard, content.getType());
             if (item == null) {
-                item = dashboardItemService.createDashboardItem(dashboard, content);
+                item = dashboardItemService.add(dashboard, content);
                 itemsCount += 1;
             }
             element = dashboardElementService.createDashboardElement(item, content);

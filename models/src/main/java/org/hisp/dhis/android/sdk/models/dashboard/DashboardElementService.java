@@ -92,7 +92,7 @@ public class DashboardElementService implements IDashboardElementService {
         /* if count of elements in item is zero, it means
         we don't need this item anymore */
         if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
-            dashboardItemService.deleteDashboardItem(dashboardElement.getDashboardItem());
+            dashboardItemService.remove(dashboardElement.getDashboardItem());
         }
     }
 }

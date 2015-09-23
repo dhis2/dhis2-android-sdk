@@ -262,7 +262,7 @@ public class AutoCompleteDialogAdapter extends BaseAdapter implements Filterable
         }
     }
 
-    public static class OptionAdapterValue {
+    public static class OptionAdapterValue implements Comparable<OptionAdapterValue> {
         public final String id;
         public final String label;
 
@@ -287,6 +287,11 @@ public class AutoCompleteDialogAdapter extends BaseAdapter implements Filterable
         @Override
         public int hashCode() {
             return (id == null ? 0 : id.hashCode()) ^ (label == null ? 0 : label.hashCode());
+        }
+
+        @Override
+        public int compareTo(OptionAdapterValue optionAdapterValue) {
+            return this.label.compareToIgnoreCase(optionAdapterValue.label);
         }
     }
 }

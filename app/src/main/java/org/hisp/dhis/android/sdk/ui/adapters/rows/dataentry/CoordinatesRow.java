@@ -32,26 +32,27 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
+import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
-import org.hisp.dhis.android.sdk.controllers.GpsController;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 
 public final class CoordinatesRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final Event mEvent;
+    private final int MAX_INPUT_LENGTH = 9; // max input length = 9 for accepting 6 decimals in coordinates
 
     public CoordinatesRow(Event event) {
         mEvent = event;
@@ -77,20 +78,24 @@ public final class CoordinatesRow extends Row {
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
+        //input filters for coordinate row text fields
+        InputFilter[] latitudeFilters = new InputFilter[2];
+        InputFilter[] longitudeFilters = new InputFilter[2];
+        InputFilter maxCharFilter = new InputFilter.LengthFilter(MAX_INPUT_LENGTH);
+        InputFilter invalidLatitudeFilter = new InvalidLatitudeInputValueFilter(mEvent);
+        InputFilter invalidLongitudeFilter = new InvalidLongitudeInputValueFilter(mEvent);
+        latitudeFilters[0] = maxCharFilter;
+        latitudeFilters[1] = invalidLatitudeFilter;
+        longitudeFilters[0] = maxCharFilter;
+        longitudeFilters[1] = invalidLongitudeFilter;
+
+        holder.latitude.setFilters(latitudeFilters);
+        holder.longitude.setFilters(longitudeFilters);
         holder.updateViews(mEvent);
 
-        if(!isEditable())
-        {
-            holder.latitude.setEnabled(false);
-            holder.longitude.setEnabled(false);
-            holder.captureCoords.setEnabled(false);
-        }
-        else
-        {
-            holder.latitude.setEnabled(true);
-            holder.longitude.setEnabled(true);
-            holder.captureCoords.setEnabled(true);
-        }
+        // Coordinates cannot be manually entered
+        holder.latitude.setEnabled(false);
+        holder.longitude.setEnabled(false);
 
         return view;
     }
@@ -99,8 +104,6 @@ public final class CoordinatesRow extends Row {
     public int getViewType() {
         return DataEntryRowTypes.COORDINATES.ordinal();
     }
-
-
 
     private static class CoordinateViewHolder {
         private final EditText latitude;
@@ -146,20 +149,29 @@ public final class CoordinatesRow extends Row {
             longitude.setText(lon);
         }
     }
+    private abstract static class CoordinateWatcher extends AbsTextWatcher {
+        final EditText mEditText;
+        final String mCoordinateMessage;
+        Event mEvent;
+        double value;
 
-    private static class LatitudeWatcher extends AbsTextWatcher {
-        private final EditText mLatitude;
-        private final String mLatitudeMessage;
-        private Event mEvent;
-        private double value;
-
-        public LatitudeWatcher(EditText latitude, String latitudeMessage) {
-            mLatitude = latitude;
-            mLatitudeMessage = latitudeMessage;
+        public CoordinateWatcher(EditText mEditText, String mCoordinateMessage)
+        {
+            this.mEditText = mEditText;
+            this.mCoordinateMessage = mCoordinateMessage;
         }
 
-        public void setEvent(Event event) {
-            mEvent = event;
+        public void setEvent(Event mEvent) {
+            this.mEvent = mEvent;
+        }
+
+        @Override
+        public abstract void afterTextChanged(Editable s);
+    }
+    private static class LatitudeWatcher extends CoordinateWatcher {
+
+        public LatitudeWatcher(EditText mLatitude, String mLatitudeMessage) {
+            super(mLatitude,mLatitudeMessage);
         }
 
         @Override
@@ -170,32 +182,25 @@ public final class CoordinatesRow extends Row {
             if (s.length() > 1) {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -90 || newValue > 90) {
-                    mLatitude.setError(mLatitudeMessage);
+                    mEditText.setError(mCoordinateMessage);
                 }
+
                 if(newValue != value)
                 {
                     mEvent.setLatitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();
-                    dataValue.setValue(""+ newValue);
+                    dataValue.setValue("" + newValue);
                     Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue));
+
                 }
             }
         }
     }
 
-    private static class LongitudeWatcher extends AbsTextWatcher {
-        private final EditText mLongitude;
-        private final String mLongitudeMessage;
-        private Event mEvent;
-        private double value;
+    private static class LongitudeWatcher extends CoordinateWatcher {
 
-        public LongitudeWatcher(EditText latitude, String latitudeMessage) {
-            mLongitude = latitude;
-            mLongitudeMessage = latitudeMessage;
-        }
-
-        public void setEvent(Event event) {
-            mEvent = event;
+        public LongitudeWatcher(EditText mLongitude, String mLongitudeMessage) {
+           super(mLongitude, mLongitudeMessage);
         }
 
         @Override
@@ -206,13 +211,14 @@ public final class CoordinatesRow extends Row {
             if (s.length() > 1) {
                 double newValue = Double.parseDouble(s.toString());
                 if (newValue < -180 || newValue > 180) {
-                    mLongitude.setError(mLongitudeMessage);
+                    mEditText.setError(mCoordinateMessage);
                 }
+
                 if(newValue != value)
                 {
                     mEvent.setLongitude(Double.valueOf(newValue));
                     DataValue dataValue = new DataValue();
-                    dataValue.setValue(""+ newValue);
+                    dataValue.setValue("" + newValue);
                     Dhis2Application.getEventBus().post(new RowValueChangedEvent(dataValue));
                 }
             }
@@ -231,8 +237,48 @@ public final class CoordinatesRow extends Row {
         @Override
         public void onClick(View v) {
             Location location = GpsController.getLocation();
-            mLatitude.setText(String.valueOf(location.getLatitude()));
-            mLongitude.setText(String.valueOf(location.getLongitude()));
+                mLatitude.setText(String.valueOf(location.getLatitude()));
+                mLongitude.setText(String.valueOf(location.getLongitude()));
+        }
+    }
+
+    private abstract class InvalidInputValueFilter implements InputFilter{
+        final Event event;
+        final String invalidValue = "0.0"; // we don't want users to overwrite existing coordinates with 0.0 - aka no network coords
+        public InvalidInputValueFilter(Event event)
+        {
+            this.event = event;
+        }
+        @Override
+        public abstract CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4);
+    }
+
+    private class InvalidLatitudeInputValueFilter extends InvalidInputValueFilter
+    {
+        public InvalidLatitudeInputValueFilter(Event event) {
+            super(event);
+        }
+
+        @Override
+        public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4) {
+            if(charSequence != null && charSequence.toString().trim().equals(invalidValue))
+                return Double.toString(event.getLatitude());
+
+            return null;
+        }
+    }
+    private class InvalidLongitudeInputValueFilter extends InvalidInputValueFilter
+    {
+        public InvalidLongitudeInputValueFilter(Event event) {
+            super(event);
+        }
+
+        @Override
+        public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4) {
+            if(charSequence != null && charSequence.toString().trim().equals(invalidValue))
+                return Double.toString(event.getLongitude());
+
+            return null;
         }
     }
 }

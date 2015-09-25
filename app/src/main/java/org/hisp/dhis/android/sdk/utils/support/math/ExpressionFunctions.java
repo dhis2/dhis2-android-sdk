@@ -64,9 +64,31 @@ public class ExpressionFunctions {
         }
 
         return (value.doubleValue() >= 0d) ? 1d : 0d;
+    }    
+    
+    /**
+     * Function which will return the count of zero or positive values among the
+     * given argument values.
+     * 
+     * @param values the arguments.
+     * @return an Integer.
+     */
+    public static Integer zpvc(Number... values) {
+        if (values == null || values.length == 0) {
+            throw new IllegalArgumentException("Argument is null or empty: " + values);
+        }
+        
+        int count = 0;
+        
+        for (Number value : values) {
+            if (value != null && value.doubleValue() >= 0d) {
+                count++;
+            }
+        }
+        
+        return count;        
     }
-    
-    
+
     /**
      * Functions which will return the true value if the condition is true, false
      * value if not.

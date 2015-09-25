@@ -32,27 +32,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardElement extends BaseIdentifiableObject {
 
     @JsonIgnore
-    State state;
-
-    @JsonIgnore
     DashboardItem dashboardItem;
 
     public DashboardElement() {
-        state = State.SYNCED;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public DashboardItem getDashboardItem() {

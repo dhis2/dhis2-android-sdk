@@ -36,9 +36,9 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
@@ -46,7 +46,8 @@ import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -69,20 +70,24 @@ import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toM
 
 public final class DashboardController implements IDataController<Dashboard> {
     private final IDhisApi dhisApi;
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
 
-    public DashboardController(IDhisApi dhisApi, IDashboardStore dashboardStore,
+    private final IStateStore stateStore;
+
+    public DashboardController(IDhisApi dhisApi, IIdentifiableObjectStore<Dashboard> dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
-                               IDashboardItemContentStore dashboardItemContentStore) {
+                               IDashboardItemContentStore dashboardItemContentStore,
+                               IStateStore stateStore) {
         this.dhisApi = dhisApi;
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemContentStore = dashboardItemContentStore;
+        this.stateStore = stateStore;
     }
 
     /* this method subtracts content of bList from aList */
@@ -109,10 +114,14 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
 
         Queue<IDbOperation> operations = new LinkedList<>();
+        /* operations.addAll(DbUtils.createOperations(dashboardStore,
+                dashboardStore.filter(Action.TO_POST), dashboards)); */
         operations.addAll(DbUtils.createOperations(dashboardStore,
-                dashboardStore.filter(State.TO_POST), dashboards));
+                stateStore.filterByAction(Dashboard.class, Action.TO_POST), dashboards));
+        /* operations.addAll(DbUtils.createOperations(dashboardItemStore,
+                dashboardItemStore.filter(Action.TO_POST), dashboardItems)); */
         operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                dashboardItemStore.filter(State.TO_POST), dashboardItems));
+                stateStore.filterByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
         DbUtils.applyBatch(operations);
@@ -165,18 +174,25 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         // List of persisted dashboards.
-        List<Dashboard> persistedDashboards = dashboardStore.filter(State.TO_POST);
+        // List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
+        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST);
         if (persistedDashboards != null && !persistedDashboards.isEmpty()) {
             for (Dashboard dashboard : persistedDashboards) {
-                List<DashboardItem> items = dashboardItemStore
-                        .filter(dashboard, State.TO_POST);
+                /* List<DashboardItem> items = dashboardItemStore
+                        .filter(dashboard, Action.TO_POST); */
+
+                List<DashboardItem> items = filterDashboardItems(dashboard, Action.TO_POST);
                 if (items == null || items.isEmpty()) {
                     continue;
                 }
 
                 for (DashboardItem item : items) {
+                    /* List<DashboardElement> dashboardElements =
+                            dashboardElementStore.filter(item, Action.TO_POST); */
+                    // item.setDashboardElements(dashboardElements);
+
                     List<DashboardElement> dashboardElements =
-                            dashboardElementStore.filter(item, State.TO_POST);
+                            filterDashboardElements(item, Action.TO_POST);
                     item.setDashboardElements(dashboardElements);
                 }
                 dashboard.setDashboardItems(items);
@@ -184,6 +200,51 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         return merge(actualDashboards, updatedDashboards, persistedDashboards);
+    }
+
+    private List<DashboardItem> filterDashboardItems(Dashboard dashboard, Action action) {
+        List<DashboardItem> filteredItems = new ArrayList<>();
+        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action);
+
+        if (dbItems != null && !dbItems.isEmpty()) {
+            for (DashboardItem dashboardItem : dbItems) {
+                if (dashboard.getId() == dashboardItem.getDashboard().getId()) {
+                    filteredItems.add(dashboardItem);
+                }
+            }
+        }
+
+        return filteredItems;
+    }
+
+    private List<DashboardElement> filterDashboardElements(DashboardItem item, Action action) {
+        List<DashboardElement> filteredElements = new ArrayList<>();
+        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action);
+
+        if (dbElements != null && !dbElements.isEmpty()) {
+            for (DashboardElement dbElement : dbElements) {
+                if (item.getId() == dbElement.getDashboardItem().getId()) {
+                    filteredElements.add(dbElement);
+                }
+            }
+        }
+
+        return filteredElements;
+    }
+
+    private List<DashboardElement> getDashboardElements(DashboardItem item, Action action) {
+        List<DashboardElement> filteredElements = new ArrayList<>();
+        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action);
+
+        if (dbElements != null && !dbElements.isEmpty()) {
+            for (DashboardElement dbElement : dbElements) {
+                if (item.getId() == dbElement.getDashboardItem().getId()) {
+                    filteredElements.add(dbElement);
+                }
+            }
+        }
+
+        return filteredElements;
     }
 
     private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime lastUpdated) throws APIException {
@@ -205,8 +266,10 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         // List of persisted dashboard items
+        /* Map<String, DashboardItem> persistedDashboardItems =
+                toMap(dashboardItemStore.filter(Action.TO_POST)); */
         Map<String, DashboardItem> persistedDashboardItems =
-                toMap(dashboardItemStore.filter(State.TO_POST));
+                toMap(stateStore.filterByAction(DashboardItem.class, Action.TO_POST));
 
         // List of updated dashboard items. We need this only to get
         // information about updates of item shape.
@@ -248,8 +311,11 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<DbOperation> dbOperations = new ArrayList<>();
 
         for (DashboardItem refreshedItem : refreshedItems) {
+            /* List<DashboardElement> persistedElementList =
+                    dashboardElementStore.filter(refreshedItem, Action.TO_POST); */
             List<DashboardElement> persistedElementList =
-                    dashboardElementStore.filter(refreshedItem, State.TO_POST);
+                    filterDashboardElements(refreshedItem, Action.TO_POST);
+
             List<DashboardElement> refreshedElementList =
                     refreshedItem.getDashboardElements();
 
@@ -304,13 +370,17 @@ public final class DashboardController implements IDataController<Dashboard> {
         // we need to sort dashboards in natural order.
         // In order they were inserted in local database.
 
-        List<Dashboard> dashboards = dashboardStore.filter(State.SYNCED);
+        // List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
+        List<Dashboard> dashboards = stateStore
+                .filterByAction(Dashboard.class, Action.SYNCED);
+        Map<Long, Action> actionMap = stateStore
+                .queryMap(Dashboard.class);
         if (dashboards == null || dashboards.isEmpty()) {
             return;
         }
 
         for (Dashboard dashboard : dashboards) {
-            switch (dashboard.getState()) {
+            switch (actionMap.get(dashboard.getId())) {
                 case TO_POST: {
                     postDashboard(dashboard);
                     break;
@@ -337,9 +407,10 @@ public final class DashboardController implements IDataController<Dashboard> {
             String dashboardId = Uri.parse(header.getValue()).getLastPathSegment();
             // set UUID, change state and save dashboard
             dashboard.setUId(dashboardId);
-            dashboard.setState(State.SYNCED);
+            // dashboard.setAction(Action.SYNCED);
 
             dashboardStore.save(dashboard);
+            stateStore.save(dashboard, Action.SYNCED);
 
             updateDashboardTimeStamp(dashboard);
         } catch (APIException apiException) {
@@ -351,8 +422,9 @@ public final class DashboardController implements IDataController<Dashboard> {
         try {
             dhisApi.putDashboard(dashboard.getUId(), dashboard);
 
-            dashboard.setState(State.SYNCED);
+            // dashboard.setAction(Action.SYNCED);
             dashboardStore.save(dashboard);
+            stateStore.save(dashboard, Action.SYNCED);
 
             updateDashboardTimeStamp(dashboard);
         } catch (APIException apiException) {
@@ -371,15 +443,18 @@ public final class DashboardController implements IDataController<Dashboard> {
     }
 
     private void sendDashboardItemChanges() throws APIException {
+        /* List<DashboardItem> dashboardItems =
+                dashboardItemStore.filter(Action.SYNCED); */
         List<DashboardItem> dashboardItems =
-                dashboardItemStore.filter(State.SYNCED);
+                stateStore.filterByAction(DashboardItem.class, Action.SYNCED);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         if (dashboardItems == null || dashboardItems.isEmpty()) {
             return;
         }
 
         for (DashboardItem dashboardItem : dashboardItems) {
-            switch (dashboardItem.getState()) {
+            switch (actionMap.get(dashboardItem.getId())) {
                 case TO_POST: {
                     postDashboardItem(dashboardItem);
                     break;
@@ -394,23 +469,20 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private void postDashboardItem(DashboardItem dashboardItem) throws APIException {
         Dashboard dashboard = dashboardItem.getDashboard();
+        Action dashboardAction = stateStore.queryAction(dashboard);
 
-        if (dashboard != null && dashboard.getState() != null) {
-            boolean isDashboardSynced = (dashboard.getState().equals(State.SYNCED) ||
-                    dashboard.getState().equals(State.TO_UPDATE));
+        if (dashboard != null && dashboardAction != null) {
+            boolean isDashboardSynced = (dashboardAction.equals(Action.SYNCED) ||
+                    dashboardAction.equals(Action.TO_UPDATE));
 
             if (!isDashboardSynced) {
                 return;
             }
 
-            /* List<DashboardElement> elements = new Select().from(DashboardElement.class)
-                    .where(Condition.column(DashboardElement$Table
-                            .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()))
-                    .and(Condition.column(DashboardItem$Table
-                            .STATE).is(State.TO_POST.toString()))
-                    .queryList(); */
+            /* List<DashboardElement> elements =
+                    dashboardElementStore.query(dashboardItem, Action.TO_POST); */
             List<DashboardElement> elements =
-                    dashboardElementStore.query(dashboardItem, State.TO_POST);
+                    getDashboardElements(dashboardItem, Action.TO_POST);
 
             if (elements == null || elements.isEmpty()) {
                 return;
@@ -425,12 +497,15 @@ public final class DashboardController implements IDataController<Dashboard> {
                 String dashboardItemUId = Uri.parse(locationHeader
                         .getValue()).getLastPathSegment();
                 dashboardItem.setUId(dashboardItemUId);
-                dashboardItem.setState(State.SYNCED);
+                // dashboardItem.setAction(Action.SYNCED);
 
-                element.setState(State.SYNCED);
+                // element.setAction(Action.SYNCED);
 
                 dashboardItemStore.save(dashboardItem);
                 dashboardElementStore.save(element);
+
+                stateStore.save(dashboardItem, Action.SYNCED);
+                stateStore.save(dashboard, Action.SYNCED);
 
                 // we have to update timestamp of dashboard after adding new item.
                 updateDashboardTimeStamp(dashboardItem.getDashboard());
@@ -442,10 +517,11 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private void deleteDashboardItem(DashboardItem dashboardItem) throws APIException {
         Dashboard dashboard = dashboardItem.getDashboard();
+        Action dashboardAction = stateStore.queryAction(dashboard);
 
-        if (dashboard != null && dashboard.getState() != null) {
-            boolean isDashboardSynced = (dashboard.getState().equals(State.SYNCED) ||
-                    dashboard.getState().equals(State.TO_UPDATE));
+        if (dashboard != null && dashboardAction != null) {
+            boolean isDashboardSynced = (dashboardAction.equals(Action.SYNCED) ||
+                    dashboardAction.equals(Action.TO_UPDATE));
 
             if (!isDashboardSynced) {
                 return;
@@ -468,17 +544,19 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* List<DashboardElement> elements = new Select()
                 .from(DashboardElement.class)
                 .where(Condition.column(DashboardElement$Table
-                        .STATE).isNot(State.SYNCED))
+                        .STATE).isNot(Action.SYNCED))
                 .orderBy(true, DashboardElement$Table.ID)
                 .queryList(); */
-        List<DashboardElement> elements = dashboardElementStore.filter(State.SYNCED);
+        List<DashboardElement> elements = stateStore
+                .filterByAction(DashboardElement.class, Action.SYNCED);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         if (elements == null || elements.isEmpty()) {
             return;
         }
 
         for (DashboardElement element : elements) {
-            switch (element.getState()) {
+            switch (actionMap.get(actionMap)) {
                 case TO_POST: {
                     postDashboardElement(element);
                     break;
@@ -493,53 +571,56 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private void postDashboardElement(DashboardElement element) throws APIException {
         DashboardItem item = element.getDashboardItem();
-        if (item == null || item.getState() == null) {
+        /* if (item == null || item.getAction() == null) {
             return;
         }
 
         Dashboard dashboard = item.getDashboard();
-        if (dashboard == null || dashboard.getState() == null) {
+        if (dashboard == null || dashboard.getAction() == null) {
             return;
         }
 
         // we need to make sure that associated DashboardItem
         // and parent Dashboard are already synced to the server.
-        boolean isDashboardSynced = (dashboard.getState().equals(State.SYNCED) ||
-                dashboard.getState().equals(State.TO_UPDATE));
-        boolean isItemSynced = item.getState().equals(State.SYNCED) ||
-                item.getState().equals(State.TO_UPDATE);
+        boolean isDashboardSynced = (dashboard.getAction().equals(Action.SYNCED) ||
+                dashboard.getAction().equals(Action.TO_UPDATE));
+        boolean isItemSynced = item.getAction().equals(Action.SYNCED) ||
+                item.getAction().equals(Action.TO_UPDATE);
         if (isDashboardSynced && isItemSynced) {
 
             try {
                 dhisApi.postDashboardItem(dashboard.getUId(),
                         item.getType(), element.getUId(), "");
-                element.setState(State.SYNCED);
+                element.setAction(Action.SYNCED);
                 dashboardElementStore.save(element);
 
                 updateDashboardTimeStamp(item.getDashboard());
             } catch (APIException apiException) {
                 handleApiException(apiException, element, dashboardElementStore);
             }
-        }
+        } */
     }
 
     private void deleteDashboardElement(DashboardElement element) throws APIException {
         DashboardItem item = element.getDashboardItem();
-        if (item == null || item.getState() == null) {
+        Action itemAction = stateStore.queryAction(item);
+
+        if (item == null || itemAction == null) {
             return;
         }
 
         Dashboard dashboard = item.getDashboard();
-        if (dashboard == null || dashboard.getState() == null) {
+        Action dashboardAction = stateStore.queryAction(dashboard);
+        if (dashboard == null || dashboardAction == null) {
             return;
         }
 
         // we need to make sure associated DashboardItem
         // and parent Dashboard are already synced to server
-        boolean isDashboardSynced = (dashboard.getState().equals(State.SYNCED) ||
-                dashboard.getState().equals(State.TO_UPDATE));
-        boolean isItemSynced = item.getState().equals(State.SYNCED) ||
-                item.getState().equals(State.TO_UPDATE);
+        boolean isDashboardSynced = (dashboardAction.equals(Action.SYNCED) ||
+                dashboardAction.equals(Action.TO_UPDATE));
+        boolean isItemSynced = dashboardAction.equals(Action.SYNCED) ||
+                dashboardAction.equals(Action.TO_UPDATE);
         if (isDashboardSynced && isItemSynced) {
             try {
                 dhisApi.deleteDashboardItemContent(dashboard.getUId(),
@@ -614,7 +695,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         dashboardItemContent.addAll(updateApiResourceByType(
                 DashboardItemContent.TYPE_MAP, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
-                DashboardItemContent.TYPE_REPORT_TABLES, lastUpdated));
+                DashboardItemContent.TYPE_REPORT_TABLE, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
                 DashboardItemContent.TYPE_EVENT_REPORT, lastUpdated));
         dashboardItemContent.addAll(updateApiResourceByType(
@@ -664,7 +745,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 return unwrapResponse(dhisApi.getEventCharts(queryParams), "eventCharts");
             case DashboardItemContent.TYPE_MAP:
                 return unwrapResponse(dhisApi.getMaps(queryParams), "maps");
-            case DashboardItemContent.TYPE_REPORT_TABLES:
+            case DashboardItemContent.TYPE_REPORT_TABLE:
                 return unwrapResponse(dhisApi.getReportTables(queryParams), "reportTables");
             case DashboardItemContent.TYPE_EVENT_REPORT:
                 return unwrapResponse(dhisApi.getEventReports(queryParams), "eventReports");

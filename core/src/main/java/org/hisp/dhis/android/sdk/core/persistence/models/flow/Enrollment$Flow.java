@@ -37,9 +37,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.android.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -96,7 +94,7 @@ public final class Enrollment$Flow extends BaseModel {
     Access access;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     List<Event$Flow> events;
 
@@ -222,12 +220,12 @@ public final class Enrollment$Flow extends BaseModel {
         this.access = access;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+        this.action = action;
     }
 
     public List<Event$Flow> getEvents() {
@@ -271,7 +269,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setCreated(enrollmentFlow.getCreated());
         enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
         enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setState(enrollmentFlow.getState());
+        enrollment.setAction(enrollmentFlow.getAction());
         enrollment.setEvents(Event$Flow.toModels(enrollmentFlow.getEvents()));
         enrollment.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.toModels(enrollmentFlow.getTrackedEntityAttributeValues()));
         return enrollment;
@@ -298,7 +296,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setCreated(enrollment.getCreated());
         enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
         enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setState(enrollment.getState());
+        enrollmentFlow.setAction(enrollment.getAction());
         enrollmentFlow.setEvents(Event$Flow.fromModels(enrollment.getEvents()));
         enrollmentFlow.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.fromModels(enrollment.getTrackedEntityAttributeValues()));
         return enrollmentFlow;

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.sdk.core.api;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardService;
@@ -42,6 +43,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationCommentService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElementService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationService;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
 import org.hisp.dhis.android.sdk.models.user.UserAccountService;
 
@@ -57,14 +59,17 @@ final class Services {
     private final IInterpretationCommentService interpretationCommentService;
 
     private final IUserAccountService userAccountService;
+    private final IStateStore stateStore;
 
     private Services(Context context) {
         Models.init(context);
 
-        dashboardItemService = new DashboardItemService(Models.dashboardItems(), Models.dashboardElements());
-        dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService);
+        stateStore = new StateStore();
+
+        dashboardItemService = new DashboardItemService(Models.dashboardItems(), Models.dashboardElements(), stateStore);
+        dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService, stateStore);
         dashboardService = new DashboardService(Models.dashboards(), Models.dashboardItems(),
-                Models.dashboardElements(), dashboardItemService, dashboardElementService);
+                Models.dashboardElements(), dashboardItemService, dashboardElementService, stateStore);
 
         interpretationElementService = new InterpretationElementService();
         interpretationCommentService = new InterpretationCommentService(Models.interpretationComments());

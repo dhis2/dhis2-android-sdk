@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
@@ -70,8 +70,8 @@ public final class InterpretationServiceTests {
         assertEquals(comment.getUser(), user);
         assertEquals(comment.getText(), text);
 
-        /* we need to make sure that State is State.TO_POST */
-        assertEquals(comment.getState(), State.TO_POST);
+        /* we need to make sure that Action is Action.TO_POST */
+        assertEquals(comment.getAction(), Action.TO_POST);
 
         assertNotNull(comment.getCreated());
         assertNotNull(comment.getLastUpdated());
@@ -130,7 +130,7 @@ public final class InterpretationServiceTests {
 
         assertEquals(interpretationChart.getText(), text);
         assertEquals(interpretationChart.getUser(), user);
-        assertEquals(interpretationChart.getState(), State.TO_POST);
+        assertEquals(interpretationChart.getAction(), Action.TO_POST);
 
         assertEquals(interpretationChart.getType(), Interpretation.TYPE_CHART);
         assertNotNull(interpretationChart.getChart());

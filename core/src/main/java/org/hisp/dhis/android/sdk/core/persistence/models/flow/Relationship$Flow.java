@@ -35,7 +35,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.relationship.Relationship;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public final class Relationship$Flow extends BaseModel {
     String displayName;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public String getRelationship() {
         return relationship;
@@ -94,12 +93,12 @@ public final class Relationship$Flow extends BaseModel {
         this.displayName = displayName;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+        this.action = action;
     }
 
     public Relationship$Flow() {
@@ -116,7 +115,7 @@ public final class Relationship$Flow extends BaseModel {
         relationship.setTrackedEntityInstanceA(relationshipFlow.getTrackedEntityInstanceA());
         relationship.setTrackedEntityInstanceB(relationshipFlow.getTrackedEntityInstanceB());
         relationship.setDisplayName(relationshipFlow.getDisplayName());
-        relationship.setState(relationshipFlow.getState());
+        relationship.setAction(relationshipFlow.getAction());
         return relationship;
     }
 
@@ -130,7 +129,7 @@ public final class Relationship$Flow extends BaseModel {
         relationshipFlow.setTrackedEntityInstanceA(relationship.getTrackedEntityInstanceA());
         relationshipFlow.setTrackedEntityInstanceB(relationship.getTrackedEntityInstanceB());
         relationshipFlow.setDisplayName(relationship.getDisplayName());
-        relationshipFlow.setState(relationship.getState());
+        relationshipFlow.setAction(relationship.getAction());
         return relationshipFlow;
     }
 

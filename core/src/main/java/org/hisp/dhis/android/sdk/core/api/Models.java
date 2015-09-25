@@ -59,6 +59,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.programstagesection.Pro
 import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityattribute.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationship.RelationshipStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.RelationshipTypeStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattributevalue.TrackedEntityAttributeValueStore;
@@ -68,11 +69,12 @@ import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.constant.Constant;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
@@ -95,6 +97,7 @@ import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSection
 import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.ITrackedEntityAttributeValueStore;
@@ -136,7 +139,7 @@ public final class Models {
     private final IEnrollmentStore enrollmentStore;
 
     // Dashboard store objects
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
@@ -152,6 +155,8 @@ public final class Models {
 
     // Models store
     private final IModelsStore modelsStore;
+
+    private final IStateStore stateStore;
 
     public Models(Context context) {
         FlowManager.init(context);
@@ -198,6 +203,8 @@ public final class Models {
         userStore = new UserStore();
 
         modelsStore = new ModelsStore();
+
+        stateStore = new StateStore();
     }
 
     public static void init(Context context) {
@@ -308,7 +315,7 @@ public final class Models {
         return getInstance().dataSetStore;
     }
 
-    public static IDashboardStore dashboards() {
+    public static IIdentifiableObjectStore<Dashboard> dashboards() {
         return getInstance().dashboardStore;
     }
 
@@ -346,5 +353,9 @@ public final class Models {
 
     public static IModelsStore modelsStore() {
         return getInstance().modelsStore;
+    }
+
+    public static IStateStore stateStore() {
+        return getInstance().stateStore;
     }
 }

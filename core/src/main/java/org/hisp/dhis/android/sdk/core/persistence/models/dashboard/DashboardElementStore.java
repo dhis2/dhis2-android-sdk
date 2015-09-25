@@ -33,13 +33,13 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
 
-import java.util.Arrays;
 import java.util.List;
+
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardElementStore implements IDashboardElementStore {
 
@@ -98,17 +98,31 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem, State... states) {
-        return query(dashboardItem, Arrays.asList(states));
+    public List<DashboardElement> query(DashboardItem dashboardItem) {
+        isNull(dashboardItem, "dashboard item must not be null");
+
+        List<DashboardElement$Flow> elementFlows = new Select()
+                .from(DashboardElement$Flow.class)
+                .where(Condition.column(DashboardElement$Flow$Table
+                        .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()))
+                .queryList();
+
+        // converting flow models to Dashboard
+        return DashboardElement$Flow.toModels(elementFlows);
+    }
+
+    /* @Override
+    public List<DashboardElement> query(DashboardItem dashboardItem, Action... actions) {
+        return query(dashboardItem, Arrays.asList(actions));
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem, List<State> states) {
-        if (states != null && states.isEmpty()) {
-            throw new IllegalArgumentException("Please, provide at least one State");
+    public List<DashboardElement> query(DashboardItem dashboardItem, List<Action> actions) {
+        if (actions != null && actions.isEmpty()) {
+            throw new IllegalArgumentException("Please, provide at least one Action");
         }
 
-        Condition.CombinedCondition combinedCondition = buildCombinedCondition(states);
+        Condition.CombinedCondition combinedCondition = buildCombinedCondition(actions);
         combinedCondition = combinedCondition.and(Condition
                 .column(DashboardElement$Flow$Table
                         .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()));
@@ -123,16 +137,16 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public List<DashboardElement> filter(DashboardItem dashboardItem, State state) {
-        if (state == null) {
-            throw new IllegalArgumentException("Please, provide State");
+    public List<DashboardElement> filter(DashboardItem dashboardItem, Action action) {
+        if (action == null) {
+            throw new IllegalArgumentException("Please, provide Action");
         }
 
         List<DashboardElement$Flow> elementFlows = new Select()
                 .from(DashboardElement$Flow.class)
                 .where(Condition.CombinedCondition
                         .begin(Condition.column(DashboardElement$Flow$Table
-                                .STATE).isNot(state.toString()))
+                                .ACTION).isNot(action.toString()))
                         .and(Condition.column(DashboardElement$Flow$Table
                                 .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId())))
                 .queryList();
@@ -142,35 +156,35 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public List<DashboardElement> filter(State state) {
-        if (state == null) {
-            throw new IllegalArgumentException("Please, provide State");
+    public List<DashboardElement> filter(Action action) {
+        if (action == null) {
+            throw new IllegalArgumentException("Please, provide Action");
         }
 
         List<DashboardElement$Flow> elementFlows = new Select()
                 .from(DashboardElement$Flow.class)
                 .where(Condition.column(DashboardElement$Flow$Table
-                        .STATE).isNot(state.toString()))
+                        .ACTION).isNot(action.toString()))
                 .queryList();
 
         // converting flow models to Dashboard
         return DashboardElement$Flow.toModels(elementFlows);
-    }
+    } */
 
-    private static Condition.CombinedCondition buildCombinedCondition(List<State> states) {
+    /* private static Condition.CombinedCondition buildCombinedCondition(List<Action> actions) {
         Condition.CombinedCondition combinedCondition = null;
-        for (State state : states) {
+        for (Action action : actions) {
             if (combinedCondition == null) {
-                combinedCondition = Condition.CombinedCondition.begin(isState(state));
+                combinedCondition = Condition.CombinedCondition.begin(isState(action));
             } else {
-                combinedCondition = combinedCondition.or(isState(state));
+                combinedCondition = combinedCondition.or(isState(action));
             }
         }
         return combinedCondition;
-    }
+    } */
 
-    private static Condition isState(State state) {
+    /* private static Condition isState(Action action) {
         return Condition.column(DashboardElement$Flow$Table
-                .STATE).is(state.toString());
-    }
+                .ACTION).is(action.toString());
+    } */
 }

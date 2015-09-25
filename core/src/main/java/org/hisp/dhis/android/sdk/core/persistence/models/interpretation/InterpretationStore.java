@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 
@@ -100,11 +100,11 @@ public final class InterpretationStore implements IInterpretationStore {
     }
 
     @Override
-    public List<Interpretation> filter(State state) {
+    public List<Interpretation> filter(Action action) {
         List<Interpretation$Flow> interpretationFlows = new Select()
                 .from(Interpretation$Flow.class)
                 .where(Condition.column(Interpretation$Flow$Table
-                        .STATE).isNot(state.toString()))
+                        .ACTION).isNot(action.toString()))
                 .queryList();
         return Interpretation$Flow.toModels(interpretationFlows);
     }

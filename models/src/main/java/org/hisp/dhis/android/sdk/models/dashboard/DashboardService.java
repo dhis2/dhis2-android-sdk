@@ -28,38 +28,46 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
-import org.joda.time.DateTime;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardService implements IDashboardService {
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
 
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
 
-    public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
+    private final IStateStore stateStore;
+
+    public DashboardService(IIdentifiableObjectStore<Dashboard> dashboardStore, IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
-                            IDashboardItemService dashboardItemService, IDashboardElementService dashboardElementService) {
+                            IDashboardItemService dashboardItemService,
+                            IDashboardElementService dashboardElementService,
+                            IStateStore stateStore) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemService = dashboardItemService;
         this.dashboardElementService = dashboardElementService;
+        this.stateStore = stateStore;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Dashboard createDashboard(String name) {
-        DateTime lastUpdated = new DateTime();
+    public boolean add(Dashboard dashboard) {
+        /* DateTime lastUpdated = new DateTime();
 
         Dashboard dashboard = new Dashboard();
         dashboard.setName(name);
@@ -67,48 +75,99 @@ public class DashboardService implements IDashboardService {
         dashboard.setCreated(lastUpdated);
         dashboard.setLastUpdated(lastUpdated);
         dashboard.setAccess(Access.createDefaultAccess());
-        dashboard.setState(State.TO_POST);
-        return dashboard;
+        // dashboard.setAction(Action.TO_POST);
+        return dashboard; */
+
+        dashboardStore.insert(dashboard);
+        stateStore.save(dashboard, Action.TO_POST);
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deleteDashboard(Dashboard dashboard) {
+    public boolean save(Dashboard object) {
+        dashboardStore.save(object);
+
+        // TODO check if dashboard was created earlier (then set correct flag)
+        Action action = stateStore.queryAction(object);
+
+        if (action == null) {
+            stateStore.save(object, Action.TO_POST);
+        } else {
+            stateStore.save(object, Action.TO_UPDATE);
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Dashboard> query() {
+        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean remove(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        if (State.TO_DELETE.equals(dashboard.getState())) {
-            dashboard.setState(State.TO_DELETE);
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
+            // dashboard.setAction(Action.TO_DELETE);
+            stateStore.delete(dashboard);
             dashboardStore.delete(dashboard);
         } else {
-            dashboard.setState(State.TO_DELETE);
+            // dashboard.setAction(Action.TO_DELETE);
+            stateStore.save(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
         }
+
+        return true;
+    }
+
+    @Override
+    public Dashboard query(long id) {
+        Dashboard dashboard = dashboardStore.query(id);
+        Action action = stateStore.queryAction(dashboard);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return dashboard;
+        }
+
+        return null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void updateDashboardName(Dashboard dashboard, String name) {
+    public boolean update(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        if (State.TO_DELETE.equals(dashboard.getState())) {
-            throw new IllegalArgumentException("The name of dashboard with State." +
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
+            throw new IllegalArgumentException("The name of dashboard with Action." +
                     "TO_DELETE cannot be updated");
         }
 
         /* if dashboard was not posted to the server before,
         you don't have anything to update */
-        if (dashboard.getState() != State.TO_POST) {
-            dashboard.setState(State.TO_UPDATE);
+        if (!Action.TO_POST.equals(action)) {
+            // dashboard.setAction(Action.TO_UPDATE);
+            stateStore.save(dashboard, Action.TO_UPDATE);
         }
 
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
+        /* dashboard.setName(name);
+        dashboard.setDisplayName(name); */
 
         dashboardStore.update(dashboard);
+
+        return true;
     }
 
     /**
@@ -124,16 +183,16 @@ public class DashboardService implements IDashboardService {
         int itemsCount = getDashboardItemCount(dashboard);
 
         if (isItemContentTypeEmbedded(content)) {
-            item = dashboardItemService.createDashboardItem(dashboard, content);
-            element = dashboardElementService.createDashboardElement(item, content);
+            item = dashboardItemService.add(dashboard, content);
+            element = dashboardElementService.add(item, content);
             itemsCount += 1;
         } else {
             item = getAvailableItemByType(dashboard, content.getType());
             if (item == null) {
-                item = dashboardItemService.createDashboardItem(dashboard, content);
+                item = dashboardItemService.add(dashboard, content);
                 itemsCount += 1;
             }
-            element = dashboardElementService.createDashboardElement(item, content);
+            element = dashboardElementService.add(item, content);
         }
 
         if (itemsCount > Dashboard.MAX_ITEMS) {
@@ -154,14 +213,13 @@ public class DashboardService implements IDashboardService {
         isNull(dashboard, "dashboard must not be null");
         isNull(type, "type must not be null");
 
-        List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, State.TO_DELETE);
+        List<DashboardItem> dashboardItems = queryRelateDashboardItems(dashboard);
 
-        if (items == null || items.isEmpty()) {
+        if (dashboardItems.isEmpty()) {
             return null;
         }
 
-        for (DashboardItem item : items) {
+        for (DashboardItem item : dashboardItems) {
             if (type.equals(item.getType()) &&
                     dashboardItemService.getContentCount(item) < DashboardItem.MAX_CONTENT) {
                 return item;
@@ -172,9 +230,24 @@ public class DashboardService implements IDashboardService {
     }
 
     int getDashboardItemCount(Dashboard dashboard) {
-        List<DashboardItem> items = dashboardItemStore
-                .filter(dashboard, State.TO_DELETE);
-        return items == null ? 0 : items.size();
+        List<DashboardItem> dashboardItems = queryRelateDashboardItems(dashboard);
+        return dashboardItems == null ? 0 : dashboardItems.size();
+    }
+
+    private List<DashboardItem> queryRelateDashboardItems(Dashboard dashboard) {
+        List<DashboardItem> allDashboardItems = dashboardItemStore.query(dashboard);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+
+        List<DashboardItem> dashboardItems = new ArrayList<>();
+        for (DashboardItem dashboardItem : allDashboardItems) {
+            Action action = actionMap.get(dashboardItem.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardItems.add(dashboardItem);
+            }
+        }
+
+        return dashboardItems;
     }
 
     static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
@@ -193,6 +266,7 @@ public class DashboardService implements IDashboardService {
             }
         }
 
-        throw new IllegalArgumentException("Unsupported DashboardItemContent type");
+        throw new IllegalArgumentException("Unsupported DashboardItemContent type: " +
+                content.getType() + " name: " + content.getDisplayName());
     }
 }

@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
 import org.joda.time.DateTime;
 
@@ -112,10 +112,10 @@ public final class Event implements Serializable {
     private Access access;
 
     @JsonIgnore
-    private State state;
+    private Action action;
 
     public Event() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
     @JsonProperty("coordinate")
@@ -132,12 +132,12 @@ public final class Event implements Serializable {
         return coordinate;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public long getId() {

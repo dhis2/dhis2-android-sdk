@@ -32,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.user.User;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -44,12 +44,12 @@ public class InterpretationComment extends BaseIdentifiableObject {
     @JsonProperty("user")
     private User user;
 
-    private State state;
+    private Action action;
 
     private Interpretation interpretation;
 
     public InterpretationComment() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
     public String getText() {
@@ -68,12 +68,12 @@ public class InterpretationComment extends BaseIdentifiableObject {
         this.user = user;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public Interpretation getInterpretation() {

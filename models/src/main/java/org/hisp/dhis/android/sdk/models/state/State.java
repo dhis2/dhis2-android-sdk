@@ -26,13 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.interpretation;
+package org.hisp.dhis.android.sdk.models.state;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.state.Action;
+public final class State {
+    private long itemId;
+    private Class<?> itemType;
+    private Action action;
 
-import java.util.List;
+    public State() {
+        // empty constructor
+    }
 
-public interface IInterpretationStore extends IIdentifiableObjectStore<Interpretation> {
-    List<Interpretation> filter(Action action);
+    public long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
+    }
+
+    public Class<?> getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(Class<?> itemType) {
+        this.itemType = itemType;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
 }

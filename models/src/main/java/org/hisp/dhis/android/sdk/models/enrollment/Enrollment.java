@@ -34,10 +34,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -102,10 +101,10 @@ public final class Enrollment implements Serializable {
     private List<Event> events;
 
     @JsonIgnore
-    private State state;
+    private Action action;
 
     public Enrollment() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
     public long getId() {
@@ -244,11 +243,11 @@ public final class Enrollment implements Serializable {
         this.events = events;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 }

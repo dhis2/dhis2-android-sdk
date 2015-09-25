@@ -35,7 +35,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
@@ -69,7 +68,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
     DateTime lastUpdated;
 
     @Column
-    State state;
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public long getId() {
         return id;
@@ -135,12 +134,12 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
         this.lastUpdated = lastUpdated;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+        this.action = action;
     }
 
     public TrackedEntityInstance$Flow() {

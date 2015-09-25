@@ -26,8 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.common.meta;
+package org.hisp.dhis.android.sdk.models.state;
 
-public enum State {
-    SYNCED, TO_POST, TO_UPDATE, TO_DELETE,
+import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+
+import java.util.List;
+import java.util.Map;
+
+public interface IStateStore extends IStore<State> {
+    <T extends IdentifiableObject> State query(T object);
+
+    <T extends IdentifiableObject> List<State> query(Class<T> clazz);
+
+    <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz);
+
+    <T extends IdentifiableObject> Action queryAction(T object);
+
+    <T extends IdentifiableObject> void delete(T object);
+
+    <T extends IdentifiableObject> void save(T object, Action action);
+
+    <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action);
+
+    <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action);
 }

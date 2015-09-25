@@ -30,44 +30,51 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
 
+import java.util.List;
+
 public interface IDashboardService extends IService {
 
     /**
      * Factory method which creates new Dashboard with given name.
      *
-     * @param name String name of new dashboard.
-     * @return a dashboard.
+     * @param dashboard dashbaord to create on server.
      */
-    Dashboard createDashboard(String name);
+    // TODO substitute timestamp for dashboard
+    boolean add(Dashboard dashboard);
+
+
+    boolean save(Dashboard object);
 
 
     /**
-     * Changes the name of dashboard along with the State.
-     * <p/>
-     * If the current state of model is State.TO_DELETE or State.TO_POST,
-     * state won't be changed. Otherwise, it will be set to State.TO_UPDATE.
+     * Changes the name of dashboard along with the Action.
+     * <p>
+     * If the current action of model is Action.TO_DELETE or Action.TO_POST,
+     * action won't be changed. Otherwise, it will be set to Action.TO_UPDATE.
      *
-     * @param name Name for dashboard.
+     * @param dashboard to update.
      * @throws IllegalArgumentException in cases when dashboard is null.
      */
-    void updateDashboardName(Dashboard dashboard, String name);
-
+    boolean update(Dashboard dashboard);
 
     /**
      * @param dashboard to be removed.
      * @throws IllegalArgumentException in cases when dashboard is null.
      */
-    void deleteDashboard(Dashboard dashboard) throws IllegalArgumentException;
+    boolean remove(Dashboard dashboard);
 
+    Dashboard query(long id);
+
+    List<Dashboard> query();
 
     /**
      * Will try to append DashboardItemContent to current dashboard.
      * If the type of DashboardItemContent is embedded (chart, eventChart, map, eventReport, reportTable),
      * method will create a new item and append it to dashboard.
-     * <p/>
+     * <p>
      * If the type of DashboardItemContent is link type (users, reports, resources),
      * method will try to append content to existing item. Otherwise it will create a new dashboard item.
-     * <p/>
+     * <p>
      * If the overall count of items in dashboard is bigger that Dashboard.MAX_ITEMS, method will not
      * add content and return false;
      *
@@ -76,7 +83,7 @@ public interface IDashboardService extends IService {
      * @return false if item count is bigger than MAX_ITEMS.
      * @throws IllegalArgumentException if dashboard or content is null.
      */
-    boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) throws IllegalArgumentException;
+    boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content);
 
 
     /**
@@ -87,5 +94,5 @@ public interface IDashboardService extends IService {
      * @return an item.
      * @throws IllegalArgumentException if dashboard or type is null.
      */
-    DashboardItem getAvailableItemByType(Dashboard dashboard, String type) throws IllegalArgumentException;
+    DashboardItem getAvailableItemByType(Dashboard dashboard, String type);
 }

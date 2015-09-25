@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 
 import java.util.ArrayList;
@@ -65,11 +64,11 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
     Interpretation$Flow interpretation;
 
     @NotNull
-    @Column(name = "state")
-    State state;
+    @Column(name = "action")
+    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public InterpretationComment$Flow() {
-        state = State.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
     public String getText() {
@@ -96,12 +95,12 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         this.interpretation = interpretation;
     }
 
-    public State getState() {
-        return state;
+    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+        this.action = action;
     }
 
     public static InterpretationComment$Flow fromModel(InterpretationComment comment) {
@@ -117,7 +116,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         commentFlow.setName(comment.getName());
         commentFlow.setDisplayName(comment.getDisplayName());
         commentFlow.setAccess(comment.getAccess());
-        commentFlow.setState(comment.getState());
+        commentFlow.setAction(comment.getAction());
         commentFlow.setText(comment.getText());
         commentFlow.setInterpretation(Interpretation$Flow
                 .fromModel(comment.getInterpretation()));
@@ -138,7 +137,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         comment.setName(commentFlow.getName());
         comment.setDisplayName(commentFlow.getDisplayName());
         comment.setAccess(commentFlow.getAccess());
-        comment.setState(commentFlow.getState());
+        comment.setAction(commentFlow.getAction());
         comment.setText(commentFlow.getText());
         comment.setInterpretation(Interpretation$Flow
                 .toModel(commentFlow.getInterpretation()));

@@ -26,17 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.state;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
-
-import java.util.List;
-
-public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
-    List<Dashboard> query(State... states);
-
-    List<Dashboard> query(List<State> states);
-
-    List<Dashboard> filter(State state);
+public enum Action {
+    SYNCED, TO_POST, TO_UPDATE, TO_DELETE,
 }

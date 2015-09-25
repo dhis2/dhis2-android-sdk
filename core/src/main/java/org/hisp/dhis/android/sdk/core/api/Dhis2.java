@@ -41,6 +41,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 public final class Dhis2 {
@@ -64,8 +66,7 @@ public final class Dhis2 {
         LastUpdatedManager.init(context);
         DateTimeManager.init(context);
 
-        dashboardScope = new DashboardScope(Controllers.dashboards(),
-                Services.dashboards(), Services.dashboardItems(), Services.dashboardElements());
+        dashboardScope = new DashboardScope(Controllers.dashboards(), Services.dashboards());
         interpretationScope = new InterpretationScope(Controllers.interpretations(),
                 Services.interpretations(), Services.interpretationElements(), Services.interpretationComments());
         userAccountScope = new UserAccountScope(Controllers.userAccount(), Services.userAccount());
@@ -88,6 +89,7 @@ public final class Dhis2 {
     }
 
     public static void logOut() throws APIException {
+
         getInstance().userAccountScope.logOut();
 
         // fetch meta data from disk
@@ -179,6 +181,14 @@ public final class Dhis2 {
 
     public static DashboardScope dashboards() {
         return getInstance().dashboardScope;
+    }
+
+    public static IDashboardItemService dashboardItems() {
+        return Services.dashboardItems();
+    }
+
+    public static IDashboardElementService dashboardElements() {
+        return Services.dashboardElements();
     }
 
     public static InterpretationScope interpretations() {

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,11 +62,11 @@ public final class DashboardServiceTests {
 
     @Test
     public void shouldCreateValidDashboard() {
-        Dashboard dashboard = service.createDashboard(DASHBOARD_NAME);
+        Dashboard dashboard = service.add(DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
-        assertEquals(dashboard.getState(), State.TO_POST);
+        assertEquals(dashboard.getAction(), Action.TO_POST);
 
         assertNotNull(dashboard.getAccess());
         assertNotNull(dashboard.getCreated());
@@ -79,43 +79,43 @@ public final class DashboardServiceTests {
     @Test
     public void shouldUpdateSyncedDashboardName() {
         Dashboard dashboard = new Dashboard();
-        dashboard.setState(State.SYNCED);
+        dashboard.setAction(Action.SYNCED);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
-        assertEquals(dashboard.getState(), State.TO_UPDATE);
+        assertEquals(dashboard.getAction(), Action.TO_UPDATE);
     }
 
     @Test
     public void shouldUpdatePostDashboardName() {
         Dashboard dashboard = new Dashboard();
-        dashboard.setState(State.TO_POST);
+        dashboard.setAction(Action.TO_POST);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
 
         assertEquals(dashboard.getName(), DASHBOARD_NAME);
         assertEquals(dashboard.getDisplayName(), DASHBOARD_NAME);
-        assertEquals(dashboard.getState(), State.TO_POST);
+        assertEquals(dashboard.getAction(), Action.TO_POST);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateNullDashboard() {
-        service.updateDashboardName(null, DASHBOARD_NAME);
+        service.update(null, DASHBOARD_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void updateDashboardNameWithDeleteState() {
         Dashboard dashboard = new Dashboard();
-        dashboard.setState(State.TO_DELETE);
+        dashboard.setAction(Action.TO_DELETE);
 
-        service.updateDashboardName(dashboard, DASHBOARD_NAME);
+        service.update(dashboard, DASHBOARD_NAME);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteNullDashboard() {
-        service.deleteDashboard(null);
+        service.delete(null);
     }
 
     @Test
@@ -124,17 +124,17 @@ public final class DashboardServiceTests {
         Dashboard dashboardUpdated = new Dashboard();
         Dashboard dashboardPost = new Dashboard();
 
-        dashboardSynced.setState(State.SYNCED);
-        dashboardUpdated.setState(State.TO_UPDATE);
-        dashboardPost.setState(State.TO_POST);
+        dashboardSynced.setAction(Action.SYNCED);
+        dashboardUpdated.setAction(Action.TO_UPDATE);
+        dashboardPost.setAction(Action.TO_POST);
 
-        service.deleteDashboard(dashboardSynced);
-        service.deleteDashboard(dashboardUpdated);
-        service.deleteDashboard(dashboardPost);
+        service.delete(dashboardSynced);
+        service.delete(dashboardUpdated);
+        service.delete(dashboardPost);
 
-        assertEquals(dashboardSynced.getState(), State.TO_DELETE);
-        assertEquals(dashboardUpdated.getState(), State.TO_DELETE);
-        assertEquals(dashboardPost.getState(), State.TO_DELETE);
+        assertEquals(dashboardSynced.getAction(), Action.TO_DELETE);
+        assertEquals(dashboardUpdated.getAction(), Action.TO_DELETE);
+        assertEquals(dashboardPost.getAction(), Action.TO_DELETE);
     }
 
     // TODO finish this test after others for element and item services.
@@ -171,7 +171,7 @@ public final class DashboardServiceTests {
 
         IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
         when(dashboardItemStore.filter(any(Dashboard.class),
-                any(State.class))).thenReturn(dashboardItems);
+                any(Action.class))).thenReturn(dashboardItems);
 
         IDashboardService dashboardService = new DashboardService(
                 mock(IDashboardStore.class), dashboardItemStore,
@@ -197,7 +197,7 @@ public final class DashboardServiceTests {
 
         IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
         when(dashboardItemStore.filter(any(Dashboard.class),
-                any(State.class))).thenReturn(dashboardItems);
+                any(Action.class))).thenReturn(dashboardItems);
 
         IDashboardService dashboardService = new DashboardService(
                 mock(IDashboardStore.class), dashboardItemStore,
@@ -223,7 +223,7 @@ public final class DashboardServiceTests {
 
         IDashboardItemStore dashboardItemStore = mock(IDashboardItemStore.class);
         when(dashboardItemStore.filter(any(Dashboard.class),
-                any(State.class))).thenReturn(dashboardItems);
+                any(Action.class))).thenReturn(dashboardItems);
 
         IDashboardService dashboardService = new DashboardService(
                 mock(IDashboardStore.class), dashboardItemStore,

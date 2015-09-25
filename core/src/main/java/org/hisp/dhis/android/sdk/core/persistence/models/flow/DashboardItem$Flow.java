@@ -32,11 +32,9 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 
 import java.util.ArrayList;
@@ -44,10 +42,6 @@ import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
-
-    @Column(name = "state")
-    @NotNull
-    State state;
 
     @Column(name = "type")
     String type;
@@ -64,15 +58,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
     Dashboard$Flow dashboard;
 
     public DashboardItem$Flow() {
-        state = State.SYNCED;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public String getType() {
@@ -115,7 +100,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItemFlow.setDashboard(Dashboard$Flow.fromModel(dashboardItem.getDashboard()));
         dashboardItemFlow.setType(dashboardItem.getType());
         dashboardItemFlow.setShape(dashboardItem.getShape());
-        dashboardItemFlow.setState(dashboardItem.getState());
         return dashboardItemFlow;
     }
 
@@ -135,7 +119,6 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
         dashboardItem.setDashboard(Dashboard$Flow.toModel(dashboardItemFlow.getDashboard()));
         dashboardItem.setType(dashboardItemFlow.getType());
         dashboardItem.setShape(dashboardItemFlow.getShape());
-        dashboardItem.setState(dashboardItemFlow.getState());
         return dashboardItem;
     }
 

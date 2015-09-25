@@ -29,20 +29,11 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
 
 import java.util.List;
 
 public interface IDashboardItemStore extends IIdentifiableObjectStore<DashboardItem> {
-    List<DashboardItem> query(State... states);
+    List<DashboardItem> query(Dashboard dashboard);
 
-    List<DashboardItem> query(List<State> states);
-
-    List<DashboardItem> query(Dashboard dashboard, List<State> states);
-
-    List<DashboardItem> filter(State state);
-
-    List<DashboardItem> filter(Dashboard dashboard, State state);
-
-    List<DashboardItem> filter(Dashboard dashboard, State state, String type);
+    List<DashboardItem> filterByType(Dashboard dashboard, String type);
 }

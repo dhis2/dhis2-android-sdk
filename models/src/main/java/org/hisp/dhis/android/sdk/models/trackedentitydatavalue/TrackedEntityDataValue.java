@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 
 import java.io.Serializable;
 
@@ -56,18 +56,18 @@ public final class TrackedEntityDataValue implements Serializable {
     private String value;
 
     @JsonIgnore
-    private State state;
+    private Action action;
 
     public TrackedEntityDataValue() {
-        state = State.SYNCED;
+        action = Action.SYNCED;
     }
 
-    public State getState() {
-        return state;
+    public Action getAction() {
+        return action;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setAction(Action action) {
+        this.action = action;
     }
 
     public String getEventUid() {

@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.meta.State;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
@@ -97,23 +97,23 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public List<InterpretationComment> filter(State state) {
+    public List<InterpretationComment> filter(Action action) {
         List<InterpretationComment$Flow> commentFlows = new Select()
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table
-                        .STATE).isNot(state.toString()))
+                        .ACTION).isNot(action.toString()))
                 .queryList();
         return InterpretationComment$Flow.toModels(commentFlows);
     }
 
     @Override
-    public List<InterpretationComment> filter(Interpretation interpretation, State state) {
+    public List<InterpretationComment> filter(Interpretation interpretation, Action action) {
         List<InterpretationComment$Flow> commentFlows = new Select()
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table
                         .INTERPRETATION_INTERPRETATION).is(interpretation.getId()))
                 .and(Condition.column(InterpretationComment$Flow$Table
-                        .STATE).isNot(state.toString()))
+                        .ACTION).isNot(action.toString()))
                 .queryList();
         return InterpretationComment$Flow.toModels(commentFlows);
     }

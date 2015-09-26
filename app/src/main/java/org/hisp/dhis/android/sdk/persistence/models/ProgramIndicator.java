@@ -95,6 +95,10 @@ public class ProgramIndicator extends BaseNameableObject {
     @Column(name = "displayShortName")
     String displayShortName;
 
+    @JsonProperty("missingValueReplacement")
+    @Column(name = "missingValueReplacement")
+    Integer missingValueReplacement;
+
     @Column(name = "program")
     String program;
 
@@ -153,6 +157,14 @@ public class ProgramIndicator extends BaseNameableObject {
 
     public void setDisplayShortName(String displayShortName) {
         this.displayShortName = displayShortName;
+    }
+
+    public Integer getMissingValueReplacement() {
+        return missingValueReplacement;
+    }
+
+    public void setMissingValueReplacement(Integer missingValueReplacement) {
+        this.missingValueReplacement = missingValueReplacement;
     }
 
     public String getProgram() {

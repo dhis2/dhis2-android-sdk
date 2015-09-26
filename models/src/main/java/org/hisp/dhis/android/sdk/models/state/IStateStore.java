@@ -47,7 +47,7 @@ public interface IStateStore extends IStore<State> {
 
     <T extends IdentifiableObject> void save(T object, Action action);
 
-    <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action);
+    <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action, String name);
 
-    <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action);
+    <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action, String name);
 }

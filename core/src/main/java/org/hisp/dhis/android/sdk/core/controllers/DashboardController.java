@@ -117,11 +117,11 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* operations.addAll(DbUtils.createOperations(dashboardStore,
                 dashboardStore.filter(Action.TO_POST), dashboards)); */
         operations.addAll(DbUtils.createOperations(dashboardStore,
-                stateStore.filterByAction(Dashboard.class, Action.TO_POST), dashboards));
+                stateStore.filterByAction(Dashboard.class, Action.TO_POST, "getDashboardDataFromServer1"), dashboards));
         /* operations.addAll(DbUtils.createOperations(dashboardItemStore,
                 dashboardItemStore.filter(Action.TO_POST), dashboardItems)); */
         operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                stateStore.filterByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
+                stateStore.filterByAction(DashboardItem.class, Action.TO_POST, "getDashboardDataFromServer2"), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
         DbUtils.applyBatch(operations);
@@ -175,7 +175,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List of persisted dashboards.
         // List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
-        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST);
+        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST, "updateDashboards");
         if (persistedDashboards != null && !persistedDashboards.isEmpty()) {
             for (Dashboard dashboard : persistedDashboards) {
                 /* List<DashboardItem> items = dashboardItemStore
@@ -204,7 +204,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private List<DashboardItem> filterDashboardItems(Dashboard dashboard, Action action) {
         List<DashboardItem> filteredItems = new ArrayList<>();
-        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action);
+        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action, "filterDashboardItems");
 
         if (dbItems != null && !dbItems.isEmpty()) {
             for (DashboardItem dashboardItem : dbItems) {
@@ -219,7 +219,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private List<DashboardElement> filterDashboardElements(DashboardItem item, Action action) {
         List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action);
+        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action, "filterDashboardElements");
 
         if (dbElements != null && !dbElements.isEmpty()) {
             for (DashboardElement dbElement : dbElements) {
@@ -234,7 +234,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private List<DashboardElement> getDashboardElements(DashboardItem item, Action action) {
         List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action);
+        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action, "getDashboardElements");
 
         if (dbElements != null && !dbElements.isEmpty()) {
             for (DashboardElement dbElement : dbElements) {
@@ -269,7 +269,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* Map<String, DashboardItem> persistedDashboardItems =
                 toMap(dashboardItemStore.filter(Action.TO_POST)); */
         Map<String, DashboardItem> persistedDashboardItems =
-                toMap(stateStore.filterByAction(DashboardItem.class, Action.TO_POST));
+                toMap(stateStore.filterByAction(DashboardItem.class, Action.TO_POST, "updateDashboardItems"));
 
         // List of updated dashboard items. We need this only to get
         // information about updates of item shape.
@@ -372,7 +372,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
         List<Dashboard> dashboards = stateStore
-                .filterByAction(Dashboard.class, Action.SYNCED);
+                .filterByAction(Dashboard.class, Action.SYNCED, "sendDashboardChanges");
         Map<Long, Action> actionMap = stateStore
                 .queryMap(Dashboard.class);
         if (dashboards == null || dashboards.isEmpty()) {
@@ -380,7 +380,10 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (Dashboard dashboard : dashboards) {
-            switch (actionMap.get(dashboard.getId())) {
+            Action action = actionMap.get(dashboard.getId());
+            action = action == null ? Action.SYNCED : action;
+
+            switch (action) {
                 case TO_POST: {
                     postDashboard(dashboard);
                     break;
@@ -446,7 +449,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* List<DashboardItem> dashboardItems =
                 dashboardItemStore.filter(Action.SYNCED); */
         List<DashboardItem> dashboardItems =
-                stateStore.filterByAction(DashboardItem.class, Action.SYNCED);
+                stateStore.filterByAction(DashboardItem.class, Action.SYNCED, "sendDashboardItemChanges");
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         if (dashboardItems == null || dashboardItems.isEmpty()) {
@@ -548,7 +551,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 .orderBy(true, DashboardElement$Table.ID)
                 .queryList(); */
         List<DashboardElement> elements = stateStore
-                .filterByAction(DashboardElement.class, Action.SYNCED);
+                .filterByAction(DashboardElement.class, Action.SYNCED, "sendDashboardElements");
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         if (elements == null || elements.isEmpty()) {

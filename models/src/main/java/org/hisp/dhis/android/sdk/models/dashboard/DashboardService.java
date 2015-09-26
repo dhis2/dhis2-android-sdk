@@ -105,7 +105,7 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public List<Dashboard> query() {
-        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
+        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE, "DashboardService");
     }
 
 

@@ -67,7 +67,6 @@ import java.util.regex.Matcher;
  */
 public class ProgramIndicatorService {
     public static final String CLASS_TAG = ProgramIndicatorService.class.getSimpleName();
-    public static final String ZERO = "0";
 
     /**
      * Calculate an program indicator value based on program instance and an
@@ -157,7 +156,7 @@ public class ProgramIndicatorService {
 
             if (value != null) {
                 result.put(programIndicator.getDisplayName(),
-                        getProgramIndicatorValue(programInstance, programIndicator));
+                    getProgramIndicatorValue(programInstance, programIndicator));
             }
         }
 
@@ -390,10 +389,10 @@ public class ProgramIndicatorService {
                             }
                         }
                     } else {
-                        if(programStageInstance == null || !programStageInstance.getUid().equals(programStageUid)) {
+                        if (programStageInstance == null || !programStageInstance.getUid().equals(programStageUid)) {
                             programStageInstance = TrackerController.getEvent(programInstance.getLocalId(), programStageUid);
                             dataElementToDataValues.clear();
-                            if(programStageInstance.getDataValues() != null) {
+                            if (programStageInstance.getDataValues() != null) {
                                 for(DataValue dataValue: programStageInstance.getDataValues()) {
                                     dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
                                 }
@@ -409,7 +408,12 @@ public class ProgramIndicatorService {
 
                     String value;
                     if (dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
-                        value = ZERO;
+					    if (indicator.getMissingValueReplacement() == null) {
+					        value = String.valueOf(0);
+					    }
+					    else {
+						    value = String.valueOf(indicator.getMissingValueReplacement());
+						}
                     } else {
                         value = dataValue.getValue();
 
@@ -429,7 +433,12 @@ public class ProgramIndicatorService {
                                 uid, programInstance.getLocalTrackedEntityInstanceId());
                         String value;
                         if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
-                            value = ZERO;
+                            if (indicator.getMissingValueReplacement() == null) {
+							    value = String.valueOf(0);
+						    }
+						    else {
+							    value = String.valueOf(indicator.getMissingValueReplacement());
+						    }
                         } else {
                             value = attributeValue.getValue();
 

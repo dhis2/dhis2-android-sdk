@@ -55,13 +55,148 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
 public class StateStore implements IStateStore {
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insert(State object) {
+        isNull(object, "State object must not be null");
+
+        State$Flow stateFlow = State$Flow.fromModel(object);
+
+        if (stateFlow != null) {
+            stateFlow.insert();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(State object) {
+        isNull(object, "State object must not be null");
+
+        State$Flow stateFlow = State$Flow.fromModel(object);
+
+        if (stateFlow != null) {
+            stateFlow.update();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void save(State state) {
+        isNull(state, "State object must not be null");
+
+        State$Flow stateFlow = State$Flow.fromModel(state);
+
+        if (stateFlow != null) {
+            stateFlow.save();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void delete(State object) {
+        isNull(object, "State object must not be null");
+
+        State$Flow stateFlow = State$Flow.fromModel(object);
+
+        if (stateFlow != null) {
+            stateFlow.delete();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<State> query() {
+        List<State$Flow> statesFlows = new Select()
+                .from(State$Flow.class)
+                .queryList();
+        return State$Flow.toModels(statesFlows);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> void insert(T object, Action action) {
+        isNull(object, "State object must not be null");
+
+        State state = new State();
+        state.setItemId(object.getId());
+        state.setItemType(object.getClass());
+        state.setAction(action);
+
+        insert(state);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> void update(T object, Action action) {
+        isNull(object, "State object must not be null");
+
+        State state = new State();
+        state.setItemId(object.getId());
+        state.setItemType(object.getClass());
+        state.setAction(action);
+
+        update(state);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> void save(T object, Action action) {
+        isNull(object, "State object must not be null");
+
+        State state = new State();
+        state.setItemId(object.getId());
+        state.setAction(action);
+        state.setItemType(object.getClass());
+
+        save(state);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> void delete(T object) {
+        isNull(object, "State object must not be null");
+
+        State state = query(object);
+
+        if (state == null) {
+            return;
+        }
+
+        State$Flow state$Flow = State$Flow.fromModel(state);
+        state$Flow.delete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends IdentifiableObject> State query(T object) {
-        if (object == null) {
-            return null;
-        }
+        isNull(object, "State object must not be null");
 
         State$Flow stateFlow = new Select()
                 .from(State$Flow.class)
@@ -74,8 +209,48 @@ public class StateStore implements IStateStore {
         return State$Flow.toModel(stateFlow);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> Action queryAction(T object) {
+        isNull(object, "State object must not be null");
+
+        State state = query(object);
+
+        if (state == null) {
+            return Action.SYNCED;
+        }
+
+        return state.getAction();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends IdentifiableObject> List<State> query(Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+
         List<State$Flow> stateFlows = new Select()
                 .from(State$Flow.class)
                 .where(Condition.column(State$Flow$Table
@@ -84,8 +259,15 @@ public class StateStore implements IStateStore {
         return State$Flow.toModels(stateFlows);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
+
         List<State> states = query(clazz);
         Map<Long, Action> actionMap = new HashMap<>();
 
@@ -96,16 +278,6 @@ public class StateStore implements IStateStore {
         }
 
         return actionMap;
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, false);
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, true);
     }
 
     @SuppressWarnings("unchecked")
@@ -153,86 +325,5 @@ public class StateStore implements IStateStore {
         List<? extends Model> list = where.queryList();
         System.out.println("LIST: " + list.size());
         return list;
-    }
-
-    @Override
-    public <T extends IdentifiableObject> Action queryAction(T object) {
-        State state = query(object);
-
-        if (state == null) {
-            return Action.SYNCED;
-        }
-
-        return state.getAction();
-    }
-
-    @Override
-    public <T extends IdentifiableObject> void delete(T object) {
-        State state = query(object);
-
-        if (state == null) {
-            return;
-        }
-
-        State$Flow state$Flow = State$Flow.fromModel(state);
-        state$Flow.delete();
-    }
-
-    @Override
-    public <T extends IdentifiableObject> void save(T object, Action action) {
-        if (object == null) {
-            return;
-        }
-
-        State state = new State();
-        state.setItemId(object.getId());
-        state.setAction(action);
-        state.setItemType(object.getClass());
-
-        save(state);
-    }
-
-    @Override
-    public void insert(State object) {
-        State$Flow stateFlow = State$Flow.fromModel(object);
-
-        if (stateFlow != null) {
-            stateFlow.insert();
-        }
-    }
-
-    @Override
-    public void update(State object) {
-        State$Flow stateFlow = State$Flow.fromModel(object);
-
-        if (stateFlow != null) {
-            stateFlow.update();
-        }
-    }
-
-    @Override
-    public void save(State state) {
-        State$Flow stateFlow = State$Flow.fromModel(state);
-
-        if (stateFlow != null) {
-            stateFlow.save();
-        }
-    }
-
-    @Override
-    public void delete(State object) {
-        State$Flow stateFlow = State$Flow.fromModel(object);
-
-        if (stateFlow != null) {
-            stateFlow.delete();
-        }
-    }
-
-    @Override
-    public List<State> query() {
-        List<State$Flow> statesFlows = new Select()
-                .from(State$Flow.class)
-                .queryList();
-        return State$Flow.toModels(statesFlows);
     }
 }

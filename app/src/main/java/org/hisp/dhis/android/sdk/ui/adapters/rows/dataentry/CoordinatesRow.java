@@ -200,7 +200,7 @@ public final class CoordinatesRow extends Row {
     private static class LongitudeWatcher extends CoordinateWatcher {
 
         public LongitudeWatcher(EditText mLongitude, String mLongitudeMessage) {
-           super(mLongitude, mLongitudeMessage);
+            super(mLongitude, mLongitudeMessage);
         }
 
         @Override
@@ -237,8 +237,8 @@ public final class CoordinatesRow extends Row {
         @Override
         public void onClick(View v) {
             Location location = GpsController.getLocation();
-                mLatitude.setText(String.valueOf(location.getLatitude()));
-                mLongitude.setText(String.valueOf(location.getLongitude()));
+            mLatitude.setText(String.valueOf(location.getLatitude()));
+            mLongitude.setText(String.valueOf(location.getLongitude()));
         }
     }
 
@@ -262,7 +262,12 @@ public final class CoordinatesRow extends Row {
         @Override
         public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4) {
             if(charSequence != null && charSequence.toString().trim().equals(invalidValue))
-                return Double.toString(event.getLatitude());
+            {
+                if(event.getLatitude() == null)
+                    return invalidValue; //if getLat == null && location.getLat== 0.0, return 0.0
+                else
+                    return Double.toString(event.getLatitude());
+            }
 
             return null;
         }
@@ -276,8 +281,12 @@ public final class CoordinatesRow extends Row {
         @Override
         public CharSequence filter(CharSequence charSequence, int i, int i2, Spanned spanned, int i3, int i4) {
             if(charSequence != null && charSequence.toString().trim().equals(invalidValue))
-                return Double.toString(event.getLongitude());
-
+            {
+                if(event.getLongitude() == null)
+                    return invalidValue; //if getLong == null && location.getLong == 0.0, return 0.0
+                else
+                    return Double.toString(event.getLongitude());
+            }
             return null;
         }
     }

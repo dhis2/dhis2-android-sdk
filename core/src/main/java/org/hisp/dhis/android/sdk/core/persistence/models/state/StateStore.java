@@ -99,54 +99,32 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action, String name) {
-        return getObjectsByAction(clazz, action, false, name);
+    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, false);
     }
 
     @Override
-    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action, String name) {
-        return getObjectsByAction(clazz, action, true, name);
+    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
+        return getObjectsByAction(clazz, action, true);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction, String name) {
-        /* Creating left join on State and destination table in order to perform filtering  */
-        /* Joining tables based on mime type and then filtering resulting table by action */
-        /* From<? extends Model> from = new Select()
-                .from(State$Flow.getFlowClass(clazz))
-                .join(State$Flow.class, Join.JoinType.LEFT)
-                .on(Condition.column(State$Flow$Table.ITEMID)
-                        .eq(State$Flow.getItemType(clazz))); */
-
-        /* Join<?, ?> join = new Select()
-                .from(State$Flow.getFlowClass(clazz))
-                .join(State$Flow.class, Join.JoinType.LEFT); */
-
-        /* Where<? extends Model> where;
-        if (withAction) {
-            where = from.where(Condition.column(State$Flow$Table
-                    .ACTION).is(action.toString()));
-        } else {
-            where = from.where(Condition.column(State$Flow$Table
-                    .ACTION).isNot(action.toString()));
-        } */
-
-        // List<? extends Model> objects = where.queryList();
+    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
-                    clazz, action, withAction, Dashboard$Flow$Table.ID, name);
+                    clazz, action, withAction, Dashboard$Flow$Table.ID);
             return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
         }
 
         if (DashboardItem.class.equals(clazz)) {
             List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) queryModels(
-                    clazz, action, withAction, DashboardItem$Flow$Table.ID, name);
+                    clazz, action, withAction, DashboardItem$Flow$Table.ID);
             return (List<T>) DashboardItem$Flow.toModels(dashboardItemFlows);
         }
 
         if (DashboardElement.class.equals(clazz)) {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
-                    clazz, action, withAction, DashboardElement$Flow$Table.ID, name);
+                    clazz, action, withAction, DashboardElement$Flow$Table.ID);
             return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
         }
 
@@ -154,7 +132,7 @@ public class StateStore implements IStateStore {
     }
 
     private List<? extends Model> queryModels(Class<?> clazz, Action action,
-                                              boolean withAction, String columnName, String name) {
+                                              boolean withAction, String columnName) {
         From<? extends Model> from = new Select()
                 .from(State$Flow.getFlowClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
@@ -173,7 +151,7 @@ public class StateStore implements IStateStore {
         }
 
         List<? extends Model> list = where.queryList();
-        System.out.println("LIST: " + list.size() + " METHOD: " + name);
+        System.out.println("LIST: " + list.size());
         return list;
     }
 

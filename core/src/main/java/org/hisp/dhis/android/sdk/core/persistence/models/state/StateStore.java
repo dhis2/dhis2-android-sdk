@@ -161,16 +161,18 @@ public class StateStore implements IStateStore {
                 .on(Condition.column(State$Flow$Table.ITEMID)
                         .eq(columnName));
 
-        /* Where<? extends Model> where;
+        Where<? extends Model> where = from
+                .where(Condition.column(State$Flow$Table
+                        .ITEMTYPE).is(State$Flow.getItemType(clazz)));
         if (withAction) {
-            where = from.where(Condition.column(State$Flow$Table
+            where = where.and(Condition.column(State$Flow$Table
                     .ACTION).is(action.toString()));
         } else {
-            where = from.where(Condition.column(State$Flow$Table
+            where = where.and(Condition.column(State$Flow$Table
                     .ACTION).isNot(action.toString()));
-        } */
+        }
 
-        List<? extends Model> list = from.queryList();
+        List<? extends Model> list = where.queryList();
         System.out.println("LIST: " + list.size() + " METHOD: " + name);
         return list;
     }
@@ -180,7 +182,7 @@ public class StateStore implements IStateStore {
         State state = query(object);
 
         if (state == null) {
-            return null;
+            return Action.SYNCED;
         }
 
         return state.getAction();

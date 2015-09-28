@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.triggers;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Insert;
 import com.raizlabs.android.dbflow.sql.trigger.CompletedTrigger;
 import com.raizlabs.android.dbflow.sql.trigger.Trigger;

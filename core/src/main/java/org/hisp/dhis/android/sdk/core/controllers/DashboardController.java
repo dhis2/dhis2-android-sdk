@@ -457,7 +457,12 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (DashboardItem dashboardItem : dashboardItems) {
-            switch (actionMap.get(dashboardItem.getId())) {
+            Action action = actionMap.get(dashboardItem.getId());
+            if (action == null) {
+                action = Action.SYNCED;
+            }
+
+            switch (action) {
                 case TO_POST: {
                     postDashboardItem(dashboardItem);
                     break;
@@ -559,7 +564,12 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (DashboardElement element : elements) {
-            switch (actionMap.get(actionMap)) {
+            Action action = actionMap.get(element.getId());
+            if (action == null) {
+                action = Action.SYNCED;
+            }
+
+            switch (action) {
                 case TO_POST: {
                     postDashboardElement(element);
                     break;

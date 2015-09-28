@@ -164,9 +164,9 @@ public final class Models {
 
     public Models(Context context) {
         FlowManager.init(context);
-        TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
+        /* TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
         TriggersManager.createInsertTrigger(DashboardItem$Flow.class).enable();
-        TriggersManager.createInsertTrigger(DashboardElement$Flow.class).enable();
+        TriggersManager.createInsertTrigger(DashboardElement$Flow.class).enable(); */
 
         constantStore = new ConstantStore();
         dataElementStore = new DataElementStore();
@@ -197,9 +197,11 @@ public final class Models {
         eventStore = new EventStore(trackedEntityDataValueStore);
         enrollmentStore = new EnrollmentStore(eventStore, trackedEntityAttributeValueStore);
 
-        dashboardStore = new DashboardStore();
-        dashboardItemStore = new DashboardItemStore();
-        dashboardElementStore = new DashboardElementStore();
+        stateStore = new StateStore();
+
+        dashboardStore = new DashboardStore(stateStore);
+        dashboardItemStore = new DashboardItemStore(stateStore);
+        dashboardElementStore = new DashboardElementStore(stateStore);
         dashboardItemContentStore = new DashboardItemContentStore();
 
         interpretationStore = new InterpretationStore();
@@ -210,8 +212,6 @@ public final class Models {
         userStore = new UserStore();
 
         modelsStore = new ModelsStore();
-
-        stateStore = new StateStore();
     }
 
     public static void init(Context context) {

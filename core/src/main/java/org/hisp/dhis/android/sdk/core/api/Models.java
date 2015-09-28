@@ -42,6 +42,9 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElement
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -67,6 +70,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.trackedentitydatavalue.
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityinstance.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
+import org.hisp.dhis.android.sdk.core.persistence.triggers.TriggersManager;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
 import org.hisp.dhis.android.sdk.models.common.IStore;
@@ -160,6 +164,9 @@ public final class Models {
 
     public Models(Context context) {
         FlowManager.init(context);
+        TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
+        TriggersManager.createInsertTrigger(DashboardItem$Flow.class).enable();
+        TriggersManager.createInsertTrigger(DashboardElement$Flow.class).enable();
 
         constantStore = new ConstantStore();
         dataElementStore = new DataElementStore();

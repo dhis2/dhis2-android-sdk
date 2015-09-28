@@ -99,17 +99,17 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, false);
+    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action, String name) {
+        return getObjectsByAction(clazz, action, false, name);
     }
 
     @Override
-    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, true);
+    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action, String name) {
+        return getObjectsByAction(clazz, action, true, name);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
+    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction, String name) {
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
         /* From<? extends Model> from = new Select()
@@ -134,19 +134,19 @@ public class StateStore implements IStateStore {
         // List<? extends Model> objects = where.queryList();
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
-                    clazz, action, withAction, Dashboard$Flow$Table.ID);
+                    clazz, action, withAction, Dashboard$Flow$Table.ID, name);
             return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
         }
 
         if (DashboardItem.class.equals(clazz)) {
             List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) queryModels(
-                    clazz, action, withAction, DashboardItem$Flow$Table.ID);
+                    clazz, action, withAction, DashboardItem$Flow$Table.ID, name);
             return (List<T>) DashboardItem$Flow.toModels(dashboardItemFlows);
         }
 
         if (DashboardElement.class.equals(clazz)) {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
-                    clazz, action, withAction, DashboardElement$Flow$Table.ID);
+                    clazz, action, withAction, DashboardElement$Flow$Table.ID, name);
             return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
         }
 
@@ -154,7 +154,7 @@ public class StateStore implements IStateStore {
     }
 
     private List<? extends Model> queryModels(Class<?> clazz, Action action,
-                                              boolean withAction, String columnName) {
+                                              boolean withAction, String columnName, String name) {
         From<? extends Model> from = new Select()
                 .from(State$Flow.getFlowClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
@@ -171,7 +171,7 @@ public class StateStore implements IStateStore {
         } */
 
         List<? extends Model> list = from.queryList();
-        System.out.println("LIST: " + list.size());
+        System.out.println("LIST: " + list.size() + " METHOD: " + name);
         return list;
     }
 

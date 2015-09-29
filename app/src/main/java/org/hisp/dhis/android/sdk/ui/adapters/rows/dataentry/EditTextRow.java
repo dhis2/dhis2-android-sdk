@@ -53,7 +53,7 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 public class EditTextRow extends Row {
     private static final String EMPTY_FIELD = "";
     private static int LONG_TEXT_LINE_COUNT = 3;
-
+    private static String rowTypeTemp;
 
 
 
@@ -139,6 +139,7 @@ public class EditTextRow extends Row {
                 holder.editText.setEnabled(true);
             }
 
+            rowTypeTemp = mRowType.toString();
             root.setTag(holder);
             view = root;
         }
@@ -194,7 +195,7 @@ public class EditTextRow extends Row {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
-                        .post(new RowValueChangedEvent(value));
+                        .post(new RowValueChangedEvent(value, rowTypeTemp));
             }
         }
     }

@@ -248,7 +248,7 @@ public final class AutoCompleteRow extends Row {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 Dhis2Application.getEventBus()
-                        .post(new RowValueChangedEvent(value));
+                        .post(new RowValueChangedEvent(value, DataEntryRowTypes.AUTO_COMPLETE.toString()));
             }
         }
     }

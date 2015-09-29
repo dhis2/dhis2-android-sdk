@@ -63,6 +63,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
@@ -90,6 +91,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public static final String TAG = EventDataEntryFragment.class.getSimpleName();
     private Map<String, List<ProgramRule>> programRulesForDataElements;
     private Map<String, List<ProgramIndicator>> programIndicatorsForDataElements;
+    private Map<String, DataValue> dataElementsToSaveMap;
+
     private RulesEvaluatorThread rulesEvaluatorThread;
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
     private SaveThread saveThread;
@@ -202,6 +205,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread.start();
         }
         indicatorEvaluatorThread.init(this);
+        dataElementsToSaveMap = new HashMap<>();
     }
 
     @Override
@@ -240,6 +244,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             listView.setVisibility(View.VISIBLE);
             form = data;
             mapDataElementsToRulesAndIndicators();
+            saveThread.setEvent(form.getEvent());
+
             if (form.getStatusRow() != null) {
                 form.getStatusRow().setFragmentActivity(getActivity());
             }
@@ -396,6 +402,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 //            timer.purge();
 //            timer.schedule(timerTask, 5000);
             flagDataChanged(false);
+        }
+    }
+
+    @Override
+    protected void saveUnchangedValues() {
+        if(dataElementsToSaveMap != null)
+        {
+//            dataElementsToSaveMap.
         }
     }
 
@@ -697,14 +711,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                 eventClick.getComplete().setText(R.string.incomplete);
                                 eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                 eventClick.getEvent().setFromServer(false);
-                                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null));
+                                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                             }
                         });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
                 eventClick.getEvent().setFromServer(false);
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null));
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
             showValidationErrorDialog(getValidationErrors());
@@ -716,6 +730,19 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         super.onRowValueChanged(event);
         saveThread.schedule();
         evaluateRulesAndIndicators(event.getId());
+
+
+        //if rowType is coordinate or event date, save the event
+        if(event.getRowType().equals(DataEntryRowTypes.COORDINATES) || event.getRowType().equals(DataEntryRowTypes.EVENT_DATE))
+        {
+            //save event
+            saveThread.schedule();
+        }
+        else // save data element
+        {
+
+        }
+
     }
 
     private static class UpdateSectionsAsyncTask extends AsyncTask {

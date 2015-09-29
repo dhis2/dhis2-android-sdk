@@ -107,7 +107,7 @@ public class EventDatePickerRow extends Row {
         return DataEntryRowTypes.EVENT_DATE.ordinal();
     }
 
-    private static class DatePickerRowHolder {
+    private class DatePickerRowHolder {
         final TextView textLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
@@ -189,7 +189,7 @@ public class EventDatePickerRow extends Row {
         }
     }
 
-    private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
+    private class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
         private Event event;
@@ -218,7 +218,7 @@ public class EventDatePickerRow extends Row {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
                 event.setEventDate(value.getValue());
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value));
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.EVENT_DATE.toString()));
             }
 
         }

@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 
 public final class RowValueChangedEvent {
 
@@ -39,8 +40,12 @@ public final class RowValueChangedEvent {
     public static final String TRACKEDENTITYATTRIBUTEVALUE = "trackedentityattributevalue";
     private String type;
     private String id;
+    private BaseValue baseValue;
+    private String rowType;
 
-    public RowValueChangedEvent(BaseValue baseValue) {
+    public RowValueChangedEvent(BaseValue baseValue, String rowType ) {
+        this.rowType = rowType;
+
         if(baseValue instanceof DataValue) {
             type = DATAVALUE;
             id = ( ( DataValue ) baseValue ).getDataElement();
@@ -60,5 +65,13 @@ public final class RowValueChangedEvent {
 
     public boolean isDataValue() {
         return type.equals(DATAVALUE);
+    }
+
+    public BaseValue getBaseValue() {
+        return baseValue;
+    }
+
+    public String getRowType() {
+        return rowType;
     }
 }

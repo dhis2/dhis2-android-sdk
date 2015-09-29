@@ -1,7 +1,5 @@
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-
 /**
  * This class enables thread safe scheduling and re-scheduling of saving of data in a data entry
  * fragment. The class has been implemented as a mechanism to simply handle problematic cases
@@ -9,7 +7,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
  */
 public class SaveThread extends AsyncHelperThread {
     private DataEntryFragment dataEntryFragment;
-    private Event event;
 
     public void init(DataEntryFragment dataEntryFragment) {
         setDataEntryFragment(dataEntryFragment);
@@ -19,15 +16,10 @@ public class SaveThread extends AsyncHelperThread {
         this.dataEntryFragment = dataEntryFragment;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
     protected void work() {
         if(this.dataEntryFragment==null) {
             return;
         }
-
         this.dataEntryFragment.save();
     }
 

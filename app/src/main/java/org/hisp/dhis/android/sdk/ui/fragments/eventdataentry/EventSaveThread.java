@@ -63,12 +63,28 @@ public class EventSaveThread extends AsyncHelperThread {
     private void saveEvent() {
         saveEvent = false;
         event.setFromServer(false);
-        //removing the events pointer of this event to avoid triggering saving all data values.
-        //this is a dirty hack, but with the new SDK coming up we don't want to spend too much time
-        List<DataValue> tempDataValues = event.getDataValues();
-        event.setDataValues(null);
-        event.save();
-        event.setDataValues(tempDataValues);
+        Event tempEvent = new Event();
+        tempEvent.setLocalId(event.getLocalId());
+        tempEvent.setEvent(event.getEvent());
+        tempEvent.setStatus(event.getStatus());
+        tempEvent.setLatitude(event.getLatitude());
+        tempEvent.setLongitude(event.getLongitude());
+        tempEvent.setTrackedEntityInstance(event.getTrackedEntityInstance());
+        tempEvent.setLocalEnrollmentId(event.getLocalEnrollmentId());
+        tempEvent.setEnrollment(event.getEnrollment());
+        tempEvent.setProgramId(event.getProgramId());
+        tempEvent.setProgramStageId(event.getProgramStageId());
+        tempEvent.setOrganisationUnitId(event.getOrganisationUnitId());
+        tempEvent.setEventDate(event.getEventDate());
+        tempEvent.setDueDate(event.getDueDate());
+        tempEvent.setFromServer(event.isFromServer());
+        tempEvent.setUid(event.getUid());
+        tempEvent.setName(event.getName());
+        tempEvent.setDisplayName(event.getDisplayName());
+        tempEvent.setCreated(event.getCreated());
+        tempEvent.setLastUpdated(event.getLastUpdated());
+        tempEvent.setAccess(event.getAccess());
+        tempEvent.save();
     }
 
     private void saveDataValue() {

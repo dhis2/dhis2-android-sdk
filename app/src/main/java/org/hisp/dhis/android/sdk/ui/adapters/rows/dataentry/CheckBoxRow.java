@@ -139,7 +139,7 @@ public class CheckBoxRow extends Row {
             if(!newValue.toString().equals(value.getValue()))
             {
                 value.setValue(newValue);
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value));
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.TRUE_ONLY.toString()));
             }
 
         }

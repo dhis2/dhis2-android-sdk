@@ -341,6 +341,8 @@ public abstract class DataEntryFragment<D> extends Fragment
 
     protected abstract void save();
 
+    protected abstract void saveUnchangedValues();
+
     @Override
     public abstract void onLoadFinished(Loader<D> loader, D data);
 }

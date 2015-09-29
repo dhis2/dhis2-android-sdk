@@ -162,11 +162,11 @@ public final class State$Flow extends BaseModel {
         }
 
         if (DashboardItem.class.getSimpleName().equals(type)) {
-            return Dashboard.class;
+            return DashboardItem.class;
         }
 
         if (DashboardElement.class.getSimpleName().equals(type)) {
-            return Dashboard.class;
+            return DashboardElement.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + type);

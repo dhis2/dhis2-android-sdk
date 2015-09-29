@@ -117,11 +117,11 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* operations.addAll(DbUtils.createOperations(dashboardStore,
                 dashboardStore.filter(Action.TO_POST), dashboards)); */
         operations.addAll(DbUtils.createOperations(dashboardStore,
-                stateStore.filterByAction(Dashboard.class, Action.TO_POST, "getDashboardDataFromServer1"), dashboards));
+                stateStore.filterByAction(Dashboard.class, Action.TO_POST), dashboards));
         /* operations.addAll(DbUtils.createOperations(dashboardItemStore,
                 dashboardItemStore.filter(Action.TO_POST), dashboardItems)); */
         operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                stateStore.filterByAction(DashboardItem.class, Action.TO_POST, "getDashboardDataFromServer2"), dashboardItems));
+                stateStore.filterByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
         DbUtils.applyBatch(operations);
@@ -175,13 +175,17 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List of persisted dashboards.
         // List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
-        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST, "updateDashboards");
+        List<Dashboard> persistedDashboards = stateStore.filterByAction(Dashboard.class, Action.TO_POST);
         if (persistedDashboards != null && !persistedDashboards.isEmpty()) {
+            Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
+            Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
+
             for (Dashboard dashboard : persistedDashboards) {
                 /* List<DashboardItem> items = dashboardItemStore
                         .filter(dashboard, Action.TO_POST); */
 
-                List<DashboardItem> items = filterDashboardItems(dashboard, Action.TO_POST);
+                // List<DashboardItem> items = filterDashboardItems(dashboard, Action.TO_POST);
+                List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
                 if (items == null || items.isEmpty()) {
                     continue;
                 }
@@ -191,8 +195,10 @@ public final class DashboardController implements IDataController<Dashboard> {
                             dashboardElementStore.filter(item, Action.TO_POST); */
                     // item.setDashboardElements(dashboardElements);
 
+                    /* List<DashboardElement> dashboardElements =
+                            filterDashboardElements(item, Action.TO_POST); */
                     List<DashboardElement> dashboardElements =
-                            filterDashboardElements(item, Action.TO_POST);
+                            dashboardElementMap.get(item.getId());
                     item.setDashboardElements(dashboardElements);
                 }
                 dashboard.setDashboardItems(items);
@@ -202,9 +208,57 @@ public final class DashboardController implements IDataController<Dashboard> {
         return merge(actualDashboards, updatedDashboards, persistedDashboards);
     }
 
-    private List<DashboardItem> filterDashboardItems(Dashboard dashboard, Action action) {
+    private Map<Long, List<DashboardItem>> getDashboardItemMap() {
+        List<DashboardItem> dashboardItemsList = stateStore
+                .filterByAction(DashboardItem.class, Action.TO_POST);
+        Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
+
+        for (DashboardItem dashboardItem : dashboardItemsList) {
+            Long dashboardId = dashboardItem.getDashboard().getId();
+
+            List<DashboardItem> bag = dashboardItemMap.get(dashboardId);
+            if (bag == null) {
+                bag = new ArrayList<>();
+                dashboardItemMap.put(dashboardId, bag);
+            }
+
+            bag.add(dashboardItem);
+        }
+
+        return dashboardItemMap;
+    }
+
+    private Map<Long, List<DashboardElement>> getDashboardElementMap(boolean withAction) {
+        List<DashboardElement> dashboardElementsList;
+
+        if (withAction) {
+            dashboardElementsList = stateStore.queryWithAction(
+                    DashboardElement.class, Action.TO_POST);
+        } else {
+            dashboardElementsList = stateStore.filterByAction(
+                    DashboardElement.class, Action.TO_POST);
+        }
+        Map<Long, List<DashboardElement>> dashboardElementMap = new HashMap<>();
+
+        for (DashboardElement dashboardElement : dashboardElementsList) {
+            Long dashboardItemId = dashboardElement.getDashboardItem().getId();
+
+            List<DashboardElement> bag = dashboardElementMap.get(dashboardItemId);
+            if (bag == null) {
+                bag = new ArrayList<>();
+                dashboardElementMap.put(dashboardItemId, bag);
+            }
+
+            bag.add(dashboardElement);
+        }
+
+        return dashboardElementMap;
+    }
+
+
+    /* private List<DashboardItem> filterDashboardItems(Dashboard dashboard, Action action) {
         List<DashboardItem> filteredItems = new ArrayList<>();
-        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action, "filterDashboardItems");
+        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action);
 
         if (dbItems != null && !dbItems.isEmpty()) {
             for (DashboardItem dashboardItem : dbItems) {
@@ -219,7 +273,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private List<DashboardElement> filterDashboardElements(DashboardItem item, Action action) {
         List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action, "filterDashboardElements");
+        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action);
 
         if (dbElements != null && !dbElements.isEmpty()) {
             for (DashboardElement dbElement : dbElements) {
@@ -234,7 +288,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private List<DashboardElement> getDashboardElements(DashboardItem item, Action action) {
         List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action, "getDashboardElements");
+        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action);
 
         if (dbElements != null && !dbElements.isEmpty()) {
             for (DashboardElement dbElement : dbElements) {
@@ -245,7 +299,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         return filteredElements;
-    }
+    } */
 
     private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime lastUpdated) throws APIException {
         final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
@@ -269,7 +323,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* Map<String, DashboardItem> persistedDashboardItems =
                 toMap(dashboardItemStore.filter(Action.TO_POST)); */
         Map<String, DashboardItem> persistedDashboardItems =
-                toMap(stateStore.filterByAction(DashboardItem.class, Action.TO_POST, "updateDashboardItems"));
+                toMap(stateStore.filterByAction(DashboardItem.class, Action.TO_POST));
 
         // List of updated dashboard items. We need this only to get
         // information about updates of item shape.
@@ -310,11 +364,14 @@ public final class DashboardController implements IDataController<Dashboard> {
     private List<DbOperation> createOperations(List<DashboardItem> refreshedItems) {
         List<DbOperation> dbOperations = new ArrayList<>();
 
+        Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
         for (DashboardItem refreshedItem : refreshedItems) {
             /* List<DashboardElement> persistedElementList =
                     dashboardElementStore.filter(refreshedItem, Action.TO_POST); */
+            /* List<DashboardElement> persistedElementList =
+                    filterDashboardElements(refreshedItem, Action.TO_POST); */
             List<DashboardElement> persistedElementList =
-                    filterDashboardElements(refreshedItem, Action.TO_POST);
+                    dashboardElementMap.get(refreshedItem.getId());
 
             List<DashboardElement> refreshedElementList =
                     refreshedItem.getDashboardElements();
@@ -372,7 +429,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
         List<Dashboard> dashboards = stateStore
-                .filterByAction(Dashboard.class, Action.SYNCED, "sendDashboardChanges");
+                .filterByAction(Dashboard.class, Action.SYNCED);
         Map<Long, Action> actionMap = stateStore
                 .queryMap(Dashboard.class);
         if (dashboards == null || dashboards.isEmpty()) {
@@ -449,7 +506,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* List<DashboardItem> dashboardItems =
                 dashboardItemStore.filter(Action.SYNCED); */
         List<DashboardItem> dashboardItems =
-                stateStore.filterByAction(DashboardItem.class, Action.SYNCED, "sendDashboardItemChanges");
+                stateStore.filterByAction(DashboardItem.class, Action.SYNCED);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         if (dashboardItems == null || dashboardItems.isEmpty()) {
@@ -457,7 +514,12 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (DashboardItem dashboardItem : dashboardItems) {
-            switch (actionMap.get(dashboardItem.getId())) {
+            Action action = actionMap.get(dashboardItem.getId());
+            if (action == null) {
+                action = Action.SYNCED;
+            }
+
+            switch (action) {
                 case TO_POST: {
                     postDashboardItem(dashboardItem);
                     break;
@@ -484,8 +546,10 @@ public final class DashboardController implements IDataController<Dashboard> {
 
             /* List<DashboardElement> elements =
                     dashboardElementStore.query(dashboardItem, Action.TO_POST); */
-            List<DashboardElement> elements =
-                    getDashboardElements(dashboardItem, Action.TO_POST);
+            /* List<DashboardElement> elements =
+                    getDashboardElements(dashboardItem, Action.TO_POST); */
+            List<DashboardElement> elements = getDashboardElementMap(true)
+                    .get(dashboardItem.getId());
 
             if (elements == null || elements.isEmpty()) {
                 return;
@@ -551,7 +615,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 .orderBy(true, DashboardElement$Table.ID)
                 .queryList(); */
         List<DashboardElement> elements = stateStore
-                .filterByAction(DashboardElement.class, Action.SYNCED, "sendDashboardElements");
+                .filterByAction(DashboardElement.class, Action.SYNCED);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         if (elements == null || elements.isEmpty()) {
@@ -559,7 +623,12 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
 
         for (DashboardElement element : elements) {
-            switch (actionMap.get(actionMap)) {
+            Action action = actionMap.get(element.getId());
+            if (action == null) {
+                action = Action.SYNCED;
+            }
+
+            switch (action) {
                 case TO_POST: {
                     postDashboardElement(element);
                     break;

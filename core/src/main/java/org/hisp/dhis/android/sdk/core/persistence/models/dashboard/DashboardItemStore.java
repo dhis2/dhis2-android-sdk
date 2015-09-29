@@ -36,12 +36,19 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardItemStore implements IDashboardItemStore {
+    private final IStateStore stateStore;
+
+    public DashboardItemStore(IStateStore stateStore) {
+        this.stateStore = stateStore;
+    }
 
     @Override
     public void insert(DashboardItem object) {
@@ -50,6 +57,8 @@ public class DashboardItemStore implements IDashboardItemStore {
         dashboardItemFlow.insert();
 
         object.setId(dashboardItemFlow.getId());
+
+        stateStore.save(object, Action.SYNCED);
     }
 
     @Override
@@ -64,11 +73,26 @@ public class DashboardItemStore implements IDashboardItemStore {
         dashboardItemFlow.save();
 
         object.setId(dashboardItemFlow.getId());
+
+        Action action = stateStore.queryAction(object);
+        if (action == null) {
+            stateStore.save(object, Action.SYNCED);
+        }
     }
 
     @Override
     public void delete(DashboardItem object) {
-        DashboardItem$Flow.fromModel(object).delete();
+        DashboardItem$Flow dashboardItemFlow = new Select()
+                .from(DashboardItem$Flow.class)
+                .where(Condition.column(DashboardItem$Flow$Table
+                        .ID).is(object.getId()))
+                .querySingle();
+
+        if (dashboardItemFlow != null) {
+            dashboardItemFlow.delete();
+
+            stateStore.delete(object);
+        }
     }
 
     @Override

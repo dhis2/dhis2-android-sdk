@@ -68,8 +68,7 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
 import java.util.ArrayList;
 
 public abstract class DataEntryFragment<D> extends Fragment
-        implements LoaderManager.LoaderCallbacks<D>,
-        OnBackPressedListener, AdapterView.OnItemSelectedListener {
+        implements LoaderManager.LoaderCallbacks<D>, AdapterView.OnItemSelectedListener {
     public static final String TAG = DataEntryFragment.class.getSimpleName();
 
     protected static final int LOADER_ID = 17;
@@ -94,7 +93,7 @@ public abstract class DataEntryFragment<D> extends Fragment
         }
         if (activity instanceof INavigationHandler) {
             navigationHandler = (INavigationHandler) activity;
-            navigationHandler.setBackPressedListener(this);
+//            navigationHandler.setBackPressedListener(this); //dunno if this is necessary for some devices
         } else {
             throw new IllegalArgumentException("Activity must implement INavigationHandler interface");
         }
@@ -136,6 +135,13 @@ public abstract class DataEntryFragment<D> extends Fragment
     public void onPause() {
         super.onPause();
         Dhis2Application.getEventBus().unregister(this);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.action_new_event);
+        menuItem.setEnabled(false);
+
     }
 
     @Override
@@ -182,7 +188,7 @@ public abstract class DataEntryFragment<D> extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
-            doBack();
+            //go back
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             if (isValid()) {
@@ -205,41 +211,6 @@ public abstract class DataEntryFragment<D> extends Fragment
 
         progressBar.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void doBack() {
-        if (haveValuesChanged()) {
-            UiUtils.showConfirmDialog(getActivity(),
-                    getString(R.string.discard), getString(R.string.discard_confirm_changes),
-                    getString(R.string.save_and_close),
-                    getString(R.string.discard),
-                    getString(R.string.cancel),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (isValid()) {
-                                save();
-                                getFragmentManager().popBackStack();
-                            } else {
-                                dialog.dismiss();
-                                showValidationErrorDialog(getValidationErrors());
-                            }
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            getFragmentManager().popBackStack();
-                        }
-                    }, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            getFragmentManager().popBackStack();
-        }
     }
 
     @Override

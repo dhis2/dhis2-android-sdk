@@ -453,8 +453,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
      * This is used to avoid stacking up calls to evaluateAndApplyProgramIndicators
      * @param dataElement
      */
-    private void initiateEvaluateProgramIndicators(String dataElement) {
-        indicatorEvaluatorThread.schedule(dataElement);
+    private synchronized void initiateEvaluateProgramIndicators(String dataElement) {
+        if(programIndicatorsForDataElements == null) {
+            return;
+        }
+        List<ProgramIndicator> programIndicators = programIndicatorsForDataElements.get(dataElement);
+        indicatorEvaluatorThread.schedule(programIndicators);
     }
 
     /**
@@ -487,15 +491,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
     }
 
-    void evaluateAndApplyProgramIndicators(String dataElement) {
-        if(programIndicatorsForDataElements !=null && programIndicatorsForDataElements.containsKey(dataElement)) {
-            List<ProgramIndicator> programIndicators = programIndicatorsForDataElements.get(dataElement);
-            for(ProgramIndicator programIndicator: programIndicators) {
-                IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
-                updateIndicatorRow(indicatorRow, form.getEvent());
-            }
-            refreshListView();
-        }
+    void evaluateAndApplyProgramIndicator(ProgramIndicator programIndicator) {
+        IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
+        updateIndicatorRow(indicatorRow, form.getEvent());
+        refreshListView();
     }
 
     /**

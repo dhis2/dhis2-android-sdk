@@ -1,12 +1,16 @@
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import android.util.Log;
+
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.AsyncHelperThread;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 class IndicatorEvaluatorThread extends AsyncHelperThread {
     private EventDataEntryFragment eventDataEntryFragment;
-    private ConcurrentLinkedQueue<String> queuedDataElements = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<ProgramIndicator> queuedProgramIndicators = new ConcurrentLinkedQueue<>();
 
     void init(EventDataEntryFragment eventDataEntryFragment) {
         setEventDataEntryFragment(eventDataEntryFragment);
@@ -18,17 +22,19 @@ class IndicatorEvaluatorThread extends AsyncHelperThread {
 
     protected void work() {
         if(eventDataEntryFragment!=null) {
-            while (!queuedDataElements.isEmpty()) {
-                String dataElement = queuedDataElements.poll();
-                eventDataEntryFragment.evaluateAndApplyProgramIndicators(dataElement);
+            while (!queuedProgramIndicators.isEmpty()) {
+                ProgramIndicator programIndicator = queuedProgramIndicators.poll();
+                eventDataEntryFragment.evaluateAndApplyProgramIndicator(programIndicator);
             }
             eventDataEntryFragment.refreshListView();
         }
     }
 
-    void schedule(String dataElement) {
-        if(!queuedDataElements.contains(dataElement)) {
-            queuedDataElements.add(dataElement);
+    void schedule(List<ProgramIndicator> programIndicators) {
+        for(ProgramIndicator programIndicator : programIndicators) {
+            if(!queuedProgramIndicators.contains(programIndicator)) {
+                queuedProgramIndicators.add(programIndicator);
+            }
         }
         super.schedule();
     }
@@ -36,9 +42,9 @@ class IndicatorEvaluatorThread extends AsyncHelperThread {
     public void kill() {
         super.kill();
         setEventDataEntryFragment(null);
-        if(queuedDataElements!=null) {
-            queuedDataElements.clear();
+        if(queuedProgramIndicators!=null) {
+            queuedProgramIndicators.clear();
         }
-        queuedDataElements = null;
+        queuedProgramIndicators = null;
     }
 }

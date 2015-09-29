@@ -206,9 +206,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Override
     public void onDestroy() {
-        rulesEvaluatorThread.kill();
-        indicatorEvaluatorThread.kill();
-        saveThread.kill();
+        new Thread() {
+            public void run() {
+                saveThread.kill();
+                rulesEvaluatorThread.kill();
+                indicatorEvaluatorThread.kill();
+                rulesEvaluatorThread = null;
+                indicatorEvaluatorThread = null;
+                saveThread = null;
+            }
+        }.start();
         super.onDestroy();
     }
 
@@ -384,17 +391,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             //form.getEvent().setLastUpdated(Utils.getCurrentTime());
             form.getEvent().save();
 
-//            if(timerTask!=null) {
-//                timerTask.cancel();
-//            }
-//            timerTask = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    DhisService.sendData();
-//                }
-//            };
-//            timer.purge();
-//            timer.schedule(timerTask, 5000);
             flagDataChanged(false);
         }
     }

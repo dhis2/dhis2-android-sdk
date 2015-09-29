@@ -49,7 +49,8 @@ public class DashboardService implements IDashboardService {
 
     private final IStateStore stateStore;
 
-    public DashboardService(IIdentifiableObjectStore<Dashboard> dashboardStore, IDashboardItemStore dashboardItemStore,
+    public DashboardService(IIdentifiableObjectStore<Dashboard> dashboardStore,
+                            IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService,

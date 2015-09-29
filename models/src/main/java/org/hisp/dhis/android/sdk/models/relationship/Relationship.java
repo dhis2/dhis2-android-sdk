@@ -34,37 +34,39 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Relationship implements Serializable{
+public final class Relationship implements Serializable, IModel {
+
+    @JsonIgnore
+    private long id;
 
     @JsonProperty
     private String relationship;
 
-    @JsonProperty
-    private String trackedEntityInstanceA;
+    @JsonIgnore
+    private TrackedEntityInstance trackedEntityInstanceA;
 
-    @JsonProperty
-    private String trackedEntityInstanceB;
+    @JsonIgnore
+    private TrackedEntityInstance trackedEntityInstanceB;
 
     @JsonProperty
     private String displayName;
 
-    @JsonIgnore
-    private Action action;
-
     public Relationship() {
-        action = Action.SYNCED;
+
     }
 
-    public Action getAction() {
-        return action;
+    public long getId() {
+        return id;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getRelationship() {
@@ -75,19 +77,41 @@ public final class Relationship implements Serializable{
         this.relationship = relationship;
     }
 
-    public String getTrackedEntityInstanceA() {
+    @JsonProperty("trackedEntityInstanceA")
+    public String getTrackedEntityInstanceAUid() {
+        return trackedEntityInstanceA.getTrackedEntityInstanceUid();
+    }
+
+    @JsonProperty("trackedEntityInstanceA")
+    public void setTrackedEntityInstanceA(String trackedEntityInstanceA) {
+        this.trackedEntityInstanceA = new TrackedEntityInstance();
+        this.trackedEntityInstanceA.setTrackedEntityInstanceUid(trackedEntityInstanceA);
+    }
+
+    @JsonProperty("trackedEntityInstanceB")
+    public String getTrackedEntityInstanceBUid() {
+        return trackedEntityInstanceB.getTrackedEntityInstanceUid();
+    }
+
+    @JsonProperty("trackedEntityInstanceB")
+    public void setTrackedEntityInstanceB(String trackedEntityInstanceB) {
+        this.trackedEntityInstanceB = new TrackedEntityInstance();
+        this.trackedEntityInstanceB.setTrackedEntityInstanceUid(trackedEntityInstanceB);
+    }
+
+    public TrackedEntityInstance getTrackedEntityInstanceA() {
         return trackedEntityInstanceA;
     }
 
-    public void setTrackedEntityInstanceA(String trackedEntityInstanceA) {
+    public void setTrackedEntityInstanceA(TrackedEntityInstance trackedEntityInstanceA) {
         this.trackedEntityInstanceA = trackedEntityInstanceA;
     }
 
-    public String getTrackedEntityInstanceB() {
+    public TrackedEntityInstance getTrackedEntityInstanceB() {
         return trackedEntityInstanceB;
     }
 
-    public void setTrackedEntityInstanceB(String trackedEntityInstanceB) {
+    public void setTrackedEntityInstanceB(TrackedEntityInstance trackedEntityInstanceB) {
         this.trackedEntityInstanceB = trackedEntityInstanceB;
     }
 

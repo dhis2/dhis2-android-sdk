@@ -65,11 +65,13 @@ public final class EnrollmentStore implements IEnrollmentStore {
 
     @Override
     public void update(Enrollment object) {
+        make sure uid is not overwritten!!
         Enrollment$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(Enrollment object) {
+        make sure uid is not overwritten!!
         Enrollment$Flow enrollmentFlow =
                 Enrollment$Flow.fromModel(object);
         enrollmentFlow.save();
@@ -134,6 +136,18 @@ public final class EnrollmentStore implements IEnrollmentStore {
         setEvents(enrollmentFlow);
         setTrackedEntityAttributeValues(enrollmentFlow);
         return Enrollment$Flow.toModel(enrollmentFlow);
+    }
+
+    @Override
+    public List<Enrollment> query(TrackedEntityInstance trackedEntityInstance) {
+        List<Enrollment$Flow> enrollmentFlows = new Select()
+                .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
+                        TRACKEDENTITYINSTANCEID).is(trackedEntityInstance.getId())).queryList();
+        for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
+            setEvents(enrollmentFlow);
+            setTrackedEntityAttributeValues(enrollmentFlow);
+        }
+        return Enrollment$Flow.toModels(enrollmentFlows);
     }
 
     private void setEvents(Enrollment$Flow enrollmentFlow) {

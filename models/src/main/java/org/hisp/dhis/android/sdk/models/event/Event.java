@@ -35,7 +35,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
@@ -44,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Event implements Serializable {
+public final class Event implements Serializable, IModel {
 
     public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_COMPLETED = "COMPLETED";
@@ -67,16 +70,10 @@ public final class Event implements Serializable {
     private Double longitude;
 
     @JsonIgnore
-    private long trackedEntityInstanceId;
-
-    @JsonProperty("trackedEntityInstance")
-    private String trackedEntityInstanceUid;
+    private TrackedEntityInstance trackedEntityInstance;
 
     @JsonIgnore
-    private long enrollmentId;
-
-    @JsonProperty("enrollment")
-    private String enrollmentUid;
+    private Enrollment enrollment;
 
     @JsonProperty("program")
     private String programId;
@@ -111,11 +108,8 @@ public final class Event implements Serializable {
     @JsonProperty("access")
     private Access access;
 
-    @JsonIgnore
-    private Action action;
-
     public Event() {
-        action = Action.SYNCED;
+
     }
 
     @JsonProperty("coordinate")
@@ -130,14 +124,6 @@ public final class Event implements Serializable {
         coordinate.put("latitude", latitude);
         coordinate.put("longitude", longitude);
         return coordinate;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
     }
 
     public long getId() {
@@ -180,36 +166,42 @@ public final class Event implements Serializable {
         this.longitude = longitude;
     }
 
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
-    }
-
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
-    }
-
+    @JsonProperty("trackedEntityInstance")
     public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstanceUid;
+        return trackedEntityInstance.getTrackedEntityInstanceUid();
     }
 
+    @JsonProperty("trackedEntityInstance")
     public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
+        this.trackedEntityInstance = new TrackedEntityInstance();
+        this.trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
     }
 
-    public long getEnrollmentId() {
-        return enrollmentId;
+    public TrackedEntityInstance getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setEnrollmentId(long enrollmentId) {
-        this.enrollmentId = enrollmentId;
+    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
+    @JsonProperty("enrollment")
     public String getEnrollmentUid() {
-        return enrollmentUid;
+        return enrollment.getEnrollmentUid();
     }
 
+    @JsonProperty("enrollment")
     public void setEnrollmentUid(String enrollmentUid) {
-        this.enrollmentUid = enrollmentUid;
+        this.enrollment = new Enrollment();
+        this.enrollment.setEnrollmentUid(enrollmentUid);
+    }
+
+    public Enrollment getEnrollment() {
+        return enrollment;
+    }
+
+    public void setEnrollment(Enrollment enrollment) {
+        this.enrollment = enrollment;
     }
 
     public String getProgramId() {

@@ -31,14 +31,14 @@ package org.hisp.dhis.android.sdk.models.event;
 
 import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.program.Program;
 
 import java.util.List;
 
 public interface IEventStore extends IStore<Event> {
-
     Event query(long id);
-
     Event query(String uid);
-
     List<Event> query(Enrollment enrollment);
+    List<Event> query(OrganisationUnit organisationUnit, Program program);
 }

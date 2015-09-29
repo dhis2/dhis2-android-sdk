@@ -62,11 +62,13 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
 
     @Override
     public void update(TrackedEntityInstance object) {
+        make sure uid is not overwritten!!
         TrackedEntityInstance$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(TrackedEntityInstance object) {
+        make sure uid is not overwritten!!
         TrackedEntityInstance$Flow trackedEntityInstanceFlow =
                 TrackedEntityInstance$Flow.fromModel(object);
         trackedEntityInstanceFlow.save();

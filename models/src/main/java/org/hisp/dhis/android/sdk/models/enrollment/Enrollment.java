@@ -37,13 +37,15 @@ import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Enrollment implements Serializable {
+public final class Enrollment implements Serializable, IModel {
 
     public static final String ACTIVE = "ACTIVE";
     public static final String COMPLETED = "COMPLETED";
@@ -58,11 +60,8 @@ public final class Enrollment implements Serializable {
     @JsonProperty("orgUnit")
     private String orgUnit;
 
-    @JsonProperty("trackedEntityInstance")
-    private String trackedEntityInstanceUid;
-
     @JsonIgnore
-    private long trackedEntityInstanceId;
+    private TrackedEntityInstance trackedEntityInstance;
 
     @JsonProperty("program")
     private String program;
@@ -100,11 +99,8 @@ public final class Enrollment implements Serializable {
     @JsonIgnore
     private List<Event> events;
 
-    @JsonIgnore
-    private Action action;
-
     public Enrollment() {
-        action = Action.SYNCED;
+
     }
 
     public long getId() {
@@ -131,20 +127,22 @@ public final class Enrollment implements Serializable {
         this.orgUnit = orgUnit;
     }
 
+    @JsonProperty("trackedEntityInstance")
     public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstanceUid;
+        return trackedEntityInstance.getTrackedEntityInstanceUid();
     }
 
     public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
+        this.trackedEntityInstance = new TrackedEntityInstance();
+        this.trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
     }
 
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
+    public TrackedEntityInstance getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     public String getProgram() {
@@ -243,11 +241,4 @@ public final class Enrollment implements Serializable {
         this.events = events;
     }
 
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
-    }
 }

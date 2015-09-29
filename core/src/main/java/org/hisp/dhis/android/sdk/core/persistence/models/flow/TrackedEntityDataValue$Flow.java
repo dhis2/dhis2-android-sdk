@@ -44,6 +44,9 @@ import java.util.List;
 public final class TrackedEntityDataValue$Flow extends BaseModel {
 
     @Column
+    long eventId;
+
+    @Column
     @PrimaryKey
     String eventUid;
 
@@ -62,6 +65,14 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
 
     @Column
     org.hisp.dhis.android.sdk.models.state.Action action;
+
+    public long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(long eventId) {
+        this.eventId = eventId;
+    }
 
     public String getEventUid() {
         return eventUid;
@@ -121,6 +132,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
+        trackedEntityDataValue.setEventId(trackedEntityDataValueFlow.getEventId());
         trackedEntityDataValue.setEventUid(trackedEntityDataValueFlow.getEventUid());
         trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
         trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
@@ -136,6 +148,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
+        trackedEntityDataValueFlow.setEventId(trackedEntityDataValue.getEventId());
         trackedEntityDataValueFlow.setEventUid(trackedEntityDataValue.getEventUid());
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
         trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());

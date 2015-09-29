@@ -27,19 +27,26 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.persistence;
+package org.hisp.dhis.android.sdk.persistence.migrations.version5;
 
-import com.raizlabs.android.dbflow.annotation.Database;
+import com.raizlabs.android.dbflow.annotation.Migration;
+import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
-/**
- * @author Simen Skogly Russnes
- * Database definition for DbFlow
- */
-@Database(name = Dhis2Database.NAME, version = Dhis2Database.VERSION, foreignKeysSupported = true)
-public class Dhis2Database {
+import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 
-    public static final String NAME = "Dhis2";
+@Migration(version = 5, databaseName = Dhis2Database.NAME)
+public class Version5MigrationProgramIndicator extends AlterTableMigration<ProgramIndicator> {
 
-    public static final int VERSION = 5;
 
+    public Version5MigrationProgramIndicator() {
+        super(ProgramIndicator.class);
+    }
+
+    @Override
+    public void onPreMigrate() {
+        // Simple ALTER TABLE migration wraps the statements into a nice builder notation
+        super.onPreMigrate();
+        addColumn(Integer.class, "missingValueReplacement");
+    }
 }

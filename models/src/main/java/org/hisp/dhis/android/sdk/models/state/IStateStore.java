@@ -35,19 +35,69 @@ import java.util.List;
 import java.util.Map;
 
 public interface IStateStore extends IStore<State> {
-    <T extends IdentifiableObject> State query(T object);
 
-    <T extends IdentifiableObject> List<State> query(Class<T> clazz);
+    //////////////////////////////////////////////////////////////////////////////////////////
+    // Helper methods for work with models and actions directly (by bypassing State model)
+    //////////////////////////////////////////////////////////////////////////////////////////
 
-    <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz);
+    /**
+     * @param object IdentifiableObject for which the action should be inserted.
+     * @param action Action to insert.
+     */
+    <T extends IdentifiableObject> void insert(T object, Action action);
 
-    <T extends IdentifiableObject> Action queryAction(T object);
+    /**
+     * @param object IdentifiableObject for which the action should be updated.
+     * @param action Action to update.
+     */
+    <T extends IdentifiableObject> void update(T object, Action action);
 
-    <T extends IdentifiableObject> void delete(T object);
-
+    /**
+     * @param object IdentifiableObject for which the action should be saved.
+     * @param action Action to save.
+     */
     <T extends IdentifiableObject> void save(T object, Action action);
 
+    /**
+     * @param object IdentifiableObject for which the action should be deleted.
+     */
+    <T extends IdentifiableObject> void delete(T object);
+
+    /**
+     * @param object IdentifiableObject which state the method returns.
+     * @return State of given object.
+     */
+    <T extends IdentifiableObject> State query(T object);
+
+    /**
+     * @param object IdentifiableObject which action should be returned.
+     * @return State of given object.
+     */
+    <T extends IdentifiableObject> Action queryAction(T object);
+
+    /**
+     * @param clazz Class for which we want to retrieve all state models.
+     * @return List of states for given class.
+     */
+    <T extends IdentifiableObject> List<State> query(Class<T> clazz);
+
+    /**
+     * @param clazz Class for which we want to retrieve actions.
+     * @return Map where key is id and the value is action for model of given Class.
+     */
+    <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz);
+
+    /**
+     * @param clazz  Class, instances of which we want to retrieve from database.
+     * @param action Action by which we want to filter resulting payload from database.
+     * @return List of Class typed instances which State does not contain given action.
+     */
     <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action);
 
+    /**
+     * @param clazz  Class, instances of which we want to retrieve from database.
+     * @param action Action which we want to have in resulting payload from database.
+     * @return List of Class typed instances which State contain given action.
+     */
     <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action);
 }

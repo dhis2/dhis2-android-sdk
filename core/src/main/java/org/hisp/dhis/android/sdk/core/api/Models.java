@@ -42,9 +42,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElement
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
-import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow;
-import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.faileditem.FailedItemStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -63,17 +61,15 @@ import org.hisp.dhis.android.sdk.core.persistence.models.programtrackedentityatt
 import org.hisp.dhis.android.sdk.core.persistence.models.relationship.RelationshipStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationshiptype.RelationshipTypeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattribute.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityattributevalue.TrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentitydatavalue.TrackedEntityDataValueStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentityinstance.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.user.UserStore;
-import org.hisp.dhis.android.sdk.core.persistence.triggers.TriggersManager;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
-import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
@@ -83,6 +79,7 @@ import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
+import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
@@ -90,7 +87,6 @@ import org.hisp.dhis.android.sdk.models.option.IOptionStore;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.program.IProgramStore;
-import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.programindicator.IProgramIndicatorStore;
 import org.hisp.dhis.android.sdk.models.programrule.IProgramRuleStore;
 import org.hisp.dhis.android.sdk.models.programruleaction.IProgramRuleActionStore;
@@ -110,7 +106,7 @@ import org.hisp.dhis.android.sdk.models.trackedentityinstance.ITrackedEntityInst
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
-public final class Models {
+final class Models {
     private static Models models;
 
     // Meta data store objects
@@ -162,6 +158,8 @@ public final class Models {
 
     private final IStateStore stateStore;
 
+    private final IFailedItemStore failedItemStore;
+
     public Models(Context context) {
         FlowManager.init(context);
         /* TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
@@ -199,6 +197,8 @@ public final class Models {
 
         stateStore = new StateStore();
 
+        failedItemStore = new FailedItemStore();
+
         dashboardStore = new DashboardStore(stateStore);
         dashboardItemStore = new DashboardItemStore(stateStore);
         dashboardElementStore = new DashboardElementStore(stateStore);
@@ -224,6 +224,10 @@ public final class Models {
         }
 
         return models;
+    }
+
+    public static IFailedItemStore failedItems() {
+        return getInstance().failedItemStore;
     }
 
     public static IEnrollmentStore enrollments() {

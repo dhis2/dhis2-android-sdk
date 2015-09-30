@@ -96,7 +96,7 @@ public class DashboardItemStore implements IDashboardItemStore {
     }
 
     @Override
-    public List<DashboardItem> query() {
+    public List<DashboardItem> queryAll() {
         List<DashboardItem$Flow> dashboardItemFlows = new Select()
                 .from(DashboardItem$Flow.class)
                 .queryList();
@@ -104,7 +104,7 @@ public class DashboardItemStore implements IDashboardItemStore {
     }
 
     @Override
-    public DashboardItem query(long id) {
+    public DashboardItem queryById(long id) {
         DashboardItem$Flow dashboardItem = new Select()
                 .from(DashboardItem$Flow.class)
                 .where(Condition.column(DashboardItem$Flow$Table
@@ -114,7 +114,7 @@ public class DashboardItemStore implements IDashboardItemStore {
     }
 
     @Override
-    public DashboardItem query(String uid) {
+    public DashboardItem queryByUid(String uid) {
         DashboardItem$Flow dashboardItem = new Select()
                 .from(DashboardItem$Flow.class)
                 .where(Condition.column(DashboardItem$Flow$Table
@@ -153,12 +153,12 @@ public class DashboardItemStore implements IDashboardItemStore {
     }
 
     /* @Override
-    public List<DashboardItem> query(Action... actions) {
-        return query(Arrays.asList(actions));
+    public List<DashboardItem> queryById(Action... actions) {
+        return queryById(Arrays.asList(actions));
     }
 
     @Override
-    public List<DashboardItem> query(List<Action> actions) {
+    public List<DashboardItem> queryById(List<Action> actions) {
         if (actions == null || actions.isEmpty()) {
             throw new IllegalArgumentException("Please, provide at least one Action");
         }
@@ -173,7 +173,7 @@ public class DashboardItemStore implements IDashboardItemStore {
     }
 
     @Override
-    public List<DashboardItem> query(Dashboard dashboard, List<Action> actions) {
+    public List<DashboardItem> queryById(Dashboard dashboard, List<Action> actions) {
         if (actions == null || actions.isEmpty()) {
             throw new IllegalArgumentException("Please, provide at least one Action");
         }

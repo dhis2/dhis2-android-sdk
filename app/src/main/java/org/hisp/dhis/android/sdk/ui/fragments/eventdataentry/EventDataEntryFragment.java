@@ -91,11 +91,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public static final String TAG = EventDataEntryFragment.class.getSimpleName();
     private Map<String, List<ProgramRule>> programRulesForDataElements;
     private Map<String, List<ProgramIndicator>> programIndicatorsForDataElements;
-    private Map<String, DataValue> dataElementsToSaveMap;
 
     private RulesEvaluatorThread rulesEvaluatorThread;
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
-    private SaveThread saveThread;
+    private EventSaveThread saveThread;
     private static final String ORG_UNIT_ID = "extra:orgUnitId";
     private static final String PROGRAM_ID = "extra:ProgramId";
     private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
@@ -196,7 +195,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
         rulesEvaluatorThread.init(this);
         if(saveThread == null || saveThread.isKilled()) {
-            saveThread = new SaveThread();
+            saveThread = new EventSaveThread();
             saveThread.start();
         }
         saveThread.init(this);
@@ -205,14 +204,20 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread.start();
         }
         indicatorEvaluatorThread.init(this);
-        dataElementsToSaveMap = new HashMap<>();
     }
 
     @Override
     public void onDestroy() {
-        rulesEvaluatorThread.kill();
-        indicatorEvaluatorThread.kill();
-        saveThread.kill();
+        new Thread() {
+            public void run() {
+                saveThread.kill();
+                rulesEvaluatorThread.kill();
+                indicatorEvaluatorThread.kill();
+                rulesEvaluatorThread = null;
+                indicatorEvaluatorThread = null;
+                saveThread = null;
+            }
+        }.start();
         super.onDestroy();
     }
 
@@ -386,30 +391,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     protected void save() {
         if (form != null && form.getEvent()!=null) {
-            form.getEvent().setFromServer(false);
-            //form.getEvent().setLastUpdated(Utils.getCurrentTime());
-            form.getEvent().save();
-
-//            if(timerTask!=null) {
-//                timerTask.cancel();
-//            }
-//            timerTask = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    DhisService.sendData();
-//                }
-//            };
-//            timer.purge();
-//            timer.schedule(timerTask, 5000);
             flagDataChanged(false);
-        }
-    }
-
-    @Override
-    protected void saveUnchangedValues() {
-        if(dataElementsToSaveMap != null)
-        {
-//            dataElementsToSaveMap.
         }
     }
 
@@ -728,21 +710,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Subscribe
     public void onRowValueChanged(final RowValueChangedEvent event) {
         super.onRowValueChanged(event);
-        saveThread.schedule();
         evaluateRulesAndIndicators(event.getId());
 
-
         //if rowType is coordinate or event date, save the event
-        if(event.getRowType().equals(DataEntryRowTypes.COORDINATES) || event.getRowType().equals(DataEntryRowTypes.EVENT_DATE))
-        {
+        if(event.getRowType() == null
+                || DataEntryRowTypes.COORDINATES.toString().equals(event.getRowType())
+                || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
             //save event
-            saveThread.schedule();
+            saveThread.scheduleSaveEvent();
+        } else {// save data element
+            saveThread.scheduleSaveDataValue(event.getId());
         }
-        else // save data element
-        {
-
-        }
-
     }
 
     private static class UpdateSectionsAsyncTask extends AsyncTask {

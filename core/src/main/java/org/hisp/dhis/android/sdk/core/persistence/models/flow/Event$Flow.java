@@ -30,6 +30,9 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -44,6 +47,9 @@ import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class Event$Flow extends BaseModel {
+
+    final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
+    final static String ENROLLMENT_KEY = "enrollment";
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -62,16 +68,20 @@ public final class Event$Flow extends BaseModel {
     Double longitude;
 
     @Column
-    long trackedEntityInstanceId;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    TrackedEntityInstance$Flow trackedEntityInstance;
 
     @Column
-    String trackedEntityInstanceUid;
-
-    @Column
-    long enrollmentId;
-
-    @Column
-    String enrollmentUid;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = ENROLLMENT_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    Enrollment$Flow enrollment;
 
     @Column
     String programId;
@@ -102,9 +112,6 @@ public final class Event$Flow extends BaseModel {
 
     @Column
     Access access;
-
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
 
     List<TrackedEntityDataValue$Flow> trackedEntityDataValues;
 
@@ -148,36 +155,20 @@ public final class Event$Flow extends BaseModel {
         this.longitude = longitude;
     }
 
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
+    public TrackedEntityInstance$Flow getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    public void setTrackedEntityInstance(TrackedEntityInstance$Flow trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
-    public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstanceUid;
+    public Enrollment$Flow getEnrollment() {
+        return enrollment;
     }
 
-    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
-    }
-
-    public long getEnrollmentId() {
-        return enrollmentId;
-    }
-
-    public void setEnrollmentId(long enrollmentId) {
-        this.enrollmentId = enrollmentId;
-    }
-
-    public String getEnrollmentUid() {
-        return enrollmentUid;
-    }
-
-    public void setEnrollmentUid(String enrollmentUid) {
-        this.enrollmentUid = enrollmentUid;
+    public void setEnrollment(Enrollment$Flow enrollment) {
+        this.enrollment = enrollment;
     }
 
     public String getProgramId() {
@@ -268,14 +259,6 @@ public final class Event$Flow extends BaseModel {
         this.access = access;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
-    }
-
     public Event$Flow() {
         // empty constructor
     }
@@ -291,10 +274,10 @@ public final class Event$Flow extends BaseModel {
         event.setStatus(eventFlow.getStatus());
         event.setLatitude(eventFlow.getLatitude());
         event.setLongitude(eventFlow.getLongitude());
-        event.setTrackedEntityInstanceId(eventFlow.getTrackedEntityInstanceId());
-        event.setTrackedEntityInstanceUid(eventFlow.getTrackedEntityInstanceUid());
-        event.setEnrollmentId(eventFlow.getEnrollmentId());
-        event.setEnrollmentUid(eventFlow.getEnrollmentUid());
+        event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
+        event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
+        event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
+        event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
         event.setProgramId(eventFlow.getProgramId());
         event.setProgramStageId(eventFlow.getProgramStageId());
         event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());
@@ -306,7 +289,6 @@ public final class Event$Flow extends BaseModel {
         event.setCreated(eventFlow.getCreated());
         event.setLastUpdated(eventFlow.getLastUpdated());
         event.setAccess(eventFlow.getAccess());
-        event.setAction(eventFlow.getAction());
         return event;
     }
 
@@ -321,10 +303,8 @@ public final class Event$Flow extends BaseModel {
         eventFlow.setStatus(event.getStatus());
         eventFlow.setLatitude(event.getLatitude());
         eventFlow.setLongitude(event.getLongitude());
-        eventFlow.setTrackedEntityInstanceId(event.getTrackedEntityInstanceId());
-        eventFlow.setTrackedEntityInstanceUid(event.getTrackedEntityInstanceUid());
-        eventFlow.setEnrollmentId(event.getEnrollmentId());
-        eventFlow.setEnrollmentUid(event.getEnrollmentUid());
+        eventFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(event.getTrackedEntityInstance()));
+        eventFlow.setEnrollment(Enrollment$Flow.fromModel(event.getEnrollment()));
         eventFlow.setProgramId(event.getProgramId());
         eventFlow.setProgramStageId(event.getProgramStageId());
         eventFlow.setOrganisationUnitId(event.getOrganisationUnitId());
@@ -336,7 +316,6 @@ public final class Event$Flow extends BaseModel {
         eventFlow.setCreated(event.getCreated());
         eventFlow.setLastUpdated(event.getLastUpdated());
         eventFlow.setAccess(event.getAccess());
-        eventFlow.setAction(event.getAction());
         return eventFlow;
     }
 

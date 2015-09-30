@@ -83,7 +83,7 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     @Override
-    public List<ProgramStage> query() {
+    public List<ProgramStage> queryAll() {
         List<ProgramStage$Flow> programStageFlows = new Select()
                 .from(ProgramStage$Flow.class)
                 .queryList();
@@ -95,7 +95,7 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     @Override
-    public ProgramStage query(long id) {
+    public ProgramStage queryById(long id) {
         ProgramStage$Flow programStageFlow = new Select()
                 .from(ProgramStage$Flow.class)
                 .where(Condition.column(ProgramStage$Flow$Table.ID).is(id))
@@ -106,7 +106,7 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     @Override
-    public ProgramStage query(String uid) {
+    public ProgramStage queryByUid(String uid) {
         ProgramStage$Flow programStageFlow = new Select()
                 .from(ProgramStage$Flow.class)
                 .where(Condition.column(ProgramStage$Flow$Table.UID).is(uid))

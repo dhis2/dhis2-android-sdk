@@ -74,7 +74,7 @@ public final class ProgramRuleActionStore implements IProgramRuleActionStore {
     }
 
     @Override
-    public List<ProgramRuleAction> query() {
+    public List<ProgramRuleAction> queryAll() {
         List<ProgramRuleAction$Flow> programRuleActionFlows = new Select()
                 .from(ProgramRuleAction$Flow.class)
                 .queryList();
@@ -82,7 +82,7 @@ public final class ProgramRuleActionStore implements IProgramRuleActionStore {
     }
 
     @Override
-    public ProgramRuleAction query(long id) {
+    public ProgramRuleAction queryById(long id) {
         ProgramRuleAction$Flow programRuleActionFlow = new Select()
                 .from(ProgramRuleAction$Flow.class)
                 .where(Condition.column(ProgramRuleAction$Flow$Table.ID).is(id))
@@ -91,7 +91,7 @@ public final class ProgramRuleActionStore implements IProgramRuleActionStore {
     }
 
     @Override
-    public ProgramRuleAction query(String uid) {
+    public ProgramRuleAction queryByUid(String uid) {
         ProgramRuleAction$Flow programRuleActionFlow = new Select()
                 .from(ProgramRuleAction$Flow.class)
                 .where(Condition.column(ProgramRuleAction$Flow$Table.UID).is(uid))

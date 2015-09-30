@@ -56,11 +56,13 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
 
     private Map<String, Integer> dataElementsToRowIndexMap;
     private final FragmentManager mFragmentManager;
+    private Map<String, Boolean> hiddenDataElementRows;
 
     public DataValueAdapter(FragmentManager fragmentManager,
                             LayoutInflater inflater) {
         super(inflater);
         mFragmentManager = fragmentManager;
+        hiddenDataElementRows = new HashMap<>();
     }
 
     @Override
@@ -71,9 +73,9 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
                     AbsListView.LayoutParams.WRAP_CONTENT));
-
+            String id = dataEntryRow.getItemId();
             view.setId(position);
-            if (dataEntryRow.isHidden()) {
+            if(hiddenDataElementRows.containsKey(id)) {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
                 view.postInvalidate();
                 view.setVisibility(View.GONE);
@@ -127,18 +129,16 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     }
 
     public void hideIndex(String dataElement) {
-        hideIndex(getIndex(dataElement));
-    }
-
-    public void hideIndex(int pos) {
-        if (pos < 0) return;
-        getData().get(pos).setIsHidden(true);
+        if(hiddenDataElementRows == null) {
+            hiddenDataElementRows = new HashMap<>();
+        }
+        hiddenDataElementRows.put(dataElement, true);
     }
 
     public void resetHiding() {
         if (mData == null) return;
-        for (Row row : mData) {
-            row.setIsHidden(false);
+        if(hiddenDataElementRows != null) {
+            hiddenDataElementRows.clear();
         }
     }
 

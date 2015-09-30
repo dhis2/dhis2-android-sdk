@@ -74,7 +74,7 @@ public final class InterpretationStore implements IInterpretationStore {
     }
 
     @Override
-    public List<Interpretation> query() {
+    public List<Interpretation> queryAll() {
         List<Interpretation$Flow> interpretationFlows = new Select()
                 .from(Interpretation$Flow.class)
                 .queryList();
@@ -82,7 +82,7 @@ public final class InterpretationStore implements IInterpretationStore {
     }
 
     @Override
-    public Interpretation query(long id) {
+    public Interpretation queryById(long id) {
         Interpretation$Flow interpretationFlow = new Select()
                 .from(Interpretation$Flow.class)
                 .where(Condition.column(Interpretation$Flow$Table.ID).is(id))
@@ -91,7 +91,7 @@ public final class InterpretationStore implements IInterpretationStore {
     }
 
     @Override
-    public Interpretation query(String uid) {
+    public Interpretation queryByUid(String uid) {
         Interpretation$Flow interpretationFlow = new Select()
                 .from(Interpretation$Flow.class)
                 .where(Condition.column(Interpretation$Flow$Table.UID).is(uid))

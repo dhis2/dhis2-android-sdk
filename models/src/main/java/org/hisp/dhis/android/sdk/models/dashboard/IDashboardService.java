@@ -39,7 +39,6 @@ public interface IDashboardService extends IService {
      *
      * @param dashboard dashbaord to create on server.
      */
-    // TODO substitute timestamp for dashboard
     boolean add(Dashboard dashboard);
 
 

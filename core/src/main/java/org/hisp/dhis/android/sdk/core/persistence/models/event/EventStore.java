@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.core.persistence.models.event;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow$Table;
@@ -62,15 +63,29 @@ public final class EventStore implements IEventStore {
 
     @Override
     public void update(Event object) {
-        make sure uid is not overwritten!!
+        //making sure uid is not overwritten with blank value in case uid was updated from server while event was loaded in memory
+        if(object.getEventUid() == null || object.getEventUid().isEmpty()) {
+            Event$Flow persisted = new Select().from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ID).is(object.getId())).querySingle();
+            if(persisted != null) {
+                object.setEventUid(persisted.getEventUid());
+            }
+        }
         Event$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(Event object) {
+        //making sure uid is not overwritten with blank value in case uid was updated from
+        // server while event was loaded in memory
+        if(object.getEventUid() == null || object.getEventUid().isEmpty()) {
+            Event$Flow persisted = new Select().from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ID).is(object.getId())).querySingle();
+            if(persisted != null) {
+                object.setEventUid(persisted.getEventUid());
+            }
+        }
+        Event$Flow.fromModel(object).update();
         Event$Flow eventFlow =
                 Event$Flow.fromModel(object);
-        make sure uid is not overwritten!!
         eventFlow.save();
     }
 
@@ -80,7 +95,7 @@ public final class EventStore implements IEventStore {
     }
 
     @Override
-    public List<Event> query() {
+    public List<Event> queryAll() {
         List<Event$Flow> eventFlows = new Select()
                 .from(Event$Flow.class)
                 .queryList();
@@ -109,8 +124,8 @@ public final class EventStore implements IEventStore {
     @Override
     public List<Event> query(Enrollment enrollment) {
         List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ENROLLMENTID)
-                        .is(enrollment.getId())).queryList();
+                .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ENROLLMENT_ENROLLMENT)
+                        .is(enrollment)).queryList();
         for(Event$Flow eventFlow : eventFlows) {
             setTrackedEntityDataValues(eventFlow);
         }

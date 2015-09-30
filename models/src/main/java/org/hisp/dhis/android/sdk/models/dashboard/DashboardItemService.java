@@ -143,7 +143,7 @@ public class DashboardItemService implements IDashboardItemService {
 
     @Override
     public DashboardItem query(long id) {
-        DashboardItem dashboardItem = dashboardItemStore.query(id);
+        DashboardItem dashboardItem = dashboardItemStore.queryById(id);
 
         if (dashboardItem != null) {
             Action action = stateStore.queryAction(dashboardItem);
@@ -158,7 +158,7 @@ public class DashboardItemService implements IDashboardItemService {
 
     @Override
     public DashboardItem query(String uid) {
-        DashboardItem dashboardItem = dashboardItemStore.query(uid);
+        DashboardItem dashboardItem = dashboardItemStore.queryByUid(uid);
 
         if (dashboardItem != null) {
             Action action = stateStore.queryAction(dashboardItem);

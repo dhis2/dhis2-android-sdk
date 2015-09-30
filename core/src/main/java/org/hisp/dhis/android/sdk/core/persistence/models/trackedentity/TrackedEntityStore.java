@@ -73,7 +73,7 @@ public final class TrackedEntityStore implements IIdentifiableObjectStore<Tracke
     }
 
     @Override
-    public List<TrackedEntity> query() {
+    public List<TrackedEntity> queryAll() {
         List<TrackedEntity$Flow> trackedEntityFlows = new Select()
                 .from(TrackedEntity$Flow.class)
                 .queryList();
@@ -81,7 +81,7 @@ public final class TrackedEntityStore implements IIdentifiableObjectStore<Tracke
     }
 
     @Override
-    public TrackedEntity query(long id) {
+    public TrackedEntity queryById(long id) {
         TrackedEntity$Flow trackedEntityFlow = new Select()
                 .from(TrackedEntity$Flow.class)
                 .where(Condition.column(TrackedEntity$Flow$Table.ID).is(id))
@@ -90,7 +90,7 @@ public final class TrackedEntityStore implements IIdentifiableObjectStore<Tracke
     }
 
     @Override
-    public TrackedEntity query(String uid) {
+    public TrackedEntity queryByUid(String uid) {
         TrackedEntity$Flow trackedEntityFlow = new Select()
                 .from(TrackedEntity$Flow.class)
                 .where(Condition.column(TrackedEntity$Flow$Table.UID).is(uid))

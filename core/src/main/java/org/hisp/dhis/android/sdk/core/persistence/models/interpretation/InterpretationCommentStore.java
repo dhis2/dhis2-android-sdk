@@ -71,7 +71,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public List<InterpretationComment> query() {
+    public List<InterpretationComment> queryAll() {
         List<InterpretationComment$Flow> commentFlows = new Select()
                 .from(InterpretationComment$Flow.class)
                 .queryList();
@@ -79,7 +79,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public InterpretationComment query(long id) {
+    public InterpretationComment queryById(long id) {
         InterpretationComment$Flow commentFlow = new Select()
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table.ID).is(id))
@@ -88,7 +88,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public InterpretationComment query(String uid) {
+    public InterpretationComment queryByUid(String uid) {
         InterpretationComment$Flow commentFlow = new Select()
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table.UID).is(uid))

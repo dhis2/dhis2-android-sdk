@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.models.common;
 
 public interface IIdentifiableObjectStore<T extends IdentifiableObject> extends IStore<T> {
 
-    T query(long id);
+    T queryById(long id);
 
-    T query(String uid);
+    T queryByUid(String uid);
 }

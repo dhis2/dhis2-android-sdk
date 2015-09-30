@@ -30,8 +30,14 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
@@ -40,25 +46,31 @@ import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntit
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(databaseName = DbDhis.NAME)
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = TrackedEntityAttributeValue$Flow.UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE, uniqueConflict = ConflictAction.FAIL)})
 public final class TrackedEntityAttributeValue$Flow extends BaseModel {
+
+    static final int UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE = 901;
+    static final String TRACKED_ENTITY_INSTANCE_KEY = "trackedEntityInstance";
 
     @Column
     @PrimaryKey
+    long id;
+
+    @Column
     String trackedEntityAttributeUId;
 
     @Column
-    @PrimaryKey
-    String trackedEntityInstanceUId;
-
-    @Column
-    long trackedEntityInstanceId;
+    @Unique(unique = true, uniqueGroups = {UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE})
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    TrackedEntityInstance$Flow trackedEntityInstance;
 
     @Column
     String value;
-
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public String getTrackedEntityAttributeUId() {
         return trackedEntityAttributeUId;
@@ -68,20 +80,20 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         this.trackedEntityAttributeUId = trackedEntityAttributeUId;
     }
 
-    public String getTrackedEntityInstanceUId() {
-        return trackedEntityInstanceUId;
+    public TrackedEntityInstance$Flow getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setTrackedEntityInstanceUId(String trackedEntityInstanceUId) {
-        this.trackedEntityInstanceUId = trackedEntityInstanceUId;
+    public void setTrackedEntityInstance(TrackedEntityInstance$Flow trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
+    public long getId() {
+        return id;
     }
 
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getValue() {
@@ -90,14 +102,6 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
     }
 
     public TrackedEntityAttributeValue$Flow() {
@@ -110,11 +114,12 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         }
 
         TrackedEntityAttributeValue trackedEntityAttributeValue = new TrackedEntityAttributeValue();
+        trackedEntityAttributeValue.setId(trackedEntityAttributeValueFlow.getId());
         trackedEntityAttributeValue.setTrackedEntityAttributeUId(trackedEntityAttributeValueFlow.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValue.setTrackedEntityInstanceId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceId());
-        trackedEntityAttributeValue.setTrackedEntityInstanceUId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceUId());
+        trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
         trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
-        trackedEntityAttributeValue.setAction(trackedEntityAttributeValueFlow.getAction());
+        trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
+        trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
         return trackedEntityAttributeValue;
     }
 
@@ -124,11 +129,12 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         }
 
         TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
+        trackedEntityAttributeValueFlow.setId(trackedEntityAttributeValue.getId());
         trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstanceId(trackedEntityAttributeValue.getTrackedEntityInstanceId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstanceUId(trackedEntityAttributeValue.getTrackedEntityInstanceUId());
+        trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
         trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
-        trackedEntityAttributeValueFlow.setAction(trackedEntityAttributeValue.getAction());
+        trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
+        trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
         return trackedEntityAttributeValueFlow;
     }
 

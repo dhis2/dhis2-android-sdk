@@ -63,7 +63,7 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
     }
 
     @Override
-    public List<OptionSet> query() {
+    public List<OptionSet> queryAll() {
         List<OptionSet$Flow> optionSetFlows = new Select()
                 .from(OptionSet$Flow.class)
                 .queryList();
@@ -74,7 +74,7 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
     }
 
     @Override
-    public OptionSet query(long id) {
+    public OptionSet queryById(long id) {
         OptionSet$Flow optionSetFlow = new Select()
                 .from(OptionSet$Flow.class)
                 .where(Condition.column(OptionSet$Flow$Table.ID).is(id))
@@ -84,7 +84,7 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
     }
 
     @Override
-    public OptionSet query(String uid) {
+    public OptionSet queryByUid(String uid) {
         OptionSet$Flow optionSetFlow = new Select()
                 .from(OptionSet$Flow.class)
                 .where(Condition.column(OptionSet$Flow$Table.UID).is(uid))

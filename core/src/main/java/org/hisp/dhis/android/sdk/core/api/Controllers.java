@@ -30,13 +30,19 @@ package org.hisp.dhis.android.sdk.core.api;
 
 import org.hisp.dhis.android.sdk.core.controllers.AssignedProgramsController;
 import org.hisp.dhis.android.sdk.core.controllers.DashboardController;
+import org.hisp.dhis.android.sdk.core.controllers.EnrollmentController;
+import org.hisp.dhis.android.sdk.core.controllers.EventController;
+import org.hisp.dhis.android.sdk.core.controllers.IEnrollmentController;
+import org.hisp.dhis.android.sdk.core.controllers.IEventController;
 import org.hisp.dhis.android.sdk.core.controllers.IOrganisationUnitController;
 import org.hisp.dhis.android.sdk.core.controllers.IProgramController;
+import org.hisp.dhis.android.sdk.core.controllers.ITrackedEntityInstanceController;
 import org.hisp.dhis.android.sdk.core.controllers.InterpretationController;
 import org.hisp.dhis.android.sdk.core.controllers.OptionSetController;
 import org.hisp.dhis.android.sdk.core.controllers.OrganisationUnitController;
 import org.hisp.dhis.android.sdk.core.controllers.ProgramController;
 import org.hisp.dhis.android.sdk.core.controllers.RelationshipTypeController;
+import org.hisp.dhis.android.sdk.core.controllers.TrackedEntityInstanceController;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.controllers.user.IUserAccountController;
 import org.hisp.dhis.android.sdk.core.controllers.user.UserAccountController;
@@ -58,20 +64,34 @@ final class Controllers {
     private final IProgramController programController;
     private final IOrganisationUnitController organisationUnitController;
     private final IDataController<Program> assignedProgramsController;
+    private final IEventController eventController;
+    private final IEnrollmentController enrollmentController;
+    private final ITrackedEntityInstanceController trackedEntityInstanceController;
 
     private Controllers(IDhisApi dhisApi) {
         dashboardController = new DashboardController(dhisApi, Models.dashboards(),
                 Models.dashboardItems(), Models.dashboardElements(),
                 Models.dashboardItemContent(), Models.stateStore());
         interpretationController = new InterpretationController(dhisApi,
-                Services.interpretations(), Services.userAccount());
+                Services.interpretations(), Services.userAccount(), Models.interpretations(),
+                Models.interpretationElements(), Models.interpretationComments(), Models.users());
         userAccountController = new UserAccountController(dhisApi, Models.userAccount());
-        relationshipTypeController = new RelationshipTypeController(dhisApi);
-        optionSetController = new OptionSetController(dhisApi);
-        programController = new ProgramController(dhisApi);
-        organisationUnitController = new OrganisationUnitController(dhisApi);
+        relationshipTypeController = new RelationshipTypeController(dhisApi, Models.relationships(), Models.relationshipTypes());
+        optionSetController = new OptionSetController(dhisApi, Models.options(), Models.optionSets());
+        programController = new ProgramController(dhisApi, Models.programs(), Models.programIndicators(),
+                Models.programStageDataElements(), Models.programTrackedEntityAttributes(), Models.programStages(), Models.programStageSections());
+        organisationUnitController = new OrganisationUnitController(dhisApi, Models.organisationUnits());
         assignedProgramsController = new AssignedProgramsController(dhisApi,
-                programController, organisationUnitController);
+                programController, organisationUnitController, Models.organisationUnits(), Models.programs());
+        eventController = new EventController(dhisApi, Models.stateStore(), Models.events(),
+                Models.trackedEntityDataValues(), Models.organisationUnits(), Models.programs(),
+                Models.failedItems());
+        enrollmentController = new EnrollmentController(dhisApi, eventController,
+                Models.enrollments(), Models.events(), Models.stateStore(), Models.failedItems());
+        trackedEntityInstanceController = new TrackedEntityInstanceController(dhisApi,
+                enrollmentController, Models.trackedEntityInstances(), Models.stateStore(),
+                Models.failedItems(), Models.relationships(), Models.trackedEntityAttributeValues(),
+                Models.enrollments());
     }
 
     public static void init(IDhisApi dhisApi) {

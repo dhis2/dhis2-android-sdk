@@ -75,7 +75,7 @@ public final class ProgramRuleVariableStore implements IProgramRuleVariableStore
     }
 
     @Override
-    public List<ProgramRuleVariable> query() {
+    public List<ProgramRuleVariable> queryAll() {
         List<ProgramRuleVariable$Flow> programRuleVariableFlow = new Select()
                 .from(ProgramRuleVariable$Flow.class)
                 .queryList();
@@ -83,7 +83,7 @@ public final class ProgramRuleVariableStore implements IProgramRuleVariableStore
     }
 
     @Override
-    public ProgramRuleVariable query(long id) {
+    public ProgramRuleVariable queryById(long id) {
         ProgramRuleVariable$Flow programRuleVariableFlow = new Select()
                 .from(ProgramRuleVariable$Flow.class)
                 .where(Condition.column(ProgramRuleVariable$Flow$Table.ID).is(id))
@@ -92,7 +92,7 @@ public final class ProgramRuleVariableStore implements IProgramRuleVariableStore
     }
 
     @Override
-    public ProgramRuleVariable query(String uid) {
+    public ProgramRuleVariable queryByUid(String uid) {
         ProgramRuleVariable$Flow programRuleVariableFlow = new Select()
                 .from(ProgramRuleVariable$Flow.class)
                 .where(Condition.column(ProgramRuleVariable$Flow$Table.UID).is(uid))

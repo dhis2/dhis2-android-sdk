@@ -73,7 +73,7 @@ public final class RelationshipTypeStore implements IIdentifiableObjectStore<Rel
     }
 
     @Override
-    public List<RelationshipType> query() {
+    public List<RelationshipType> queryAll() {
         List<RelationshipType$Flow> relationshipTypeFlow = new Select()
                 .from(RelationshipType$Flow.class)
                 .queryList();
@@ -81,7 +81,7 @@ public final class RelationshipTypeStore implements IIdentifiableObjectStore<Rel
     }
 
     @Override
-    public RelationshipType query(long id) {
+    public RelationshipType queryById(long id) {
         RelationshipType$Flow relationshipTypeFlow = new Select()
                 .from(RelationshipType$Flow.class)
                 .where(Condition.column(RelationshipType$Flow$Table.ID).is(id))
@@ -90,7 +90,7 @@ public final class RelationshipTypeStore implements IIdentifiableObjectStore<Rel
     }
 
     @Override
-    public RelationshipType query(String uid) {
+    public RelationshipType queryByUid(String uid) {
         RelationshipType$Flow relationshipTypeFlow = new Select()
                 .from(RelationshipType$Flow.class)
                 .where(Condition.column(RelationshipType$Flow$Table.UID).is(uid))

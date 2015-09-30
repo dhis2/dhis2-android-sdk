@@ -71,7 +71,7 @@ public final class ProgramTrackedEntityAttributeStore implements IProgramTracked
     }
 
     @Override
-    public List<ProgramTrackedEntityAttribute> query() {
+    public List<ProgramTrackedEntityAttribute> queryAll() {
         List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new Select()
                 .from(ProgramTrackedEntityAttribute$Flow.class)
                 .queryList();

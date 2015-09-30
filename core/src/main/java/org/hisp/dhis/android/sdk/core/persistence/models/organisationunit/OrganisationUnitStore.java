@@ -50,7 +50,7 @@ public final class OrganisationUnitStore implements IOrganisationUnitStore {
     }
 
     @Override
-    public List<OrganisationUnit> query() {
+    public List<OrganisationUnit> queryAll() {
         List<OrganisationUnit$Flow> organisationUnitFlow = new Select()
                 .from(OrganisationUnit$Flow.class)
                 .queryList();
@@ -58,7 +58,7 @@ public final class OrganisationUnitStore implements IOrganisationUnitStore {
     }
 
     @Override
-    public OrganisationUnit query(long id) {
+    public OrganisationUnit queryById(long id) {
         OrganisationUnit$Flow organisationUnitFlow = new Select()
                 .from(OrganisationUnit$Flow.class)
                 .where(Condition.column(OrganisationUnit$Flow$Table.ID).is(id))
@@ -67,7 +67,7 @@ public final class OrganisationUnitStore implements IOrganisationUnitStore {
     }
 
     @Override
-    public OrganisationUnit query(String uid) {
+    public OrganisationUnit queryByUid(String uid) {
         OrganisationUnit$Flow organisationUnitFlow = new Select()
                 .from(OrganisationUnit$Flow.class)
                 .where(Condition.column(OrganisationUnit$Flow$Table.UID).is(uid))

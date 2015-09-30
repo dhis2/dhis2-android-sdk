@@ -44,7 +44,7 @@ public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
     }
 
     @Override
-    public List<Constant> query() {
+    public List<Constant> queryAll() {
         List<Constant$Flow> constantFlows = new Select()
                 .from(Constant$Flow.class)
                 .queryList();
@@ -52,7 +52,7 @@ public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
     }
 
     @Override
-    public Constant query(long id) {
+    public Constant queryById(long id) {
         Constant$Flow constantFlow = new Select()
                 .from(Constant$Flow.class)
                 .where(Condition.column(Constant$Flow$Table.ID).is(id))
@@ -61,7 +61,7 @@ public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
     }
 
     @Override
-    public Constant query(String uid) {
+    public Constant queryByUid(String uid) {
         Constant$Flow constantFlow = new Select()
                 .from(Constant$Flow.class)
                 .where(Condition.column(Constant$Flow$Table.UID).is(uid))

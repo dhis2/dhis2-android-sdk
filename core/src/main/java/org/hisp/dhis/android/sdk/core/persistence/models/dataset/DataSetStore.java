@@ -63,7 +63,7 @@ public final class DataSetStore implements IDataSetStore {
     }
 
     @Override
-    public DataSet query(long id) {
+    public DataSet queryById(long id) {
         DataSet$Flow dataSetFlow = new Select()
                 .from(DataSet$Flow.class)
                 .where(Condition.column(DataSet$Flow$Table.ID).is(id))
@@ -72,7 +72,7 @@ public final class DataSetStore implements IDataSetStore {
     }
 
     @Override
-    public DataSet query(String uid) {
+    public DataSet queryByUid(String uid) {
         DataSet$Flow dataSetFlow = new Select()
                 .from(DataSet$Flow.class)
                 .where(Condition.column(DataSet$Flow$Table.UID).is(uid))
@@ -81,7 +81,7 @@ public final class DataSetStore implements IDataSetStore {
     }
 
     @Override
-    public List<DataSet> query() {
+    public List<DataSet> queryAll() {
         List<DataSet$Flow> dataSetFlows = new Select()
                 .from(DataSet$Flow.class).queryList();
         return DataSet$Flow.toModels(dataSetFlows);

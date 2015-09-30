@@ -36,7 +36,8 @@ import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramTrackedEntityAttribute implements IModel{
+public final class ProgramTrackedEntityAttribute implements IModel {
+    private long localId;
 
     private String trackedEntityAttribute;
 
@@ -56,6 +57,16 @@ public final class ProgramTrackedEntityAttribute implements IModel{
     @JsonProperty("trackedEntityAttribute")
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute.getUId();
+    }
+
+    @Override
+    public long getId() {
+        return localId;
+    }
+
+    @Override
+    public void setId(long id) {
+        localId = id;
     }
 
     public String getTrackedEntityAttribute() {

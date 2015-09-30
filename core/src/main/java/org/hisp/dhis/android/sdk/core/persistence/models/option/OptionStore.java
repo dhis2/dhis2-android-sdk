@@ -45,7 +45,7 @@ public final class OptionStore implements IOptionStore{
     }
 
     @Override
-    public List<Option> query() {
+    public List<Option> queryAll() {
         List<Option$Flow> optionFlows = new Select()
                 .from(Option$Flow.class)
                 .queryList();
@@ -53,7 +53,7 @@ public final class OptionStore implements IOptionStore{
     }
 
     @Override
-    public Option query(long id) {
+    public Option queryById(long id) {
         Option$Flow optionFlow = new Select()
                 .from(Option$Flow.class)
                 .where(Condition.column(Option$Flow$Table.ID).is(id))
@@ -63,7 +63,7 @@ public final class OptionStore implements IOptionStore{
     }
 
     @Override
-    public Option query(String uid) {
+    public Option queryByUid(String uid) {
         Option$Flow optionFlow = new Select()
                 .from(Option$Flow.class)
                 .where(Condition.column(Option$Flow$Table.UID).is(uid))

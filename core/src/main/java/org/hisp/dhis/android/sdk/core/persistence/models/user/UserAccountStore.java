@@ -72,7 +72,7 @@ public final class UserAccountStore implements IUserAccountStore {
     }
 
     @Override
-    public List<UserAccount> query() {
+    public List<UserAccount> queryAll() {
         List<UserAccount$Flow> userAccounts = new Select()
                 .from(UserAccount$Flow.class)
                 .queryList();
@@ -80,7 +80,7 @@ public final class UserAccountStore implements IUserAccountStore {
     }
 
     @Override
-    public UserAccount query(long id) {
+    public UserAccount queryById(long id) {
         UserAccount$Flow userAccount = new Select()
                 .from(UserAccount$Flow.class)
                 .where(Condition.column(UserAccount$Flow$Table.ID).is(id))
@@ -89,7 +89,7 @@ public final class UserAccountStore implements IUserAccountStore {
     }
 
     @Override
-    public UserAccount query(String uid) {
+    public UserAccount queryByUid(String uid) {
         UserAccount$Flow userAccount = new Select()
                 .from(UserAccount$Flow.class)
                 .where(Condition.column(UserAccount$Flow$Table.UID).is(uid))

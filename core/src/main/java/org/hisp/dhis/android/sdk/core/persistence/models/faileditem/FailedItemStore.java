@@ -103,7 +103,7 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
-    public List<FailedItem> query() {
+    public List<FailedItem> queryAll() {
         List<FailedItem$Flow> failedItemFlows = new Select()
                 .from(FailedItem$Flow.class)
                 .queryList();

@@ -38,7 +38,9 @@ import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class ProgramStageDataElement implements IModel{
+public final class ProgramStageDataElement implements IModel {
+
+    private long localId;
 
     private String programStage;
 
@@ -61,6 +63,17 @@ public final class ProgramStageDataElement implements IModel{
 
     private String programStageSection;
 
+
+    @Override
+    public long getId() {
+        return localId;
+    }
+
+    @Override
+    public void setId(long id) {
+        localId = id;
+    }
+
     @JsonProperty("programStage")
     public void setProgramStageFromJSON(Map<String, Object> programStage) {
         this.programStage = (String) programStage.get("id");
@@ -70,6 +83,7 @@ public final class ProgramStageDataElement implements IModel{
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.getUId();
     }
+
 
     public String getProgramStage() {
         return programStage;

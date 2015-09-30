@@ -29,10 +29,16 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.repository.IRepositoryAdd;
+import org.hisp.dhis.android.sdk.models.common.repository.IRepositoryList;
+import org.hisp.dhis.android.sdk.models.common.repository.IRepositoryRemove;
+import org.hisp.dhis.android.sdk.models.common.repository.IRepositorySave;
+import org.hisp.dhis.android.sdk.models.common.repository.IRepositoryUpdate;
 
 import java.util.List;
 
-public interface IDashboardService extends IService {
+public interface IDashboardService extends IService, IRepositoryAdd<Dashboard>,
+        IRepositorySave<Dashboard>, IRepositoryUpdate<Dashboard>, IRepositoryRemove<Dashboard>, IRepositoryList<Dashboard> {
 
     /**
      * Factory method which creates new Dashboard with given name.

@@ -804,7 +804,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
 
         List<DashboardItemContent> persistedItems =
-                dashboardItemContentStore.query(Arrays.asList(type));
+                dashboardItemContentStore.queryByTypes(Arrays.asList(type));
 
         return merge(actualItems, updatedItems, persistedItems);
     }

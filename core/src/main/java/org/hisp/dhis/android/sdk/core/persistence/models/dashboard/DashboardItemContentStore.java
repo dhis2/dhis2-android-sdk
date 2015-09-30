@@ -103,7 +103,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public List<DashboardItemContent> query(List<String> types) {
+    public List<DashboardItemContent> queryByTypes(List<String> types) {
         CombinedCondition generalCondition = CombinedCondition.begin(
                 column(DashboardItemContent$Flow$Table.TYPE).isNotNull());
         CombinedCondition columnConditions = null;

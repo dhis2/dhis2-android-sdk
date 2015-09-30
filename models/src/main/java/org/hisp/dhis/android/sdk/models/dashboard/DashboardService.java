@@ -67,17 +67,6 @@ public class DashboardService implements IDashboardService {
      */
     @Override
     public boolean add(Dashboard dashboard) {
-        /* DateTime lastUpdated = new DateTime();
-
-        Dashboard dashboard = new Dashboard();
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
-        dashboard.setCreated(lastUpdated);
-        dashboard.setLastUpdated(lastUpdated);
-        dashboard.setAccess(Access.createDefaultAccess());
-        // dashboard.setAction(Action.TO_POST);
-        return dashboard; */
-
         dashboardStore.insert(dashboard);
         stateStore.save(dashboard, Action.TO_POST);
 
@@ -118,11 +107,9 @@ public class DashboardService implements IDashboardService {
 
         Action action = stateStore.queryAction(dashboard);
         if (Action.TO_DELETE.equals(action)) {
-            // dashboard.setAction(Action.TO_DELETE);
             stateStore.delete(dashboard);
             dashboardStore.delete(dashboard);
         } else {
-            // dashboard.setAction(Action.TO_DELETE);
             stateStore.save(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
         }
@@ -235,7 +222,7 @@ public class DashboardService implements IDashboardService {
     }
 
     private List<DashboardItem> queryRelateDashboardItems(Dashboard dashboard) {
-        List<DashboardItem> allDashboardItems = dashboardItemStore.query(dashboard);
+        List<DashboardItem> allDashboardItems = dashboardItemStore.queryByDashboard(dashboard);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> dashboardItems = new ArrayList<>();

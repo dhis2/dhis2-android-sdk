@@ -26,6 +26,6 @@ public class DashboardContentService implements IDashboardItemContentService {
 
     @Override
     public List<DashboardItemContent> query(List<String> types) {
-        return mDashboardItemContentStore.query(types);
+        return mDashboardItemContentStore.queryByTypes(types);
     }
 }

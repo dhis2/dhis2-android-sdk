@@ -59,7 +59,6 @@ public class DashboardItemService implements IDashboardItemService {
      * @param content   Content for dashboard item.
      * @return new item.
      */
-    // TODO revise the use of Factory method ().
     @Override
     public DashboardItem add(Dashboard dashboard, DashboardItemContent content) {
         isNull(dashboard, "dashboard must not be null");
@@ -74,7 +73,6 @@ public class DashboardItemService implements IDashboardItemService {
         item.setAccess(Access.createDefaultAccess());
         item.setType(content.getType());
 
-        // item.setAction(Action.TO_POST);
         stateStore.save(item, Action.TO_POST);
 
         return item;
@@ -109,7 +107,7 @@ public class DashboardItemService implements IDashboardItemService {
 
     @Override
     public List<DashboardItem> query(Dashboard dashboard) {
-        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
+        List<DashboardItem> dashboardItems = dashboardItemStore.queryByDashboard(dashboard);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> filteredItems = new ArrayList<>();
@@ -178,7 +176,7 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     private List<DashboardElement> queryRelatedElements(DashboardItem dashboardItem) {
-        List<DashboardElement> allDashboardElements = dashboardElementStore.query(dashboardItem);
+        List<DashboardElement> allDashboardElements = dashboardElementStore.queryByDashboardItem(dashboardItem);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         List<DashboardElement> dashboardElements = new ArrayList<>();

@@ -124,7 +124,7 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem) {
+    public List<DashboardElement> queryByDashboardItem(DashboardItem dashboardItem) {
         isNull(dashboardItem, "dashboard item must not be null");
 
         List<DashboardElement$Flow> elementFlows = new Select()
@@ -136,81 +136,4 @@ public class DashboardElementStore implements IDashboardElementStore {
         // converting flow models to Dashboard
         return DashboardElement$Flow.toModels(elementFlows);
     }
-
-    /* @Override
-    public List<DashboardElement> queryById(DashboardItem dashboardItem, Action... actions) {
-        return queryById(dashboardItem, Arrays.asList(actions));
-    }
-
-    @Override
-    public List<DashboardElement> queryById(DashboardItem dashboardItem, List<Action> actions) {
-        if (actions != null && actions.isEmpty()) {
-            throw new IllegalArgumentException("Please, provide at least one Action");
-        }
-
-        Condition.CombinedCondition combinedCondition = buildCombinedCondition(actions);
-        combinedCondition = combinedCondition.and(Condition
-                .column(DashboardElement$Flow$Table
-                        .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId()));
-
-        List<DashboardElement$Flow> elementFlows = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(combinedCondition)
-                .queryList();
-
-        // converting flow models to Dashboard
-        return DashboardElement$Flow.toModels(elementFlows);
-    }
-
-    @Override
-    public List<DashboardElement> filter(DashboardItem dashboardItem, Action action) {
-        if (action == null) {
-            throw new IllegalArgumentException("Please, provide Action");
-        }
-
-        List<DashboardElement$Flow> elementFlows = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(Condition.CombinedCondition
-                        .begin(Condition.column(DashboardElement$Flow$Table
-                                .ACTION).isNot(action.toString()))
-                        .and(Condition.column(DashboardElement$Flow$Table
-                                .DASHBOARDITEM_DASHBOARDITEM).is(dashboardItem.getId())))
-                .queryList();
-
-        // converting flow models to Dashboard
-        return DashboardElement$Flow.toModels(elementFlows);
-    }
-
-    @Override
-    public List<DashboardElement> filter(Action action) {
-        if (action == null) {
-            throw new IllegalArgumentException("Please, provide Action");
-        }
-
-        List<DashboardElement$Flow> elementFlows = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(Condition.column(DashboardElement$Flow$Table
-                        .ACTION).isNot(action.toString()))
-                .queryList();
-
-        // converting flow models to Dashboard
-        return DashboardElement$Flow.toModels(elementFlows);
-    } */
-
-    /* private static Condition.CombinedCondition buildCombinedCondition(List<Action> actions) {
-        Condition.CombinedCondition combinedCondition = null;
-        for (Action action : actions) {
-            if (combinedCondition == null) {
-                combinedCondition = Condition.CombinedCondition.begin(isState(action));
-            } else {
-                combinedCondition = combinedCondition.or(isState(action));
-            }
-        }
-        return combinedCondition;
-    } */
-
-    /* private static Condition isState(Action action) {
-        return Condition.column(DashboardElement$Flow$Table
-                .ACTION).is(action.toString());
-    } */
 }

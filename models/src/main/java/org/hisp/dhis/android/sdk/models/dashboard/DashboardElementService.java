@@ -115,4 +115,21 @@ public class DashboardElementService implements IDashboardElementService {
 
         return dashboardElements;
     }
+
+    @Override
+    public List<DashboardElement> query() {
+        List<DashboardElement> elements = dashboardElementStore.query();
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
+
+        List<DashboardElement> dashboardElements = new ArrayList<>();
+        for (DashboardElement dashboardElement : elements) {
+            Action action = actionMap.get(dashboardElement.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardElements.add(dashboardElement);
+            }
+        }
+
+        return dashboardElements;
+    }
 }

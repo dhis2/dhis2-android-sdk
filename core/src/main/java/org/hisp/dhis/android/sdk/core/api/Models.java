@@ -110,7 +110,7 @@ import org.hisp.dhis.android.sdk.models.trackedentityinstance.ITrackedEntityInst
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
-public final class Models {
+final class Models {
     private static Models models;
 
     // Meta data store objects

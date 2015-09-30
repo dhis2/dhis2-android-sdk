@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface IDashboardItemContentService extends IService {
 
+    DashboardItemContent query(long id);
+
     List<DashboardItemContent> query();
 
     List<DashboardItemContent> query(List<String> types);

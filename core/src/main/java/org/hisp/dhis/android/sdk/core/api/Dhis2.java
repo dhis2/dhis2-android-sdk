@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
@@ -189,6 +190,10 @@ public final class Dhis2 {
 
     public static IDashboardElementService dashboardElements() {
         return Services.dashboardElements();
+    }
+
+    public static IDashboardItemContentService dashboardItemContents() {
+        return Services.dashboardItemContents();
     }
 
     public static InterpretationScope interpretations() {

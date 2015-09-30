@@ -2,14 +2,16 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 import java.util.List;
 
-/**
- * Created by arazabishov on 9/30/15.
- */
 public class DashboardContentService implements IDashboardItemContentService {
     private final IDashboardItemContentStore mDashboardItemContentStore;
 
     public DashboardContentService(IDashboardItemContentStore mDashboardItemContentStore) {
         this.mDashboardItemContentStore = mDashboardItemContentStore;
+    }
+
+    @Override
+    public DashboardItemContent query(long id) {
+        return mDashboardItemContentStore.query(id);
     }
 
     @Override

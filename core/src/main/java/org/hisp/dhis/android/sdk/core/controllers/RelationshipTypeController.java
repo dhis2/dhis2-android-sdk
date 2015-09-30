@@ -74,9 +74,9 @@ public final class RelationshipTypeController extends ResourceController<Relatio
         //merging updated items with persisted items, and removing ones not present in server.
         List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
                 merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
-                        query());
+                        queryAll());
         saveResourceDataFromServer(resource, mRelationshipTypeStore,
-                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.query(),
+                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll(),
                 serverTime);
     }
 

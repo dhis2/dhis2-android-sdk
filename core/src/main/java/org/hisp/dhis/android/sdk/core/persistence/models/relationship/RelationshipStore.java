@@ -71,7 +71,7 @@ public final class RelationshipStore implements IRelationshipStore {
     }
 
     @Override
-    public List<Relationship> query() {
+    public List<Relationship> queryAll() {
         List<Relationship$Flow> relationshipFlow = new Select()
                 .from(Relationship$Flow.class)
                 .queryList();

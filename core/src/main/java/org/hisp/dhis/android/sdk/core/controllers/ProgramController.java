@@ -104,7 +104,7 @@ public final class ProgramController extends ResourceController<Program> impleme
         for(Program program : allProgramsOnServer) {
             programsOnServerMap.put(program.getUId(), program);
         }
-        for(Program persistedProgram : mProgramStore.query()) {
+        for(Program persistedProgram : mProgramStore.queryAll()) {
             if(!programsOnServerMap.containsKey(persistedProgram.getUId())) {
                 operations.addAll(genereDeleteProgramDbOperations(persistedProgram, true));
             }
@@ -133,7 +133,7 @@ public final class ProgramController extends ResourceController<Program> impleme
             getProgramDataFromServer(programUidToLoad);
         }
         //deleting previously loaded programs that are removed from server
-        List<Program> persistedPrograms = mProgramStore.query();
+        List<Program> persistedPrograms = mProgramStore.queryAll();
         for(Program persistedProgram : persistedPrograms) {
             if(!existingProgramUidsToLoad.contains(persistedProgram.getUId())) {
                 genereDeleteProgramDbOperations(persistedProgram, true);
@@ -170,7 +170,7 @@ public final class ProgramController extends ResourceController<Program> impleme
          * ProgramStageSections
          * ProgramIndicators
          */
-        Program persistedProgram = mProgramStore.query(updatedProgram.getUId());
+        Program persistedProgram = mProgramStore.queryByUid(updatedProgram.getUId());
         if (persistedProgram != null) {
             updatedProgram.setId(persistedProgram.getId());
             operations.addAll(genereDeleteProgramDbOperations(persistedProgram, false));

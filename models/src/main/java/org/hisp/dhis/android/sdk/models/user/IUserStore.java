@@ -31,5 +31,5 @@ package org.hisp.dhis.android.sdk.models.user;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 
 public interface IUserStore extends IIdentifiableObjectStore<User> {
-    User query(String uid);
+    User queryByUid(String uid);
 }

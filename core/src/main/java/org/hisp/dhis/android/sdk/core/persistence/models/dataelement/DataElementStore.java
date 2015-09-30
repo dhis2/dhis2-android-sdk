@@ -44,7 +44,7 @@ public final class DataElementStore implements IIdentifiableObjectStore<DataElem
     }
 
     @Override
-    public List<DataElement> query() {
+    public List<DataElement> queryAll() {
         List<DataElement$Flow> dataElementFlows = new Select()
                 .from(DataElement$Flow.class)
                 .queryList();
@@ -52,7 +52,7 @@ public final class DataElementStore implements IIdentifiableObjectStore<DataElem
     }
 
     @Override
-    public DataElement query(long id) {
+    public DataElement queryById(long id) {
         DataElement$Flow dataElementFlow = new Select()
                 .from(DataElement$Flow.class)
                 .where(Condition.column(DataElement$Flow$Table.ID).is(id))
@@ -61,7 +61,7 @@ public final class DataElementStore implements IIdentifiableObjectStore<DataElem
     }
 
     @Override
-    public DataElement query(String uid) {
+    public DataElement queryByUid(String uid) {
         DataElement$Flow dataElementFlow = new Select()
                 .from(DataElement$Flow.class)
                 .where(Condition.column(DataElement$Flow$Table.UID).is(uid))

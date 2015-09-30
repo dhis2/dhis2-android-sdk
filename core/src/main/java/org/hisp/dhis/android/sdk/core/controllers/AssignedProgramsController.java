@@ -150,8 +150,8 @@ public final class AssignedProgramsController extends ResourceController<Program
                 organisationUnitController.sync(organisationUnits);
             }
         }
-        organisationUnits = organisationUnitStore.query();
-        List<Program> programs = programStore.query();
+        organisationUnits = organisationUnitStore.queryAll();
+        List<Program> programs = programStore.queryAll();
         Map<String, OrganisationUnit> organisationUnitMap = toMap(organisationUnits);
         for (Program program : programs) {
             List<OrganisationUnit> organisationUnitsAssigned = new ArrayList<>();

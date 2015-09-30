@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
@@ -133,7 +132,7 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public Dashboard query(long id) {
-        Dashboard dashboard = dashboardStore.query(id);
+        Dashboard dashboard = dashboardStore.queryById(id);
         Action action = stateStore.queryAction(dashboard);
 
         if (!Action.TO_DELETE.equals(action)) {

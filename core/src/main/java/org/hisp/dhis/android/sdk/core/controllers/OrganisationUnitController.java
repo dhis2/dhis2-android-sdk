@@ -88,7 +88,7 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
             first = last;
             iteration++;
         }
-        List<OrganisationUnit> persistedOrganisationUnits = mOrganisationUnitStore.query();
+        List<OrganisationUnit> persistedOrganisationUnits = mOrganisationUnitStore.queryAll();
         Map<String, OrganisationUnit> persistedOrganisationUnitsMap = toMap(persistedOrganisationUnits);
         Map<String, OrganisationUnit> updatedOrganisationUnitsMap = toMap(updatedOrganisationUnits);
         for(OrganisationUnit persistedOrganisationUnit : persistedOrganisationUnits) {
@@ -112,7 +112,7 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
     }
 
     private void getOrganisationUnitsFromServer() {
-        getOrganisationUnitsFromServer(mOrganisationUnitStore.query());
+        getOrganisationUnitsFromServer(mOrganisationUnitStore.queryAll());
     }
 
     private String getOrganisationUnitFilterIdString(List<OrganisationUnit> organisationUnits) {

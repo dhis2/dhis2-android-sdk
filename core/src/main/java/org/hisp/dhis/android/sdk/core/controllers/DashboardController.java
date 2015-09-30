@@ -545,7 +545,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             }
 
             /* List<DashboardElement> elements =
-                    dashboardElementStore.query(dashboardItem, Action.TO_POST); */
+                    dashboardElementStore.queryById(dashboardItem, Action.TO_POST); */
             /* List<DashboardElement> elements =
                     getDashboardElements(dashboardItem, Action.TO_POST); */
             List<DashboardElement> elements = getDashboardElementMap(true)
@@ -752,7 +752,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 updateApiResources(lastUpdated);
         Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(dashboardItemContentStore,
-                dashboardItemContentStore.query(), dashboardItemContent));
+                dashboardItemContentStore.queryAll(), dashboardItemContent));
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.DASHBOARDS_CONTENT, serverDateTime);

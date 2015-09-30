@@ -11,12 +11,17 @@ public class DashboardContentService implements IDashboardItemContentService {
 
     @Override
     public DashboardItemContent query(long id) {
-        return mDashboardItemContentStore.query(id);
+        return mDashboardItemContentStore.queryById(id);
+    }
+
+    @Override
+    public DashboardItemContent query(String uid) {
+        return mDashboardItemContentStore.queryByUid(uid);
     }
 
     @Override
     public List<DashboardItemContent> query() {
-        return mDashboardItemContentStore.query();
+        return mDashboardItemContentStore.queryAll();
     }
 
     @Override

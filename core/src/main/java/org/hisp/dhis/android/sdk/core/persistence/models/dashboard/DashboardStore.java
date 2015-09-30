@@ -95,14 +95,14 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
     }
 
     @Override
-    public List<Dashboard> query() {
+    public List<Dashboard> queryAll() {
         List<Dashboard$Flow> dashboardFlows =
                 new Select().from(Dashboard$Flow.class).queryList();
         return Dashboard$Flow.toModels(dashboardFlows);
     }
 
     @Override
-    public Dashboard query(long id) {
+    public Dashboard queryById(long id) {
         Dashboard$Flow dashboardFlow = new Select()
                 .from(Dashboard$Flow.class)
                 .where(Condition.column(Dashboard$Flow$Table
@@ -112,7 +112,7 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
     }
 
     @Override
-    public Dashboard query(String uid) {
+    public Dashboard queryByUid(String uid) {
         Dashboard$Flow dashboardFlow = new Select()
                 .from(Dashboard$Flow.class)
                 .where(Condition.column(Dashboard$Flow$Table
@@ -122,12 +122,12 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
     }
 
     /* @Override
-    public List<Dashboard> query(Action... actions)  {
-        return query(Arrays.asList(actions));
+    public List<Dashboard> queryById(Action... actions)  {
+        return queryById(Arrays.asList(actions));
     }
 
     @Override
-    public List<Dashboard> query(List<Action> actions) {
+    public List<Dashboard> queryById(List<Action> actions) {
         if (actions == null || actions.isEmpty()) {
             throw new IllegalArgumentException("Please, provide at least one Action");
         }

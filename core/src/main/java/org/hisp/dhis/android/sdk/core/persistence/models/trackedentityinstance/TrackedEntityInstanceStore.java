@@ -80,7 +80,7 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     }
 
     @Override
-    public List<TrackedEntityInstance> query() {
+    public List<TrackedEntityInstance> queryAll() {
         List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityInstance$Flow.class)
                 .queryList();

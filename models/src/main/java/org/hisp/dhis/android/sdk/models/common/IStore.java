@@ -41,5 +41,5 @@ public interface IStore<T> {
 
     void delete(T object);
 
-    List<T> query();
+    List<T> queryAll();
 }

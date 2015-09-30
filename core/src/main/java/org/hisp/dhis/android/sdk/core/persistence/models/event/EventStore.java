@@ -80,7 +80,7 @@ public final class EventStore implements IEventStore {
     }
 
     @Override
-    public List<Event> query() {
+    public List<Event> queryAll() {
         List<Event$Flow> eventFlows = new Select()
                 .from(Event$Flow.class)
                 .queryList();

@@ -74,16 +74,16 @@ public final class OptionSetController extends ResourceController<OptionSet> {
                 .getOptionSets(getAllFieldsQueryMap(lastUpdated)), OPTIONSETS);
         linkOptionsWithOptionSets(updatedOptionSets);
         List<OptionSet> existingPersistedAndUpdatedOptionSets =
-                merge(allOptionSets, updatedOptionSets, mOptionSetStore.query());
+                merge(allOptionSets, updatedOptionSets, mOptionSetStore.queryAll());
 
         List<IDbOperation> operations = new ArrayList<>();
-        List<OptionSet> persistedOptionSets = mOptionSetStore.query();
+        List<OptionSet> persistedOptionSets = mOptionSetStore.queryAll();
         if (existingPersistedAndUpdatedOptionSets != null && !existingPersistedAndUpdatedOptionSets.isEmpty()) {
             for (OptionSet optionSet: existingPersistedAndUpdatedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
                 }
-                OptionSet persistedOptionSet = mOptionSetStore.query(optionSet.getUId());
+                OptionSet persistedOptionSet = mOptionSetStore.queryByUid(optionSet.getUId());
                 List<Option> persistedOptions;
                 if(persistedOptionSet != null) {
                     persistedOptions = persistedOptionSet.getOptions();

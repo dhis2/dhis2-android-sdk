@@ -375,7 +375,7 @@ public final class InterpretationController implements IDataController<Interpret
 
         Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(
-                mUserStore, mUserStore.query(), users));
+                mUserStore, mUserStore.queryAll(), users));
         operations.addAll(createOperations(
                 mInterpretationStore.filter(Action.TO_POST), interpretations));
         operations.addAll(DbUtils.createOperations(
@@ -499,7 +499,7 @@ public final class InterpretationController implements IDataController<Interpret
                                                  List<InterpretationComment> comments) {
         Map<String, User> users = new HashMap<>();
         UserAccount currentUserAccount = mUserAccountService.getCurrentUserAccount();
-        User currentUser = mUserStore.query(currentUserAccount.getUId());
+        User currentUser = mUserStore.queryByUid(currentUserAccount.getUId());
         if (currentUser == null) {
             currentUser = mUserAccountService.toUser(currentUserAccount);
         }

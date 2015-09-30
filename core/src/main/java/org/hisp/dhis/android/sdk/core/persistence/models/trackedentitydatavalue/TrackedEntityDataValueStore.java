@@ -72,7 +72,7 @@ public final class TrackedEntityDataValueStore implements ITrackedEntityDataValu
     }
 
     @Override
-    public List<TrackedEntityDataValue> query() {
+    public List<TrackedEntityDataValue> queryAll() {
         List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlow = new Select()
                 .from(TrackedEntityDataValue$Flow.class)
                 .queryList();

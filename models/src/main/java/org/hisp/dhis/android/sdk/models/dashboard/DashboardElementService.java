@@ -118,7 +118,7 @@ public class DashboardElementService implements IDashboardElementService {
 
     @Override
     public List<DashboardElement> query() {
-        List<DashboardElement> elements = dashboardElementStore.query();
+        List<DashboardElement> elements = dashboardElementStore.queryAll();
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         List<DashboardElement> dashboardElements = new ArrayList<>();

@@ -75,7 +75,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public List<DashboardItemContent> query() {
+    public List<DashboardItemContent> queryAll() {
         List<DashboardItemContent$Flow> flows = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .queryList();
@@ -83,7 +83,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public DashboardItemContent query(long id) {
+    public DashboardItemContent queryById(long id) {
         DashboardItemContent$Flow dashboardItemContentFlow = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .where(column(DashboardItemContent$Flow$Table
@@ -93,7 +93,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public DashboardItemContent query(String uid) {
+    public DashboardItemContent queryByUid(String uid) {
         DashboardItemContent$Flow dashboardItemContentFlow = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .where(column(DashboardItemContent$Flow$Table

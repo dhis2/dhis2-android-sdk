@@ -62,16 +62,32 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
 
     @Override
     public void update(TrackedEntityInstance object) {
-        make sure uid is not overwritten!!
+        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
+        if(object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
+            TrackedEntityInstance$Flow persisted = new Select()
+                    .from(TrackedEntityInstance$Flow.class).where(Condition
+                            .column(TrackedEntityInstance$Flow$Table.ID).is(object.getId()))
+                    .querySingle();
+            if(persisted != null) {
+                object.setTrackedEntityInstanceUid(persisted.getTrackedEntityInstanceUid());
+            }
+        }
         TrackedEntityInstance$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(TrackedEntityInstance object) {
-        make sure uid is not overwritten!!
-        TrackedEntityInstance$Flow trackedEntityInstanceFlow =
-                TrackedEntityInstance$Flow.fromModel(object);
-        trackedEntityInstanceFlow.save();
+        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
+        if(object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
+            TrackedEntityInstance$Flow persisted = new Select()
+                    .from(TrackedEntityInstance$Flow.class).where(Condition
+                            .column(TrackedEntityInstance$Flow$Table.ID).is(object.getId()))
+                    .querySingle();
+            if(persisted != null) {
+                object.setTrackedEntityInstanceUid(persisted.getTrackedEntityInstanceUid());
+            }
+        }
+        TrackedEntityInstance$Flow.fromModel(object).update();
     }
 
     @Override

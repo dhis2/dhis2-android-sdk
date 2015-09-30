@@ -30,6 +30,9 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -46,6 +49,8 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class Enrollment$Flow extends BaseModel {
 
+    final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
+
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
@@ -58,10 +63,12 @@ public final class Enrollment$Flow extends BaseModel {
     String orgUnit;
 
     @Column
-    String trackedEntityInstanceUid;
-
-    @Column
-    long trackedEntityInstanceId;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    TrackedEntityInstance$Flow trackedEntityInstance;
 
     @Column
     String program;
@@ -93,9 +100,6 @@ public final class Enrollment$Flow extends BaseModel {
     @Column
     Access access;
 
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
-
     List<Event$Flow> events;
 
     List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValues;
@@ -124,20 +128,12 @@ public final class Enrollment$Flow extends BaseModel {
         this.orgUnit = orgUnit;
     }
 
-    public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstanceUid;
+    public TrackedEntityInstance$Flow getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstanceUid = trackedEntityInstanceUid;
-    }
-
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
-    }
-
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    public void setTrackedEntityInstance(TrackedEntityInstance$Flow trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     public String getProgram() {
@@ -220,14 +216,6 @@ public final class Enrollment$Flow extends BaseModel {
         this.access = access;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
-    }
-
     public List<Event$Flow> getEvents() {
         return events;
     }
@@ -257,8 +245,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setId(enrollmentFlow.getId());
         enrollment.setEnrollmentUid(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
-        enrollment.setTrackedEntityInstanceId(enrollmentFlow.getTrackedEntityInstanceId());
-        enrollment.setTrackedEntityInstanceUid(enrollmentFlow.getTrackedEntityInstanceUid());
+        enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
         enrollment.setProgram(enrollmentFlow.getProgram());
         enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
         enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());
@@ -269,7 +256,6 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setCreated(enrollmentFlow.getCreated());
         enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
         enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setAction(enrollmentFlow.getAction());
         enrollment.setEvents(Event$Flow.toModels(enrollmentFlow.getEvents()));
         enrollment.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.toModels(enrollmentFlow.getTrackedEntityAttributeValues()));
         return enrollment;
@@ -284,8 +270,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getEnrollmentUid());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
-        enrollmentFlow.setTrackedEntityInstanceId(enrollment.getTrackedEntityInstanceId());
-        enrollmentFlow.setTrackedEntityInstanceUid(enrollment.getTrackedEntityInstanceUid());
+        enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
         enrollmentFlow.setProgram(enrollment.getProgram());
         enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
         enrollmentFlow.setDateOfIncident(enrollment.getDateOfIncident());
@@ -296,7 +281,6 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setCreated(enrollment.getCreated());
         enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
         enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setAction(enrollment.getAction());
         enrollmentFlow.setEvents(Event$Flow.fromModels(enrollment.getEvents()));
         enrollmentFlow.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.fromModels(enrollment.getTrackedEntityAttributeValues()));
         return enrollmentFlow;

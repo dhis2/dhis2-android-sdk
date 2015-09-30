@@ -38,11 +38,15 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.state.State;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +158,7 @@ public final class State$Flow extends BaseModel {
         return stateFlows;
     }
 
-    public static Class<? extends IdentifiableObject> getItemClass(String type) {
+    public static Class<? extends IModel> getItemClass(String type) {
         isNull(type, "type must not be null");
 
         if (Dashboard.class.getSimpleName().equals(type)) {
@@ -167,6 +171,18 @@ public final class State$Flow extends BaseModel {
 
         if (DashboardElement.class.getSimpleName().equals(type)) {
             return DashboardElement.class;
+        }
+
+        if (TrackedEntityInstance.class.getSimpleName().equals(type)) {
+            return TrackedEntityInstance.class;
+        }
+
+        if (Enrollment.class.getSimpleName().equals(type)) {
+            return Enrollment.class;
+        }
+
+        if (Event.class.getSimpleName().equals(type)) {
+            return Event.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + type);
@@ -185,6 +201,18 @@ public final class State$Flow extends BaseModel {
 
         if (DashboardElement.class.equals(objectClass)) {
             return DashboardElement$Flow.class;
+        }
+
+        if (TrackedEntityInstance.class.equals(objectClass)) {
+            return TrackedEntityInstance$Flow.class;
+        }
+
+        if (Enrollment.class.equals(objectClass)) {
+            return Enrollment$Flow.class;
+        }
+
+        if (Event.class.equals(objectClass)) {
+            return Event$Flow.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());

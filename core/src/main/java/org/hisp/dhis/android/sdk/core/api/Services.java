@@ -31,10 +31,12 @@ package org.hisp.dhis.android.sdk.core.api;
 import android.content.Context;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
+import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardService;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentService;
@@ -53,6 +55,7 @@ final class Services {
     private final IDashboardService dashboardService;
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
+    private final IDashboardItemContentService dashboardItemContentService;
 
     private final IInterpretationService interpretationsService;
     private final IInterpretationElementService interpretationElementService;
@@ -70,6 +73,7 @@ final class Services {
         dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService, stateStore);
         dashboardService = new DashboardService(Models.dashboards(), Models.dashboardItems(),
                 Models.dashboardElements(), dashboardItemService, dashboardElementService, stateStore);
+        dashboardItemContentService = new DashboardContentService(Models.dashboardItemContent());
 
         interpretationElementService = new InterpretationElementService();
         interpretationCommentService = new InterpretationCommentService(Models.interpretationComments());
@@ -102,6 +106,10 @@ final class Services {
 
     public static IDashboardElementService dashboardElements() {
         return getInstance().dashboardElementService;
+    }
+
+    public static IDashboardItemContentService dashboardItemContents() {
+        return getInstance().dashboardItemContentService;
     }
 
     public static IInterpretationService interpretations() {

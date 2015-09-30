@@ -91,7 +91,7 @@ public class DatePickerRow extends Row {
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, (DataValue) mValue);
+        holder.updateViews(mLabel, mValue);
 
         if(isDetailedInfoButtonHidden())
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -128,7 +128,7 @@ public class DatePickerRow extends Row {
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
-        public void updateViews(String label, DataValue baseValue) {
+        public void updateViews(String label, BaseValue baseValue) {
             dateSetListener.setBaseValue(baseValue);
             clearButtonListener.setBaseValue(baseValue);
 
@@ -159,13 +159,13 @@ public class DatePickerRow extends Row {
 
     private static class ClearButtonListener implements OnClickListener {
         private final TextView textView;
-        private DataValue value;
+        private BaseValue value;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(DataValue value) {
+        public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 
@@ -181,13 +181,13 @@ public class DatePickerRow extends Row {
     private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
-        private DataValue value;
+        private BaseValue value;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(DataValue value) {
+        public void setBaseValue(BaseValue value) {
             this.value = value;
         }
 

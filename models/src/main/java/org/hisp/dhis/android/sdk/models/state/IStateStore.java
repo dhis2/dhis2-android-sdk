@@ -42,71 +42,63 @@ public interface IStateStore extends IStore<State> {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param object IdentifiableObject for which the action should be inserted.
+     * @param object IModel for which the action should be inserted.
      * @param action Action to insert.
      */
-    <T extends IdentifiableObject> void insert(T object, Action action);
+    <T extends IModel> void insert(T object, Action action);
 
     /**
-     * @param object IdentifiableObject for which the action should be updated.
+     * @param object IModel for which the action should be updated.
      * @param action Action to update.
      */
-    <T extends IdentifiableObject> void update(T object, Action action);
+    <T extends IModel> void update(T object, Action action);
 
     /**
-     * @param object IdentifiableObject for which the action should be saved.
+     * @param object IModel for which the action should be saved.
      * @param action Action to save.
      */
-    <T extends IdentifiableObject> void save(T object, Action action);
+    <T extends IModel> void save(T object, Action action);
 
     /**
-     * @param object IdentifiableObject for which the action should be deleted.
+     * @param object IModel for which the action should be deleted.
      */
-    <T extends IdentifiableObject> void delete(T object);
+    <T extends IModel> void delete(T object);
 
     /**
-     * @param object IdentifiableObject which state the method returns.
+     * @param object IModel which state the method returns.
      * @return State of given object.
      */
-    <T extends IdentifiableObject> State query(T object);
+    <T extends IModel> State query(T object);
 
     /**
-     * @param object IdentifiableObject which action should be returned.
+     * @param object IModel which action should be returned.
      * @return State of given object.
      */
-    <T extends IdentifiableObject> Action queryAction(T object);
+    <T extends IModel> Action queryAction(T object);
 
     /**
      * @param clazz Class for which we want to retrieve all state models.
      * @return List of states for given class.
      */
-    <T extends IdentifiableObject> List<State> query(Class<T> clazz);
+    <T extends IModel> List<State> query(Class<T> clazz);
 
     /**
      * @param clazz Class for which we want to retrieve actions.
      * @return Map where key is id and the value is action for model of given Class.
      */
-    <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz);
+    <T extends IModel> Map<Long, Action> queryMap(Class<T> clazz);
 
     /**
      * @param clazz  Class, instances of which we want to retrieve from database.
      * @param action Action by which we want to filter resulting payload from database.
      * @return List of Class typed instances which State does not contain given action.
      */
-    <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action);
+    <T extends IModel> List<T> filterByAction(Class<T> clazz, Action action);
 
     /**
      * @param clazz  Class, instances of which we want to retrieve from database.
      * @param action Action which we want to have in resulting payload from database.
      * @return List of Class typed instances which State contain given action.
      */
-    <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action);
-
-    <T extends IModel> State query(T object);
-
-    <T extends IModel> Action queryAction(T object);
-
-    <T extends IModel> void delete(T object);
-
-    <T extends IModel> void save(T object, Action action);
+    <T extends IModel> List<T> queryWithAction(Class<T> clazz, Action action);
 }

@@ -142,7 +142,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> void insert(T object, Action action) {
+    public <T extends IModel> void insert(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -157,7 +157,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> void update(T object, Action action) {
+    public <T extends IModel> void update(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -172,7 +172,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> void save(T object, Action action) {
+    public <T extends IModel> void save(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -188,7 +188,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> void delete(T object) {
+    public <T extends IModel> void delete(T object) {
         isNull(object, "State object must not be null");
 
         State state = query(object);
@@ -205,7 +205,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> State query(T object) {
+    public <T extends IModel> State query(T object) {
         isNull(object, "State object must not be null");
 
         State$Flow stateFlow = new Select()
@@ -224,7 +224,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> Action queryAction(T object) {
+    public <T extends IModel> Action queryAction(T object) {
         isNull(object, "State object must not be null");
 
         State state = query(object);
@@ -240,7 +240,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> List<T> filterByAction(Class<T> clazz, Action action) {
+    public <T extends IModel> List<T> filterByAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, false);
     }
 
@@ -248,7 +248,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action) {
+    public <T extends IModel> List<T> queryWithAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, true);
     }
 
@@ -256,7 +256,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> List<State> query(Class<T> clazz) {
+    public <T extends IModel> List<State> query(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -273,7 +273,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public <T extends IdentifiableObject> Map<Long, Action> queryMap(Class<T> clazz) {
+    public <T extends IModel> Map<Long, Action> queryMap(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -291,7 +291,7 @@ public class StateStore implements IStateStore {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
+    private <T extends IModel> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
         /* From<? extends Model> from = new Select()

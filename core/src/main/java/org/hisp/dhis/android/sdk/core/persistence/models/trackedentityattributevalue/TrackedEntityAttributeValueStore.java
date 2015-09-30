@@ -79,7 +79,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
     }
 
     @Override
-    public List<TrackedEntityAttributeValue> query() {
+    public List<TrackedEntityAttributeValue> queryAll() {
         List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlow = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .queryList();
@@ -118,7 +118,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
         if(enrollment == null) {
             return null;
         }
-        Program program = programStore.query(enrollment.getProgram());
+        Program program = programStore.queryByUid(enrollment.getProgram());
         List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
                 program.getProgramTrackedEntityAttributes();
         if(programTrackedEntityAttributes == null) {

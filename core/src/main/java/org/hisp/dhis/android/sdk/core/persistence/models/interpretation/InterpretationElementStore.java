@@ -71,7 +71,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
-    public List<InterpretationElement> query() {
+    public List<InterpretationElement> queryAll() {
         List<InterpretationElement$Flow> elementFlows = new Select()
                 .from(InterpretationElement$Flow.class)
                 .queryList();
@@ -79,7 +79,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
-    public InterpretationElement query(long id) {
+    public InterpretationElement queryById(long id) {
         InterpretationElement$Flow elementFlow = new Select()
                 .from(InterpretationElement$Flow.class)
                 .where(Condition.column(InterpretationElement$Flow$Table.ID).is(id))
@@ -88,7 +88,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
-    public InterpretationElement query(String uid) {
+    public InterpretationElement queryByUid(String uid) {
         InterpretationElement$Flow elementFlow = new Select()
                 .from(InterpretationElement$Flow.class)
                 .where(Condition.column(InterpretationElement$Flow$Table.UID).is(uid))

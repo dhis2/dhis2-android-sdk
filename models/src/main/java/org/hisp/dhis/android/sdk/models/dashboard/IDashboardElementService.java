@@ -39,4 +39,6 @@ public interface IDashboardElementService extends IService {
     void remove(DashboardElement dashboardElement);
 
     List<DashboardElement> query(DashboardItem dashboardItem);
+
+    List<DashboardElement> query();
 }

@@ -73,7 +73,7 @@ public final class TrackedEntityAttributeStore implements IIdentifiableObjectSto
     }
 
     @Override
-    public List<TrackedEntityAttribute> query() {
+    public List<TrackedEntityAttribute> queryAll() {
         List<TrackedEntityAttribute$Flow> trackedEntityAttributeFlows = new Select()
                 .from(TrackedEntityAttribute$Flow.class)
                 .queryList();
@@ -81,7 +81,7 @@ public final class TrackedEntityAttributeStore implements IIdentifiableObjectSto
     }
 
     @Override
-    public TrackedEntityAttribute query(long id) {
+    public TrackedEntityAttribute queryById(long id) {
         TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new Select()
                 .from(TrackedEntityAttribute$Flow.class)
                 .where(Condition.column(TrackedEntityAttribute$Flow$Table.ID).is(id))
@@ -90,7 +90,7 @@ public final class TrackedEntityAttributeStore implements IIdentifiableObjectSto
     }
 
     @Override
-    public TrackedEntityAttribute query(String uid) {
+    public TrackedEntityAttribute queryByUid(String uid) {
         TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new Select()
                 .from(TrackedEntityAttribute$Flow.class)
                 .where(Condition.column(TrackedEntityAttribute$Flow$Table.UID).is(uid))

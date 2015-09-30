@@ -130,7 +130,7 @@ public class StateStore implements IStateStore {
      * {@inheritDoc}
      */
     @Override
-    public List<State> query() {
+    public List<State> queryAll() {
         List<State$Flow> statesFlows = new Select()
                 .from(State$Flow.class)
                 .queryList();

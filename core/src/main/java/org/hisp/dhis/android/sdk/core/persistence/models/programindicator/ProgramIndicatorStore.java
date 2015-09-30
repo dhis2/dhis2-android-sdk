@@ -74,7 +74,7 @@ public final class ProgramIndicatorStore implements IProgramIndicatorStore {
     }
 
     @Override
-    public List<ProgramIndicator> query() {
+    public List<ProgramIndicator> queryAll() {
         List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
                 .from(ProgramIndicator$Flow.class)
                 .queryList();
@@ -82,7 +82,7 @@ public final class ProgramIndicatorStore implements IProgramIndicatorStore {
     }
 
     @Override
-    public ProgramIndicator query(long id) {
+    public ProgramIndicator queryById(long id) {
         ProgramIndicator$Flow programIndicatorFlow = new Select()
                 .from(ProgramIndicator$Flow.class)
                 .where(Condition.column(ProgramIndicator$Flow$Table.ID).is(id))
@@ -91,7 +91,7 @@ public final class ProgramIndicatorStore implements IProgramIndicatorStore {
     }
 
     @Override
-    public ProgramIndicator query(String uid) {
+    public ProgramIndicator queryByUid(String uid) {
         ProgramIndicator$Flow programIndicatorFlow = new Select()
                 .from(ProgramIndicator$Flow.class)
                 .where(Condition.column(ProgramIndicator$Flow$Table.UID).is(uid))

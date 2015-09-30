@@ -96,7 +96,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public List<Enrollment> query() {
+    public List<Enrollment> queryAll() {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class)
                 .queryList();

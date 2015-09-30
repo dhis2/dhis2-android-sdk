@@ -30,21 +30,24 @@ package org.hisp.dhis.android.sdk.core.controllers;
 
 import android.net.Uri;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
+import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
+import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
+import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
+import org.hisp.dhis.android.sdk.models.user.IUserStore;
 import org.hisp.dhis.android.sdk.models.user.User;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
@@ -72,11 +75,23 @@ public final class InterpretationController implements IDataController<Interpret
     private final IInterpretationService mInterpretationService;
     private final IUserAccountService mUserAccountService;
 
+    private final IInterpretationStore mInterpretationStore;
+    private final IInterpretationElementStore mInterpretationElementStore;
+    private final IInterpretationCommentStore mInterpretationCommentStore;
+
+    private final IUserStore mUserStore;
+
     public InterpretationController(IDhisApi dhisApi, IInterpretationService interpretationsService,
-                                    IUserAccountService userAccountService) {
+                                    IUserAccountService userAccountService, IInterpretationStore mInterpretationStore,
+                                    IInterpretationElementStore mInterpretationElementStore,
+                                    IInterpretationCommentStore mInterpretationCommentStore, IUserStore mUserStore) {
         mDhisApi = dhisApi;
-        mInterpretationService = interpretationsService;
-        mUserAccountService = userAccountService;
+        this.mInterpretationService = interpretationsService;
+        this.mUserAccountService = userAccountService;
+        this.mInterpretationStore = mInterpretationStore;
+        this.mInterpretationElementStore = mInterpretationElementStore;
+        this.mInterpretationCommentStore = mInterpretationCommentStore;
+        this.mUserStore = mUserStore;
     }
 
     private void sendLocalChanges() throws APIException {
@@ -86,7 +101,7 @@ public final class InterpretationController implements IDataController<Interpret
 
     private void sendInterpretationChanges() throws APIException {
         List<Interpretation> interpretations =
-                Models.interpretations().filter(Action.SYNCED);
+                mInterpretationStore.filter(Action.SYNCED);
 
         if (interpretations == null || interpretations.isEmpty()) {
             return;
@@ -94,7 +109,7 @@ public final class InterpretationController implements IDataController<Interpret
 
         for (Interpretation interpretation : interpretations) {
             List<InterpretationElement> elements =
-                    Models.interpretationElements().query(interpretation);
+                    mInterpretationElementStore.query(interpretation);
             mInterpretationService.setInterpretationElements(interpretation, elements);
         }
 
@@ -145,12 +160,12 @@ public final class InterpretationController implements IDataController<Interpret
                     .getValue()).getLastPathSegment();
             interpretation.setUId(interpretationUid);
             interpretation.setAction(Action.SYNCED);
-            Models.interpretations().save(interpretation);
+            mInterpretationStore.save(interpretation);
 
             updateInterpretationTimeStamp(interpretation);
 
         } catch (APIException apiException) {
-            handleApiException(apiException, interpretation, Models.interpretations());
+            handleApiException(apiException, interpretation, mInterpretationStore);
         }
     }
 
@@ -160,11 +175,11 @@ public final class InterpretationController implements IDataController<Interpret
                     new TypedString(interpretation.getText()));
             interpretation.setAction(Action.SYNCED);
 
-            Models.interpretations().save(interpretation);
+            mInterpretationStore.save(interpretation);
 
             updateInterpretationTimeStamp(interpretation);
         } catch (APIException apiException) {
-            handleApiException(apiException, interpretation, Models.interpretations());
+            handleApiException(apiException, interpretation, mInterpretationStore);
         }
     }
 
@@ -172,15 +187,15 @@ public final class InterpretationController implements IDataController<Interpret
         try {
             mDhisApi.deleteInterpretation(interpretation.getUId());
 
-            Models.interpretations().delete(interpretation);
+            mInterpretationStore.delete(interpretation);
         } catch (APIException apiException) {
-            handleApiException(apiException, interpretation, Models.interpretations());
+            handleApiException(apiException, interpretation, mInterpretationStore);
         }
     }
 
     private void sendInterpretationCommentChanges() throws APIException {
         List<InterpretationComment> comments =
-                Models.interpretationComments().filter(Action.SYNCED);
+                mInterpretationCommentStore.filter(Action.SYNCED);
 
         if (comments == null || comments.isEmpty()) {
             return;
@@ -225,11 +240,11 @@ public final class InterpretationController implements IDataController<Interpret
                 comment.setUId(commentUid);
                 comment.setAction(Action.SYNCED);
 
-                Models.interpretations().save(interpretation);
+                mInterpretationStore.save(interpretation);
 
                 updateInterpretationCommentTimeStamp(comment);
             } catch (APIException apiException) {
-                handleApiException(apiException, comment, Models.interpretationComments());
+                handleApiException(apiException, comment, mInterpretationCommentStore);
             }
         }
     }
@@ -251,7 +266,7 @@ public final class InterpretationController implements IDataController<Interpret
 
                 comment.setAction(Action.SYNCED);
 
-                Models.interpretationComments().save(comment);
+                mInterpretationCommentStore.save(comment);
 
                 updateInterpretationTimeStamp(comment.getInterpretation());
             } catch (APIException apiException) {
@@ -282,11 +297,11 @@ public final class InterpretationController implements IDataController<Interpret
                 mDhisApi.deleteInterpretationComment(
                         interpretation.getUId(), comment.getUId());
 
-                Models.interpretationComments().delete(comment);
+                mInterpretationCommentStore.delete(comment);
 
                 updateInterpretationTimeStamp(comment.getInterpretation());
             } catch (APIException apiException) {
-                handleApiException(apiException, comment, Models.interpretationComments());
+                handleApiException(apiException, comment, mInterpretationCommentStore);
             }
         }
     }
@@ -309,9 +324,9 @@ public final class InterpretationController implements IDataController<Interpret
             interpretation.setCreated(updatedInterpretation.getCreated());
             interpretation.setLastUpdated(updatedInterpretation.getLastUpdated());
 
-            Models.interpretations().save(interpretation);
+            mInterpretationStore.save(interpretation);
         } catch (APIException apiException) {
-            handleApiException(apiException, interpretation, Models.interpretations());
+            handleApiException(apiException, interpretation, mInterpretationStore);
         }
     }
 
@@ -330,7 +345,7 @@ public final class InterpretationController implements IDataController<Interpret
             persistedInterpretation.setCreated(updatedInterpretation.getCreated());
             persistedInterpretation.setLastUpdated(updatedInterpretation.getLastUpdated());
 
-            Models.interpretations().save(persistedInterpretation);
+            mInterpretationStore.save(persistedInterpretation);
 
             // second, find comment which we have added recently and update its timestamp
             Map<String, InterpretationComment> updatedComments
@@ -342,7 +357,7 @@ public final class InterpretationController implements IDataController<Interpret
                 comment.setCreated(updatedComment.getCreated());
                 comment.setLastUpdated(updatedComment.getLastUpdated());
 
-                Models.interpretationComments().save(comment);
+                mInterpretationCommentStore.save(comment);
             }
         } catch (APIException apiException) {
             handleApiException(apiException);
@@ -360,11 +375,11 @@ public final class InterpretationController implements IDataController<Interpret
 
         Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(
-                Models.users(), Models.users().query(), users));
+                mUserStore, mUserStore.queryAll(), users));
         operations.addAll(createOperations(
-                Models.interpretations().filter(Action.TO_POST), interpretations));
+                mInterpretationStore.filter(Action.TO_POST), interpretations));
         operations.addAll(DbUtils.createOperations(
-                Models.interpretationComments(), Models.interpretationComments().filter(Action.TO_POST), comments));
+                mInterpretationCommentStore, mInterpretationCommentStore.filter(Action.TO_POST), comments));
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -451,16 +466,16 @@ public final class InterpretationController implements IDataController<Interpret
         }
 
         List<Interpretation> persistedInterpretations =
-                Models.interpretations().filter(Action.TO_POST);
+                mInterpretationStore.filter(Action.TO_POST);
         if (persistedInterpretations != null
                 && !persistedInterpretations.isEmpty()) {
             for (Interpretation interpretation : persistedInterpretations) {
                 List<InterpretationElement> elements =
-                        Models.interpretationElements().query(interpretation);
+                        mInterpretationElementStore.query(interpretation);
                 mInterpretationService.setInterpretationElements(interpretation, elements);
 
                 List<InterpretationComment> comments =
-                        Models.interpretationComments().filter(interpretation, Action.TO_POST);
+                        mInterpretationCommentStore.filter(interpretation, Action.TO_POST);
                 interpretation.setComments(comments);
             }
         }
@@ -484,7 +499,7 @@ public final class InterpretationController implements IDataController<Interpret
                                                  List<InterpretationComment> comments) {
         Map<String, User> users = new HashMap<>();
         UserAccount currentUserAccount = mUserAccountService.getCurrentUserAccount();
-        User currentUser = Models.users().query(currentUserAccount.getUId());
+        User currentUser = mUserStore.queryByUid(currentUserAccount.getUId());
         if (currentUser == null) {
             currentUser = mUserAccountService.toUser(currentUserAccount);
         }
@@ -530,13 +545,13 @@ public final class InterpretationController implements IDataController<Interpret
             Interpretation oldModel = oldModelsMap.get(oldModelKey);
 
             if (newModel == null) {
-                ops.add(DbOperation.with(Models.interpretations()).delete(oldModel));
+                ops.add(DbOperation.with(mInterpretationStore).delete(oldModel));
                 continue;
             }
 
             if (newModel.getLastUpdated().isAfter(oldModel.getLastUpdated())) {
                 newModel.setId(oldModel.getId());
-                ops.add(DbOperation.with(Models.interpretations()).update(newModel));
+                ops.add(DbOperation.with(mInterpretationStore).update(newModel));
             }
 
             newModelsMap.remove(oldModelKey);
@@ -546,12 +561,12 @@ public final class InterpretationController implements IDataController<Interpret
             Interpretation item = newModelsMap.get(newModelKey);
 
             // we also have to insert interpretation elements here
-            ops.add(DbOperation.with(Models.interpretations()).insert(item));
+            ops.add(DbOperation.with(mInterpretationStore).insert(item));
 
             List<InterpretationElement> elements
                     = mInterpretationService.getInterpretationElements(item);
             for (InterpretationElement element : elements) {
-                ops.add(DbOperation.with(Models.interpretationElements()).insert(element));
+                ops.add(DbOperation.with(mInterpretationElementStore).insert(element));
             }
         }
 

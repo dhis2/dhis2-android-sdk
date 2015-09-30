@@ -72,7 +72,7 @@ public final class UserStore implements IUserStore {
     }
 
     @Override
-    public List<User> query() {
+    public List<User> queryAll() {
         List<User$Flow> userFlows = new Select()
                 .from(User$Flow.class)
                 .queryList();
@@ -80,7 +80,7 @@ public final class UserStore implements IUserStore {
     }
 
     @Override
-    public User query(long id) {
+    public User queryById(long id) {
         User$Flow userFlow = new Select()
                 .from(User$Flow.class)
                 .where(Condition.column(User$Flow$Table.ID).is(id))
@@ -89,7 +89,7 @@ public final class UserStore implements IUserStore {
     }
 
     @Override
-    public User query(String uid) {
+    public User queryByUid(String uid) {
         User$Flow userFlow = new Select()
                 .from(User$Flow.class)
                 .where(Condition.column(User$Flow$Table.UID).is(uid))

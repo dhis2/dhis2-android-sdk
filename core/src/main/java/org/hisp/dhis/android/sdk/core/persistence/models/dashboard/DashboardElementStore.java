@@ -98,7 +98,7 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public List<DashboardElement> query() {
+    public List<DashboardElement> queryAll() {
         List<DashboardElement$Flow> elementFlows = new Select()
                 .from(DashboardElement$Flow.class)
                 .queryList();
@@ -106,7 +106,7 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public DashboardElement query(long id) {
+    public DashboardElement queryById(long id) {
         DashboardElement$Flow dashboardElementFlow = new Select()
                 .from(DashboardElement$Flow.class)
                 .where(Condition.column(DashboardElement$Flow$Table.ID).is(id))
@@ -115,7 +115,7 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     @Override
-    public DashboardElement query(String uid) {
+    public DashboardElement queryByUid(String uid) {
         DashboardElement$Flow dashboardElementFlow = new Select()
                 .from(DashboardElement$Flow.class)
                 .where(Condition.column(DashboardElement$Flow$Table.UID).is(uid))
@@ -138,12 +138,12 @@ public class DashboardElementStore implements IDashboardElementStore {
     }
 
     /* @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem, Action... actions) {
-        return query(dashboardItem, Arrays.asList(actions));
+    public List<DashboardElement> queryById(DashboardItem dashboardItem, Action... actions) {
+        return queryById(dashboardItem, Arrays.asList(actions));
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem, List<Action> actions) {
+    public List<DashboardElement> queryById(DashboardItem dashboardItem, List<Action> actions) {
         if (actions != null && actions.isEmpty()) {
             throw new IllegalArgumentException("Please, provide at least one Action");
         }

@@ -64,14 +64,16 @@ final class Controllers {
                 Models.dashboardItems(), Models.dashboardElements(),
                 Models.dashboardItemContent(), Models.stateStore());
         interpretationController = new InterpretationController(dhisApi,
-                Services.interpretations(), Services.userAccount());
+                Services.interpretations(), Services.userAccount(), Models.interpretations(),
+                Models.interpretationElements(), Models.interpretationComments(), Models.users());
         userAccountController = new UserAccountController(dhisApi, Models.userAccount());
-        relationshipTypeController = new RelationshipTypeController(dhisApi);
-        optionSetController = new OptionSetController(dhisApi);
-        programController = new ProgramController(dhisApi);
-        organisationUnitController = new OrganisationUnitController(dhisApi);
+        relationshipTypeController = new RelationshipTypeController(dhisApi, Models.relationships(), Models.relationshipTypes());
+        optionSetController = new OptionSetController(dhisApi, Models.options(), Models.optionSets());
+        programController = new ProgramController(dhisApi, Models.programs(), Models.programIndicators(),
+                Models.programStageDataElements(), Models.programTrackedEntityAttributes(), Models.programStages(), Models.programStageSections());
+        organisationUnitController = new OrganisationUnitController(dhisApi, Models.organisationUnits());
         assignedProgramsController = new AssignedProgramsController(dhisApi,
-                programController, organisationUnitController);
+                programController, organisationUnitController, Models.organisationUnits(), Models.programs());
     }
 
     public static void init(IDhisApi dhisApi) {

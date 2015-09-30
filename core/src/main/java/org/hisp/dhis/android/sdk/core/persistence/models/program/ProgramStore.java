@@ -92,7 +92,7 @@ public final class ProgramStore implements IProgramStore {
     }
 
     @Override
-    public List<Program> query() {
+    public List<Program> queryAll() {
         List<Program$Flow> programFlows = new Select()
                 .from(Program$Flow.class)
                 .queryList();
@@ -104,7 +104,7 @@ public final class ProgramStore implements IProgramStore {
     }
 
     @Override
-    public Program query(long id) {
+    public Program queryById(long id) {
         Program$Flow programFlow = new Select()
                 .from(Program$Flow.class)
                 .where(Condition.column(Program$Flow$Table.ID).is(id))
@@ -115,7 +115,7 @@ public final class ProgramStore implements IProgramStore {
     }
 
     @Override
-    public Program query(String uid) {
+    public Program queryByUid(String uid) {
         Program$Flow programFlow = new Select()
                 .from(Program$Flow.class)
                 .where(Condition.column(Program$Flow$Table.UID).is(uid))

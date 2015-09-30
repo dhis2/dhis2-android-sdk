@@ -72,7 +72,7 @@ public final class ProgramStageDataElementStore implements IProgramStageDataElem
     }
 
     @Override
-    public List<ProgramStageDataElement> query() {
+    public List<ProgramStageDataElement> queryAll() {
         List<ProgramStageDataElement$Flow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElement$Flow.class)
                 .queryList();

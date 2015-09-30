@@ -276,6 +276,8 @@ public final class Event$Flow extends BaseModel {
         event.setLongitude(eventFlow.getLongitude());
         event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
         event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
+        event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
+        event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
         event.setProgramId(eventFlow.getProgramId());
         event.setProgramStageId(eventFlow.getProgramStageId());
         event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());

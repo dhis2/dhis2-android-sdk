@@ -139,6 +139,9 @@ public final class Relationship$Flow extends BaseModel {
         relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
         relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
         relationship.setDisplayName(relationshipFlow.getDisplayName());
+        relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
+        relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
+        relationship.setDisplayName(relationshipFlow.getDisplayName());
         return relationship;
     }
 
@@ -150,6 +153,9 @@ public final class Relationship$Flow extends BaseModel {
         Relationship$Flow relationshipFlow = new Relationship$Flow();
         relationshipFlow.setId(relationship.getId());
         relationshipFlow.setRelationship(relationship.getRelationship());
+        relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
+        relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
+        relationshipFlow.setDisplayName(relationship.getDisplayName());
         relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
         relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
         relationshipFlow.setDisplayName(relationship.getDisplayName());

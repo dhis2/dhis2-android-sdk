@@ -88,6 +88,10 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
             }
         }
         TrackedEntityInstance$Flow.fromModel(object).update();
+        // make sure uid is not overwritten!!
+        TrackedEntityInstance$Flow trackedEntityInstanceFlow =
+                TrackedEntityInstance$Flow.fromModel(object);
+        trackedEntityInstanceFlow.save();
     }
 
     @Override

@@ -118,6 +118,8 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         trackedEntityAttributeValue.setTrackedEntityAttributeUId(trackedEntityAttributeValueFlow.getTrackedEntityAttributeUId());
         trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
         trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
+        trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
+        trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
         return trackedEntityAttributeValue;
     }
 
@@ -129,6 +131,8 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
         TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
         trackedEntityAttributeValueFlow.setId(trackedEntityAttributeValue.getId());
         trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
+        trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
+        trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
         trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
         trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
         return trackedEntityAttributeValueFlow;

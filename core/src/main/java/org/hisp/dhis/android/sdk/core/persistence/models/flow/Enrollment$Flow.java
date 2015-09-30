@@ -246,6 +246,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setEnrollmentUid(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
         enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
+        enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
         enrollment.setProgram(enrollmentFlow.getProgram());
         enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
         enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());
@@ -270,6 +271,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getEnrollmentUid());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
+        enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
         enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
         enrollmentFlow.setProgram(enrollment.getProgram());
         enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());

@@ -85,6 +85,9 @@ public final class EnrollmentStore implements IEnrollmentStore {
             }
         }
         Enrollment$Flow.fromModel(object).update();
+        Enrollment$Flow enrollmentFlow =
+                Enrollment$Flow.fromModel(object);
+        enrollmentFlow.save();
     }
 
     @Override

@@ -84,6 +84,9 @@ public final class EventStore implements IEventStore {
             }
         }
         Event$Flow.fromModel(object).update();
+        Event$Flow eventFlow =
+                Event$Flow.fromModel(object);
+        eventFlow.save();
     }
 
     @Override

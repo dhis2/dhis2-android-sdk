@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.state;
 
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.common.IStore;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 
@@ -100,4 +101,12 @@ public interface IStateStore extends IStore<State> {
      * @return List of Class typed instances which State contain given action.
      */
     <T extends IdentifiableObject> List<T> queryWithAction(Class<T> clazz, Action action);
+
+    <T extends IModel> State query(T object);
+
+    <T extends IModel> Action queryAction(T object);
+
+    <T extends IModel> void delete(T object);
+
+    <T extends IModel> void save(T object, Action action);
 }

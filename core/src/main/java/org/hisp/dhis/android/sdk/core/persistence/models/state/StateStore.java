@@ -41,15 +41,25 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$F
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Enrollment$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Enrollment$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityInstance$Flow$Table;
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.state.State;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
 import java.util.HashMap;
 import java.util.List;
@@ -282,6 +292,28 @@ public class StateStore implements IStateStore {
 
     @SuppressWarnings("unchecked")
     private <T extends IdentifiableObject> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
+        /* Creating left join on State and destination table in order to perform filtering  */
+        /* Joining tables based on mime type and then filtering resulting table by action */
+        /* From<? extends Model> from = new Select()
+                .from(State$Flow.getFlowClass(clazz))
+                .join(State$Flow.class, Join.JoinType.LEFT)
+                .on(Condition.column(State$Flow$Table.ITEMID)
+                        .eq(State$Flow.getItemType(clazz))); */
+
+        /* Join<?, ?> join = new Select()
+                .from(State$Flow.getFlowClass(clazz))
+                .join(State$Flow.class, Join.JoinType.LEFT); */
+
+        /* Where<? extends Model> where;
+        if (withAction) {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).is(action.toString()));
+        } else {
+            where = from.where(Condition.column(State$Flow$Table
+                    .ACTION).isNot(action.toString()));
+        } */
+
+        // List<? extends Model> objects = where.queryList();
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
                     clazz, action, withAction, Dashboard$Flow$Table.ID);
@@ -298,6 +330,21 @@ public class StateStore implements IStateStore {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
                     clazz, action, withAction, DashboardElement$Flow$Table.ID);
             return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
+        }
+
+        if (Event.class.equals(clazz)) {
+            List<Event$Flow> eventFlows = (List<Event$Flow>) queryModels(clazz, action, withAction, Event$Flow$Table.ID);
+            return (List<T>) Event$Flow.toModels(eventFlows);
+        }
+
+        if (Enrollment.class.equals(clazz)) {
+            List<Enrollment$Flow> enrollmentFlows = (List<Enrollment$Flow>) queryModels(clazz, action, withAction, Enrollment$Flow$Table.ID);
+            return (List<T>) Enrollment$Flow.toModels(enrollmentFlows);
+        }
+
+        if (TrackedEntityInstance.class.equals(clazz)) {
+            List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = (List<TrackedEntityInstance$Flow>) queryModels(clazz, action, withAction, TrackedEntityInstance$Flow$Table.ID);
+            return (List<T>) TrackedEntityInstance$Flow.toModels(trackedEntityInstanceFlows);
         }
 
         return null;

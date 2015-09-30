@@ -34,14 +34,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.event.Event;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntityDataValue implements Serializable {
+public final class TrackedEntityDataValue implements Serializable, IModel {
 
     @JsonIgnore
-    private String eventUid;
+    private long id;
+
+    @JsonIgnore
+    private Event event;
 
     @JsonProperty("dataElement")
     private String dataElement;
@@ -55,27 +60,24 @@ public final class TrackedEntityDataValue implements Serializable {
     @JsonProperty("value")
     private String value;
 
-    @JsonIgnore
-    private Action action;
-
     public TrackedEntityDataValue() {
-        action = Action.SYNCED;
+
     }
 
-    public Action getAction() {
-        return action;
+    public long getId() {
+        return id;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getEventUid() {
-        return eventUid;
+    public Event getEvent() {
+        return event;
     }
 
-    public void setEventUid(String eventUid) {
-        this.eventUid = eventUid;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public String getDataElement() {

@@ -38,8 +38,11 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityDataV
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.ITrackedEntityDataValueStore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class EventStore implements IEventStore {
@@ -59,6 +62,7 @@ public final class EventStore implements IEventStore {
 
     @Override
     public void update(Event object) {
+        make sure uid is not overwritten!!
         Event$Flow.fromModel(object).update();
     }
 
@@ -66,6 +70,7 @@ public final class EventStore implements IEventStore {
     public void save(Event object) {
         Event$Flow eventFlow =
                 Event$Flow.fromModel(object);
+        make sure uid is not overwritten!!
         eventFlow.save();
     }
 
@@ -106,6 +111,21 @@ public final class EventStore implements IEventStore {
         List<Event$Flow> eventFlows = new Select()
                 .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ENROLLMENTID)
                         .is(enrollment.getId())).queryList();
+        for(Event$Flow eventFlow : eventFlows) {
+            setTrackedEntityDataValues(eventFlow);
+        }
+        return Event$Flow.toModels(eventFlows);
+    }
+
+    @Override
+    public List<Event> query(OrganisationUnit organisationUnit, Program program) {
+        if(organisationUnit == null || program == null) {
+            return new ArrayList<>();
+        }
+        List<Event$Flow> eventFlows = new Select()
+                .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ORGANISATIONUNITID)
+                        .is(organisationUnit.getUId())).and(Condition.column(Event$Flow$Table.PROGRAMID)
+                        .is(program.getUId())).queryList();
         for(Event$Flow eventFlow : eventFlows) {
             setTrackedEntityDataValues(eventFlow);
         }

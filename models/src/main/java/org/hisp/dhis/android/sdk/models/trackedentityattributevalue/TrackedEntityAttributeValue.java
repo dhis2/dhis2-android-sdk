@@ -34,37 +34,36 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
 import java.io.Serializable;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntityAttributeValue implements Serializable {
+public final class TrackedEntityAttributeValue implements Serializable, IModel {
+
+    @JsonIgnore
+    private long id;
 
     @JsonProperty("attribute")
     private String trackedEntityAttributeUId;
 
     @JsonIgnore
-    private String trackedEntityInstanceUId;
-
-    @JsonIgnore
-    private long trackedEntityInstanceId;
+    private TrackedEntityInstance trackedEntityInstance;
 
     @JsonProperty("value")
     private String value;
 
-    @JsonIgnore
-    private Action action;
-
     public TrackedEntityAttributeValue() {
-        action = Action.SYNCED;
+
     }
 
-    public Action getAction() {
-        return action;
+    public long getId() {
+        return id;
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTrackedEntityAttributeUId() {
@@ -75,20 +74,12 @@ public final class TrackedEntityAttributeValue implements Serializable {
         this.trackedEntityAttributeUId = trackedEntityAttributeUId;
     }
 
-    public String getTrackedEntityInstanceUId() {
-        return trackedEntityInstanceUId;
+    public TrackedEntityInstance getTrackedEntityInstance() {
+        return trackedEntityInstance;
     }
 
-    public void setTrackedEntityInstanceUId(String trackedEntityInstanceUId) {
-        this.trackedEntityInstanceUId = trackedEntityInstanceUId;
-    }
-
-    public long getTrackedEntityInstanceId() {
-        return trackedEntityInstanceId;
-    }
-
-    public void setTrackedEntityInstanceId(long trackedEntityInstanceId) {
-        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     public String getValue() {

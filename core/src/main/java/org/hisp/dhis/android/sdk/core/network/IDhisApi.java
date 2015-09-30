@@ -28,11 +28,15 @@
 
 package org.hisp.dhis.android.sdk.core.network;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.category.Category;
 import org.hisp.dhis.android.sdk.models.categoryCombo.CategoryCombo;
@@ -42,6 +46,7 @@ import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 import java.util.List;
@@ -253,5 +258,54 @@ public interface IDhisApi {
 
     @GET("/me/programs/")
     Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
+
+    /////////////////////////////////////////////////////////////////////////
+    // Methods for working with Tracker Data Values
+    /////////////////////////////////////////////////////////////////////////
+    @GET("/" + EVENTS + "?page=0")
+    JsonNode getEvents(@Query("program") String programUid,
+                       @Query("orgUnit") String organisationUnitUid,
+                       @Query("pageSize") int eventLimit,
+                       @QueryMap Map<String, String> queryParams);
+
+    @GET("/" + EVENTS + "?paging=false&ouMode=ACCESSIBLE")
+    JsonNode getEventsForEnrollment(@Query("program") String programUid,
+                                    @Query("programStatus") String programStatus,
+                                    @Query("trackedEntityInstance") String
+                                            trackedEntityInstanceUid,
+                                    @QueryMap Map<String, String> queryParams);
+
+    @GET("/" + EVENTS + "/{eventUid}")
+    Event getEvent(@Path("eventUid") String eventUid, @QueryMap Map<String, String> queryMap);
+
+    @POST("/" + EVENTS + "/")
+    Response postEvent(@Body Event event);
+
+    @PUT("/" + EVENTS + "/{eventUid}")
+    Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
+
+    @GET("/" + ENROLLMENTS + "/{enrollmentUid}")
+    Enrollment getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
+
+    @GET("/" + ENROLLMENTS + "?ouMode=ACCESSIBLE")
+    Map<String, List<Enrollment>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+
+    @POST("/" + ENROLLMENTS + "/")
+    Response postEnrollment(@Body Enrollment enrollment);
+
+    @PUT("/" + ENROLLMENTS + "/{enrollmentUid}")
+    Response putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
+
+    @GET("/" + TRACKED_ENTITY_INSTANCES + "/{trackedEntityInstanceUid}")
+    TrackedEntityInstance getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+
+    @GET("/" + TRACKED_ENTITY_INSTANCES)
+    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
+
+    @POST("/" + TRACKED_ENTITY_INSTANCES + "/")
+    Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);
+
+    @PUT("/" + TRACKED_ENTITY_INSTANCES + "/{trackedEntityInstanceUid}")
+    Response putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @Body TrackedEntityInstance trackedEntityInstance);
 
 }

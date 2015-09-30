@@ -63,6 +63,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
@@ -90,9 +91,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public static final String TAG = EventDataEntryFragment.class.getSimpleName();
     private Map<String, List<ProgramRule>> programRulesForDataElements;
     private Map<String, List<ProgramIndicator>> programIndicatorsForDataElements;
+
     private RulesEvaluatorThread rulesEvaluatorThread;
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
-    private SaveThread saveThread;
+    private EventSaveThread saveThread;
     private static final String ORG_UNIT_ID = "extra:orgUnitId";
     private static final String PROGRAM_ID = "extra:ProgramId";
     private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
@@ -193,7 +195,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
         rulesEvaluatorThread.init(this);
         if(saveThread == null || saveThread.isKilled()) {
-            saveThread = new SaveThread();
+            saveThread = new EventSaveThread();
             saveThread.start();
         }
         saveThread.init(this);
@@ -206,9 +208,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     @Override
     public void onDestroy() {
-        rulesEvaluatorThread.kill();
-        indicatorEvaluatorThread.kill();
-        saveThread.kill();
+        new Thread() {
+            public void run() {
+                saveThread.kill();
+                rulesEvaluatorThread.kill();
+                indicatorEvaluatorThread.kill();
+                rulesEvaluatorThread = null;
+                indicatorEvaluatorThread = null;
+                saveThread = null;
+            }
+        }.start();
         super.onDestroy();
     }
 
@@ -240,6 +249,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             listView.setVisibility(View.VISIBLE);
             form = data;
             mapDataElementsToRulesAndIndicators();
+            saveThread.setEvent(form.getEvent());
+
             if (form.getStatusRow() != null) {
                 form.getStatusRow().setFragmentActivity(getActivity());
             }
@@ -380,21 +391,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     protected void save() {
         if (form != null && form.getEvent()!=null) {
-            form.getEvent().setFromServer(false);
-            //form.getEvent().setLastUpdated(Utils.getCurrentTime());
-            form.getEvent().save();
-
-//            if(timerTask!=null) {
-//                timerTask.cancel();
-//            }
-//            timerTask = new TimerTask() {
-//                @Override
-//                public void run() {
-//                    DhisService.sendData();
-//                }
-//            };
-//            timer.purge();
-//            timer.schedule(timerTask, 5000);
             flagDataChanged(false);
         }
     }
@@ -453,8 +449,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
      * This is used to avoid stacking up calls to evaluateAndApplyProgramIndicators
      * @param dataElement
      */
-    private void initiateEvaluateProgramIndicators(String dataElement) {
-        indicatorEvaluatorThread.schedule(dataElement);
+    private synchronized void initiateEvaluateProgramIndicators(String dataElement) {
+        if(programIndicatorsForDataElements == null) {
+            return;
+        }
+        List<ProgramIndicator> programIndicators = programIndicatorsForDataElements.get(dataElement);
+        indicatorEvaluatorThread.schedule(programIndicators);
     }
 
     /**
@@ -487,15 +487,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
     }
 
-    void evaluateAndApplyProgramIndicators(String dataElement) {
-        if(programIndicatorsForDataElements !=null && programIndicatorsForDataElements.containsKey(dataElement)) {
-            List<ProgramIndicator> programIndicators = programIndicatorsForDataElements.get(dataElement);
-            for(ProgramIndicator programIndicator: programIndicators) {
-                IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
-                updateIndicatorRow(indicatorRow, form.getEvent());
-            }
-            refreshListView();
-        }
+    void evaluateAndApplyProgramIndicator(ProgramIndicator programIndicator) {
+        IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
+        updateIndicatorRow(indicatorRow, form.getEvent());
+        refreshListView();
     }
 
     /**
@@ -698,14 +693,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                 eventClick.getComplete().setText(R.string.incomplete);
                                 eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                 eventClick.getEvent().setFromServer(false);
-                                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null));
+                                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                             }
                         });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
                 eventClick.getEvent().setFromServer(false);
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null));
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
             showValidationErrorDialog(getValidationErrors());
@@ -715,8 +710,17 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Subscribe
     public void onRowValueChanged(final RowValueChangedEvent event) {
         super.onRowValueChanged(event);
-        saveThread.schedule();
         evaluateRulesAndIndicators(event.getId());
+
+        //if rowType is coordinate or event date, save the event
+        if(event.getRowType() == null
+                || DataEntryRowTypes.COORDINATES.toString().equals(event.getRowType())
+                || DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
+            //save event
+            saveThread.scheduleSaveEvent();
+        } else {// save data element
+            saveThread.scheduleSaveDataValue(event.getId());
+        }
     }
 
     private static class UpdateSectionsAsyncTask extends AsyncTask {

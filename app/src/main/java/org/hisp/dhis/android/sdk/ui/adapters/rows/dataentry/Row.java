@@ -25,17 +25,7 @@ public abstract class Row implements DataEntryRow
     protected DataEntryRowTypes mRowType;
     protected View detailedInfoButton;
     private boolean hideDetailedInfoButton;
-    private boolean hidden = false;
     private boolean editable = true;
-
-    public void setIsHidden(boolean hidden)
-    {
-        this.hidden = hidden;
-    }
-
-    public boolean isHidden(){
-        return hidden;
-    }
 
     public View getDetailedInfoButton(){
         return detailedInfoButton;

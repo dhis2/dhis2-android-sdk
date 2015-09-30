@@ -487,6 +487,7 @@ final class TrackerDataSender {
             item.async().delete();
         }
     }
+
     private static void handleImportSummary(ImportSummary importSummary, String type, long id) {
         if ( ImportSummary.ERROR.equals(importSummary.getStatus()) ){
             Log.d(CLASS_TAG, "failed.. ");

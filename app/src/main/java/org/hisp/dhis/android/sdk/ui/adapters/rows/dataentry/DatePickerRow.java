@@ -42,6 +42,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -90,7 +91,7 @@ public class DatePickerRow extends Row {
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mValue);
+        holder.updateViews(mLabel, (DataValue) mValue);
 
         if(isDetailedInfoButtonHidden())
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -127,7 +128,7 @@ public class DatePickerRow extends Row {
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
-        public void updateViews(String label, BaseValue baseValue) {
+        public void updateViews(String label, DataValue baseValue) {
             dateSetListener.setBaseValue(baseValue);
             clearButtonListener.setBaseValue(baseValue);
 
@@ -158,13 +159,13 @@ public class DatePickerRow extends Row {
 
     private static class ClearButtonListener implements OnClickListener {
         private final TextView textView;
-        private BaseValue value;
+        private DataValue value;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
+        public void setBaseValue(DataValue value) {
             this.value = value;
         }
 
@@ -173,20 +174,20 @@ public class DatePickerRow extends Row {
             textView.setText(EMPTY_FIELD);
             value.setValue(EMPTY_FIELD);
             Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value));
+                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
         }
     }
 
     private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
-        private BaseValue value;
+        private DataValue value;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
+        public void setBaseValue(DataValue value) {
             this.value = value;
         }
 
@@ -198,7 +199,7 @@ public class DatePickerRow extends Row {
             textView.setText(newValue);
             value.setValue(newValue);
             Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value));
+                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
         }
     }
 }

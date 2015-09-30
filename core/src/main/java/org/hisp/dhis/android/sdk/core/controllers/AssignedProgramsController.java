@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.core.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.controllers.common.StringConverter;
 import org.hisp.dhis.android.sdk.core.network.APIException;
@@ -39,7 +38,9 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
+import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
@@ -55,7 +56,7 @@ import retrofit.converter.ConversionException;
 
 import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toMap;
 
-public final class AssignedProgramsController extends ResourceController {
+public final class AssignedProgramsController extends ResourceController<Program> {
 
     private final static String ORGANISATIONUNITS = "organisationUnits";
     private final static String PROGRAMS = "programs";
@@ -65,11 +66,18 @@ public final class AssignedProgramsController extends ResourceController {
     private final IProgramController programController;
     private final IOrganisationUnitController organisationUnitController;
 
+    private final IOrganisationUnitStore organisationUnitStore;
+    private final IProgramStore programStore;
+
+
     public AssignedProgramsController(IDhisApi dhisApi, IProgramController programController,
-                                      IOrganisationUnitController organisationUnitController) {
+                                      IOrganisationUnitController organisationUnitController,
+                                      IOrganisationUnitStore organisationUnitStore, IProgramStore programStore) {
         mDhisApi = dhisApi;
         this.programController = programController;
         this.organisationUnitController = organisationUnitController;
+        this.organisationUnitStore = organisationUnitStore;
+        this.programStore = programStore;
     }
 
     private void getAssignedProgramsDataFromServer() throws APIException {
@@ -98,7 +106,7 @@ public final class AssignedProgramsController extends ResourceController {
         }
 
         //manual deserialization of the /me/programs node for organisationUnits with programAssignments
-        if(node != null) {
+        if (node != null) {
             JsonNode organisationUnitsNode = node.get(ORGANISATIONUNITS);
             if (organisationUnitsNode != null) { //may be null if there are no org units.
                 Iterator<JsonNode> nodes = organisationUnitsNode.elements();
@@ -112,7 +120,7 @@ public final class AssignedProgramsController extends ResourceController {
                     } catch (IOException e) {
                         item = null;
                     }
-                    if(item != null) {
+                    if (item != null) {
                         organisationUnits.add(item);
                         organisationUnitPrograms.put(item, new ArrayList<String>());
                         JsonNode programsNode = organisationUnitNode.get(PROGRAMS);
@@ -124,7 +132,7 @@ public final class AssignedProgramsController extends ResourceController {
                                 JsonNode programNode = programsNodeIterator.next();
                                 String programUid = programNode.get(ID).textValue();
                                 List<String> organisationUnitsForProgram = programOrganisationUnits.get(programUid);
-                                if(organisationUnitsForProgram == null) {
+                                if (organisationUnitsForProgram == null) {
                                     organisationUnitsForProgram = new ArrayList<>();
                                     programOrganisationUnits.put(programUid, organisationUnitsForProgram);
                                 }
@@ -142,15 +150,15 @@ public final class AssignedProgramsController extends ResourceController {
                 organisationUnitController.sync(organisationUnits);
             }
         }
-        organisationUnits = Models.organisationUnits().query();
-        List<Program> programs = Models.programs().query();
+        organisationUnits = organisationUnitStore.query();
+        List<Program> programs = programStore.query();
         Map<String, OrganisationUnit> organisationUnitMap = toMap(organisationUnits);
-        for(Program program : programs) {
+        for (Program program : programs) {
             List<OrganisationUnit> organisationUnitsAssigned = new ArrayList<>();
-            for(String organisationUnitId : programOrganisationUnits.get(program.getUId())) {
+            for (String organisationUnitId : programOrganisationUnits.get(program.getUId())) {
                 organisationUnitsAssigned.add(organisationUnitMap.get(organisationUnitId));
             }
-            Models.programs().assign(program, organisationUnitsAssigned);
+            programStore.assign(program, organisationUnitsAssigned);
         }
 
         DateTimeManager.getInstance()

@@ -29,14 +29,15 @@
 
 package org.hisp.dhis.android.sdk.core.controllers;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.option.IOptionStore;
 import org.hisp.dhis.android.sdk.models.option.Option;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
@@ -52,8 +53,14 @@ public final class OptionSetController extends ResourceController<OptionSet> {
     private final static String OPTIONSETS = "optionSets";
     private final IDhisApi mDhisApi;
 
-    public OptionSetController(IDhisApi dhisApi) {
-        mDhisApi = dhisApi;
+    private final IOptionStore mOptionStore;
+    private final IIdentifiableObjectStore<OptionSet> mOptionSetStore;
+
+    public OptionSetController(IDhisApi dhisApi, IOptionStore mOptionStore,
+                               IIdentifiableObjectStore<OptionSet> mOptionSetStore) {
+        this.mDhisApi = dhisApi;
+        this.mOptionStore = mOptionStore;
+        this.mOptionSetStore = mOptionSetStore;
     }
 
     private void getOptionSetDataFromServer() throws APIException {
@@ -67,27 +74,26 @@ public final class OptionSetController extends ResourceController<OptionSet> {
                 .getOptionSets(getAllFieldsQueryMap(lastUpdated)), OPTIONSETS);
         linkOptionsWithOptionSets(updatedOptionSets);
         List<OptionSet> existingPersistedAndUpdatedOptionSets =
-                merge(allOptionSets, updatedOptionSets, Models.optionSets().
-                        query());
+                merge(allOptionSets, updatedOptionSets, mOptionSetStore.query());
 
         List<IDbOperation> operations = new ArrayList<>();
-        List<OptionSet> persistedOptionSets = Models.optionSets().query();
+        List<OptionSet> persistedOptionSets = mOptionSetStore.query();
         if (existingPersistedAndUpdatedOptionSets != null && !existingPersistedAndUpdatedOptionSets.isEmpty()) {
             for (OptionSet optionSet: existingPersistedAndUpdatedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
                 }
-                OptionSet persistedOptionSet = Models.optionSets().query(optionSet.getUId());
+                OptionSet persistedOptionSet = mOptionSetStore.query(optionSet.getUId());
                 List<Option> persistedOptions;
                 if(persistedOptionSet != null) {
                     persistedOptions = persistedOptionSet.getOptions();
                 } else {
                     persistedOptions = new ArrayList<>();
                 }
-                operations.addAll(DbUtils.createOperations(Models.options(), persistedOptions, optionSet.getOptions()));
+                operations.addAll(DbUtils.createOperations(mOptionStore, persistedOptions, optionSet.getOptions()));
             }
         }
-        operations.addAll(DbUtils.createOperations(Models.optionSets(), persistedOptionSets, existingPersistedAndUpdatedOptionSets));
+        operations.addAll(DbUtils.createOperations(mOptionSetStore, persistedOptionSets, existingPersistedAndUpdatedOptionSets));
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()

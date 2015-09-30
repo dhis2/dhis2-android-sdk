@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.core.controllers;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 
@@ -54,8 +54,11 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
     private final static int QUERY_SIZE = 100;
     private final IDhisApi mDhisApi;
 
-    public OrganisationUnitController(IDhisApi dhisApi) {
-        mDhisApi = dhisApi;
+    private final IOrganisationUnitStore mOrganisationUnitStore;
+
+    public OrganisationUnitController(IDhisApi dhisApi, IOrganisationUnitStore mOrganisationUnitStore) {
+        this.mDhisApi = dhisApi;
+        this.mOrganisationUnitStore = mOrganisationUnitStore;
     }
 
     private void getOrganisationUnitsFromServer(List<OrganisationUnit> organisationUnits) {
@@ -85,7 +88,7 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
             first = last;
             iteration++;
         }
-        List<OrganisationUnit> persistedOrganisationUnits = Models.organisationUnits().query();
+        List<OrganisationUnit> persistedOrganisationUnits = mOrganisationUnitStore.query();
         Map<String, OrganisationUnit> persistedOrganisationUnitsMap = toMap(persistedOrganisationUnits);
         Map<String, OrganisationUnit> updatedOrganisationUnitsMap = toMap(updatedOrganisationUnits);
         for(OrganisationUnit persistedOrganisationUnit : persistedOrganisationUnits) {
@@ -97,9 +100,9 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
         List<IDbOperation> operations = new ArrayList<>();
         for(OrganisationUnit updatedOrganisationUnit : updatedOrganisationUnits) {
             if(persistedOrganisationUnitsMap.containsValue(updatedOrganisationUnit.getUId())) {
-                operations.add(DbOperation.with(Models.organisationUnits()).update(updatedOrganisationUnit));
+                operations.add(DbOperation.with(mOrganisationUnitStore).update(updatedOrganisationUnit));
             } else {
-                operations.add(DbOperation.with(Models.organisationUnits()).insert(updatedOrganisationUnit));
+                operations.add(DbOperation.with(mOrganisationUnitStore).insert(updatedOrganisationUnit));
             }
         }
         DbUtils.applyBatch(operations);
@@ -109,7 +112,7 @@ public final class OrganisationUnitController implements IOrganisationUnitContro
     }
 
     private void getOrganisationUnitsFromServer() {
-        getOrganisationUnitsFromServer(Models.organisationUnits().query());
+        getOrganisationUnitsFromServer(mOrganisationUnitStore.query());
     }
 
     private String getOrganisationUnitFilterIdString(List<OrganisationUnit> organisationUnits) {

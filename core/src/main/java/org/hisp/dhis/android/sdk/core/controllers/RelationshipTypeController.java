@@ -29,12 +29,13 @@
 
 package org.hisp.dhis.android.sdk.core.controllers;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
 import org.joda.time.DateTime;
 
@@ -47,9 +48,14 @@ public final class RelationshipTypeController extends ResourceController<Relatio
 
     private final static String RELATIONSHIPTYPES = "relationshipTypes";
     private final IDhisApi mDhisApi;
+    private final IRelationshipStore mRelationshipStore;
+    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
 
-    public RelationshipTypeController(IDhisApi dhisApi) {
-        mDhisApi = dhisApi;
+    public RelationshipTypeController(IDhisApi mDhisApi, IRelationshipStore mRelationshipStore,
+                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
+        this.mDhisApi = mDhisApi;
+        this.mRelationshipStore = mRelationshipStore;
+        this.mRelationshipTypeStore = mRelationshipTypeStore;
     }
 
     private void getRelationshipTypesDataFromServer() throws APIException {
@@ -67,10 +73,10 @@ public final class RelationshipTypeController extends ResourceController<Relatio
                 .getRelationshipTypes(getAllFieldsQueryMap(lastUpdated)), RELATIONSHIPTYPES);
         //merging updated items with persisted items, and removing ones not present in server.
         List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                merge(allRelationshipTypes, updatedRelationshipTypes, Models.relationshipTypes().
+                merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
                         query());
-        saveResourceDataFromServer(resource, Models.relationshipTypes(),
-                existingPersistedAndUpdatedRelationshipTypes, Models.relationshipTypes().query(),
+        saveResourceDataFromServer(resource, mRelationshipTypeStore,
+                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.query(),
                 serverTime);
     }
 

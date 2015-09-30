@@ -29,7 +29,6 @@
 
 package org.hisp.dhis.android.sdk.core.controllers;
 
-import org.hisp.dhis.android.sdk.core.api.Models;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
@@ -38,11 +37,17 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programindicator.IProgramIndicatorStore;
 import org.hisp.dhis.android.sdk.models.programindicator.ProgramIndicator;
+import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
+import org.hisp.dhis.android.sdk.models.programstagedataelement.IProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.models.programstagedataelement.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.models.programstagesection.IProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
+import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.ProgramTrackedEntityAttribute;
 import org.joda.time.DateTime;
 
@@ -58,9 +63,28 @@ public final class ProgramController extends ResourceController<Program> impleme
     private final static String PROGRAMS = "programs";
     private final IDhisApi mDhisApi;
 
-    public ProgramController(IDhisApi dhisApi) {
-        mDhisApi = dhisApi;
+    private final IProgramStore mProgramStore;
+    private final IProgramIndicatorStore mProgramIndicatorsStore;
+    private final IProgramStageDataElementStore mProgramStageDataElementStore;
+    private final IProgramTrackedEntityAttributeStore mProgramTrackedEntityAttributeStore;
+    private final IProgramStageStore mProgramStageStore;
+    private final IProgramStageSectionStore mProgramStageSectionStore;
+
+    public ProgramController(IDhisApi mDhisApi, IProgramStore mProgramStore,
+                             IProgramIndicatorStore mProgramIndicatorsStore,
+                             IProgramStageDataElementStore mProgramStageDataElementStore,
+                             IProgramTrackedEntityAttributeStore mProgramTrackedEntityAttributeStore,
+                             IProgramStageStore mProgramStageStore,
+                             IProgramStageSectionStore mProgramStageSectionStore) {
+        this.mDhisApi = mDhisApi;
+        this.mProgramStore = mProgramStore;
+        this.mProgramIndicatorsStore = mProgramIndicatorsStore;
+        this.mProgramStageDataElementStore = mProgramStageDataElementStore;
+        this.mProgramTrackedEntityAttributeStore = mProgramTrackedEntityAttributeStore;
+        this.mProgramStageStore = mProgramStageStore;
+        this.mProgramStageSectionStore = mProgramStageSectionStore;
     }
+
 
     private void getProgramsDataFromServer() throws APIException {
         ResourceType resource = ResourceType.PROGRAMS;
@@ -80,7 +104,7 @@ public final class ProgramController extends ResourceController<Program> impleme
         for(Program program : allProgramsOnServer) {
             programsOnServerMap.put(program.getUId(), program);
         }
-        for(Program persistedProgram : Models.programs().query()) {
+        for(Program persistedProgram : mProgramStore.query()) {
             if(!programsOnServerMap.containsKey(persistedProgram.getUId())) {
                 operations.addAll(genereDeleteProgramDbOperations(persistedProgram, true));
             }
@@ -109,7 +133,7 @@ public final class ProgramController extends ResourceController<Program> impleme
             getProgramDataFromServer(programUidToLoad);
         }
         //deleting previously loaded programs that are removed from server
-        List<Program> persistedPrograms = Models.programs().query();
+        List<Program> persistedPrograms = mProgramStore.query();
         for(Program persistedProgram : persistedPrograms) {
             if(!existingProgramUidsToLoad.contains(persistedProgram.getUId())) {
                 genereDeleteProgramDbOperations(persistedProgram, true);
@@ -146,35 +170,35 @@ public final class ProgramController extends ResourceController<Program> impleme
          * ProgramStageSections
          * ProgramIndicators
          */
-        Program persistedProgram = Models.programs().query(updatedProgram.getUId());
+        Program persistedProgram = mProgramStore.query(updatedProgram.getUId());
         if (persistedProgram != null) {
             updatedProgram.setId(persistedProgram.getId());
             operations.addAll(genereDeleteProgramDbOperations(persistedProgram, false));
         }
-        operations.add(DbOperation.with(Models.programs()).save(updatedProgram));
+        operations.add(DbOperation.with(mProgramStore).save(updatedProgram));
 
         int sortOrder = 0;
         for (ProgramTrackedEntityAttribute ptea : updatedProgram.getProgramTrackedEntityAttributes()) {
             ptea.setProgram(updatedProgram.getUId());
             ptea.setSortOrder(sortOrder);
-            operations.add(DbOperation.with(Models.programTrackedEntityAttributes()).save(ptea));
+            operations.add(DbOperation.with(mProgramTrackedEntityAttributeStore).save(ptea));
             sortOrder++;
         }
 
         for (ProgramStage programStage : updatedProgram.getProgramStages()) {
-            operations.add(DbOperation.with(Models.programStages()).save(programStage));
+            operations.add(DbOperation.with(mProgramStageStore).save(programStage));
             if (programStage.getProgramStageSections() != null && !programStage.getProgramStageSections().isEmpty()) {
                 // due to the way the WebAPI lists programStageSections we have to manually
                 // set id of programStageSection in programStageDataElements to be able to
                 // access it later when loading from local db
                 for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
-                    operations.add(DbOperation.with(Models.programStageSections()).save(programStageSection));
+                    operations.add(DbOperation.with(mProgramStageSectionStore).save(programStageSection));
                     for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                         programStageDataElement.setProgramStageSection(programStageSection.getUId());
-                        operations.add(DbOperation.with(Models.programStageDataElements()).save(programStageDataElement));
+                        operations.add(DbOperation.with(mProgramStageDataElementStore).save(programStageDataElement));
                     }
                     for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
-                        operations.add(DbOperation.with(Models.programIndicators()).save(programIndicator));
+                        operations.add(DbOperation.with(mProgramIndicatorsStore).save(programIndicator));
                     }
                 }
             }
@@ -185,22 +209,22 @@ public final class ProgramController extends ResourceController<Program> impleme
     private List<IDbOperation> genereDeleteProgramDbOperations(Program persistedProgram, boolean deleteProgram) {
         List<IDbOperation> operations = new ArrayList<>();
         for (ProgramTrackedEntityAttribute ptea : persistedProgram.getProgramTrackedEntityAttributes()) {
-            operations.add(DbOperation.with(Models.programTrackedEntityAttributes()).delete(ptea));
+            operations.add(DbOperation.with(mProgramTrackedEntityAttributeStore).delete(ptea));
         }
         for (ProgramStage programStage : persistedProgram.getProgramStages()) {
             for (ProgramStageDataElement psde : programStage.getProgramStageDataElements()) {
-                operations.add(DbOperation.with(Models.programStageDataElements()).delete(psde));
+                operations.add(DbOperation.with(mProgramStageDataElementStore).delete(psde));
             }
             for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
-                operations.add(DbOperation.with(Models.programStageSections()).delete(programStageSection));
+                operations.add(DbOperation.with(mProgramStageSectionStore).delete(programStageSection));
             }
-            operations.add(DbOperation.with(Models.programStages()).delete(programStage));
+            operations.add(DbOperation.with(mProgramStageStore).delete(programStage));
         }
-        for (ProgramIndicator programIndicator : Models.programIndicators().query(persistedProgram)) {
-            operations.add(DbOperation.with(Models.programIndicators()).delete(programIndicator));
+        for (ProgramIndicator programIndicator : mProgramIndicatorsStore.query(persistedProgram)) {
+            operations.add(DbOperation.with(mProgramIndicatorsStore).delete(programIndicator));
         }
         if(deleteProgram) {
-            operations.add(DbOperation.with(Models.programs()).delete(persistedProgram));
+            operations.add(DbOperation.with(mProgramStore).delete(persistedProgram));
         }
         return operations;
     }

@@ -63,7 +63,6 @@ public final class ProgramStageDataElement implements IModel {
 
     private String programStageSection;
 
-
     @Override
     public long getId() {
         return localId;

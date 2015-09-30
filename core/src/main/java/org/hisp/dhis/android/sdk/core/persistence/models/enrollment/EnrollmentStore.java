@@ -65,13 +65,13 @@ public final class EnrollmentStore implements IEnrollmentStore {
 
     @Override
     public void update(Enrollment object) {
-        make sure uid is not overwritten!!
+        // make sure uid is not overwritten!!
         Enrollment$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(Enrollment object) {
-        make sure uid is not overwritten!!
+        // make sure uid is not overwritten!!
         Enrollment$Flow enrollmentFlow =
                 Enrollment$Flow.fromModel(object);
         enrollmentFlow.save();

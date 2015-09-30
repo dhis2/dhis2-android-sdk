@@ -291,9 +291,9 @@ public final class Event$Flow extends BaseModel {
         event.setStatus(eventFlow.getStatus());
         event.setLatitude(eventFlow.getLatitude());
         event.setLongitude(eventFlow.getLongitude());
-        event.setTrackedEntityInstanceId(eventFlow.getTrackedEntityInstanceId());
+        // event.setTrackedEntityInstanceId(eventFlow.getTrackedEntityInstanceId());
         event.setTrackedEntityInstanceUid(eventFlow.getTrackedEntityInstanceUid());
-        event.setEnrollmentId(eventFlow.getEnrollmentId());
+        // event.setEnrollmentId(eventFlow.getEnrollmentId());
         event.setEnrollmentUid(eventFlow.getEnrollmentUid());
         event.setProgramId(eventFlow.getProgramId());
         event.setProgramStageId(eventFlow.getProgramStageId());
@@ -306,7 +306,7 @@ public final class Event$Flow extends BaseModel {
         event.setCreated(eventFlow.getCreated());
         event.setLastUpdated(eventFlow.getLastUpdated());
         event.setAccess(eventFlow.getAccess());
-        event.setAction(eventFlow.getAction());
+        // event.setAction(eventFlow.getAction());
         return event;
     }
 
@@ -321,9 +321,9 @@ public final class Event$Flow extends BaseModel {
         eventFlow.setStatus(event.getStatus());
         eventFlow.setLatitude(event.getLatitude());
         eventFlow.setLongitude(event.getLongitude());
-        eventFlow.setTrackedEntityInstanceId(event.getTrackedEntityInstanceId());
+        // eventFlow.setTrackedEntityInstanceId(event.getTrackedEntityInstanceId());
         eventFlow.setTrackedEntityInstanceUid(event.getTrackedEntityInstanceUid());
-        eventFlow.setEnrollmentId(event.getEnrollmentId());
+        // eventFlow.setEnrollmentId(event.getEnrollmentId());
         eventFlow.setEnrollmentUid(event.getEnrollmentUid());
         eventFlow.setProgramId(event.getProgramId());
         eventFlow.setProgramStageId(event.getProgramStageId());
@@ -336,7 +336,7 @@ public final class Event$Flow extends BaseModel {
         eventFlow.setCreated(event.getCreated());
         eventFlow.setLastUpdated(event.getLastUpdated());
         eventFlow.setAccess(event.getAccess());
-        eventFlow.setAction(event.getAction());
+        // eventFlow.setAction(event.getAction());
         return eventFlow;
     }
 

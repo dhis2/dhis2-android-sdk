@@ -62,7 +62,7 @@ public final class EventStore implements IEventStore {
 
     @Override
     public void update(Event object) {
-        make sure uid is not overwritten!!
+        // make sure uid is not overwritten!!
         Event$Flow.fromModel(object).update();
     }
 
@@ -70,7 +70,7 @@ public final class EventStore implements IEventStore {
     public void save(Event object) {
         Event$Flow eventFlow =
                 Event$Flow.fromModel(object);
-        make sure uid is not overwritten!!
+        // make sure uid is not overwritten!!
         eventFlow.save();
     }
 

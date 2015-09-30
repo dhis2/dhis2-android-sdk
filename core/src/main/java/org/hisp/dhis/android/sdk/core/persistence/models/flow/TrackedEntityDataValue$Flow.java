@@ -132,13 +132,13 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-        trackedEntityDataValue.setEventId(trackedEntityDataValueFlow.getEventId());
-        trackedEntityDataValue.setEventUid(trackedEntityDataValueFlow.getEventUid());
+        // trackedEntityDataValue.setEventId(trackedEntityDataValueFlow.getEventId());
+        // trackedEntityDataValue.setEventUid(trackedEntityDataValueFlow.getEventUid());
         trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
         trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
         trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());
         trackedEntityDataValue.setValue(trackedEntityDataValueFlow.getValue());
-        trackedEntityDataValue.setAction(trackedEntityDataValueFlow.getAction());
+        // trackedEntityDataValue.setAction(trackedEntityDataValueFlow.getAction());
         return trackedEntityDataValue;
     }
 
@@ -148,13 +148,13 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
-        trackedEntityDataValueFlow.setEventId(trackedEntityDataValue.getEventId());
-        trackedEntityDataValueFlow.setEventUid(trackedEntityDataValue.getEventUid());
+        // trackedEntityDataValueFlow.setEventId(trackedEntityDataValue.getEventId());
+        // trackedEntityDataValueFlow.setEventUid(trackedEntityDataValue.getEventUid());
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
         trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
         trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
         trackedEntityDataValueFlow.setValue(trackedEntityDataValue.getValue());
-        trackedEntityDataValueFlow.setAction(trackedEntityDataValue.getAction());
+        // trackedEntityDataValueFlow.setAction(trackedEntityDataValue.getAction());
         return trackedEntityDataValueFlow;
     }
 

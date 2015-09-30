@@ -257,7 +257,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setId(enrollmentFlow.getId());
         enrollment.setEnrollmentUid(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
-        enrollment.setTrackedEntityInstanceId(enrollmentFlow.getTrackedEntityInstanceId());
+        // enrollment.setTrackedEntityInstanceId(enrollmentFlow.getTrackedEntityInstanceId());
         enrollment.setTrackedEntityInstanceUid(enrollmentFlow.getTrackedEntityInstanceUid());
         enrollment.setProgram(enrollmentFlow.getProgram());
         enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
@@ -269,7 +269,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollment.setCreated(enrollmentFlow.getCreated());
         enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
         enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setAction(enrollmentFlow.getAction());
+        // enrollment.setAction(enrollmentFlow.getAction());
         enrollment.setEvents(Event$Flow.toModels(enrollmentFlow.getEvents()));
         enrollment.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.toModels(enrollmentFlow.getTrackedEntityAttributeValues()));
         return enrollment;
@@ -284,7 +284,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getEnrollmentUid());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
-        enrollmentFlow.setTrackedEntityInstanceId(enrollment.getTrackedEntityInstanceId());
+        // enrollmentFlow.setTrackedEntityInstanceId(enrollment.getTrackedEntityInstanceId());
         enrollmentFlow.setTrackedEntityInstanceUid(enrollment.getTrackedEntityInstanceUid());
         enrollmentFlow.setProgram(enrollment.getProgram());
         enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
@@ -296,7 +296,7 @@ public final class Enrollment$Flow extends BaseModel {
         enrollmentFlow.setCreated(enrollment.getCreated());
         enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
         enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setAction(enrollment.getAction());
+        // enrollmentFlow.setAction(enrollment.getAction());
         enrollmentFlow.setEvents(Event$Flow.fromModels(enrollment.getEvents()));
         enrollmentFlow.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.fromModels(enrollment.getTrackedEntityAttributeValues()));
         return enrollmentFlow;

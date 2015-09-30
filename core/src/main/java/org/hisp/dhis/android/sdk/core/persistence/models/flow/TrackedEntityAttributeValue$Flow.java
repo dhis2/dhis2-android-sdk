@@ -111,10 +111,10 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
 
         TrackedEntityAttributeValue trackedEntityAttributeValue = new TrackedEntityAttributeValue();
         trackedEntityAttributeValue.setTrackedEntityAttributeUId(trackedEntityAttributeValueFlow.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValue.setTrackedEntityInstanceId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceId());
-        trackedEntityAttributeValue.setTrackedEntityInstanceUId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceUId());
+        // trackedEntityAttributeValue.setTrackedEntityInstanceId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceId());
+        // trackedEntityAttributeValue.setTrackedEntityInstanceUId(trackedEntityAttributeValueFlow.getTrackedEntityInstanceUId());
         trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
-        trackedEntityAttributeValue.setAction(trackedEntityAttributeValueFlow.getAction());
+        // trackedEntityAttributeValue.setAction(trackedEntityAttributeValueFlow.getAction());
         return trackedEntityAttributeValue;
     }
 
@@ -125,10 +125,10 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
 
         TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
         trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstanceId(trackedEntityAttributeValue.getTrackedEntityInstanceId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstanceUId(trackedEntityAttributeValue.getTrackedEntityInstanceUId());
+        // trackedEntityAttributeValueFlow.setTrackedEntityInstanceId(trackedEntityAttributeValue.getTrackedEntityInstanceId());
+        // trackedEntityAttributeValueFlow.setTrackedEntityInstanceUId(trackedEntityAttributeValue.getTrackedEntityInstanceUId());
         trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
-        trackedEntityAttributeValueFlow.setAction(trackedEntityAttributeValue.getAction());
+        // trackedEntityAttributeValueFlow.setAction(trackedEntityAttributeValue.getAction());
         return trackedEntityAttributeValueFlow;
     }
 

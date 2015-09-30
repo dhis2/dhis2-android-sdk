@@ -146,11 +146,11 @@ public final class Relationship$Flow extends BaseModel {
         Relationship relationship = new Relationship();
         relationship.setRelationship(relationshipFlow.getRelationship());
         relationship.setTrackedEntityInstanceA(relationshipFlow.getTrackedEntityInstanceA());
-        relationship.setTrackedEntityInstanceAId(relationshipFlow.getTrackedEntityInstanceAId());
+        // relationship.setTrackedEntityInstanceAId(relationshipFlow.getTrackedEntityInstanceAId());
         relationship.setTrackedEntityInstanceB(relationshipFlow.getTrackedEntityInstanceB());
-        relationship.setTrackedEntityInstanceBId(relationshipFlow.getTrackedEntityInstanceBId());
+        // relationship.setTrackedEntityInstanceBId(relationshipFlow.getTrackedEntityInstanceBId());
         relationship.setDisplayName(relationshipFlow.getDisplayName());
-        relationship.setAction(relationshipFlow.getAction());
+        // relationship.setAction(relationshipFlow.getAction());
         return relationship;
     }
 
@@ -161,12 +161,12 @@ public final class Relationship$Flow extends BaseModel {
 
         Relationship$Flow relationshipFlow = new Relationship$Flow();
         relationshipFlow.setRelationship(relationship.getRelationship());
-        relationshipFlow.setTrackedEntityInstanceA(relationship.getTrackedEntityInstanceA());
-        relationshipFlow.setTrackedEntityInstanceAId(relationship.getTrackedEntityInstanceAId());
-        relationshipFlow.setTrackedEntityInstanceB(relationship.getTrackedEntityInstanceB());
-        relationshipFlow.setTrackedEntityInstanceBId(relationship.getTrackedEntityInstanceBId());
+        // relationshipFlow.setTrackedEntityInstanceA(relationship.getTrackedEntityInstanceA());
+        // relationshipFlow.setTrackedEntityInstanceAId(relationship.getTrackedEntityInstanceAId());
+        // relationshipFlow.setTrackedEntityInstanceB(relationship.getTrackedEntityInstanceB());
+        // relationshipFlow.setTrackedEntityInstanceBId(relationship.getTrackedEntityInstanceBId());
         relationshipFlow.setDisplayName(relationship.getDisplayName());
-        relationshipFlow.setAction(relationship.getAction());
+        // relationshipFlow.setAction(relationship.getAction());
         return relationshipFlow;
     }
 

@@ -124,7 +124,8 @@ public class DashboardItemService implements IDashboardItemService {
 
     @Override
     public List<DashboardItem> filterByType(Dashboard dashboard, String type) {
-        List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
+        // List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
+        List<DashboardItem> dashboardItems = new ArrayList<>();
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> filteredItems = new ArrayList<>();

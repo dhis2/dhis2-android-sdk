@@ -31,11 +31,8 @@ package org.hisp.dhis.android.sdk.core.api;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardService;
 
 import java.util.List;
@@ -71,13 +68,13 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     }
 
     @Override
-    public Dashboard query(long id) {
-        return dashboardService.query(id);
+    public Dashboard get(long id) {
+        return dashboardService.get(id);
     }
 
     @Override
-    public List<Dashboard> query() {
-        return dashboardService.query();
+    public List<Dashboard> list() {
+        return dashboardService.list();
     }
 
     @Override

@@ -100,7 +100,7 @@ public class DashboardElementService implements IDashboardElementService {
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem) {
+    public List<DashboardElement> list(DashboardItem dashboardItem) {
         List<DashboardElement> allDashboardElements = dashboardElementStore.queryByDashboardItem(dashboardItem);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
@@ -117,7 +117,7 @@ public class DashboardElementService implements IDashboardElementService {
     }
 
     @Override
-    public List<DashboardElement> query() {
+    public List<DashboardElement> list() {
         List<DashboardElement> elements = dashboardElementStore.queryAll();
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 

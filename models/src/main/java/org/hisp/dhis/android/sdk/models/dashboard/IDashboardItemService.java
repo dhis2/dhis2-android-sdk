@@ -37,15 +37,13 @@ public interface IDashboardItemService extends IService {
 
     boolean remove(DashboardItem dashboardItem);
 
-    List<DashboardItem> query();
+    List<DashboardItem> list();
 
-    List<DashboardItem> query(Dashboard dashboard);
+    List<DashboardItem> list(Dashboard dashboard);
 
-    DashboardItem query(long id);
+    DashboardItem get(long id);
 
-    DashboardItem query(String uid);
-
-    List<DashboardItem> filterByType(Dashboard dashboard, String type);
+    DashboardItem get(String uid);
 
     int getContentCount(DashboardItem dashboardItem);
 }

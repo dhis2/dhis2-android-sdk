@@ -93,7 +93,7 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public List<Dashboard> query() {
+    public List<Dashboard> list() {
         return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
     }
 
@@ -118,7 +118,7 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public Dashboard query(long id) {
+    public Dashboard get(long id) {
         Dashboard dashboard = dashboardStore.queryById(id);
         Action action = stateStore.queryAction(dashboard);
 

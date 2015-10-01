@@ -52,8 +52,8 @@ import java.util.List;
 public final class Relationship$Flow extends BaseModel {
 
     static final int UNIQUE_RELATIONSHIP_GROUP = 93;
-    static final String TRACKED_ENTITY_INSTANCEA_KEY = "teiA";
-    static final String TRACKED_ENTITY_INSTANCEB_KEY = "teiB";
+    static final String TRACKED_ENTITY_INSTANCE_A_KEY = "trackedEntityInstanceA";
+    static final String TRACKED_ENTITY_INSTANCE_B_KEY = "trackedEntityInstanceB";
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -67,7 +67,7 @@ public final class Relationship$Flow extends BaseModel {
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCEA_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_A_KEY, columnType = long.class, foreignColumnName = "id"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstanceA;
@@ -76,7 +76,7 @@ public final class Relationship$Flow extends BaseModel {
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCEB_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_B_KEY, columnType = long.class, foreignColumnName = "id"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstanceB;

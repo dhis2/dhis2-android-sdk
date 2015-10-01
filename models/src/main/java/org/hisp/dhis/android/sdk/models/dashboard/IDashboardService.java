@@ -62,9 +62,9 @@ public interface IDashboardService extends IService {
      */
     boolean remove(Dashboard dashboard);
 
-    Dashboard query(long id);
+    Dashboard get(long id);
 
-    List<Dashboard> query();
+    List<Dashboard> list();
 
     /**
      * Will try to append DashboardItemContent to current dashboard.

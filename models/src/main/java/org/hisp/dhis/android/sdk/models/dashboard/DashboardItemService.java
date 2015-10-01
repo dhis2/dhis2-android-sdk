@@ -89,11 +89,9 @@ public class DashboardItemService implements IDashboardItemService {
     public boolean remove(DashboardItem dashboardItem) {
         Action action = stateStore.queryAction(dashboardItem);
         if (Action.TO_POST.equals(action)) {
-            // dashboardItem.setAction(Action.TO_DELETE);
             stateStore.delete(dashboardItem);
             dashboardItemStore.delete(dashboardItem);
         } else {
-            // dashboardItem.setAction(Action.TO_DELETE);
             stateStore.save(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
@@ -101,12 +99,12 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     @Override
-    public List<DashboardItem> query() {
-        return null;
+    public List<DashboardItem> list() {
+        return stateStore.filterByAction(DashboardItem.class, Action.TO_DELETE);
     }
 
     @Override
-    public List<DashboardItem> query(Dashboard dashboard) {
+    public List<DashboardItem> list(Dashboard dashboard) {
         List<DashboardItem> dashboardItems = dashboardItemStore.queryByDashboard(dashboard);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
@@ -122,7 +120,7 @@ public class DashboardItemService implements IDashboardItemService {
         return filteredItems;
     }
 
-    @Override
+    /* @Override
     public List<DashboardItem> filterByType(Dashboard dashboard, String type) {
         // List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
         List<DashboardItem> dashboardItems = new ArrayList<>();
@@ -138,10 +136,10 @@ public class DashboardItemService implements IDashboardItemService {
         }
 
         return filteredItems;
-    }
+    } */
 
     @Override
-    public DashboardItem query(long id) {
+    public DashboardItem get(long id) {
         DashboardItem dashboardItem = dashboardItemStore.queryById(id);
 
         if (dashboardItem != null) {
@@ -156,7 +154,7 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     @Override
-    public DashboardItem query(String uid) {
+    public DashboardItem get(String uid) {
         DashboardItem dashboardItem = dashboardItemStore.queryByUid(uid);
 
         if (dashboardItem != null) {

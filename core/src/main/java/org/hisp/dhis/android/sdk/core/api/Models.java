@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElement
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.faileditem.FailedItemStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -78,6 +79,7 @@ import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
+import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
@@ -156,6 +158,8 @@ final class Models {
 
     private final IStateStore stateStore;
 
+    private final IFailedItemStore failedItemStore;
+
     public Models(Context context) {
         FlowManager.init(context);
         /* TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
@@ -193,6 +197,8 @@ final class Models {
 
         stateStore = new StateStore();
 
+        failedItemStore = new FailedItemStore();
+
         dashboardStore = new DashboardStore(stateStore);
         dashboardItemStore = new DashboardItemStore(stateStore);
         dashboardElementStore = new DashboardElementStore(stateStore);
@@ -218,6 +224,10 @@ final class Models {
         }
 
         return models;
+    }
+
+    public static IFailedItemStore failedItems() {
+        return getInstance().failedItemStore;
     }
 
     public static IEnrollmentStore enrollments() {

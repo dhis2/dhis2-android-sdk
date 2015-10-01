@@ -35,8 +35,7 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -44,42 +43,41 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
 
-public final class RelationshipTypeController extends ResourceController<RelationshipType> {
+public final class DataElementController extends ResourceController<DataElement> {
 
-    private final static String RELATIONSHIPTYPES = "relationshipTypes";
+    private final static String DATAELEMENTS = "dataElements";
     private final IDhisApi mDhisApi;
-    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
+    private final IIdentifiableObjectStore<DataElement> mDataElementStore;
 
-    public RelationshipTypeController(IDhisApi mDhisApi,
-                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
+    public DataElementController(IDhisApi mDhisApi, IIdentifiableObjectStore<DataElement> mDataElementStore) {
         this.mDhisApi = mDhisApi;
-        this.mRelationshipTypeStore = mRelationshipTypeStore;
+        this.mDataElementStore = mDataElementStore;
     }
 
-    private void getRelationshipTypesDataFromServer() throws APIException {
-        ResourceType resource = ResourceType.RELATIONSHIPTYPES;
+    private void getProgramRulesDataFromServer() throws APIException {
+        ResourceType resource = ResourceType.DATAELEMENTS;
         DateTime serverTime = mDhisApi.getSystemInfo().getServerDate();
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<RelationshipType> allRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getBasicQueryMap()), RELATIONSHIPTYPES);
-        //fetch all updated relationshiptypes
-        List<RelationshipType> updatedRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getAllFieldsQueryMap(lastUpdated)), RELATIONSHIPTYPES);
+        List<DataElement> allDataElements = unwrapResponse(mDhisApi
+                .getDataElements(getBasicQueryMap()), DATAELEMENTS);
+        //fetch all updated items
+        List<DataElement> updatedDataElements = unwrapResponse(mDhisApi
+                .getDataElements(getAllFieldsQueryMap(lastUpdated)), DATAELEMENTS);
         //merging updated items with persisted items, and removing ones not present in server.
-        List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
+        List<DataElement> existingPersistedAndUpdatedDataElements =
+                merge(allDataElements, updatedDataElements, mDataElementStore.
                         queryAll());
-        saveResourceDataFromServer(resource, mRelationshipTypeStore,
-                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll(),
+        saveResourceDataFromServer(resource, mDataElementStore,
+                existingPersistedAndUpdatedDataElements, mDataElementStore.queryAll(),
                 serverTime);
     }
 
     @Override
     public void sync() throws APIException {
-        getRelationshipTypesDataFromServer();
+        getProgramRulesDataFromServer();
     }
 }

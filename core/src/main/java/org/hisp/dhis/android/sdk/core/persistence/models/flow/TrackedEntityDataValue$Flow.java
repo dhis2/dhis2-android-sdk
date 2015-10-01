@@ -30,8 +30,14 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
@@ -40,18 +46,28 @@ import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityData
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(databaseName = DbDhis.NAME)
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = TrackedEntityDataValue$Flow.UNIQUE_EVENT_DATAVALUE, uniqueConflict = ConflictAction.FAIL)})
 public final class TrackedEntityDataValue$Flow extends BaseModel {
 
-    @Column
-    long eventId;
+    static final int UNIQUE_EVENT_DATAVALUE = 57;
+    private final static String EVENT_KEY = "event";
 
     @Column
     @PrimaryKey
-    String eventUid;
+    long id;
 
     @Column
-    @PrimaryKey
+    @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = EVENT_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    Event$Flow event;
+
+    @Column
+    @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
     String dataElement;
 
     @Column
@@ -63,23 +79,20 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
     @Column
     String value;
 
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
-
-    public long getEventId() {
-        return eventId;
+    public long getId() {
+        return id;
     }
 
-    public void setEventId(long eventId) {
-        this.eventId = eventId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getEventUid() {
-        return eventUid;
+    public Event$Flow getEvent() {
+        return event;
     }
 
-    public void setEventUid(String eventUid) {
-        this.eventUid = eventUid;
+    public void setEvent(Event$Flow event) {
+        this.event = event;
     }
 
     public String getDataElement() {
@@ -114,14 +127,6 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         this.value = value;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
-    }
-
     public TrackedEntityDataValue$Flow() {
         // empty constructor
     }
@@ -132,13 +137,12 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-        // trackedEntityDataValue.setEventId(trackedEntityDataValueFlow.getEventId());
-        // trackedEntityDataValue.setEventUid(trackedEntityDataValueFlow.getEventUid());
+        trackedEntityDataValue.setId(trackedEntityDataValueFlow.getId());
+        trackedEntityDataValue.setEvent(Event$Flow.toModel(trackedEntityDataValueFlow.getEvent()));
         trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
         trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
         trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());
         trackedEntityDataValue.setValue(trackedEntityDataValueFlow.getValue());
-        // trackedEntityDataValue.setAction(trackedEntityDataValueFlow.getAction());
         return trackedEntityDataValue;
     }
 
@@ -148,13 +152,12 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
         }
 
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
-        // trackedEntityDataValueFlow.setEventId(trackedEntityDataValue.getEventId());
-        // trackedEntityDataValueFlow.setEventUid(trackedEntityDataValue.getEventUid());
+        trackedEntityDataValueFlow.setId(trackedEntityDataValue.getId());
+        trackedEntityDataValueFlow.setEvent(Event$Flow.fromModel(trackedEntityDataValue.getEvent()));
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
         trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
         trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
         trackedEntityDataValueFlow.setValue(trackedEntityDataValue.getValue());
-        // trackedEntityDataValueFlow.setAction(trackedEntityDataValue.getAction());
         return trackedEntityDataValueFlow;
     }
 

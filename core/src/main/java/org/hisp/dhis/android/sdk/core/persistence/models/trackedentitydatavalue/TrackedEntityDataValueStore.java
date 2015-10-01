@@ -86,8 +86,8 @@ public final class TrackedEntityDataValueStore implements ITrackedEntityDataValu
         }
         List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlow = new Select()
                 .from(TrackedEntityDataValue$Flow.class)
-                .where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENTUID)
-                        .is(event.getEventUid()))
+                .where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT)
+                        .is(event))
                 .queryList();
         return TrackedEntityDataValue$Flow.toModels(trackedEntityDataValueFlow);
     }
@@ -98,8 +98,8 @@ public final class TrackedEntityDataValueStore implements ITrackedEntityDataValu
             return null;
         }
         return TrackedEntityDataValue$Flow.toModel(new Select().from(TrackedEntityDataValue$Flow.
-                class).where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENTUID).
-                is(event.getEventUid())).and(Condition.column(TrackedEntityDataValue$Flow$Table.
+                class).where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT).
+                is(event)).and(Condition.column(TrackedEntityDataValue$Flow$Table.
                 DATAELEMENT).is(dataElement.getUId())).
                 querySingle());
     }

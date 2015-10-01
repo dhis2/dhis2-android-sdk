@@ -43,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
@@ -58,6 +59,7 @@ public class AutoCompleteDialogFragment extends DialogFragment
     private AutoCompleteDialogAdapter mAdapter;
     private OnOptionSelectedListener mListener;
     private int mDialogId;
+    public ProgressBar mProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class AutoCompleteDialogFragment extends DialogFragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ListView listView = (ListView) view
+        ListView mListView = (ListView) view
                 .findViewById(R.id.simple_listview);
         ImageView closeDialogButton = (ImageView) view
                 .findViewById(R.id.close_dialog_button);
@@ -85,22 +87,26 @@ public class AutoCompleteDialogFragment extends DialogFragment
                 .findViewById(R.id.filter_options);
         mDialogLabel = (TextView) view
                 .findViewById(R.id.dialog_label);
+        mProgressBar = (ProgressBar) view
+                .findViewById(R.id.auto_complete_dialog_progress_bar);
         InputMethodManager imm = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
 
         mAdapter = new AutoCompleteDialogAdapter(LayoutInflater.from(getActivity()));
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         mFilter.addTextChangedListener(new AbsTextWatcher() {
-            @Override public void afterTextChanged(Editable s) {
+            @Override
+            public void afterTextChanged(Editable s) {
                 mAdapter.getFilter().filter(s.toString());
             }
         });
 
         closeDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 dismiss();
             }
         });

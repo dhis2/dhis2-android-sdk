@@ -29,23 +29,41 @@
 package org.hisp.dhis.android.sdk.core.api;
 
 import org.hisp.dhis.android.sdk.core.controllers.AssignedProgramsController;
+import org.hisp.dhis.android.sdk.core.controllers.ConstantController;
 import org.hisp.dhis.android.sdk.core.controllers.DashboardController;
+import org.hisp.dhis.android.sdk.core.controllers.DataElementController;
+import org.hisp.dhis.android.sdk.core.controllers.EnrollmentController;
+import org.hisp.dhis.android.sdk.core.controllers.EventController;
+import org.hisp.dhis.android.sdk.core.controllers.IEnrollmentController;
+import org.hisp.dhis.android.sdk.core.controllers.IEventController;
 import org.hisp.dhis.android.sdk.core.controllers.IOrganisationUnitController;
 import org.hisp.dhis.android.sdk.core.controllers.IProgramController;
+import org.hisp.dhis.android.sdk.core.controllers.ITrackedEntityInstanceController;
 import org.hisp.dhis.android.sdk.core.controllers.InterpretationController;
 import org.hisp.dhis.android.sdk.core.controllers.OptionSetController;
 import org.hisp.dhis.android.sdk.core.controllers.OrganisationUnitController;
 import org.hisp.dhis.android.sdk.core.controllers.ProgramController;
+import org.hisp.dhis.android.sdk.core.controllers.ProgramRuleActionController;
+import org.hisp.dhis.android.sdk.core.controllers.ProgramRuleController;
+import org.hisp.dhis.android.sdk.core.controllers.ProgramRuleVariableController;
 import org.hisp.dhis.android.sdk.core.controllers.RelationshipTypeController;
+import org.hisp.dhis.android.sdk.core.controllers.TrackedEntityAttributeController;
+import org.hisp.dhis.android.sdk.core.controllers.TrackedEntityInstanceController;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.controllers.user.IUserAccountController;
 import org.hisp.dhis.android.sdk.core.controllers.user.UserAccountController;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
+import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
+import org.hisp.dhis.android.sdk.models.programruleaction.ProgramRuleAction;
+import org.hisp.dhis.android.sdk.models.programrulevariable.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 
 final class Controllers {
     private static Controllers controllers;
@@ -58,6 +76,15 @@ final class Controllers {
     private final IProgramController programController;
     private final IOrganisationUnitController organisationUnitController;
     private final IDataController<Program> assignedProgramsController;
+    private final IEventController eventController;
+    private final IEnrollmentController enrollmentController;
+    private final ITrackedEntityInstanceController trackedEntityInstanceController;
+    private final IDataController<DataElement> dataElementController;
+    private final IDataController<Constant> constantController;
+    private final IDataController<TrackedEntityAttribute> trackedEntityAttributeController;
+    private final IDataController<ProgramRule> programRuleController;
+    private final IDataController<ProgramRuleVariable> programRuleVariableController;
+    private final IDataController<ProgramRuleAction> programRuleActionController;
 
     private Controllers(IDhisApi dhisApi) {
         dashboardController = new DashboardController(dhisApi, Models.dashboards(),
@@ -67,13 +94,28 @@ final class Controllers {
                 Services.interpretations(), Services.userAccount(), Models.interpretations(),
                 Models.interpretationElements(), Models.interpretationComments(), Models.users());
         userAccountController = new UserAccountController(dhisApi, Models.userAccount());
-        relationshipTypeController = new RelationshipTypeController(dhisApi, Models.relationships(), Models.relationshipTypes());
+        relationshipTypeController = new RelationshipTypeController(dhisApi, Models.relationshipTypes());
         optionSetController = new OptionSetController(dhisApi, Models.options(), Models.optionSets());
         programController = new ProgramController(dhisApi, Models.programs(), Models.programIndicators(),
                 Models.programStageDataElements(), Models.programTrackedEntityAttributes(), Models.programStages(), Models.programStageSections());
         organisationUnitController = new OrganisationUnitController(dhisApi, Models.organisationUnits());
         assignedProgramsController = new AssignedProgramsController(dhisApi,
                 programController, organisationUnitController, Models.organisationUnits(), Models.programs());
+        eventController = new EventController(dhisApi, Models.stateStore(), Models.events(),
+                Models.trackedEntityDataValues(), Models.organisationUnits(), Models.programs(),
+                Models.failedItems());
+        enrollmentController = new EnrollmentController(dhisApi, eventController,
+                Models.enrollments(), Models.events(), Models.stateStore(), Models.failedItems());
+        trackedEntityInstanceController = new TrackedEntityInstanceController(dhisApi,
+                enrollmentController, Models.trackedEntityInstances(), Models.stateStore(),
+                Models.failedItems(), Models.relationships(), Models.trackedEntityAttributeValues(),
+                Models.enrollments());
+        dataElementController = new DataElementController(dhisApi, Models.dataElements());
+        constantController = new ConstantController(dhisApi, Models.constants());
+        trackedEntityAttributeController = new TrackedEntityAttributeController(dhisApi, Models.trackedEntityAttributes());
+        programRuleController = new ProgramRuleController(dhisApi, Models.programRules());
+        programRuleVariableController = new ProgramRuleVariableController(dhisApi, Models.programRuleVariables());
+        programRuleActionController = new ProgramRuleActionController(dhisApi, Models.programRuleActions());
     }
 
     public static void init(IDhisApi dhisApi) {

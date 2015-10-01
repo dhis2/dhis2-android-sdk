@@ -31,6 +31,9 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
@@ -49,6 +52,8 @@ import java.util.List;
 public final class Relationship$Flow extends BaseModel {
 
     static final int UNIQUE_RELATIONSHIP_GROUP = 93;
+    static final String TRACKED_ENTITY_INSTANCEA_KEY = "teiA";
+    static final String TRACKED_ENTITY_INSTANCEB_KEY = "teiB";
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -59,24 +64,25 @@ public final class Relationship$Flow extends BaseModel {
     String relationship;
 
     @Column
-    long trackedEntityInstanceAId;
+    @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCEA_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    TrackedEntityInstance$Flow trackedEntityInstanceA;
 
     @Column
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
-    String trackedEntityInstanceA;
-
-    @Column
-    long trackedEntityInstanceBId;
-
-    @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
-    String trackedEntityInstanceB;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCEB_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    TrackedEntityInstance$Flow trackedEntityInstanceB;
 
     @Column
     String displayName;
-
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
 
     public String getRelationship() {
         return relationship;
@@ -86,35 +92,27 @@ public final class Relationship$Flow extends BaseModel {
         this.relationship = relationship;
     }
 
-    public long getTrackedEntityInstanceAId() {
-        return trackedEntityInstanceAId;
+    public long getId() {
+        return id;
     }
 
-    public void setTrackedEntityInstanceAId(long trackedEntityInstanceAId) {
-        this.trackedEntityInstanceAId = trackedEntityInstanceAId;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public long getTrackedEntityInstanceBId() {
-        return trackedEntityInstanceBId;
-    }
-
-    public void setTrackedEntityInstanceBId(long trackedEntityInstanceBId) {
-        this.trackedEntityInstanceBId = trackedEntityInstanceBId;
-    }
-
-    public String getTrackedEntityInstanceA() {
+    public TrackedEntityInstance$Flow getTrackedEntityInstanceA() {
         return trackedEntityInstanceA;
     }
 
-    public void setTrackedEntityInstanceA(String trackedEntityInstanceA) {
+    public void setTrackedEntityInstanceA(TrackedEntityInstance$Flow trackedEntityInstanceA) {
         this.trackedEntityInstanceA = trackedEntityInstanceA;
     }
 
-    public String getTrackedEntityInstanceB() {
+    public TrackedEntityInstance$Flow getTrackedEntityInstanceB() {
         return trackedEntityInstanceB;
     }
 
-    public void setTrackedEntityInstanceB(String trackedEntityInstanceB) {
+    public void setTrackedEntityInstanceB(TrackedEntityInstance$Flow trackedEntityInstanceB) {
         this.trackedEntityInstanceB = trackedEntityInstanceB;
     }
 
@@ -124,14 +122,6 @@ public final class Relationship$Flow extends BaseModel {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
     }
 
     public Relationship$Flow() {
@@ -144,13 +134,14 @@ public final class Relationship$Flow extends BaseModel {
         }
 
         Relationship relationship = new Relationship();
+        relationship.setId(relationshipFlow.getId());
         relationship.setRelationship(relationshipFlow.getRelationship());
-        relationship.setTrackedEntityInstanceA(relationshipFlow.getTrackedEntityInstanceA());
-        // relationship.setTrackedEntityInstanceAId(relationshipFlow.getTrackedEntityInstanceAId());
-        relationship.setTrackedEntityInstanceB(relationshipFlow.getTrackedEntityInstanceB());
-        // relationship.setTrackedEntityInstanceBId(relationshipFlow.getTrackedEntityInstanceBId());
+        relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
+        relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
         relationship.setDisplayName(relationshipFlow.getDisplayName());
-        // relationship.setAction(relationshipFlow.getAction());
+        relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
+        relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
+        relationship.setDisplayName(relationshipFlow.getDisplayName());
         return relationship;
     }
 
@@ -160,13 +151,14 @@ public final class Relationship$Flow extends BaseModel {
         }
 
         Relationship$Flow relationshipFlow = new Relationship$Flow();
+        relationshipFlow.setId(relationship.getId());
         relationshipFlow.setRelationship(relationship.getRelationship());
-        // relationshipFlow.setTrackedEntityInstanceA(relationship.getTrackedEntityInstanceA());
-        // relationshipFlow.setTrackedEntityInstanceAId(relationship.getTrackedEntityInstanceAId());
-        // relationshipFlow.setTrackedEntityInstanceB(relationship.getTrackedEntityInstanceB());
-        // relationshipFlow.setTrackedEntityInstanceBId(relationship.getTrackedEntityInstanceBId());
+        relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
+        relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
         relationshipFlow.setDisplayName(relationship.getDisplayName());
-        // relationshipFlow.setAction(relationship.getAction());
+        relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
+        relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
+        relationshipFlow.setDisplayName(relationship.getDisplayName());
         return relationshipFlow;
     }
 

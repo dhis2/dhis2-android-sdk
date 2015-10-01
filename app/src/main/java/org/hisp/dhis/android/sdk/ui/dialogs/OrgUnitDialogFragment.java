@@ -61,9 +61,9 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
                                                     Program.ProgramType... programKinds) {
         OrgUnitDialogFragment fragment = new OrgUnitDialogFragment();
         Bundle args = new Bundle();
-        if( programKinds != null ) {
+        if (programKinds != null) {
             String[] programKindStrings = new String[programKinds.length];
-            for(int i = 0; i<programKinds.length; i++) {
+            for (int i = 0; i < programKinds.length; i++) {
                 programKindStrings[i] = programKinds[i].name();
             }
             args.putStringArray(Program$Table.KIND, programKindStrings);
@@ -91,16 +91,21 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
         if (LOADER_ID == id && isAdded()) {
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
             modelsToTrack.add(OrganisationUnitProgramRelationship.class);
+            modelsToTrack.add(OrganisationUnit.class);
+            modelsToTrack.add(Program.class);
+
             String[] kinds = args.getStringArray(Program$Table.KIND);
             Program.ProgramType[] types = null;
-            if( kinds != null ) {
+            if (kinds != null) {
                 types = new Program.ProgramType[kinds.length];
-                for( int i = 0; i<kinds.length; i++ ) {
+                for (int i = 0; i < kinds.length; i++) {
                     types[i] = Program.ProgramType.valueOf(kinds[i]);
                 }
             }
             return new DbLoader<>(
-                    getActivity().getBaseContext(), modelsToTrack, new OrgUnitQuery(types)
+                    getActivity().getBaseContext(),
+                    modelsToTrack,
+                    new OrgUnitQuery(types)
             );
         }
         return null;
@@ -111,6 +116,9 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
                                List<OptionAdapterValue> data) {
         if (loader.getId() == LOADER_ID) {
             getAdapter().swapData(data);
+
+            if (MetaDataController.isDataLoaded(getActivity()))
+                mProgressBar.setVisibility(View.GONE);
         }
     }
 

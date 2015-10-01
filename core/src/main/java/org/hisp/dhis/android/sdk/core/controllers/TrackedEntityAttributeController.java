@@ -35,8 +35,8 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
+import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -44,42 +44,41 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
 
-public final class RelationshipTypeController extends ResourceController<RelationshipType> {
+public final class TrackedEntityAttributeController extends ResourceController<TrackedEntityAttribute> {
 
-    private final static String RELATIONSHIPTYPES = "relationshipTypes";
+    private final static String TRACKEDENTITYATTRIBUTES = "trackedEntityAttributes";
     private final IDhisApi mDhisApi;
-    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
+    private final IIdentifiableObjectStore<TrackedEntityAttribute> mTrackedEntityAttributeStore;
 
-    public RelationshipTypeController(IDhisApi mDhisApi,
-                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
+    public TrackedEntityAttributeController(IDhisApi mDhisApi, IIdentifiableObjectStore<TrackedEntityAttribute> mTrackedEntityAttributeStore) {
         this.mDhisApi = mDhisApi;
-        this.mRelationshipTypeStore = mRelationshipTypeStore;
+        this.mTrackedEntityAttributeStore = mTrackedEntityAttributeStore;
     }
 
-    private void getRelationshipTypesDataFromServer() throws APIException {
-        ResourceType resource = ResourceType.RELATIONSHIPTYPES;
+    private void getProgramRulesDataFromServer() throws APIException {
+        ResourceType resource = ResourceType.TRACKEDENTITYATTRIBUTES;
         DateTime serverTime = mDhisApi.getSystemInfo().getServerDate();
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<RelationshipType> allRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getBasicQueryMap()), RELATIONSHIPTYPES);
-        //fetch all updated relationshiptypes
-        List<RelationshipType> updatedRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getAllFieldsQueryMap(lastUpdated)), RELATIONSHIPTYPES);
+        List<TrackedEntityAttribute> allTrackedEntityAttributes = unwrapResponse(mDhisApi
+                .getTrackedEntityAttributes(getBasicQueryMap()), TRACKEDENTITYATTRIBUTES);
+        //fetch all updated items
+        List<TrackedEntityAttribute> updatedTrackedEntityAttributes = unwrapResponse(mDhisApi
+                .getTrackedEntityAttributes(getAllFieldsQueryMap(lastUpdated)), TRACKEDENTITYATTRIBUTES);
         //merging updated items with persisted items, and removing ones not present in server.
-        List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
+        List<TrackedEntityAttribute> existingPersistedAndUpdatedTrackedEntityAttributes =
+                merge(allTrackedEntityAttributes, updatedTrackedEntityAttributes, mTrackedEntityAttributeStore.
                         queryAll());
-        saveResourceDataFromServer(resource, mRelationshipTypeStore,
-                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll(),
+        saveResourceDataFromServer(resource, mTrackedEntityAttributeStore,
+                existingPersistedAndUpdatedTrackedEntityAttributes, mTrackedEntityAttributeStore.queryAll(),
                 serverTime);
     }
 
     @Override
     public void sync() throws APIException {
-        getRelationshipTypesDataFromServer();
+        getProgramRulesDataFromServer();
     }
 }

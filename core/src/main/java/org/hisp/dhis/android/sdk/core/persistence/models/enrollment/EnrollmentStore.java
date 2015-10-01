@@ -65,13 +65,26 @@ public final class EnrollmentStore implements IEnrollmentStore {
 
     @Override
     public void update(Enrollment object) {
-        // make sure uid is not overwritten!!
+        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
+        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
+            Enrollment$Flow persisted = new Select().from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.ID).is(object.getId())).querySingle();
+            if(persisted != null) {
+                object.setEnrollmentUid(persisted.getEnrollmentUid());
+            }
+        }
         Enrollment$Flow.fromModel(object).update();
     }
 
     @Override
     public void save(Enrollment object) {
-        // make sure uid is not overwritten!!
+        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
+        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
+            Enrollment$Flow persisted = new Select().from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.ID).is(object.getId())).querySingle();
+            if(persisted != null) {
+                object.setEnrollmentUid(persisted.getEnrollmentUid());
+            }
+        }
+        Enrollment$Flow.fromModel(object).update();
         Enrollment$Flow enrollmentFlow =
                 Enrollment$Flow.fromModel(object);
         enrollmentFlow.save();
@@ -117,7 +130,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCEID).is(trackedEntityInstance.getId())).queryList();
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
         for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
             setEvents(enrollmentFlow);
             setTrackedEntityAttributeValues(enrollmentFlow);
@@ -130,7 +143,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCEID).is(trackedEntityInstance.getId())).
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).
                         and(Condition.column(Enrollment$Flow$Table.STATUS).is(Enrollment.ACTIVE)).
                         querySingle();
         setEvents(enrollmentFlow);
@@ -142,7 +155,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
     public List<Enrollment> query(TrackedEntityInstance trackedEntityInstance) {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCEID).is(trackedEntityInstance.getId())).queryList();
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
         for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
             setEvents(enrollmentFlow);
             setTrackedEntityAttributeValues(enrollmentFlow);

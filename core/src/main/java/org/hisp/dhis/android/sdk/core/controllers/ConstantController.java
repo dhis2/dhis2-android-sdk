@@ -35,8 +35,7 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -44,42 +43,41 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
 
-public final class RelationshipTypeController extends ResourceController<RelationshipType> {
+public final class ConstantController extends ResourceController<Constant> {
 
-    private final static String RELATIONSHIPTYPES = "relationshipTypes";
+    private final static String CONSTANTS = "constants";
     private final IDhisApi mDhisApi;
-    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
+    private final IIdentifiableObjectStore<Constant> mConstantStore;
 
-    public RelationshipTypeController(IDhisApi mDhisApi,
-                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
+    public ConstantController(IDhisApi mDhisApi, IIdentifiableObjectStore<Constant> constantStore) {
         this.mDhisApi = mDhisApi;
-        this.mRelationshipTypeStore = mRelationshipTypeStore;
+        this.mConstantStore = constantStore;
     }
 
-    private void getRelationshipTypesDataFromServer() throws APIException {
-        ResourceType resource = ResourceType.RELATIONSHIPTYPES;
+    private void getConstantsDataFromServer() throws APIException {
+        ResourceType resource = ResourceType.CONSTANTS;
         DateTime serverTime = mDhisApi.getSystemInfo().getServerDate();
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<RelationshipType> allRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getBasicQueryMap()), RELATIONSHIPTYPES);
-        //fetch all updated relationshiptypes
-        List<RelationshipType> updatedRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getAllFieldsQueryMap(lastUpdated)), RELATIONSHIPTYPES);
+        List<Constant> allConstants = unwrapResponse(mDhisApi
+                .getConstants(getBasicQueryMap()), CONSTANTS);
+        //fetch all updated items
+        List<Constant> updatedConstants = unwrapResponse(mDhisApi
+                .getConstants(getAllFieldsQueryMap(lastUpdated)), CONSTANTS);
         //merging updated items with persisted items, and removing ones not present in server.
-        List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
+        List<Constant> existingPersistedAndUpdatedConstants =
+                merge(allConstants, updatedConstants, mConstantStore.
                         queryAll());
-        saveResourceDataFromServer(resource, mRelationshipTypeStore,
-                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll(),
+        saveResourceDataFromServer(resource, mConstantStore,
+                existingPersistedAndUpdatedConstants, mConstantStore.queryAll(),
                 serverTime);
     }
 
     @Override
     public void sync() throws APIException {
-        getRelationshipTypesDataFromServer();
+        getConstantsDataFromServer();
     }
 }

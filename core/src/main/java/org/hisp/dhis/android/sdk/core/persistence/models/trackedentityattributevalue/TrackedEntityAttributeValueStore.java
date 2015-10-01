@@ -95,8 +95,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
         TrackedEntityAttributeValue$Flow trackedEntityInstanceFlow = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                        .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstanceUid())).and(Condition
+                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).and(Condition
                         .column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                         .is(trackedEntityAttribute.getUId())).querySingle();
         return TrackedEntityAttributeValue$Flow.toModel(trackedEntityInstanceFlow);
@@ -110,8 +109,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
         List<TrackedEntityAttributeValue$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                        .TRACKEDENTITYINSTANCEUID).is(trackedEntityInstance
-                        .getTrackedEntityInstanceUid())).queryList();
+                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).queryList();
         return TrackedEntityAttributeValue$Flow.toModels(trackedEntityInstanceFlows);
     }
 
@@ -131,7 +129,7 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
             TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new Select()
                     .from(TrackedEntityAttributeValue$Flow.class)
                     .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                            .TRACKEDENTITYINSTANCEUID).is(enrollment.getTrackedEntityInstanceUid()))
+                            .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(enrollment.getTrackedEntityInstance()))
                     .and(Condition.column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                             .is(programTrackedEntityAttribute.getTrackedEntityAttribute())).querySingle();
             if(trackedEntityAttributeValueFlow != null) {

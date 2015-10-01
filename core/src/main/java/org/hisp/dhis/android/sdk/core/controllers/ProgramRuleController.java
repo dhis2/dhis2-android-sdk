@@ -35,8 +35,8 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.constant.Constant;
+import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -44,42 +44,41 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
 
-public final class RelationshipTypeController extends ResourceController<RelationshipType> {
+public final class ProgramRuleController extends ResourceController<ProgramRule> {
 
-    private final static String RELATIONSHIPTYPES = "relationshipTypes";
+    private final static String PROGRAMRULES = "programRules";
     private final IDhisApi mDhisApi;
-    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
+    private final IIdentifiableObjectStore<ProgramRule> mProgramRuleStore;
 
-    public RelationshipTypeController(IDhisApi mDhisApi,
-                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
+    public ProgramRuleController(IDhisApi mDhisApi, IIdentifiableObjectStore<ProgramRule> mProgramRuleStore) {
         this.mDhisApi = mDhisApi;
-        this.mRelationshipTypeStore = mRelationshipTypeStore;
+        this.mProgramRuleStore = mProgramRuleStore;
     }
 
-    private void getRelationshipTypesDataFromServer() throws APIException {
-        ResourceType resource = ResourceType.RELATIONSHIPTYPES;
+    private void getProgramRulesDataFromServer() throws APIException {
+        ResourceType resource = ResourceType.PROGRAMRULES;
         DateTime serverTime = mDhisApi.getSystemInfo().getServerDate();
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<RelationshipType> allRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getBasicQueryMap()), RELATIONSHIPTYPES);
-        //fetch all updated relationshiptypes
-        List<RelationshipType> updatedRelationshipTypes = unwrapResponse(mDhisApi
-                .getRelationshipTypes(getAllFieldsQueryMap(lastUpdated)), RELATIONSHIPTYPES);
+        List<ProgramRule> allProgramRules = unwrapResponse(mDhisApi
+                .getProgramRules(getBasicQueryMap()), PROGRAMRULES);
+        //fetch all updated items
+        List<ProgramRule> updatedProgramRules = unwrapResponse(mDhisApi
+                .getProgramRules(getAllFieldsQueryMap(lastUpdated)), PROGRAMRULES);
         //merging updated items with persisted items, and removing ones not present in server.
-        List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
+        List<ProgramRule> existingPersistedAndUpdatedProgramRules =
+                merge(allProgramRules, updatedProgramRules, mProgramRuleStore.
                         queryAll());
-        saveResourceDataFromServer(resource, mRelationshipTypeStore,
-                existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll(),
+        saveResourceDataFromServer(resource, mProgramRuleStore,
+                existingPersistedAndUpdatedProgramRules, mProgramRuleStore.queryAll(),
                 serverTime);
     }
 
     @Override
     public void sync() throws APIException {
-        getRelationshipTypesDataFromServer();
+        getProgramRulesDataFromServer();
     }
 }

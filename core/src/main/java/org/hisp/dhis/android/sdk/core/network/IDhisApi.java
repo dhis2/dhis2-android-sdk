@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.core.network;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.models.common.SystemInfo;
+import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
@@ -45,7 +46,11 @@ import org.hisp.dhis.android.sdk.models.dataset.DataSet;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
+import org.hisp.dhis.android.sdk.models.programruleaction.ProgramRuleAction;
+import org.hisp.dhis.android.sdk.models.programrulevariable.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
+import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
@@ -243,6 +248,21 @@ public interface IDhisApi {
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with tracker meta data
     /////////////////////////////////////////////////////////////////////////
+
+    @GET("/" + TRACKED_ENTITY_ATTRIBUTES + "?paging=false")
+    Map<String, List<TrackedEntityAttribute>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + CONSTANTS + "?paging=false")
+    Map<String, List<Constant>> getConstants(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + PROGRAMRULES + "?paging=false")
+    Map<String, List<ProgramRule>> getProgramRules(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + PROGRAMRULEVARIABLES + "?paging=false")
+    Map<String, List<ProgramRuleVariable>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + PROGRAMRULEACTIONS + "?paging=false")
+    Map<String, List<ProgramRuleAction>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + RELATIONSHIPTYPES + "?paging=false")
     Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);

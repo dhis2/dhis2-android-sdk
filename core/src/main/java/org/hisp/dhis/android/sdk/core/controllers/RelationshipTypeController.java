@@ -48,13 +48,11 @@ public final class RelationshipTypeController extends ResourceController<Relatio
 
     private final static String RELATIONSHIPTYPES = "relationshipTypes";
     private final IDhisApi mDhisApi;
-    private final IRelationshipStore mRelationshipStore;
     private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
 
-    public RelationshipTypeController(IDhisApi mDhisApi, IRelationshipStore mRelationshipStore,
+    public RelationshipTypeController(IDhisApi mDhisApi,
                                       IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore) {
         this.mDhisApi = mDhisApi;
-        this.mRelationshipStore = mRelationshipStore;
         this.mRelationshipTypeStore = mRelationshipTypeStore;
     }
 

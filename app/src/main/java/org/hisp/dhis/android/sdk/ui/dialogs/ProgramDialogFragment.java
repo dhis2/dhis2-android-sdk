@@ -39,12 +39,12 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
-import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit$Table;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
 import java.util.ArrayList;
@@ -61,9 +61,9 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
         ProgramDialogFragment fragment = new ProgramDialogFragment();
         Bundle args = new Bundle();
         args.putString(OrganisationUnit$Table.ID, orgUnitId);
-        if( programKinds != null ) {
+        if (programKinds != null) {
             String[] programKindStrings = new String[programKinds.length];
-            for(int i = 0; i<programKinds.length; i++) {
+            for (int i = 0; i < programKinds.length; i++) {
                 programKindStrings[i] = programKinds[i].name();
             }
             args.putStringArray(Program$Table.KIND, programKindStrings);
@@ -92,9 +92,9 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
             String organisationUnitId = args.getString(OrganisationUnit$Table.ID);
             String[] kinds = args.getStringArray(Program$Table.KIND);
             Program.ProgramType[] types = null;
-            if( kinds != null ) {
+            if (kinds != null) {
                 types = new Program.ProgramType[kinds.length];
-                for( int i = 0; i<kinds.length; i++ ) {
+                for (int i = 0; i < kinds.length; i++) {
                     types[i] = Program.ProgramType.valueOf(kinds[i]);
                 }
             }
@@ -113,6 +113,9 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
                                List<OptionAdapterValue> data) {
         if (LOADER_ID == loader.getId()) {
             getAdapter().swapData(data);
+
+            if (MetaDataController.isDataLoaded(getActivity()))
+                mProgressBar.setVisibility(View.GONE);
         }
     }
 

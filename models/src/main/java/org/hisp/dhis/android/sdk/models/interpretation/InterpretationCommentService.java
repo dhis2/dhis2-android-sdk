@@ -46,7 +46,7 @@ public class InterpretationCommentService implements IInterpretationCommentServi
      * @param interpretationComment comment to delete.
      */
     @Override
-    public void deleteComment(InterpretationComment interpretationComment) {
+    public void remove(InterpretationComment interpretationComment) {
         isNull(interpretationComment, "interpretationComment should not be null");
 
         if (Action.TO_POST.equals(interpretationComment.getAction())) {
@@ -67,7 +67,7 @@ public class InterpretationCommentService implements IInterpretationCommentServi
      * @param text                  Edited text of comment.
      */
     @Override
-    public void updateCommentText(InterpretationComment interpretationComment, String text) {
+    public void update(InterpretationComment interpretationComment, String text) {
         isNull(interpretationComment, "interpretationComment must not be null");
 
         if (Action.TO_DELETE.equals(interpretationComment.getAction())) {

@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.user.User;
 
 import java.util.List;
@@ -50,9 +48,6 @@ public class Interpretation extends BaseIdentifiableObject {
 
     @JsonProperty("type")
     private String type;
-
-    @JsonIgnore
-    private Action action;
 
     @JsonProperty("user")
     private User user;
@@ -79,7 +74,6 @@ public class Interpretation extends BaseIdentifiableObject {
     private List<InterpretationComment> comments;
 
     public Interpretation() {
-        action = Action.SYNCED;
     }
 
     public String getText() {
@@ -96,14 +90,6 @@ public class Interpretation extends BaseIdentifiableObject {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
     }
 
     public User getUser() {

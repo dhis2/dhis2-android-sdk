@@ -89,7 +89,7 @@ public class InterpretationService implements IInterpretationService {
      * @return new Interpretation.
      */
     @Override
-    public Interpretation createInterpretation(DashboardItem item, User user, String text) {
+    public Interpretation add(DashboardItem item, User user, String text) {
         DateTime lastUpdated = new DateTime();
 
         Interpretation interpretation = new Interpretation();
@@ -103,21 +103,21 @@ public class InterpretationService implements IInterpretationService {
         switch (item.getType()) {
             case Interpretation.TYPE_CHART: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getChart(), Interpretation.TYPE_CHART);
+                        .add(interpretation, item.getChart(), Interpretation.TYPE_CHART);
                 interpretation.setType(Interpretation.TYPE_CHART);
                 interpretation.setChart(element);
                 break;
             }
             case Interpretation.TYPE_MAP: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getMap(), Interpretation.TYPE_MAP);
+                        .add(interpretation, item.getMap(), Interpretation.TYPE_MAP);
                 interpretation.setType(Interpretation.TYPE_MAP);
                 interpretation.setMap(element);
                 break;
             }
             case Interpretation.TYPE_REPORT_TABLE: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getReportTable(), Interpretation.TYPE_REPORT_TABLE);
+                        .add(interpretation, item.getReportTable(), Interpretation.TYPE_REPORT_TABLE);
                 interpretation.setType(Interpretation.TYPE_REPORT_TABLE);
                 interpretation.setReportTable(element);
                 break;
@@ -131,7 +131,7 @@ public class InterpretationService implements IInterpretationService {
     }
 
     @Override
-    public void updateInterpretationText(Interpretation interpretation, String text) {
+    public void update(Interpretation interpretation, String text) {
         interpretation.setText(text);
 
         if (interpretation.getAction() != Action.TO_DELETE &&
@@ -143,7 +143,7 @@ public class InterpretationService implements IInterpretationService {
     }
 
     @Override
-    public void deleteInterpretation(Interpretation interpretation) {
+    public void remove(Interpretation interpretation) {
         if (Action.TO_POST.equals(interpretation.getAction())) {
             interpretationStore.delete(interpretation);
         } else {

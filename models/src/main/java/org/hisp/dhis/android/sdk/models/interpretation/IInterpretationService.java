@@ -37,12 +37,13 @@ import java.util.List;
 public interface IInterpretationService extends IService {
     InterpretationComment addComment(Interpretation interpretation, User user, String text);
 
-    Interpretation createInterpretation(DashboardItem item, User user, String text);
+    Interpretation add(DashboardItem item, User user, String text);
 
-    void updateInterpretationText(Interpretation interpretation, String text);
+    void update(Interpretation interpretation, String text);
 
-    void deleteInterpretation(Interpretation interpretation);
+    void remove(Interpretation interpretation);
 
+    /* very strange location for these methods. Consider to refactor them out */
     void setInterpretationElements(Interpretation interpretation, List<InterpretationElement> elements);
 
     List<InterpretationElement> getInterpretationElements(Interpretation interpretation);

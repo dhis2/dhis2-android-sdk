@@ -44,12 +44,9 @@ public class InterpretationComment extends BaseIdentifiableObject {
     @JsonProperty("user")
     private User user;
 
-    private Action action;
-
     private Interpretation interpretation;
 
     public InterpretationComment() {
-        action = Action.SYNCED;
     }
 
     public String getText() {
@@ -66,14 +63,6 @@ public class InterpretationComment extends BaseIdentifiableObject {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Action getAction() {
-        return action;
-    }
-
-    public void setAction(Action action) {
-        this.action = action;
     }
 
     public Interpretation getInterpretation() {

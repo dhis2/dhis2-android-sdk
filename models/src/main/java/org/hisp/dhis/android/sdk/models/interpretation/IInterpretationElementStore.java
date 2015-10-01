@@ -33,5 +33,5 @@ import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import java.util.List;
 
 public interface IInterpretationElementStore extends IIdentifiableObjectStore<InterpretationElement> {
-    List<InterpretationElement> query(Interpretation interpretation);
+    List<InterpretationElement> list(Interpretation interpretation);
 }

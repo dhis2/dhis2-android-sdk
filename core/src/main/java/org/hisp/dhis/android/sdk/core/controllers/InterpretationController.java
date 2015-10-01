@@ -109,7 +109,7 @@ public final class InterpretationController implements IDataController<Interpret
 
         for (Interpretation interpretation : interpretations) {
             List<InterpretationElement> elements =
-                    mInterpretationElementStore.query(interpretation);
+                    mInterpretationElementStore.list(interpretation);
             mInterpretationService.setInterpretationElements(interpretation, elements);
         }
 
@@ -471,7 +471,7 @@ public final class InterpretationController implements IDataController<Interpret
                 && !persistedInterpretations.isEmpty()) {
             for (Interpretation interpretation : persistedInterpretations) {
                 List<InterpretationElement> elements =
-                        mInterpretationElementStore.query(interpretation);
+                        mInterpretationElementStore.list(interpretation);
                 mInterpretationService.setInterpretationElements(interpretation, elements);
 
                 List<InterpretationComment> comments =

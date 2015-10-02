@@ -131,6 +131,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     }
 
     private <T extends Model & IModel> boolean isModelExists(T object) {
-        new Select().from(getModelClass()).
+        //new Select().from(getModelClass()).
+        return false;
     }
 }

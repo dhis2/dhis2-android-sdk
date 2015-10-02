@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.sdk.models.common.state;
 
-import org.hisp.dhis.android.sdk.models.common.base.BaseModel;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
-public final class State extends BaseModel {
+public final class State implements IModel {
     private long itemId;
     private Class<?> itemType;
     private Action action;
@@ -61,5 +61,15 @@ public final class State extends BaseModel {
 
     public void setAction(Action action) {
         this.action = action;
+    }
+
+    @Override
+    public long getId() {
+        return 0;
+    }
+
+    @Override
+    public void setId(long id) {
+
     }
 }

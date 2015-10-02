@@ -122,6 +122,11 @@ public class StateStore implements IStateStore {
     }
 
     @Override
+    public State queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<State> queryAll() {
         List<State$Flow> statesFlows = new Select()
                 .from(State$Flow.class)

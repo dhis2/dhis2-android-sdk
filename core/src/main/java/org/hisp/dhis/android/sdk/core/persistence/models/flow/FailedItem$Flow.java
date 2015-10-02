@@ -38,6 +38,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public final class FailedItem$Flow extends BaseModel {
 
     @Column
     @Unique(unique = true, uniqueGroups = {UNIQUE_FAILEDITEM_GROUP})
-    FailedItem.Type itemType;
+    FailedItemType itemType;
 
     @Column
     int httpStatusCode;
@@ -98,11 +99,11 @@ public final class FailedItem$Flow extends BaseModel {
         this.itemId = itemId;
     }
 
-    public FailedItem.Type getItemType() {
+    public FailedItemType getItemType() {
         return itemType;
     }
 
-    public void setItemType(FailedItem.Type itemType) {
+    public void setItemType(FailedItemType itemType) {
         this.itemType = itemType;
     }
 

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import java.util.List;
 
 public interface IFailedItemStore extends IStore<FailedItem> {
-    List<FailedItem> query(FailedItem.Type type);
+    List<FailedItem> query(FailedItemType type);
 
-    FailedItem query(FailedItem.Type type, long itemId);
+    FailedItem query(FailedItemType type, long itemId);
 }

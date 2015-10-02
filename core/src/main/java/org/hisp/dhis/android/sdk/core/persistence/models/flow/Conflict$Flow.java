@@ -42,12 +42,12 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class Conflict$Flow extends BaseModel$Flow {
 
-    static final String IMPORTSUMMARY_KEY = "importSummary";
+    static final String IMPORT_SUMMARY_KEY = "importSummary";
 
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = IMPORTSUMMARY_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = IMPORT_SUMMARY_KEY, columnType = long.class, foreignColumnName = "id"),
             }, saveForeignKeyModel = false
     )
     ImportSummary$Flow importSummary;

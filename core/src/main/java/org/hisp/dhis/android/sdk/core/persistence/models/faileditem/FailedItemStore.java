@@ -37,6 +37,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.FailedItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.FailedItem$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ImportSummary$Flow;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
 import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
 
 import java.util.List;
@@ -100,6 +101,11 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
+    public FailedItem queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<FailedItem> queryAll() {
         List<FailedItem$Flow> failedItemFlows = new Select()
                 .from(FailedItem$Flow.class)
@@ -115,7 +121,7 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
-    public List<FailedItem> query(FailedItem.Type type) {
+    public List<FailedItem> query(FailedItemType type) {
         List<FailedItem$Flow> failedItemFlows = new Select()
                 .from(FailedItem$Flow.class).where(Condition.column(FailedItem$Flow$Table.ITEMTYPE).is(type))
                 .queryList();
@@ -130,7 +136,7 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
-    public FailedItem query(FailedItem.Type type, long itemId) {
+    public FailedItem query(FailedItemType type, long itemId) {
         FailedItem$Flow failedItemFlow = new Select()
                 .from(FailedItem$Flow.class).where(Condition.column(FailedItem$Flow$Table.ITEMTYPE)
                         .is(type)).and(Condition.column(FailedItem$Flow$Table.ITEMID).is(itemId))

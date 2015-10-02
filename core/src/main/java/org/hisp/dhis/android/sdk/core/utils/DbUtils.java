@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.core.utils;
 
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
+import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;

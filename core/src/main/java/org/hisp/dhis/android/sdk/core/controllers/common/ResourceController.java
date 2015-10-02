@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.core.controllers.common;
 
-import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;

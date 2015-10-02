@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis.android.sdk.core.persistence.models.common.base.RelationModel$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;

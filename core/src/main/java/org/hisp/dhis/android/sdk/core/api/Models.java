@@ -42,7 +42,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.dataelement.DataElement
 import org.hisp.dhis.android.sdk.core.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.enrollment.EnrollmentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.event.EventStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.faileditem.FailedItemStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.common.faileditem.FailedItemStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationElementStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.interpretation.InterpretationStore;
@@ -60,7 +60,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramStageSec
 import org.hisp.dhis.android.sdk.core.persistence.models.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationship.RelationshipStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
+import org.hisp.dhis.android.sdk.core.persistence.models.common.state.StateStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.core.persistence.models.trackedentity.TrackedEntityAttributeValueStore;

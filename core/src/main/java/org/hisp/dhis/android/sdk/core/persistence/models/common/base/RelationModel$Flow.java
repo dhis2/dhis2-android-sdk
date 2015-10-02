@@ -26,20 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.persistence.models.common;
+package org.hisp.dhis.android.sdk.core.persistence.models.common.base;
 
-import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.models.common.base.IModel;
-
-import java.util.List;
-
-public interface IMappable<T extends IModel> {
-    <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(T model);
-
-    <DataBaseType extends Model> List<DataBaseType> mapToDatabaseEntities(List<T> models);
-
-    <DataBaseType extends Model> T mapToModel(DataBaseType dataBaseEntity);
-
-    <DataBaseType extends Model> List<T> mapToModels(List<DataBaseType> dataBaseEntity);
+public interface RelationModel$Flow {
+    String getFirstKey();
+    String getSecondKey();
 }

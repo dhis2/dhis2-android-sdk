@@ -1,4 +1,4 @@
-package org.hisp.dhis.android.sdk.core.persistence.models.common;
+package org.hisp.dhis.android.sdk.core.persistence.models.common.base;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;

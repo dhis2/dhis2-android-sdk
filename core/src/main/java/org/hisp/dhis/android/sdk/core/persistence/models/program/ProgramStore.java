@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.persistence.models.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.persistence.models.common.DbFlowOperation;
+import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbFlowOperation;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnitToProgramRelation$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OrganisationUnitToProgramRelation$Flow$Table;

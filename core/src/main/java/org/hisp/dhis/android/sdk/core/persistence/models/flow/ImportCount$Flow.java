@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.importcount.ImportCount;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportCount;
 
 import java.util.ArrayList;
 import java.util.List;

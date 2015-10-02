@@ -4,7 +4,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
 public class BaseModel$Flow extends BaseModel implements IModel {
     public static final String COLUMN_ID = "id";

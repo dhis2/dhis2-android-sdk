@@ -33,14 +33,12 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.List;

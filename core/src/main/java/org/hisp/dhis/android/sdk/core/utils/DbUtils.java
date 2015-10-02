@@ -31,8 +31,8 @@ package org.hisp.dhis.android.sdk.core.utils;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 
@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 /**

@@ -29,9 +29,8 @@
 package org.hisp.dhis.android.sdk.core.controllers;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
-import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 

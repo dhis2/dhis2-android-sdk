@@ -55,8 +55,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityInstance$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityInstance$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
@@ -65,10 +64,10 @@ import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.state.State;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.State;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.HashMap;
 import java.util.List;
@@ -131,7 +130,7 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> void insert(T object, Action action) {
+    public <T extends IModel> void insertActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -143,7 +142,7 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> void update(T object, Action action) {
+    public <T extends IModel> void updateActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -155,7 +154,7 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> void save(T object, Action action) {
+    public <T extends IModel> void saveActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -167,10 +166,10 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> void delete(T object) {
+    public <T extends IModel> void deleteActionForModel(T object) {
         isNull(object, "State object must not be null");
 
-        State state = query(object);
+        State state = queryStateForModel(object);
 
         if (state == null) {
             return;
@@ -181,7 +180,7 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> State query(T object) {
+    public <T extends IModel> State queryStateForModel(T object) {
         isNull(object, "State object must not be null");
 
         State$Flow stateFlow = new Select()
@@ -196,10 +195,10 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> Action queryAction(T object) {
+    public <T extends IModel> Action queryActionForModel(T object) {
         isNull(object, "State object must not be null");
 
-        State state = query(object);
+        State state = queryStateForModel(object);
 
         if (state == null) {
             return Action.SYNCED;
@@ -209,17 +208,17 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> List<T> filterByAction(Class<T> clazz, Action action) {
+    public <T extends IModel> List<T> filterModelsByAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, false);
     }
 
     @Override
-    public <T extends IModel> List<T> queryWithAction(Class<T> clazz, Action action) {
+    public <T extends IModel> List<T> queryModelsWithAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, true);
     }
 
     @Override
-    public <T extends IModel> List<State> query(Class<T> clazz) {
+    public <T extends IModel> List<State> queryStatesForModelClass(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -233,12 +232,12 @@ public class StateStore implements IStateStore {
     }
 
     @Override
-    public <T extends IModel> Map<Long, Action> queryMap(Class<T> clazz) {
+    public <T extends IModel> Map<Long, Action> queryActionsForModel(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
 
-        List<State> states = query(clazz);
+        List<State> states = queryStatesForModelClass(clazz);
         Map<Long, Action> actionMap = new HashMap<>();
 
         if (states != null && !states.isEmpty()) {

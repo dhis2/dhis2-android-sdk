@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.common.meta;
 
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 

@@ -32,8 +32,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,5 +124,13 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
             }
         }
         return modelObjects;
+    }
+
+    protected final Class<? extends Model> getModelClass() {
+        return mClass;
+    }
+
+    private <T extends Model & IModel> boolean isModelExists(T object) {
+        new Select().from(getModelClass()).
     }
 }

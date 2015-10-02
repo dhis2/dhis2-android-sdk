@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.core.persistence.loaders;
 
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.meta.DbAction;
 
 import java.util.Arrays;

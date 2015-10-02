@@ -42,10 +42,10 @@ import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.common.IStore;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
@@ -53,10 +53,10 @@ import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.ITrackedEntityDataValueStore;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityDataValueStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -274,7 +274,7 @@ public final class EventController extends PushableDataController implements IEv
             // actual (up to date) items, it means it was removed on the server side,
             // or the item was created locally and has not yet been posted.
             if (newModel == null) {
-                Action action = stateStore.queryAction(oldModel);
+                Action action = stateStore.queryActionForModel(oldModel);
                 if(!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
                     ops.add(DbOperation.with(modelStore)
                             .delete(oldModel));
@@ -348,7 +348,7 @@ public final class EventController extends PushableDataController implements IEv
                 //todo: this may be problematic in cases where a data element has been removed
                 //todo:  from a program on the server, but the user of the this code has changed
                 //todo:  the datavalue for the dataelement that has been removed on the server.
-                Action action = stateStore.queryAction(oldModel);
+                Action action = stateStore.queryActionForModel(oldModel);
                 if(!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
                     ops.add(DbOperation.with(modelStore)
                             .delete(oldModel));
@@ -452,8 +452,8 @@ public final class EventController extends PushableDataController implements IEv
     }
 
     private List<Event> getLocallyChangedEvents() {
-        List<Event> toPost = stateStore.filterByAction(Event.class, Action.TO_POST);
-        List<Event> toPut = stateStore.filterByAction(Event.class, Action.TO_UPDATE);
+        List<Event> toPost = stateStore.filterModelsByAction(Event.class, Action.TO_POST);
+        List<Event> toPut = stateStore.filterModelsByAction(Event.class, Action.TO_UPDATE);
         List<Event> events = new ArrayList<>();
         events.addAll(toPost);
         events.addAll(toPut);
@@ -467,14 +467,14 @@ public final class EventController extends PushableDataController implements IEv
         }
 
         Map<Long, Action> actionMap = stateStore
-                .queryMap(Event.class);
+                .queryActionsForModel(Event.class);
 
         for (int i = 0; i < events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
             Event event = events.get(i);
             Action enrollmentAction = null;
             Enrollment enrollment = event.getEnrollment();
             if(enrollment != null) {
-                enrollmentAction = stateStore.queryAction(enrollment);
+                enrollmentAction = stateStore.queryActionForModel(enrollment);
             }
             //we avoid trying to send events whose enrollments that have not yet been posted to server
             if (Action.TO_POST.equals(enrollmentAction)) {
@@ -497,7 +497,7 @@ public final class EventController extends PushableDataController implements IEv
         Action enrollmentAction = null;
         Enrollment enrollment = event.getEnrollment();
         if(enrollment != null) {
-            enrollmentAction = stateStore.queryAction(enrollment);
+            enrollmentAction = stateStore.queryActionForModel(enrollment);
         }
         //we avoid trying to send events whose enrollments that have not yet been posted to server
         if (Action.TO_POST.equals(enrollmentAction)) {
@@ -528,10 +528,10 @@ public final class EventController extends PushableDataController implements IEv
                     String eventUid = Uri.parse(header.getValue()).getLastPathSegment();
                     // set UUID, change state and save event
                     event.setEventUid(eventUid);
-                    stateStore.save(event, Action.SYNCED);
+                    stateStore.saveActionForModel(event, Action.SYNCED);
                     List<IDbOperation> operations = new ArrayList<>();
                     for(TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
-                        stateStore.save(dataValue, Action.SYNCED);
+                        stateStore.saveActionForModel(dataValue, Action.SYNCED);
                         operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
                     }
                     operations.add(DbOperation.with(eventStore).save(event));
@@ -555,10 +555,10 @@ public final class EventController extends PushableDataController implements IEv
                 if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
 
-                    stateStore.save(event, Action.SYNCED);
+                    stateStore.saveActionForModel(event, Action.SYNCED);
                     List<IDbOperation> operations = new ArrayList<>();
                     for(TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
-                        stateStore.save(dataValue, Action.SYNCED);
+                        stateStore.saveActionForModel(dataValue, Action.SYNCED);
                         operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
                     }
                     operations.add(DbOperation.with(eventStore).save(event));

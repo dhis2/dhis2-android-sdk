@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.models.interpretation;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.android.sdk.models.user.User;
 
 import java.util.List;

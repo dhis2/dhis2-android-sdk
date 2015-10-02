@@ -31,8 +31,8 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 
 import java.util.Collection;

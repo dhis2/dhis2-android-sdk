@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.Relationship$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Relationship$Flow$Table;
 import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.relationship.Relationship;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 

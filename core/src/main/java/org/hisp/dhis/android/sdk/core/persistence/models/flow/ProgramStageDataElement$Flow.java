@@ -31,10 +31,9 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.programstagedataelement.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.models.program.ProgramStageDataElement;
 
 import java.util.ArrayList;
 import java.util.List;

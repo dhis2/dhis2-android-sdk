@@ -32,9 +32,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.io.Serializable;
 

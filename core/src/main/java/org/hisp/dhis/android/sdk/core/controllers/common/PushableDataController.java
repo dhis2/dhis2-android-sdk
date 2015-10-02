@@ -35,14 +35,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.ApiResponse;
-import org.hisp.dhis.android.sdk.models.conflict.Conflict;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
+import org.hisp.dhis.android.sdk.models.common.meta.ApiResponse;
+import org.hisp.dhis.android.sdk.models.common.importsummary.Conflict;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -139,7 +139,7 @@ public abstract class PushableDataController {
     }
 
     public static void handleTrackedEntityInstanceSendException(APIException apiException, IFailedItemStore failedItemStore, TrackedEntityInstance trackedEntityInstance) {
-        handleSerializableItemException(apiException, failedItemStore, FailedItem.Type.TRACKEDENTITYINSTANCE, trackedEntityInstance.getId());
+        handleSerializableItemException(apiException, failedItemStore, FailedItem.Type.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
     }
 
     public static void handleEnrollmentSendException(APIException apiException, IFailedItemStore failedItemStore, Enrollment enrollment) {
@@ -163,7 +163,7 @@ public abstract class PushableDataController {
                 }
                 failedItem.setHttpStatusCode(-1);
                 failedItem.setItemId(id);
-                failedItem.setItemType(type);
+                failedItem.setItemFailedItemType(type);
                 failedItemStore.save(failedItem);
                 break;
             }
@@ -178,7 +178,7 @@ public abstract class PushableDataController {
                     }
                 }
                 failedItem.setItemId(id);
-                failedItem.setItemType(type);
+                failedItem.setItemFailedItemType(type);
                 failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
                 failedItemStore.save(failedItem);
             }
@@ -189,7 +189,7 @@ public abstract class PushableDataController {
         FailedItem failedItem = new FailedItem();
         failedItem.setImportSummary(importSummary);
         failedItem.setItemId(id);
-        failedItem.setItemType(type);
+        failedItem.setItemFailedItemType(type);
         failedItem.setHttpStatusCode(code);
         if( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
             for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {

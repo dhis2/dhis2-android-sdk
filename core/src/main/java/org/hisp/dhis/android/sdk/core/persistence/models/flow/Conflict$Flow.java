@@ -31,12 +31,10 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.conflict.Conflict;
+import org.hisp.dhis.android.sdk.models.common.importsummary.Conflict;
 
 import java.util.ArrayList;
 import java.util.List;

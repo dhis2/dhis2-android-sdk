@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -38,8 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.constant.Constant;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -139,7 +137,7 @@ public final class FailedItem$Flow extends BaseModel {
         failedItem.setHttpStatusCode(failedItemFlow.getHttpStatusCode());
         failedItem.setImportSummary(ImportSummary$Flow.toModel(failedItemFlow.getImportSummary()));
         failedItem.setItemId(failedItemFlow.getItemId());
-        failedItem.setItemType(failedItemFlow.getItemType());
+        failedItem.setItemFailedItemType(failedItemFlow.getItemType());
         return failedItem;
     }
 
@@ -154,7 +152,7 @@ public final class FailedItem$Flow extends BaseModel {
         failedItemFlow.setHttpStatusCode(failedItem.getHttpStatusCode());
         failedItemFlow.setImportSummary(ImportSummary$Flow.fromModel(failedItem.getImportSummary()));
         failedItemFlow.setItemId(failedItem.getItemId());
-        failedItemFlow.setItemType(failedItem.getItemType());
+        failedItemFlow.setItemType(failedItem.getItemFailedItemType());
         return failedItemFlow;
     }
 

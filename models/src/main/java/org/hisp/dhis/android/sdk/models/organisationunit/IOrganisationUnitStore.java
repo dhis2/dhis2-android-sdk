@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.organisationunit;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
 
 import java.util.List;

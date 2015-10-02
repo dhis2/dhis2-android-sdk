@@ -53,7 +53,7 @@ import java.util.Map;
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class AssignedProgramsController extends ResourceController<Program> {
 

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.core.persistence.models.event;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow$Table;
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.ITrackedEntityDataValueStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityDataValueStore;
 
 import java.util.ArrayList;
 import java.util.List;

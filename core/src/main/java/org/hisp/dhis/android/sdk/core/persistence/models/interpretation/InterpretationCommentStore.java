@@ -31,10 +31,8 @@ package org.hisp.dhis.android.sdk.core.persistence.models.interpretation;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.core.api.Dhis2;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow$Table;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;

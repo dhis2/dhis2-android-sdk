@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -52,12 +52,12 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     public void remove(InterpretationComment interpretationComment) {
         isNull(interpretationComment, "interpretationComment should not be null");
 
-        Action action = stateStore.queryAction(interpretationComment);
+        Action action = stateStore.queryActionForModel(interpretationComment);
         if (Action.TO_POST.equals(action)) {
-            stateStore.delete(interpretationComment);
+            stateStore.deleteActionForModel(interpretationComment);
             interpretationCommentStore.delete(interpretationComment);
         } else {
-            stateStore.save(interpretationComment, Action.TO_DELETE);
+            stateStore.saveActionForModel(interpretationComment, Action.TO_DELETE);
             interpretationCommentStore.save(interpretationComment);
         }
     }
@@ -74,14 +74,14 @@ public class InterpretationCommentService implements IInterpretationCommentServi
     public void update(InterpretationComment interpretationComment, String text) {
         isNull(interpretationComment, "interpretationComment must not be null");
 
-        Action action = stateStore.queryAction(interpretationComment);
+        Action action = stateStore.queryActionForModel(interpretationComment);
         if (Action.TO_DELETE.equals(action)) {
             throw new IllegalArgumentException("The text of interpretation comment with Action." +
                     "TO_DELETE cannot be updated");
         }
 
         if (!Action.TO_POST.equals(action)) {
-            stateStore.save(interpretationComment, Action.TO_UPDATE);
+            stateStore.saveActionForModel(interpretationComment, Action.TO_UPDATE);
         }
 
         interpretationComment.setText(text);

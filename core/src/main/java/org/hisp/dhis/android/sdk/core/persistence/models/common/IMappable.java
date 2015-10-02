@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.core.persistence.models.common;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
 import java.util.List;
 

@@ -38,7 +38,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
 
 import java.util.ArrayList;
 import java.util.List;

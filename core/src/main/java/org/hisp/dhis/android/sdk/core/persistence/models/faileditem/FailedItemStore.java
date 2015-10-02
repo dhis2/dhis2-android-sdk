@@ -36,10 +36,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.Conflict$Flow$Tabl
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.FailedItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.FailedItem$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.ImportSummary$Flow;
-import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.conflict.Conflict;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
 
 import java.util.List;
 

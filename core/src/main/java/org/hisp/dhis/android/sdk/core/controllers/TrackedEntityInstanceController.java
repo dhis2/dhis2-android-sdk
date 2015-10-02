@@ -38,21 +38,21 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.common.IStore;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.relationship.Relationship;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.ITrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.ITrackedEntityInstanceStore;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityInstanceStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
@@ -231,7 +231,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
             // actual (up to date) items, it means it was removed on the server side,
             // or the item was created locally and has not yet been posted.
             if (newModel == null) {
-                Action action = stateStore.queryAction(oldModel);
+                Action action = stateStore.queryActionForModel(oldModel);
                 if(!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
                     ops.add(DbOperation.with(modelStore)
                             .delete(oldModel));
@@ -281,8 +281,8 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
     }
 
     private List<TrackedEntityInstance> getLocallyChangedTrackedEntityInstances() {
-        List<TrackedEntityInstance> toPost = stateStore.filterByAction(TrackedEntityInstance.class, Action.TO_POST);
-        List<TrackedEntityInstance> toPut = stateStore.filterByAction(TrackedEntityInstance.class, Action.TO_UPDATE);
+        List<TrackedEntityInstance> toPost = stateStore.filterModelsByAction(TrackedEntityInstance.class, Action.TO_POST);
+        List<TrackedEntityInstance> toPut = stateStore.filterModelsByAction(TrackedEntityInstance.class, Action.TO_UPDATE);
         List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
         trackedEntityInstances.addAll(toPost);
         trackedEntityInstances.addAll(toPut);
@@ -295,7 +295,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         }
 
         Map<Long, Action> actionMap = stateStore
-                .queryMap(TrackedEntityInstance.class);
+                .queryActionsForModel(TrackedEntityInstance.class);
 
         for (TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
             sendTrackedEntityInstanceChanges(trackedEntityInstance, actionMap.get(trackedEntityInstance.getId()), sendEnrollments);
@@ -322,7 +322,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
             Response response = mDhisApi.postTrackedEntityInstance(trackedEntityInstance);
             if(response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKEDENTITYINSTANCE, trackedEntityInstance.getId());
+                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
                 if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
 
@@ -334,9 +334,9 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
                     // set UUID, change state and save trackedentityinstance
                     String oldUid = trackedEntityInstance.getTrackedEntityInstanceUid();
                     trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
-                    stateStore.save(trackedEntityInstance, Action.SYNCED);
+                    stateStore.saveActionForModel(trackedEntityInstance, Action.SYNCED);
                     trackedEntityInstanceStore.save(trackedEntityInstance);
-                    clearFailedItem(FailedItem.Type.TRACKEDENTITYINSTANCE, failedItemStore, trackedEntityInstance.getId());
+                    clearFailedItem(FailedItem.Type.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
                     UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance);
                 }
             }
@@ -350,12 +350,12 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
             Response response = mDhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstanceUid(), trackedEntityInstance);
             if(response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKEDENTITYINSTANCE, trackedEntityInstance.getId());
+                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
                 if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
-                    stateStore.save(trackedEntityInstance, Action.SYNCED);
+                    stateStore.saveActionForModel(trackedEntityInstance, Action.SYNCED);
                     trackedEntityInstanceStore.save(trackedEntityInstance);
-                    clearFailedItem(FailedItem.Type.TRACKEDENTITYINSTANCE, failedItemStore, trackedEntityInstance.getId());
+                    clearFailedItem(FailedItem.Type.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
                     UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance);
                 }
             }

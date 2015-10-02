@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardContent extends BaseIdentifiableObject {

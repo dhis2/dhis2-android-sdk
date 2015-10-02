@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.base.IService;
 
 public interface IInterpretationCommentService extends IService {
     void remove(InterpretationComment comment);

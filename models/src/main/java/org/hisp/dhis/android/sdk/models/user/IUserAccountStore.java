@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.user;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 
 public interface IUserAccountStore extends IIdentifiableObjectStore<UserAccount> {
 }

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.persistence.converters;
 
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
 
 @SuppressWarnings("unused")
 @com.raizlabs.android.dbflow.annotation.TypeConverter

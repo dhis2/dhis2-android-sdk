@@ -28,14 +28,12 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardItemService implements IDashboardItemService {
     private final IDashboardItemStore dashboardItemStore;
@@ -55,12 +53,12 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public boolean remove(DashboardItem dashboardItem) {
-        Action action = stateStore.queryAction(dashboardItem);
+        Action action = stateStore.queryActionForModel(dashboardItem);
         if (Action.TO_POST.equals(action)) {
-            stateStore.delete(dashboardItem);
+            stateStore.deleteActionForModel(dashboardItem);
             dashboardItemStore.delete(dashboardItem);
         } else {
-            stateStore.save(dashboardItem, Action.TO_DELETE);
+            stateStore.saveActionForModel(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
         return true;
@@ -71,7 +69,7 @@ public class DashboardItemService implements IDashboardItemService {
      */
     @Override
     public List<DashboardItem> list() {
-        return stateStore.filterByAction(DashboardItem.class, Action.TO_DELETE);
+        return stateStore.filterModelsByAction(DashboardItem.class, Action.TO_DELETE);
     }
 
 
@@ -81,7 +79,7 @@ public class DashboardItemService implements IDashboardItemService {
     @Override
     public List<DashboardItem> list(Dashboard dashboard) {
         List<DashboardItem> dashboardItems = dashboardItemStore.queryByDashboard(dashboard);
-        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+        Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardItem.class);
 
         List<DashboardItem> filteredItems = new ArrayList<>();
         if (dashboardItems != null && !dashboardItems.isEmpty()) {
@@ -122,7 +120,7 @@ public class DashboardItemService implements IDashboardItemService {
         DashboardItem dashboardItem = dashboardItemStore.queryById(id);
 
         if (dashboardItem != null) {
-            Action action = stateStore.queryAction(dashboardItem);
+            Action action = stateStore.queryActionForModel(dashboardItem);
 
             if (!Action.TO_DELETE.equals(action)) {
                 return dashboardItem;
@@ -141,7 +139,7 @@ public class DashboardItemService implements IDashboardItemService {
         DashboardItem dashboardItem = dashboardItemStore.queryByUid(uid);
 
         if (dashboardItem != null) {
-            Action action = stateStore.queryAction(dashboardItem);
+            Action action = stateStore.queryActionForModel(dashboardItem);
 
             if (!Action.TO_DELETE.equals(action)) {
                 return dashboardItem;

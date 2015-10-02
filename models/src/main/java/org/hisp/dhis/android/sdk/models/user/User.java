@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.user;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject;
 
 public class User extends BaseIdentifiableObject {
     // no additional fields

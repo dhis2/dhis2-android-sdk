@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.event;
 
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;

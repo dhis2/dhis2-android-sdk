@@ -29,12 +29,10 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
     DateTime lastUpdated;
 
     @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
+    org.hisp.dhis.android.sdk.models.common.state.Action action;
 
     public String getTrackedEntityInstanceUid() {
         return trackedEntityInstanceUid;
@@ -121,11 +119,11 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
         this.lastUpdated = lastUpdated;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.common.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.common.state.Action action) {
         this.action = action;
     }
 

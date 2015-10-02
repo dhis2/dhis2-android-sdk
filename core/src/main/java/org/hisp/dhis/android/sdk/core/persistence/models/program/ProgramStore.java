@@ -44,8 +44,8 @@ import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.IProgramStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.programstage.IProgramStageStore;
-import org.hisp.dhis.android.sdk.models.programtrackedentityattribute.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.models.program.IProgramStageStore;
+import org.hisp.dhis.android.sdk.models.program.IProgramTrackedEntityAttributeStore;
 
 import java.util.ArrayList;
 import java.util.HashMap;

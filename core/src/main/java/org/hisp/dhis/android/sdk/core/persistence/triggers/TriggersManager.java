@@ -38,8 +38,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$F
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
-import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
 
 public final class TriggersManager {
     private static TriggersManager manager;

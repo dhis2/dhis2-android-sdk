@@ -29,21 +29,28 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.repository.IAdd;
+import org.hisp.dhis.android.sdk.models.common.repository.IGet;
+import org.hisp.dhis.android.sdk.models.common.repository.IGetUid;
+import org.hisp.dhis.android.sdk.models.common.repository.IList;
+import org.hisp.dhis.android.sdk.models.common.repository.IRemove;
+import org.hisp.dhis.android.sdk.models.common.repository.IUpdate;
 
 import java.util.List;
 
-public interface IDashboardItemService extends IService {
-    DashboardItem add(Dashboard dashboard, DashboardContent content);
+public interface IDashboardItemService extends IService, IRemove<DashboardItem>,
+        IList<DashboardItem>, IGet<DashboardItem>, IGetUid<DashboardItem> {
+    // DashboardItem add(Dashboard dashboard, DashboardContent content);
 
-    boolean remove(DashboardItem dashboardItem);
+    // boolean remove(DashboardItem dashboardItem);
 
-    List<DashboardItem> list();
+    // List<DashboardItem> list();
 
     List<DashboardItem> list(Dashboard dashboard);
 
-    DashboardItem get(long id);
+    // DashboardItem get(long id);
 
-    DashboardItem get(String uid);
+    // DashboardItem get(String uid);
 
-    int getContentCount(DashboardItem dashboardItem);
+    // int getContentCount(DashboardItem dashboardItem);
 }

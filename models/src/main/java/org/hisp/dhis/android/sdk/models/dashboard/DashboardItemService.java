@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +57,12 @@ public class DashboardItemService implements IDashboardItemService {
      * @param content   Content for dashboard item.
      * @return new item.
      */
-    @Override
-    public DashboardItem add(Dashboard dashboard, DashboardContent content) {
+    // @Override
+    boolean add(Dashboard dashboard, DashboardContent content) {
         isNull(dashboard, "dashboard must not be null");
         isNull(content, "content must not be null");
 
-        DateTime lastUpdated = new DateTime();
+        /* DateTime lastUpdated = new DateTime();
 
         DashboardItem item = new DashboardItem();
         item.setCreated(lastUpdated);
@@ -75,7 +73,8 @@ public class DashboardItemService implements IDashboardItemService {
 
         stateStore.save(item, Action.TO_POST);
 
-        return item;
+        return item; */
+        return false;
     }
 
     /**
@@ -168,8 +167,8 @@ public class DashboardItemService implements IDashboardItemService {
         return null;
     }
 
-    @Override
-    public int getContentCount(DashboardItem dashboardItem) {
+    //@Override
+    int getContentCount(DashboardItem dashboardItem) {
         List<DashboardElement> dashboardElements = queryRelatedElements(dashboardItem);
         return dashboardElements == null ? 0 : dashboardElements.size();
     }

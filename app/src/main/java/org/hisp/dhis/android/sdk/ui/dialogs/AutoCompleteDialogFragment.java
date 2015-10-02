@@ -45,7 +45,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
+
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
@@ -91,21 +94,20 @@ public class AutoCompleteDialogFragment extends DialogFragment
         InputMethodManager imm = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
+        mProgressBar.setVisibility(View.GONE);
 
         mAdapter = new AutoCompleteDialogAdapter(LayoutInflater.from(getActivity()));
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 
         mFilter.addTextChangedListener(new AbsTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
+            @Override public void afterTextChanged(Editable s) {
                 mAdapter.getFilter().filter(s.toString());
             }
         });
 
         closeDialogButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            @Override public void onClick(View v) {
                 dismiss();
             }
         });

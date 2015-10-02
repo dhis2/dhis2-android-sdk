@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +85,7 @@ public class DashboardService implements IDashboardService {
         element.setDashboardItem(dashboardItem);
 
         // element.setAction(Action.TO_POST);
-        stateStore.save(element, Action.TO_POST);
+        stateStore.saveActionForModel(element, Action.TO_POST);
 
         return element;
     }
@@ -124,7 +124,7 @@ public class DashboardService implements IDashboardService {
     @Override
     public boolean add(Dashboard dashboard) {
         dashboardStore.insert(dashboard);
-        stateStore.save(dashboard, Action.TO_POST);
+        stateStore.saveActionForModel(dashboard, Action.TO_POST);
 
         return true;
     }
@@ -137,12 +137,12 @@ public class DashboardService implements IDashboardService {
         dashboardStore.save(object);
 
         // TODO check if dashboard was created earlier (then set correct flag)
-        Action action = stateStore.queryAction(object);
+        Action action = stateStore.queryActionForModel(object);
 
         if (action == null) {
-            stateStore.save(object, Action.TO_POST);
+            stateStore.saveActionForModel(object, Action.TO_POST);
         } else {
-            stateStore.save(object, Action.TO_UPDATE);
+            stateStore.saveActionForModel(object, Action.TO_UPDATE);
         }
 
         return true;
@@ -155,7 +155,7 @@ public class DashboardService implements IDashboardService {
     public boolean update(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        Action action = stateStore.queryAction(dashboard);
+        Action action = stateStore.queryActionForModel(dashboard);
         if (Action.TO_DELETE.equals(action)) {
             throw new IllegalArgumentException("The name of dashboard with Action." +
                     "TO_DELETE cannot be updated");
@@ -165,7 +165,7 @@ public class DashboardService implements IDashboardService {
         you don't have anything to update */
         if (!Action.TO_POST.equals(action)) {
             // dashboard.setAction(Action.TO_UPDATE);
-            stateStore.save(dashboard, Action.TO_UPDATE);
+            stateStore.saveActionForModel(dashboard, Action.TO_UPDATE);
         }
 
         /* dashboard.setName(name);
@@ -181,7 +181,7 @@ public class DashboardService implements IDashboardService {
      */
     @Override
     public List<Dashboard> list() {
-        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
+        return stateStore.filterModelsByAction(Dashboard.class, Action.TO_DELETE);
     }
 
 
@@ -192,12 +192,12 @@ public class DashboardService implements IDashboardService {
     public boolean remove(Dashboard dashboard) {
         isNull(dashboard, "dashboard argument must not be null");
 
-        Action action = stateStore.queryAction(dashboard);
+        Action action = stateStore.queryActionForModel(dashboard);
         if (Action.TO_DELETE.equals(action)) {
-            stateStore.delete(dashboard);
+            stateStore.deleteActionForModel(dashboard);
             dashboardStore.delete(dashboard);
         } else {
-            stateStore.save(dashboard, Action.TO_DELETE);
+            stateStore.saveActionForModel(dashboard, Action.TO_DELETE);
             dashboardStore.update(dashboard);
         }
 
@@ -210,7 +210,7 @@ public class DashboardService implements IDashboardService {
     @Override
     public Dashboard get(long id) {
         Dashboard dashboard = dashboardStore.queryById(id);
-        Action action = stateStore.queryAction(dashboard);
+        Action action = stateStore.queryActionForModel(dashboard);
 
         if (!Action.TO_DELETE.equals(action)) {
             return dashboard;
@@ -291,7 +291,7 @@ public class DashboardService implements IDashboardService {
 
     private List<DashboardItem> queryRelateDashboardItems(Dashboard dashboard) {
         List<DashboardItem> allDashboardItems = dashboardItemStore.queryByDashboard(dashboard);
-        Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
+        Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardItem.class);
 
         List<DashboardItem> dashboardItems = new ArrayList<>();
         for (DashboardItem dashboardItem : allDashboardItems) {

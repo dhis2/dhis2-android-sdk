@@ -45,14 +45,6 @@ public final class CategoryCombo$Flow extends BaseIdentifiableObject$Flow {
     public CategoryCombo$Flow() {
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
     public boolean isSkipTotal() {
         return skipTotal;
     }

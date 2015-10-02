@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.user;
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.base.IService;
 
 public interface IUserAccountService extends IService {
     UserAccount getCurrentUserAccount();

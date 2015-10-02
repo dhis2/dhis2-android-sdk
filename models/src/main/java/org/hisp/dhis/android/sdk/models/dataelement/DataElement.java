@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.models.dataelement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.common.meta.BaseNameableObject;
+import org.hisp.dhis.android.sdk.models.common.base.BaseNameableObject;
 
 import java.util.Map;
 

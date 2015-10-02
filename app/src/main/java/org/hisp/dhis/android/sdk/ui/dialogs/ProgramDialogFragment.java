@@ -32,7 +32,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
@@ -54,6 +58,7 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
         implements LoaderManager.LoaderCallbacks<List<OptionAdapterValue>> {
     public static final int ID = 921345;
     private static final int LOADER_ID = 1;
+
 
     public static ProgramDialogFragment newInstance(OnOptionSelectedListener listener,
                                                     String orgUnitId, Program.ProgramType... programKinds) {
@@ -77,6 +82,7 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
         super.onViewCreated(view, savedInstanceState);
         setDialogLabel(R.string.dialog_programs);
         setDialogId(ID);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -29,25 +29,29 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.programstagedataelement.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.models.program.ProgramStageDataElement;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(databaseName = DbDhis.NAME)
-public final class ProgramStageDataElement$Flow extends BaseModel {
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = ProgramStageDataElement$Flow.UNIQUE_PROGRAM_DATA_ELEMENT_GROUP, uniqueConflict = ConflictAction.FAIL)
+})
+public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
+    static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
 
     @Column
-    @PrimaryKey
+    @Unique(unique = false, uniqueGroups = {UNIQUE_PROGRAM_DATA_ELEMENT_GROUP})
     String programStage;
 
     @Column
-    @PrimaryKey
+    @Unique(unique = false, uniqueGroups = {UNIQUE_PROGRAM_DATA_ELEMENT_GROUP})
     String dataElement;
 
     @Column

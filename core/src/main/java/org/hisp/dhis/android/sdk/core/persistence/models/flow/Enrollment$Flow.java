@@ -32,10 +32,8 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.Access;
@@ -46,13 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class Enrollment$Flow extends BaseModel {
-
+public final class Enrollment$Flow extends BaseModel$Flow {
     final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
 
     @Column
     @Unique
@@ -102,14 +95,6 @@ public final class Enrollment$Flow extends BaseModel {
     List<Event$Flow> events;
 
     List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValues;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getEnrollmentUid() {
         return enrollmentUid;

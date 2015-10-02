@@ -36,7 +36,7 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
@@ -45,7 +45,6 @@ import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
-import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 import org.hisp.dhis.android.sdk.models.user.User;
@@ -66,8 +65,8 @@ import retrofit.mime.TypedString;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.findLocationHeader;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.handleApiException;
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.merge;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class InterpretationController implements IDataController<Interpretation> {
     private final IDhisApi mDhisApi;

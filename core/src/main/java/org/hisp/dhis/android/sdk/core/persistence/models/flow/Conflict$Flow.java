@@ -31,29 +31,23 @@ package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.conflict.Conflict;
+import org.hisp.dhis.android.sdk.models.common.importsummary.Conflict;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class Conflict$Flow extends BaseModel {
+public final class Conflict$Flow extends BaseModel$Flow {
 
-    static final String IMPORTSUMMARY_KEY = "importSummary";
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
+    static final String IMPORT_SUMMARY_KEY = "importSummary";
 
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = IMPORTSUMMARY_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = IMPORT_SUMMARY_KEY, columnType = long.class, foreignColumnName = "id"),
             }, saveForeignKeyModel = false
     )
     ImportSummary$Flow importSummary;
@@ -63,14 +57,6 @@ public final class Conflict$Flow extends BaseModel {
 
     @Column
     String value;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public ImportSummary$Flow getImportSummary() {
         return importSummary;

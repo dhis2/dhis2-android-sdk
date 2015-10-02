@@ -35,14 +35,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.models.common.ApiResponse;
-import org.hisp.dhis.android.sdk.models.conflict.Conflict;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
+import org.hisp.dhis.android.sdk.models.common.meta.ApiResponse;
+import org.hisp.dhis.android.sdk.models.common.importsummary.Conflict;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -132,25 +133,25 @@ public abstract class PushableDataController {
         return null;
     }
 
-    public static void handleImportSummary(ImportSummary importSummary, IFailedItemStore failedItemStore, FailedItem.Type type, long id) {
+    public static void handleImportSummary(ImportSummary importSummary, IFailedItemStore failedItemStore, FailedItemType type, long id) {
         if ( ImportSummary.Status.ERROR.equals(importSummary.getStatus()) ){
             handleImportSummaryError(importSummary, failedItemStore, type, 200, id);
         }
     }
 
     public static void handleTrackedEntityInstanceSendException(APIException apiException, IFailedItemStore failedItemStore, TrackedEntityInstance trackedEntityInstance) {
-        handleSerializableItemException(apiException, failedItemStore, FailedItem.Type.TRACKEDENTITYINSTANCE, trackedEntityInstance.getId());
+        handleSerializableItemException(apiException, failedItemStore, FailedItemType.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
     }
 
     public static void handleEnrollmentSendException(APIException apiException, IFailedItemStore failedItemStore, Enrollment enrollment) {
-        handleSerializableItemException(apiException, failedItemStore, FailedItem.Type.ENROLLMENT, enrollment.getId());
+        handleSerializableItemException(apiException, failedItemStore, FailedItemType.ENROLLMENT, enrollment.getId());
     }
 
     public static void handleEventSendException(APIException apiException, IFailedItemStore failedItemStore, Event event) {
-        handleSerializableItemException(apiException, failedItemStore, FailedItem.Type.EVENT, event.getId());
+        handleSerializableItemException(apiException, failedItemStore, FailedItemType.EVENT, event.getId());
     }
 
-    private static void handleSerializableItemException(APIException apiException, IFailedItemStore failedItemStore, FailedItem.Type type, long id) {
+    private static void handleSerializableItemException(APIException apiException, IFailedItemStore failedItemStore, FailedItemType type, long id) {
         switch (apiException.getKind()) {
             case NETWORK: {
                 FailedItem failedItem = new FailedItem();
@@ -163,7 +164,7 @@ public abstract class PushableDataController {
                 }
                 failedItem.setHttpStatusCode(-1);
                 failedItem.setItemId(id);
-                failedItem.setItemType(type);
+                failedItem.setItemFailedItemType(type);
                 failedItemStore.save(failedItem);
                 break;
             }
@@ -178,18 +179,18 @@ public abstract class PushableDataController {
                     }
                 }
                 failedItem.setItemId(id);
-                failedItem.setItemType(type);
+                failedItem.setItemFailedItemType(type);
                 failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
                 failedItemStore.save(failedItem);
             }
         }
     }
 
-    public static void handleImportSummaryError(ImportSummary importSummary, IFailedItemStore failedItemStore, FailedItem.Type type, int code, long id) {
+    public static void handleImportSummaryError(ImportSummary importSummary, IFailedItemStore failedItemStore, FailedItemType type, int code, long id) {
         FailedItem failedItem = new FailedItem();
         failedItem.setImportSummary(importSummary);
         failedItem.setItemId(id);
-        failedItem.setItemType(type);
+        failedItem.setItemFailedItemType(type);
         failedItem.setHttpStatusCode(code);
         if( failedItem.getImportSummary() != null && failedItem.getImportSummary().getConflicts() != null ) {
             for(Conflict conflict: failedItem.getImportSummary().getConflicts() ) {
@@ -199,7 +200,7 @@ public abstract class PushableDataController {
         failedItemStore.save(failedItem);
     }
 
-    public static void clearFailedItem(FailedItem.Type type, IFailedItemStore failedItemStore, long id) {
+    public static void clearFailedItem(FailedItemType type, IFailedItemStore failedItemStore, long id) {
         FailedItem item = failedItemStore.query(type, id);
         if (item != null) {
             failedItemStore.delete(item);

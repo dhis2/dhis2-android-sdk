@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.core.controllers;
 
 import org.hisp.dhis.android.sdk.core.controllers.common.IController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.program.Program;
 
 import java.util.List;

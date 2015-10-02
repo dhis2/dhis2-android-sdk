@@ -38,7 +38,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
@@ -47,8 +47,8 @@ import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
-import org.hisp.dhis.android.sdk.models.state.State;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.common.state.State;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public final class State$Flow extends BaseModel {
 
     // We need to specify FQCN in order to avoid collision with BaseMode.Action class.
     @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
+    org.hisp.dhis.android.sdk.models.common.state.Action action;
 
     public State$Flow() {
         // empty constructor
@@ -98,11 +98,11 @@ public final class State$Flow extends BaseModel {
 
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.common.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.common.state.Action action) {
         this.action = action;
     }
 

@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class OrganisationUnitController implements IOrganisationUnitController {
 

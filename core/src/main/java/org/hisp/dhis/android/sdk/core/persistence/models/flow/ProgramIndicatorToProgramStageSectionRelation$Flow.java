@@ -37,8 +37,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.programindicator.ProgramIndicator;
-import org.hisp.dhis.android.sdk.models.programstagesection.ProgramStageSection;
 
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramIndicatorToProgramStageSectionRelation$Flow extends BaseModel {

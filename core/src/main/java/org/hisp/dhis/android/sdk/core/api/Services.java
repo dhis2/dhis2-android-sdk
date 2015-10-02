@@ -45,7 +45,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationCommentService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElementService;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationService;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
 import org.hisp.dhis.android.sdk.models.user.UserAccountService;
 

@@ -33,28 +33,21 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.trackedentitydatavalue.TrackedEntityDataValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = TrackedEntityDataValue$Flow.UNIQUE_EVENT_DATAVALUE, uniqueConflict = ConflictAction.FAIL)})
-public final class TrackedEntityDataValue$Flow extends BaseModel {
-
+public final class TrackedEntityDataValue$Flow extends BaseModel$Flow {
     static final int UNIQUE_EVENT_DATAVALUE = 57;
-    private final static String EVENT_KEY = "event";
-
-    @Column
-    @PrimaryKey
-    long id;
+    static final String EVENT_KEY = "event";
 
     @Column
     @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
@@ -77,14 +70,6 @@ public final class TrackedEntityDataValue$Flow extends BaseModel {
 
     @Column
     String value;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public Event$Flow getEvent() {
         return event;

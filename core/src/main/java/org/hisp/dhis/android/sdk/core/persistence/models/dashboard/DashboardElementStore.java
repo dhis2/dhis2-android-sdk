@@ -36,8 +36,8 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardElement$F
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class DashboardElementStore implements IDashboardElementStore {
 
         object.setId(elementFlow.getId());
 
-        stateStore.save(object, Action.SYNCED);
+        stateStore.saveActionForModel(object, Action.SYNCED);
     }
 
     @Override
@@ -74,9 +74,9 @@ public class DashboardElementStore implements IDashboardElementStore {
 
         object.setId(elementFlow.getId());
 
-        Action action = stateStore.queryAction(object);
+        Action action = stateStore.queryActionForModel(object);
         if (action == null) {
-            stateStore.save(object, Action.SYNCED);
+            stateStore.saveActionForModel(object, Action.SYNCED);
         }
     }
 
@@ -93,7 +93,7 @@ public class DashboardElementStore implements IDashboardElementStore {
         if (dashboardElementFlow != null) {
             dashboardElementFlow.delete();
 
-            stateStore.delete(object);
+            stateStore.deleteActionForModel(object);
         }
     }
 

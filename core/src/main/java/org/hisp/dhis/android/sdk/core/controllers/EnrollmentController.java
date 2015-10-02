@@ -37,19 +37,19 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
-import org.hisp.dhis.android.sdk.models.common.IStore;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
+import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
 import org.hisp.dhis.android.sdk.models.event.Event;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
-import org.hisp.dhis.android.sdk.models.faileditem.FailedItem;
-import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public final class EnrollmentController extends PushableDataController implement
     }
 
     private List<Enrollment> getEnrollmentsDataFromServer(TrackedEntityInstance trackedEntityInstance) throws APIException {
-        if(trackedEntityInstance == null) {
+        if (trackedEntityInstance == null) {
             return new ArrayList<>();
         }
         DateTime lastUpdated = DateTimeManager.getInstance()
@@ -99,7 +99,7 @@ public final class EnrollmentController extends PushableDataController implement
                 .getEnrollments(trackedEntityInstance.getTrackedEntityInstanceUid(),
                         getAllFieldsQueryMap(lastUpdated)), ENROLLMENTS);
         List<Enrollment> existingUpdatedAndPersistedEnrollments = merge(allExistingEnrollments, updatedEnrollments, enrollmentStore.query(trackedEntityInstance));
-        for(Enrollment enrollment: existingUpdatedAndPersistedEnrollments) {
+        for (Enrollment enrollment : existingUpdatedAndPersistedEnrollments) {
             enrollment.setTrackedEntityInstance(trackedEntityInstance);
         }
 
@@ -107,8 +107,8 @@ public final class EnrollmentController extends PushableDataController implement
                 trackedEntityInstance.getTrackedEntityInstanceUid(),
                 enrollmentStore,
                 existingUpdatedAndPersistedEnrollments, enrollmentStore.query(trackedEntityInstance), serverDateTime);
-        if(existingUpdatedAndPersistedEnrollments != null) {
-            for(Enrollment enrollment: existingUpdatedAndPersistedEnrollments) {
+        if (existingUpdatedAndPersistedEnrollments != null) {
+            for (Enrollment enrollment : existingUpdatedAndPersistedEnrollments) {
                 try {
                     eventController.getEventsDataFromServer(enrollment);
                 } catch (APIException e) {//can't throw this exception up because we want to continue loading enrollments.. todo: let the user know?
@@ -130,13 +130,13 @@ public final class EnrollmentController extends PushableDataController implement
         //todo: be sure to check if the enrollment has ever been on the server, or if it is still pending first time registration sync
 
         Enrollment persistedEnrollment = enrollmentStore.query(uid);
-        if(updatedEnrollment.getEnrollmentUid() == null) {
+        if (updatedEnrollment.getEnrollmentUid() == null) {
             //either the uid provided was invalid, or the enrollment has not been updated since lastUpdated
             return persistedEnrollment;
         }
-        if(persistedEnrollment != null) {
+        if (persistedEnrollment != null) {
             updatedEnrollment.setId(persistedEnrollment.getId());
-            if(updatedEnrollment.getLastUpdated().isAfter(persistedEnrollment.getLastUpdated())) {
+            if (updatedEnrollment.getLastUpdated().isAfter(persistedEnrollment.getLastUpdated())) {
                 DbOperation.with(enrollmentStore).update(updatedEnrollment).execute();
             }
         } else {
@@ -144,17 +144,17 @@ public final class EnrollmentController extends PushableDataController implement
         }
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.ENROLLMENT, uid, serverDateTime);
-        if(getEvents) {
+        if (getEvents) {
             eventController.getEventsDataFromServer(updatedEnrollment);
         }
         return updatedEnrollment;
     }
 
     private void saveResourceDataFromServer(ResourceType resourceType, String extraIdentifier,
-                                                                          IStore<Enrollment> store,
-                                                                          List<Enrollment> updatedItems,
-                                                                          List<Enrollment> persistedItems,
-                                                                          DateTime serverDateTime) {
+                                            IStore<Enrollment> store,
+                                            List<Enrollment> updatedItems,
+                                            List<Enrollment> persistedItems,
+                                            DateTime serverDateTime) {
         Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(createOperations(store, persistedItems, updatedItems));
         DbUtils.applyBatch(operations);
@@ -176,6 +176,7 @@ public final class EnrollmentController extends PushableDataController implement
         }
         return map;
     }
+
     /**
      * This utility method allows to determine which type of operation to apply to
      * each BaseIdentifiableObject$Flow depending on TimeStamp.
@@ -184,7 +185,7 @@ public final class EnrollmentController extends PushableDataController implement
      * @param newModels List of models of distance instance of DHIS.
      */
     private List<DbOperation> createOperations(IStore<Enrollment> store, List<Enrollment> oldModels,
-                                                     List<Enrollment> newModels) {
+                                               List<Enrollment> newModels) {
         List<DbOperation> ops = new ArrayList<>();
 
         Map<String, Enrollment> newModelsMap = toMap(newModels);
@@ -201,8 +202,8 @@ public final class EnrollmentController extends PushableDataController implement
             // if there is no particular model with given uid in list of
             // actual (up to date) items, it means it was removed on the server side
             if (newModel == null) {
-                Action action = stateStore.queryAction(oldModel);
-                if(!Action.TO_POST.equals(action) && !Action.TO_UPDATE.equals(action)) {
+                Action action = stateStore.queryActionForModel(oldModel);
+                if (!Action.TO_POST.equals(action) && !Action.TO_UPDATE.equals(action)) {
                     ops.add(DbOperation.with(store)
                             .delete(oldModel));
                 }
@@ -241,14 +242,15 @@ public final class EnrollmentController extends PushableDataController implement
      * Returns a list of items taken from updatedItems and persistedItems, based on the items in
      * the passed existingItems List. Items that are not present in existingItems will not be
      * included.
+     *
      * @param existingItems
      * @param updatedItems
      * @param persistedItems
      * @return
      */
     private List<Enrollment> merge(List<Enrollment> existingItems,
-                                                               List<Enrollment> updatedItems,
-                                                               List<Enrollment> persistedItems) {
+                                   List<Enrollment> updatedItems,
+                                   List<Enrollment> persistedItems) {
         Map<String, Enrollment> updatedItemsMap = toMap(updatedItems);
         Map<String, Enrollment> persistedItemsMap = toMap(persistedItems);
         Map<String, Enrollment> existingItemsMap = new HashMap<>();
@@ -296,8 +298,8 @@ public final class EnrollmentController extends PushableDataController implement
     }
 
     private List<Enrollment> getLocallyChangedEnrollments() {
-        List<Enrollment> toPost = stateStore.filterByAction(Enrollment.class, Action.TO_POST);
-        List<Enrollment> toPut = stateStore.filterByAction(Enrollment.class, Action.TO_UPDATE);
+        List<Enrollment> toPost = stateStore.filterModelsByAction(Enrollment.class, Action.TO_POST);
+        List<Enrollment> toPut = stateStore.filterModelsByAction(Enrollment.class, Action.TO_UPDATE);
         List<Enrollment> enrollments = new ArrayList<>();
         enrollments.addAll(toPost);
         enrollments.addAll(toPut);
@@ -311,15 +313,15 @@ public final class EnrollmentController extends PushableDataController implement
         }
 
         Map<Long, Action> actionMap = stateStore
-                .queryMap(Enrollment.class);
+                .queryActionsForModel(Enrollment.class);
 
 
         for (int i = 0; i < enrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
             Enrollment enrollment = enrollments.get(i);
             Action trackedEntityInstanceAction = null;
             TrackedEntityInstance trackedEntityInstance = enrollment.getTrackedEntityInstance();
-            if(trackedEntityInstance == null) {
-                trackedEntityInstanceAction = stateStore.queryAction(trackedEntityInstance);
+            if (trackedEntityInstance == null) {
+                trackedEntityInstanceAction = stateStore.queryActionForModel(trackedEntityInstance);
             }
 
             //we avoid trying to send enrollments whose trackedEntityInstances that have not yet been posted to server
@@ -339,8 +341,8 @@ public final class EnrollmentController extends PushableDataController implement
         }
         Action trackedEntityInstanceAction = null;
         TrackedEntityInstance trackedEntityInstance = enrollment.getTrackedEntityInstance();
-        if(trackedEntityInstance == null) {
-            trackedEntityInstanceAction = stateStore.queryAction(trackedEntityInstance);
+        if (trackedEntityInstance == null) {
+            trackedEntityInstanceAction = stateStore.queryActionForModel(trackedEntityInstance);
         }
 
         //we avoid trying to send enrollments whose trackedEntityInstances that have not yet been posted to server
@@ -348,12 +350,12 @@ public final class EnrollmentController extends PushableDataController implement
             return;
         }
 
-        if(Action.TO_POST.equals(action)) {
+        if (Action.TO_POST.equals(action)) {
             postEnrollment(enrollment);
         } else {
             putEnrollment(enrollment);
         }
-        if( sendEvents ) {
+        if (sendEvents) {
             List<Event> events = eventStore.query(enrollment);
             eventController.sendEventChanges(events);
         }
@@ -362,11 +364,11 @@ public final class EnrollmentController extends PushableDataController implement
     private void postEnrollment(Enrollment enrollment) throws APIException {
         try {
             Response response = mDhisApi.postEnrollment(enrollment);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.ENROLLMENT, enrollment.getId());
+                handleImportSummary(importSummary, failedItemStore, FailedItemType.ENROLLMENT, enrollment.getId());
 
-                if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
                     // also, we will need to find UUID of newly created enrollment,
                     // which is contained inside of HTTP Location header
@@ -375,9 +377,9 @@ public final class EnrollmentController extends PushableDataController implement
                     String enrollmentUid = Uri.parse(header.getValue()).getLastPathSegment();
                     // set UUID, change state and save enrollment
                     enrollment.setEnrollmentUid(enrollmentUid);
-                    stateStore.save(enrollment, Action.SYNCED);
+                    stateStore.saveActionForModel(enrollment, Action.SYNCED);
                     enrollmentStore.save(enrollment);
-                    clearFailedItem(FailedItem.Type.ENROLLMENT, failedItemStore, enrollment.getId());
+                    clearFailedItem(FailedItemType.ENROLLMENT, failedItemStore, enrollment.getId());
                     //updateEnrollmentReferences(enrollment.getId(), enrollmentUid);
                     UpdateEnrollmentTimestamp(enrollment);
                 }
@@ -390,16 +392,16 @@ public final class EnrollmentController extends PushableDataController implement
     private void putEnrollment(Enrollment enrollment) throws APIException {
         try {
             Response response = mDhisApi.putEnrollment(enrollment.getEnrollmentUid(), enrollment);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.ENROLLMENT, enrollment.getId());
+                handleImportSummary(importSummary, failedItemStore, FailedItemType.ENROLLMENT, enrollment.getId());
 
-                if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
 
-                    stateStore.save(enrollment, Action.SYNCED);
+                    stateStore.saveActionForModel(enrollment, Action.SYNCED);
                     enrollmentStore.save(enrollment);
-                    clearFailedItem(FailedItem.Type.ENROLLMENT, failedItemStore, enrollment.getId());
+                    clearFailedItem(FailedItemType.ENROLLMENT, failedItemStore, enrollment.getId());
                     UpdateEnrollmentTimestamp(enrollment);
                 }
             }

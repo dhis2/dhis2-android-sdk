@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
 
@@ -71,7 +71,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     Access access;
 
     @Column(name = "action")
-    org.hisp.dhis.android.sdk.models.state.Action action;
+    org.hisp.dhis.android.sdk.models.common.state.Action action;
 
     @Column(name = "firstName")
     String firstName;
@@ -110,7 +110,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     String phoneNumber;
 
     public UserAccount$Flow() {
-        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
+        action = org.hisp.dhis.android.sdk.models.common.state.Action.SYNCED;
     }
 
     @Override
@@ -183,11 +183,11 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         this.access = access;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
+    public org.hisp.dhis.android.sdk.models.common.state.Action getAction() {
         return action;
     }
 
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
+    public void setAction(org.hisp.dhis.android.sdk.models.common.state.Action action) {
         this.action = action;
     }
 

@@ -35,13 +35,12 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.Option$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.OptionSet$Flow$Table;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.option.IOptionStore;
-import org.hisp.dhis.android.sdk.models.option.Option;
+import org.hisp.dhis.android.sdk.models.optionset.IOptionStore;
+import org.hisp.dhis.android.sdk.models.optionset.Option;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;

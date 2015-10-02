@@ -32,7 +32,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
@@ -77,6 +81,7 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
         super.onViewCreated(view, savedInstanceState);
         setDialogLabel(R.string.dialog_organisation_units);
         setDialogId(ID);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

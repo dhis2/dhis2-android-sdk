@@ -34,10 +34,10 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.option.IOptionStore;
-import org.hisp.dhis.android.sdk.models.option.Option;
+import org.hisp.dhis.android.sdk.models.optionset.IOptionStore;
+import org.hisp.dhis.android.sdk.models.optionset.Option;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.merge;
 
 public final class OptionSetController extends ResourceController<OptionSet> {
 

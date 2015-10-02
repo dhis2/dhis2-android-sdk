@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.relationship;
 
-import org.hisp.dhis.android.sdk.models.common.IStore;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.common.base.IStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 

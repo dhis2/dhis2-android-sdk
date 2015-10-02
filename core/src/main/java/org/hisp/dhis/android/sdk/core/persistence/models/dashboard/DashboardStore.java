@@ -33,10 +33,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Dashboard$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
 
         object.setId(dashboardFlow.getId());
 
-        stateStore.save(object, Action.SYNCED);
+        stateStore.saveActionForModel(object, Action.SYNCED);
     }
 
     @Override
@@ -73,9 +73,9 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
 
         object.setId(dashboardFlow.getId());
 
-        Action action = stateStore.queryAction(object);
+        Action action = stateStore.queryActionForModel(object);
         if (action == null) {
-            stateStore.save(object, Action.SYNCED);
+            stateStore.saveActionForModel(object, Action.SYNCED);
         }
     }
 
@@ -90,7 +90,7 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
         if (dashboardFlow != null) {
             dashboardFlow.delete();
 
-            stateStore.delete(object);
+            stateStore.deleteActionForModel(object);
         }
     }
 

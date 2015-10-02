@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 
-import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.base.IService;
 import org.hisp.dhis.android.sdk.models.common.repository.IList;
 import org.hisp.dhis.android.sdk.models.common.repository.IRemove;
 

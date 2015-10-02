@@ -33,14 +33,14 @@ import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
-import static org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject.merge;
+import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.merge;
 
 public final class ConstantController extends ResourceController<Constant> {
 

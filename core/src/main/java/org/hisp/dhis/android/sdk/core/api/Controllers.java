@@ -59,11 +59,11 @@ import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.programrule.ProgramRule;
-import org.hisp.dhis.android.sdk.models.programruleaction.ProgramRuleAction;
-import org.hisp.dhis.android.sdk.models.programrulevariable.ProgramRuleVariable;
-import org.hisp.dhis.android.sdk.models.relationshiptype.RelationshipType;
-import org.hisp.dhis.android.sdk.models.trackedentityattribute.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.models.program.ProgramRule;
+import org.hisp.dhis.android.sdk.models.program.ProgramRuleAction;
+import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.models.relationship.RelationshipType;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttribute;
 
 final class Controllers {
     private static Controllers controllers;

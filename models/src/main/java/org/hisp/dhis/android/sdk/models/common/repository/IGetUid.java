@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.common.repository;
 
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 
 public interface IGetUid<T extends IdentifiableObject> {
     T get(String uid);

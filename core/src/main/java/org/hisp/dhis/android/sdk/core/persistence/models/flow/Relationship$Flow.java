@@ -48,15 +48,11 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = Relationship$Flow.UNIQUE_RELATIONSHIP_GROUP, uniqueConflict = ConflictAction.FAIL)
 })
-public final class Relationship$Flow extends BaseModel {
+public final class Relationship$Flow extends BaseModel$Flow {
 
     static final int UNIQUE_RELATIONSHIP_GROUP = 93;
     static final String TRACKED_ENTITY_INSTANCE_A_KEY = "trackedEntityInstanceA";
     static final String TRACKED_ENTITY_INSTANCE_B_KEY = "trackedEntityInstanceB";
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
 
     @Column
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
@@ -89,14 +85,6 @@ public final class Relationship$Flow extends BaseModel {
 
     public void setRelationship(String relationship) {
         this.relationship = relationship;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public TrackedEntityInstance$Flow getTrackedEntityInstanceA() {

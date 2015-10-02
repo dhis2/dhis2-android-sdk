@@ -30,8 +30,7 @@ package org.hisp.dhis.android.sdk.core.controllers;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
-import org.joda.time.DateTime;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 

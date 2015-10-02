@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.models.common.repository;
 
-import org.hisp.dhis.android.sdk.models.common.IModel;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
 public interface IGet<T extends IModel> {
     T get(long id);

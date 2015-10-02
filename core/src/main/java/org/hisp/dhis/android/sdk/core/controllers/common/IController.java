@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.core.controllers.common;
 
 
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 
 public interface IController<T extends IdentifiableObject> {
 }

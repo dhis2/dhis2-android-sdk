@@ -29,23 +29,17 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class TrackedEntityInstance$Flow extends BaseModel {
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
+public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
 
     @Column
     String trackedEntityInstanceUid;
@@ -56,26 +50,15 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
     @Column
     String orgUnit;
 
-    List<TrackedEntityAttributeValue$Flow> attributes;
-
-    List<Relationship$Flow> relationships;
-
     @Column
     DateTime created;
 
     @Column
     DateTime lastUpdated;
 
-    @Column
-    org.hisp.dhis.android.sdk.models.state.Action action;
+    List<TrackedEntityAttributeValue$Flow> attributes;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    List<Relationship$Flow> relationships;
 
     public String getTrackedEntityInstanceUid() {
         return trackedEntityInstanceUid;
@@ -131,14 +114,6 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
 
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
     }
 
     public TrackedEntityInstance$Flow() {

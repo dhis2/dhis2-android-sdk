@@ -132,11 +132,16 @@ final class TrackerDataLoader extends ResourceController {
     static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getEventsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.EVENTS);
+                .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "[:all]");
+        if (lastUpdated != null) {
+            map.put("lastUpdated", lastUpdated.toString());
+        }
         JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 200,
-                getBasicQueryMap(lastUpdated));
+                map);
         List<Event> events = EventsWrapper.getEvents(response);
-        saveResourceDataFromServer(ResourceType.EVENTS, dhisApi, events, null, serverDateTime);
+        saveResourceDataFromServer(ResourceType.EVENTS,organisationUnitUid+programUid, dhisApi, events, null, serverDateTime);
     }
 
     static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,

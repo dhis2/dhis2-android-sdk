@@ -111,7 +111,7 @@ final class TrackerDataSender {
             return;
         }
 
-        if(Utils.isLocal(event.getEvent())) {
+        if(event.getCreated() == null) {
             postEvent(event, dhisApi);
         } else {
             putEvent(event, dhisApi);
@@ -119,8 +119,6 @@ final class TrackerDataSender {
     }
 
     private static void postEvent(Event event, DhisApi dhisApi) throws APIException {
-        //setting event to null to avoid sending temporary local reference
-        event.setEvent(null);
         try {
             Response response = dhisApi.postEvent(event);
             if(response.getStatus() == 200) {
@@ -131,15 +129,10 @@ final class TrackerDataSender {
                     // also, we will need to find UUID of newly created event,
                     // which is contained inside of HTTP Location header
                     Header header = NetworkUtils.findLocationHeader(response.getHeaders());
-                    // parse the value of header as URI and extract the id
-                    String eventUid = Uri.parse(header.getValue()).getLastPathSegment();
-                    // set UUID, change state and save event
-                    event.setEvent(eventUid);
-                    //event.setState(State.SYNCED);
+                    // change state and save event
                     event.setFromServer(true);
                     event.save();
                     clearFailedItem(FailedItem.EVENT, event.getLocalId());
-                    updateEventReferences(event.getLocalId(), eventUid);
                     UpdateEventTimestamp(event, dhisApi);
                 }
             }
@@ -157,11 +150,9 @@ final class TrackerDataSender {
                 if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
 
-                    //event.setState(State.SYNCED);
                     event.setFromServer(true);
                     event.save();
                     clearFailedItem(FailedItem.EVENT, event.getLocalId());
-                    Log.d(CLASS_TAG, "event saved!");
                     UpdateEventTimestamp(event, dhisApi);
                 }
             }

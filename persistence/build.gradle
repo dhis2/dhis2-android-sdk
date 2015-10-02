@@ -26,4 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core', ':persistence'
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+
+    // Raizlabs libraries.
+    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+    compile 'com.raizlabs.android:DBFlow-Core:2.2.1'
+    compile 'com.raizlabs.android:DBFlow:2.2.1'
+}

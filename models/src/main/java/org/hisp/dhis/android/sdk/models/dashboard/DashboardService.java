@@ -92,43 +92,6 @@ public class DashboardService implements IDashboardService {
         return true;
     }
 
-    @Override
-    public List<Dashboard> list() {
-        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean remove(Dashboard dashboard) {
-        isNull(dashboard, "dashboard argument must not be null");
-
-        Action action = stateStore.queryAction(dashboard);
-        if (Action.TO_DELETE.equals(action)) {
-            stateStore.delete(dashboard);
-            dashboardStore.delete(dashboard);
-        } else {
-            stateStore.save(dashboard, Action.TO_DELETE);
-            dashboardStore.update(dashboard);
-        }
-
-        return true;
-    }
-
-    @Override
-    public Dashboard get(long id) {
-        Dashboard dashboard = dashboardStore.queryById(id);
-        Action action = stateStore.queryAction(dashboard);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return dashboard;
-        }
-
-        return null;
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -155,6 +118,54 @@ public class DashboardService implements IDashboardService {
         dashboardStore.update(dashboard);
 
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Dashboard> list() {
+        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean remove(Dashboard dashboard) {
+        isNull(dashboard, "dashboard argument must not be null");
+
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
+            stateStore.delete(dashboard);
+            dashboardStore.delete(dashboard);
+        } else {
+            stateStore.save(dashboard, Action.TO_DELETE);
+            dashboardStore.update(dashboard);
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Dashboard get(long id) {
+        Dashboard dashboard = dashboardStore.queryById(id);
+        Action action = stateStore.queryAction(dashboard);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return dashboard;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Dashboard get(String uid) {
+        return null;
     }
 
     /**
@@ -195,8 +206,8 @@ public class DashboardService implements IDashboardService {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
+    // @Override
+    DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
         isNull(dashboard, "dashboard must not be null");
         isNull(type, "type must not be null");
 

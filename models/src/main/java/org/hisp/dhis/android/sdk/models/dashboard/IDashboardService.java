@@ -67,5 +67,5 @@ public interface IDashboardService extends IService, IAdd<Dashboard>, ISave<Dash
      * @return an item.
      * @throws IllegalArgumentException if dashboard or type is null.
      */
-    DashboardItem getAvailableItemByType(Dashboard dashboard, String type);
+    // DashboardItem getAvailableItemByType(Dashboard dashboard, String type);
 }

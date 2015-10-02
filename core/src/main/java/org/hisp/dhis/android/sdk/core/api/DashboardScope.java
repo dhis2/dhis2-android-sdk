@@ -82,13 +82,18 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
         return dashboardService.addContent(dashboard, content);
     }
 
-    @Override
+    /* @Override
     public DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
         return dashboardService.getAvailableItemByType(dashboard, type);
-    }
+    } */
 
     @Override
     public void sync() throws APIException {
         dataController.sync();
+    }
+
+    @Override
+    public Dashboard get(String uid) {
+        return null;
     }
 }

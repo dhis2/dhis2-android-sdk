@@ -96,6 +96,11 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     }
 
     @Override
+    public T queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<T> queryAll() {
         List<? extends Model> databaseEntities = new Select()
                 .from(mClass)
@@ -131,6 +136,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     }
 
     private <T extends Model & IModel> boolean isModelExists(T object) {
+
         //new Select().from(getModelClass()).
         return false;
     }

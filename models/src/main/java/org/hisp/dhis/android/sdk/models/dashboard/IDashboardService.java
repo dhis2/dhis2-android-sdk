@@ -29,18 +29,18 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.repository.IAdd;
+import org.hisp.dhis.android.sdk.models.common.repository.IGet;
+import org.hisp.dhis.android.sdk.models.common.repository.IGetUid;
+import org.hisp.dhis.android.sdk.models.common.repository.IList;
+import org.hisp.dhis.android.sdk.models.common.repository.IRemove;
+import org.hisp.dhis.android.sdk.models.common.repository.ISave;
+import org.hisp.dhis.android.sdk.models.common.repository.IUpdate;
 
 import java.util.List;
 
-public interface IDashboardService extends IService {
-
-    /**
-     * Factory method which creates new Dashboard with given name.
-     *
-     * @param dashboard dashbaord to create on server.
-     */
-    boolean add(Dashboard dashboard);
-
+public interface IDashboardService extends IService, IAdd<Dashboard>, ISave<Dashboard>,
+        IUpdate<Dashboard>, IRemove<Dashboard>, IGet<Dashboard>, IGetUid<Dashboard>, IList<Dashboard> {
 
     boolean save(Dashboard object);
 

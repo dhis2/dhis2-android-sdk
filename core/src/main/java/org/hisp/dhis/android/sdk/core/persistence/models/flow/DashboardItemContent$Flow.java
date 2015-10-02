@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,35 +56,35 @@ public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow
         this.type = type;
     }
 
-    public static DashboardItemContent toModel(DashboardItemContent$Flow contentFlow) {
+    public static DashboardContent toModel(DashboardItemContent$Flow contentFlow) {
         if (contentFlow == null) {
             return null;
         }
 
-        DashboardItemContent dashboardItemContent = new DashboardItemContent();
-        dashboardItemContent.setId(contentFlow.getId());
-        dashboardItemContent.setUId(contentFlow.getUId());
-        dashboardItemContent.setCreated(contentFlow.getCreated());
-        dashboardItemContent.setLastUpdated(contentFlow.getLastUpdated());
-        dashboardItemContent.setName(contentFlow.getName());
-        dashboardItemContent.setDisplayName(contentFlow.getDisplayName());
-        dashboardItemContent.setType(contentFlow.getType());
-        return dashboardItemContent;
+        DashboardContent dashboardContent = new DashboardContent();
+        dashboardContent.setId(contentFlow.getId());
+        dashboardContent.setUId(contentFlow.getUId());
+        dashboardContent.setCreated(contentFlow.getCreated());
+        dashboardContent.setLastUpdated(contentFlow.getLastUpdated());
+        dashboardContent.setName(contentFlow.getName());
+        dashboardContent.setDisplayName(contentFlow.getDisplayName());
+        dashboardContent.setType(contentFlow.getType());
+        return dashboardContent;
     }
 
-    public static List<DashboardItemContent> toModels(List<DashboardItemContent$Flow> flows) {
-        List<DashboardItemContent> dashboardItemContents = new ArrayList<>();
+    public static List<DashboardContent> toModels(List<DashboardItemContent$Flow> flows) {
+        List<DashboardContent> dashboardContents = new ArrayList<>();
 
         if (flows != null && !flows.isEmpty()) {
             for (DashboardItemContent$Flow flow : flows) {
-                dashboardItemContents.add(toModel(flow));
+                dashboardContents.add(toModel(flow));
             }
         }
 
-        return dashboardItemContents;
+        return dashboardContents;
     }
 
-    public static DashboardItemContent$Flow fromModel(DashboardItemContent content) {
+    public static DashboardItemContent$Flow fromModel(DashboardContent content) {
         if (content == null) {
             return null;
         }

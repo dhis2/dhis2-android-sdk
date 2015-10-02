@@ -47,7 +47,7 @@ import org.hisp.dhis.android.sdk.models.common.meta.DbAction;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
@@ -78,7 +78,7 @@ public class ModelChangeObserver implements FlowContentObserver.OnModelStateChan
             trackedModel = DashboardItem$Flow.class;
         } else if (DashboardElement.class.equals(mTrackedTable.getTrackedModel())) {
             trackedModel = DashboardElement$Flow.class;
-        } else if (DashboardItemContent.class.equals(mTrackedTable.getTrackedModel())) {
+        } else if (DashboardContent.class.equals(mTrackedTable.getTrackedModel())) {
             trackedModel = DashboardItemContent$Flow.class;
         } else if (Interpretation.class.equals(mTrackedTable.getTrackedModel())) {
             trackedModel = Interpretation$Flow.class;

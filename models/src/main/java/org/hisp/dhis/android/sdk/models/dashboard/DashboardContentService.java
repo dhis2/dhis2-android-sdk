@@ -38,22 +38,22 @@ public class DashboardContentService implements IDashboardItemContentService {
     }
 
     @Override
-    public DashboardItemContent get(long id) {
+    public DashboardContent get(long id) {
         return mDashboardItemContentStore.queryById(id);
     }
 
     @Override
-    public DashboardItemContent get(String uid) {
+    public DashboardContent get(String uid) {
         return mDashboardItemContentStore.queryByUid(uid);
     }
 
     @Override
-    public List<DashboardItemContent> list() {
+    public List<DashboardContent> list() {
         return mDashboardItemContentStore.queryAll();
     }
 
     @Override
-    public List<DashboardItemContent> list(List<String> types) {
+    public List<DashboardContent> list(List<String> types) {
         return mDashboardItemContentStore.queryByTypes(types);
     }
 }

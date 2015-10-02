@@ -60,7 +60,7 @@ public class DashboardItemService implements IDashboardItemService {
      * @return new item.
      */
     @Override
-    public DashboardItem add(Dashboard dashboard, DashboardItemContent content) {
+    public DashboardItem add(Dashboard dashboard, DashboardContent content) {
         isNull(dashboard, "dashboard must not be null");
         isNull(content, "content must not be null");
 

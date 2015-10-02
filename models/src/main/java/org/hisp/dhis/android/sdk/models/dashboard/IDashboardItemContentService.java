@@ -34,11 +34,11 @@ import java.util.List;
 
 public interface IDashboardItemContentService extends IService {
 
-    DashboardItemContent get(long id);
+    DashboardContent get(long id);
 
-    DashboardItemContent get(String uid);
+    DashboardContent get(String uid);
 
-    List<DashboardItemContent> list();
+    List<DashboardContent> list();
 
-    List<DashboardItemContent> list(List<String> types);
+    List<DashboardContent> list(List<String> types);
 }

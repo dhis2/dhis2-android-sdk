@@ -34,7 +34,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DashboardItemContent extends BaseIdentifiableObject {
+public class DashboardContent extends BaseIdentifiableObject {
     public static final String TYPE_CHART = "chart";
     public static final String TYPE_EVENT_CHART = "eventChart";
     public static final String TYPE_MAP = "map";
@@ -61,7 +61,7 @@ public class DashboardItemContent extends BaseIdentifiableObject {
     @JsonIgnore
     String type;
 
-    public DashboardItemContent() {
+    public DashboardContent() {
     }
 
     public String getType() {

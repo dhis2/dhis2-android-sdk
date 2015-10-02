@@ -33,7 +33,7 @@ import org.hisp.dhis.android.sdk.models.common.IService;
 import java.util.List;
 
 public interface IDashboardItemService extends IService {
-    DashboardItem add(Dashboard dashboard, DashboardItemContent content);
+    DashboardItem add(Dashboard dashboard, DashboardContent content);
 
     boolean remove(DashboardItem dashboardItem);
 

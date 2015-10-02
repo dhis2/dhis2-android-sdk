@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.interpretation;
 
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
@@ -56,9 +56,9 @@ public class InterpretationElementService implements IInterpretationElementServi
         isNull(mimeType, "mimeType must not be null");
 
         switch(mimeType) {
-            case DashboardItemContent.TYPE_CHART:
-            case DashboardItemContent.TYPE_MAP:
-            case DashboardItemContent.TYPE_REPORT_TABLE:
+            case DashboardContent.TYPE_CHART:
+            case DashboardContent.TYPE_MAP:
+            case DashboardContent.TYPE_REPORT_TABLE:
                 break;
             default:
                 throw new IllegalArgumentException(mimeType + " is unsupported by interpretations.");

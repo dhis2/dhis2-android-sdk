@@ -33,8 +33,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
@@ -142,36 +142,36 @@ public interface IDhisApi {
 
 
     /////////////////////////////////////////////////////////////////////////
-    // Methods for getting DashboardItemContent
+    // Methods for getting DashboardContent
     /////////////////////////////////////////////////////////////////////////
 
     @GET("/charts?paging=false")
-    Map<String, List<DashboardItemContent>> getCharts(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getCharts(@QueryMap Map<String, String> queryParams);
 
     @GET("/eventCharts?paging=false")
-    Map<String, List<DashboardItemContent>> getEventCharts(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getEventCharts(@QueryMap Map<String, String> queryParams);
 
     @GET("/maps?paging=false")
-    Map<String, List<DashboardItemContent>> getMaps(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getMaps(@QueryMap Map<String, String> queryParams);
 
     @GET("/reportTables?paging=false")
-    Map<String, List<DashboardItemContent>> getReportTables(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getReportTables(@QueryMap Map<String, String> queryParams);
 
     @Headers("Accept: application/text")
     @GET("/reportTables/{id}/data.html")
     Response getReportTableData(@Path("id") String id);
 
     @GET("/eventReports?paging=false")
-    Map<String, List<DashboardItemContent>> getEventReports(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getEventReports(@QueryMap Map<String, String> queryParams);
 
     @GET("/users?paging=false")
-    Map<String, List<DashboardItemContent>> getUsers(@QueryMap Map<String, String> queryParams);
+    Map<String, List<DashboardContent>> getUsers(@QueryMap Map<String, String> queryParams);
 
     @GET("/reports?paging=false")
-    Map<String, List<DashboardItemContent>> getReports(@QueryMap Map<String, String> queryMap);
+    Map<String, List<DashboardContent>> getReports(@QueryMap Map<String, String> queryMap);
 
     @GET("/documents?paging=false")
-    Map<String, List<DashboardItemContent>> getResources(@QueryMap Map<String, String> queryMap);
+    Map<String, List<DashboardContent>> getResources(@QueryMap Map<String, String> queryMap);
 
 
     /////////////////////////////////////////////////////////////////////////

@@ -161,9 +161,9 @@ public class DashboardService implements IDashboardService {
      * {@inheritDoc}
      */
     @Override
-    public boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) {
+    public boolean addContent(Dashboard dashboard, DashboardContent content) {
         isNull(dashboard, "Dashboard object must not be null");
-        isNull(content, "DashboardItemContent object must not be null");
+        isNull(content, "DashboardContent object must not be null");
 
         DashboardItem item;
         DashboardElement element;
@@ -237,23 +237,23 @@ public class DashboardService implements IDashboardService {
         return dashboardItems;
     }
 
-    static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
+    static boolean isItemContentTypeEmbedded(DashboardContent content) {
         switch (content.getType()) {
-            case DashboardItemContent.TYPE_CHART:
-            case DashboardItemContent.TYPE_EVENT_CHART:
-            case DashboardItemContent.TYPE_MAP:
-            case DashboardItemContent.TYPE_EVENT_REPORT:
-            case DashboardItemContent.TYPE_REPORT_TABLE: {
+            case DashboardContent.TYPE_CHART:
+            case DashboardContent.TYPE_EVENT_CHART:
+            case DashboardContent.TYPE_MAP:
+            case DashboardContent.TYPE_EVENT_REPORT:
+            case DashboardContent.TYPE_REPORT_TABLE: {
                 return true;
             }
-            case DashboardItemContent.TYPE_USERS:
-            case DashboardItemContent.TYPE_REPORTS:
-            case DashboardItemContent.TYPE_RESOURCES: {
+            case DashboardContent.TYPE_USERS:
+            case DashboardContent.TYPE_REPORTS:
+            case DashboardContent.TYPE_RESOURCES: {
                 return false;
             }
         }
 
-        throw new IllegalArgumentException("Unsupported DashboardItemContent type: " +
+        throw new IllegalArgumentException("Unsupported DashboardContent type: " +
                 content.getType() + " name: " + content.getDisplayName());
     }
 }

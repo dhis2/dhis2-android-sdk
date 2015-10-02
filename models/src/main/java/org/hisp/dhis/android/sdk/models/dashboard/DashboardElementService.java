@@ -54,21 +54,21 @@ public class DashboardElementService implements IDashboardElementService {
      * Factory method for creating DashboardElement.
      *
      * @param dashboardItem        DashboardItem to associate with element.
-     * @param dashboardItemContent Content from which element will be created.
+     * @param dashboardContent Content from which element will be created.
      * @return new element.
-     * @throws IllegalArgumentException when dashboardItem or dashboardItemContent is null.
+     * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.
      */
     @Override
-    public DashboardElement add(DashboardItem dashboardItem, DashboardItemContent dashboardItemContent) {
+    public DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
         isNull(dashboardItem, "dashboardItem must not be null");
-        isNull(dashboardItemContent, "dashboardItemContent must not be null");
+        isNull(dashboardContent, "dashboardContent must not be null");
 
         DashboardElement element = new DashboardElement();
-        element.setUId(dashboardItemContent.getUId());
-        element.setName(dashboardItemContent.getName());
-        element.setDisplayName(dashboardItemContent.getDisplayName());
-        element.setCreated(dashboardItemContent.getCreated());
-        element.setLastUpdated(dashboardItemContent.getLastUpdated());
+        element.setUId(dashboardContent.getUId());
+        element.setName(dashboardContent.getName());
+        element.setDisplayName(dashboardContent.getDisplayName());
+        element.setCreated(dashboardContent.getCreated());
+        element.setLastUpdated(dashboardContent.getLastUpdated());
         element.setDashboardItem(dashboardItem);
 
         // element.setAction(Action.TO_POST);

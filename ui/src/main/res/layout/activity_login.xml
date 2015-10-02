@@ -114,5 +114,4 @@
             app:font="@string/font_bold" />
 
     </LinearLayout>
-
 </RelativeLayout>

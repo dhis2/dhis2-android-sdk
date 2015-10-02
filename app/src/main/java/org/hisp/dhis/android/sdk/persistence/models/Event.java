@@ -43,6 +43,7 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.joda.time.LocalDate;
 
@@ -123,13 +124,13 @@ public class Event extends BaseSerializableModel {
 
 
     public Event() {
-        this.event = DhisController.QUEUED + UUID.randomUUID().toString();
+        this.event = CodeGenerator.generateCode();
     }
 
     public Event(String organisationUnitId, String status, String programId,
                  ProgramStage programStage, String trackedEntityInstanceId,
                  String enrollment, String dateOfEnrollment) {
-        this.event = DhisController.QUEUED + UUID.randomUUID().toString();
+        this.event = CodeGenerator.generateCode();
         this.fromServer = false;
         this.dueDate = DateUtils.getMediumDateString();
         this.eventDate = DateUtils.getMediumDateString();

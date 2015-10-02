@@ -32,7 +32,6 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
@@ -63,12 +62,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
     )
     Interpretation$Flow interpretation;
 
-    @NotNull
-    @Column(name = "action")
-    org.hisp.dhis.android.sdk.models.state.Action action;
-
     public InterpretationComment$Flow() {
-        action = org.hisp.dhis.android.sdk.models.state.Action.SYNCED;
     }
 
     public String getText() {
@@ -95,14 +89,6 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         this.interpretation = interpretation;
     }
 
-    public org.hisp.dhis.android.sdk.models.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.state.Action action) {
-        this.action = action;
-    }
-
     public static InterpretationComment$Flow fromModel(InterpretationComment comment) {
         if (comment == null) {
             return null;
@@ -116,7 +102,6 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         commentFlow.setName(comment.getName());
         commentFlow.setDisplayName(comment.getDisplayName());
         commentFlow.setAccess(comment.getAccess());
-        commentFlow.setAction(comment.getAction());
         commentFlow.setText(comment.getText());
         commentFlow.setInterpretation(Interpretation$Flow
                 .fromModel(comment.getInterpretation()));
@@ -137,7 +122,6 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         comment.setName(commentFlow.getName());
         comment.setDisplayName(commentFlow.getDisplayName());
         comment.setAccess(commentFlow.getAccess());
-        comment.setAction(commentFlow.getAction());
         comment.setText(commentFlow.getText());
         comment.setInterpretation(Interpretation$Flow
                 .toModel(commentFlow.getInterpretation()));

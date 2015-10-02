@@ -194,35 +194,35 @@ public class DashboardItem extends BaseIdentifiableObject {
         }
 
         switch (getType()) {
-            case DashboardItemContent.TYPE_CHART: {
+            case DashboardContent.TYPE_CHART: {
                 setChart(dashboardElements.get(0));
                 break;
             }
-            case DashboardItemContent.TYPE_EVENT_CHART: {
+            case DashboardContent.TYPE_EVENT_CHART: {
                 setEventChart(dashboardElements.get(0));
                 break;
             }
-            case DashboardItemContent.TYPE_MAP: {
+            case DashboardContent.TYPE_MAP: {
                 setMap(dashboardElements.get(0));
                 break;
             }
-            case DashboardItemContent.TYPE_REPORT_TABLE: {
+            case DashboardContent.TYPE_REPORT_TABLE: {
                 setReportTable(dashboardElements.get(0));
                 break;
             }
-            case DashboardItemContent.TYPE_EVENT_REPORT: {
+            case DashboardContent.TYPE_EVENT_REPORT: {
                 setEventReport(dashboardElements.get(0));
                 break;
             }
-            case DashboardItemContent.TYPE_USERS: {
+            case DashboardContent.TYPE_USERS: {
                 setUsers(dashboardElements);
                 break;
             }
-            case DashboardItemContent.TYPE_REPORTS: {
+            case DashboardContent.TYPE_REPORTS: {
                 setReports(dashboardElements);
                 break;
             }
-            case DashboardItemContent.TYPE_RESOURCES: {
+            case DashboardContent.TYPE_RESOURCES: {
                 setResources(dashboardElements);
                 break;
             }
@@ -237,35 +237,35 @@ public class DashboardItem extends BaseIdentifiableObject {
         }
 
         switch (getType()) {
-            case DashboardItemContent.TYPE_CHART: {
+            case DashboardContent.TYPE_CHART: {
                 elements.add(getChart());
                 break;
             }
-            case DashboardItemContent.TYPE_EVENT_CHART: {
+            case DashboardContent.TYPE_EVENT_CHART: {
                 elements.add(getEventChart());
                 break;
             }
-            case DashboardItemContent.TYPE_MAP: {
+            case DashboardContent.TYPE_MAP: {
                 elements.add(getMap());
                 break;
             }
-            case DashboardItemContent.TYPE_REPORT_TABLE: {
+            case DashboardContent.TYPE_REPORT_TABLE: {
                 elements.add(getReportTable());
                 break;
             }
-            case DashboardItemContent.TYPE_EVENT_REPORT: {
+            case DashboardContent.TYPE_EVENT_REPORT: {
                 elements.add(getEventReport());
                 break;
             }
-            case DashboardItemContent.TYPE_USERS: {
+            case DashboardContent.TYPE_USERS: {
                 elements.addAll(getUsers());
                 break;
             }
-            case DashboardItemContent.TYPE_REPORTS: {
+            case DashboardContent.TYPE_REPORTS: {
                 elements.addAll(getReports());
                 break;
             }
-            case DashboardItemContent.TYPE_RESOURCES: {
+            case DashboardContent.TYPE_RESOURCES: {
                 elements.addAll(getResources());
                 break;
             }

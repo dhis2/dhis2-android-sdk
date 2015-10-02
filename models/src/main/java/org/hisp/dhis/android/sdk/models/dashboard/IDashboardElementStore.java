@@ -33,5 +33,5 @@ import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import java.util.List;
 
 public interface IDashboardElementStore extends IIdentifiableObjectStore<DashboardElement> {
-    List<DashboardElement> query(DashboardItem dashboardItem);
+    List<DashboardElement> queryByDashboardItem(DashboardItem dashboardItem);
 }

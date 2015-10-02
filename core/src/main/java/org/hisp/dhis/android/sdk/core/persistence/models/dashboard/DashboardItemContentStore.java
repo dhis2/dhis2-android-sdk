@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItemContent$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.DashboardItemContent$Flow$Table;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public void insert(DashboardItemContent object) {
+    public void insert(DashboardContent object) {
         DashboardItemContent$Flow flowModel
                 = DashboardItemContent$Flow.fromModel(object);
         flowModel.insert();
@@ -56,12 +56,12 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public void update(DashboardItemContent object) {
+    public void update(DashboardContent object) {
         DashboardItemContent$Flow.fromModel(object).update();
     }
 
     @Override
-    public void save(DashboardItemContent object) {
+    public void save(DashboardContent object) {
         DashboardItemContent$Flow flowModel
                 = DashboardItemContent$Flow.fromModel(object);
         flowModel.save();
@@ -70,12 +70,12 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public void delete(DashboardItemContent object) {
+    public void delete(DashboardContent object) {
         DashboardItemContent$Flow.fromModel(object).delete();
     }
 
     @Override
-    public List<DashboardItemContent> queryAll() {
+    public List<DashboardContent> queryAll() {
         List<DashboardItemContent$Flow> flows = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .queryList();
@@ -83,7 +83,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public DashboardItemContent queryById(long id) {
+    public DashboardContent queryById(long id) {
         DashboardItemContent$Flow dashboardItemContentFlow = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .where(column(DashboardItemContent$Flow$Table
@@ -93,7 +93,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public DashboardItemContent queryByUid(String uid) {
+    public DashboardContent queryByUid(String uid) {
         DashboardItemContent$Flow dashboardItemContentFlow = new Select()
                 .from(DashboardItemContent$Flow.class)
                 .where(column(DashboardItemContent$Flow$Table
@@ -103,7 +103,7 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
     }
 
     @Override
-    public List<DashboardItemContent> query(List<String> types) {
+    public List<DashboardContent> queryByTypes(List<String> types) {
         CombinedCondition generalCondition = CombinedCondition.begin(
                 column(DashboardItemContent$Flow$Table.TYPE).isNotNull());
         CombinedCondition columnConditions = null;

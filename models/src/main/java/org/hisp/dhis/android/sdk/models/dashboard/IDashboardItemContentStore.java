@@ -32,6 +32,6 @@ import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 
 import java.util.List;
 
-public interface IDashboardItemContentStore extends IIdentifiableObjectStore<DashboardItemContent> {
-    List<DashboardItemContent> query(List<String> type);
+public interface IDashboardItemContentStore extends IIdentifiableObjectStore<DashboardContent> {
+    List<DashboardContent> queryByTypes(List<String> type);
 }

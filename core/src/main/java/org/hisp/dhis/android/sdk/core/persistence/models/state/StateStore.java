@@ -45,6 +45,12 @@ import org.hisp.dhis.android.sdk.core.persistence.models.flow.Enrollment$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Enrollment$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Event$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow$Table;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationElement$Flow;
+import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationElement$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.State$Flow$Table;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.TrackedEntityInstance$Flow;
@@ -56,6 +62,9 @@ import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
+import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.state.State;
@@ -330,6 +339,24 @@ public class StateStore implements IStateStore {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
                     clazz, action, withAction, DashboardElement$Flow$Table.ID);
             return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
+        }
+
+        if (Interpretation.class.equals(clazz)) {
+            List<Interpretation$Flow> interpretationFlows = (List<Interpretation$Flow>) queryModels(
+                    clazz, action, withAction, Interpretation$Flow$Table.ID);
+            return (List<T>) Interpretation$Flow.toModels(interpretationFlows);
+        }
+
+        if (InterpretationElement.class.equals(clazz)) {
+            List<InterpretationElement$Flow> interpretationElementFlows = (List<InterpretationElement$Flow>) queryModels(
+                    clazz, action, withAction, InterpretationElement$Flow$Table.ID);
+            return (List<T>) InterpretationElement$Flow.toModels(interpretationElementFlows);
+        }
+
+        if (InterpretationComment.class.equals(clazz)) {
+            List<InterpretationComment$Flow> interpretationCommentFlows = (List<InterpretationComment$Flow>) queryModels(
+                    clazz, action, withAction, InterpretationComment$Flow$Table.ID);
+            return (List<T>) InterpretationComment$Flow.toModels(interpretationCommentFlows);
         }
 
         if (Event.class.equals(clazz)) {

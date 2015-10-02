@@ -26,49 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.dashboard;
+package org.hisp.dhis.android.sdk.models.common.repository;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hisp.dhis.android.sdk.models.common.IModel;
 
-import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
+public interface IAdd<T extends IModel> {
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class DashboardItemContent extends BaseIdentifiableObject {
-    public static final String TYPE_CHART = "chart";
-    public static final String TYPE_EVENT_CHART = "eventChart";
-    public static final String TYPE_MAP = "map";
-    public static final String TYPE_REPORT_TABLE = "reportTable";
-
-    /* have to implement user fragment for this */
-    public static final String TYPE_USERS = "users";
-
-    /* we can use data entry fragment for this: have to implement read-only mode */
-    public static final String TYPE_REPORTS = "reports";
-
-    /* not supported on server side */
-    public static final String TYPE_EVENT_REPORT = "eventReport";
-
-    /* resource can be anything (like pdf or binary file. Will look into this later */
-    public static final String TYPE_RESOURCES = "resources";
-
-    /* unknown type: ask core team about this one */
-    public static final String TYPE_REPORT_TABLES = "reportTables";
-
-    /* won't be supported until implementation of messaging application */
-    public static final String TYPE_MESSAGES = "messages";
-
-    @JsonIgnore
-    String type;
-
-    public DashboardItemContent() {
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+    /**
+     * Returns true if this collection changed as a result of the call. (Returns false if this
+     * collection does not permit duplicates and already contains the specified element.)
+     * Collections that support this operation may place limitations on what elements may be added to this
+     * collection. In particular, some collections will refuse to add null elements, and others will
+     * impose restrictions on the type of elements that may be added. Collection classes should clearly
+     * specify in their documentation any restrictions on what elements may be added.
+     * <p/>
+     *
+     * If a collection refuses to add a particular element for any reason other than that it already
+     * contains the element, it must throw an exception (rather than returning false). This preserves
+     * the invariant that a collection always contains the specified element after this call returns.
+     *
+     * @param object element whose presence in this collection is to be ensured.
+     */
+    boolean add(T object);
 }

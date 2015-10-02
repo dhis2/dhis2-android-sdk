@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.core.persistence.models.interpretation;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.core.api.Dhis2;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.InterpretationComment$Flow$Table;
 import org.hisp.dhis.android.sdk.models.state.Action;
@@ -97,6 +98,11 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
+    public List<InterpretationComment> queryByInterpretation(Interpretation interpretation) {
+        return null;
+    }
+
+    /* @Override
     public List<InterpretationComment> filter(Action action) {
         List<InterpretationComment$Flow> commentFlows = new Select()
                 .from(InterpretationComment$Flow.class)
@@ -116,5 +122,5 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
                         .ACTION).isNot(action.toString()))
                 .queryList();
         return InterpretationComment$Flow.toModels(commentFlows);
-    }
+    } */
 }

@@ -50,58 +50,30 @@ public class DashboardElementService implements IDashboardElementService {
         this.stateStore = stateStore;
     }
 
-    /**
-     * Factory method for creating DashboardElement.
-     *
-     * @param dashboardItem        DashboardItem to associate with element.
-     * @param dashboardItemContent Content from which element will be created.
-     * @return new element.
-     * @throws IllegalArgumentException when dashboardItem or dashboardItemContent is null.
-     */
     @Override
-    public DashboardElement add(DashboardItem dashboardItem, DashboardItemContent dashboardItemContent) {
-        isNull(dashboardItem, "dashboardItem must not be null");
-        isNull(dashboardItemContent, "dashboardItemContent must not be null");
-
-        DashboardElement element = new DashboardElement();
-        element.setUId(dashboardItemContent.getUId());
-        element.setName(dashboardItemContent.getName());
-        element.setDisplayName(dashboardItemContent.getDisplayName());
-        element.setCreated(dashboardItemContent.getCreated());
-        element.setLastUpdated(dashboardItemContent.getLastUpdated());
-        element.setDashboardItem(dashboardItem);
-
-        // element.setAction(Action.TO_POST);
-        stateStore.save(element, Action.TO_POST);
-
-        return element;
-    }
-
-    @Override
-    public void remove(DashboardElement dashboardElement) {
+    public boolean remove(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
         Action action = stateStore.queryAction(dashboardElement);
         if (Action.TO_POST.equals(action)) {
-            // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.delete(dashboardElement);
             dashboardElementStore.delete(dashboardElement);
         } else {
-            // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.save(dashboardElement, Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 
-        /* if count of elements in item is zero, it means
-        we don't need this item anymore */
-        if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
+        /* if count of elements in item is zero, it means we don't need this item anymore */
+        if (!(getContentCount(dashboardElement.getDashboardItem()) > 0)) {
             dashboardItemService.remove(dashboardElement.getDashboardItem());
         }
+
+        return false;
     }
 
     @Override
-    public List<DashboardElement> query(DashboardItem dashboardItem) {
-        List<DashboardElement> allDashboardElements = dashboardElementStore.query(dashboardItem);
+    public List<DashboardElement> list(DashboardItem dashboardItem) {
+        List<DashboardElement> allDashboardElements = dashboardElementStore.queryByDashboardItem(dashboardItem);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
         List<DashboardElement> dashboardElements = new ArrayList<>();
@@ -117,7 +89,7 @@ public class DashboardElementService implements IDashboardElementService {
     }
 
     @Override
-    public List<DashboardElement> query() {
+    public List<DashboardElement> list() {
         List<DashboardElement> elements = dashboardElementStore.queryAll();
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
 
@@ -131,5 +103,23 @@ public class DashboardElementService implements IDashboardElementService {
         }
 
         return dashboardElements;
+    }
+
+    /* Made this method package private for testing */
+    int getContentCount(DashboardItem dashboardItem) {
+        List<DashboardElement> allDashboardElements =
+                dashboardElementStore.queryByDashboardItem(dashboardItem);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
+
+        List<DashboardElement> dashboardElements = new ArrayList<>();
+        for (DashboardElement dashboardElement : allDashboardElements) {
+            Action action = actionMap.get(dashboardElement.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardElements.add(dashboardElement);
+            }
+        }
+
+        return dashboardElements.size();
     }
 }

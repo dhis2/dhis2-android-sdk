@@ -29,14 +29,17 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.state.Action;
+import org.hisp.dhis.android.sdk.models.state.IStateStore;
 
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class InterpretationCommentService implements IInterpretationCommentService {
     private final IInterpretationCommentStore interpretationCommentStore;
+    private final IStateStore stateStore;
 
-    public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore) {
+    public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore, IStateStore stateStore) {
         this.interpretationCommentStore = interpretationCommentStore;
+        this.stateStore = stateStore;
     }
 
     /**
@@ -46,14 +49,15 @@ public class InterpretationCommentService implements IInterpretationCommentServi
      * @param interpretationComment comment to delete.
      */
     @Override
-    public void deleteComment(InterpretationComment interpretationComment) {
+    public void remove(InterpretationComment interpretationComment) {
         isNull(interpretationComment, "interpretationComment should not be null");
 
-        if (Action.TO_POST.equals(interpretationComment.getAction())) {
-            interpretationComment.setAction(Action.TO_DELETE);
+        Action action = stateStore.queryAction(interpretationComment);
+        if (Action.TO_POST.equals(action)) {
+            stateStore.delete(interpretationComment);
             interpretationCommentStore.delete(interpretationComment);
         } else {
-            interpretationComment.setAction(Action.TO_DELETE);
+            stateStore.save(interpretationComment, Action.TO_DELETE);
             interpretationCommentStore.save(interpretationComment);
         }
     }
@@ -67,16 +71,17 @@ public class InterpretationCommentService implements IInterpretationCommentServi
      * @param text                  Edited text of comment.
      */
     @Override
-    public void updateCommentText(InterpretationComment interpretationComment, String text) {
+    public void update(InterpretationComment interpretationComment, String text) {
         isNull(interpretationComment, "interpretationComment must not be null");
 
-        if (Action.TO_DELETE.equals(interpretationComment.getAction())) {
+        Action action = stateStore.queryAction(interpretationComment);
+        if (Action.TO_DELETE.equals(action)) {
             throw new IllegalArgumentException("The text of interpretation comment with Action." +
                     "TO_DELETE cannot be updated");
         }
 
-        if (!Action.TO_POST.equals(interpretationComment.getAction())) {
-            interpretationComment.setAction(Action.TO_UPDATE);
+        if (!Action.TO_POST.equals(action)) {
+            stateStore.save(interpretationComment, Action.TO_UPDATE);
         }
 
         interpretationComment.setText(text);

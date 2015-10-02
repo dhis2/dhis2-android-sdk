@@ -31,11 +31,8 @@ package org.hisp.dhis.android.sdk.core.api;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemContent;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardService;
 
 import java.util.List;
@@ -71,27 +68,32 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     }
 
     @Override
-    public Dashboard query(long id) {
-        return dashboardService.query(id);
+    public Dashboard get(long id) {
+        return dashboardService.get(id);
     }
 
     @Override
-    public List<Dashboard> query() {
-        return dashboardService.query();
+    public List<Dashboard> list() {
+        return dashboardService.list();
     }
 
     @Override
-    public boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) {
-        return dashboardService.addDashboardContent(dashboard, content);
+    public boolean addContent(Dashboard dashboard, DashboardContent content) {
+        return dashboardService.addContent(dashboard, content);
     }
 
-    @Override
+    /* @Override
     public DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
         return dashboardService.getAvailableItemByType(dashboard, type);
-    }
+    } */
 
     @Override
     public void sync() throws APIException {
         dataController.sync();
+    }
+
+    @Override
+    public Dashboard get(String uid) {
+        return null;
     }
 }

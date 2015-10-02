@@ -34,7 +34,5 @@ import org.hisp.dhis.android.sdk.models.state.Action;
 import java.util.List;
 
 public interface IInterpretationCommentStore extends IIdentifiableObjectStore<InterpretationComment> {
-    List<InterpretationComment> filter(Action action);
-
-    List<InterpretationComment> filter(Interpretation interpretation, Action action);
+    List<InterpretationComment> queryByInterpretation(Interpretation interpretation);
 }

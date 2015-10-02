@@ -62,22 +62,67 @@ public class DashboardService implements IDashboardService {
         this.stateStore = stateStore;
     }
 
+
+    /**
+     * Factory method for creating DashboardElement.
+     *
+     * @param dashboardItem        DashboardItem to associate with element.
+     * @param dashboardContent Content from which element will be created.
+     * @return new element.
+     * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.
+     */
+    // @Override
+    DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
+        isNull(dashboardItem, "dashboardItem must not be null");
+        isNull(dashboardContent, "dashboardContent must not be null");
+
+        DashboardElement element = new DashboardElement();
+        element.setUId(dashboardContent.getUId());
+        element.setName(dashboardContent.getName());
+        element.setDisplayName(dashboardContent.getDisplayName());
+        element.setCreated(dashboardContent.getCreated());
+        element.setLastUpdated(dashboardContent.getLastUpdated());
+        element.setDashboardItem(dashboardItem);
+
+        // element.setAction(Action.TO_POST);
+        stateStore.save(element, Action.TO_POST);
+
+        return element;
+    }
+
+
+    /**
+     * Factory method which creates and returns DashboardItem.
+     *
+     * @param dashboard Dashboard to associate with item.
+     * @param content   Content for dashboard item.
+     * @return new item.
+     */
+    // @Override
+    boolean add(Dashboard dashboard, DashboardContent content) {
+        isNull(dashboard, "dashboard must not be null");
+        isNull(content, "content must not be null");
+
+        /* DateTime lastUpdated = new DateTime();
+
+        DashboardItem item = new DashboardItem();
+        item.setCreated(lastUpdated);
+        item.setLastUpdated(lastUpdated);
+        item.setDashboard(dashboard);
+        item.setAccess(Access.createDefaultAccess());
+        item.setType(content.getType());
+
+        stateStore.save(item, Action.TO_POST);
+
+        return item; */
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean add(Dashboard dashboard) {
-        /* DateTime lastUpdated = new DateTime();
-
-        Dashboard dashboard = new Dashboard();
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
-        dashboard.setCreated(lastUpdated);
-        dashboard.setLastUpdated(lastUpdated);
-        dashboard.setAccess(Access.createDefaultAccess());
-        // dashboard.setAction(Action.TO_POST);
-        return dashboard; */
-
         dashboardStore.insert(dashboard);
         stateStore.save(dashboard, Action.TO_POST);
 
@@ -101,45 +146,6 @@ public class DashboardService implements IDashboardService {
         }
 
         return true;
-    }
-
-    @Override
-    public List<Dashboard> query() {
-        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean remove(Dashboard dashboard) {
-        isNull(dashboard, "dashboard argument must not be null");
-
-        Action action = stateStore.queryAction(dashboard);
-        if (Action.TO_DELETE.equals(action)) {
-            // dashboard.setAction(Action.TO_DELETE);
-            stateStore.delete(dashboard);
-            dashboardStore.delete(dashboard);
-        } else {
-            // dashboard.setAction(Action.TO_DELETE);
-            stateStore.save(dashboard, Action.TO_DELETE);
-            dashboardStore.update(dashboard);
-        }
-
-        return true;
-    }
-
-    @Override
-    public Dashboard query(long id) {
-        Dashboard dashboard = dashboardStore.queryById(id);
-        Action action = stateStore.queryAction(dashboard);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return dashboard;
-        }
-
-        return null;
     }
 
     /**
@@ -174,9 +180,57 @@ public class DashboardService implements IDashboardService {
      * {@inheritDoc}
      */
     @Override
-    public boolean addDashboardContent(Dashboard dashboard, DashboardItemContent content) {
-        isNull(dashboard, "Dashboard object must not be null");
-        isNull(content, "DashboardItemContent object must not be null");
+    public List<Dashboard> list() {
+        return stateStore.filterByAction(Dashboard.class, Action.TO_DELETE);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean remove(Dashboard dashboard) {
+        isNull(dashboard, "dashboard argument must not be null");
+
+        Action action = stateStore.queryAction(dashboard);
+        if (Action.TO_DELETE.equals(action)) {
+            stateStore.delete(dashboard);
+            dashboardStore.delete(dashboard);
+        } else {
+            stateStore.save(dashboard, Action.TO_DELETE);
+            dashboardStore.update(dashboard);
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Dashboard get(long id) {
+        Dashboard dashboard = dashboardStore.queryById(id);
+        Action action = stateStore.queryAction(dashboard);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return dashboard;
+        }
+
+        return null;
+    }
+
+    @Override
+    public Dashboard get(String uid) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean addContent(Dashboard dashboard, DashboardContent content) {
+        /* isNull(dashboard, "Dashboard object must not be null");
+        isNull(content, "DashboardContent object must not be null");
 
         DashboardItem item;
         DashboardElement element;
@@ -202,14 +256,15 @@ public class DashboardService implements IDashboardService {
         dashboardItemStore.save(item);
         dashboardElementStore.save(element);
 
-        return true;
+        return true; */
+        return false;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
+    // @Override
+    DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
         isNull(dashboard, "dashboard must not be null");
         isNull(type, "type must not be null");
 
@@ -219,12 +274,12 @@ public class DashboardService implements IDashboardService {
             return null;
         }
 
-        for (DashboardItem item : dashboardItems) {
+        /* for (DashboardItem item : dashboardItems) {
             if (type.equals(item.getType()) &&
                     dashboardItemService.getContentCount(item) < DashboardItem.MAX_CONTENT) {
                 return item;
             }
-        }
+        } */
 
         return null;
     }
@@ -235,7 +290,7 @@ public class DashboardService implements IDashboardService {
     }
 
     private List<DashboardItem> queryRelateDashboardItems(Dashboard dashboard) {
-        List<DashboardItem> allDashboardItems = dashboardItemStore.query(dashboard);
+        List<DashboardItem> allDashboardItems = dashboardItemStore.queryByDashboard(dashboard);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> dashboardItems = new ArrayList<>();
@@ -250,23 +305,23 @@ public class DashboardService implements IDashboardService {
         return dashboardItems;
     }
 
-    static boolean isItemContentTypeEmbedded(DashboardItemContent content) {
+    static boolean isItemContentTypeEmbedded(DashboardContent content) {
         switch (content.getType()) {
-            case DashboardItemContent.TYPE_CHART:
-            case DashboardItemContent.TYPE_EVENT_CHART:
-            case DashboardItemContent.TYPE_MAP:
-            case DashboardItemContent.TYPE_EVENT_REPORT:
-            case DashboardItemContent.TYPE_REPORT_TABLE: {
+            case DashboardContent.TYPE_CHART:
+            case DashboardContent.TYPE_EVENT_CHART:
+            case DashboardContent.TYPE_MAP:
+            case DashboardContent.TYPE_EVENT_REPORT:
+            case DashboardContent.TYPE_REPORT_TABLE: {
                 return true;
             }
-            case DashboardItemContent.TYPE_USERS:
-            case DashboardItemContent.TYPE_REPORTS:
-            case DashboardItemContent.TYPE_RESOURCES: {
+            case DashboardContent.TYPE_USERS:
+            case DashboardContent.TYPE_REPORTS:
+            case DashboardContent.TYPE_RESOURCES: {
                 return false;
             }
         }
 
-        throw new IllegalArgumentException("Unsupported DashboardItemContent type: " +
+        throw new IllegalArgumentException("Unsupported DashboardContent type: " +
                 content.getType() + " name: " + content.getDisplayName());
     }
 }

@@ -26,13 +26,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.interpretation;
+package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.state.Action;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.List;
+import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
 
-public interface IInterpretationStore extends IIdentifiableObjectStore<Interpretation> {
-    List<Interpretation> filter(Action action);
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DashboardContent extends BaseIdentifiableObject {
+    public static final String TYPE_CHART = "chart";
+    public static final String TYPE_EVENT_CHART = "eventChart";
+    public static final String TYPE_MAP = "map";
+    public static final String TYPE_REPORT_TABLE = "reportTable";
+
+    /* have to implement user fragment for this */
+    public static final String TYPE_USERS = "users";
+
+    /* we can use data entry fragment for this: have to implement read-only mode */
+    public static final String TYPE_REPORTS = "reports";
+
+    /* not supported on server side */
+    public static final String TYPE_EVENT_REPORT = "eventReport";
+
+    /* resource can be anything (like pdf or binary file. Will look into this later */
+    public static final String TYPE_RESOURCES = "resources";
+
+    /* unknown type: ask core team about this one */
+    public static final String TYPE_REPORT_TABLES = "reportTables";
+
+    /* won't be supported until implementation of messaging application */
+    public static final String TYPE_MESSAGES = "messages";
+
+    @JsonIgnore
+    String type;
+
+    public DashboardContent() {
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

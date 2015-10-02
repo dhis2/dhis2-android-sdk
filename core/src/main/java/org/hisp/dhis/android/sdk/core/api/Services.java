@@ -76,7 +76,7 @@ final class Services {
         dashboardItemContentService = new DashboardContentService(Models.dashboardItemContent());
 
         interpretationElementService = new InterpretationElementService();
-        interpretationCommentService = new InterpretationCommentService(Models.interpretationComments());
+        interpretationCommentService = new InterpretationCommentService(Models.interpretationComments(), stateStore);
         interpretationsService = new InterpretationService(Models.interpretations(), interpretationElementService);
 
         userAccountService = new UserAccountService(Models.userAccount(), Models.modelsStore());

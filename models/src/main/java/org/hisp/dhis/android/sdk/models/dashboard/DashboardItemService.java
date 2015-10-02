@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.sdk.models.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.state.IStateStore;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,63 +51,36 @@ public class DashboardItemService implements IDashboardItemService {
     }
 
     /**
-     * Factory method which creates and returns DashboardItem.
-     *
-     * @param dashboard Dashboard to associate with item.
-     * @param content   Content for dashboard item.
-     * @return new item.
-     */
-    // TODO revise the use of Factory method ().
-    @Override
-    public DashboardItem add(Dashboard dashboard, DashboardItemContent content) {
-        isNull(dashboard, "dashboard must not be null");
-        isNull(content, "content must not be null");
-
-        DateTime lastUpdated = new DateTime();
-
-        DashboardItem item = new DashboardItem();
-        item.setCreated(lastUpdated);
-        item.setLastUpdated(lastUpdated);
-        item.setDashboard(dashboard);
-        item.setAccess(Access.createDefaultAccess());
-        item.setType(content.getType());
-
-        // item.setAction(Action.TO_POST);
-        stateStore.save(item, Action.TO_POST);
-
-        return item;
-    }
-
-    /**
-     * This method will change the action of the model to TO_DELETE
-     * if the model was already synced to the server.
-     * <p/>
-     * If model was created only locally, it will delete it
-     * from embedded database.
+     * {@inheritDoc}
      */
     @Override
     public boolean remove(DashboardItem dashboardItem) {
         Action action = stateStore.queryAction(dashboardItem);
         if (Action.TO_POST.equals(action)) {
-            // dashboardItem.setAction(Action.TO_DELETE);
             stateStore.delete(dashboardItem);
             dashboardItemStore.delete(dashboardItem);
         } else {
-            // dashboardItem.setAction(Action.TO_DELETE);
             stateStore.save(dashboardItem, Action.TO_DELETE);
             dashboardItemStore.update(dashboardItem);
         }
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<DashboardItem> query() {
-        return null;
+    public List<DashboardItem> list() {
+        return stateStore.filterByAction(DashboardItem.class, Action.TO_DELETE);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<DashboardItem> query(Dashboard dashboard) {
-        List<DashboardItem> dashboardItems = dashboardItemStore.query(dashboard);
+    public List<DashboardItem> list(Dashboard dashboard) {
+        List<DashboardItem> dashboardItems = dashboardItemStore.queryByDashboard(dashboard);
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> filteredItems = new ArrayList<>();
@@ -124,9 +95,10 @@ public class DashboardItemService implements IDashboardItemService {
         return filteredItems;
     }
 
-    @Override
+    /* @Override
     public List<DashboardItem> filterByType(Dashboard dashboard, String type) {
-        List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
+        // List<DashboardItem> dashboardItems = dashboardItemStore.filterByType(dashboard, type);
+        List<DashboardItem> dashboardItems = new ArrayList<>();
         Map<Long, Action> actionMap = stateStore.queryMap(DashboardItem.class);
 
         List<DashboardItem> filteredItems = new ArrayList<>();
@@ -139,10 +111,14 @@ public class DashboardItemService implements IDashboardItemService {
         }
 
         return filteredItems;
-    }
+    } */
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public DashboardItem query(long id) {
+    public DashboardItem get(long id) {
         DashboardItem dashboardItem = dashboardItemStore.queryById(id);
 
         if (dashboardItem != null) {
@@ -156,8 +132,12 @@ public class DashboardItemService implements IDashboardItemService {
         return null;
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public DashboardItem query(String uid) {
+    public DashboardItem get(String uid) {
         DashboardItem dashboardItem = dashboardItemStore.queryByUid(uid);
 
         if (dashboardItem != null) {
@@ -169,29 +149,5 @@ public class DashboardItemService implements IDashboardItemService {
         }
 
         return null;
-    }
-
-    @Override
-    public int getContentCount(DashboardItem dashboardItem) {
-        List<DashboardElement> dashboardElements = queryRelatedElements(dashboardItem);
-        return dashboardElements == null ? 0 : dashboardElements.size();
-    }
-
-    private List<DashboardElement> queryRelatedElements(DashboardItem dashboardItem) {
-        List<DashboardElement> allDashboardElements = dashboardElementStore.query(dashboardItem);
-        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
-
-        List<DashboardElement> dashboardElements = new ArrayList<>();
-        if (allDashboardElements != null && !allDashboardElements.isEmpty()) {
-            for (DashboardElement dashboardElement : dashboardElements) {
-                Action action = actionMap.get(dashboardElement.getId());
-
-                if (!Action.TO_DELETE.equals(action)) {
-                    dashboardElements.add(dashboardElement);
-                }
-            }
-        }
-
-        return dashboardElements;
     }
 }

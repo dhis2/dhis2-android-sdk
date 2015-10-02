@@ -39,12 +39,14 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.common.IModel;
-import org.hisp.dhis.android.sdk.models.common.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
+import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
+import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.state.State;
 import org.hisp.dhis.android.sdk.models.trackedentityinstance.TrackedEntityInstance;
 
@@ -173,6 +175,18 @@ public final class State$Flow extends BaseModel {
             return DashboardElement.class;
         }
 
+        if (Interpretation.class.getSimpleName().equals(type)) {
+            return Interpretation.class;
+        }
+
+        if (InterpretationElement.class.getSimpleName().equals(type)) {
+            return InterpretationElement.class;
+        }
+
+        if (InterpretationComment.class.getSimpleName().equals(type)) {
+            return InterpretationComment.class;
+        }
+
         if (TrackedEntityInstance.class.getSimpleName().equals(type)) {
             return TrackedEntityInstance.class;
         }
@@ -188,7 +202,7 @@ public final class State$Flow extends BaseModel {
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
-    public static Class<? extends Model> getFlowClass(Class<?> objectClass){
+    public static Class<? extends Model> getFlowClass(Class<?> objectClass) {
         isNull(objectClass, "Class object must not be null");
 
         if (Dashboard.class.equals(objectClass)) {
@@ -201,6 +215,18 @@ public final class State$Flow extends BaseModel {
 
         if (DashboardElement.class.equals(objectClass)) {
             return DashboardElement$Flow.class;
+        }
+
+        if (Interpretation.class.equals(objectClass)) {
+            return Interpretation$Flow.class;
+        }
+
+        if (InterpretationElement.class.equals(objectClass)) {
+            return InterpretationElement$Flow.class;
+        }
+
+        if (InterpretationComment.class.equals(objectClass)) {
+            return InterpretationComment$Flow.class;
         }
 
         if (TrackedEntityInstance.class.equals(objectClass)) {

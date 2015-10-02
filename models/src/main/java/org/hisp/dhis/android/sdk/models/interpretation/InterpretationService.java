@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.user.User;
@@ -40,10 +41,10 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class InterpretationService implements IInterpretationService {
-    private final IInterpretationStore interpretationStore;
+    private final IIdentifiableObjectStore<Interpretation> interpretationStore;
     private final IInterpretationElementService interpretationElementService;
 
-    public InterpretationService(IInterpretationStore interpretationStore,
+    public InterpretationService(IIdentifiableObjectStore<Interpretation> interpretationStore,
                                  IInterpretationElementService interpretationElementService) {
         this.interpretationStore = interpretationStore;
         this.interpretationElementService = interpretationElementService;
@@ -69,7 +70,7 @@ public class InterpretationService implements IInterpretationService {
         comment.setLastUpdated(lastUpdated);
         comment.setAccess(Access.createDefaultAccess());
         comment.setText(text);
-        comment.setAction(Action.TO_POST);
+        // comment.setAction(Action.TO_POST);
         comment.setUser(user);
         comment.setInterpretation(interpretation);
         return comment;
@@ -89,7 +90,7 @@ public class InterpretationService implements IInterpretationService {
      * @return new Interpretation.
      */
     @Override
-    public Interpretation createInterpretation(DashboardItem item, User user, String text) {
+    public Interpretation add(DashboardItem item, User user, String text) {
         DateTime lastUpdated = new DateTime();
 
         Interpretation interpretation = new Interpretation();
@@ -97,27 +98,27 @@ public class InterpretationService implements IInterpretationService {
         interpretation.setLastUpdated(lastUpdated);
         interpretation.setAccess(Access.createDefaultAccess());
         interpretation.setText(text);
-        interpretation.setAction(Action.TO_POST);
+        // interpretation.setAction(Action.TO_POST);
         interpretation.setUser(user);
 
         switch (item.getType()) {
             case Interpretation.TYPE_CHART: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getChart(), Interpretation.TYPE_CHART);
+                        .add(interpretation, item.getChart(), Interpretation.TYPE_CHART);
                 interpretation.setType(Interpretation.TYPE_CHART);
                 interpretation.setChart(element);
                 break;
             }
             case Interpretation.TYPE_MAP: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getMap(), Interpretation.TYPE_MAP);
+                        .add(interpretation, item.getMap(), Interpretation.TYPE_MAP);
                 interpretation.setType(Interpretation.TYPE_MAP);
                 interpretation.setMap(element);
                 break;
             }
             case Interpretation.TYPE_REPORT_TABLE: {
                 InterpretationElement element = interpretationElementService
-                        .createInterpretationElement(interpretation, item.getReportTable(), Interpretation.TYPE_REPORT_TABLE);
+                        .add(interpretation, item.getReportTable(), Interpretation.TYPE_REPORT_TABLE);
                 interpretation.setType(Interpretation.TYPE_REPORT_TABLE);
                 interpretation.setReportTable(element);
                 break;
@@ -131,25 +132,25 @@ public class InterpretationService implements IInterpretationService {
     }
 
     @Override
-    public void updateInterpretationText(Interpretation interpretation, String text) {
+    public void update(Interpretation interpretation, String text) {
         interpretation.setText(text);
 
-        if (interpretation.getAction() != Action.TO_DELETE &&
+        /* if (interpretation.getAction() != Action.TO_DELETE &&
                 interpretation.getAction() != Action.TO_POST) {
             interpretation.setAction(Action.TO_UPDATE);
-        }
+        } */
 
         interpretationStore.save(interpretation);
     }
 
     @Override
-    public void deleteInterpretation(Interpretation interpretation) {
-        if (Action.TO_POST.equals(interpretation.getAction())) {
+    public void remove(Interpretation interpretation) {
+        /* if (Action.TO_POST.equals(interpretation.getAction())) {
             interpretationStore.delete(interpretation);
         } else {
             interpretation.setAction(Action.TO_DELETE);
             interpretationStore.save(interpretation);
-        }
+        } */
     }
 
     /**

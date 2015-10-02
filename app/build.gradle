@@ -64,9 +64,9 @@ android {
 
 dependencies {
     // Android support libraries.
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:appcompat-v7:23.0.1'
+    compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.android.support:design:23.0.1'
 
     // Square libraries.
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'

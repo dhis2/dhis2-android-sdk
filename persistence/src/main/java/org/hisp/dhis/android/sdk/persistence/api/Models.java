@@ -162,56 +162,80 @@ public final class Models {
 
     public Models(Context context) {
         FlowManager.init(context);
-        /* TriggersManager.createInsertTrigger(Dashboard$Flow.class).enable();
-        TriggersManager.createInsertTrigger(DashboardItem$Flow.class).enable();
-        TriggersManager.createInsertTrigger(DashboardElement$Flow.class).enable(); */
-
-        constantStore = new ConstantStore();
-        dataElementStore = new DataElementStore();
-        optionStore = new OptionStore();
-        optionSetStore = new OptionSetStore(optionStore);
-        organisationUnitStore = new OrganisationUnitStore();
-        trackedEntityStore = new TrackedEntityStore();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore();
-        programStageDataElementStore = new ProgramStageDataElementStore();
-        programIndicatorStore = new ProgramIndicatorStore();
-        programStageSectionStore = new ProgramStageSectionStore(programStageDataElementStore);
-        programStageStore = new ProgramStageStore(programStageDataElementStore,
-                programStageSectionStore);
-        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore);
-        programRuleActionStore = new ProgramRuleActionStore();
-        programRuleStore = new ProgramRuleStore(programRuleActionStore);
-        programRuleVariableStore = new ProgramRuleVariableStore();
-        relationshipTypeStore = new RelationshipTypeStore();
-
-        dataSetStore = new DataSetStore();
-
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(programStore);
-        relationshipStore = new RelationshipStore();
-        trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore,
-                trackedEntityAttributeValueStore);
-        trackedEntityDataValueStore = new TrackedEntityDataValueStore();
-        eventStore = new EventStore(trackedEntityDataValueStore);
-        enrollmentStore = new EnrollmentStore(eventStore, trackedEntityAttributeValueStore);
 
         stateStore = new StateStore();
-
         failedItemStore = new FailedItemStore();
+        modelsStore = new ModelsStore();
+
+        relationshipStore = new RelationshipStore();
+        relationshipTypeStore = new RelationshipTypeStore();
+
+        optionStore = new OptionStore();
+        optionSetStore = new OptionSetStore(optionStore);
+
+        organisationUnitStore = new OrganisationUnitStore();
+        dataSetStore = new DataSetStore();
+        dataElementStore = new DataElementStore();
+        constantStore = new ConstantStore();
+
+        userAccountStore = new UserAccountStore();
+        userStore = new UserStore();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Dashboard stores.
+        /////////////////////////////////////////////////////////////////////////////////////
 
         dashboardStore = new DashboardStore(stateStore);
         dashboardItemStore = new DashboardItemStore(stateStore);
         dashboardElementStore = new DashboardElementStore(stateStore);
         dashboardItemContentStore = new DashboardItemContentStore();
 
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Interpretation stores.
+        /////////////////////////////////////////////////////////////////////////////////////
+
         interpretationStore = new InterpretationStore();
         interpretationCommentStore = new InterpretationCommentStore();
         interpretationElementStore = new InterpretationElementStore();
 
-        userAccountStore = new UserAccountStore();
-        userStore = new UserStore();
 
-        modelsStore = new ModelsStore();
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Program stores.
+        /////////////////////////////////////////////////////////////////////////////////////
+
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore();
+        programStageDataElementStore = new ProgramStageDataElementStore();
+        programIndicatorStore = new ProgramIndicatorStore();
+        programStageSectionStore = new ProgramStageSectionStore(programStageDataElementStore);
+        programStageStore = new ProgramStageStore(programStageDataElementStore, programStageSectionStore);
+        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore);
+        programRuleActionStore = new ProgramRuleActionStore();
+        programRuleStore = new ProgramRuleStore(programRuleActionStore);
+        programRuleVariableStore = new ProgramRuleVariableStore();
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Tracker meta-data stores.
+        /////////////////////////////////////////////////////////////////////////////////////
+
+        trackedEntityStore = new TrackedEntityStore();
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(programStore);
+        trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore, trackedEntityAttributeValueStore);
+        trackedEntityDataValueStore = new TrackedEntityDataValueStore();
+
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // Tracker data stores.
+        /////////////////////////////////////////////////////////////////////////////////////
+
+        eventStore = new EventStore(trackedEntityDataValueStore);
+        enrollmentStore = new EnrollmentStore(eventStore, trackedEntityAttributeValueStore);
     }
 
     public static void init(Context context) {

@@ -93,6 +93,11 @@ public final class EventStore implements IEventStore {
     }
 
     @Override
+    public Event queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<Event> queryAll() {
         List<Event$Flow> eventFlows = new Select()
                 .from(Event$Flow.class)

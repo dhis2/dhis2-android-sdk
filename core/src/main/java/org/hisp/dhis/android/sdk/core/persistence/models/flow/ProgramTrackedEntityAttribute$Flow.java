@@ -29,8 +29,11 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.program.ProgramTrackedEntityAttribute;
@@ -38,15 +41,18 @@ import org.hisp.dhis.android.sdk.models.program.ProgramTrackedEntityAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(databaseName = DbDhis.NAME)
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = ProgramTrackedEntityAttribute$Flow.UNIQUE_TRACKED_ENTITY_PROGRAM, uniqueConflict = ConflictAction.FAIL)
+})
 public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
+    static final int UNIQUE_TRACKED_ENTITY_PROGRAM = 1;
 
     @Column
-    @PrimaryKey
+    @Unique(unique = false, uniqueGroups = {UNIQUE_TRACKED_ENTITY_PROGRAM})
     String trackedEntityAttribute;
 
     @Column
-    @PrimaryKey
+    @Unique(unique = false, uniqueGroups = {UNIQUE_TRACKED_ENTITY_PROGRAM})
     String program;
 
     @Column

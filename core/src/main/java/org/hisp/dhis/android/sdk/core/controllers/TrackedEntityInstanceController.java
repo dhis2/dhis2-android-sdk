@@ -37,25 +37,23 @@ import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
-import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
-import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.android.sdk.models.common.base.IStore;
+import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
 import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
 import org.hisp.dhis.android.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.relationship.Relationship;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
+import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
+import org.hisp.dhis.android.sdk.models.relationship.Relationship;
 import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityInstanceStore;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
-
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +63,8 @@ import java.util.Map;
 
 import retrofit.client.Header;
 import retrofit.client.Response;
+
+import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
 
 public final class TrackedEntityInstanceController extends PushableDataController implements ITrackedEntityInstanceController {
 
@@ -101,6 +101,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
      * The returned tracked entity instances will only contain basic information. More information, like
      * enrollments and events need to be loaded with either getTrackedEntityInstancesDataFromServer(List),
      * or getTrackedEntityInstanceDataFromServer(String uid);
+     *
      * @param organisationUnitUid
      * @param programUid
      * @param queryString
@@ -109,23 +110,23 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
      * @throws APIException
      */
     private List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(String organisationUnitUid,
-                                                                                 String programUid,
-                                                                                 String queryString,
-                                                                                 TrackedEntityAttributeValue... params) throws APIException {
+                                                                                  String programUid,
+                                                                                  String queryString,
+                                                                                  TrackedEntityAttributeValue... params) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        if(programUid != null) {
+        if (programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
         }
 
         List<TrackedEntityAttributeValue> valueParams = new LinkedList<>();
-        if( params != null ) {
-            for(TrackedEntityAttributeValue trackedEntityAttributeValue: params ) {
-                if( trackedEntityAttributeValue != null &&
-                        trackedEntityAttributeValue.getValue() != null ) {
-                    if( !trackedEntityAttributeValue.getValue().isEmpty() ) {
-                        valueParams.add( trackedEntityAttributeValue );
+        if (params != null) {
+            for (TrackedEntityAttributeValue trackedEntityAttributeValue : params) {
+                if (trackedEntityAttributeValue != null &&
+                        trackedEntityAttributeValue.getValue() != null) {
+                    if (!trackedEntityAttributeValue.getValue().isEmpty()) {
+                        valueParams.add(trackedEntityAttributeValue);
                         QUERY_MAP_FULL.put("filter", trackedEntityAttributeValue
-                                .getTrackedEntityAttributeUId()+":LIKE:"+trackedEntityAttributeValue
+                                .getTrackedEntityAttributeUId() + ":LIKE:" + trackedEntityAttributeValue
                                 .getValue());
                     }
                 }
@@ -133,8 +134,8 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         }
 
         //doesnt work with both attribute filter and query
-        if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {
-            QUERY_MAP_FULL.put("query","LIKE:"+queryString);//todo: make a map where we can use more than one of each key
+        if (queryString != null && !queryString.isEmpty() && valueParams.isEmpty()) {
+            QUERY_MAP_FULL.put("query", "LIKE:" + queryString);//todo: make a map where we can use more than one of each key
         }
         List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(mDhisApi
                 .getTrackedEntityInstances(organisationUnitUid,
@@ -144,14 +145,15 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
 
     /**
      * Loads a list of trackedEntityInstances from the server and stores to the local database.
+     *
      * @param trackedEntityInstances
-     * @param getEnrollments set to true if you want to load enrollments with the trackedEntityInstance
+     * @param getEnrollments         set to true if you want to load enrollments with the trackedEntityInstance
      */
     private void getTrackedEntityInstancesDataFromServer(List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) {
-        if(trackedEntityInstances == null) {
+        if (trackedEntityInstances == null) {
             return;
         }
-        for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
             try {
                 getTrackedEntityInstanceDataFromServer(trackedEntityInstance.getTrackedEntityInstanceUid(), getEnrollments);
             } catch (APIException e) { //can't throw this further up because we want to continue loading all the TEIs..
@@ -169,9 +171,9 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         TrackedEntityInstance updatedTrackedEntityInstance = mDhisApi.getTrackedEntityInstance(uid, QUERY_MAP_FULL);
         TrackedEntityInstance persistedTrackedEntityInstance = trackedEntityInstanceStore.query(uid);
-        if(persistedTrackedEntityInstance != null) {
+        if (persistedTrackedEntityInstance != null) {
             updatedTrackedEntityInstance.setId(persistedTrackedEntityInstance.getId());
-            if(updatedTrackedEntityInstance.getLastUpdated().isAfter(persistedTrackedEntityInstance.getLastUpdated())) {
+            if (updatedTrackedEntityInstance.getLastUpdated().isAfter(persistedTrackedEntityInstance.getLastUpdated())) {
                 DbOperation.with(trackedEntityInstanceStore).update(updatedTrackedEntityInstance).execute();
             }
         } else {
@@ -189,7 +191,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         }
         List<Relationship> updatedRelationships = updatedTrackedEntityInstance.getRelationships();
         List<Relationship> persistedRelationships = null;
-        if(persistedTrackedEntityInstance != null) {
+        if (persistedTrackedEntityInstance != null) {
             persistedRelationships = persistedTrackedEntityInstance.getRelationships();
         }
         if (updatedRelationships != null) {
@@ -198,7 +200,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid, serverDateTime);
-        if(getEnrollments) {
+        if (getEnrollments) {
             enrollmentController.sync(updatedTrackedEntityInstance);
         }
         return updatedTrackedEntityInstance;
@@ -212,8 +214,8 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
      * @param newModels List of models of distance instance of DHIS.
      */
     private List<DbOperation> createOperations(IStore<Relationship> modelStore,
-                                                     List<Relationship> oldModels,
-                                                     List<Relationship> newModels) {
+                                               List<Relationship> oldModels,
+                                               List<Relationship> newModels) {
         List<DbOperation> ops = new ArrayList<>();
 
         Map<String, Relationship> newModelsMap = toMap(newModels);
@@ -232,7 +234,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
             // or the item was created locally and has not yet been posted.
             if (newModel == null) {
                 Action action = stateStore.queryActionForModel(oldModel);
-                if(!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
+                if (!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
                     ops.add(DbOperation.with(modelStore)
                             .delete(oldModel));
                 }
@@ -242,9 +244,9 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
                 continue;
             }
 
-                newModel.setId(oldModel.getId());
-                ops.add(DbOperation.with(modelStore)
-                        .update(newModel));
+            newModel.setId(oldModel.getId());
+            ops.add(DbOperation.with(modelStore)
+                    .update(newModel));
 
             // as we have processed given old (persisted) model,
             // we can remove it from map of new models.
@@ -297,7 +299,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         Map<Long, Action> actionMap = stateStore
                 .queryActionsForModel(TrackedEntityInstance.class);
 
-        for (TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
             sendTrackedEntityInstanceChanges(trackedEntityInstance, actionMap.get(trackedEntityInstance.getId()), sendEnrollments);
         }
     }
@@ -306,12 +308,12 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
         if (trackedEntityInstance == null) {
             return;
         }
-        if(Action.TO_POST.equals(action)) {
+        if (Action.TO_POST.equals(action)) {
             postTrackedEntityInstance(trackedEntityInstance);
         } else {
             putTrackedEntityInstance(trackedEntityInstance);
         }
-        if( sendEnrollments ) {
+        if (sendEnrollments) {
             List<Enrollment> enrollments = enrollmentStore.query(trackedEntityInstance);
             enrollmentController.sendEnrollmentChanges(enrollments, sendEnrollments);
         }
@@ -320,10 +322,10 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
     private void postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) throws APIException {
         try {
             Response response = mDhisApi.postTrackedEntityInstance(trackedEntityInstance);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
-                if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                handleImportSummary(importSummary, failedItemStore, FailedItemType.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
+                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
 
                     // also, we will need to find UUID of newly created trackedentityinstance,
@@ -336,7 +338,7 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
                     trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
                     stateStore.saveActionForModel(trackedEntityInstance, Action.SYNCED);
                     trackedEntityInstanceStore.save(trackedEntityInstance);
-                    clearFailedItem(FailedItem.Type.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
+                    clearFailedItem(FailedItemType.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
                     UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance);
                 }
             }
@@ -348,14 +350,14 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
     private void putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) throws APIException {
         try {
             Response response = mDhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstanceUid(), trackedEntityInstance);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
-                handleImportSummary(importSummary, failedItemStore, FailedItem.Type.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
-                if(ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                handleImportSummary(importSummary, failedItemStore, FailedItemType.TRACKED_ENTITY_INSTANCE, trackedEntityInstance.getId());
+                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
                     stateStore.saveActionForModel(trackedEntityInstance, Action.SYNCED);
                     trackedEntityInstanceStore.save(trackedEntityInstance);
-                    clearFailedItem(FailedItem.Type.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
+                    clearFailedItem(FailedItemType.TRACKED_ENTITY_INSTANCE, failedItemStore, trackedEntityInstance.getId());
                     UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance);
                 }
             }
@@ -396,9 +398,9 @@ public final class TrackedEntityInstanceController extends PushableDataControlle
 
     @Override
     public List<TrackedEntityInstance> queryServerTrackedEntityInstances(String organisationUnitUid,
-                                                                          String programUid,
-                                                                          String queryString,
-                                                                          TrackedEntityAttributeValue... params) throws APIException {
+                                                                         String programUid,
+                                                                         String queryString,
+                                                                         TrackedEntityAttributeValue... params) throws APIException {
         return queryTrackedEntityInstancesDataFromServer(organisationUnitUid, programUid, queryString, params);
     }
 }

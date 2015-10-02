@@ -71,6 +71,11 @@ public final class ProgramStageDataElementStore implements IProgramStageDataElem
     }
 
     @Override
+    public ProgramStageDataElement queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<ProgramStageDataElement> queryAll() {
         List<ProgramStageDataElement$Flow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElement$Flow.class)

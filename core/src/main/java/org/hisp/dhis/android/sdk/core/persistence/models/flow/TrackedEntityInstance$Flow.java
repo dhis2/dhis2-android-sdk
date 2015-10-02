@@ -50,18 +50,15 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
     @Column
     String orgUnit;
 
-    List<TrackedEntityAttributeValue$Flow> attributes;
-
-    List<Relationship$Flow> relationships;
-
     @Column
     DateTime created;
 
     @Column
     DateTime lastUpdated;
 
-    @Column
-    org.hisp.dhis.android.sdk.models.common.state.Action action;
+    List<TrackedEntityAttributeValue$Flow> attributes;
+
+    List<Relationship$Flow> relationships;
 
     public String getTrackedEntityInstanceUid() {
         return trackedEntityInstanceUid;
@@ -117,14 +114,6 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
 
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    public org.hisp.dhis.android.sdk.models.common.state.Action getAction() {
-        return action;
-    }
-
-    public void setAction(org.hisp.dhis.android.sdk.models.common.state.Action action) {
-        this.action = action;
     }
 
     public TrackedEntityInstance$Flow() {

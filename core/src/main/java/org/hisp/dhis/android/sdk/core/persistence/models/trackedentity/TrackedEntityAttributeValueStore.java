@@ -78,6 +78,11 @@ public final class TrackedEntityAttributeValueStore implements ITrackedEntityAtt
     }
 
     @Override
+    public TrackedEntityAttributeValue queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<TrackedEntityAttributeValue> queryAll() {
         List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlow = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)

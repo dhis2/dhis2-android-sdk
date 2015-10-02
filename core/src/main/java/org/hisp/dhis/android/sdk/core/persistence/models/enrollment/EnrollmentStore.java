@@ -95,6 +95,11 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
+    public Enrollment queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<Enrollment> queryAll() {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class)

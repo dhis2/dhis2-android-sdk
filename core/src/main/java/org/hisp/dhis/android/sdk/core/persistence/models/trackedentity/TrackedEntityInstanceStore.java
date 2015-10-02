@@ -99,6 +99,11 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     }
 
     @Override
+    public TrackedEntityInstance queryById(long id) {
+        return null;
+    }
+
+    @Override
     public List<TrackedEntityInstance> queryAll() {
         List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityInstance$Flow.class)

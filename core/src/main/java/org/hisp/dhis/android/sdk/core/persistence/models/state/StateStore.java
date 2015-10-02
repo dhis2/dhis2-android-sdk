@@ -78,41 +78,31 @@ import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class StateStore implements IStateStore {
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void insert(State object) {
-        isNull(object, "State object must not be null");
+    public void insert(State state) {
+        isNull(state, "state must not be null");
 
-        State$Flow stateFlow = State$Flow.fromModel(object);
+        State$Flow stateFlow = State$Flow.fromModel(state);
 
         if (stateFlow != null) {
             stateFlow.insert();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void update(State object) {
-        isNull(object, "State object must not be null");
+    public void update(State state) {
+        isNull(state, "state must not be null");
 
-        State$Flow stateFlow = State$Flow.fromModel(object);
+        State$Flow stateFlow = State$Flow.fromModel(state);
 
         if (stateFlow != null) {
             stateFlow.update();
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void save(State state) {
-        isNull(state, "State object must not be null");
+        isNull(state, "state must not be null");
 
         State$Flow stateFlow = State$Flow.fromModel(state);
 
@@ -121,9 +111,6 @@ public class StateStore implements IStateStore {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void delete(State object) {
         isNull(object, "State object must not be null");
@@ -135,9 +122,6 @@ public class StateStore implements IStateStore {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<State> queryAll() {
         List<State$Flow> statesFlows = new Select()
@@ -146,10 +130,6 @@ public class StateStore implements IStateStore {
         return State$Flow.toModels(statesFlows);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> void insert(T object, Action action) {
         isNull(object, "State object must not be null");
@@ -162,9 +142,6 @@ public class StateStore implements IStateStore {
         insert(state);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> void update(T object, Action action) {
         isNull(object, "State object must not be null");
@@ -177,9 +154,6 @@ public class StateStore implements IStateStore {
         update(state);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> void save(T object, Action action) {
         isNull(object, "State object must not be null");
@@ -192,10 +166,6 @@ public class StateStore implements IStateStore {
         save(state);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> void delete(T object) {
         isNull(object, "State object must not be null");
@@ -210,9 +180,6 @@ public class StateStore implements IStateStore {
         state$Flow.delete();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> State query(T object) {
         isNull(object, "State object must not be null");
@@ -228,10 +195,6 @@ public class StateStore implements IStateStore {
         return State$Flow.toModel(stateFlow);
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> Action queryAction(T object) {
         isNull(object, "State object must not be null");
@@ -245,25 +208,16 @@ public class StateStore implements IStateStore {
         return state.getAction();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> List<T> filterByAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, false);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> List<T> queryWithAction(Class<T> clazz, Action action) {
         return getObjectsByAction(clazz, action, true);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> List<State> query(Class<T> clazz) {
         if (clazz == null) {
@@ -278,9 +232,6 @@ public class StateStore implements IStateStore {
         return State$Flow.toModels(stateFlows);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public <T extends IModel> Map<Long, Action> queryMap(Class<T> clazz) {
         if (clazz == null) {

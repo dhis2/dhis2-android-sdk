@@ -32,10 +32,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.android.sdk.models.common.IModel;
 import org.hisp.dhis.android.sdk.models.importsummary.ImportSummary;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Conflict {
+public class Conflict implements IModel {
 
     @JsonIgnore
     private long id;
@@ -49,10 +50,12 @@ public class Conflict {
     @JsonProperty("value")
     private String value;
 
+    @Override
     public long getId() {
         return id;
     }
 
+    @Override
     public void setId(long id) {
         this.id = id;
     }

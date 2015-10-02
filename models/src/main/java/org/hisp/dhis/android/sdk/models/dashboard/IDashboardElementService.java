@@ -36,11 +36,8 @@ import org.hisp.dhis.android.sdk.models.common.repository.IRemove;
 import java.util.List;
 
 public interface IDashboardElementService extends IService, IRemove<DashboardElement>, IList<DashboardElement> {
-    // DashboardElement add(DashboardItem item, DashboardContent content);
-
-    // void remove(DashboardElement dashboardElement);
-
+    /**
+     * {@inheritDoc}
+     */
     List<DashboardElement> list(DashboardItem dashboardItem);
-
-    // List<DashboardElement> list();
 }

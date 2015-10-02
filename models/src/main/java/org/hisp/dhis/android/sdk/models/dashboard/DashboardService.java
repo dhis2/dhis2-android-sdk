@@ -62,6 +62,62 @@ public class DashboardService implements IDashboardService {
         this.stateStore = stateStore;
     }
 
+
+    /**
+     * Factory method for creating DashboardElement.
+     *
+     * @param dashboardItem        DashboardItem to associate with element.
+     * @param dashboardContent Content from which element will be created.
+     * @return new element.
+     * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.
+     */
+    // @Override
+    DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
+        isNull(dashboardItem, "dashboardItem must not be null");
+        isNull(dashboardContent, "dashboardContent must not be null");
+
+        DashboardElement element = new DashboardElement();
+        element.setUId(dashboardContent.getUId());
+        element.setName(dashboardContent.getName());
+        element.setDisplayName(dashboardContent.getDisplayName());
+        element.setCreated(dashboardContent.getCreated());
+        element.setLastUpdated(dashboardContent.getLastUpdated());
+        element.setDashboardItem(dashboardItem);
+
+        // element.setAction(Action.TO_POST);
+        stateStore.save(element, Action.TO_POST);
+
+        return element;
+    }
+
+
+    /**
+     * Factory method which creates and returns DashboardItem.
+     *
+     * @param dashboard Dashboard to associate with item.
+     * @param content   Content for dashboard item.
+     * @return new item.
+     */
+    // @Override
+    boolean add(Dashboard dashboard, DashboardContent content) {
+        isNull(dashboard, "dashboard must not be null");
+        isNull(content, "content must not be null");
+
+        /* DateTime lastUpdated = new DateTime();
+
+        DashboardItem item = new DashboardItem();
+        item.setCreated(lastUpdated);
+        item.setLastUpdated(lastUpdated);
+        item.setDashboard(dashboard);
+        item.setAccess(Access.createDefaultAccess());
+        item.setType(content.getType());
+
+        stateStore.save(item, Action.TO_POST);
+
+        return item; */
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */

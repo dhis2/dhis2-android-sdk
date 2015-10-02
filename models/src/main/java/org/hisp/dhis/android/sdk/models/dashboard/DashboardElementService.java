@@ -50,53 +50,23 @@ public class DashboardElementService implements IDashboardElementService {
         this.stateStore = stateStore;
     }
 
-    /**
-     * Factory method for creating DashboardElement.
-     *
-     * @param dashboardItem        DashboardItem to associate with element.
-     * @param dashboardContent Content from which element will be created.
-     * @return new element.
-     * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.
-     */
-    // @Override
-    DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
-        isNull(dashboardItem, "dashboardItem must not be null");
-        isNull(dashboardContent, "dashboardContent must not be null");
-
-        DashboardElement element = new DashboardElement();
-        element.setUId(dashboardContent.getUId());
-        element.setName(dashboardContent.getName());
-        element.setDisplayName(dashboardContent.getDisplayName());
-        element.setCreated(dashboardContent.getCreated());
-        element.setLastUpdated(dashboardContent.getLastUpdated());
-        element.setDashboardItem(dashboardItem);
-
-        // element.setAction(Action.TO_POST);
-        stateStore.save(element, Action.TO_POST);
-
-        return element;
-    }
-
     @Override
     public boolean remove(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
         Action action = stateStore.queryAction(dashboardElement);
         if (Action.TO_POST.equals(action)) {
-            // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.delete(dashboardElement);
             dashboardElementStore.delete(dashboardElement);
         } else {
-            // dashboardElement.setAction(Action.TO_DELETE);
             stateStore.save(dashboardElement, Action.TO_DELETE);
             dashboardElementStore.update(dashboardElement);
         }
 
-        /* if count of elements in item is zero, it means
-        we don't need this item anymore */
-        /* if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
+        /* if count of elements in item is zero, it means we don't need this item anymore */
+        if (!(getContentCount(dashboardElement.getDashboardItem()) > 0)) {
             dashboardItemService.remove(dashboardElement.getDashboardItem());
-        } */
+        }
 
         return false;
     }
@@ -133,5 +103,23 @@ public class DashboardElementService implements IDashboardElementService {
         }
 
         return dashboardElements;
+    }
+
+    /* Made this method package private for testing */
+    int getContentCount(DashboardItem dashboardItem) {
+        List<DashboardElement> allDashboardElements =
+                dashboardElementStore.queryByDashboardItem(dashboardItem);
+        Map<Long, Action> actionMap = stateStore.queryMap(DashboardElement.class);
+
+        List<DashboardElement> dashboardElements = new ArrayList<>();
+        for (DashboardElement dashboardElement : allDashboardElements) {
+            Action action = actionMap.get(dashboardElement.getId());
+
+            if (!Action.TO_DELETE.equals(action)) {
+                dashboardElements.add(dashboardElement);
+            }
+        }
+
+        return dashboardElements.size();
     }
 }

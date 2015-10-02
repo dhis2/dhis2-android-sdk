@@ -31,5 +31,16 @@ package org.hisp.dhis.android.sdk.models.common.repository;
 import org.hisp.dhis.android.sdk.models.common.IModel;
 
 public interface IRemove<T extends IModel> {
-    boolean remove(T model);
+
+    /**
+     * Removes a single instance of the specified element from this collection.
+     * More formally, removes an model object such that (o == null ? e == null : o.equals(e)),
+     * if this collection contains one or more such elements. Returns true if this collection
+     * contained the specified element (or equivalently, if this collection
+     * changed as a result of the call).
+     *
+     * @param object o - element to be removed from this collection, if present
+     * @return true if an element was removed as a result of this call
+     */
+    boolean remove(T object);
 }

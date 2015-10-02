@@ -38,11 +38,8 @@ import java.util.List;
 public interface IDashboardItemContentService extends IService, IGet<DashboardContent>,
         IGetUid<DashboardContent>, IList<DashboardContent> {
 
-    // DashboardContent get(long id);
-
-    // DashboardContent get(String uid);
-
-    // List<DashboardContent> list();
-
+    /**
+     * {@inheritDoc}
+     */
     List<DashboardContent> list(List<String> types);
 }

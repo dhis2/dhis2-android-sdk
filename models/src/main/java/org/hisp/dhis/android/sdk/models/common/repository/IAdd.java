@@ -26,13 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.programstagesection;
+package org.hisp.dhis.android.sdk.models.common.repository;
 
-import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.programstage.ProgramStage;
+public interface IAdd {
 
-import java.util.List;
-
-public interface IProgramStageSectionStore extends IIdentifiableObjectStore<ProgramStageSection> {
-    List<ProgramStageSection> query(ProgramStage programStage);
 }

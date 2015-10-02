@@ -30,6 +30,6 @@ package org.hisp.dhis.android.sdk.models.common.repository;
 
 import org.hisp.dhis.android.sdk.models.common.IModel;
 
-public interface IAdd<T extends IModel> {
-    boolean add(T object);
+public interface IUpdate<T extends IModel> {
+    boolean update(T object);
 }

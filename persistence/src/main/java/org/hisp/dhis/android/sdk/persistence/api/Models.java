@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.core.api;
+package org.hisp.dhis.android.sdk.persistence.api;
 
 import android.content.Context;
 
@@ -106,7 +106,7 @@ import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityInstanceStor
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.IUserStore;
 
-final class Models {
+public final class Models {
     private static Models models;
 
     // Meta data store objects

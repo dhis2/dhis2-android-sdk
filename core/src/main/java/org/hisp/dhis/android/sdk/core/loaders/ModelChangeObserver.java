@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.persistence.loaders.loaders;
+package org.hisp.dhis.android.sdk.core.loaders;
 
 import android.util.Log;
 

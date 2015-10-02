@@ -45,6 +45,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
+import org.hisp.dhis.android.sdk.persistence.api.Models;
 
 public final class Dhis2 {
     // Reference to Dhis2 instance

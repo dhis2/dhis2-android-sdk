@@ -29,16 +29,20 @@
 package org.hisp.dhis.android.sdk.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.repository.IGet;
+import org.hisp.dhis.android.sdk.models.common.repository.IGetUid;
+import org.hisp.dhis.android.sdk.models.common.repository.IList;
 
 import java.util.List;
 
-public interface IDashboardItemContentService extends IService {
+public interface IDashboardItemContentService extends IService, IGet<DashboardContent>,
+        IGetUid<DashboardContent>, IList<DashboardContent> {
 
-    DashboardContent get(long id);
+    // DashboardContent get(long id);
 
-    DashboardContent get(String uid);
+    // DashboardContent get(String uid);
 
-    List<DashboardContent> list();
+    // List<DashboardContent> list();
 
     List<DashboardContent> list(List<String> types);
 }

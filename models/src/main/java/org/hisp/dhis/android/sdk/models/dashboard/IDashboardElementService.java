@@ -30,15 +30,17 @@ package org.hisp.dhis.android.sdk.models.dashboard;
 
 
 import org.hisp.dhis.android.sdk.models.common.IService;
+import org.hisp.dhis.android.sdk.models.common.repository.IList;
+import org.hisp.dhis.android.sdk.models.common.repository.IRemove;
 
 import java.util.List;
 
-public interface IDashboardElementService extends IService {
-    DashboardElement add(DashboardItem item, DashboardContent content);
+public interface IDashboardElementService extends IService, IRemove<DashboardElement>, IList<DashboardElement> {
+    // DashboardElement add(DashboardItem item, DashboardContent content);
 
-    void remove(DashboardElement dashboardElement);
+    // void remove(DashboardElement dashboardElement);
 
     List<DashboardElement> list(DashboardItem dashboardItem);
 
-    List<DashboardElement> list();
+    // List<DashboardElement> list();
 }

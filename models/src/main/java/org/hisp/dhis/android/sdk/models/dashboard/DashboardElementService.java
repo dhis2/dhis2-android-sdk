@@ -58,8 +58,8 @@ public class DashboardElementService implements IDashboardElementService {
      * @return new element.
      * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.
      */
-    @Override
-    public DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
+    // @Override
+    DashboardElement add(DashboardItem dashboardItem, DashboardContent dashboardContent) {
         isNull(dashboardItem, "dashboardItem must not be null");
         isNull(dashboardContent, "dashboardContent must not be null");
 
@@ -78,7 +78,7 @@ public class DashboardElementService implements IDashboardElementService {
     }
 
     @Override
-    public void remove(DashboardElement dashboardElement) {
+    public boolean remove(DashboardElement dashboardElement) {
         isNull(dashboardElement, "dashboardElement must not be null");
 
         Action action = stateStore.queryAction(dashboardElement);
@@ -94,9 +94,11 @@ public class DashboardElementService implements IDashboardElementService {
 
         /* if count of elements in item is zero, it means
         we don't need this item anymore */
-        if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
+        /* if (!(dashboardItemService.getContentCount(dashboardElement.getDashboardItem()) > 0)) {
             dashboardItemService.remove(dashboardElement.getDashboardItem());
-        }
+        } */
+
+        return false;
     }
 
     @Override

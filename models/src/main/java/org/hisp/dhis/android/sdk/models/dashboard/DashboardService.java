@@ -173,7 +173,7 @@ public class DashboardService implements IDashboardService {
      */
     @Override
     public boolean addContent(Dashboard dashboard, DashboardContent content) {
-        isNull(dashboard, "Dashboard object must not be null");
+        /* isNull(dashboard, "Dashboard object must not be null");
         isNull(content, "DashboardContent object must not be null");
 
         DashboardItem item;
@@ -200,7 +200,8 @@ public class DashboardService implements IDashboardService {
         dashboardItemStore.save(item);
         dashboardElementStore.save(element);
 
-        return true;
+        return true; */
+        return false;
     }
 
     /**
@@ -217,12 +218,12 @@ public class DashboardService implements IDashboardService {
             return null;
         }
 
-        for (DashboardItem item : dashboardItems) {
+        /* for (DashboardItem item : dashboardItems) {
             if (type.equals(item.getType()) &&
                     dashboardItemService.getContentCount(item) < DashboardItem.MAX_CONTENT) {
                 return item;
             }
-        }
+        } */
 
         return null;
     }

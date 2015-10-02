@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.models.common.IModel;
 import java.util.List;
 
 public interface IMappable<T extends IModel> {
-    <DataBaseType extends Model> DataBaseType mapToDatabaseEntity(T model);
+    <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(T model);
 
     <DataBaseType extends Model> List<DataBaseType> mapToDatabaseEntities(List<T> models);
 

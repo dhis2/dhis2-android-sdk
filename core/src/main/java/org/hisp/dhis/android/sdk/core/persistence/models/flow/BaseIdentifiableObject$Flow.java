@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.sdk.core.persistence.models.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
 import org.hisp.dhis.android.sdk.models.common.BaseIdentifiableObject;
@@ -41,13 +39,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class BaseIdentifiableObject$Flow extends BaseModel implements IdentifiableObject {
+public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow implements IdentifiableObject {
+    public static final String COLUMN_UID = "uId";
 
-    @Column(name = "id")
-    @PrimaryKey(autoincrement = true)
-    long id;
-
-    @Column(name = "uId")
+    @Column(name = COLUMN_UID)
     String uId;
 
     @Column(name = "name")
@@ -66,72 +61,62 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel implements I
     Access access;
 
     @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public String getUId() {
+    public final String getUId() {
         return uId;
     }
 
     @Override
-    public void setUId(String uId) {
+    public final void setUId(String uId) {
         this.uId = uId;
     }
 
     @Override
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
     @Override
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
     @Override
-    public String getDisplayName() {
+    public final String getDisplayName() {
         return displayName;
     }
 
     @Override
-    public void setDisplayName(String displayName) {
+    public final void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     @Override
-    public DateTime getCreated() {
+    public final DateTime getCreated() {
         return created;
     }
 
     @Override
-    public void setCreated(DateTime created) {
+    public final void setCreated(DateTime created) {
         this.created = created;
     }
 
     @Override
-    public DateTime getLastUpdated() {
+    public final DateTime getLastUpdated() {
         return lastUpdated;
     }
 
     @Override
-    public void setLastUpdated(DateTime lastUpdated) {
+    public final void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
     @Override
-    public Access getAccess() {
+    public final Access getAccess() {
         return access;
     }
 
     @Override
-    public void setAccess(Access access) {
+    public final void setAccess(Access access) {
         this.access = access;
     }
 

@@ -54,6 +54,10 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
         BaseModel databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.insert();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            IModel dataBaseEntityModel = (IModel) databaseEntity;
+            object.setId(dataBaseEntityModel.getId());
         }
     }
 
@@ -74,6 +78,10 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
         BaseModel databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.save();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            IModel dataBaseEntityModel = (IModel) databaseEntity;
+            object.setId(dataBaseEntityModel.getId());
         }
     }
 
@@ -97,21 +105,21 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
 
     @Override
     @SuppressWarnings("unchecked")
-    public <DataBaseType extends Model> List<DataBaseType> mapToDatabaseEntities(List<T> models) {
-        List<DataBaseType> modelObjects = new ArrayList<>();
+    public <DatabaseEntityType extends Model> List<DatabaseEntityType> mapToDatabaseEntities(List<T> models) {
+        List<DatabaseEntityType> modelObjects = new ArrayList<>();
         if (models != null && !models.isEmpty()) {
             for (T model : models) {
-                modelObjects.add((DataBaseType) mapToDatabaseEntity(model));
+                modelObjects.add((DatabaseEntityType) mapToDatabaseEntity(model));
             }
         }
         return modelObjects;
     }
 
     @Override
-    public <DataBaseType extends Model> List<T> mapToModels(List<DataBaseType> dataBaseEntities) {
+    public <DatabaseEntityType extends Model> List<T> mapToModels(List<DatabaseEntityType> dataBaseEntities) {
         List<T> modelObjects = new ArrayList<>();
         if (dataBaseEntities != null && !dataBaseEntities.isEmpty()) {
-            for (DataBaseType dataBaseEntity : dataBaseEntities) {
+            for (DatabaseEntityType dataBaseEntity : dataBaseEntities) {
                 modelObjects.add(mapToModel(dataBaseEntity));
             }
         }

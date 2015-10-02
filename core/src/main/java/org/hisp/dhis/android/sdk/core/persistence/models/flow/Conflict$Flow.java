@@ -42,13 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class Conflict$Flow extends BaseModel {
+public final class Conflict$Flow extends BaseModel$Flow {
 
     static final String IMPORTSUMMARY_KEY = "importSummary";
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
 
     @Column
     @ForeignKey(
@@ -63,14 +59,6 @@ public final class Conflict$Flow extends BaseModel {
 
     @Column
     String value;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public ImportSummary$Flow getImportSummary() {
         return importSummary;

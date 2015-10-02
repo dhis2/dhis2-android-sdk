@@ -41,11 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class TrackedEntityInstance$Flow extends BaseModel {
-
-    @Column
-    @PrimaryKey(autoincrement = true)
-    long id;
+public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
 
     @Column
     String trackedEntityInstanceUid;
@@ -68,14 +64,6 @@ public final class TrackedEntityInstance$Flow extends BaseModel {
 
     @Column
     org.hisp.dhis.android.sdk.models.state.Action action;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getTrackedEntityInstanceUid() {
         return trackedEntityInstanceUid;

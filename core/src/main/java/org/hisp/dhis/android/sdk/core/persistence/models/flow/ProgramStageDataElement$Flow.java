@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
-public final class ProgramStageDataElement$Flow extends BaseModel {
+public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
 
     @Column
     @PrimaryKey

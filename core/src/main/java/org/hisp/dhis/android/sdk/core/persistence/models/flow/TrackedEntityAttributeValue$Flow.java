@@ -33,11 +33,9 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.DbDhis;
 import org.hisp.dhis.android.sdk.models.trackedentityattributevalue.TrackedEntityAttributeValue;
@@ -47,14 +45,10 @@ import java.util.List;
 
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = TrackedEntityAttributeValue$Flow.UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE, uniqueConflict = ConflictAction.FAIL)})
-public final class TrackedEntityAttributeValue$Flow extends BaseModel {
+public final class TrackedEntityAttributeValue$Flow extends BaseModel$Flow {
 
     static final int UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE = 901;
     static final String TRACKED_ENTITY_INSTANCE_KEY = "trackedEntityInstance";
-
-    @Column
-    @PrimaryKey
-    long id;
 
     @Column
     String trackedEntityAttributeUId;
@@ -85,14 +79,6 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel {
 
     public void setTrackedEntityInstance(TrackedEntityInstance$Flow trackedEntityInstance) {
         this.trackedEntityInstance = trackedEntityInstance;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getValue() {

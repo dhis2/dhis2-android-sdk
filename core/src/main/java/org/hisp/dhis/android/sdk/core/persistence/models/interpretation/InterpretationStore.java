@@ -33,13 +33,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow;
 import org.hisp.dhis.android.sdk.core.persistence.models.flow.Interpretation$Flow$Table;
-import org.hisp.dhis.android.sdk.models.state.Action;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 
 import java.util.List;
 
-public final class InterpretationStore implements IInterpretationStore {
+public final class InterpretationStore implements IIdentifiableObjectStore<Interpretation> {
 
     public InterpretationStore() {
         // empty constructor
@@ -99,7 +98,7 @@ public final class InterpretationStore implements IInterpretationStore {
         return Interpretation$Flow.toModel(interpretationFlow);
     }
 
-    @Override
+    /* @Override
     public List<Interpretation> filter(Action action) {
         List<Interpretation$Flow> interpretationFlows = new Select()
                 .from(Interpretation$Flow.class)
@@ -107,5 +106,5 @@ public final class InterpretationStore implements IInterpretationStore {
                         .ACTION).isNot(action.toString()))
                 .queryList();
         return Interpretation$Flow.toModels(interpretationFlows);
-    }
+    } */
 }

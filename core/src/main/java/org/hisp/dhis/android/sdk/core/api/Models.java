@@ -82,7 +82,7 @@ import org.hisp.dhis.android.sdk.models.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.faileditem.IFailedItemStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
+import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.option.IOptionStore;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
@@ -145,7 +145,7 @@ final class Models {
     private final IDashboardItemContentStore dashboardItemContentStore;
 
     // Interpretation store objects
-    private final IInterpretationStore interpretationStore;
+    private final IIdentifiableObjectStore<Interpretation> interpretationStore;
     private final IInterpretationCommentStore interpretationCommentStore;
     private final IInterpretationElementStore interpretationElementStore;
 
@@ -342,7 +342,7 @@ final class Models {
         return getInstance().dashboardItemContentStore;
     }
 
-    public static IInterpretationStore interpretations() {
+    public static IIdentifiableObjectStore<Interpretation> interpretations() {
         return getInstance().interpretationStore;
     }
 

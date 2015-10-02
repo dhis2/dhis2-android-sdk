@@ -113,7 +113,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
         interpretation.setAccess(interpretationFlow.getAccess());
         interpretation.setText(interpretationFlow.getText());
         interpretation.setType(interpretationFlow.getType());
-        interpretation.setAction(interpretationFlow.getAction());
+        // interpretation.setAction(interpretationFlow.getAction());
         interpretation.setUser(User$Flow.toModel(interpretationFlow.getUser()));
         return interpretation;
     }
@@ -133,7 +133,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
         interpretationFlow.setAccess(interpretation.getAccess());
         interpretationFlow.setText(interpretation.getText());
         interpretationFlow.setType(interpretation.getType());
-        interpretationFlow.setAction(interpretation.getAction());
+        // interpretationFlow.setAction(interpretation.getAction());
         interpretationFlow.setUser(User$Flow.fromModel(interpretation.getUser()));
         return interpretationFlow;
     }

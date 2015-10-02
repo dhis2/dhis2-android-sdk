@@ -36,12 +36,12 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
@@ -75,14 +75,15 @@ public final class InterpretationController implements IDataController<Interpret
     private final IInterpretationService mInterpretationService;
     private final IUserAccountService mUserAccountService;
 
-    private final IInterpretationStore mInterpretationStore;
+    private final IIdentifiableObjectStore<Interpretation> mInterpretationStore;
     private final IInterpretationElementStore mInterpretationElementStore;
     private final IInterpretationCommentStore mInterpretationCommentStore;
 
     private final IUserStore mUserStore;
 
     public InterpretationController(IDhisApi dhisApi, IInterpretationService interpretationsService,
-                                    IUserAccountService userAccountService, IInterpretationStore mInterpretationStore,
+                                    IUserAccountService userAccountService,
+                                    IIdentifiableObjectStore<Interpretation> mInterpretationStore,
                                     IInterpretationElementStore mInterpretationElementStore,
                                     IInterpretationCommentStore mInterpretationCommentStore, IUserStore mUserStore) {
         mDhisApi = dhisApi;
@@ -100,8 +101,8 @@ public final class InterpretationController implements IDataController<Interpret
     }
 
     private void sendInterpretationChanges() throws APIException {
-        List<Interpretation> interpretations =
-                mInterpretationStore.filter(Action.SYNCED);
+        List<Interpretation> interpretations = null;
+        // mInterpretationStore.filter(Action.SYNCED);
 
         if (interpretations == null || interpretations.isEmpty()) {
             return;
@@ -113,7 +114,7 @@ public final class InterpretationController implements IDataController<Interpret
             mInterpretationService.setInterpretationElements(interpretation, elements);
         }
 
-        for (Interpretation interpretation : interpretations) {
+        /* for (Interpretation interpretation : interpretations) {
             switch (interpretation.getAction()) {
                 case TO_POST: {
                     postInterpretation(interpretation);
@@ -128,7 +129,7 @@ public final class InterpretationController implements IDataController<Interpret
                     break;
                 }
             }
-        }
+        } */
     }
 
     public void postInterpretation(Interpretation interpretation) throws APIException {
@@ -159,7 +160,7 @@ public final class InterpretationController implements IDataController<Interpret
             String interpretationUid = Uri.parse(header
                     .getValue()).getLastPathSegment();
             interpretation.setUId(interpretationUid);
-            interpretation.setAction(Action.SYNCED);
+            // interpretation.setAction(Action.SYNCED);
             mInterpretationStore.save(interpretation);
 
             updateInterpretationTimeStamp(interpretation);
@@ -173,7 +174,7 @@ public final class InterpretationController implements IDataController<Interpret
         try {
             mDhisApi.putInterpretationText(interpretation.getUId(),
                     new TypedString(interpretation.getText()));
-            interpretation.setAction(Action.SYNCED);
+            // interpretation.setAction(Action.SYNCED);
 
             mInterpretationStore.save(interpretation);
 
@@ -194,15 +195,15 @@ public final class InterpretationController implements IDataController<Interpret
     }
 
     private void sendInterpretationCommentChanges() throws APIException {
-        List<InterpretationComment> comments =
-                mInterpretationCommentStore.filter(Action.SYNCED);
+        List<InterpretationComment> comments = null;
+                // mInterpretationCommentStore.queryByInterpretation(Action.SYNCED);
 
         if (comments == null || comments.isEmpty()) {
             return;
         }
 
         for (InterpretationComment comment : comments) {
-            switch (comment.getAction()) {
+            /* switch (comment.getAction()) {
                 case TO_POST: {
                     postInterpretationComment(comment);
                     break;
@@ -215,14 +216,14 @@ public final class InterpretationController implements IDataController<Interpret
                     deleteInterpretationComment(comment);
                     break;
                 }
-            }
+            } */
         }
     }
 
     public void postInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getAction() != null) {
+        /* if (interpretation != null && interpretation.getAction() != null) {
             boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
                     interpretation.getAction().equals(Action.TO_UPDATE));
 
@@ -246,13 +247,13 @@ public final class InterpretationController implements IDataController<Interpret
             } catch (APIException apiException) {
                 handleApiException(apiException, comment, mInterpretationCommentStore);
             }
-        }
+        } */
     }
 
     public void putInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getAction() != null) {
+        /* if (interpretation != null && interpretation.getAction() != null) {
             boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
                     interpretation.getAction().equals(Action.TO_UPDATE));
 
@@ -272,13 +273,13 @@ public final class InterpretationController implements IDataController<Interpret
             } catch (APIException apiException) {
                 handleApiException(apiException);
             }
-        }
+        } */
     }
 
     public void deleteInterpretationComment(InterpretationComment comment) throws APIException {
         Interpretation interpretation = comment.getInterpretation();
 
-        if (interpretation != null && interpretation.getAction() != null) {
+        /* if (interpretation != null && interpretation.getAction() != null) {
             boolean isInterpretationSynced = (interpretation.getAction().equals(Action.SYNCED) ||
                     interpretation.getAction().equals(Action.TO_UPDATE));
 
@@ -303,7 +304,7 @@ public final class InterpretationController implements IDataController<Interpret
             } catch (APIException apiException) {
                 handleApiException(apiException, comment, mInterpretationCommentStore);
             }
-        }
+        } */
     }
 
     /**
@@ -376,10 +377,10 @@ public final class InterpretationController implements IDataController<Interpret
         Queue<IDbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(
                 mUserStore, mUserStore.queryAll(), users));
-        operations.addAll(createOperations(
-                mInterpretationStore.filter(Action.TO_POST), interpretations));
-        operations.addAll(DbUtils.createOperations(
-                mInterpretationCommentStore, mInterpretationCommentStore.filter(Action.TO_POST), comments));
+        /* operations.addAll(createOperations(
+                mInterpretationStore.filter(Action.TO_POST), interpretations)); */
+        /* operations.addAll(DbUtils.createOperations(
+                mInterpretationCommentStore, mInterpretationCommentStore.queryByInterpretation(Action.TO_POST), comments)); */
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -465,8 +466,8 @@ public final class InterpretationController implements IDataController<Interpret
             }
         }
 
-        List<Interpretation> persistedInterpretations =
-                mInterpretationStore.filter(Action.TO_POST);
+        List<Interpretation> persistedInterpretations = null;
+        // mInterpretationStore.filter(Action.TO_POST);
         if (persistedInterpretations != null
                 && !persistedInterpretations.isEmpty()) {
             for (Interpretation interpretation : persistedInterpretations) {
@@ -474,8 +475,8 @@ public final class InterpretationController implements IDataController<Interpret
                         mInterpretationElementStore.list(interpretation);
                 mInterpretationService.setInterpretationElements(interpretation, elements);
 
-                List<InterpretationComment> comments =
-                        mInterpretationCommentStore.filter(interpretation, Action.TO_POST);
+                List<InterpretationComment> comments = null;
+                // mInterpretationCommentStore.queryByInterpretation(interpretation, Action.TO_POST);
                 interpretation.setComments(comments);
             }
         }

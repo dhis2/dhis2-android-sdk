@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.sdk.models.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
+import org.hisp.dhis.android.sdk.models.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.state.Action;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.user.User;
@@ -40,10 +41,10 @@ import java.util.List;
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class InterpretationService implements IInterpretationService {
-    private final IInterpretationStore interpretationStore;
+    private final IIdentifiableObjectStore<Interpretation> interpretationStore;
     private final IInterpretationElementService interpretationElementService;
 
-    public InterpretationService(IInterpretationStore interpretationStore,
+    public InterpretationService(IIdentifiableObjectStore<Interpretation> interpretationStore,
                                  IInterpretationElementService interpretationElementService) {
         this.interpretationStore = interpretationStore;
         this.interpretationElementService = interpretationElementService;
@@ -69,7 +70,7 @@ public class InterpretationService implements IInterpretationService {
         comment.setLastUpdated(lastUpdated);
         comment.setAccess(Access.createDefaultAccess());
         comment.setText(text);
-        comment.setAction(Action.TO_POST);
+        // comment.setAction(Action.TO_POST);
         comment.setUser(user);
         comment.setInterpretation(interpretation);
         return comment;
@@ -97,7 +98,7 @@ public class InterpretationService implements IInterpretationService {
         interpretation.setLastUpdated(lastUpdated);
         interpretation.setAccess(Access.createDefaultAccess());
         interpretation.setText(text);
-        interpretation.setAction(Action.TO_POST);
+        // interpretation.setAction(Action.TO_POST);
         interpretation.setUser(user);
 
         switch (item.getType()) {
@@ -134,22 +135,22 @@ public class InterpretationService implements IInterpretationService {
     public void update(Interpretation interpretation, String text) {
         interpretation.setText(text);
 
-        if (interpretation.getAction() != Action.TO_DELETE &&
+        /* if (interpretation.getAction() != Action.TO_DELETE &&
                 interpretation.getAction() != Action.TO_POST) {
             interpretation.setAction(Action.TO_UPDATE);
-        }
+        } */
 
         interpretationStore.save(interpretation);
     }
 
     @Override
     public void remove(Interpretation interpretation) {
-        if (Action.TO_POST.equals(interpretation.getAction())) {
+        /* if (Action.TO_POST.equals(interpretation.getAction())) {
             interpretationStore.delete(interpretation);
         } else {
             interpretation.setAction(Action.TO_DELETE);
             interpretationStore.save(interpretation);
-        }
+        } */
     }
 
     /**

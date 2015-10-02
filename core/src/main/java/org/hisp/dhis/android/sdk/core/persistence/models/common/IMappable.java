@@ -32,8 +32,14 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.IModel;
 
-public interface IMappable<T extends IModel> {
-    <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(T model);
+import java.util.List;
 
-    <DataBaseType extends Model & IModel> T mapToModel(DataBaseType dataBaseEntity);
+public interface IMappable<T extends IModel> {
+    <DataBaseType extends Model> DataBaseType mapToDatabaseEntity(T model);
+
+    <DataBaseType extends Model> List<DataBaseType> mapToDatabaseEntities(List<T> models);
+
+    <DataBaseType extends Model> T mapToModel(DataBaseType dataBaseEntity);
+
+    <DataBaseType extends Model> List<T> mapToModels(List<DataBaseType> dataBaseEntity);
 }

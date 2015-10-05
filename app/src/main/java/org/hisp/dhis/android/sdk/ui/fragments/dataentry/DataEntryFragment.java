@@ -187,7 +187,7 @@ public abstract class DataEntryFragment<D> extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
-            //go back
+            getFragmentManager().popBackStack();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             if (isValid()) {

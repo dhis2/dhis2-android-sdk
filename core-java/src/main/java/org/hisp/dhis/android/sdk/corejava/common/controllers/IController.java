@@ -26,8 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.common.controllers;
 
-dependencies {
-    compile project(':core-java')
+
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+
+public interface IController<T extends IdentifiableObject> {
 }

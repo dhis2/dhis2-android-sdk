@@ -26,8 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.common.network;
 
-dependencies {
-    compile project(':core-java')
+public enum HttpMethod {
+    GET,
+    PUT,
+    PATCH,
+    POST,
+    DELETE,
+    HEAD,
 }

@@ -26,8 +26,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.dashboard;
 
-dependencies {
-    compile project(':core-java')
+import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
+import org.hisp.dhis.android.sdk.corejava.common.network.Response;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+
+import java.util.List;
+import java.util.Map;
+
+public interface IDashboardApiClient {
+
+    List<Dashboard> getDashboards(Map<String, String> queryMap) throws APIException;
+
+    List<DashboardItem> getDashboardItems(Map<String, String> queryMap) throws APIException;
+
+    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap) throws APIException;
+
+    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap) throws APIException;
+
+    Response postDashboard(Dashboard dashboard) throws APIException;
+
+    Response postDashboardItem(DashboardItem dashboardItem) throws APIException;
+
+    Response putDashboard(Dashboard dashboard) throws APIException;
+
+    Response deleteDashboard(Dashboard dashboard) throws APIException;
+
+    Response deleteDashboardItem(DashboardItem dashboardItem) throws APIException;
+
+    Response deleteDashboardItemContent(String dashboardUid, String itemUid, String contentUid) throws APIException;
 }

@@ -26,8 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-dependencies {
-    compile project(':core-java')
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+
+public interface PersistenceModule {
+    IIdentifiableObjectStore<Dashboard> getDashboardStore();
+
+    IDashboardItemStore getDashboardItemStore();
+
+    IDashboardElementStore getDashboardElementStore();
+
+    IDashboardItemContentStore getDashboardContentStore();
 }

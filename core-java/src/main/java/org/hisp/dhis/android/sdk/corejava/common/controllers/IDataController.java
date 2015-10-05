@@ -26,8 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.common.controllers;
 
-dependencies {
-    compile project(':core-java')
+import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+
+public interface IDataController<T extends IdentifiableObject> extends IController<T> {
+    void sync() throws APIException;
 }

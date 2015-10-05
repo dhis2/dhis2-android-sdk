@@ -26,8 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-dependencies {
-    compile project(':core-java')
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
+
+public interface NetworkModule {
+    IDashboardApiClient getDashboardApiClient();
 }

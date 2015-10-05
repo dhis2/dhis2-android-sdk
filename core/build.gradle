@@ -64,7 +64,7 @@ dependencies {
     compile project(':persistence')
 
     // Android support libraries.
-    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:support-v4:22.1.0'
 
     // Square libraries.
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.5.0'

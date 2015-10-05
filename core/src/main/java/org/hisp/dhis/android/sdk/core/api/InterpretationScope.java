@@ -30,11 +30,11 @@ package org.hisp.dhis.android.sdk.core.api;
 
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentService;
+import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementService;
+import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentService;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementService;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;

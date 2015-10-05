@@ -60,9 +60,10 @@ public final class TriggersManager {
     }
 
     public static <T extends Model & IdentifiableObject> CompletedTrigger<T> createInsertTrigger(Class<T> clazz) {
-        return Trigger.create("DashboardStateInsertTrigger")
+        /* return Trigger.create("DashboardStateInsertTrigger")
                 .after().insert(clazz)
-                .begin(createInsertStateQuery(clazz));
+                .begin(createInsertStateQuery(clazz)); */
+        return null;
     }
 
     /* public static <T extends Model & IdentifiableObject> CompletedTrigger<T> createDeleteTrigger(Class<T> clazz) {
@@ -79,11 +80,11 @@ public final class TriggersManager {
 
     }
 
-    private static <T extends Model & IdentifiableObject> Insert createInsertStateQuery(Class<T> clazz) {
+    /* private static <T extends Model & IdentifiableObject> Insert createInsertStateQuery(Class<T> clazz) {
         return Insert.into(State$Flow.class)
                 .columns(State$Flow$Table.ITEMID, State$Flow$Table.ITEMTYPE, State$Flow$Table.ACTION)
                 .values("new.id", State$Flow.getItemType(clazz), Action.SYNCED.toString());
-    }
+    } */
 
     /* private static <T extends Model & IdentifiableObject> Delete createDeleteStateQuery(Class<T> clazz) {
         Delete.table(clazz,

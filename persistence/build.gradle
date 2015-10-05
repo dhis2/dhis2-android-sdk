@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    compile project(':models')
+    compile project(':core-java')
 
     // Raizlabs libraries.
     apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'

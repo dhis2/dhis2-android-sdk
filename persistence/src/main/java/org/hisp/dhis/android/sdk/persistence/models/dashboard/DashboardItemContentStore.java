@@ -32,10 +32,10 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.Condition.CombinedCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
 
 import java.util.List;
 

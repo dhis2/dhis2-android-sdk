@@ -49,6 +49,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsStore;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow$Table;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
@@ -74,63 +75,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StateStore implements IStateStore {
+public class StateStore extends AbsStore<State> implements IStateStore {
 
-    @Override
-    public void insert(State state) {
-        Preconditions.isNull(state, "state must not be null");
-
-        State$Flow stateFlow = State$Flow.fromModel(state);
-
-        if (stateFlow != null) {
-            stateFlow.insert();
-        }
-    }
-
-    @Override
-    public void update(State state) {
-        Preconditions.isNull(state, "state must not be null");
-
-        State$Flow stateFlow = State$Flow.fromModel(state);
-
-        if (stateFlow != null) {
-            stateFlow.update();
-        }
-    }
-
-    @Override
-    public void save(State state) {
-        Preconditions.isNull(state, "state must not be null");
-
-        State$Flow stateFlow = State$Flow.fromModel(state);
-
-        if (stateFlow != null) {
-            stateFlow.save();
-        }
-    }
-
-    @Override
-    public void delete(State object) {
-        Preconditions.isNull(object, "State object must not be null");
-
-        State$Flow stateFlow = State$Flow.fromModel(object);
-
-        if (stateFlow != null) {
-            stateFlow.delete();
-        }
-    }
-
-    @Override
-    public State queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<State> queryAll() {
-        List<State$Flow> statesFlows = new Select()
-                .from(State$Flow.class)
-                .queryList();
-        return State$Flow.toModels(statesFlows);
+    public StateStore() {
+        super(State$Flow.class);
     }
 
     @Override
@@ -179,7 +127,7 @@ public class StateStore implements IStateStore {
             return;
         }
 
-        State$Flow state$Flow = State$Flow.fromModel(state);
+        State$Flow state$Flow = mapToDatabaseEntity(state);
         state$Flow.delete();
     }
 
@@ -190,12 +138,12 @@ public class StateStore implements IStateStore {
         State$Flow stateFlow = new Select()
                 .from(State$Flow.class)
                 .where(Condition.column(State$Flow$Table
-                        .ITEMTYPE).is(State$Flow.getItemType(object.getClass())))
+                        .ITEMTYPE).is(getItemType(object.getClass())))
                 .and(Condition.column(State$Flow$Table
                         .ITEMID).is(object.getId()))
                 .querySingle();
 
-        return State$Flow.toModel(stateFlow);
+        return mapToModel(stateFlow);
     }
 
     @Override
@@ -230,9 +178,10 @@ public class StateStore implements IStateStore {
         List<State$Flow> stateFlows = new Select()
                 .from(State$Flow.class)
                 .where(Condition.column(State$Flow$Table
-                        .ITEMTYPE).is(State$Flow.getItemType(clazz)))
+                        .ITEMTYPE).is(getItemType(clazz)))
                 .queryList();
-        return State$Flow.toModels(stateFlows);
+
+        return mapToModels(stateFlows);
     }
 
     @Override
@@ -255,28 +204,6 @@ public class StateStore implements IStateStore {
 
     @SuppressWarnings("unchecked")
     private <T extends IModel> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
-        /* Creating left join on State and destination table in order to perform filtering  */
-        /* Joining tables based on mime type and then filtering resulting table by action */
-        /* From<? extends Model> from = new Select()
-                .from(State$Flow.getFlowClass(clazz))
-                .join(State$Flow.class, Join.JoinType.LEFT)
-                .on(Condition.column(State$Flow$Table.ITEMID)
-                        .eq(State$Flow.getItemType(clazz))); */
-
-        /* Join<?, ?> join = new Select()
-                .from(State$Flow.getFlowClass(clazz))
-                .join(State$Flow.class, Join.JoinType.LEFT); */
-
-        /* Where<? extends Model> where;
-        if (withAction) {
-            where = from.where(Condition.column(State$Flow$Table
-                    .ACTION).is(action.toString()));
-        } else {
-            where = from.where(Condition.column(State$Flow$Table
-                    .ACTION).isNot(action.toString()));
-        } */
-
-        // List<? extends Model> objects = where.queryList();
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
                     clazz, action, withAction, Dashboard$Flow$Table.ID);
@@ -333,15 +260,17 @@ public class StateStore implements IStateStore {
 
     private List<? extends Model> queryModels(Class<?> clazz, Action action,
                                               boolean withAction, String columnName) {
+        /* Creating left join on State and destination table in order to perform filtering  */
+        /* Joining tables based on mime type and then filtering resulting table by action */
         From<? extends Model> from = new Select()
-                .from(State$Flow.getFlowClass(clazz))
+                .from(getFlowClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
                 .on(Condition.column(State$Flow$Table.ITEMID)
                         .eq(columnName));
 
         Where<? extends Model> where = from
                 .where(Condition.column(State$Flow$Table
-                        .ITEMTYPE).is(State$Flow.getItemType(clazz)));
+                        .ITEMTYPE).is(getItemType(clazz)));
         if (withAction) {
             where = where.and(Condition.column(State$Flow$Table
                     .ACTION).is(action.toString()));
@@ -353,5 +282,124 @@ public class StateStore implements IStateStore {
         List<? extends Model> list = where.queryList();
         System.out.println("LIST: " + list.size());
         return list;
+    }
+
+    @Override
+    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(State state) {
+        if (state == null) {
+            return null;
+        }
+
+        State$Flow stateFlow = new State$Flow();
+        stateFlow.setItemId(state.getItemId());
+        stateFlow.setItemType(getItemType(state.getItemType()));
+        stateFlow.setAction(state.getAction());
+
+        return (DataBaseType) stateFlow;
+    }
+
+    @Override
+    public <DataBaseType extends Model> State mapToModel(DataBaseType dataBaseEntity) {
+        if (dataBaseEntity == null) {
+            return null;
+        }
+
+        State$Flow stateFlow = (State$Flow) dataBaseEntity;
+
+        State state = new State();
+        state.setItemId(stateFlow.getItemId());
+        state.setItemType(getItemClass(stateFlow.getItemType()));
+        state.setAction(stateFlow.getAction());
+
+        return state;
+    }
+
+
+    private static Class<? extends IModel> getItemClass(String type) {
+        Preconditions.isNull(type, "type must not be null");
+
+        if (Dashboard.class.getSimpleName().equals(type)) {
+            return Dashboard.class;
+        }
+
+        if (DashboardItem.class.getSimpleName().equals(type)) {
+            return DashboardItem.class;
+        }
+
+        if (DashboardElement.class.getSimpleName().equals(type)) {
+            return DashboardElement.class;
+        }
+
+        if (Interpretation.class.getSimpleName().equals(type)) {
+            return Interpretation.class;
+        }
+
+        if (InterpretationElement.class.getSimpleName().equals(type)) {
+            return InterpretationElement.class;
+        }
+
+        if (InterpretationComment.class.getSimpleName().equals(type)) {
+            return InterpretationComment.class;
+        }
+
+        if (TrackedEntityInstance.class.getSimpleName().equals(type)) {
+            return TrackedEntityInstance.class;
+        }
+
+        if (Enrollment.class.getSimpleName().equals(type)) {
+            return Enrollment.class;
+        }
+
+        if (Event.class.getSimpleName().equals(type)) {
+            return Event.class;
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + type);
+    }
+
+    private static Class<? extends Model> getFlowClass(Class<?> objectClass) {
+        Preconditions.isNull(objectClass, "Class object must not be null");
+
+        if (Dashboard.class.equals(objectClass)) {
+            return Dashboard$Flow.class;
+        }
+
+        if (DashboardItem.class.equals(objectClass)) {
+            return DashboardItem$Flow.class;
+        }
+
+        if (DashboardElement.class.equals(objectClass)) {
+            return DashboardElement$Flow.class;
+        }
+
+        if (Interpretation.class.equals(objectClass)) {
+            return Interpretation$Flow.class;
+        }
+
+        if (InterpretationElement.class.equals(objectClass)) {
+            return InterpretationElement$Flow.class;
+        }
+
+        if (InterpretationComment.class.equals(objectClass)) {
+            return InterpretationComment$Flow.class;
+        }
+
+        if (TrackedEntityInstance.class.equals(objectClass)) {
+            return TrackedEntityInstance$Flow.class;
+        }
+
+        if (Enrollment.class.equals(objectClass)) {
+            return Enrollment$Flow.class;
+        }
+
+        if (Event.class.equals(objectClass)) {
+            return Event$Flow.class;
+        }
+
+        throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());
+    }
+
+    private static String getItemType(Class<?> clazz) {
+        return clazz.getSimpleName();
     }
 }

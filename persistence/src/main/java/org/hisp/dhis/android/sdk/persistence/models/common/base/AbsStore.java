@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.sdk.persistence.models.common.base;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.persistence.models.flow.BaseModel$Flow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     public void insert(T object) {
         Preconditions.isNull(object, "object must not be null");
 
-        BaseModel databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -64,7 +65,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     public void update(T object) {
         Preconditions.isNull(object, "object must not be null");
 
-        BaseModel databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.update();
         }
@@ -74,7 +75,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     public void save(T object) {
         Preconditions.isNull(object, "object must not be null");
 
-        BaseModel databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.save();
 
@@ -88,7 +89,7 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     public void delete(T object) {
         Preconditions.isNull(object, "object must not be null");
 
-        BaseModel databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.delete();
         }
@@ -96,7 +97,12 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
 
     @Override
     public T queryById(long id) {
-        return null;
+        Model databaseEntity = new Select()
+                .from(mClass)
+                .where(Condition.column(
+                        BaseModel$Flow.COLUMN_ID).is(id))
+                .querySingle();
+        return mapToModel(databaseEntity);
     }
 
     @Override

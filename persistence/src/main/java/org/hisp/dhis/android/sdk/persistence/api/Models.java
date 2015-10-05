@@ -32,6 +32,11 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentStore;
+import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.common.ModelsStore;
 import org.hisp.dhis.android.sdk.persistence.models.constant.ConstantStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
@@ -72,16 +77,11 @@ import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.IModelsStore;
 import org.hisp.dhis.android.sdk.models.constant.Constant;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementStore;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentStore;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.enrollment.IEnrollmentStore;
 import org.hisp.dhis.android.sdk.models.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationCommentStore;
-import org.hisp.dhis.android.sdk.models.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.optionset.IOptionStore;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;

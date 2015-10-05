@@ -31,11 +31,11 @@ package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow$Table;

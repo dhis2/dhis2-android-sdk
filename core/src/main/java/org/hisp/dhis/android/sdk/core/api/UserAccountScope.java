@@ -32,7 +32,7 @@ import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.core.controllers.user.IUserAccountController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
+import org.hisp.dhis.android.sdk.core.models.Credentials;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
 import org.hisp.dhis.android.sdk.models.user.User;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;

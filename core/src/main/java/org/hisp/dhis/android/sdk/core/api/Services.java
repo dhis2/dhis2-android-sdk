@@ -30,7 +30,8 @@ package org.hisp.dhis.android.sdk.core.api;
 
 import android.content.Context;
 
-import org.hisp.dhis.android.sdk.core.persistence.models.state.StateStore;
+import org.hisp.dhis.android.sdk.persistence.api.Models;
+import org.hisp.dhis.android.sdk.persistence.models.common.StateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItemService;

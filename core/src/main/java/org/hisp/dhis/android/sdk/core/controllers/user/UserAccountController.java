@@ -32,9 +32,9 @@ import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
-import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.core.models.Credentials;
+import org.hisp.dhis.android.sdk.core.models.Session;
+import org.hisp.dhis.android.sdk.core.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountStore;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 

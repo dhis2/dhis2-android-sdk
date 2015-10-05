@@ -32,7 +32,7 @@ import com.squareup.okhttp.HttpUrl;
 
 import org.hisp.dhis.android.sdk.core.controllers.common.IController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
+import org.hisp.dhis.android.sdk.core.models.Credentials;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 public interface IUserAccountController extends IController<UserAccount> {

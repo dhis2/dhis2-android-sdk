@@ -79,26 +79,12 @@ public class ProgramIndicatorService {
         if(programIndicator == null) {
             return null;
         }
+        
         Double value = getValue(programInstance, null, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
-
-            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
-                Date baseDate = new Date();
-
-                if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) {
-                    baseDate = DateUtils.getMediumDate(programInstance.getDateOfIncident());
-                } else if (ProgramIndicator.ENROLLMENT_DATE.equals(programIndicator.getRootDate())) {
-                    baseDate = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
-                }
-
-                Date date = DateUtils.getDateAfterAddition(baseDate, value.intValue());
-
-                return DateUtils.getMediumDateString(date);
-            }
-
-            return String.valueOf(Math.floor(value));
+            return String.valueOf(value);
         }
 
         return null;
@@ -115,24 +101,11 @@ public class ProgramIndicatorService {
         if(programIndicator == null) {
             return null;
         }
+        
         Double value = getValue(null, event, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
             value = MathUtils.getRounded(value, 2);
-
-            if (ProgramIndicator.VALUE_TYPE_DATE.equals(programIndicator.getValueType())) {
-                Date baseDate = new Date();
-
-                if (ProgramIndicator.INCIDENT_DATE.equals(programIndicator.getRootDate())) { //todo: ignoring in case of single event event without registration
-                    //baseDate = DateUtils.getMediumDate(programInstance.dateOfIncident);
-                } else if (ProgramIndicator.ENROLLMENT_DATE.equals(programIndicator.getRootDate())) {
-                    //baseDate = DateUtils.getMediumDate(programInstance.dateOfEnrollment);
-                }
-
-                Date date = DateUtils.getDateAfterAddition(baseDate, value.intValue());
-
-                return DateUtils.getMediumDateString(date);
-            }
             return String.valueOf(value);
         }
 

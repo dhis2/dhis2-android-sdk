@@ -37,14 +37,15 @@ import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.DhisApi;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.network.RepositoryManager;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Credentials;
-import org.hisp.dhis.android.sdk.core.persistence.models.common.meta.Session;
-import org.hisp.dhis.android.sdk.core.persistence.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.persistence.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.core.models.Credentials;
+import org.hisp.dhis.android.sdk.core.models.Session;
+import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardElementService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemContentService;
 import org.hisp.dhis.android.sdk.models.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
+import org.hisp.dhis.android.sdk.persistence.api.Models;
 
 public final class Dhis2 {
     // Reference to Dhis2 instance

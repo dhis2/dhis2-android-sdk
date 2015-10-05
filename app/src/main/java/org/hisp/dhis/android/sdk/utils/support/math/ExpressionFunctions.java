@@ -44,7 +44,7 @@ public class ExpressionFunctions {
      */
     public static Double zing(Number value) {
         if (value == null) {
-            throw new IllegalArgumentException("Argument is null: " + value);
+            return null;
         }
 
         return Math.max(0d, value.doubleValue());
@@ -59,7 +59,7 @@ public class ExpressionFunctions {
      */
     public static Double oizp(Number value) {
         if (value == null) {
-            throw new IllegalArgumentException("Argument is null: " + value);
+            return null;
         }
 
         return (value.doubleValue() >= 0d) ? 1d : 0d;

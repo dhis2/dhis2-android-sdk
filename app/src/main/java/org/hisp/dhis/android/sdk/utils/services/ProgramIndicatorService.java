@@ -66,7 +66,7 @@ import java.util.regex.Matcher;
  */
 public class ProgramIndicatorService {
     public static final String CLASS_TAG = ProgramIndicatorService.class.getSimpleName();
-
+    private static final String NULL_REPLACEMENT = "null";
     /**
      * Calculate an program indicator value based on program instance and an
      * indicator defined for a TrackedEntityInstance
@@ -407,12 +407,7 @@ public class ProgramIndicatorService {
 
                     String value;
                     if (dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
-					    if (indicator.getMissingValueReplacement() == null) {
-					        value = String.valueOf(0);
-					    }
-					    else {
-						    value = String.valueOf(indicator.getMissingValueReplacement());
-						}
+                        value = NULL_REPLACEMENT;
                     } else {
                         value = dataValue.getValue();
 
@@ -432,12 +427,7 @@ public class ProgramIndicatorService {
                                 uid, programInstance.getLocalTrackedEntityInstanceId());
                         String value;
                         if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
-                            if (indicator.getMissingValueReplacement() == null) {
-							    value = String.valueOf(0);
-						    }
-						    else {
-							    value = String.valueOf(indicator.getMissingValueReplacement());
-						    }
+                            value = NULL_REPLACEMENT;
                         } else {
                             value = attributeValue.getValue();
 

@@ -26,35 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.dashboard;
+package org.hisp.dhis.android.sdk.api;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.Response;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import android.app.Application;
+import android.test.ApplicationTestCase;
 
-import java.util.List;
-import java.util.Map;
-
-public interface IDashboardApiClient {
-
-    List<Dashboard> getDashboards(Map<String, String> queryMap);
-
-    List<DashboardItem> getDashboardItems(Map<String, String> queryMap);
-
-    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap);
-
-    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap);
-
-    Response postDashboard(Dashboard dashboard);
-
-    Response postDashboardItem(DashboardItem dashboardItem);
-
-    Response putDashboard(Dashboard dashboard);
-
-    Response deleteDashboard(Dashboard dashboard);
-
-    Response deleteDashboardItem(DashboardItem dashboardItem);
-
-    Response deleteDashboardItemContent(DashboardElement dashboardElement);
+/**
+ * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ */
+public class ApplicationTest extends ApplicationTestCase<Application> {
+    public ApplicationTest() {
+        super(Application.class);
+    }
 }

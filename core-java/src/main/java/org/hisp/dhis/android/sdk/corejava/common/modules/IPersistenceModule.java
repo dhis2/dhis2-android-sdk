@@ -28,8 +28,21 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
-public interface NetworkModule {
-    IDashboardApiClient getDashboardApiClient();
+public interface IPersistenceModule {
+    IStateStore getStateStore();
+
+    IIdentifiableObjectStore<Dashboard> getDashboardStore();
+
+    IDashboardItemStore getDashboardItemStore();
+
+    IDashboardElementStore getDashboardElementStore();
+
+    IDashboardItemContentStore getDashboardContentStore();
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.sdk.corejava.dashboard;
 
 import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
 import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
-import org.hisp.dhis.android.sdk.corejava.common.network.Header;
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
@@ -698,9 +697,9 @@ public final class DashboardController implements IDataController<Dashboard> {
             try {
                 /* dhisApi.deleteDashboardItemContent(dashboard.getUId(),
                         item.getUId(), element.getUId()); */
-                dashboardApiClient.deleteDashboardItemContent(dashboard.getUId(),
-                        item.getUId(), element.getUId());
-
+                /* dashboardApiClient.deleteDashboardItemContent(dashboard.getUId(),
+                        item.getUId(), element.getUId()); */
+                dashboardApiClient.deleteDashboardItemContent(element);
                 dashboardElementStore.delete(element);
 
                 // removal of elements changes

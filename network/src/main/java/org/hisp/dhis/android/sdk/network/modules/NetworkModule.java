@@ -26,20 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.network.modules;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
 
-public interface PersistenceModule {
-    IIdentifiableObjectStore<Dashboard> getDashboardStore();
+public class NetworkModule implements INetworkModule {
 
-    IDashboardItemStore getDashboardItemStore();
-
-    IDashboardElementStore getDashboardElementStore();
-
-    IDashboardItemContentStore getDashboardContentStore();
+    @Override
+    public IDashboardApiClient getDashboardApiClient() {
+        return null;
+    }
 }

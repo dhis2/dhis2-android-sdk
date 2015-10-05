@@ -26,35 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.dashboard;
+package org.hisp.dhis.android.sdk.api;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.Response;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
+import org.hisp.dhis.android.sdk.corejava.common.modules.IPersistenceModule;
 
-import java.util.List;
-import java.util.Map;
+public class Dhis2 {
+    private final INetworkModule mNetworkModule;
+    private final IPersistenceModule mPersistenceModule;
 
-public interface IDashboardApiClient {
+    private Dhis2(INetworkModule networkModule, IPersistenceModule persistenceModule) {
+        mNetworkModule = networkModule;
+        mPersistenceModule = persistenceModule;
+    }
 
-    List<Dashboard> getDashboards(Map<String, String> queryMap);
+    public static class Builder {
+        private INetworkModule mNetworkModule;
+        private IPersistenceModule mPersistenceModule;
 
-    List<DashboardItem> getDashboardItems(Map<String, String> queryMap);
+        public static Builder newInstance() {
+            return new Builder();
+        }
 
-    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap);
+        public Builder withNetworkModule(INetworkModule networkModule) {
+            mNetworkModule = networkModule;
+            return this;
+        }
 
-    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap);
+        public Builder withPersistenceModule(IPersistenceModule persistenceModule) {
+            mPersistenceModule = persistenceModule;
+            return this;
+        }
 
-    Response postDashboard(Dashboard dashboard);
-
-    Response postDashboardItem(DashboardItem dashboardItem);
-
-    Response putDashboard(Dashboard dashboard);
-
-    Response deleteDashboard(Dashboard dashboard);
-
-    Response deleteDashboardItem(DashboardItem dashboardItem);
-
-    Response deleteDashboardItemContent(DashboardElement dashboardElement);
+        public Dhis2 build() {
+            return new Dhis2(mNetworkModule, mPersistenceModule);
+        }
+    }
 }

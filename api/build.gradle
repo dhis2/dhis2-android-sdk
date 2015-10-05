@@ -26,35 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.dashboard;
+apply plugin: 'com.android.library'
 
-import org.hisp.dhis.android.sdk.corejava.common.network.Response;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
-import java.util.List;
-import java.util.Map;
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
 
-public interface IDashboardApiClient {
+dependencies {
+    compile project(':core-java')
+    compile project(':network')
+    compile project(':persistence')
 
-    List<Dashboard> getDashboards(Map<String, String> queryMap);
-
-    List<DashboardItem> getDashboardItems(Map<String, String> queryMap);
-
-    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap);
-
-    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap);
-
-    Response postDashboard(Dashboard dashboard);
-
-    Response postDashboardItem(DashboardItem dashboardItem);
-
-    Response putDashboard(Dashboard dashboard);
-
-    Response deleteDashboard(Dashboard dashboard);
-
-    Response deleteDashboardItem(DashboardItem dashboardItem);
-
-    Response deleteDashboardItemContent(DashboardElement dashboardElement);
+    testCompile 'junit:junit:4.12'
 }

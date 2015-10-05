@@ -26,35 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.dashboard;
+package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.Response;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
 
-import java.util.List;
-import java.util.Map;
-
-public interface IDashboardApiClient {
-
-    List<Dashboard> getDashboards(Map<String, String> queryMap);
-
-    List<DashboardItem> getDashboardItems(Map<String, String> queryMap);
-
-    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap);
-
-    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap);
-
-    Response postDashboard(Dashboard dashboard);
-
-    Response postDashboardItem(DashboardItem dashboardItem);
-
-    Response putDashboard(Dashboard dashboard);
-
-    Response deleteDashboard(Dashboard dashboard);
-
-    Response deleteDashboardItem(DashboardItem dashboardItem);
-
-    Response deleteDashboardItemContent(DashboardElement dashboardElement);
+public interface INetworkModule {
+    IDashboardApiClient getDashboardApiClient();
 }

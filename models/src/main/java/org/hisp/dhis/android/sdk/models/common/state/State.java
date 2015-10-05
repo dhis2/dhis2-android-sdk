@@ -31,12 +31,23 @@ package org.hisp.dhis.android.sdk.models.common.state;
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
 public final class State implements IModel {
+    private long id;
     private long itemId;
     private Class<?> itemType;
     private Action action;
 
     public State() {
         // empty constructor
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getItemId() {
@@ -61,15 +72,5 @@ public final class State implements IModel {
 
     public void setAction(Action action) {
         this.action = action;
-    }
-
-    @Override
-    public long getId() {
-        return 0;
-    }
-
-    @Override
-    public void setId(long id) {
-
     }
 }

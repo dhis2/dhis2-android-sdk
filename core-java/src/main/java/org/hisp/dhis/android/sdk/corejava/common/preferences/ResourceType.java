@@ -26,30 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.corejava.common.preferences;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+public enum ResourceType {
+    /* Dashboard app resources */
+    DASHBOARDS_CONTENT,
+    INTERPRETATIONS,
+    DASHBOARDS,
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+    RELATION_SHIP_TYPES,
+    ORGANISATION_UNITS,
+    DATA_ELEMENTS,
+    OPTION_SETS,
+    CONSTANTS,
+    USERS,
 
-dependencies {
-    compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
+    /* Event and Tracker capture resources */
+    PROGRAM_RULE_VARIABLES,
+    PROGRAM_RULE_ACTIONS,
+    ASSIGNED_PROGRAMS,
+    PROGRAM_RULES,
+    PROGRAMS,
+    PROGRAM,
 
-    testCompile 'junit:junit:4.12'
+    TRACKED_ENTITY_ATTRIBUTES,
+    TRACKED_ENTITY_INSTANCE,
+    ENROLLMENTS,
+    ENROLLMENT,
+    EVENTS,
+    EVENT,
 }

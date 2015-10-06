@@ -26,30 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.corejava.common.preferences;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import java.util.List;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+public interface IPreferences<Key, Value> {
+    void save(Key key, Value value);
 
-dependencies {
-    compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
+    void delete(Key key);
 
-    testCompile 'junit:junit:4.12'
+    Value get(Key key);
+
+    List<Value> get();
+
+    boolean isSet(Key key);
+
+    void clear();
 }

@@ -26,30 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.corejava.dashboard;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
-
-dependencies {
-    compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
-
-    testCompile 'junit:junit:4.12'
+public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
 }

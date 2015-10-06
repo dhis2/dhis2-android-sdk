@@ -26,30 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.corejava.common.persistence;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+import java.util.Collection;
 
-dependencies {
-    compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
-
-    testCompile 'junit:junit:4.12'
+public interface ITransactionManager {
+    void transact(Collection<IDbOperation> operations);
 }

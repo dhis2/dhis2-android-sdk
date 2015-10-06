@@ -29,22 +29,31 @@
 package org.hisp.dhis.android.sdk.corejava.dashboard;
 
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
+import org.joda.time.DateTime;
 
 import java.util.List;
-import java.util.Map;
 
+// TODO build relationships between (dashbord and dashboard items for example) models.
+// TODO Handle field filtering and selection.
+// TODO do not return null collections.
 public interface IDashboardApiClient {
 
-    List<Dashboard> getDashboards(Map<String, String> queryMap);
+    List<Dashboard> getBasicDashboards(DateTime lastUpdated);
 
-    List<DashboardItem> getDashboardItems(Map<String, String> queryMap);
+    List<Dashboard> getFullDashboards(DateTime lastUpdated);
 
-    Dashboard getDashboardByUid(String uId, Map<String, String> queryMap);
+    List<DashboardItem> getBasicDashboardItems(DateTime lastUpdated);
 
-    DashboardItem getDashboardItemByUid(String uId, Map<String, String> queryMap);
+    List<DashboardItem> getFullDashboardItems(DateTime lastUpdated);
+
+    Dashboard getDashboardByUid(String uid);
+
+    DashboardItem getDashboardItemByUid(String uid);
 
     Response postDashboard(Dashboard dashboard);
 
@@ -57,4 +66,22 @@ public interface IDashboardApiClient {
     Response deleteDashboardItem(DashboardItem dashboardItem);
 
     Response deleteDashboardItemContent(DashboardElement dashboardElement);
+
+    List<DashboardContent> getBasicCharts();
+
+    List<DashboardContent> getBasicEventCharts();
+
+    List<DashboardContent> getBasicMaps();
+
+    List<DashboardContent> getBasicReportTables();
+
+    List<DashboardContent> getBasicEventReports();
+
+    List<DashboardContent> getBasicUsers();
+
+    List<DashboardContent> getBasicReports();
+
+    List<DashboardContent> getBasicResources();
+
+    Response getReportTableDataByUid(String uid);
 }

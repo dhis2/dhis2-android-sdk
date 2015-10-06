@@ -31,7 +31,11 @@ package org.hisp.dhis.android.sdk.corejava.dashboard;
 import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
 import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.persistence.DbUtils;
+import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.LastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
@@ -55,265 +59,115 @@ import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObjec
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class DashboardController implements IDataController<Dashboard> {
-    private final IDashboardApiClient dashboardApiClient;
-    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
+    private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
-
     private final IStateStore stateStore;
 
-    public DashboardController(IDashboardApiClient dashboardApiClient,
-                               IIdentifiableObjectStore<Dashboard> dashboardStore,
+    /* dashboard client */
+    private final IDashboardApiClient dashboardApiClient;
+    private final ISystemInfoApiClient systemInfoApiClient;
+
+    /* last updated preferences */
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+
+    /* database transaction manager */
+    private final ITransactionManager transactionManager;
+
+    public DashboardController(IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,
-                               IStateStore stateStore) {
-        this.dashboardApiClient = dashboardApiClient;
+                               IStateStore stateStore,
+                               IDashboardApiClient dashboardApiClient,
+                               ISystemInfoApiClient systemInfoApiClient,
+                               LastUpdatedPreferences lastUpdatedPreferences,
+                               ITransactionManager transactionManager) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
         this.dashboardItemContentStore = dashboardItemContentStore;
         this.stateStore = stateStore;
+        this.dashboardApiClient = dashboardApiClient;
+        this.systemInfoApiClient = systemInfoApiClient;
+        this.lastUpdatedPreferences = lastUpdatedPreferences;
+        this.transactionManager = transactionManager;
     }
 
-    /* this method subtracts content of bList from aList */
-    private static List<String> subtract(List<String> aList, List<String> bList) {
-        List<String> aListCopy = new ArrayList<>(aList);
-        if (bList != null && !bList.isEmpty()) {
-            for (String bItem : bList) {
-                if (aListCopy.contains(bItem)) {
-                    int index = aListCopy.indexOf(bItem);
-                    aListCopy.remove(index);
-                }
-            }
-        }
-        return aListCopy;
+    @Override
+    public void sync() {
+        /* first we need to fetch all changes from server and apply them to local database */
+        getDashboardDataFromServer();
+
+        /* now we can try to send changes made locally to server */
+        // sendLocalChanges();
+
+        /* sync content */
+        // syncDashboardContent();
     }
 
-    private void getDashboardDataFromServer() throws APIException {
-        /* DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.DASHBOARDS);
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate(); */
+    private void getDashboardDataFromServer() {
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS);
+        DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
-        // List<Dashboard> dashboards = updateDashboards(lastUpdated);
-        // List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
+        List<Dashboard> dashboards = updateDashboards(lastUpdated);
+        List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        /* operations.addAll(DbUtils.createOperations(dashboardStore,
-                dashboardStore.filter(Action.TO_POST), dashboards)); */
-        /* operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                dashboardItemStore.filter(Action.TO_POST), dashboardItems)); */
 
-        /* operations.addAll(DbUtils.createOperations(dashboardStore,
-                stateStore.filterModelsByAction(Dashboard.class, Action.TO_POST), dashboards));
-        operations.addAll(DbUtils.createOperations(dashboardItemStore,
-                stateStore.filterModelsByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
+        operations.addAll(DbUtils.createOperations(dashboardStore, stateStore.filterModelsByAction(Dashboard.class, Action.TO_POST), dashboards));
+        operations.addAll(DbUtils.createOperations(dashboardItemStore, stateStore.filterModelsByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
-        DbUtils.applyBatch(operations);
-        DateTimeManager.getInstance()
-                .setLastUpdated(ResourceType.DASHBOARDS, serverDateTime); */
+        transactionManager.transact(operations);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, serverDateTime);
     }
 
-    private List<Dashboard> updateDashboards(DateTime lastUpdated) throws APIException {
-        final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
-        final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
-        final String BASE = "id,created,lastUpdated,name,displayName,access";
-
-        QUERY_MAP_BASIC.put("fields", "id");
-        QUERY_MAP_FULL.put("fields", BASE + ",dashboardItems" +
-                "[" + BASE + ",type,shape,messages," +
-                "chart" + "[" + BASE + "]," +
-                "eventChart" + "[" + BASE + "]" +
-                "map" + "[" + BASE + "]," +
-                "reportTable" + "[" + BASE + "]," +
-                "eventReport" + "[" + BASE + "]," +
-                "users" + "[" + BASE + "]," +
-                "reports" + "[" + BASE + "]," +
-                "resources" + "[" + BASE + "]" +
-                "]");
-
-        if (lastUpdated != null) {
-            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
-        }
-
+    private List<Dashboard> updateDashboards(DateTime lastUpdated) {
         // List of dashboards with UUIDs (without content). This list is used
         // only to determine what was removed on server.
-        List<Dashboard> actualDashboards = dashboardApiClient.getDashboards(QUERY_MAP_BASIC);
+        List<Dashboard> actualDashboards = dashboardApiClient.getBasicDashboards(null);
 
         // List of updated dashboards with content.
-        List<Dashboard> updatedDashboards = dashboardApiClient.getDashboards(QUERY_MAP_FULL);
-
-        // Building dashboard item to dashboard relationship.
-        if (updatedDashboards != null && !updatedDashboards.isEmpty()) {
-            for (Dashboard dashboard : updatedDashboards) {
-                if (dashboard == null || dashboard.getDashboardItems().isEmpty()) {
-                    continue;
-                }
-
-                for (DashboardItem item : dashboard.getDashboardItems()) {
-                    item.setDashboard(dashboard);
-                }
-            }
-        }
+        List<Dashboard> updatedDashboards = dashboardApiClient.getFullDashboards(lastUpdated);
 
         // List of persisted dashboards.
-        // List<Dashboard> persistedDashboards = dashboardStore.filter(Action.TO_POST);
         List<Dashboard> persistedDashboards = stateStore.filterModelsByAction(Dashboard.class, Action.TO_POST);
-        if (persistedDashboards != null && !persistedDashboards.isEmpty()) {
-            Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
-            Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
 
-            for (Dashboard dashboard : persistedDashboards) {
-                /* List<DashboardItem> items = dashboardItemStore
-                        .filter(dashboard, Action.TO_POST); */
+        Map<Long, List<DashboardItem>> dashboardItemMap = getDashboardItemMap();
+        Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
 
-                // List<DashboardItem> items = filterDashboardItems(dashboard, Action.TO_POST);
-                List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
-                if (items == null || items.isEmpty()) {
-                    continue;
-                }
-
-                for (DashboardItem item : items) {
-                    /* List<DashboardElement> dashboardElements =
-                            dashboardElementStore.filter(item, Action.TO_POST); */
-                    // item.setDashboardElements(dashboardElements);
-
-                    /* List<DashboardElement> dashboardElements =
-                            filterDashboardElements(item, Action.TO_POST); */
-                    List<DashboardElement> dashboardElements =
-                            dashboardElementMap.get(item.getId());
-                    item.setDashboardElements(dashboardElements);
-                }
-                dashboard.setDashboardItems(items);
+        for (Dashboard dashboard : persistedDashboards) {
+            List<DashboardItem> items = dashboardItemMap.get(dashboard.getId());
+            if (items == null || items.isEmpty()) {
+                continue;
             }
+
+            for (DashboardItem item : items) {
+                item.setDashboardElements(dashboardElementMap.get(item.getId()));
+            }
+            dashboard.setDashboardItems(items);
         }
 
         return merge(actualDashboards, updatedDashboards, persistedDashboards);
     }
 
-    private Map<Long, List<DashboardItem>> getDashboardItemMap() {
-        List<DashboardItem> dashboardItemsList = stateStore
-                .filterModelsByAction(DashboardItem.class, Action.TO_POST);
-        Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
-
-        for (DashboardItem dashboardItem : dashboardItemsList) {
-            Long dashboardId = dashboardItem.getDashboard().getId();
-
-            List<DashboardItem> bag = dashboardItemMap.get(dashboardId);
-            if (bag == null) {
-                bag = new ArrayList<>();
-                dashboardItemMap.put(dashboardId, bag);
-            }
-
-            bag.add(dashboardItem);
-        }
-
-        return dashboardItemMap;
-    }
-
-    private Map<Long, List<DashboardElement>> getDashboardElementMap(boolean withAction) {
-        List<DashboardElement> dashboardElementsList;
-
-        if (withAction) {
-            dashboardElementsList = stateStore.queryModelsWithAction(
-                    DashboardElement.class, Action.TO_POST);
-        } else {
-            dashboardElementsList = stateStore.filterModelsByAction(
-                    DashboardElement.class, Action.TO_POST);
-        }
-        Map<Long, List<DashboardElement>> dashboardElementMap = new HashMap<>();
-
-        for (DashboardElement dashboardElement : dashboardElementsList) {
-            Long dashboardItemId = dashboardElement.getDashboardItem().getId();
-
-            List<DashboardElement> bag = dashboardElementMap.get(dashboardItemId);
-            if (bag == null) {
-                bag = new ArrayList<>();
-                dashboardElementMap.put(dashboardItemId, bag);
-            }
-
-            bag.add(dashboardElement);
-        }
-
-        return dashboardElementMap;
-    }
-
-
-    /* private List<DashboardItem> filterDashboardItems(Dashboard dashboard, Action action) {
-        List<DashboardItem> filteredItems = new ArrayList<>();
-        List<DashboardItem> dbItems = stateStore.filterByAction(DashboardItem.class, action);
-
-        if (dbItems != null && !dbItems.isEmpty()) {
-            for (DashboardItem dashboardItem : dbItems) {
-                if (dashboard.getId() == dashboardItem.getDashboard().getId()) {
-                    filteredItems.add(dashboardItem);
-                }
-            }
-        }
-
-        return filteredItems;
-    }
-
-    private List<DashboardElement> filterDashboardElements(DashboardItem item, Action action) {
-        List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.filterByAction(DashboardElement.class, action);
-
-        if (dbElements != null && !dbElements.isEmpty()) {
-            for (DashboardElement dbElement : dbElements) {
-                if (item.getId() == dbElement.getDashboardItem().getId()) {
-                    filteredElements.add(dbElement);
-                }
-            }
-        }
-
-        return filteredElements;
-    }
-
-    private List<DashboardElement> getDashboardElements(DashboardItem item, Action action) {
-        List<DashboardElement> filteredElements = new ArrayList<>();
-        List<DashboardElement> dbElements = stateStore.queryWithAction(DashboardElement.class, action);
-
-        if (dbElements != null && !dbElements.isEmpty()) {
-            for (DashboardElement dbElement : dbElements) {
-                if (item.getId() == dbElement.getDashboardItem().getId()) {
-                    filteredElements.add(dbElement);
-                }
-            }
-        }
-
-        return filteredElements;
-    } */
-
-    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime lastUpdated) throws APIException {
-        final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
-        QUERY_MAP_BASIC.put("fields", "id,created,lastUpdated,shape");
-
-        if (lastUpdated != null) {
-            QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
-        }
-
+    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime lastUpdated) {
         // List of actual dashboard items.
         List<DashboardItem> actualItems = new ArrayList<>();
-        if (dashboards != null && !dashboards.isEmpty()) {
-            for (Dashboard dashboard : dashboards) {
-                if (dashboard.getDashboardItems() != null) {
-                    actualItems.addAll(dashboard.getDashboardItems());
-                }
-            }
+        for (Dashboard dashboard : dashboards) {
+            List<DashboardItem> items = dashboard.getDashboardItems();
+            actualItems.addAll(items != null ? items : new ArrayList<DashboardItem>());
         }
 
         // List of persisted dashboard items
-        /* Map<String, DashboardItem> persistedDashboardItems =
-                toMap(dashboardItemStore.filter(Action.TO_POST)); */
         Map<String, DashboardItem> persistedDashboardItems =
                 toMap(stateStore.filterModelsByAction(DashboardItem.class, Action.TO_POST));
 
         // List of updated dashboard items. We need this only to get
         // information about updates of item shape.
-        List<DashboardItem> updatedItems = dashboardApiClient.getDashboardItems(QUERY_MAP_BASIC);
+        List<DashboardItem> updatedItems = dashboardApiClient.getBasicDashboardItems(lastUpdated);
 
         // Map of items where keys are UUIDs.
         Map<String, DashboardItem> updatedItemsMap = toMap(updatedItems);
@@ -347,15 +201,12 @@ public final class DashboardController implements IDataController<Dashboard> {
         return actualItems;
     }
 
+
     private List<DbOperation> createOperations(List<DashboardItem> refreshedItems) {
         List<DbOperation> dbOperations = new ArrayList<>();
 
         Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
         for (DashboardItem refreshedItem : refreshedItems) {
-            /* List<DashboardElement> persistedElementList =
-                    dashboardElementStore.filter(refreshedItem, Action.TO_POST); */
-            /* List<DashboardElement> persistedElementList =
-                    filterDashboardElements(refreshedItem, Action.TO_POST); */
             List<DashboardElement> persistedElementList =
                     dashboardElementMap.get(refreshedItem.getId());
 
@@ -403,13 +254,78 @@ public final class DashboardController implements IDataController<Dashboard> {
     }
 
 
-    private void sendLocalChanges() throws APIException {
+    /* this method subtracts content of bList from aList */
+    private static List<String> subtract(List<String> aList, List<String> bList) {
+        List<String> aListCopy = new ArrayList<>(aList);
+        if (bList != null && !bList.isEmpty()) {
+            for (String bItem : bList) {
+                if (aListCopy.contains(bItem)) {
+                    int index = aListCopy.indexOf(bItem);
+                    aListCopy.remove(index);
+                }
+            }
+        }
+        return aListCopy;
+    }
+
+
+    // TODO move this method out
+    private Map<Long, List<DashboardItem>> getDashboardItemMap() {
+        List<DashboardItem> dashboardItemsList = stateStore
+                .filterModelsByAction(DashboardItem.class, Action.TO_POST);
+        Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
+
+        for (DashboardItem dashboardItem : dashboardItemsList) {
+            Long dashboardId = dashboardItem.getDashboard().getId();
+
+            List<DashboardItem> bag = dashboardItemMap.get(dashboardId);
+            if (bag == null) {
+                bag = new ArrayList<>();
+                dashboardItemMap.put(dashboardId, bag);
+            }
+
+            bag.add(dashboardItem);
+        }
+
+        return dashboardItemMap;
+    }
+
+    // TODO move this method out
+    private Map<Long, List<DashboardElement>> getDashboardElementMap(boolean withAction) {
+        List<DashboardElement> dashboardElementsList;
+
+        if (withAction) {
+            dashboardElementsList = stateStore.queryModelsWithAction(
+                    DashboardElement.class, Action.TO_POST);
+        } else {
+            dashboardElementsList = stateStore.filterModelsByAction(
+                    DashboardElement.class, Action.TO_POST);
+        }
+        Map<Long, List<DashboardElement>> dashboardElementMap = new HashMap<>();
+
+        for (DashboardElement dashboardElement : dashboardElementsList) {
+            Long dashboardItemId = dashboardElement.getDashboardItem().getId();
+
+            List<DashboardElement> bag = dashboardElementMap.get(dashboardItemId);
+            if (bag == null) {
+                bag = new ArrayList<>();
+                dashboardElementMap.put(dashboardItemId, bag);
+            }
+
+            bag.add(dashboardElement);
+        }
+
+        return dashboardElementMap;
+    }
+
+
+    private void sendLocalChanges() {
         sendDashboardChanges();
         sendDashboardItemChanges();
         sendDashboardElements();
     }
 
-    private void sendDashboardChanges() throws APIException {
+    private void sendDashboardChanges() {
         // we need to sort dashboards in natural order.
         // In order they were inserted in local database.
 
@@ -443,7 +359,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void postDashboard(Dashboard dashboard) throws APIException {
+    private void postDashboard(Dashboard dashboard) {
         try {
             // Response response = dhisApi.postDashboard(dashboard);
             Response response = dashboardApiClient.postDashboard(dashboard);
@@ -471,7 +387,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void putDashboard(Dashboard dashboard) throws APIException {
+    private void putDashboard(Dashboard dashboard) {
         try {
             dashboardApiClient.putDashboard(dashboard);
 
@@ -485,7 +401,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void deleteDashboard(Dashboard dashboard) throws APIException {
+    private void deleteDashboard(Dashboard dashboard) {
         try {
             // dhisApi.deleteDashboard(dashboard.getUId());
             dashboardApiClient.deleteDashboard(dashboard);
@@ -496,7 +412,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void sendDashboardItemChanges() throws APIException {
+    private void sendDashboardItemChanges() {
         /* List<DashboardItem> dashboardItems =
                 dashboardItemStore.filter(Action.SYNCED); */
         List<DashboardItem> dashboardItems =
@@ -526,7 +442,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void postDashboardItem(DashboardItem dashboardItem) throws APIException {
+    private void postDashboardItem(DashboardItem dashboardItem) {
         Dashboard dashboard = dashboardItem.getDashboard();
         Action dashboardAction = stateStore.queryActionForModel(dashboard);
 
@@ -581,7 +497,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void deleteDashboardItem(DashboardItem dashboardItem) throws APIException {
+    private void deleteDashboardItem(DashboardItem dashboardItem) {
         Dashboard dashboard = dashboardItem.getDashboard();
         Action dashboardAction = stateStore.queryActionForModel(dashboard);
 
@@ -607,7 +523,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void sendDashboardElements() throws APIException {
+    private void sendDashboardElements() {
         /* List<DashboardElement> elements = new Select()
                 .from(DashboardElement.class)
                 .where(Condition.column(DashboardElement$Table
@@ -641,7 +557,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void postDashboardElement(DashboardElement element) throws APIException {
+    private void postDashboardElement(DashboardElement element) {
         DashboardItem item = element.getDashboardItem();
         /* if (item == null || item.getAction() == null) {
             return;
@@ -673,7 +589,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         } */
     }
 
-    private void deleteDashboardElement(DashboardElement element) throws APIException {
+    private void deleteDashboardElement(DashboardElement element) {
         DashboardItem item = element.getDashboardItem();
         Action itemAction = stateStore.queryActionForModel(item);
 
@@ -712,15 +628,9 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    private void updateDashboardTimeStamp(Dashboard dashboard) throws APIException {
+    private void updateDashboardTimeStamp(Dashboard dashboard) {
         try {
-            final Map<String, String> QUERY_PARAMS = new HashMap<>();
-            QUERY_PARAMS.put("fields", "created,lastUpdated");
-            /* Dashboard updatedDashboard = dhisApi
-                    .getDashboard(dashboard.getUId(), QUERY_PARAMS); */
-
-            Dashboard updatedDashboard = dashboardApiClient
-                    .getDashboardByUid(dashboard.getUId(), QUERY_PARAMS);
+            Dashboard updatedDashboard = dashboardApiClient.getDashboardByUid(dashboard.getUId());
 
             // merging updated timestamp to local dashboard model
             dashboard.setCreated(updatedDashboard.getCreated());
@@ -732,20 +642,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         }
     }
 
-    @Override
-    public void sync() throws APIException {
-        /* first we need to fetch all changes from server
-        and apply them to local database */
-        getDashboardDataFromServer();
-
-        /* now we can try to send changes made locally to server */
-        sendLocalChanges();
-
-        /* sync content */
-        syncDashboardContent();
-    }
-
-    public void syncDashboardContent() throws APIException {
+    public void syncDashboardContent() {
         /* DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.DASHBOARDS_CONTENT);
         DateTime serverDateTime = dhisApi
@@ -763,7 +660,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 .setLastUpdated(ResourceType.DASHBOARDS_CONTENT, serverDateTime); */
     }
 
-    private List<DashboardContent> updateApiResources(DateTime lastUpdated) throws APIException {
+    private List<DashboardContent> updateApiResources(DateTime lastUpdated) {
         List<DashboardContent> dashboardContent = new ArrayList<>();
         dashboardContent.addAll(updateApiResourceByType(
                 DashboardContent.TYPE_CHART, lastUpdated));
@@ -784,8 +681,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         return dashboardContent;
     }
 
-    private List<DashboardContent> updateApiResourceByType(final String type,
-                                                               final DateTime lastUpdated) throws APIException {
+    private List<DashboardContent> updateApiResourceByType(String type, DateTime lastUpdated) {
         final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
@@ -814,27 +710,26 @@ public final class DashboardController implements IDataController<Dashboard> {
         return merge(actualItems, updatedItems, persistedItems);
     }
 
-    private List<DashboardContent> getApiResourceByType(String type, Map<String, String> queryParams) throws APIException {
-        /* switch (type) {
+    private List<DashboardContent> getApiResourceByType(String type, Map<String, String> queryParams) {
+        switch (type) {
             case DashboardContent.TYPE_CHART:
-                return unwrapResponse(dhisApi.getCharts(queryParams), "charts");
+                return dashboardApiClient.getBasicCharts();
             case DashboardContent.TYPE_EVENT_CHART:
-                return unwrapResponse(dhisApi.getEventCharts(queryParams), "eventCharts");
+                return dashboardApiClient.getBasicEventCharts();
             case DashboardContent.TYPE_MAP:
-                return unwrapResponse(dhisApi.getMaps(queryParams), "maps");
+                return dashboardApiClient.getBasicMaps();
             case DashboardContent.TYPE_REPORT_TABLE:
-                return unwrapResponse(dhisApi.getReportTables(queryParams), "reportTables");
+                return dashboardApiClient.getBasicReportTables();
             case DashboardContent.TYPE_EVENT_REPORT:
-                return unwrapResponse(dhisApi.getEventReports(queryParams), "eventReports");
+                return dashboardApiClient.getBasicEventReports();
             case DashboardContent.TYPE_USERS:
-                return unwrapResponse(dhisApi.getUsers(queryParams), "users");
+                return dashboardApiClient.getBasicUsers();
             case DashboardContent.TYPE_REPORTS:
-                return unwrapResponse(dhisApi.getReports(queryParams), "reports");
+                return dashboardApiClient.getBasicReports();
             case DashboardContent.TYPE_RESOURCES:
-                return unwrapResponse(dhisApi.getResources(queryParams), "documents");
+                return dashboardApiClient.getBasicResources();
             default:
                 throw new IllegalArgumentException("Unsupported DashboardContent type");
-        } */
-        return new ArrayList<>();
+        }
     }
 }

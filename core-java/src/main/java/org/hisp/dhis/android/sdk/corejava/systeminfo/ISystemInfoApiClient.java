@@ -26,40 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.api;
+package org.hisp.dhis.android.sdk.corejava.systeminfo;
 
-import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
-import org.hisp.dhis.android.sdk.corejava.common.modules.IPersistenceModule;
+import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 
-public class Dhis2 {
-    private final INetworkModule mNetworkModule;
-    private final IPersistenceModule mPersistenceModule;
-
-    private Dhis2(INetworkModule networkModule, IPersistenceModule persistenceModule) {
-        mNetworkModule = networkModule;
-        mPersistenceModule = persistenceModule;
-    }
-
-    public static class Builder {
-        private INetworkModule mNetworkModule;
-        private IPersistenceModule mPersistenceModule;
-
-        public static Builder newInstance() {
-            return new Builder();
-        }
-
-        public Builder withNetworkModule(INetworkModule networkModule) {
-            mNetworkModule = networkModule;
-            return this;
-        }
-
-        public Builder withPersistenceModule(IPersistenceModule persistenceModule) {
-            mPersistenceModule = persistenceModule;
-            return this;
-        }
-
-        public Dhis2 build() {
-            return new Dhis2(mNetworkModule, mPersistenceModule);
-        }
-    }
+public interface ISystemInfoApiClient {
+    SystemInfo getSystemInfo();
 }

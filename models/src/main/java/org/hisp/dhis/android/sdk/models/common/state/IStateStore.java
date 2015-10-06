@@ -34,6 +34,7 @@ import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import java.util.List;
 import java.util.Map;
 
+// TODO do not return null collections.
 public interface IStateStore extends IStore<State> {
 
     //////////////////////////////////////////////////////////////////////////////////////////

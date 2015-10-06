@@ -26,30 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.android.sdk.corejava.common.api;
 
-android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
+import org.hisp.dhis.android.sdk.corejava.common.modules.IPersistenceModule;
 
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+public class Dhis2 {
+    private final INetworkModule mNetworkModule;
+    private final IPersistenceModule mPersistenceModule;
+
+    private Dhis2(INetworkModule networkModule, IPersistenceModule persistenceModule) {
+        mNetworkModule = networkModule;
+        mPersistenceModule = persistenceModule;
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+    public static class Builder {
+        private INetworkModule mNetworkModule;
+        private IPersistenceModule mPersistenceModule;
+
+        public static Builder newInstance() {
+            return new Builder();
+        }
+
+        public Builder withNetworkModule(INetworkModule networkModule) {
+            mNetworkModule = networkModule;
+            return this;
+        }
+
+        public Builder withPersistenceModule(IPersistenceModule persistenceModule) {
+            mPersistenceModule = persistenceModule;
+            return this;
+        }
+
+        public Dhis2 build() {
+            return new Dhis2(mNetworkModule, mPersistenceModule);
         }
     }
-}
-
-dependencies {
-    compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
-
-    testCompile 'junit:junit:4.12'
 }

@@ -25,7 +25,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 import android.app.DatePickerDialog;
@@ -33,34 +32,40 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import static android.text.TextUtils.isEmpty;
 
-public class EventDatePickerRow extends Row {
+public class EnrollmentDatePickerRow extends Row
+{
     private static final String EMPTY_FIELD = "";
     private static final String DATE_FORMAT = "YYYY-MM-dd";
-    private final Event mEvent;
+    private final Enrollment mEnrollment;
+    private final String mEnrollmentDate;
+    private final String mIncidentDate;
 
-    public EventDatePickerRow(String label, Event event) {
+    public EnrollmentDatePickerRow(String label, Enrollment enrollment, String enrollmentDate, String incidentDate) {
+        if(enrollmentDate == null && incidentDate == null)
+            throw new IllegalArgumentException("Enrollment date or incident date needs to be supplied for this row");
+        else if(enrollmentDate != null && incidentDate != null)
+            throw new IllegalArgumentException("You should only supply either enrollment date or incident date");
+
         mLabel = label;
-        mEvent = event;
+        mEnrollment = enrollment;
+        this.mEnrollmentDate = enrollmentDate;
+        this.mIncidentDate = incidentDate;
 
         checkNeedsForDescriptionButton();
     }
@@ -95,7 +100,7 @@ public class EventDatePickerRow extends Row {
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mEvent);
+        holder.updateViews(mLabel, mEnrollment, mEnrollmentDate, mIncidentDate);
 
         if(isDetailedInfoButtonHidden())
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
@@ -105,7 +110,7 @@ public class EventDatePickerRow extends Row {
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.EVENT_DATE.ordinal();
+        return DataEntryRowTypes.ENROLLMENT_DATE.ordinal();
     }
 
     private class DatePickerRowHolder {
@@ -132,15 +137,25 @@ public class EventDatePickerRow extends Row {
 
         }
 
-        public void updateViews(String label, Event event) {
-            dateSetListener.setEvent(event);
-            clearButtonListener.setEvent(event);
+        public void updateViews(String label, Enrollment enrollment, String enrollmentDate, String incidentDate ) {
+            dateSetListener.setEnrollment(enrollment);
+            clearButtonListener.setEnrollment(enrollment);
 
             String eventDate = null;
-            if (event != null && event.getEventDate() != null
-                    && !isEmpty(event.getEventDate())) {
-                DateTime eventDateTime = DateTime.parse(event.getEventDate());
-                eventDate = eventDateTime.toString(DATE_FORMAT);
+
+            if(enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate))
+            {
+                dateSetListener.setEnrollmentDate(enrollmentDate);
+                clearButtonListener.setEnrollmentDate(enrollmentDate);
+                DateTime enrollmentDateTime = DateTime.parse(enrollmentDate);
+                eventDate = enrollmentDateTime.toString(DATE_FORMAT);
+            }
+            else if(enrollment != null && incidentDate != null && !isEmpty(incidentDate))
+            {
+                dateSetListener.setIncidentDate(incidentDate);
+                clearButtonListener.setIncidentDate(incidentDate);
+                DateTime incidentDateTime= DateTime.parse(incidentDate);
+                eventDate = incidentDateTime.toString(DATE_FORMAT);
             }
 
             textLabel.setText(label);
@@ -149,7 +164,7 @@ public class EventDatePickerRow extends Row {
 
     }
 
-    private static class OnEditTextClickListener implements OnClickListener {
+    private static class OnEditTextClickListener implements View.OnClickListener {
         private final Context context;
         private final DateSetListener listener;
 
@@ -157,8 +172,6 @@ public class EventDatePickerRow extends Row {
                                        DateSetListener listener) {
             this.context = context;
             this.listener = listener;
-
-
         }
 
         @Override
@@ -171,37 +184,60 @@ public class EventDatePickerRow extends Row {
         }
     }
 
-    private static class ClearButtonListener implements OnClickListener {
+    private static class ClearButtonListener implements View.OnClickListener {
         private final TextView textView;
-        private Event event;
+        private Enrollment enrollment;
+        private String enrollmentDate;
+        private String incidentDate;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setEvent(Event event) {
-            this.event = event;
+        public void setEnrollment(Enrollment enrollment) {
+            this.enrollment = enrollment;
+        }
+
+        public void setEnrollmentDate(String enrollmentDate) {
+            this.enrollmentDate = enrollmentDate;
+        }
+
+        public void setIncidentDate(String incidentDate) {
+            this.incidentDate = incidentDate;
         }
 
         @Override
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
-            event.setEventDate(EMPTY_FIELD);
+            if(enrollmentDate != null)
+                enrollment.setDateOfEnrollment(EMPTY_FIELD);
+            else if(incidentDate != null)
+                enrollment.setDateOfIncident(EMPTY_FIELD);
         }
     }
 
     private class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
-        private Event event;
+        private Enrollment enrollment;
         private DataValue value;
+        private String enrollmentDate;
+        private String incidentDate;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setEvent(Event event) {
-            this.event = event;
+        public void setEnrollment(Enrollment enrollment) {
+            this.enrollment = enrollment;
+        }
+
+        public void setEnrollmentDate(String enrollmentDate) {
+            this.enrollmentDate = enrollmentDate;
+        }
+
+        public void setIncidentDate(String incidentDate) {
+            this.incidentDate = incidentDate;
         }
 
         @Override
@@ -210,19 +246,25 @@ public class EventDatePickerRow extends Row {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
             if (value == null) value = new DataValue();
 
-            if (event.getEventDate() != null)
-                value.setValue(event.getEventDate());
+            if (enrollmentDate != null)
+                value.setValue(enrollmentDate);
+            else if(incidentDate != null)
+                value.setValue(incidentDate);
 
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
 
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
-                event.setEventDate(value.getValue());
-                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.EVENT_DATE.toString()));
+
+                if(enrollmentDate != null)
+                    enrollment.setDateOfEnrollment(value.getValue());
+                else if(incidentDate != null)
+                    enrollment.setDateOfIncident(value.getValue());
+
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.ENROLLMENT_DATE.toString()));
             }
 
         }
     }
-
 }

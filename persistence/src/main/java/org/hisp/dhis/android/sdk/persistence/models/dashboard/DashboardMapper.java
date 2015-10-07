@@ -33,7 +33,6 @@ import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 
 public class DashboardMapper extends AbsMapper<Dashboard, Dashboard$Flow> {
-    // public static final DashboardMapper INSTANCE = new DashboardMapper();
 
     public DashboardMapper() {
         // empty constructor

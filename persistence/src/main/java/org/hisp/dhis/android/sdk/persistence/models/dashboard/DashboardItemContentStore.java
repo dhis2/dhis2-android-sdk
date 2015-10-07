@@ -35,16 +35,17 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow$Table;
 
 import java.util.List;
 
-public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent, DashboardItemContent$Flow> implements IDashboardItemContentStore {
+public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent,
+        DashboardItemContent$Flow> implements IDashboardItemContentStore {
 
-    public DashboardItemContentStore() {
-        super(null);
-        // empty constructor
+    public DashboardItemContentStore(IMapper<DashboardContent, DashboardItemContent$Flow> contentMapper) {
+        super(contentMapper);
     }
 
     @Override
@@ -67,72 +68,6 @@ public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<
                 .from(DashboardItemContent$Flow.class)
                 .where(generalCondition)
                 .queryList();
-        return DashboardItemContent$Flow.toModels(resources);
+        return getMapper().mapToModels(resources);
     }
-
-    /* @Override
-    public Model mapToDatabaseEntity(DashboardContent model) {
-        return null;
-    }
-
-    @Override
-    public DashboardContent mapToModel(Model dataBaseEntity) {
-        return null;
-    } */
-
-    /* @Override
-    public void insert(DashboardContent object) {
-        DashboardItemContent$Flow flowModel
-                = DashboardItemContent$Flow.fromModel(object);
-        flowModel.insert();
-
-        object.setId(flowModel.getId());
-    }
-
-    @Override
-    public void update(DashboardContent object) {
-        DashboardItemContent$Flow.fromModel(object).update();
-    }
-
-    @Override
-    public void save(DashboardContent object) {
-        DashboardItemContent$Flow flowModel
-                = DashboardItemContent$Flow.fromModel(object);
-        flowModel.save();
-
-        object.setId(flowModel.getId());
-    }
-
-    @Override
-    public void delete(DashboardContent object) {
-        DashboardItemContent$Flow.fromModel(object).delete();
-    }
-
-    @Override
-    public List<DashboardContent> queryAll() {
-        List<DashboardItemContent$Flow> flows = new Select()
-                .from(DashboardItemContent$Flow.class)
-                .queryList();
-        return DashboardItemContent$Flow.toModels(flows);
-    }
-
-    @Override
-    public DashboardContent queryById(long id) {
-        DashboardItemContent$Flow dashboardItemContentFlow = new Select()
-                .from(DashboardItemContent$Flow.class)
-                .where(Condition.column(DashboardItemContent$Flow$Table
-                        .ID).is(id))
-                .querySingle();
-        return DashboardItemContent$Flow.toModel(dashboardItemContentFlow);
-    }
-
-    @Override
-    public DashboardContent queryByUid(String uid) {
-        DashboardItemContent$Flow dashboardItemContentFlow = new Select()
-                .from(DashboardItemContent$Flow.class)
-                .where(Condition.column(DashboardItemContent$Flow$Table
-                        .UID).is(uid))
-                .querySingle();
-        return DashboardItemContent$Flow.toModel(dashboardItemContentFlow);
-    } */
 }

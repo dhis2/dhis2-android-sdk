@@ -36,6 +36,7 @@ import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow$Table;
 
@@ -43,8 +44,8 @@ import java.util.List;
 
 public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardElement, DashboardElement$Flow> implements IDashboardElementStore {
 
-    public DashboardElementStore() {
-        super(null);
+    public DashboardElementStore(IMapper<DashboardElement, DashboardElement$Flow> mapper) {
+        super(mapper);
     }
 
     @Override
@@ -60,77 +61,4 @@ public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardE
         // converting flow models to Dashboard
         return getMapper().mapToModels(elementFlows);
     }
-
-    /* @Override
-    public void insert(DashboardElement object) {
-        DashboardElement$Flow elementFlow = DashboardElement$Flow
-                .fromModel(object);
-        elementFlow.insert();
-
-        object.setId(elementFlow.getId());
-
-        stateStore.saveActionForModel(object, Action.SYNCED);
-    }
-
-    @Override
-    public void update(DashboardElement object) {
-        DashboardElement$Flow.fromModel(object).update();
-    }
-
-    @Override
-    public void save(DashboardElement object) {
-        DashboardElement$Flow elementFlow
-                = DashboardElement$Flow.fromModel(object);
-        elementFlow.save();
-
-        object.setId(elementFlow.getId());
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            stateStore.saveActionForModel(object, Action.SYNCED);
-        }
-    }
-
-    @Override
-    public void delete(DashboardElement object) {
-        DashboardElement$Flow.fromModel(object).delete();
-
-        DashboardElement$Flow dashboardElementFlow = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(Condition.column(DashboardElement$Flow$Table
-                        .ID).is(object.getId()))
-                .querySingle();
-
-        if (dashboardElementFlow != null) {
-            dashboardElementFlow.delete();
-
-            stateStore.deleteActionForModel(object);
-        }
-    }
-
-    @Override
-    public List<DashboardElement> queryAll() {
-        List<DashboardElement$Flow> elementFlows = new Select()
-                .from(DashboardElement$Flow.class)
-                .queryList();
-        return DashboardElement$Flow.toModels(elementFlows);
-    }
-
-    @Override
-    public DashboardElement queryById(long id) {
-        DashboardElement$Flow dashboardElementFlow = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(Condition.column(DashboardElement$Flow$Table.ID).is(id))
-                .querySingle();
-        return DashboardElement$Flow.toModel(dashboardElementFlow);
-    }
-
-    @Override
-    public DashboardElement queryByUid(String uid) {
-        DashboardElement$Flow dashboardElementFlow = new Select()
-                .from(DashboardElement$Flow.class)
-                .where(Condition.column(DashboardElement$Flow$Table.UID).is(uid))
-                .querySingle();
-        return DashboardElement$Flow.toModel(dashboardElementFlow);
-    } */
 }

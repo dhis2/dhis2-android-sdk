@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsMapper;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow;
 
 public class DashboardElementMapper extends AbsMapper<DashboardElement, DashboardElement$Flow> {
-    private final DashboardItemMapper dashboardItemMapper;
+    private final IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper;
 
-    public DashboardElementMapper(DashboardItemMapper dashboardItemMapper) {
+    public DashboardElementMapper(IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper) {
         this.dashboardItemMapper = dashboardItemMapper;
     }
 

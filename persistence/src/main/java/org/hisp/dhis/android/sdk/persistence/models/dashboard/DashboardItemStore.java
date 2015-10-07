@@ -33,38 +33,27 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.common.base.IModel;
-import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow$Table;
 
 import java.util.List;
 
-public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem> implements IDashboardItemStore {
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
+public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
     // private final IStateStore stateStore;
 
     public DashboardItemStore() {
-        super(DashboardItem$Flow.class);
-    }
-
-    @Override
-    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(DashboardItem model) {
-        return null;
-    }
-
-    @Override
-    public <DataBaseType extends Model> DashboardItem mapToModel(DataBaseType dataBaseEntity) {
-        return null;
+        super(null);
     }
 
     @Override
     public List<DashboardItem> queryByDashboard(Dashboard dashboard) {
-        Preconditions.isNull(dashboard, "Dashboard must not be null");
+        isNull(dashboard, "Dashboard must not be null");
 
         List<DashboardItem$Flow> dashboardItemFlows = new Select()
                 .from(DashboardItem$Flow.class)
@@ -72,9 +61,8 @@ public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem
                         .DASHBOARD_DASHBOARD).is(dashboard.getId()))
                 .queryList();
 
-        return DashboardItem$Flow.toModels(dashboardItemFlows);
+        return getMapper().mapToModels(dashboardItemFlows);
     }
-
 
     /* @Override
     public void insert(DashboardItem object) {

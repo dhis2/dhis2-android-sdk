@@ -32,14 +32,30 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public interface IMappable<T extends IModel> {
-    <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(T model);
+public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType extends IModel & Model> implements IMapper<ModelType, DatabaseEntityType> {
 
-    <DataBaseType extends Model> List<DataBaseType> mapToDatabaseEntities(List<T> models);
+    @Override
+    public List<DatabaseEntityType> mapToDatabaseEntities(List<ModelType> models) {
+        List<DatabaseEntityType> modelObjects = new ArrayList<>();
+        if (models != null && !models.isEmpty()) {
+            for (ModelType model : models) {
+                modelObjects.add(mapToDatabaseEntity(model));
+            }
+        }
+        return modelObjects;
+    }
 
-    <DataBaseType extends Model> T mapToModel(DataBaseType dataBaseEntity);
-
-    <DataBaseType extends Model> List<T> mapToModels(List<DataBaseType> dataBaseEntity);
+    @Override
+    public List<ModelType> mapToModels(List<DatabaseEntityType> dataBaseEntities) {
+        List<ModelType> modelObjects = new ArrayList<>();
+        if (dataBaseEntities != null && !dataBaseEntities.isEmpty()) {
+            for (DatabaseEntityType dataBaseEntity : dataBaseEntities) {
+                modelObjects.add(mapToModel(dataBaseEntity));
+            }
+        }
+        return modelObjects;
+    }
 }

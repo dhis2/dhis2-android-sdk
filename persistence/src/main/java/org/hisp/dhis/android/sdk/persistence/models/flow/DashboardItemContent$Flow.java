@@ -33,10 +33,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow {
@@ -54,49 +50,5 @@ public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public static DashboardContent toModel(DashboardItemContent$Flow contentFlow) {
-        if (contentFlow == null) {
-            return null;
-        }
-
-        DashboardContent dashboardContent = new DashboardContent();
-        dashboardContent.setId(contentFlow.getId());
-        dashboardContent.setUId(contentFlow.getUId());
-        dashboardContent.setCreated(contentFlow.getCreated());
-        dashboardContent.setLastUpdated(contentFlow.getLastUpdated());
-        dashboardContent.setName(contentFlow.getName());
-        dashboardContent.setDisplayName(contentFlow.getDisplayName());
-        dashboardContent.setType(contentFlow.getType());
-        return dashboardContent;
-    }
-
-    public static List<DashboardContent> toModels(List<DashboardItemContent$Flow> flows) {
-        List<DashboardContent> dashboardContents = new ArrayList<>();
-
-        if (flows != null && !flows.isEmpty()) {
-            for (DashboardItemContent$Flow flow : flows) {
-                dashboardContents.add(toModel(flow));
-            }
-        }
-
-        return dashboardContents;
-    }
-
-    public static DashboardItemContent$Flow fromModel(DashboardContent content) {
-        if (content == null) {
-            return null;
-        }
-
-        DashboardItemContent$Flow flowModel = new DashboardItemContent$Flow();
-        flowModel.setId(content.getId());
-        flowModel.setUId(content.getUId());
-        flowModel.setCreated(content.getCreated());
-        flowModel.setLastUpdated(content.getLastUpdated());
-        flowModel.setName(content.getName());
-        flowModel.setDisplayName(content.getDisplayName());
-        flowModel.setType(content.getType());
-        return flowModel;
     }
 }

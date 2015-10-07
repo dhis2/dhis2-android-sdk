@@ -31,35 +31,20 @@ package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.Condition.CombinedCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
-import org.hisp.dhis.android.sdk.models.common.base.IModel;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow$Table;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
 
-import static com.raizlabs.android.dbflow.sql.builder.Condition.column;
-
-public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent> implements IDashboardItemContentStore {
+public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent, DashboardItemContent$Flow> implements IDashboardItemContentStore {
 
     public DashboardItemContentStore() {
-        super(DashboardItemContent$Flow.class);
+        super(null);
         // empty constructor
-    }
-
-    @Override
-    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(DashboardContent model) {
-        return null;
-    }
-
-    @Override
-    public <DataBaseType extends Model> DashboardContent mapToModel(DataBaseType dataBaseEntity) {
-        return null;
     }
 
     @Override
@@ -84,6 +69,16 @@ public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<
                 .queryList();
         return DashboardItemContent$Flow.toModels(resources);
     }
+
+    /* @Override
+    public Model mapToDatabaseEntity(DashboardContent model) {
+        return null;
+    }
+
+    @Override
+    public DashboardContent mapToModel(Model dataBaseEntity) {
+        return null;
+    } */
 
     /* @Override
     public void insert(DashboardContent object) {

@@ -36,10 +36,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
@@ -63,53 +59,5 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
 
     public void setDashboardItem(DashboardItem$Flow dashboardItem) {
         this.dashboardItem = dashboardItem;
-    }
-
-    public static DashboardElement$Flow fromModel(DashboardElement dashboardElement) {
-        if (dashboardElement == null) {
-            return null;
-        }
-
-        DashboardElement$Flow dashboardElementFlow = new DashboardElement$Flow();
-        dashboardElementFlow.setId(dashboardElement.getId());
-        dashboardElementFlow.setUId(dashboardElement.getUId());
-        dashboardElementFlow.setCreated(dashboardElement.getCreated());
-        dashboardElementFlow.setLastUpdated(dashboardElement.getLastUpdated());
-        dashboardElementFlow.setAccess(dashboardElement.getAccess());
-        dashboardElementFlow.setName(dashboardElement.getName());
-        dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
-        dashboardElementFlow.setDashboardItem(DashboardItem$Flow
-                .fromModel(dashboardElement.getDashboardItem()));
-        return dashboardElementFlow;
-    }
-
-    public static DashboardElement toModel(DashboardElement$Flow dashboardElementFlow) {
-        if (dashboardElementFlow == null) {
-            return null;
-        }
-
-        DashboardElement dashboardElement = new DashboardElement();
-        dashboardElement.setId(dashboardElementFlow.getId());
-        dashboardElement.setUId(dashboardElementFlow.getUId());
-        dashboardElement.setCreated(dashboardElementFlow.getCreated());
-        dashboardElement.setLastUpdated(dashboardElementFlow.getLastUpdated());
-        dashboardElement.setAccess(dashboardElementFlow.getAccess());
-        dashboardElement.setName(dashboardElementFlow.getName());
-        dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
-        dashboardElement.setDashboardItem(DashboardItem$Flow
-                .toModel(dashboardElementFlow.getDashboardItem()));
-        return dashboardElement;
-    }
-
-    public static List<DashboardElement> toModels(List<DashboardElement$Flow> elementFlows) {
-        List<DashboardElement> dashboardElements = new ArrayList<>();
-
-        if (elementFlows != null && !elementFlows.isEmpty()) {
-            for (DashboardElement$Flow dashboardElementFlow : elementFlows) {
-                dashboardElements.add(toModel(dashboardElementFlow));
-            }
-        }
-
-        return dashboardElements;
     }
 }

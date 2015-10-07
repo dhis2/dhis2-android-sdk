@@ -28,8 +28,22 @@
 
 package org.hisp.dhis.android.sdk.persistence.models.common.base;
 
+import com.raizlabs.android.dbflow.structure.Model;
 
-public interface RelationModel$Flow {
-    String getFirstKey();
-    String getSecondKey();
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+
+import java.util.List;
+
+public interface IMapper<ModelType extends IModel, DatabaseEntityType extends Model & IModel> {
+    DatabaseEntityType mapToDatabaseEntity(ModelType model);
+
+    ModelType mapToModel(DatabaseEntityType dataBaseEntity);
+
+    List<DatabaseEntityType> mapToDatabaseEntities(List<ModelType> models);
+
+    List<ModelType> mapToModels(List<DatabaseEntityType> dataBaseEntity);
+
+    Class<ModelType> getModelTypeClass();
+
+    Class<DatabaseEntityType> getDatabaseEntityTypeClass();
 }

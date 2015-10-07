@@ -34,24 +34,24 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.common.base.IStore;
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.flow.BaseModel$Flow;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable<T> {
-    private final Class<? extends Model> mClass;
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-    public <DatabaseEntityType extends Model & IModel> AbsStore(Class<DatabaseEntityType> clazz) {
-        mClass = clazz;
+public abstract class AbsStore<ModelType extends IModel, DatabaseEntityType extends Model & IModel> implements IStore<ModelType> {
+    private final IMapper<ModelType, DatabaseEntityType> mapper;
+
+    public AbsStore(IMapper<ModelType, DatabaseEntityType> mapper) {
+        this.mapper = isNull(mapper, "mapper object must not be null");
     }
 
     @Override
-    public void insert(T object) {
-        Preconditions.isNull(object, "object must not be null");
+    public void insert(ModelType object) {
+        isNull(object, "object must not be null");
 
-        Model databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -62,20 +62,20 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     }
 
     @Override
-    public void update(T object) {
-        Preconditions.isNull(object, "object must not be null");
+    public void update(ModelType object) {
+        isNull(object, "object must not be null");
 
-        Model databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.update();
         }
     }
 
     @Override
-    public void save(T object) {
-        Preconditions.isNull(object, "object must not be null");
+    public void save(ModelType object) {
+        isNull(object, "object must not be null");
 
-        Model databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.save();
 
@@ -86,63 +86,34 @@ public abstract class AbsStore<T extends IModel> implements IStore<T>, IMappable
     }
 
     @Override
-    public void delete(T object) {
-        Preconditions.isNull(object, "object must not be null");
+    public void delete(ModelType object) {
+        isNull(object, "object must not be null");
 
-        Model databaseEntity = mapToDatabaseEntity(object);
+        Model databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.delete();
         }
     }
 
     @Override
-    public T queryById(long id) {
-        Model databaseEntity = new Select()
-                .from(mClass)
+    public ModelType queryById(long id) {
+        DatabaseEntityType databaseEntity = new Select()
+                .from(mapper.getDatabaseEntityTypeClass())
                 .where(Condition.column(
                         BaseModel$Flow.COLUMN_ID).is(id))
                 .querySingle();
-        return mapToModel(databaseEntity);
+        return mapper.mapToModel(databaseEntity);
     }
 
     @Override
-    public List<T> queryAll() {
-        List<? extends Model> databaseEntities = new Select()
-                .from(mClass)
+    public List<ModelType> queryAll() {
+        List<DatabaseEntityType> databaseEntities = new Select()
+                .from(mapper.getDatabaseEntityTypeClass())
                 .queryList();
-        return mapToModels(databaseEntities);
+        return mapper.mapToModels(databaseEntities);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public <DatabaseEntityType extends Model> List<DatabaseEntityType> mapToDatabaseEntities(List<T> models) {
-        List<DatabaseEntityType> modelObjects = new ArrayList<>();
-        if (models != null && !models.isEmpty()) {
-            for (T model : models) {
-                modelObjects.add((DatabaseEntityType) mapToDatabaseEntity(model));
-            }
-        }
-        return modelObjects;
-    }
-
-    @Override
-    public <DatabaseEntityType extends Model> List<T> mapToModels(List<DatabaseEntityType> dataBaseEntities) {
-        List<T> modelObjects = new ArrayList<>();
-        if (dataBaseEntities != null && !dataBaseEntities.isEmpty()) {
-            for (DatabaseEntityType dataBaseEntity : dataBaseEntities) {
-                modelObjects.add(mapToModel(dataBaseEntity));
-            }
-        }
-        return modelObjects;
-    }
-
-    protected final Class<? extends Model> getModelClass() {
-        return mClass;
-    }
-
-    private <T extends Model & IModel> boolean isModelExists(T object) {
-
-        //new Select().from(getModelClass()).
-        return false;
+    protected IMapper<ModelType, DatabaseEntityType> getMapper() {
+        return mapper;
     }
 }

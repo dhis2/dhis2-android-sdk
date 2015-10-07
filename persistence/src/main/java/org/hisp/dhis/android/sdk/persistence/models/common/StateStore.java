@@ -127,7 +127,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
             return;
         }
 
-        State$Flow state$Flow = mapToDatabaseEntity(state);
+        State$Flow state$Flow = (State$Flow) mapToDatabaseEntity(state);
         state$Flow.delete();
     }
 
@@ -207,7 +207,8 @@ public class StateStore extends AbsStore<State> implements IStateStore {
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
                     clazz, action, withAction, Dashboard$Flow$Table.ID);
-            return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
+            // return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
+            return null;
         }
 
         if (DashboardItem.class.equals(clazz)) {
@@ -285,7 +286,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
     }
 
     @Override
-    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(State state) {
+    public Model mapToDatabaseEntity(State state) {
         if (state == null) {
             return null;
         }
@@ -295,11 +296,11 @@ public class StateStore extends AbsStore<State> implements IStateStore {
         stateFlow.setItemType(getItemType(state.getItemType()));
         stateFlow.setAction(state.getAction());
 
-        return (DataBaseType) stateFlow;
+        return stateFlow;
     }
 
     @Override
-    public <DataBaseType extends Model> State mapToModel(DataBaseType dataBaseEntity) {
+    public State mapToModel(Model dataBaseEntity) {
         if (dataBaseEntity == null) {
             return null;
         }

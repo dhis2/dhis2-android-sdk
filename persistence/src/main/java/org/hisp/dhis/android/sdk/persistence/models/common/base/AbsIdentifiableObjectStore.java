@@ -3,33 +3,34 @@ package org.hisp.dhis.android.sdk.persistence.models.common.base;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.persistence.models.flow.BaseIdentifiableObject$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.BaseModel$Flow;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.android.sdk.persistence.models.flow.BaseIdentifiableObject$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.BaseModel$Flow;
 
-public abstract class AbsIdentifiableObjectStore<T extends IdentifiableObject> extends AbsStore<T> implements IIdentifiableObjectStore<T> {
+public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableObject,
+        DatabaseEntityType extends Model & IModel> extends AbsStore<ModelType, DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
-    public <DatabaseEntityType extends Model & IModel> AbsIdentifiableObjectStore(Class<DatabaseEntityType> clazz) {
-        super(clazz);
+    public AbsIdentifiableObjectStore(IMapper<ModelType, DatabaseEntityType> mapper) {
+        super(mapper);
     }
 
     @Override
-    public T queryById(long id) {
-        Model databaseEntity = new Select()
-                .from(getModelClass())
+    public ModelType queryById(long id) {
+        DatabaseEntityType databaseEntity = new Select()
+                .from(getMapper().getDatabaseEntityTypeClass())
                 .where(BaseModel$Flow.COLUMN_ID)
                 .querySingle();
-        return mapToModel(databaseEntity);
+        return getMapper().mapToModel(databaseEntity);
     }
 
     @Override
-    public T queryByUid(String uid) {
-        Model databaseEntity = new Select()
-                .from(getModelClass())
+    public ModelType queryByUid(String uid) {
+        DatabaseEntityType databaseEntity = new Select()
+                .from(getMapper().getDatabaseEntityTypeClass())
                 .where(BaseIdentifiableObject$Flow.COLUMN_UID)
                 .querySingle();
-        return mapToModel(databaseEntity);
+        return getMapper().mapToModel(databaseEntity);
     }
 }

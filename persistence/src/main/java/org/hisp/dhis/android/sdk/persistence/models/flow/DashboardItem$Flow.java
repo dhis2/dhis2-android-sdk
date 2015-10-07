@@ -35,10 +35,6 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
@@ -82,55 +78,5 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
 
     public void setDashboard(Dashboard$Flow dashboard) {
         this.dashboard = dashboard;
-    }
-
-    public static DashboardItem$Flow fromModel(DashboardItem dashboardItem) {
-        if (dashboardItem == null) {
-            return null;
-        }
-
-        DashboardItem$Flow dashboardItemFlow = new DashboardItem$Flow();
-        dashboardItemFlow.setId(dashboardItem.getId());
-        dashboardItemFlow.setUId(dashboardItem.getUId());
-        dashboardItemFlow.setCreated(dashboardItem.getCreated());
-        dashboardItemFlow.setLastUpdated(dashboardItem.getLastUpdated());
-        dashboardItemFlow.setAccess(dashboardItem.getAccess());
-        dashboardItemFlow.setName(dashboardItem.getName());
-        dashboardItemFlow.setDisplayName(dashboardItem.getDisplayName());
-        dashboardItemFlow.setDashboard(Dashboard$Flow.fromModel(dashboardItem.getDashboard()));
-        dashboardItemFlow.setType(dashboardItem.getType());
-        dashboardItemFlow.setShape(dashboardItem.getShape());
-        return dashboardItemFlow;
-    }
-
-    public static DashboardItem toModel(DashboardItem$Flow dashboardItemFlow) {
-        if (dashboardItemFlow == null) {
-            return null;
-        }
-
-        DashboardItem dashboardItem = new DashboardItem();
-        dashboardItem.setId(dashboardItemFlow.getId());
-        dashboardItem.setUId(dashboardItemFlow.getUId());
-        dashboardItem.setCreated(dashboardItemFlow.getCreated());
-        dashboardItem.setLastUpdated(dashboardItemFlow.getLastUpdated());
-        dashboardItem.setAccess(dashboardItemFlow.getAccess());
-        dashboardItem.setName(dashboardItemFlow.getName());
-        dashboardItem.setDisplayName(dashboardItemFlow.getDisplayName());
-        dashboardItem.setDashboard(Dashboard$Flow.toModel(dashboardItemFlow.getDashboard()));
-        dashboardItem.setType(dashboardItemFlow.getType());
-        dashboardItem.setShape(dashboardItemFlow.getShape());
-        return dashboardItem;
-    }
-
-    public static List<DashboardItem> toModels(List<DashboardItem$Flow> dashboardItemFlows) {
-        List<DashboardItem> dashboardItems = new ArrayList<>();
-
-        if (dashboardItemFlows != null && !dashboardItemFlows.isEmpty()) {
-            for (DashboardItem$Flow dashboardItemFlow : dashboardItemFlows) {
-                dashboardItems.add(toModel(dashboardItemFlow));
-            }
-        }
-
-        return dashboardItems;
     }
 }

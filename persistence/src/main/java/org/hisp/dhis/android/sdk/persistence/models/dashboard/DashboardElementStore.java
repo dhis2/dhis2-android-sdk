@@ -30,12 +30,8 @@ package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
-import org.hisp.dhis.android.sdk.models.common.base.IModel;
-import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
@@ -45,20 +41,10 @@ import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow$T
 
 import java.util.List;
 
-public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardElement> implements IDashboardElementStore {
+public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardElement, DashboardElement$Flow> implements IDashboardElementStore {
 
     public DashboardElementStore() {
-        super(DashboardElement$Flow.class);
-    }
-
-    @Override
-    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(DashboardElement model) {
-        return null;
-    }
-
-    @Override
-    public <DataBaseType extends Model> DashboardElement mapToModel(DataBaseType dataBaseEntity) {
-        return null;
+        super(null);
     }
 
     @Override
@@ -72,7 +58,7 @@ public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardE
                 .queryList();
 
         // converting flow models to Dashboard
-        return DashboardElement$Flow.toModels(elementFlows);
+        return getMapper().mapToModels(elementFlows);
     }
 
     /* @Override

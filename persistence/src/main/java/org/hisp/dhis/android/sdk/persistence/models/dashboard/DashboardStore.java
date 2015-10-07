@@ -34,7 +34,7 @@ import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableO
 import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 
-public class DashboardStore extends AbsIdentifiableObjectStore<Dashboard, Dashboard$Flow> implements IDashboardStore{
+public class DashboardStore extends AbsIdentifiableObjectStore<Dashboard, Dashboard$Flow> implements IDashboardStore {
 
     public DashboardStore(IMapper<Dashboard, Dashboard$Flow> mapper) {
         super(mapper);

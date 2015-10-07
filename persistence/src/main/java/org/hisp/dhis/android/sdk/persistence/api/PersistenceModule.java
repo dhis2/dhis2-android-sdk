@@ -38,16 +38,18 @@ import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.common.StateStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemContentStore;
+import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardContentStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardStore;
 
 public class PersistenceModule implements IPersistenceModule {
     private final IStateStore stateStore;
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
@@ -56,11 +58,11 @@ public class PersistenceModule implements IPersistenceModule {
     public PersistenceModule(Context context) {
         FlowManager.init(context);
 
-        stateStore = new StateStore();
-        dashboardStore = new DashboardStore(stateStore);
-        dashboardItemStore = new DashboardItemStore(stateStore);
-        dashboardElementStore = new DashboardElementStore(stateStore);
-        dashboardItemContentStore = new DashboardItemContentStore();
+        stateStore = new StateStore(null, null, null, null);
+        dashboardStore = new DashboardStore(null);
+        dashboardItemStore = new DashboardItemStore(null);
+        dashboardElementStore = new DashboardElementStore(null);
+        dashboardItemContentStore = new DashboardContentStore(null);
         transactionManager = new TransactionManager();
     }
 
@@ -75,7 +77,7 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public IDashboardStore getDashboardStore() {
+    public IIdentifiableObjectStore<Dashboard> getDashboardStore() {
         return dashboardStore;
     }
 

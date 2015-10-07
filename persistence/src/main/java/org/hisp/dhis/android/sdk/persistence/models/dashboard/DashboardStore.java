@@ -26,29 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.persistence.models.flow;
+package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.NotNull;
-import com.raizlabs.android.dbflow.annotation.Table;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
+import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 
-import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
+public class DashboardStore extends AbsIdentifiableObjectStore<Dashboard, Dashboard$Flow> implements IDashboardStore{
 
-@Table(databaseName = DbDhis.NAME)
-public final class DashboardItemContent$Flow extends BaseIdentifiableObject$Flow {
-
-    @Column(name = "type")
-    @NotNull
-    String type;
-
-    public DashboardItemContent$Flow() {
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public DashboardStore(IMapper<Dashboard, Dashboard$Flow> mapper) {
+        super(mapper);
     }
 }

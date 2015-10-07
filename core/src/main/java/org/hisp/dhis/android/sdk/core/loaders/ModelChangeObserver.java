@@ -38,7 +38,7 @@ import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Interpretation$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.InterpretationElement$Flow;
@@ -78,7 +78,7 @@ public class ModelChangeObserver implements FlowContentObserver.OnModelStateChan
         } else if (DashboardElement.class.equals(mTrackedTable.getTrackedModel())) {
             trackedModel = DashboardElement$Flow.class;
         } else if (DashboardContent.class.equals(mTrackedTable.getTrackedModel())) {
-            trackedModel = DashboardItemContent$Flow.class;
+            trackedModel = DashboardContent$Flow.class;
         } else if (Interpretation.class.equals(mTrackedTable.getTrackedModel())) {
             trackedModel = Interpretation$Flow.class;
         } else if (InterpretationComment.class.equals(mTrackedTable.getTrackedModel())) {

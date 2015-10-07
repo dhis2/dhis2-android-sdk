@@ -35,12 +35,13 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.common.ModelsStore;
 import org.hisp.dhis.android.sdk.persistence.models.constant.ConstantStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemContentStore;
+import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardContentStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardStore;
 import org.hisp.dhis.android.sdk.persistence.models.dataelement.DataElementStore;
@@ -139,10 +140,10 @@ public final class Models {
     private final IEnrollmentStore enrollmentStore;
 
     // Dashboard store objects
-    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
-    private final IDashboardItemStore dashboardItemStore;
-    private final IDashboardElementStore dashboardElementStore;
-    private final IDashboardItemContentStore dashboardItemContentStore;
+    private IDashboardStore dashboardStore;
+    private IDashboardItemStore dashboardItemStore;
+    private IDashboardElementStore dashboardElementStore;
+    private IDashboardItemContentStore dashboardItemContentStore;
 
     // Interpretation store objects
     private final IIdentifiableObjectStore<Interpretation> interpretationStore;
@@ -163,7 +164,7 @@ public final class Models {
     public Models(Context context) {
         FlowManager.init(context);
 
-        stateStore = new StateStore();
+        stateStore = new StateStore(null, null, null, null);
         failedItemStore = new FailedItemStore();
         modelsStore = new ModelsStore();
 
@@ -186,10 +187,10 @@ public final class Models {
         // Dashboard stores.
         /////////////////////////////////////////////////////////////////////////////////////
 
-        dashboardStore = new DashboardStore(stateStore);
-        dashboardItemStore = new DashboardItemStore(stateStore);
-        dashboardElementStore = new DashboardElementStore(stateStore);
-        dashboardItemContentStore = new DashboardItemContentStore();
+        // dashboardStore = new DashboardStore(stateStore);
+        // dashboardItemStore = new DashboardItemStore(stateStore);
+        // dashboardElementStore = new DashboardElementStore(stateStore);
+        // dashboardItemContentStore = new DashboardContentStore();
 
 
 

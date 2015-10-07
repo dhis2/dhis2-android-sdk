@@ -26,21 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.modules;
+package org.hisp.dhis.android.sdk.corejava.dashboard;
 
-import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
-public class NetworkModule implements INetworkModule {
-
-    @Override
-    public IDashboardApiClient getDashboardApiClient() {
-        return null;
-    }
-
-    @Override
-    public ISystemInfoApiClient getSystemInfoApiClient() {
-        return null;
-    }
+public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
 }

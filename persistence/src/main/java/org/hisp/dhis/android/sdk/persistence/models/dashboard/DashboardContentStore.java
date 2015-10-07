@@ -36,36 +36,36 @@ import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow$Table;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardContent$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardContent$Flow$Table;
 
 import java.util.List;
 
-public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent,
-        DashboardItemContent$Flow> implements IDashboardItemContentStore {
+public final class DashboardContentStore extends AbsIdentifiableObjectStore<DashboardContent,
+        DashboardContent$Flow> implements IDashboardItemContentStore {
 
-    public DashboardItemContentStore(IMapper<DashboardContent, DashboardItemContent$Flow> contentMapper) {
+    public DashboardContentStore(IMapper<DashboardContent, DashboardContent$Flow> contentMapper) {
         super(contentMapper);
     }
 
     @Override
     public List<DashboardContent> queryByTypes(List<String> types) {
         CombinedCondition generalCondition = CombinedCondition.begin(
-                Condition.column(DashboardItemContent$Flow$Table.TYPE).isNotNull());
+                Condition.column(DashboardContent$Flow$Table.TYPE).isNotNull());
         CombinedCondition columnConditions = null;
         for (String type : types) {
             if (columnConditions == null) {
                 columnConditions = CombinedCondition
-                        .begin(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
+                        .begin(Condition.column(DashboardContent$Flow$Table.TYPE).is(type));
             } else {
                 columnConditions = columnConditions
-                        .or(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
+                        .or(Condition.column(DashboardContent$Flow$Table.TYPE).is(type));
             }
         }
         generalCondition.and(columnConditions);
 
-        List<DashboardItemContent$Flow> resources = new Select()
-                .from(DashboardItemContent$Flow.class)
+        List<DashboardContent$Flow> resources = new Select()
+                .from(DashboardContent$Flow.class)
                 .where(generalCondition)
                 .queryList();
         return getMapper().mapToModels(resources);

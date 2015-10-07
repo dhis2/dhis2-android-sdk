@@ -50,6 +50,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow$Table;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
@@ -75,10 +76,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StateStore extends AbsStore<State> implements IStateStore {
+public class StateStore extends AbsStore<State, State$Flow> implements IStateStore {
+    private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;
+    private final IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper;
+    private final IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper;
 
-    public StateStore() {
-        super(State$Flow.class);
+    public StateStore(IMapper<State, State$Flow> mapper,
+                      IMapper<Dashboard, Dashboard$Flow> dashboardMapper,
+                      IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper,
+                      IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper) {
+        super(mapper);
+        this.dashboardMapper = dashboardMapper;
+        this.dashboardItemMapper = dashboardItemMapper;
+        this.dashboardElementMapper = dashboardElementMapper;
     }
 
     @Override
@@ -127,7 +137,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
             return;
         }
 
-        State$Flow state$Flow = (State$Flow) mapToDatabaseEntity(state);
+        State$Flow state$Flow = getMapper().mapToDatabaseEntity(state);
         state$Flow.delete();
     }
 
@@ -143,7 +153,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
                         .ITEMID).is(object.getId()))
                 .querySingle();
 
-        return mapToModel(stateFlow);
+        return getMapper().mapToModel(stateFlow);
     }
 
     @Override
@@ -181,7 +191,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
                         .ITEMTYPE).is(getItemType(clazz)))
                 .queryList();
 
-        return mapToModels(stateFlows);
+        return getMapper().mapToModels(stateFlows);
     }
 
     @Override
@@ -207,20 +217,19 @@ public class StateStore extends AbsStore<State> implements IStateStore {
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
                     clazz, action, withAction, Dashboard$Flow$Table.ID);
-            // return (List<T>) Dashboard$Flow.toModels(dashboardFlows);
-            return null;
+            return (List<T>) dashboardMapper.mapToModels(dashboardFlows);
         }
 
         if (DashboardItem.class.equals(clazz)) {
             List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) queryModels(
                     clazz, action, withAction, DashboardItem$Flow$Table.ID);
-            return (List<T>) DashboardItem$Flow.toModels(dashboardItemFlows);
+            return (List<T>) dashboardItemMapper.mapToModels(dashboardItemFlows);
         }
 
         if (DashboardElement.class.equals(clazz)) {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
                     clazz, action, withAction, DashboardElement$Flow$Table.ID);
-            return (List<T>) DashboardElement$Flow.toModels(dashboardElementFlows);
+            return (List<T>) dashboardElementMapper.mapToModels(dashboardElementFlows);
         }
 
         if (Interpretation.class.equals(clazz)) {
@@ -285,7 +294,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
         return list;
     }
 
-    @Override
+    /* @Override
     public Model mapToDatabaseEntity(State state) {
         if (state == null) {
             return null;
@@ -313,7 +322,7 @@ public class StateStore extends AbsStore<State> implements IStateStore {
         state.setAction(stateFlow.getAction());
 
         return state;
-    }
+    } */
 
 
     private static Class<? extends IModel> getItemClass(String type) {

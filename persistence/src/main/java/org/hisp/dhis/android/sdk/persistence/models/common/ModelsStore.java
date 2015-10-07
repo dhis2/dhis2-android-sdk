@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItem$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.Interpretation$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.InterpretationElement$Flow;
@@ -53,7 +53,7 @@ public class ModelsStore implements IModelsStore {
                 Dashboard$Flow.class,
                 DashboardItem$Flow.class,
                 DashboardElement$Flow.class,
-                DashboardItemContent$Flow.class,
+                DashboardContent$Flow.class,
                 Interpretation$Flow.class,
                 InterpretationComment$Flow.class,
                 InterpretationElement$Flow.class,

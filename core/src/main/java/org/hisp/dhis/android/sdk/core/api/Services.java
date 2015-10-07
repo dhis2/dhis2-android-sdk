@@ -68,7 +68,7 @@ final class Services {
     private Services(Context context) {
         Models.init(context);
 
-        stateStore = new StateStore();
+        stateStore = new StateStore(null, null, null, null);
 
         dashboardItemService = new DashboardItemService(Models.dashboardItems(), Models.dashboardElements(), stateStore);
         dashboardElementService = new DashboardElementService(Models.dashboardElements(), dashboardItemService, stateStore);

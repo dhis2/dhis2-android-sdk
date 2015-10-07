@@ -26,21 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.modules;
+package org.hisp.dhis.android.sdk.persistence.models.flow;
 
-import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.NotNull;
+import com.raizlabs.android.dbflow.annotation.Table;
 
-public class NetworkModule implements INetworkModule {
+import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
 
-    @Override
-    public IDashboardApiClient getDashboardApiClient() {
-        return null;
+@Table(databaseName = DbDhis.NAME)
+public final class DashboardContent$Flow extends BaseIdentifiableObject$Flow {
+
+    @Column(name = "type")
+    @NotNull
+    String type;
+
+    public DashboardContent$Flow() {
     }
 
-    @Override
-    public ISystemInfoApiClient getSystemInfoApiClient() {
-        return null;
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

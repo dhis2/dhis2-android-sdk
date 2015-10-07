@@ -30,21 +30,21 @@ package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsMapper;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardContent$Flow;
 
-public class DashboardContentMapper extends AbsMapper<DashboardContent, DashboardItemContent$Flow> {
+public class DashboardContentMapper extends AbsMapper<DashboardContent, DashboardContent$Flow> {
 
     public DashboardContentMapper() {
         // empty constructor
     }
 
     @Override
-    public DashboardItemContent$Flow mapToDatabaseEntity(DashboardContent content) {
+    public DashboardContent$Flow mapToDatabaseEntity(DashboardContent content) {
         if (content == null) {
             return null;
         }
 
-        DashboardItemContent$Flow flowModel = new DashboardItemContent$Flow();
+        DashboardContent$Flow flowModel = new DashboardContent$Flow();
         flowModel.setId(content.getId());
         flowModel.setUId(content.getUId());
         flowModel.setCreated(content.getCreated());
@@ -56,7 +56,7 @@ public class DashboardContentMapper extends AbsMapper<DashboardContent, Dashboar
     }
 
     @Override
-    public DashboardContent mapToModel(DashboardItemContent$Flow contentFlow) {
+    public DashboardContent mapToModel(DashboardContent$Flow contentFlow) {
         if (contentFlow == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public class DashboardContentMapper extends AbsMapper<DashboardContent, Dashboar
     }
 
     @Override
-    public Class<DashboardItemContent$Flow> getDatabaseEntityTypeClass() {
-        return DashboardItemContent$Flow.class;
+    public Class<DashboardContent$Flow> getDatabaseEntityTypeClass() {
+        return DashboardContent$Flow.class;
     }
 }

@@ -40,14 +40,13 @@ import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.models.utils.Preconditions;
-import org.hisp.dhis.android.sdk.persistence.models.common.base.RelationModel$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
 
 
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = UnitToDataSetRelationShip$Flow.UNIQUE_ORGUNIT_DATASET_GROUP, uniqueConflict = ConflictAction.FAIL)
 })
-public final class UnitToDataSetRelationShip$Flow extends BaseModel implements RelationModel$Flow {
+public final class UnitToDataSetRelationShip$Flow extends BaseModel {
     static final int UNIQUE_ORGUNIT_DATASET_GROUP = 1;
     static final String ORG_UNIT_KEY = "organisationUnit";
     static final String DATA_SET_KEY = "dataSet";
@@ -73,16 +72,6 @@ public final class UnitToDataSetRelationShip$Flow extends BaseModel implements R
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DataSet$Flow dataSet;
-
-    @Override
-    public String getFirstKey() {
-        return organisationUnit.getUId();
-    }
-
-    @Override
-    public String getSecondKey() {
-        return dataSet.getUId();
-    }
 
     public int getId() {
         return id;

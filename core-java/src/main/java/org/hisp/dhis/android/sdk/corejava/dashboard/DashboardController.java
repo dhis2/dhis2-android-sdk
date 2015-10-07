@@ -36,6 +36,7 @@ import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager
 import org.hisp.dhis.android.sdk.corejava.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
@@ -59,7 +60,7 @@ import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObjec
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class DashboardController implements IDataController<Dashboard> {
-    private final IDashboardStore dashboardStore;
+    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
@@ -75,7 +76,7 @@ public final class DashboardController implements IDataController<Dashboard> {
     /* database transaction manager */
     private final ITransactionManager transactionManager;
 
-    public DashboardController(IDashboardStore dashboardStore,
+    public DashboardController(IIdentifiableObjectStore<Dashboard> dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,

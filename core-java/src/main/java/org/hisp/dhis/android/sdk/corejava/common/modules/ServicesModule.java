@@ -28,10 +28,27 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.dashboard.DashboardService;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardService;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
-    ISystemInfoApiClient getSystemInfoApiClient();
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
+public final class ServicesModule implements IServicesModule {
+    private final IDashboardService dashboardService;
+
+    public ServicesModule(IPersistenceModule persistenceModule) {
+        isNull(persistenceModule, "persistenceModule must not be null");
+
+        dashboardService = new DashboardService(
+                persistenceModule.getDashboardStore(),
+                persistenceModule.getDashboardItemStore(),
+                persistenceModule.getDashboardElementStore(),
+                null, null,
+                persistenceModule.getStateStore());
+    }
+
+    @Override
+    public IDashboardService getDashboardService() {
+        return dashboardService;
+    }
 }

@@ -26,12 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.persistence.api;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
+import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
-    ISystemInfoApiClient getSystemInfoApiClient();
+import java.util.Collection;
+
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
+public class TransactionManager implements ITransactionManager {
+
+    public TransactionManager() {
+        // empty constructor
+    }
+
+    @Override
+    public void transact(final Collection<IDbOperation> operations) {
+        isNull(operations, "List<DbOperation> object must not be null");
+
+        if (operations.isEmpty()) {
+            return;
+        }
+
+        com.raizlabs.android.dbflow.runtime.TransactionManager.transact(DbDhis.NAME, new Runnable() {
+            @Override
+            public void run() {
+                for (IDbOperation operation : operations) {
+                    operation.execute();
+                }
+            }
+        });
+    }
 }

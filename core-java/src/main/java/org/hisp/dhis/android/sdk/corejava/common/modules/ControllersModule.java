@@ -28,10 +28,36 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
+import org.hisp.dhis.android.sdk.corejava.dashboard.DashboardController;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
-    ISystemInfoApiClient getSystemInfoApiClient();
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+
+public class ControllersModule implements IControllersModule {
+    private final IDataController<Dashboard> dashboardController;
+
+    public ControllersModule(INetworkModule networkModule,
+                             IPersistenceModule persistenceModule,
+                             IPreferencesModule preferencesModule) {
+        isNull(networkModule, "networkModule must not be null");
+        isNull(persistenceModule, "persistenceModule must not be null");
+        isNull(preferencesModule, "preferencesModule must not be null");
+
+        dashboardController = new DashboardController(
+                persistenceModule.getDashboardStore(),
+                persistenceModule.getDashboardItemStore(),
+                persistenceModule.getDashboardElementStore(),
+                persistenceModule.getDashboardContentStore(),
+                persistenceModule.getStateStore(),
+                networkModule.getDashboardApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
+    }
+
+    @Override
+    public IDataController<Dashboard> getDashboardController() {
+        return dashboardController;
+    }
 }

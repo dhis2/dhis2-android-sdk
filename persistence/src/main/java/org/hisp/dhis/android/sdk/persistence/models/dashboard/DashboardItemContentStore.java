@@ -31,8 +31,12 @@ package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.builder.Condition.CombinedCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DashboardItemContent$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
@@ -41,13 +45,47 @@ import java.util.List;
 
 import static com.raizlabs.android.dbflow.sql.builder.Condition.column;
 
-public final class DashboardItemContentStore implements IDashboardItemContentStore {
+public final class DashboardItemContentStore extends AbsIdentifiableObjectStore<DashboardContent> implements IDashboardItemContentStore {
 
     public DashboardItemContentStore() {
+        super(DashboardItemContent$Flow.class);
         // empty constructor
     }
 
     @Override
+    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(DashboardContent model) {
+        return null;
+    }
+
+    @Override
+    public <DataBaseType extends Model> DashboardContent mapToModel(DataBaseType dataBaseEntity) {
+        return null;
+    }
+
+    @Override
+    public List<DashboardContent> queryByTypes(List<String> types) {
+        CombinedCondition generalCondition = CombinedCondition.begin(
+                Condition.column(DashboardItemContent$Flow$Table.TYPE).isNotNull());
+        CombinedCondition columnConditions = null;
+        for (String type : types) {
+            if (columnConditions == null) {
+                columnConditions = CombinedCondition
+                        .begin(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
+            } else {
+                columnConditions = columnConditions
+                        .or(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
+            }
+        }
+        generalCondition.and(columnConditions);
+
+        List<DashboardItemContent$Flow> resources = new Select()
+                .from(DashboardItemContent$Flow.class)
+                .where(generalCondition)
+                .queryList();
+        return DashboardItemContent$Flow.toModels(resources);
+    }
+
+    /* @Override
     public void insert(DashboardContent object) {
         DashboardItemContent$Flow flowModel
                 = DashboardItemContent$Flow.fromModel(object);
@@ -101,28 +139,5 @@ public final class DashboardItemContentStore implements IDashboardItemContentSto
                         .UID).is(uid))
                 .querySingle();
         return DashboardItemContent$Flow.toModel(dashboardItemContentFlow);
-    }
-
-    @Override
-    public List<DashboardContent> queryByTypes(List<String> types) {
-        CombinedCondition generalCondition = CombinedCondition.begin(
-                Condition.column(DashboardItemContent$Flow$Table.TYPE).isNotNull());
-        CombinedCondition columnConditions = null;
-        for (String type : types) {
-            if (columnConditions == null) {
-                columnConditions = CombinedCondition
-                        .begin(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
-            } else {
-                columnConditions = columnConditions
-                        .or(Condition.column(DashboardItemContent$Flow$Table.TYPE).is(type));
-            }
-        }
-        generalCondition.and(columnConditions);
-
-        List<DashboardItemContent$Flow> resources = new Select()
-                .from(DashboardItemContent$Flow.class)
-                .where(generalCondition)
-                .queryList();
-        return DashboardItemContent$Flow.toModels(resources);
-    }
+    } */
 }

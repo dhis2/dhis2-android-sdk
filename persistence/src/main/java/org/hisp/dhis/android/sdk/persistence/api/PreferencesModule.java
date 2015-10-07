@@ -26,12 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.persistence.api;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.common.modules.IPreferencesModule;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.LastUpdatedPreferences;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
-    ISystemInfoApiClient getSystemInfoApiClient();
+public class PreferencesModule implements IPreferencesModule {
+    @Override
+    public LastUpdatedPreferences getLastUpdatedPreferences() {
+        return null;
+    }
 }

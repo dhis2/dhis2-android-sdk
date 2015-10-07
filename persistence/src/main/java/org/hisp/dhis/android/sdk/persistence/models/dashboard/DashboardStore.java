@@ -28,26 +28,59 @@
 
 package org.hisp.dhis.android.sdk.persistence.models.dashboard;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow$Table;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.persistence.models.flow.Dashboard$Flow;
 
-import java.util.List;
+public final class DashboardStore extends AbsIdentifiableObjectStore<Dashboard> implements IDashboardStore {
+    // private final IStateStore stateStore;
 
-public final class DashboardStore implements IIdentifiableObjectStore<Dashboard> {
-    private final IStateStore stateStore;
-
-    public DashboardStore(IStateStore stateStore) {
-        this.stateStore = stateStore;
+    public DashboardStore() {
+        super(Dashboard$Flow.class);
+        // this.stateStore = stateStore;
     }
 
     @Override
+    public <DataBaseType extends Model & IModel> DataBaseType mapToDatabaseEntity(Dashboard dashboard) {
+        /* if (dashboard == null) {
+            return null;
+        }
+
+        Dashboard$Flow dashboardFlow = new Dashboard$Flow();
+        dashboardFlow.setId(dashboard.getId());
+        dashboardFlow.setUId(dashboard.getUId());
+        dashboardFlow.setCreated(dashboard.getCreated());
+        dashboardFlow.setLastUpdated(dashboard.getLastUpdated());
+        dashboardFlow.setAccess(dashboard.getAccess());
+        dashboardFlow.setName(dashboard.getName());
+        dashboardFlow.setDisplayName(dashboard.getDisplayName());
+        return dashboardFlow; */
+        return null;
+    }
+
+    @Override
+    public <DataBaseType extends Model> Dashboard mapToModel(DataBaseType dashboardFlow) {
+        /* if (dashboardFlow == null) {
+            return null;
+        }
+
+        Dashboard dashboard = new Dashboard();
+        dashboard.setId(dashboardFlow.getId());
+        dashboard.setUId(dashboardFlow.getUId());
+        dashboard.setCreated(dashboardFlow.getCreated());
+        dashboard.setLastUpdated(dashboardFlow.getLastUpdated());
+        dashboard.setAccess(dashboardFlow.getAccess());
+        dashboard.setName(dashboardFlow.getName());
+        dashboard.setDisplayName(dashboardFlow.getDisplayName());
+        return dashboard; */
+        return null;
+    }
+
+    /* @Override
     public void insert(Dashboard object) {
         Dashboard$Flow dashboardFlow
                 = Dashboard$Flow.fromModel(object);
@@ -119,5 +152,5 @@ public final class DashboardStore implements IIdentifiableObjectStore<Dashboard>
                         .UID).is(uid))
                 .querySingle();
         return Dashboard$Flow.toModel(dashboardFlow);
-    }
+    } */
 }

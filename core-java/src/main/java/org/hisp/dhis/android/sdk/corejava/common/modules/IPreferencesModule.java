@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.modules;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.LastUpdatedPreferences;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
-    ISystemInfoApiClient getSystemInfoApiClient();
+public interface IPreferencesModule {
+    LastUpdatedPreferences getLastUpdatedPreferences();
 }

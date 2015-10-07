@@ -31,10 +31,6 @@ package org.hisp.dhis.android.sdk.persistence.models.flow;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.models.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
@@ -46,7 +42,7 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
     // Getters and setters
     /////////////////////////////////////////////////////////////////////////
 
-    public static Dashboard$Flow fromModel(Dashboard dashboard) {
+    /* public static Dashboard$Flow fromModel(Dashboard dashboard) {
         if (dashboard == null) {
             return null;
         }
@@ -88,5 +84,5 @@ public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return dashboards;
-    }
+    } */
 }

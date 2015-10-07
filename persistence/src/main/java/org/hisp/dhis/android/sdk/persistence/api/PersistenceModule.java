@@ -28,13 +28,17 @@
 
 package org.hisp.dhis.android.sdk.persistence.api;
 
+import android.content.Context;
+
+import com.raizlabs.android.dbflow.config.FlowManager;
+
 import org.hisp.dhis.android.sdk.corejava.common.modules.IPersistenceModule;
+import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.common.StateStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemContentStore;
@@ -42,19 +46,27 @@ import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemStore
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardStore;
 
 public class PersistenceModule implements IPersistenceModule {
-    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
+    private final IStateStore stateStore;
+    private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
-    private final IStateStore stateStore;
+    private final ITransactionManager transactionManager;
 
-    public PersistenceModule() {
+    public PersistenceModule(Context context) {
+        FlowManager.init(context);
+
         stateStore = new StateStore();
-
         dashboardStore = new DashboardStore(stateStore);
         dashboardItemStore = new DashboardItemStore(stateStore);
         dashboardElementStore = new DashboardElementStore(stateStore);
         dashboardItemContentStore = new DashboardItemContentStore();
+        transactionManager = new TransactionManager();
+    }
+
+    @Override
+    public ITransactionManager getTransactionManager() {
+        return transactionManager;
     }
 
     @Override
@@ -63,22 +75,22 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public IIdentifiableObjectStore<Dashboard> getDashboardStore() {
-        return null;
+    public IDashboardStore getDashboardStore() {
+        return dashboardStore;
     }
 
     @Override
     public IDashboardItemStore getDashboardItemStore() {
-        return null;
+        return dashboardItemStore;
     }
 
     @Override
     public IDashboardElementStore getDashboardElementStore() {
-        return null;
+        return dashboardElementStore;
     }
 
     @Override
     public IDashboardItemContentStore getDashboardContentStore() {
-        return null;
+        return dashboardItemContentStore;
     }
 }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.sdk.corejava.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
@@ -43,7 +42,7 @@ import java.util.Map;
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardService implements IDashboardService {
-    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
+    private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
 
@@ -52,7 +51,7 @@ public class DashboardService implements IDashboardService {
 
     private final IStateStore stateStore;
 
-    public DashboardService(IIdentifiableObjectStore<Dashboard> dashboardStore,
+    public DashboardService(IDashboardStore dashboardStore,
                             IDashboardItemStore dashboardItemStore,
                             IDashboardElementStore dashboardElementStore,
                             IDashboardItemService dashboardItemService,
@@ -70,7 +69,7 @@ public class DashboardService implements IDashboardService {
     /**
      * Factory method for creating DashboardElement.
      *
-     * @param dashboardItem        DashboardItem to associate with element.
+     * @param dashboardItem    DashboardItem to associate with element.
      * @param dashboardContent Content from which element will be created.
      * @return new element.
      * @throws IllegalArgumentException when dashboardItem or dashboardContent is null.

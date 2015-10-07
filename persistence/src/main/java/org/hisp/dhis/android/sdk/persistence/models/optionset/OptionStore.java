@@ -106,7 +106,9 @@ public final class OptionStore implements IOptionStore {
     @Override
     public List<Option> query(OptionSet optionSet) {
         List<Option$Flow> optionFlows = new Select()
-                .from(Option$Flow.class).where(Condition.column(Option$Flow$Table.OPTIONSET).is(optionSet.getUId()))
+                .from(Option$Flow.class)
+                .where(Condition.column(Option$Flow$Table
+                        .OPTIONSET).is(optionSet.getUId()))
                 .queryList();
         return Option$Flow.toModels(optionFlows);
     }

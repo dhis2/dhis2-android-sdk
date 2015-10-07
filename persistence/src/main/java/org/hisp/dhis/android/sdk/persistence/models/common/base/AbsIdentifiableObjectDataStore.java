@@ -28,55 +28,38 @@
 
 package org.hisp.dhis.android.sdk.persistence.models.common.base;
 
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
+import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
-import org.hisp.dhis.android.sdk.models.common.state.Action;
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.persistence.models.flow.BaseIdentifiableObject$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.BaseModel$Flow;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+public abstract class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
+        DatabaseEntityType extends Model & IModel> extends AbsDataStore<ModelType, DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
-public class AbsDataStore<ModelType extends IModel, DatabaseEntityType
-        extends IModel & Model> extends AbsStore<ModelType, DatabaseEntityType> {
-
-    private final IStateStore stateStore;
-
-    public AbsDataStore(IMapper<ModelType, DatabaseEntityType> mapper, IStateStore stateStore) {
-        super(mapper);
-
-        this.stateStore = isNull(stateStore, "stateStore object must not be null");
+    public AbsIdentifiableObjectDataStore(IMapper<ModelType, DatabaseEntityType> mapper, IStateStore stateStore) {
+        super(mapper, stateStore);
     }
 
     @Override
-    public boolean insert(ModelType object) {
-        if (super.insert(object)) {
-            stateStore.saveActionForModel(object, Action.SYNCED);
-            return true;
-        }
-        return false;
+    public ModelType queryById(long id) {
+        DatabaseEntityType databaseEntity = new Select()
+                .from(getMapper().getDatabaseEntityTypeClass())
+                .where(BaseModel$Flow.COLUMN_ID)
+                .querySingle();
+        return getMapper().mapToModel(databaseEntity);
     }
 
     @Override
-    public boolean save(ModelType object) {
-        if (super.save(object)) {
-            Action action = stateStore.queryActionForModel(object);
-            if (action == null) {
-                action = Action.SYNCED;
-            }
-            stateStore.saveActionForModel(object, action);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean delete(ModelType object) {
-        if (super.delete(object)) {
-            stateStore.deleteActionForModel(object);
-            return true;
-        }
-
-        return false;
+    public ModelType queryByUid(String uid) {
+        DatabaseEntityType databaseEntity = new Select()
+                .from(getMapper().getDatabaseEntityTypeClass())
+                .where(BaseIdentifiableObject$Flow.COLUMN_UID)
+                .querySingle();
+        return getMapper().mapToModel(databaseEntity);
     }
 }

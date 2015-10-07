@@ -46,30 +46,34 @@ public final class ProgramIndicatorStore implements IProgramIndicatorStore {
     }
 
     @Override
-    public void insert(ProgramIndicator object) {
+    public boolean insert(ProgramIndicator object) {
         ProgramIndicator$Flow programIndicatorFlow = ProgramIndicator$Flow.fromModel(object);
         programIndicatorFlow.insert();
 
         object.setId(programIndicatorFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(ProgramIndicator object) {
+    public boolean update(ProgramIndicator object) {
         ProgramIndicator$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramIndicator object) {
+    public boolean save(ProgramIndicator object) {
         ProgramIndicator$Flow programIndicatorFlow =
                 ProgramIndicator$Flow.fromModel(object);
         programIndicatorFlow.save();
 
         object.setId(programIndicatorFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(ProgramIndicator object) {
+    public boolean delete(ProgramIndicator object) {
         ProgramIndicator$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

@@ -31,12 +31,12 @@ package org.hisp.dhis.android.sdk.persistence.models.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.models.program.IProgramRuleVariableStore;
+import org.hisp.dhis.android.sdk.models.program.Program;
+import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.flow.ProgramRuleVariable$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.ProgramRuleVariable$Flow$Table;
-import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.program.IProgramRuleVariableStore;
-import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
 
@@ -47,30 +47,34 @@ public final class ProgramRuleVariableStore implements IProgramRuleVariableStore
     }
 
     @Override
-    public void insert(ProgramRuleVariable object) {
+    public boolean insert(ProgramRuleVariable object) {
         ProgramRuleVariable$Flow programRuleVariableFlow = ProgramRuleVariable$Flow.fromModel(object);
         programRuleVariableFlow.insert();
 
         object.setId(programRuleVariableFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(ProgramRuleVariable object) {
+    public boolean update(ProgramRuleVariable object) {
         ProgramRuleVariable$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramRuleVariable object) {
+    public boolean save(ProgramRuleVariable object) {
         ProgramRuleVariable$Flow programRuleVariableFlow =
                 ProgramRuleVariable$Flow.fromModel(object);
         programRuleVariableFlow.save();
 
         object.setId(programRuleVariableFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(ProgramRuleVariable object) {
+    public boolean delete(ProgramRuleVariable object) {
         ProgramRuleVariable$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

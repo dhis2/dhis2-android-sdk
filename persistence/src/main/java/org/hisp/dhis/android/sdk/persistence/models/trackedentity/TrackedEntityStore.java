@@ -45,30 +45,34 @@ public final class TrackedEntityStore implements IIdentifiableObjectStore<Tracke
     }
 
     @Override
-    public void insert(TrackedEntity object) {
+    public boolean insert(TrackedEntity object) {
         TrackedEntity$Flow trackedEntityFlow = TrackedEntity$Flow.fromModel(object);
         trackedEntityFlow.insert();
 
         object.setId(trackedEntityFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(TrackedEntity object) {
+    public boolean update(TrackedEntity object) {
         TrackedEntity$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(TrackedEntity object) {
+    public boolean save(TrackedEntity object) {
         TrackedEntity$Flow trackedEntityFlow =
                 TrackedEntity$Flow.fromModel(object);
         trackedEntityFlow.save();
 
         object.setId(trackedEntityFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(TrackedEntity object) {
+    public boolean delete(TrackedEntity object) {
         TrackedEntity$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

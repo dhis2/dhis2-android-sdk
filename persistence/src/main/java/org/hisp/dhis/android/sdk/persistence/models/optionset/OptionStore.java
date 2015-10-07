@@ -46,30 +46,34 @@ public final class OptionStore implements IOptionStore {
     }
 
     @Override
-    public void insert(Option object) {
+    public boolean insert(Option object) {
         Option$Flow optionFlow = Option$Flow.fromModel(object);
         optionFlow.insert();
 
         object.setId(optionFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(Option object) {
+    public boolean update(Option object) {
         Option$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Option object) {
+    public boolean save(Option object) {
         Option$Flow optionFlow =
                 Option$Flow.fromModel(object);
         optionFlow.save();
 
         object.setId(optionFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(Option object) {
+    public boolean delete(Option object) {
         Option$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

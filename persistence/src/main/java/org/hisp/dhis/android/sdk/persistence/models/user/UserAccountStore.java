@@ -45,30 +45,34 @@ public final class UserAccountStore implements IUserAccountStore {
     }
 
     @Override
-    public void insert(UserAccount object) {
+    public boolean insert(UserAccount object) {
         UserAccount$Flow userAccountFlow = UserAccount$Flow.fromModel(object);
         userAccountFlow.insert();
 
         object.setId(userAccountFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(UserAccount object) {
+    public boolean update(UserAccount object) {
         UserAccount$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(UserAccount object) {
+    public boolean save(UserAccount object) {
         UserAccount$Flow accountFlow =
                 UserAccount$Flow.fromModel(object);
         accountFlow.save();
 
         object.setId(accountFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(UserAccount object) {
+    public boolean delete(UserAccount object) {
         UserAccount$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

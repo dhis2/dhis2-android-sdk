@@ -56,29 +56,40 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public void insert(Enrollment object) {
+    public boolean insert(Enrollment object) {
         Enrollment$Flow enrollmentFlow =
                 Enrollment$Flow.fromModel(object);
         enrollmentFlow.insert();
+
+        return true;
     }
 
     @Override
-    public void update(Enrollment object) {
+    public boolean update(Enrollment object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
         if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
-            Enrollment$Flow persisted = new Select().from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.ID).is(object.getId())).querySingle();
+            Enrollment$Flow persisted = new Select()
+                    .from(Enrollment$Flow.class)
+                    .where(Condition.column(Enrollment$Flow$Table
+                            .ID).is(object.getId()))
+                    .querySingle();
             if(persisted != null) {
                 object.setEnrollmentUid(persisted.getEnrollmentUid());
             }
         }
         Enrollment$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Enrollment object) {
+    public boolean save(Enrollment object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
         if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
-            Enrollment$Flow persisted = new Select().from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.ID).is(object.getId())).querySingle();
+            Enrollment$Flow persisted = new Select()
+                    .from(Enrollment$Flow.class)
+                    .where(Condition.column(Enrollment$Flow$Table
+                            .ID).is(object.getId()))
+                    .querySingle();
             if(persisted != null) {
                 object.setEnrollmentUid(persisted.getEnrollmentUid());
             }
@@ -87,11 +98,14 @@ public final class EnrollmentStore implements IEnrollmentStore {
         Enrollment$Flow enrollmentFlow =
                 Enrollment$Flow.fromModel(object);
         enrollmentFlow.save();
+
+        return true;
     }
 
     @Override
-    public void delete(Enrollment object) {
+    public boolean delete(Enrollment object) {
         Enrollment$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override
@@ -114,7 +128,9 @@ public final class EnrollmentStore implements IEnrollmentStore {
     @Override
     public Enrollment query(long id) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table.ID).is(id)).querySingle();
+                .where(Condition.column(Enrollment$Flow$Table
+                        .ID).is(id))
+                .querySingle();
         setEvents(enrollmentFlow);
         setTrackedEntityAttributeValues(enrollmentFlow);
         return Enrollment$Flow.toModel(enrollmentFlow);
@@ -123,7 +139,9 @@ public final class EnrollmentStore implements IEnrollmentStore {
     @Override
     public Enrollment query(String uid) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table.ENROLLMENTUID).is(uid)).querySingle();
+                .where(Condition.column(Enrollment$Flow$Table
+                        .ENROLLMENTUID).is(uid))
+                .querySingle();
         setEvents(enrollmentFlow);
         setTrackedEntityAttributeValues(enrollmentFlow);
         return Enrollment$Flow.toModel(enrollmentFlow);

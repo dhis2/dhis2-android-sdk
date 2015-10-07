@@ -31,10 +31,10 @@ package org.hisp.dhis.android.sdk.persistence.models.dataelement;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.persistence.models.flow.DataElement$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.DataElement$Flow$Table;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DataElement$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.DataElement$Flow$Table;
 
 import java.util.List;
 
@@ -45,30 +45,34 @@ public final class DataElementStore implements IIdentifiableObjectStore<DataElem
     }
 
     @Override
-    public void insert(DataElement object) {
+    public boolean insert(DataElement object) {
         DataElement$Flow dataElementFlow = DataElement$Flow.fromModel(object);
         dataElementFlow.insert();
 
         object.setId(dataElementFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(DataElement object) {
+    public boolean update(DataElement object) {
         DataElement$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(DataElement object) {
+    public boolean save(DataElement object) {
         DataElement$Flow dataElementFlow =
                 DataElement$Flow.fromModel(object);
         dataElementFlow.save();
 
         object.setId(dataElementFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(DataElement object) {
+    public boolean delete(DataElement object) {
         DataElement$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

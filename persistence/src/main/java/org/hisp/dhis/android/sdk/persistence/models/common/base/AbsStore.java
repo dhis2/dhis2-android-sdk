@@ -48,51 +48,61 @@ public abstract class AbsStore<ModelType extends IModel, DatabaseEntityType exte
     }
 
     @Override
-    public void insert(ModelType object) {
+    public boolean insert(ModelType object) {
         isNull(object, "object must not be null");
 
-        Model databaseEntity = mapper.mapToDatabaseEntity(object);
+        DatabaseEntityType databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
             /* setting id which DbFlows' BaseModel generated after insertion */
-            IModel dataBaseEntityModel = (IModel) databaseEntity;
-            object.setId(dataBaseEntityModel.getId());
+            object.setId(databaseEntity.getId());
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void update(ModelType object) {
+    public boolean update(ModelType object) {
         isNull(object, "object must not be null");
 
-        Model databaseEntity = mapper.mapToDatabaseEntity(object);
+        DatabaseEntityType databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.update();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void save(ModelType object) {
+    public boolean save(ModelType object) {
         isNull(object, "object must not be null");
 
-        Model databaseEntity = mapper.mapToDatabaseEntity(object);
+        DatabaseEntityType databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.save();
 
             /* setting id which DbFlows' BaseModel generated after insertion */
-            IModel dataBaseEntityModel = (IModel) databaseEntity;
-            object.setId(dataBaseEntityModel.getId());
+            object.setId(databaseEntity.getId());
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void delete(ModelType object) {
+    public boolean delete(ModelType object) {
         isNull(object, "object must not be null");
 
-        Model databaseEntity = mapper.mapToDatabaseEntity(object);
+        DatabaseEntityType databaseEntity = mapper.mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.delete();
+            return true;
         }
+
+        return false;
     }
 
     @Override

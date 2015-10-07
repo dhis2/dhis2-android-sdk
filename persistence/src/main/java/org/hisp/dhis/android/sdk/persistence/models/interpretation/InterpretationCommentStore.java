@@ -42,31 +42,35 @@ import java.util.List;
 public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
-    public void insert(InterpretationComment object) {
+    public boolean insert(InterpretationComment object) {
         InterpretationComment$Flow commentFlow =
                 InterpretationComment$Flow.fromModel(object);
         commentFlow.insert();
 
         object.setId(commentFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(InterpretationComment object) {
+    public boolean update(InterpretationComment object) {
         InterpretationComment$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(InterpretationComment object) {
+    public boolean save(InterpretationComment object) {
         InterpretationComment$Flow commentFlow =
                 InterpretationComment$Flow.fromModel(object);
         commentFlow.save();
 
         object.setId(commentFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(InterpretationComment object) {
+    public boolean delete(InterpretationComment object) {
         InterpretationComment$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

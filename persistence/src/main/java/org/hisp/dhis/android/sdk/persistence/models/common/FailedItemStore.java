@@ -49,55 +49,78 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
-    public void insert(FailedItem object) {
+    public boolean insert(FailedItem object) {
         FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select().from(Conflict$Flow.class).where(Condition.column(Conflict$Flow$Table.IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow)).queryList();
+            List<Conflict$Flow> conflicts = new Select()
+                    .from(Conflict$Flow.class)
+                    .where(Condition.column(Conflict$Flow$Table
+                            .IMPORTSUMMARY_IMPORTSUMMARY)
+                            .is(importSummaryFlow)).queryList();
             for(Conflict$Flow conflictFlow : conflicts) {
                 conflictFlow.insert();
             }
         }
         failedItemFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(FailedItem object) {
+    public boolean update(FailedItem object) {
         FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select().from(Conflict$Flow.class).where(Condition.column(Conflict$Flow$Table.IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow)).queryList();
+            List<Conflict$Flow> conflicts = new Select()
+                    .from(Conflict$Flow.class)
+                    .where(Condition.column(Conflict$Flow$Table
+                            .IMPORTSUMMARY_IMPORTSUMMARY)
+                            .is(importSummaryFlow))
+                    .queryList();
             for(Conflict$Flow conflictFlow : conflicts) {
                 conflictFlow.update();
             }
         }
         failedItemFlow.update();
+        return true;
     }
 
     @Override
-    public void save(FailedItem object) {
+    public boolean save(FailedItem object) {
         FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select().from(Conflict$Flow.class).where(Condition.column(Conflict$Flow$Table.IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow)).queryList();
+            List<Conflict$Flow> conflicts = new Select()
+                    .from(Conflict$Flow.class)
+                    .where(Condition.column(Conflict$Flow$Table
+                            .IMPORTSUMMARY_IMPORTSUMMARY)
+                            .is(importSummaryFlow))
+                    .queryList();
             for(Conflict$Flow conflictFlow : conflicts) {
                 conflictFlow.save();
             }
         }
         failedItemFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(FailedItem object) {
+    public boolean delete(FailedItem object) {
         FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select().from(Conflict$Flow.class).where(Condition.column(Conflict$Flow$Table.IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow)).queryList();
+            List<Conflict$Flow> conflicts = new Select()
+                    .from(Conflict$Flow.class)
+                    .where(Condition.column(Conflict$Flow$Table
+                            .IMPORTSUMMARY_IMPORTSUMMARY)
+                            .is(importSummaryFlow))
+                    .queryList();
             for(Conflict$Flow conflictFlow : conflicts) {
                 conflictFlow.delete();
             }
         }
         failedItemFlow.delete();
+        return true;
     }
 
     @Override

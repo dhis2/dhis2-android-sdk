@@ -45,31 +45,35 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
     }
 
     @Override
-    public void insert(Interpretation object) {
+    public boolean insert(Interpretation object) {
         Interpretation$Flow interpretationFlow
                 = Interpretation$Flow.fromModel(object);
         interpretationFlow.insert();
 
         object.setId(interpretationFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(Interpretation object) {
+    public boolean update(Interpretation object) {
         Interpretation$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Interpretation object) {
+    public boolean save(Interpretation object) {
         Interpretation$Flow interpretationFlow =
                 Interpretation$Flow.fromModel(object);
         interpretationFlow.save();
 
         object.setId(interpretationFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(Interpretation object) {
+    public boolean delete(Interpretation object) {
         Interpretation$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

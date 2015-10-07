@@ -54,7 +54,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
     }
 
     @Override
-    public void insert(ProgramStageSection object) {
+    public boolean insert(ProgramStageSection object) {
         ProgramStageSection$Flow programStageSectionFlow = ProgramStageSection$Flow.fromModel(object);
         programStageSectionFlow.insert();
 
@@ -72,15 +72,17 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 relationFlow.insert();
             }
         }
+        return true;
     }
 
     @Override
-    public void update(ProgramStageSection object) {
+    public boolean update(ProgramStageSection object) {
         ProgramStageSection$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramStageSection object) {
+    public boolean save(ProgramStageSection object) {
         ProgramStageSection$Flow programStageSectionFlow =
                 ProgramStageSection$Flow.fromModel(object);
         programStageSectionFlow.save();
@@ -99,10 +101,11 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
                 relationFlow.save();
             }
         }
+        return true;
     }
 
     @Override
-    public void delete(ProgramStageSection object) {
+    public boolean delete(ProgramStageSection object) {
         List<ProgramIndicatorToProgramStageSectionRelation$Flow>
                 programIndicatorToProgramStageSectionRelationFlows = new Select()
                 .from(ProgramIndicatorToProgramStageSectionRelation$Flow.class)
@@ -114,6 +117,7 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
             programIndicatorToProgramStageSectionRelationFlow.delete();
         }
         ProgramStageSection$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

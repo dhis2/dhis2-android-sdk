@@ -54,29 +54,32 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
     }
 
     @Override
-    public void insert(OptionSet object) {
+    public boolean insert(OptionSet object) {
         OptionSet$Flow optionSetFlow = OptionSet$Flow.fromModel(object);
         optionSetFlow.insert();
 
         object.setId(optionSetFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(OptionSet object) {
+    public boolean update(OptionSet object) {
         OptionSet$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(OptionSet object) {
+    public boolean save(OptionSet object) {
         OptionSet$Flow optionSetFlow =
                 OptionSet$Flow.fromModel(object);
         optionSetFlow.save();
 
         object.setId(optionSetFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(OptionSet object) {
+    public boolean delete(OptionSet object) {
         List<Option> options = object.getOptions();
         List<IDbOperation> operations;
         if (options != null) {
@@ -87,6 +90,7 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
             DbUtils.applyBatch(operations);
         }
         OptionSet$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

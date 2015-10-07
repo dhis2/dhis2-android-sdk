@@ -43,31 +43,35 @@ import java.util.List;
 public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
-    public void insert(InterpretationElement object) {
+    public boolean insert(InterpretationElement object) {
         InterpretationElement$Flow elementFlow =
                 InterpretationElement$Flow.fromModel(object);
         elementFlow.insert();
 
         object.setId(elementFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(InterpretationElement object) {
+    public boolean update(InterpretationElement object) {
         InterpretationElement$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(InterpretationElement object) {
+    public boolean save(InterpretationElement object) {
         InterpretationElement$Flow elementFlow =
                 InterpretationElement$Flow.fromModel(object);
         elementFlow.save();
 
         object.setId(elementFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(InterpretationElement object) {
+    public boolean delete(InterpretationElement object) {
         InterpretationElement$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

@@ -31,14 +31,14 @@ package org.hisp.dhis.android.sdk.persistence.models.dataset;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.models.dataset.DataSet;
+import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
+import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.DataSet$Flow$Table;
 import org.hisp.dhis.android.sdk.persistence.models.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.UnitToDataSetRelationShip$Flow;
 import org.hisp.dhis.android.sdk.persistence.models.flow.UnitToDataSetRelationShip$Flow$Table;
-import org.hisp.dhis.android.sdk.models.dataset.DataSet;
-import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
-import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,30 +88,35 @@ public final class DataSetStore implements IDataSetStore {
     }
 
     @Override
-    public void insert(DataSet object) {
+    public boolean insert(DataSet object) {
         DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
         dataSetFlow.insert();
 
         object.setId(dataSetFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(DataSet object) {
+    public boolean update(DataSet object) {
         DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
         dataSetFlow.update();
+
+        return true;
     }
 
     @Override
-    public void save(DataSet object) {
+    public boolean save(DataSet object) {
         DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
         dataSetFlow.save();
 
         object.setId(dataSetFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(DataSet object) {
+    public boolean delete(DataSet object) {
         DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
         dataSetFlow.delete();
+        return true;
     }
 }

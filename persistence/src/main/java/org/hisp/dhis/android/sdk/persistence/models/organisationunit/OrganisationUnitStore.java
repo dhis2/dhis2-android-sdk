@@ -50,31 +50,35 @@ public final class OrganisationUnitStore implements IOrganisationUnitStore {
     }
 
     @Override
-    public void insert(OrganisationUnit object) {
+    public boolean insert(OrganisationUnit object) {
         OrganisationUnit$Flow organisationUnitFlow
                 = OrganisationUnit$Flow.fromModel(object);
         organisationUnitFlow.insert();
 
         object.setId(organisationUnitFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(OrganisationUnit object) {
+    public boolean update(OrganisationUnit object) {
         OrganisationUnit$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(OrganisationUnit object) {
+    public boolean save(OrganisationUnit object) {
         OrganisationUnit$Flow organisationUnitFlow
                 = OrganisationUnit$Flow.fromModel(object);
         organisationUnitFlow.save();
 
         object.setId(organisationUnitFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(OrganisationUnit object) {
+    public boolean delete(OrganisationUnit object) {
         OrganisationUnit$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

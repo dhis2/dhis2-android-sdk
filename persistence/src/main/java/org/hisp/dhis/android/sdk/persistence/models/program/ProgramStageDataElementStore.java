@@ -48,26 +48,30 @@ public final class ProgramStageDataElementStore implements IProgramStageDataElem
     }
 
     @Override
-    public void insert(ProgramStageDataElement object) {
+    public boolean insert(ProgramStageDataElement object) {
         ProgramStageDataElement$Flow programStageDataElementFlow = ProgramStageDataElement$Flow.fromModel(object);
         programStageDataElementFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(ProgramStageDataElement object) {
+    public boolean update(ProgramStageDataElement object) {
         ProgramStageDataElement$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramStageDataElement object) {
+    public boolean save(ProgramStageDataElement object) {
         ProgramStageDataElement$Flow programStageDataElementFlow =
                 ProgramStageDataElement$Flow.fromModel(object);
         programStageDataElementFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(ProgramStageDataElement object) {
+    public boolean delete(ProgramStageDataElement object) {
         ProgramStageDataElement$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

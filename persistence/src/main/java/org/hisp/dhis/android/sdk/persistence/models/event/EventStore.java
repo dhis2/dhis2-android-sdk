@@ -53,30 +53,40 @@ public final class EventStore implements IEventStore {
     }
 
     @Override
-    public void insert(Event object) {
+    public boolean insert(Event object) {
         Event$Flow eventFlow =
                 Event$Flow.fromModel(object);
         eventFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(Event object) {
+    public boolean update(Event object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while event was loaded in memory
         if(object.getEventUid() == null || object.getEventUid().isEmpty()) {
-            Event$Flow persisted = new Select().from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ID).is(object.getId())).querySingle();
+            Event$Flow persisted = new Select()
+                    .from(Event$Flow.class)
+                    .where(Condition.column(Event$Flow$Table
+                            .ID).is(object.getId()))
+                    .querySingle();
             if(persisted != null) {
                 object.setEventUid(persisted.getEventUid());
             }
         }
         Event$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Event object) {
+    public boolean save(Event object) {
         //making sure uid is not overwritten with blank value in case uid was updated from
         // server while event was loaded in memory
         if(object.getEventUid() == null || object.getEventUid().isEmpty()) {
-            Event$Flow persisted = new Select().from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ID).is(object.getId())).querySingle();
+            Event$Flow persisted = new Select()
+                    .from(Event$Flow.class)
+                    .where(Condition.column(Event$Flow$Table
+                            .ID).is(object.getId()))
+                    .querySingle();
             if(persisted != null) {
                 object.setEventUid(persisted.getEventUid());
             }
@@ -85,11 +95,13 @@ public final class EventStore implements IEventStore {
         Event$Flow eventFlow =
                 Event$Flow.fromModel(object);
         eventFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(Event object) {
+    public boolean delete(Event object) {
         Event$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override
@@ -110,16 +122,20 @@ public final class EventStore implements IEventStore {
 
     @Override
     public Event query(long id) {
-        Event$Flow eventFlow = new Select().from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table.ID).is(id)).querySingle();
+        Event$Flow eventFlow = new Select()
+                .from(Event$Flow.class)
+                .where(Condition.column(Event$Flow$Table.ID).is(id))
+                .querySingle();
         setTrackedEntityDataValues(eventFlow);
         return Event$Flow.toModel(eventFlow);
     }
 
     @Override
     public Event query(String uid) {
-        Event$Flow eventFlow = new Select().from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table.EVENTUID).is(uid)).querySingle();
+        Event$Flow eventFlow = new Select()
+                .from(Event$Flow.class)
+                .where(Condition.column(Event$Flow$Table.EVENTUID).is(uid))
+                .querySingle();
         setTrackedEntityDataValues(eventFlow);
         return Event$Flow.toModel(eventFlow);
     }
@@ -127,8 +143,9 @@ public final class EventStore implements IEventStore {
     @Override
     public List<Event> query(Enrollment enrollment) {
         List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ENROLLMENT_ENROLLMENT)
-                        .is(enrollment)).queryList();
+                .from(Event$Flow.class)
+                .where(Condition.column(Event$Flow$Table
+                        .ENROLLMENT_ENROLLMENT).is(enrollment)).queryList();
         for(Event$Flow eventFlow : eventFlows) {
             setTrackedEntityDataValues(eventFlow);
         }
@@ -141,9 +158,11 @@ public final class EventStore implements IEventStore {
             return new ArrayList<>();
         }
         List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class).where(Condition.column(Event$Flow$Table.ORGANISATIONUNITID)
-                        .is(organisationUnit.getUId())).and(Condition.column(Event$Flow$Table.PROGRAMID)
-                        .is(program.getUId())).queryList();
+                .from(Event$Flow.class)
+                .where(Condition.column(Event$Flow$Table
+                        .ORGANISATIONUNITID).is(organisationUnit.getUId()))
+                .and(Condition.column(Event$Flow$Table
+                        .PROGRAMID).is(program.getUId())).queryList();
         for(Event$Flow eventFlow : eventFlows) {
             setTrackedEntityDataValues(eventFlow);
         }

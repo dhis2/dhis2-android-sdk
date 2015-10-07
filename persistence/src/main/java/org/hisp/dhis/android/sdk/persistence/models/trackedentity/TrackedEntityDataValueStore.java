@@ -47,27 +47,31 @@ public final class TrackedEntityDataValueStore implements ITrackedEntityDataValu
     }
 
     @Override
-    public void insert(TrackedEntityDataValue object) {
+    public boolean insert(TrackedEntityDataValue object) {
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow =
                 TrackedEntityDataValue$Flow.fromModel(object);
         trackedEntityDataValueFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(TrackedEntityDataValue object) {
+    public boolean update(TrackedEntityDataValue object) {
         TrackedEntityDataValue$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(TrackedEntityDataValue object) {
+    public boolean save(TrackedEntityDataValue object) {
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow =
                 TrackedEntityDataValue$Flow.fromModel(object);
         trackedEntityDataValueFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(TrackedEntityDataValue object) {
+    public boolean delete(TrackedEntityDataValue object) {
         TrackedEntityDataValue$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

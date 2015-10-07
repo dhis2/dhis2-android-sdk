@@ -47,26 +47,30 @@ public final class ProgramTrackedEntityAttributeStore implements IProgramTracked
     }
 
     @Override
-    public void insert(ProgramTrackedEntityAttribute object) {
+    public boolean insert(ProgramTrackedEntityAttribute object) {
         ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = ProgramTrackedEntityAttribute$Flow.fromModel(object);
         programTrackedEntityAttributeFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(ProgramTrackedEntityAttribute object) {
+    public boolean update(ProgramTrackedEntityAttribute object) {
         ProgramTrackedEntityAttribute$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramTrackedEntityAttribute object) {
+    public boolean save(ProgramTrackedEntityAttribute object) {
         ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow =
                 ProgramTrackedEntityAttribute$Flow.fromModel(object);
         programTrackedEntityAttributeFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(ProgramTrackedEntityAttribute object) {
+    public boolean delete(ProgramTrackedEntityAttribute object) {
         ProgramTrackedEntityAttribute$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

@@ -46,27 +46,31 @@ public final class RelationshipStore implements IRelationshipStore {
     }
 
     @Override
-    public void insert(Relationship object) {
+    public boolean insert(Relationship object) {
         Relationship$Flow relationshipFlow =
                 Relationship$Flow.fromModel(object);
         relationshipFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(Relationship object) {
+    public boolean update(Relationship object) {
         Relationship$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Relationship object) {
+    public boolean save(Relationship object) {
         Relationship$Flow relationshipFlow =
                 Relationship$Flow.fromModel(object);
         relationshipFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(Relationship object) {
+    public boolean delete(Relationship object) {
         Relationship$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

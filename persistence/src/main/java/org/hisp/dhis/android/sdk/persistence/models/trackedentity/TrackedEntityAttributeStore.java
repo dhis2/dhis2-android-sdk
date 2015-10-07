@@ -45,30 +45,34 @@ public final class TrackedEntityAttributeStore implements IIdentifiableObjectSto
     }
 
     @Override
-    public void insert(TrackedEntityAttribute object) {
+    public boolean insert(TrackedEntityAttribute object) {
         TrackedEntityAttribute$Flow trackedEntityAttributeFlow = TrackedEntityAttribute$Flow.fromModel(object);
         trackedEntityAttributeFlow.insert();
 
         object.setId(trackedEntityAttributeFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(TrackedEntityAttribute object) {
+    public boolean update(TrackedEntityAttribute object) {
         TrackedEntityAttribute$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(TrackedEntityAttribute object) {
+    public boolean save(TrackedEntityAttribute object) {
         TrackedEntityAttribute$Flow trackedEntityAttributeFlow =
                 TrackedEntityAttribute$Flow.fromModel(object);
         trackedEntityAttributeFlow.save();
 
         object.setId(trackedEntityAttributeFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(TrackedEntityAttribute object) {
+    public boolean delete(TrackedEntityAttribute object) {
         TrackedEntityAttribute$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

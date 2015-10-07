@@ -45,30 +45,34 @@ public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
     }
 
     @Override
-    public void insert(Constant object) {
+    public boolean insert(Constant object) {
         Constant$Flow constantFlow = Constant$Flow.fromModel(object);
         constantFlow.insert();
 
         object.setId(constantFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(Constant object) {
+    public boolean update(Constant object) {
         Constant$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Constant object) {
+    public boolean save(Constant object) {
         Constant$Flow constantFlow =
                 Constant$Flow.fromModel(object);
         constantFlow.save();
 
         object.setId(constantFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(Constant object) {
+    public boolean delete(Constant object) {
         Constant$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

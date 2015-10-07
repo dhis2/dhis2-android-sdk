@@ -26,21 +26,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.models.common.base;
+package org.hisp.dhis.android.sdk.persistence.models.common.base;
 
-import java.util.List;
+import com.raizlabs.android.dbflow.structure.Model;
 
-public interface IStore<T extends IModel> {
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 
-    boolean insert(T object);
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-    boolean update(T object);
+public class AbsDataStore<ModelType extends IModel, DatabaseEntityType
+        extends IModel & Model> extends AbsStore<ModelType, DatabaseEntityType> {
 
-    boolean save(T object);
+    private final IStateStore stateStore;
 
-    boolean delete(T object);
+    public AbsDataStore(IMapper<ModelType, DatabaseEntityType> mapper, IStateStore stateStore) {
+        super(mapper);
 
-    T queryById(long id);
+        this.stateStore = isNull(stateStore, "stateStore object must not be null");
+    }
 
-    List<T> queryAll();
+    @Override
+    public boolean insert(ModelType object) {
+        super.insert(object);
+        return false;
+    }
 }

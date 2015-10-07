@@ -45,30 +45,34 @@ public final class RelationshipTypeStore implements IIdentifiableObjectStore<Rel
     }
 
     @Override
-    public void insert(RelationshipType object) {
+    public boolean insert(RelationshipType object) {
         RelationshipType$Flow relationshipTypeFlow = RelationshipType$Flow.fromModel(object);
         relationshipTypeFlow.insert();
 
         object.setId(relationshipTypeFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(RelationshipType object) {
+    public boolean update(RelationshipType object) {
         RelationshipType$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(RelationshipType object) {
+    public boolean save(RelationshipType object) {
         RelationshipType$Flow relationshipTypeFlow =
                 RelationshipType$Flow.fromModel(object);
         relationshipTypeFlow.save();
 
         object.setId(relationshipTypeFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(RelationshipType object) {
+    public boolean delete(RelationshipType object) {
         RelationshipType$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

@@ -65,30 +65,34 @@ public final class ProgramStore implements IProgramStore {
     }
 
     @Override
-    public void insert(Program object) {
+    public boolean insert(Program object) {
         Program$Flow programFlow = Program$Flow.fromModel(object);
         programFlow.insert();
 
         object.setId(programFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(Program object) {
+    public boolean update(Program object) {
         Program$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(Program object) {
+    public boolean save(Program object) {
         Program$Flow programFlow =
                 Program$Flow.fromModel(object);
         programFlow.save();
 
         object.setId(programFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(Program object) {
+    public boolean delete(Program object) {
         Program$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

@@ -55,30 +55,34 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     @Override
-    public void insert(ProgramStage object) {
+    public boolean insert(ProgramStage object) {
         ProgramStage$Flow programStageFlow = ProgramStage$Flow.fromModel(object);
         programStageFlow.insert();
 
         object.setId(programStageFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(ProgramStage object) {
+    public boolean update(ProgramStage object) {
         ProgramStage$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramStage object) {
+    public boolean save(ProgramStage object) {
         ProgramStage$Flow programStageFlow =
                 ProgramStage$Flow.fromModel(object);
         programStageFlow.save();
 
         object.setId(programStageFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(ProgramStage object) {
+    public boolean delete(ProgramStage object) {
         ProgramStage$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

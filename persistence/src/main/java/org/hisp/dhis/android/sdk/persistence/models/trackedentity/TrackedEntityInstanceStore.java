@@ -31,14 +31,14 @@ package org.hisp.dhis.android.sdk.persistence.models.trackedentity;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.persistence.models.flow.Relationship$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityAttributeValue$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityInstance$Flow;
-import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityInstance$Flow$Table;
 import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.persistence.models.flow.Relationship$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityAttributeValue$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.android.sdk.persistence.models.flow.TrackedEntityInstance$Flow$Table;
 
 import java.util.List;
 
@@ -53,36 +53,38 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     }
 
     @Override
-    public void insert(TrackedEntityInstance object) {
+    public boolean insert(TrackedEntityInstance object) {
         TrackedEntityInstance$Flow trackedEntityInstanceFlow =
                 TrackedEntityInstance$Flow.fromModel(object);
         trackedEntityInstanceFlow.insert();
+        return true;
     }
 
     @Override
-    public void update(TrackedEntityInstance object) {
+    public boolean update(TrackedEntityInstance object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
+        if (object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
             TrackedEntityInstance$Flow persisted = new Select()
                     .from(TrackedEntityInstance$Flow.class).where(Condition
                             .column(TrackedEntityInstance$Flow$Table.ID).is(object.getId()))
                     .querySingle();
-            if(persisted != null) {
+            if (persisted != null) {
                 object.setTrackedEntityInstanceUid(persisted.getTrackedEntityInstanceUid());
             }
         }
         TrackedEntityInstance$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(TrackedEntityInstance object) {
+    public boolean save(TrackedEntityInstance object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
+        if (object.getTrackedEntityInstanceUid() == null || object.getTrackedEntityInstanceUid().isEmpty()) {
             TrackedEntityInstance$Flow persisted = new Select()
                     .from(TrackedEntityInstance$Flow.class).where(Condition
                             .column(TrackedEntityInstance$Flow$Table.ID).is(object.getId()))
                     .querySingle();
-            if(persisted != null) {
+            if (persisted != null) {
                 object.setTrackedEntityInstanceUid(persisted.getTrackedEntityInstanceUid());
             }
         }
@@ -91,11 +93,13 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
         TrackedEntityInstance$Flow trackedEntityInstanceFlow =
                 TrackedEntityInstance$Flow.fromModel(object);
         trackedEntityInstanceFlow.save();
+        return true;
     }
 
     @Override
-    public void delete(TrackedEntityInstance object) {
+    public boolean delete(TrackedEntityInstance object) {
         TrackedEntityInstance$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override
@@ -108,7 +112,7 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
         List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityInstance$Flow.class)
                 .queryList();
-        for(TrackedEntityInstance$Flow trackedEntityInstanceFlow : trackedEntityInstanceFlows) {
+        for (TrackedEntityInstance$Flow trackedEntityInstanceFlow : trackedEntityInstanceFlows) {
             setRelationships(trackedEntityInstanceFlow);
             setTrackedEntityAttributeValuess(trackedEntityInstanceFlow);
         }
@@ -136,7 +140,7 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     }
 
     private void setRelationships(TrackedEntityInstance$Flow trackedEntityInstanceFlow) {
-        if(trackedEntityInstanceFlow == null) {
+        if (trackedEntityInstanceFlow == null) {
             return;
         }
         trackedEntityInstanceFlow.setRelationships(Relationship$Flow.
@@ -145,7 +149,7 @@ public final class TrackedEntityInstanceStore implements ITrackedEntityInstanceS
     }
 
     private void setTrackedEntityAttributeValuess(TrackedEntityInstance$Flow trackedEntityInstanceFlow) {
-        if(trackedEntityInstanceFlow == null) {
+        if (trackedEntityInstanceFlow == null) {
             return;
         }
         trackedEntityInstanceFlow.setAttributes(TrackedEntityAttributeValue$Flow.

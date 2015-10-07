@@ -50,30 +50,34 @@ public final class ProgramRuleStore implements IProgramRuleStore {
     }
 
     @Override
-    public void insert(ProgramRule object) {
+    public boolean insert(ProgramRule object) {
         ProgramRule$Flow programRuleFlow = ProgramRule$Flow.fromModel(object);
         programRuleFlow.insert();
 
         object.setId(programRuleFlow.getId());
+        return true;
     }
 
     @Override
-    public void update(ProgramRule object) {
+    public boolean update(ProgramRule object) {
         ProgramRule$Flow.fromModel(object).update();
+        return true;
     }
 
     @Override
-    public void save(ProgramRule object) {
+    public boolean save(ProgramRule object) {
         ProgramRule$Flow programRuleFlow =
                 ProgramRule$Flow.fromModel(object);
         programRuleFlow.save();
 
         object.setId(programRuleFlow.getId());
+        return true;
     }
 
     @Override
-    public void delete(ProgramRule object) {
+    public boolean delete(ProgramRule object) {
         ProgramRule$Flow.fromModel(object).delete();
+        return true;
     }
 
     @Override

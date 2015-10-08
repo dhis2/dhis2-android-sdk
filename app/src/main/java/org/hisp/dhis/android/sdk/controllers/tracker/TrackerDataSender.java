@@ -222,7 +222,7 @@ final class TrackerDataSender {
             return;
         }
 
-        if(Utils.isLocal(enrollment.getEnrollment())) {
+        if(enrollment.getCreated() == null) {
             postEnrollment(enrollment, dhisApi);
         } else {
             putEnrollment(enrollment, dhisApi);
@@ -242,18 +242,12 @@ final class TrackerDataSender {
 
                 if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
-                    // also, we will need to find UUID of newly created enrollment,
-                    // which is contained inside of HTTP Location header
-                    Header header = NetworkUtils.findLocationHeader(response.getHeaders());
-                    // parse the value of header as URI and extract the id
-                    String enrollmentUid = Uri.parse(header.getValue()).getLastPathSegment();
-                    // set UUID, change state and save enrollment
-                    enrollment.setEnrollment(enrollmentUid);
+                    // change state and save enrollment
+
                     //enrollment.setState(State.SYNCED);
                     enrollment.setFromServer(true);
                     enrollment.save();
                     clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
-                    updateEnrollmentReferences(enrollment.getLocalId(), enrollmentUid);
                     UpdateEnrollmentTimestamp(enrollment, dhisApi);
                 }
             }
@@ -335,7 +329,7 @@ final class TrackerDataSender {
         if (trackedEntityInstance == null) {
             return;
         }
-        if(Utils.isLocal(trackedEntityInstance.getTrackedEntityInstance())) {
+        if(trackedEntityInstance.getCreated() == null) {
             postTrackedEntityInstance(trackedEntityInstance, dhisApi);
         } else {
             putTrackedEntityInstance(trackedEntityInstance, dhisApi);
@@ -355,18 +349,12 @@ final class TrackerDataSender {
                 if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
 
-                    // also, we will need to find UUID of newly created trackedentityinstance,
-                    // which is contained inside of HTTP Location header
-                    Header header = NetworkUtils.findLocationHeader(response.getHeaders());
-                    // parse the value of header as URI and extract the id
-                    String trackedEntityInstanceUid = Uri.parse(header.getValue()).getLastPathSegment();
-                    // set UUID, change state and save trackedentityinstance
-                    String oldUid = trackedEntityInstance.getUid();
-                    trackedEntityInstance.setTrackedEntityInstance(trackedEntityInstanceUid);
+                    // change state and save trackedentityinstance
+
                     //trackedEntityInstance.setState(State.SYNCED);
                     trackedEntityInstance.setFromServer(true);
                     trackedEntityInstance.save();
-                    updateTrackedEntityInstanceReferences(trackedEntityInstance.getLocalId(), trackedEntityInstanceUid, oldUid);
+
                     clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
                     UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance, dhisApi);
                 }

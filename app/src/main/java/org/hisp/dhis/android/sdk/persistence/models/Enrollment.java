@@ -38,15 +38,14 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
-import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Simen Skogly Russnes on 04.03.15.
@@ -104,13 +103,13 @@ public class Enrollment extends BaseSerializableModel {
     List<Event> events;
 
     public Enrollment() {
-        enrollment = DhisController.QUEUED + UUID.randomUUID().toString();
+        enrollment = CodeGenerator.generateCode();
     }
 
     public Enrollment(String organisationUnit, String trackedEntityInstance, Program program) {
         orgUnit = organisationUnit;
         status = Enrollment.ACTIVE;
-        enrollment = DhisController.QUEUED + UUID.randomUUID().toString();
+        enrollment = CodeGenerator.generateCode();
         followup = false;
         fromServer = false;
         this.program = program.getUid();

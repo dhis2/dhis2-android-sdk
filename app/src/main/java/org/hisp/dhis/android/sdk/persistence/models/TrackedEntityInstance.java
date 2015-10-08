@@ -41,7 +41,7 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.utils.Utils;
+import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 
 import java.io.Serializable;
 import java.util.List;
@@ -72,12 +72,11 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     @JsonProperty("relationships")
     List<Relationship> relationships;
 
-    public TrackedEntityInstance() {
-    }
+    public TrackedEntityInstance() { this.trackedEntityInstance = CodeGenerator.generateCode(); }
 
     public TrackedEntityInstance(Program program, String organisationUnit) {
         fromServer = false;
-        trackedEntityInstance = Utils.getTempUid();
+        trackedEntityInstance = CodeGenerator.generateCode();
         trackedEntity = program.getTrackedEntity().getId();
         //created = Utils.getCurrentTime();
         //lastUpdated = Utils.getCurrentTime();

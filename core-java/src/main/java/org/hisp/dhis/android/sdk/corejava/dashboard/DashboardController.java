@@ -33,7 +33,7 @@ import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
 import org.hisp.dhis.android.sdk.corejava.common.persistence.DbUtils;
 import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
-import org.hisp.dhis.android.sdk.corejava.common.preferences.LastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
@@ -71,7 +71,7 @@ public final class DashboardController implements IDataController<Dashboard> {
     private final ISystemInfoApiClient systemInfoApiClient;
 
     /* last updated preferences */
-    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     /* database transaction manager */
     private final ITransactionManager transactionManager;
@@ -83,7 +83,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                                IStateStore stateStore,
                                IDashboardApiClient dashboardApiClient,
                                ISystemInfoApiClient systemInfoApiClient,
-                               LastUpdatedPreferences lastUpdatedPreferences,
+                               ILastUpdatedPreferences lastUpdatedPreferences,
                                ITransactionManager transactionManager) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;

@@ -30,5 +30,9 @@ package org.hisp.dhis.android.sdk.corejava.common.preferences;
 
 import org.joda.time.DateTime;
 
-public interface LastUpdatedPreferences extends IPreferences<ResourceType, DateTime> {
+public interface ILastUpdatedPreferences extends IPreferences<ResourceType, DateTime> {
+    boolean save(ResourceType resourceType, DateTime dateTime, String extra);
+
+    DateTime get(ResourceType resourceType, String extra);
+
 }

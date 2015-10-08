@@ -40,10 +40,6 @@ import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentS
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.common.ModelsStore;
 import org.hisp.dhis.android.sdk.persistence.models.constant.ConstantStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardContentStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemStore;
-import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardStore;
 import org.hisp.dhis.android.sdk.persistence.models.dataelement.DataElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.dataset.DataSetStore;
 import org.hisp.dhis.android.sdk.persistence.models.enrollment.EnrollmentStore;
@@ -66,7 +62,7 @@ import org.hisp.dhis.android.sdk.persistence.models.program.ProgramStageSectionS
 import org.hisp.dhis.android.sdk.persistence.models.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.persistence.models.relationship.RelationshipStore;
 import org.hisp.dhis.android.sdk.persistence.models.relationship.RelationshipTypeStore;
-import org.hisp.dhis.android.sdk.persistence.models.common.StateStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.state.StateStore;
 import org.hisp.dhis.android.sdk.persistence.models.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.persistence.models.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.persistence.models.trackedentity.TrackedEntityAttributeValueStore;

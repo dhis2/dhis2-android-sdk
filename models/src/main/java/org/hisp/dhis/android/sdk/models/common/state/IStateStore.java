@@ -45,24 +45,24 @@ public interface IStateStore extends IStore<State> {
      * @param object IModel for which the action should be inserted.
      * @param action Action to insert.
      */
-    <T extends IModel> void insertActionForModel(T object, Action action);
+    <T extends IModel> boolean insertActionForModel(T object, Action action);
 
     /**
      * @param object IModel for which the action should be updated.
      * @param action Action to update.
      */
-    <T extends IModel> void updateActionForModel(T object, Action action);
+    <T extends IModel> boolean updateActionForModel(T object, Action action);
 
     /**
      * @param object IModel for which the action should be saved.
      * @param action Action to save.
      */
-    <T extends IModel> void saveActionForModel(T object, Action action);
+    <T extends IModel> boolean saveActionForModel(T object, Action action);
 
     /**
      * @param object IModel for which the action should be deleted.
      */
-    <T extends IModel> void deleteActionForModel(T object);
+    <T extends IModel> boolean deleteActionForModel(T object);
 
     /**
      * @param object IModel which state the method returns.

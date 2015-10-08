@@ -31,15 +31,15 @@ package org.hisp.dhis.android.sdk.corejava.common.preferences;
 import java.util.List;
 
 public interface IPreferences<Key, Value> {
-    void save(Key key, Value value);
+    boolean save(Key key, Value value);
 
-    void delete(Key key);
+    boolean delete(Key key);
+
+    boolean isSet(Key key);
+
+    boolean clear();
 
     Value get(Key key);
 
     List<Value> get();
-
-    boolean isSet(Key key);
-
-    void clear();
 }

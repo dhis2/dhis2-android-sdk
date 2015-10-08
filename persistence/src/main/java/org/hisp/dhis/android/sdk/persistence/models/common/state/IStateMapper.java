@@ -26,10 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.persistence.models.common.state;
 
-import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
+import com.raizlabs.android.dbflow.structure.Model;
 
-public interface IPreferencesModule {
-    ILastUpdatedPreferences getLastUpdatedPreferences();
+import org.hisp.dhis.android.sdk.models.common.base.IModel;
+import org.hisp.dhis.android.sdk.models.common.state.State;
+import org.hisp.dhis.android.sdk.persistence.models.common.base.IMapper;
+import org.hisp.dhis.android.sdk.persistence.models.flow.State$Flow;
+
+public interface IStateMapper extends IMapper<State, State$Flow> {
+    Class<? extends IModel> getRelatedModelClass(String type);
+
+    String getRelatedModelClass(Class<? extends IModel> clazz);
+
+    Class<? extends Model> getRelatedDatabaseEntityClass(Class<? extends IModel> clazz);
 }

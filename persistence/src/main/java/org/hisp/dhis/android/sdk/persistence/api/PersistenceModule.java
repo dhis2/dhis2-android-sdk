@@ -37,11 +37,10 @@ import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.android.sdk.persistence.models.common.StateStore;
+import org.hisp.dhis.android.sdk.persistence.models.common.state.StateStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardContentStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardItemStore;

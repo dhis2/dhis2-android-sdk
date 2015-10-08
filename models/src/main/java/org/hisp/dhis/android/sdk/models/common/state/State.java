@@ -33,7 +33,7 @@ import org.hisp.dhis.android.sdk.models.common.base.IModel;
 public final class State implements IModel {
     private long id;
     private long itemId;
-    private Class<?> itemType;
+    private Class<? extends IModel> itemType;
     private Action action;
 
     public State() {
@@ -58,11 +58,11 @@ public final class State implements IModel {
         this.itemId = itemId;
     }
 
-    public Class<?> getItemType() {
+    public Class<? extends IModel> getItemType() {
         return itemType;
     }
 
-    public void setItemType(Class<?> itemType) {
+    public void setItemType(Class<? extends IModel> itemType) {
         this.itemType = itemType;
     }
 

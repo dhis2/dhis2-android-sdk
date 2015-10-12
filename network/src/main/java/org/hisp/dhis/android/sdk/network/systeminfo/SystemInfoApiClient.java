@@ -26,11 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.controllers;
+package org.hisp.dhis.android.sdk.network.systeminfo;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 
-public interface IDataController<T extends IdentifiableObject> extends IController<T> {
-    void sync() throws ApiException;
+public class SystemInfoApiClient implements ISystemInfoApiClient {
+
+    @Override
+    public SystemInfo getSystemInfo() {
+        return null;
+    }
 }

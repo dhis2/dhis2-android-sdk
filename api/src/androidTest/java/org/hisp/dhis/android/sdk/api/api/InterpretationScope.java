@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.api.api;
 
 import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
-import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
+import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationService;
@@ -60,7 +60,7 @@ public final class InterpretationScope implements IDataController<Interpretation
     }
 
     @Override
-    public void sync() throws APIException {
+    public void sync() throws ApiException {
         interpretationController.sync();
     }
 

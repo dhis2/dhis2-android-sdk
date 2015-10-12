@@ -26,11 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.controllers;
+package org.hisp.dhis.android.sdk.network.utils;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public interface IDataController<T extends IdentifiableObject> extends IController<T> {
-    void sync() throws ApiException;
+public class NetworkUtils {
+    private NetworkUtils() {
+        // no instances
+    }
+
+    public static <T> List<T> unwrapResponse(Map<String, List<T>> response, String key) {
+        if (response != null && response.containsKey(key) && response.get(key) != null) {
+            return response.get(key);
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

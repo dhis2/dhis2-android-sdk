@@ -30,44 +30,31 @@ package org.hisp.dhis.android.sdk.corejava.common.network;
 
 import java.io.IOException;
 
-public class APIException extends RuntimeException {
+public class ApiException extends RuntimeException {
 
-    /* public static APIException fromRetrofitError(RetrofitError error) {
-        switch (error.getKind()) {
-            case NETWORK:
-                return networkError(error.getUrl(), (IOException) error.getCause());
-            case CONVERSION:
-                return conversionError(error.getUrl(), error.getResponse(), error.getCause());
-            case HTTP:
-                return httpError(error.getUrl(), error.getResponse());
-            default:
-                return unexpectedError(error.getUrl(), error.getCause());
-        }
-    } */
-
-    public static APIException networkError(String url, IOException exception) {
-        return new APIException(exception.getMessage(), url,
+    public static ApiException networkError(String url, IOException exception) {
+        return new ApiException(exception.getMessage(), url,
                 null, Kind.NETWORK, exception);
     }
 
-    public static APIException conversionError(String url, Response response,
+    public static ApiException conversionError(String url, Response response,
                                                Throwable exception) {
-        return new APIException(exception.getMessage(), url,
+        return new ApiException(exception.getMessage(), url,
                 response, Kind.CONVERSION, exception);
     }
 
-    public static APIException httpError(String url, Response response) {
+    public static ApiException httpError(String url, Response response) {
         String message = response.getStatus() + " " + response.getReason();
-        return new APIException(message, url, response, Kind.HTTP, null);
+        return new ApiException(message, url, response, Kind.HTTP, null);
     }
 
-    public static APIException unexpectedError(String url, Throwable exception) {
-        return new APIException(exception.getMessage(), url, null, Kind.UNEXPECTED,
+    public static ApiException unexpectedError(String url, Throwable exception) {
+        return new ApiException(exception.getMessage(), url, null, Kind.UNEXPECTED,
                 exception);
     }
 
     /**
-     * Identifies the event kind which triggered a {@link APIException}.
+     * Identifies the event kind which triggered a {@link ApiException}.
      */
     public enum Kind {
         /**
@@ -93,7 +80,7 @@ public class APIException extends RuntimeException {
     private final Response response;
     private final Kind kind;
 
-    APIException(String message, String url, Response response,
+    ApiException(String message, String url, Response response,
                  Kind kind, Throwable exception) {
         super(message, exception);
         this.url = url;

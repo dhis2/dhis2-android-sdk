@@ -28,13 +28,21 @@
 
 package org.hisp.dhis.android.sdk.persistence.api;
 
+import android.content.Context;
+
 import org.hisp.dhis.android.sdk.corejava.common.modules.IPreferencesModule;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedPreferences;
 
 public class PreferencesModule implements IPreferencesModule {
+    private final ILastUpdatedPreferences mLastUpdatedPreferences;
+
+    public PreferencesModule(Context context) {
+        mLastUpdatedPreferences = new LastUpdatedPreferences(context);
+    }
 
     @Override
     public ILastUpdatedPreferences getLastUpdatedPreferences() {
-        return null;
+        return mLastUpdatedPreferences;
     }
 }

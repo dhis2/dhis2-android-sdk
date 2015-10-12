@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.api.api;
 
 import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
-import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
+import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardService;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
@@ -87,7 +87,7 @@ public final class DashboardScope implements IDataController<Dashboard>, IDashbo
     } */
 
     @Override
-    public void sync() throws APIException {
+    public void sync() throws ApiException {
         dataController.sync();
     }
 

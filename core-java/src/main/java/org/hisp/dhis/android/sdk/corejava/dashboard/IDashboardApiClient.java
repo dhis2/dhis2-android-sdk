@@ -49,11 +49,7 @@ public interface IDashboardApiClient {
 
     List<DashboardItem> getBasicDashboardItems(DateTime lastUpdated);
 
-    List<DashboardItem> getFullDashboardItems(DateTime lastUpdated);
-
-    Dashboard getDashboardByUid(String uid);
-
-    DashboardItem getDashboardItemByUid(String uid);
+    Dashboard getBasicDashboardByUid(String uid);
 
     Response postDashboard(Dashboard dashboard);
 

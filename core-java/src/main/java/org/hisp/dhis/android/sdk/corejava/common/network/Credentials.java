@@ -26,11 +26,24 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.controllers;
+package org.hisp.dhis.android.sdk.corejava.common.network;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.android.sdk.models.utils.Preconditions;
 
-public interface IDataController<T extends IdentifiableObject> extends IController<T> {
-    void sync() throws ApiException;
+public final class Credentials {
+    private String username;
+    private String password;
+
+    public Credentials(String username, String password) {
+        this.username = Preconditions.isNull(username, "Username must not be null");
+        this.password = Preconditions.isNull(password, "Password must not be null");
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

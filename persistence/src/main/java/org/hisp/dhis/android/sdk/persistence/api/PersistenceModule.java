@@ -37,6 +37,7 @@ import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
+import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
@@ -48,7 +49,7 @@ import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardStore;
 
 public class PersistenceModule implements IPersistenceModule {
     private final IStateStore stateStore;
-    private final IIdentifiableObjectStore dashboardStore;
+    private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
@@ -76,7 +77,7 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public IIdentifiableObjectStore<Dashboard> getDashboardStore() {
+    public IDashboardStore getDashboardStore() {
         return dashboardStore;
     }
 

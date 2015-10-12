@@ -26,11 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.controllers;
+package org.hisp.dhis.android.sdk.corejava.common.network;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
-
-public interface IDataController<T extends IdentifiableObject> extends IController<T> {
-    void sync() throws ApiException;
+public interface AuthHandler {
+    Credentials getUserCredentials();
 }

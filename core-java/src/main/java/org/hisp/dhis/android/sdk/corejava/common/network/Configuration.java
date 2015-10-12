@@ -26,11 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.controllers;
+package org.hisp.dhis.android.sdk.corejava.common.network;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-public interface IDataController<T extends IdentifiableObject> extends IController<T> {
-    void sync() throws ApiException;
+public final class Configuration {
+    private final String serverUrl;
+
+    public Configuration(String serverUrl) {
+        this.serverUrl = isNull(serverUrl, "serverUrl must not be null");
+    }
+
+    public String getServerUrl() {
+        return serverUrl;
+    }
 }

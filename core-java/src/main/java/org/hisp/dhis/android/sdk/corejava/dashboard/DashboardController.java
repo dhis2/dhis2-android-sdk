@@ -29,14 +29,13 @@
 package org.hisp.dhis.android.sdk.corejava.dashboard;
 
 import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
-import org.hisp.dhis.android.sdk.corejava.common.network.APIException;
+import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
 import org.hisp.dhis.android.sdk.corejava.common.persistence.DbUtils;
 import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
@@ -60,7 +59,7 @@ import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObjec
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 
 public final class DashboardController implements IDataController<Dashboard> {
-    private final IIdentifiableObjectStore<Dashboard> dashboardStore;
+    private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
@@ -76,7 +75,7 @@ public final class DashboardController implements IDataController<Dashboard> {
     /* database transaction manager */
     private final ITransactionManager transactionManager;
 
-    public DashboardController(IIdentifiableObjectStore<Dashboard> dashboardStore,
+    public DashboardController(IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,
@@ -117,8 +116,10 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         Queue<IDbOperation> operations = new LinkedList<>();
 
-        operations.addAll(DbUtils.createOperations(dashboardStore, stateStore.filterModelsByAction(Dashboard.class, Action.TO_POST), dashboards));
-        operations.addAll(DbUtils.createOperations(dashboardItemStore, stateStore.filterModelsByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
+        operations.addAll(DbUtils.createOperations(dashboardStore,
+                stateStore.filterModelsByAction(Dashboard.class, Action.TO_POST), dashboards));
+        operations.addAll(DbUtils.createOperations(dashboardItemStore,
+                stateStore.filterModelsByAction(DashboardItem.class, Action.TO_POST), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
         transactionManager.transact(operations);
@@ -383,7 +384,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             stateStore.saveActionForModel(dashboard, Action.SYNCED);
 
             updateDashboardTimeStamp(dashboard);
-        } catch (APIException apiException) {
+        } catch (ApiException apiException) {
             // handleApiException(apiException);
         }
     }
@@ -397,7 +398,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             stateStore.saveActionForModel(dashboard, Action.SYNCED);
 
             updateDashboardTimeStamp(dashboard);
-        } catch (APIException apiException) {
+        } catch (ApiException apiException) {
             // handleApiException(apiException, dashboard, dashboardStore);
         }
     }
@@ -408,7 +409,7 @@ public final class DashboardController implements IDataController<Dashboard> {
             dashboardApiClient.deleteDashboard(dashboard);
 
             dashboardStore.delete(dashboard);
-        } catch (APIException apiException) {
+        } catch (ApiException apiException) {
             // handleApiException(apiException, dashboard, dashboardStore);
         }
     }
@@ -492,7 +493,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
                 // we have to update timestamp of dashboard after adding new item.
                 updateDashboardTimeStamp(dashboardItem.getDashboard());
-            } catch (APIException apiException) {
+            } catch (ApiException apiException) {
                 // handleApiException(apiException, dashboardItem, dashboardItemStore);
             }
         }
@@ -518,7 +519,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
                 // we have to update timestamp of dashboard after adding new item.
                 updateDashboardTimeStamp(dashboardItem.getDashboard());
-            } catch (APIException apiException) {
+            } catch (ApiException apiException) {
                 // handleApiException(apiException, dashboardItem, dashboardItemStore);
             }
         }
@@ -623,7 +624,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                 // dashboard's timestamp on server. In order to stay in sync,
                 // we need to get dashboard from server.
                 updateDashboardTimeStamp(item.getDashboard());
-            } catch (APIException apiException) {
+            } catch (ApiException apiException) {
                 // handleApiException(apiException, element, dashboardElementStore);
             }
         }
@@ -631,14 +632,14 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private void updateDashboardTimeStamp(Dashboard dashboard) {
         try {
-            Dashboard updatedDashboard = dashboardApiClient.getDashboardByUid(dashboard.getUId());
+            Dashboard updatedDashboard = dashboardApiClient.getBasicDashboardByUid(dashboard.getUId());
 
             // merging updated timestamp to local dashboard model
             dashboard.setCreated(updatedDashboard.getCreated());
             dashboard.setLastUpdated(updatedDashboard.getLastUpdated());
 
             dashboardStore.save(dashboard);
-        } catch (APIException apiException) {
+        } catch (ApiException apiException) {
             // handleApiException(apiException);
         }
     }

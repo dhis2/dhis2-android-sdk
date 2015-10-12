@@ -26,7 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network;
+package org.hisp.dhis.android.sdk.corejava.user;
 
-public class MyClass {
+import org.hisp.dhis.android.sdk.corejava.common.network.Credentials;
+import org.hisp.dhis.android.sdk.models.user.User;
+
+public interface IUserApiClient {
+    User logInUser(Credentials credentials);
 }

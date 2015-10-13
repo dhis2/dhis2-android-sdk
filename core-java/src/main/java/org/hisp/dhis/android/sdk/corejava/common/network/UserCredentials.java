@@ -26,27 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.preferences;
+package org.hisp.dhis.android.sdk.corejava.common.network;
 
-import org.joda.time.DateTime;
+public final class UserCredentials {
+    private final String username;
+    private final String password;
 
-import java.util.List;
+    public UserCredentials(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
-public interface ILastUpdatedPreferences {
-    boolean save(ResourceType key, DateTime value);
+    public String getUsername() {
+        return username;
+    }
 
-    boolean delete(ResourceType key);
-
-    boolean isSet(ResourceType key);
-
-    boolean clear();
-
-    DateTime get(ResourceType key);
-
-    List<DateTime> get();
-
-    boolean save(ResourceType resourceType, DateTime dateTime, String extra);
-
-    DateTime get(ResourceType resourceType, String extra);
-
+    public String getPassword() {
+        return password;
+    }
 }

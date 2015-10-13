@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.network;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
-
 public final class Configuration {
     private final String serverUrl;
 
     public Configuration(String serverUrl) {
-        this.serverUrl = isNull(serverUrl, "serverUrl must not be null");
+        this.serverUrl = serverUrl;
     }
 
     public String getServerUrl() {

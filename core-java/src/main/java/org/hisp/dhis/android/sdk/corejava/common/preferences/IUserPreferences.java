@@ -26,24 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.network;
+package org.hisp.dhis.android.sdk.corejava.common.preferences;
 
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
 
-public final class Credentials {
-    private String username;
-    private String password;
+public interface IUserPreferences {
+    boolean save(UserCredentials credentials);
 
-    public Credentials(String username, String password) {
-        this.username = Preconditions.isNull(username, "Username must not be null");
-        this.password = Preconditions.isNull(password, "Password must not be null");
-    }
+    boolean invalidateUserCredentials();
 
-    public String getUsername() {
-        return username;
-    }
+    boolean isUserSignedIn();
 
-    public String getPassword() {
-        return password;
-    }
+    boolean isUserInvalidated();
+
+    boolean clear();
+
+    UserCredentials get();
 }

@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.sdk.corejava.common.network;
 
 public interface AuthHandler {
-    Credentials getUserCredentials();
+    UserCredentials getUserCredentials();
 }

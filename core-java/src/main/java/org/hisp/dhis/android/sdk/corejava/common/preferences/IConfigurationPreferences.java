@@ -28,25 +28,12 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.preferences;
 
-import org.joda.time.DateTime;
+import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
 
-import java.util.List;
+public interface IConfigurationPreferences {
+    boolean save(Configuration configuration);
 
-public interface ILastUpdatedPreferences {
-    boolean save(ResourceType key, DateTime value);
-
-    boolean delete(ResourceType key);
-
-    boolean isSet(ResourceType key);
+    Configuration get();
 
     boolean clear();
-
-    DateTime get(ResourceType key);
-
-    List<DateTime> get();
-
-    boolean save(ResourceType resourceType, DateTime dateTime, String extra);
-
-    DateTime get(ResourceType resourceType, String extra);
-
 }

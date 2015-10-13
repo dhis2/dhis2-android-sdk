@@ -26,20 +26,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.preferences;
+package org.hisp.dhis.android.sdk.persistence.preferences;
 
-import java.util.List;
+import android.content.Context;
+import android.content.SharedPreferences;
 
-public interface IPreferences<Key, Value> {
-    boolean save(Key key, Value value);
+import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IConfigurationPreferences;
 
-    boolean delete(Key key);
+import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
 
-    boolean isSet(Key key);
+public class ConfigurationPreferences implements IConfigurationPreferences {
+    private static final String CONFIGURATION_PREFERENCES = "preferences:configuration";
+    private static final String SERVER_URL_KEY = "key:serverUrl";
 
-    boolean clear();
+    private final SharedPreferences mPrefs;
 
-    Value get(Key key);
+    public ConfigurationPreferences(Context context) {
+        mPrefs = context.getSharedPreferences(CONFIGURATION_PREFERENCES, Context.MODE_PRIVATE);
+    }
 
-    List<Value> get();
+    @Override
+    public boolean save(Configuration configuration) {
+        isNull(configuration, "configuration must not be null");
+        return putString(SERVER_URL_KEY, configuration.getServerUrl());
+    }
+
+    @Override
+    public Configuration get() {
+        String serverUrl = getString(SERVER_URL_KEY);
+        return new Configuration(serverUrl);
+    }
+
+    @Override
+    public boolean clear() {
+        return mPrefs.edit().clear().commit();
+    }
+
+    private boolean putString(String key, String value) {
+        return mPrefs.edit().putString(key, value).commit();
+    }
+
+    private String getString(String key) {
+        return mPrefs.getString(key, null);
+    }
 }

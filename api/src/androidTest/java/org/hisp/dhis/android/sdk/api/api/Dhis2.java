@@ -57,6 +57,7 @@ public final class Dhis2 {
     private final IPreferencesModule mPreferencesModule;
 
     private final IControllersModule mControllersModule;
+
     private final IServicesModule mServicesModule;
 
     private final DashboardScope mDashboardScope;
@@ -92,5 +93,4 @@ public final class Dhis2 {
     public static DashboardScope getDashboardScope() {
         return getInstance().mDashboardScope;
     }
-
 }

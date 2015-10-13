@@ -42,12 +42,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.call;
+import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.unwrap;
 
 public class DashboardApiClient implements IDashboardApiClient {
-    private final IDhisApi dhisApi;
+    private final IDashboardRetrofitClient dhisApi;
 
-    public DashboardApiClient(IDhisApi dhisApi) {
+    public DashboardApiClient(IDashboardRetrofitClient dhisApi) {
         this.dhisApi = dhisApi;
     }
 
@@ -60,9 +61,8 @@ public class DashboardApiClient implements IDashboardApiClient {
             QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<Dashboard> actualDashboards = unwrapResponse(dhisApi
-                .getDashboards(QUERY_MAP_BASIC), IDhisApi.DASHBOARDS);
-
+        List<Dashboard> actualDashboards = unwrap(call(dhisApi
+                .getDashboards(QUERY_MAP_BASIC)), IDhisApi.DASHBOARDS);
         if (actualDashboards == null) {
             actualDashboards = new ArrayList<>();
         }
@@ -91,8 +91,8 @@ public class DashboardApiClient implements IDashboardApiClient {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<Dashboard> dashboards = unwrapResponse(dhisApi
-                .getDashboards(QUERY_MAP_FULL), IDhisApi.DASHBOARDS);
+        List<Dashboard> dashboards = unwrap(call(dhisApi
+                .getDashboards(QUERY_MAP_FULL)), IDhisApi.DASHBOARDS);
 
         if (dashboards == null) {
             dashboards = new ArrayList<>();
@@ -123,8 +123,8 @@ public class DashboardApiClient implements IDashboardApiClient {
             QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        List<DashboardItem> updatedItems = unwrapResponse(dhisApi
-                .getDashboardItems(QUERY_MAP_BASIC), IDhisApi.DASHBOARD_ITEMS);
+        List<DashboardItem> updatedItems = unwrap(call(dhisApi
+                .getDashboardItems(QUERY_MAP_BASIC)), IDhisApi.DASHBOARD_ITEMS);
 
         if (updatedItems == null) {
             updatedItems = new ArrayList<>();
@@ -137,7 +137,7 @@ public class DashboardApiClient implements IDashboardApiClient {
     public Dashboard getBasicDashboardByUid(String uid) {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "created,lastUpdated");
-        return dhisApi.getDashboard(uid, QUERY_PARAMS);
+        return call(dhisApi.getDashboard(uid, QUERY_PARAMS));
     }
 
     @Override

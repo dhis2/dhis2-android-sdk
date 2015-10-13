@@ -28,19 +28,121 @@
 
 package org.hisp.dhis.android.sdk.network.modules;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import org.hisp.dhis.android.sdk.corejava.common.modules.INetworkModule;
+import org.hisp.dhis.android.sdk.corejava.common.modules.IPreferencesModule;
+import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
+import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IConfigurationPreferences;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IUserPreferences;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.android.sdk.network.dashboard.DashboardApiClient;
+import org.hisp.dhis.android.sdk.network.dashboard.IDashboardRetrofitClient;
+import org.hisp.dhis.android.sdk.network.systeminfo.ISystemInfoRetrofitClient;
+import org.hisp.dhis.android.sdk.network.systeminfo.SystemInfoApiClient;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import retrofit.BaseUrl;
+import retrofit.JacksonConverterFactory;
+import retrofit.Retrofit;
+
+import static com.squareup.okhttp.Credentials.basic;
+import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
 
 public class NetworkModule implements INetworkModule {
+    private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s
+    private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000;      // 20s
+    private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
+
+    private final IDashboardApiClient mDashboardApiClient;
+    private final ISystemInfoApiClient mSystemInfoApiClient;
+
+    public NetworkModule(IPreferencesModule preferencesModule) {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new AuthInterceptor(preferencesModule.getUserPreferences()));
+        okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+        okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+
+        /* constructing jackson's object mapper */
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
+        mapper.disable(
+                MapperFeature.AUTO_DETECT_CREATORS,
+                MapperFeature.AUTO_DETECT_FIELDS,
+                MapperFeature.AUTO_DETECT_GETTERS,
+                MapperFeature.AUTO_DETECT_IS_GETTERS,
+                MapperFeature.AUTO_DETECT_SETTERS
+        );
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
+                .client(okHttpClient)
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .build();
+
+        mDashboardApiClient = new DashboardApiClient(retrofit.create(IDashboardRetrofitClient.class));
+        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(ISystemInfoRetrofitClient.class));
+    }
 
     @Override
     public IDashboardApiClient getDashboardApiClient() {
-        return null;
+        return mDashboardApiClient;
     }
 
     @Override
     public ISystemInfoApiClient getSystemInfoApiClient() {
-        return null;
+        return mSystemInfoApiClient;
+    }
+
+    private static class ApiBaseUrl implements BaseUrl {
+        private final IConfigurationPreferences mConfigurationPreferences;
+
+        public ApiBaseUrl(IConfigurationPreferences configurationPreferences) {
+            mConfigurationPreferences = configurationPreferences;
+        }
+
+        @Override
+        public HttpUrl url() {
+            Configuration configuration = mConfigurationPreferences.get();
+            return HttpUrl.parse(configuration.getServerUrl());
+        }
+    }
+
+    private static class AuthInterceptor implements Interceptor {
+        private final IUserPreferences mUserPreferences;
+
+        public AuthInterceptor(IUserPreferences preferences) {
+            mUserPreferences = preferences;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            UserCredentials userCredentials = mUserPreferences.get();
+            if (isEmpty(userCredentials.getUsername())
+                    || isEmpty(userCredentials.getPassword())) {
+                return chain.proceed(chain.request());
+            }
+
+            String base64Credentials = basic(userCredentials.getUsername(),
+                    userCredentials.getPassword());
+            Request request = chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", base64Credentials)
+                    .build();
+
+            return chain.proceed(request);
+        }
     }
 }

@@ -59,7 +59,7 @@ public final class Response {
         mUrl = url;
         mStatus = status;
         mReason = reason;
-        mHeaders = Collections.unmodifiableList(new ArrayList<Header>(headers));
+        mHeaders = Collections.unmodifiableList(new ArrayList<>(headers));
         mBody = body;
     }
 

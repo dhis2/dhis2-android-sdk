@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.sdk.network.retrofit;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.squareup.okhttp.Response;
 
 import org.hisp.dhis.android.sdk.models.category.Category;
 import org.hisp.dhis.android.sdk.models.category.CategoryCombo;
@@ -57,7 +58,7 @@ import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.client.Response;
+import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -67,7 +68,6 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
-import retrofit.mime.TypedString;
 
 
 public interface IDhisApi {
@@ -96,134 +96,56 @@ public interface IDhisApi {
     // Methods for getting user information
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/system/info/")
-    SystemInfo getSystemInfo();
-
     @GET("/me/")
-    UserAccount getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-
-
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting Dashboard and DashboardItems
-    /////////////////////////////////////////////////////////////////////////
-
-    @GET("/dashboards?paging=false")
-    Map<String, List<Dashboard>> getDashboards(@QueryMap Map<String, String> queryMap);
-
-    @GET("/dashboards/{uid}")
-    Dashboard getDashboard(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
-
-    @POST("/dashboards/")
-    Response postDashboard(@Body Dashboard dashboard);
-
-    @DELETE("/dashboards/{uid}")
-    Response deleteDashboard(@Path("uid") String dashboardUId);
-
-    @PUT("/dashboards/{uid}")
-    Response putDashboard(@Path("uid") String uid, @Body Dashboard dashboard);
-
-    @GET("/dashboardItems?paging=false")
-    Map<String, List<DashboardItem>> getDashboardItems(@QueryMap Map<String, String> queryMap);
-
-    @GET("/dashboardItems/{uid}")
-    DashboardItem getDashboardItem(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
-
-    @POST("/dashboards/{dashboardUId}/items/content")
-    Response postDashboardItem(@Path("dashboardUId") String dashboardUId,
-                               @Query("type") String type,
-                               @Query("id") String uid,
-                               @Body String stubBody);
-
-    @DELETE("/dashboards/{dashboardUId}/items/{itemUId}")
-    Response deleteDashboardItem(@Path("dashboardUId") String dashboardUId,
-                                 @Path("itemUId") String itemUId);
-
-    @DELETE("/dashboards/{dashboardUid}/items/{itemUid}/content/{contentUid}")
-    Response deleteDashboardItemContent(@Path("dashboardUid") String dashboardUid,
-                                        @Path("itemUid") String itemUid,
-                                        @Path("contentUid") String contentUid);
-
-
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting DashboardContent
-    /////////////////////////////////////////////////////////////////////////
-
-    @GET("/charts?paging=false")
-    Map<String, List<DashboardContent>> getCharts(@QueryMap Map<String, String> queryParams);
-
-    @GET("/eventCharts?paging=false")
-    Map<String, List<DashboardContent>> getEventCharts(@QueryMap Map<String, String> queryParams);
-
-    @GET("/maps?paging=false")
-    Map<String, List<DashboardContent>> getMaps(@QueryMap Map<String, String> queryParams);
-
-    @GET("/reportTables?paging=false")
-    Map<String, List<DashboardContent>> getReportTables(@QueryMap Map<String, String> queryParams);
-
-    @Headers("Accept: application/text")
-    @GET("/reportTables/{id}/data.html")
-    Response getReportTableData(@Path("id") String id);
-
-    @GET("/eventReports?paging=false")
-    Map<String, List<DashboardContent>> getEventReports(@QueryMap Map<String, String> queryParams);
-
-    @GET("/users?paging=false")
-    Map<String, List<DashboardContent>> getUsers(@QueryMap Map<String, String> queryParams);
-
-    @GET("/reports?paging=false")
-    Map<String, List<DashboardContent>> getReports(@QueryMap Map<String, String> queryMap);
-
-    @GET("/documents?paging=false")
-    Map<String, List<DashboardContent>> getResources(@QueryMap Map<String, String> queryMap);
-
+    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Interpretations
     /////////////////////////////////////////////////////////////////////////
 
     @GET("/interpretations/?paging=false")
-    Map<String, List<Interpretation>> getInterpretations(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<Interpretation>>> getInterpretations(@QueryMap Map<String, String> queryMap);
 
     @GET("/interpretations/{uid}")
-    Interpretation getInterpretation(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
+    Call<Interpretation> getInterpretation(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/chart/{uid}")
-    Response postChartInterpretation(@Path("uid") String elementUid,
-                                     @Body TypedString interpretationText);
+    Call<Response> postChartInterpretation(@Path("uid") String elementUid,
+                                           @Body String interpretationText);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/map/{uid}")
-    Response postMapInterpretation(@Path("uid") String elementUid,
-                                   @Body TypedString interpretationText);
+    Call<Response> postMapInterpretation(@Path("uid") String elementUid,
+                                         @Body String interpretationText);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/reportTable/{uid}")
-    Response postReportTableInterpretation(@Path("uid") String elementUid,
-                                           @Body TypedString interpretationText);
+    Call<Response> postReportTableInterpretation(@Path("uid") String elementUid,
+                                                 @Body String interpretationText);
 
     @Headers("Content-Type: text/plain")
     @PUT("/interpretations/{uid}")
-    Response putInterpretationText(@Path("uid") String interpretationUid,
-                                   @Body TypedString interpretationText);
+    Call<Response> putInterpretationText(@Path("uid") String interpretationUid,
+                                         @Body String interpretationText);
 
     @DELETE("/interpretations/{uid}")
-    Response deleteInterpretation(@Path("uid") String interpretationUid);
+    Call<Response> deleteInterpretation(@Path("uid") String interpretationUid);
 
     @Headers("Content-Type: text/plain")
     @POST("/interpretations/{interpretationUid}/comments")
-    Response postInterpretationComment(@Path("interpretationUid") String interpretationUid,
-                                       @Body TypedString commentText);
+    Call<Response> postInterpretationComment(@Path("interpretationUid") String interpretationUid,
+                                             @Body String commentText);
 
     @Headers("Content-Type: text/plain")
     @PUT("/interpretations/{interpretationUid}/comments/{commentUid}")
-    Response putInterpretationComment(@Path("interpretationUid") String interpretationUid,
-                                      @Path("commentUid") String commentUid,
-                                      @Body TypedString commentText);
+    Call<Response> putInterpretationComment(@Path("interpretationUid") String interpretationUid,
+                                            @Path("commentUid") String commentUid,
+                                            @Body String commentText);
 
     @DELETE("/interpretations/{interpretationUid}/comments/{commentUid}")
-    Response deleteInterpretationComment(@Path("interpretationUid") String interpretationUid,
-                                         @Path("commentUid") String commentUid);
+    Call<Response> deleteInterpretationComment(@Path("interpretationUid") String interpretationUid,
+                                               @Path("commentUid") String commentUid);
 
 
     /////////////////////////////////////////////////////////////////////////
@@ -231,104 +153,111 @@ public interface IDhisApi {
     /////////////////////////////////////////////////////////////////////////
 
     @GET("/organisationUnits?paging=false")
-    Map<String, List<OrganisationUnit>> getOrganisationUnits(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<OrganisationUnit>>> getOrganisationUnits(@QueryMap Map<String, String> queryParams);
 
     @GET("/dataSets?paging=false")
-    Map<String, List<DataSet>> getDataSets(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<DataSet>>> getDataSets(@QueryMap Map<String, String> queryParams);
 
     @GET("/dataElements?paging=false")
-    Map<String, List<DataElement>> getDataElements(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<DataElement>>> getDataElements(@QueryMap Map<String, String> queryParams);
 
     @GET("/categoryCombos?paging=false")
-    Map<String, List<CategoryCombo>> getCategoryCombos(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<CategoryCombo>>> getCategoryCombos(@QueryMap Map<String, String> queryParams);
 
     @GET("/categories?paging=false")
-    Map<String, List<Category>> getCategories(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<Category>>> getCategories(@QueryMap Map<String, String> queryMap);
 
     @GET("/categoryOptions?paging=false")
-    Map<String, List<CategoryOption>> getCategoryOptions(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<CategoryOption>>> getCategoryOptions(@QueryMap Map<String, String> queryMap);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with tracker meta data
     /////////////////////////////////////////////////////////////////////////
 
     @GET("/" + TRACKED_ENTITY_ATTRIBUTES + "?paging=false")
-    Map<String, List<TrackedEntityAttribute>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<TrackedEntityAttribute>>> getTrackedEntityAttributes(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + CONSTANTS + "?paging=false")
-    Map<String, List<Constant>> getConstants(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<Constant>>> getConstants(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + PROGRAM_RULES + "?paging=false")
-    Map<String, List<ProgramRule>> getProgramRules(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<ProgramRule>>> getProgramRules(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + PROGRAM_RULE_VARIABLES + "?paging=false")
-    Map<String, List<ProgramRuleVariable>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<ProgramRuleVariable>>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + PROGRAM_RULE_ACTIONS + "?paging=false")
-    Map<String, List<ProgramRuleAction>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<ProgramRuleAction>>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + RELATION_SHIP_TYPES + "?paging=false")
-    Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<RelationshipType>>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + OPTION_SETS + "?paging=false")
-    Map<String, List<OptionSet>> getOptionSets(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<OptionSet>>> getOptionSets(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + PROGRAMS + "/{programUid}")
-    Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
+    Call<Program> getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
 
     @GET("/" + PROGRAMS + "/?paging=false")
-    Map<String, List<Program>> getPrograms(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<Program>>> getPrograms(@QueryMap Map<String, String> queryMap);
 
     @GET("/me/programs/")
-    Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
+    Call<Response> getAssignedPrograms(@QueryMap Map<String, String> queryMap);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Tracker Data Values
     /////////////////////////////////////////////////////////////////////////
     @GET("/" + EVENTS + "?page=0")
-    JsonNode getEvents(@Query("program") String programUid,
-                       @Query("orgUnit") String organisationUnitUid,
-                       @Query("pageSize") int eventLimit,
-                       @QueryMap Map<String, String> queryParams);
+    Call<JsonNode> getEvents(@Query("program") String programUid,
+                             @Query("orgUnit") String organisationUnitUid,
+                             @Query("pageSize") int eventLimit,
+                             @QueryMap Map<String, String> queryParams);
 
     @GET("/" + EVENTS + "?paging=false&ouMode=ACCESSIBLE")
-    JsonNode getEventsForEnrollment(@Query("program") String programUid,
-                                    @Query("programStatus") String programStatus,
-                                    @Query("trackedEntityInstance") String
-                                            trackedEntityInstanceUid,
-                                    @QueryMap Map<String, String> queryParams);
+    Call<JsonNode> getEventsForEnrollment(@Query("program") String programUid,
+                                          @Query("programStatus") String programStatus,
+                                          @Query("trackedEntityInstance") String
+                                                  trackedEntityInstanceUid,
+                                          @QueryMap Map<String, String> queryParams);
 
     @GET("/" + EVENTS + "/{eventUid}")
-    Event getEvent(@Path("eventUid") String eventUid, @QueryMap Map<String, String> queryMap);
+    Call<Event> getEvent(@Path("eventUid") String eventUid,
+                         @QueryMap Map<String, String> queryMap);
 
     @POST("/" + EVENTS + "/")
-    Response postEvent(@Body Event event);
+    Call<Response> postEvent(@Body Event event);
 
     @PUT("/" + EVENTS + "/{eventUid}")
-    Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
+    Call<Response> putEvent(@Path("eventUid") String eventUid,
+                            @Body Event event);
 
     @GET("/" + ENROLLMENTS + "/{enrollmentUid}")
-    Enrollment getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
+    Call<Enrollment> getEnrollment(@Path("enrollmentUid") String enrollmentUid,
+                                   @QueryMap Map<String, String> queryMap);
 
     @GET("/" + ENROLLMENTS + "?ouMode=ACCESSIBLE")
-    Map<String, List<Enrollment>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<Enrollment>>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid,
+                                                       @QueryMap Map<String, String> queryMap);
 
     @POST("/" + ENROLLMENTS + "/")
-    Response postEnrollment(@Body Enrollment enrollment);
+    Call<Response> postEnrollment(@Body Enrollment enrollment);
 
     @PUT("/" + ENROLLMENTS + "/{enrollmentUid}")
-    Response putEnrollment(@Path("enrollmentUid") String enrollmentUid, @Body Enrollment enrollment);
+    Call<Response> putEnrollment(@Path("enrollmentUid") String enrollmentUid,
+                                 @Body Enrollment enrollment);
 
     @GET("/" + TRACKED_ENTITY_INSTANCES + "/{trackedEntityInstanceUid}")
-    TrackedEntityInstance getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
+    Call<TrackedEntityInstance> getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid,
+                                                         @QueryMap Map<String, String> queryMap);
 
     @GET("/" + TRACKED_ENTITY_INSTANCES)
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<TrackedEntityInstance>>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid,
+                                                                             @QueryMap Map<String, String> queryMap);
 
     @POST("/" + TRACKED_ENTITY_INSTANCES + "/")
-    Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);
+    Call<Response> postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);
 
     @PUT("/" + TRACKED_ENTITY_INSTANCES + "/{trackedEntityInstanceUid}")
-    Response putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @Body TrackedEntityInstance trackedEntityInstance);
-
+    Call<Response> putTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid,
+                                            @Body TrackedEntityInstance trackedEntityInstance);
 }

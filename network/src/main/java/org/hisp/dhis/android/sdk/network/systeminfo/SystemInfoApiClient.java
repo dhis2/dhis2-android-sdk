@@ -31,10 +31,17 @@ package org.hisp.dhis.android.sdk.network.systeminfo;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 
+import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.call;
+
 public class SystemInfoApiClient implements ISystemInfoApiClient {
+    private final ISystemInfoRetrofitClient mClient;
+
+    public SystemInfoApiClient(ISystemInfoRetrofitClient client) {
+        mClient = client;
+    }
 
     @Override
     public SystemInfo getSystemInfo() {
-        return null;
+        return call(mClient.getSystemInfo());
     }
 }

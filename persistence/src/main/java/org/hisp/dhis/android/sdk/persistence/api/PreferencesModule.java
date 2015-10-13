@@ -31,18 +31,36 @@ package org.hisp.dhis.android.sdk.persistence.api;
 import android.content.Context;
 
 import org.hisp.dhis.android.sdk.corejava.common.modules.IPreferencesModule;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IUserPreferences;
+import org.hisp.dhis.android.sdk.persistence.preferences.ConfigurationPreferences;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.persistence.preferences.UserPreferences;
 
 public class PreferencesModule implements IPreferencesModule {
     private final ILastUpdatedPreferences mLastUpdatedPreferences;
+    private final IUserPreferences mUserPreferences;
+    private final IConfigurationPreferences mConfigurationPreferences;
 
     public PreferencesModule(Context context) {
         mLastUpdatedPreferences = new LastUpdatedPreferences(context);
+        mUserPreferences = new UserPreferences(context);
+        mConfigurationPreferences = new ConfigurationPreferences(context);
     }
 
     @Override
     public ILastUpdatedPreferences getLastUpdatedPreferences() {
         return mLastUpdatedPreferences;
+    }
+
+    @Override
+    public IUserPreferences getUserPreferences() {
+        return mUserPreferences;
+    }
+
+    @Override
+    public IConfigurationPreferences getConfigurationPreferences() {
+        return mConfigurationPreferences;
     }
 }

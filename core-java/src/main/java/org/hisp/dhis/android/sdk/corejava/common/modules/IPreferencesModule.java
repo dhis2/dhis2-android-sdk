@@ -28,8 +28,14 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.modules;
 
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.android.sdk.corejava.common.preferences.IUserPreferences;
 
 public interface IPreferencesModule {
     ILastUpdatedPreferences getLastUpdatedPreferences();
+
+    IUserPreferences getUserPreferences();
+
+    IConfigurationPreferences getConfigurationPreferences();
 }

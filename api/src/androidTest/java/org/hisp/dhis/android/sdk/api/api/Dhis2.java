@@ -76,8 +76,8 @@ public final class Dhis2 {
     public static void init(Context context) {
         if (mDhis2 == null) {
             IPersistenceModule persistenceModule = new PersistenceModule(context);
-            INetworkModule networkModule = new NetworkModule();
             IPreferencesModule preferencesModule = new PreferencesModule(context);
+            INetworkModule networkModule = new NetworkModule(preferencesModule);
             mDhis2 = new Dhis2(networkModule, persistenceModule, preferencesModule);
         }
     }

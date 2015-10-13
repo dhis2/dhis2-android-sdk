@@ -26,51 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.utils;
+package org.hisp.dhis.android.sdk.network.systeminfo;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.network.retrofit.ResponseMapper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 
 import retrofit.Call;
-import retrofit.Response;
+import retrofit.http.GET;
 
-public class NetworkUtils {
-    private NetworkUtils() {
-        // no instances
-    }
+public interface ISystemInfoRetrofitClient {
 
-    public static <T> T call(Call<T> call) {
-        Response<T> response = null;
-        ApiException apiException = null;
-
-        try {
-            response = call.execute();
-        } catch (IOException ioException) {
-            apiException = ApiException.networkError(null, ioException);
-        }
-
-        if (apiException != null) {
-            throw apiException;
-        }
-
-        if (!response.isSuccess()) {
-            throw ApiException.httpError(response.raw().request().urlString(),
-                    ResponseMapper.fromOkResponse(response.raw()));
-        }
-
-        return response.body();
-    }
-
-    public static <T> List<T> unwrap(Map<String, List<T>> response, String key) {
-        if (response != null && response.containsKey(key) && response.get(key) != null) {
-            return response.get(key);
-        } else {
-            return new ArrayList<>();
-        }
-    }
+    @GET("/system/info/")
+    Call<SystemInfo> getSystemInfo();
 }

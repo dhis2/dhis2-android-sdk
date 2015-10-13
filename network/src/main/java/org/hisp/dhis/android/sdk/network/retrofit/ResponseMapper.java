@@ -26,51 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.utils;
+package org.hisp.dhis.android.sdk.network.retrofit;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
-import org.hisp.dhis.android.sdk.network.retrofit.ResponseMapper;
+import org.hisp.dhis.android.sdk.corejava.common.network.Header;
+import org.hisp.dhis.android.sdk.corejava.common.network.Response;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Response;
+public final class ResponseMapper {
 
-public class NetworkUtils {
-    private NetworkUtils() {
-        // no instances
+    private ResponseMapper() {
+        // private constructor
     }
 
-    public static <T> T call(Call<T> call) {
-        Response<T> response = null;
-        ApiException apiException = null;
+    public static Response fromOkResponse(com.squareup.okhttp.Response okResponse) {
+        if (okResponse == null) {
+            return null;
+        }
 
+        List<Header> headers = HeaderMapper
+                .fromOkHeaders(okResponse.headers());
+        byte[] responseBody = null;
         try {
-            response = call.execute();
+            responseBody = okResponse.body().bytes();
         } catch (IOException ioException) {
-            apiException = ApiException.networkError(null, ioException);
+            ioException.printStackTrace();
         }
-
-        if (apiException != null) {
-            throw apiException;
-        }
-
-        if (!response.isSuccess()) {
-            throw ApiException.httpError(response.raw().request().urlString(),
-                    ResponseMapper.fromOkResponse(response.raw()));
-        }
-
-        return response.body();
-    }
-
-    public static <T> List<T> unwrap(Map<String, List<T>> response, String key) {
-        if (response != null && response.containsKey(key) && response.get(key) != null) {
-            return response.get(key);
-        } else {
-            return new ArrayList<>();
-        }
+        return new Response(
+                okResponse.request().urlString(),
+                okResponse.code(),
+                okResponse.message(),
+                headers, responseBody);
     }
 }

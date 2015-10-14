@@ -37,8 +37,8 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.core.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.LastUpdatedManager;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -62,7 +62,7 @@ import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 
 import java.util.ArrayList;

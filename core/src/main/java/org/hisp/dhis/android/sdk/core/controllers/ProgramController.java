@@ -31,9 +31,9 @@ package org.hisp.dhis.android.sdk.core.controllers;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
-import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.core.api.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.program.IProgramStore;
@@ -55,7 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.unwrapResponse;
 
 public final class ProgramController extends ResourceController<Program> implements IProgramController {
 

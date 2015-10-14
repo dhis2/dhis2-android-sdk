@@ -57,8 +57,8 @@ import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance$Table;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.util.ArrayList;

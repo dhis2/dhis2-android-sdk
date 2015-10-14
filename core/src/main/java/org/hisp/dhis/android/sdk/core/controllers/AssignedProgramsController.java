@@ -34,7 +34,7 @@ import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.controllers.common.StringConverter;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
 import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;

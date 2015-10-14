@@ -39,8 +39,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.core.models.meta.State;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 import org.joda.time.DateTime;
 
 import java.util.List;

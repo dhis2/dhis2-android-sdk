@@ -33,10 +33,10 @@ import android.net.Uri;
 import org.hisp.dhis.android.sdk.core.controllers.common.PushableDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
-import org.hisp.dhis.android.sdk.core.utils.DbUtils;
-import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
+import org.hisp.dhis.android.sdk.core.api.utils.DbUtils;
+import org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
 import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
@@ -64,7 +64,7 @@ import java.util.Map;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.unwrapResponse;
 
 public final class TrackedEntityInstanceController extends PushableDataController implements ITrackedEntityInstanceController {
 

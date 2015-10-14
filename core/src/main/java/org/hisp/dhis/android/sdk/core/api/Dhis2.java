@@ -39,13 +39,13 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.network.RepositoryManager;
 import org.hisp.dhis.android.sdk.core.models.Credentials;
 import org.hisp.dhis.android.sdk.core.models.Session;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.core.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementService;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentService;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemService;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
-import org.hisp.dhis.android.sdk.core.common.Models;
+import org.hisp.dhis.android.sdk.core.api.modules.Models;
 
 public final class Dhis2 {
     // Reference to Dhis2 instance

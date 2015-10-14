@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.core.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.

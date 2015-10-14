@@ -33,12 +33,12 @@ import android.net.Uri;
 import org.hisp.dhis.android.sdk.core.controllers.common.IDataController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.android.sdk.core.utils.DbUtils;
+import org.hisp.dhis.android.sdk.core.api.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
@@ -62,9 +62,9 @@ import retrofit.client.Header;
 import retrofit.client.Response;
 import retrofit.mime.TypedString;
 
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.findLocationHeader;
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.handleApiException;
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.findLocationHeader;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.handleApiException;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.merge;
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
 

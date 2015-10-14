@@ -66,7 +66,7 @@ import org.hisp.dhis.android.sdk.core.models.Enrollment;
 import org.hisp.dhis.android.sdk.core.models.Event;
 import org.hisp.dhis.android.sdk.core.models.FailedItem;
 import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 import org.hisp.dhis.android.sdk.utils.LogUtils;
 

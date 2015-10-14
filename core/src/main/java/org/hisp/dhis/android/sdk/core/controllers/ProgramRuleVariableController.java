@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.controllers;
 import org.hisp.dhis.android.sdk.core.controllers.common.ResourceController;
 import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
-import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
@@ -39,7 +39,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.sdk.core.utils.NetworkUtils.unwrapResponse;
+import static org.hisp.dhis.android.sdk.core.api.utils.NetworkUtils.unwrapResponse;
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.merge;
 
 public final class ProgramRuleVariableController extends ResourceController<ProgramRuleVariable> {

@@ -50,9 +50,9 @@ import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.network.Credentials;
-import org.hisp.dhis.android.sdk.core.preferences.AppPreferences;
+import org.hisp.dhis.android.sdk.core.api.preferences.AppPreferences;
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.api.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 /**

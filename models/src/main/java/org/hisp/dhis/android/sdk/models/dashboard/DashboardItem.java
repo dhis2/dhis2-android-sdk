@@ -37,8 +37,6 @@ import org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DashboardItem extends BaseIdentifiableObject {
     public static final int MAX_CONTENT = 8;
@@ -185,7 +183,7 @@ public class DashboardItem extends BaseIdentifiableObject {
     }
 
     public void setDashboardElements(List<DashboardElement> dashboardElements) {
-        if (isEmpty(getType())) {
+        if (getType() == null || getType().isEmpty()) {
             return;
         }
 
@@ -232,7 +230,7 @@ public class DashboardItem extends BaseIdentifiableObject {
     public List<DashboardElement> getDashboardElements() {
 
         List<DashboardElement> elements = new ArrayList<>();
-        if (isEmpty(getType())) {
+        if (getType() == null || getType().isEmpty()) {
             return elements;
         }
 

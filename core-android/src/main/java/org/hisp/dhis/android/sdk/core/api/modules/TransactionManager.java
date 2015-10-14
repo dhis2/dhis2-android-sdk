@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.sdk.core.api.modules;
 
 import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.core.common.meta.DbDhis;
 
 import java.util.Collection;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class TransactionManager implements ITransactionManager {
 

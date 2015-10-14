@@ -62,7 +62,7 @@ import retrofit.JacksonConverterFactory;
 import retrofit.Retrofit;
 
 import static com.squareup.okhttp.Credentials.basic;
-import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
+import static org.hisp.dhis.android.sdk.corejava.utils.StringUtils.isEmpty;
 
 public class NetworkModule implements INetworkModule {
     private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s

@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.android.sdk.models.common.Access;
-import org.hisp.dhis.android.sdk.models.utils.StringUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -120,21 +119,6 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
     @Override
     public void setAccess(Access access) {
         this.access = access;
-    }
-
-    @Override
-    public String toString() {
-        return StringUtils.create()
-                .append("BaseIdentifiableObject$Flow {")
-                .append("id=").append(getId())
-                .append(", uId=").append(uId)
-                .append(", name=").append(name)
-                .append(", displayName=").append(displayName)
-                .append(", created=").append(created == null ? "" : created.toString())
-                .append(", lastUpdated=").append(lastUpdated == null ? "" : lastUpdated.toString())
-                .append(", access=").append(access == null ? "" : access.toString())
-                .append("}")
-                .build();
     }
 
     public static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {

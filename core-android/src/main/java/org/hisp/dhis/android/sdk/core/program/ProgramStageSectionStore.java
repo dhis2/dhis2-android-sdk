@@ -37,8 +37,8 @@ import org.hisp.dhis.android.sdk.core.flow.ProgramIndicatorToProgramStageSection
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageSection$Flow$Table;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageDataElementStore;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageSectionStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageSectionStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramStage;
 import org.hisp.dhis.android.sdk.models.program.ProgramStageSection;
 

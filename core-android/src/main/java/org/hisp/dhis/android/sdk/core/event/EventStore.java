@@ -36,10 +36,10 @@ import org.hisp.dhis.android.sdk.core.flow.Event$Flow$Table;
 import org.hisp.dhis.android.sdk.core.flow.TrackedEntityDataValue$Flow;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.event.Event;
-import org.hisp.dhis.android.sdk.models.event.IEventStore;
+import org.hisp.dhis.android.sdk.corejava.event.IEventStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityDataValueStore;
+import org.hisp.dhis.android.sdk.corejava.trackedentity.ITrackedEntityDataValueStore;
 
 import java.util.ArrayList;
 import java.util.List;

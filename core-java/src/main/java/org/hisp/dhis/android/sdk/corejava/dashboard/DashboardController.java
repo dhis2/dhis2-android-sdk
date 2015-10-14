@@ -36,10 +36,10 @@ import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;

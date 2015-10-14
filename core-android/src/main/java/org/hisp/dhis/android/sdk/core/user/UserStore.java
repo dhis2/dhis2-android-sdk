@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.flow.User$Flow;
 import org.hisp.dhis.android.sdk.core.flow.User$Flow$Table;
-import org.hisp.dhis.android.sdk.models.user.IUserStore;
+import org.hisp.dhis.android.sdk.corejava.user.IUserStore;
 import org.hisp.dhis.android.sdk.models.user.User;
 
 import java.util.List;

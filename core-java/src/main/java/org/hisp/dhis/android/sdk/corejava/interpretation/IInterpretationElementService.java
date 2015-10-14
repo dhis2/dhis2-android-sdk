@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.corejava.interpretation;
 
-import org.hisp.dhis.android.sdk.models.common.base.IService;
+import org.hisp.dhis.android.sdk.corejava.common.IService;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;

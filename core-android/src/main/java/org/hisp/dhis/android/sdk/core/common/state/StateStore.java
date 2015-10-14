@@ -37,7 +37,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 import org.hisp.dhis.android.sdk.models.common.state.State;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
@@ -48,7 +48,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.utils.Preconditions;
 import org.hisp.dhis.android.sdk.core.common.base.AbsStore;
 import org.hisp.dhis.android.sdk.core.common.base.IMapper;
 import org.hisp.dhis.android.sdk.core.flow.Dashboard$Flow;

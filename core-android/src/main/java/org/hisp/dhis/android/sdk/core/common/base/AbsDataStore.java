@@ -32,9 +32,9 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.models.common.base.IModel;
 import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class AbsDataStore<ModelType extends IModel, DatabaseEntityType
         extends IModel & Model> extends AbsStore<ModelType, DatabaseEntityType> {

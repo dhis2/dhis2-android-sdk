@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.corejava.dashboard;
 
 import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;
 
@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class DashboardElementService implements IDashboardElementService {
     private final IDashboardElementStore dashboardElementStore;

@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.sdk.models.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.android.sdk.models.utils.StringUtils;
-
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class Access {
 
     @JsonProperty("manage")
@@ -70,78 +68,51 @@ public final class Access {
         return access;
     }
 
-    @JsonIgnore
     public boolean isDelete() {
         return delete;
     }
 
-    @JsonIgnore
     public void setDelete(boolean delete) {
         this.delete = delete;
     }
 
-    @JsonIgnore
     public boolean isExternalize() {
         return externalize;
     }
 
-    @JsonIgnore
     public void setExternalize(boolean externalize) {
         this.externalize = externalize;
     }
 
-    @JsonIgnore
     public boolean isManage() {
         return manage;
     }
 
-    @JsonIgnore
     public void setManage(boolean manage) {
         this.manage = manage;
     }
 
-    @JsonIgnore
     public boolean isRead() {
         return read;
     }
 
-    @JsonIgnore
     public void setRead(boolean read) {
         this.read = read;
     }
 
-    @JsonIgnore
     public boolean isUpdate() {
         return update;
     }
 
-    @JsonIgnore
     public void setUpdate(boolean update) {
         this.update = update;
     }
 
-    @JsonIgnore
     public boolean isWrite() {
         return write;
     }
 
-    @JsonIgnore
     public void setWrite(boolean write) {
         this.write = write;
-    }
-
-    @JsonIgnore
-    @Override
-    public String toString() {
-        return StringUtils.create()
-                .append("Access {")
-                .append("manage=").append(manage)
-                .append(", externalize=").append(externalize)
-                .append(", write=").append(write)
-                .append(", read=").append(read)
-                .append(", update=").append(update)
-                .append(", delete=").append(delete)
-                .append("}")
-                .build();
     }
 }

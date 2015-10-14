@@ -31,10 +31,10 @@ package org.hisp.dhis.android.sdk.core.api.utils;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.core.common.meta.DbDhis;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.models.common.base.BaseIdentifiableObject.toMap;
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 /**
  * This class is intended to process list of DbOperations

@@ -31,10 +31,10 @@ package org.hisp.dhis.android.sdk.core.optionset;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.optionset.IOptionStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.optionset.IOptionStore;
 import org.hisp.dhis.android.sdk.models.optionset.Option;
 import org.hisp.dhis.android.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.core.flow.Option$Flow;

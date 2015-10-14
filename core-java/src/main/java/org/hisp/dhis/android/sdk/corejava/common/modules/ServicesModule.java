@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.corejava.common.modules;
 import org.hisp.dhis.android.sdk.corejava.dashboard.DashboardService;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardService;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public final class ServicesModule implements IServicesModule {
     private final IDashboardService dashboardService;

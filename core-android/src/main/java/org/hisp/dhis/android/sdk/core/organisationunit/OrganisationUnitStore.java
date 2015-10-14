@@ -37,7 +37,7 @@ import org.hisp.dhis.android.sdk.core.flow.OrganisationUnit$Flow$Table;
 import org.hisp.dhis.android.sdk.core.flow.UnitToDataSetRelationShip$Flow;
 import org.hisp.dhis.android.sdk.core.flow.UnitToDataSetRelationShip$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
-import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.android.sdk.corejava.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.ArrayList;

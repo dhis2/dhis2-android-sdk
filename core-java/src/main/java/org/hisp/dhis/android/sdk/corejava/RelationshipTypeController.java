@@ -33,7 +33,7 @@ import org.hisp.dhis.android.sdk.core.network.APIException;
 import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.relationship.RelationshipType;
 import org.joda.time.DateTime;
 

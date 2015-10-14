@@ -30,9 +30,9 @@ package org.hisp.dhis.android.sdk.core.common.meta;
 
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.android.sdk.models.common.meta.DbAction;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbAction;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.utils.Preconditions;
 
 /**
  * This class is intended to implement partial

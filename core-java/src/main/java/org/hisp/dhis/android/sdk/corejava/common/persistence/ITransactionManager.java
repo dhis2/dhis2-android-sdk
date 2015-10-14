@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.persistence;
 
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
 
 import java.util.Collection;
 

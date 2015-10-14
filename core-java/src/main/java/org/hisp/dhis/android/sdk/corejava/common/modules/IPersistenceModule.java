@@ -33,9 +33,7 @@ import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 
 public interface IPersistenceModule {
     ITransactionManager getTransactionManager();

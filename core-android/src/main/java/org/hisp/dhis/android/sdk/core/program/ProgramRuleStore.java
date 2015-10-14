@@ -35,9 +35,9 @@ import org.hisp.dhis.android.sdk.core.flow.ProgramRule$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramRule$Flow$Table;
 import org.hisp.dhis.android.sdk.core.flow.ProgramRuleAction$Flow;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.program.IProgramRuleStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramRuleStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramRule;
-import org.hisp.dhis.android.sdk.models.program.IProgramRuleActionStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramRuleActionStore;
 
 import java.util.List;
 

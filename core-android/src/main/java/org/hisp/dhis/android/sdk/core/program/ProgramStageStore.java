@@ -36,10 +36,10 @@ import org.hisp.dhis.android.sdk.core.flow.ProgramStage$Flow$Table;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramStage;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageDataElementStore;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageSectionStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageSectionStore;
 
 import java.util.List;
 

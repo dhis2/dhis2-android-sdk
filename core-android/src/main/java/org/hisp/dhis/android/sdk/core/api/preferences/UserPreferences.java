@@ -34,8 +34,8 @@ import android.content.SharedPreferences;
 import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
 import org.hisp.dhis.android.sdk.corejava.common.preferences.IUserPreferences;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
-import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.StringUtils.isEmpty;
 
 public class UserPreferences implements IUserPreferences {
     private static final String USER_CREDENTIALS = "preferences:userCredentials";

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.corejava.dashboard;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
 public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {

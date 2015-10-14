@@ -29,10 +29,10 @@
 package org.hisp.dhis.android.sdk.corejava.interpretation;
 
 import org.hisp.dhis.android.sdk.models.common.state.Action;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class InterpretationCommentService implements IInterpretationCommentService {
     private final IInterpretationCommentStore interpretationCommentStore;

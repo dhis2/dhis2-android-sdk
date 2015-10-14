@@ -33,9 +33,9 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.core.api.utils.DbUtils;
-import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
-import org.hisp.dhis.android.sdk.models.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 

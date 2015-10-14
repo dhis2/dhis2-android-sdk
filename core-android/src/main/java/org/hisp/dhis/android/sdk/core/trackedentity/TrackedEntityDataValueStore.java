@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.core.flow.TrackedEntityDataValue$Flow;
 import org.hisp.dhis.android.sdk.core.flow.TrackedEntityDataValue$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.models.event.Event;
-import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityDataValueStore;
+import org.hisp.dhis.android.sdk.corejava.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;

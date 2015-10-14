@@ -39,7 +39,7 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.utils.Preconditions;
 import org.hisp.dhis.android.sdk.core.common.meta.DbDhis;
 
 

@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.flow.RelationshipType$Flow;
 import org.hisp.dhis.android.sdk.core.flow.RelationshipType$Flow$Table;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.relationship.RelationshipType;
 
 import java.util.List;

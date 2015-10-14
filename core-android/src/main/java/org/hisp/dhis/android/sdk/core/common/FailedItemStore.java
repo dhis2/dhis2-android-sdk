@@ -38,7 +38,7 @@ import org.hisp.dhis.android.sdk.core.flow.FailedItem$Flow$Table;
 import org.hisp.dhis.android.sdk.core.flow.ImportSummary$Flow;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;
-import org.hisp.dhis.android.sdk.models.common.faileditem.IFailedItemStore;
+import org.hisp.dhis.android.sdk.corejava.common.IFailedItemStore;
 
 import java.util.List;
 

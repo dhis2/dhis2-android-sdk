@@ -46,9 +46,9 @@ import org.hisp.dhis.android.sdk.corejava.interpretation.InterpretationElementSe
 import org.hisp.dhis.android.sdk.corejava.interpretation.InterpretationService;
 import org.hisp.dhis.android.sdk.core.api.modules.Models;
 import org.hisp.dhis.android.sdk.core.common.state.StateStore;
-import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.user.IUserAccountService;
-import org.hisp.dhis.android.sdk.models.user.UserAccountService;
+import org.hisp.dhis.android.sdk.corejava.common.IStateStore;
+import org.hisp.dhis.android.sdk.corejava.user.IUserAccountService;
+import org.hisp.dhis.android.sdk.corejava.user.UserAccountService;
 
 final class Services {
     private static Services services;

@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramStageDataElement$Flow$Table;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageDataElementStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageDataElementStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramStage;
 import org.hisp.dhis.android.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.models.program.ProgramStageSection;

@@ -31,11 +31,11 @@ package org.hisp.dhis.android.sdk.core.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.IDbOperation;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.sdk.models.program.IProgramStageStore;
-import org.hisp.dhis.android.sdk.models.program.IProgramStore;
-import org.hisp.dhis.android.sdk.models.program.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStageStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.core.common.meta.DbFlowOperation;
 import org.hisp.dhis.android.sdk.core.flow.Program$Flow$Table;

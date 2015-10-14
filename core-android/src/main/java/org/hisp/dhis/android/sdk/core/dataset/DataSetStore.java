@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.models.dataset.DataSet;
-import org.hisp.dhis.android.sdk.models.dataset.IDataSetStore;
+import org.hisp.dhis.android.sdk.corejava.dataset.IDataSetStore;
 import org.hisp.dhis.android.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.android.sdk.core.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.core.flow.DataSet$Flow$Table;

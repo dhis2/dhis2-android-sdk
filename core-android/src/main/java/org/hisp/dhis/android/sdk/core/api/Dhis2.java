@@ -47,8 +47,8 @@ import org.hisp.dhis.android.sdk.core.api.modules.PreferencesModule;
 
 import java.net.HttpURLConnection;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
-import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.StringUtils.isEmpty;
 
 public final class Dhis2 {
     // singleton instance

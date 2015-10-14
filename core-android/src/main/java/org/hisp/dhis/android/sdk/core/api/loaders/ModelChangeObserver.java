@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.runtime.FlowContentObserver;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.utils.Preconditions;
 import org.hisp.dhis.android.sdk.core.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.DashboardItem$Flow;
@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.core.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.core.flow.InterpretationElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.User$Flow;
 import org.hisp.dhis.android.sdk.core.flow.UserAccount$Flow;
-import org.hisp.dhis.android.sdk.models.common.meta.DbAction;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbAction;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardItem;

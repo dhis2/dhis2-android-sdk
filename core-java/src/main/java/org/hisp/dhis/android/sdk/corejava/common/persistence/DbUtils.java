@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.sdk.corejava.common.persistence;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
+import org.hisp.dhis.android.sdk.corejava.common.meta.DbOperation;
 
 import java.util.ArrayList;
 import java.util.List;

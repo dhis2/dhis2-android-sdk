@@ -31,9 +31,9 @@ package org.hisp.dhis.android.sdk.core.trackedentity;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.relationship.IRelationshipStore;
-import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityAttributeValueStore;
-import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityInstanceStore;
+import org.hisp.dhis.android.sdk.corejava.relationship.IRelationshipStore;
+import org.hisp.dhis.android.sdk.corejava.trackedentity.ITrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.sdk.corejava.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.core.flow.Relationship$Flow;
 import org.hisp.dhis.android.sdk.core.flow.TrackedEntityAttributeValue$Flow;

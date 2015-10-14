@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.dataelement;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.core.flow.DataElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.DataElement$Flow$Table;

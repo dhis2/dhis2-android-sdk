@@ -31,11 +31,11 @@ package org.hisp.dhis.android.sdk.core.trackedentity;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.corejava.common.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.models.trackedentity.ITrackedEntityAttributeValueStore;
+import org.hisp.dhis.android.sdk.corejava.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;

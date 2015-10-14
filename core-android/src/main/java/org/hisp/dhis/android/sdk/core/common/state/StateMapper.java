@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.android.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.models.utils.Preconditions;
+import org.hisp.dhis.android.sdk.corejava.utils.Preconditions;
 import org.hisp.dhis.android.sdk.core.common.base.AbsMapper;
 import org.hisp.dhis.android.sdk.core.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.core.flow.DashboardElement$Flow;
@@ -54,7 +54,7 @@ import org.hisp.dhis.android.sdk.core.flow.InterpretationElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.State$Flow;
 import org.hisp.dhis.android.sdk.core.flow.TrackedEntityInstance$Flow;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class StateMapper extends AbsMapper<State, State$Flow> implements IStateMapper {
 

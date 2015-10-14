@@ -35,7 +35,7 @@ import org.hisp.dhis.android.sdk.corejava.common.repository.IList;
 import org.hisp.dhis.android.sdk.corejava.common.repository.IRemove;
 import org.hisp.dhis.android.sdk.corejava.common.repository.ISave;
 import org.hisp.dhis.android.sdk.corejava.common.repository.IUpdate;
-import org.hisp.dhis.android.sdk.models.common.base.IService;
+import org.hisp.dhis.android.sdk.corejava.common.IService;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.models.dashboard.DashboardContent;
 

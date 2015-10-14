@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.core.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.android.sdk.core.flow.ProgramTrackedEntityAttribute$Flow$Table;
-import org.hisp.dhis.android.sdk.models.program.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttribute;

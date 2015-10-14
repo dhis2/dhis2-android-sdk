@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.android.sdk.models.program.IProgramRuleVariableStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramRuleVariableStore;
 import org.hisp.dhis.android.sdk.models.program.Program;
 import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.core.flow.ProgramRuleVariable$Flow;

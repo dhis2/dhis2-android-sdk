@@ -39,7 +39,7 @@ import org.hisp.dhis.android.sdk.core.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.core.flow.InterpretationElement$Flow;
 import org.hisp.dhis.android.sdk.core.flow.User$Flow;
 import org.hisp.dhis.android.sdk.core.flow.UserAccount$Flow;
-import org.hisp.dhis.android.sdk.models.common.IModelsStore;
+import org.hisp.dhis.android.sdk.corejava.common.IModelsStore;
 
 public class ModelsStore implements IModelsStore {
 

@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.core.flow.DashboardItem$Flow$Table;
 
 import java.util.List;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
 

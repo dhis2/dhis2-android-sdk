@@ -32,7 +32,7 @@ import org.hisp.dhis.android.sdk.corejava.common.controllers.IDataController;
 import org.hisp.dhis.android.sdk.corejava.dashboard.DashboardController;
 import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 
-import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.corejava.utils.Preconditions.isNull;
 
 public class ControllersModule implements IControllersModule {
     private final IDataController<Dashboard> dashboardController;

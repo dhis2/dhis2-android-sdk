@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.core.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.models.program.IProgramRuleActionStore;
+import org.hisp.dhis.android.sdk.corejava.program.IProgramRuleActionStore;
 import org.hisp.dhis.android.sdk.models.program.ProgramRule;
 import org.hisp.dhis.android.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.core.flow.ProgramRuleAction$Flow;

@@ -45,12 +45,16 @@ import org.hisp.dhis.android.sdk.corejava.common.preferences.IConfigurationPrefe
 import org.hisp.dhis.android.sdk.corejava.common.preferences.IUserPreferences;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
 import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.network.dashboard.DashboardApiClient;
-import org.hisp.dhis.android.sdk.network.dashboard.IDashboardRetrofitClient;
-import org.hisp.dhis.android.sdk.network.systeminfo.ISystemInfoRetrofitClient;
-import org.hisp.dhis.android.sdk.network.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+import org.hisp.dhis.android.sdk.network.clients.DashboardApiClient;
+import org.hisp.dhis.android.sdk.network.clients.DashboardApiClientRetrofit;
+import org.hisp.dhis.android.sdk.network.clients.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.android.sdk.network.clients.SystemInfoApiClient;
+import org.hisp.dhis.android.sdk.network.clients.UserApiClient;
+import org.hisp.dhis.android.sdk.network.clients.UserApiClientRetrofit;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.BaseUrl;
@@ -67,6 +71,7 @@ public class NetworkModule implements INetworkModule {
 
     private final IDashboardApiClient mDashboardApiClient;
     private final ISystemInfoApiClient mSystemInfoApiClient;
+    private final IUserApiClient mUserApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         OkHttpClient okHttpClient = new OkHttpClient();
@@ -92,8 +97,9 @@ public class NetworkModule implements INetworkModule {
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
-        mDashboardApiClient = new DashboardApiClient(retrofit.create(IDashboardRetrofitClient.class));
-        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(ISystemInfoRetrofitClient.class));
+        mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));
+        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(SystemInfoApiClientRetrofit.class));
+        mUserApiClient = new UserApiClient(retrofit.create(UserApiClientRetrofit.class));
     }
 
     @Override
@@ -104,6 +110,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public ISystemInfoApiClient getSystemInfoApiClient() {
         return mSystemInfoApiClient;
+    }
+
+    @Override
+    public IUserApiClient getUserApiClient() {
+        return mUserApiClient;
     }
 
     private static class ApiBaseUrl implements BaseUrl {
@@ -142,7 +153,11 @@ public class NetworkModule implements INetworkModule {
                     .addHeader("Authorization", base64Credentials)
                     .build();
 
-            return chain.proceed(request);
+            Response response = chain.proceed(request);
+            if (!response.isSuccessful() && response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                mUserPreferences.invalidateUserCredentials();
+            }
+            return response;
         }
     }
 }

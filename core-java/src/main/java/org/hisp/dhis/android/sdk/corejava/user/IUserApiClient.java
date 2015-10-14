@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.sdk.corejava.user;
 
-import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
-import org.hisp.dhis.android.sdk.models.user.User;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
 public interface IUserApiClient {
-    User logInUser(UserCredentials userCredentials);
+    UserAccount getUserAccount();
 }

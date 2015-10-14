@@ -26,16 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.network.clients;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
+import java.util.Map;
 
-    ISystemInfoApiClient getSystemInfoApiClient();
+import retrofit.Call;
+import retrofit.http.GET;
+import retrofit.http.QueryMap;
 
-    IUserApiClient getUserApiClient();
+public interface UserApiClientRetrofit {
+
+    /////////////////////////////////////////////////////////////////////////
+    // Methods for getting user information
+    /////////////////////////////////////////////////////////////////////////
+
+    @GET("/me/")
+    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 }

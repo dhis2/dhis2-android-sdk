@@ -26,16 +26,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.corejava.user;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+import org.hisp.dhis.android.sdk.corejava.common.controllers.IController;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
+public class UserController implements IController<UserAccount> {
 
-    ISystemInfoApiClient getSystemInfoApiClient();
-
-    IUserApiClient getUserApiClient();
 }

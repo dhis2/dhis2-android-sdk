@@ -26,15 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.systeminfo;
+package org.hisp.dhis.android.sdk.network.clients;
 
-import org.hisp.dhis.android.sdk.models.common.SystemInfo;
+import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 
-import retrofit.Call;
-import retrofit.http.GET;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface ISystemInfoRetrofitClient {
+import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.call;
 
-    @GET("/system/info/")
-    Call<SystemInfo> getSystemInfo();
+public class UserApiClient implements IUserApiClient {
+    private final UserApiClientRetrofit mApiClient;
+
+    public UserApiClient(UserApiClientRetrofit mApiClient) {
+        this.mApiClient = mApiClient;
+    }
+
+    @Override
+    public UserAccount getUserAccount() {
+        final Map<String, String> QUERY_PARAMS = new HashMap<>();
+        QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
+                "firstName,surname,gender,birthday,introduction," +
+                "education,employer,interests,jobTitle,languages,email,phoneNumber," +
+                "organisationUnits[id]");
+
+        return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
+    }
 }

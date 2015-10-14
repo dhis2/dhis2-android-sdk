@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.dashboard;
+package org.hisp.dhis.android.sdk.network.clients;
 
 import com.squareup.okhttp.Response;
 
@@ -48,7 +48,7 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
-public interface IDashboardRetrofitClient {
+public interface DashboardApiClientRetrofit {
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for getting Dashboard and DashboardItems

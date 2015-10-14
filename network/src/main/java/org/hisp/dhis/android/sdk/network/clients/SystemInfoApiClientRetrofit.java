@@ -26,16 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.network.clients;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+import org.hisp.dhis.android.sdk.models.common.SystemInfo;
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
+import retrofit.Call;
+import retrofit.http.GET;
 
-    ISystemInfoApiClient getSystemInfoApiClient();
+public interface SystemInfoApiClientRetrofit {
 
-    IUserApiClient getUserApiClient();
+    @GET("/system/info/")
+    Call<SystemInfo> getSystemInfo();
 }

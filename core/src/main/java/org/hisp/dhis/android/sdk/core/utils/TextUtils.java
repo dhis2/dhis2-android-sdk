@@ -26,16 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.corejava.common.modules;
+package org.hisp.dhis.android.sdk.core.utils;
 
-import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
-import org.hisp.dhis.android.sdk.corejava.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.android.sdk.corejava.user.IUserApiClient;
+public class TextUtils {
 
-public interface INetworkModule {
-    IDashboardApiClient getDashboardApiClient();
+    private TextUtils() {
+        // private constructor
+    }
 
-    ISystemInfoApiClient getSystemInfoApiClient();
-
-    IUserApiClient getUserApiClient();
+    public static boolean isEmpty(CharSequence sequence) {
+        return sequence == null || sequence.length() == 0;
+    }
 }

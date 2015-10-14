@@ -37,40 +37,46 @@ import org.hisp.dhis.android.sdk.corejava.common.modules.IPersistenceModule;
 import org.hisp.dhis.android.sdk.corejava.common.modules.IPreferencesModule;
 import org.hisp.dhis.android.sdk.corejava.common.modules.IServicesModule;
 import org.hisp.dhis.android.sdk.corejava.common.modules.ServicesModule;
+import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
+import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
+import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import org.hisp.dhis.android.sdk.network.modules.NetworkModule;
 import org.hisp.dhis.android.sdk.persistence.api.PersistenceModule;
 import org.hisp.dhis.android.sdk.persistence.api.PreferencesModule;
 
+import java.net.HttpURLConnection;
+
 import static org.hisp.dhis.android.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.models.utils.StringUtils.isEmpty;
 
 public final class Dhis2 {
     // singleton instance
     private static Dhis2 mDhis2;
 
-    // network module
+    /* core building blocks of android SDK */
     private final INetworkModule mNetworkModule;
-
-    // persistence module
     private final IPersistenceModule mPersistenceModule;
-
-    // preferences module
     private final IPreferencesModule mPreferencesModule;
 
+    /* higher level modules */
     private final IControllersModule mControllersModule;
-
     private final IServicesModule mServicesModule;
 
     private final DashboardScope mDashboardScope;
 
-    private Dhis2(INetworkModule networkModule, IPersistenceModule persistenceModule, IPreferencesModule preferencesModule) {
+    private Dhis2(INetworkModule networkModule, IPersistenceModule persistenceModule,
+                  IPreferencesModule preferencesModule) {
         mNetworkModule = isNull(networkModule, "networkModule must not be null");
         mPersistenceModule = isNull(persistenceModule, "persistenceModule must not be null");
         mPreferencesModule = isNull(preferencesModule, "preferencesModule must not be null");
 
-        mControllersModule = new ControllersModule(networkModule, persistenceModule, preferencesModule);
+        mControllersModule = new ControllersModule(networkModule, persistenceModule,
+                preferencesModule);
         mServicesModule = new ServicesModule(persistenceModule);
 
-        mDashboardScope = new DashboardScope(mControllersModule.getDashboardController(), mServicesModule.getDashboardService());
+        mDashboardScope = new DashboardScope(mControllersModule.getDashboardController(),
+                mServicesModule.getDashboardService());
     }
 
     public static void init(Context context) {
@@ -82,7 +88,7 @@ public final class Dhis2 {
         }
     }
 
-    public static Dhis2 getInstance() {
+    private static Dhis2 getInstance() {
         if (mDhis2 == null) {
             throw new IllegalArgumentException("You have to call init first");
         }
@@ -92,5 +98,41 @@ public final class Dhis2 {
 
     public static DashboardScope getDashboardScope() {
         return getInstance().mDashboardScope;
+    }
+
+    public static void configure(Configuration configuration) {
+        if (configuration == null) {
+            configuration = new Configuration(null);
+        }
+
+        getInstance().mPreferencesModule.getConfigurationPreferences().save(configuration);
+    }
+
+    public static UserAccount signIn(UserCredentials credentials) {
+        Configuration configuration = getInstance().mPreferencesModule
+                .getConfigurationPreferences().get();
+        if (configuration == null || isEmpty(configuration.getServerUrl())) {
+            throw new UnsupportedOperationException("You first have to set serverUrl " +
+                    "through configure() method");
+        }
+
+        if (getInstance().mPreferencesModule.getUserPreferences().isUserSignedIn()) {
+            throw new IllegalArgumentException("Another user is already signed in. " +
+                    "Please sign out first");
+        }
+
+        getInstance().mPreferencesModule.getUserPreferences().save(credentials);
+
+        try {
+            return getInstance().mNetworkModule
+                    .getUserApiClient().getUserAccount();
+        } catch (ApiException apiException) {
+            if (apiException.getKind() == ApiException.Kind.HTTP &&
+                    apiException.getResponse().getStatus() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                getInstance().mPreferencesModule.getUserPreferences().clear();
+            }
+
+            throw apiException;
+        }
     }
 }

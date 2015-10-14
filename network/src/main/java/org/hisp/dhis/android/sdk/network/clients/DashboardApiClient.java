@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.network.dashboard;
+package org.hisp.dhis.android.sdk.network.clients;
 
 import org.hisp.dhis.android.sdk.corejava.common.network.Response;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardApiClient;
@@ -46,9 +46,9 @@ import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.call;
 import static org.hisp.dhis.android.sdk.network.utils.NetworkUtils.unwrap;
 
 public class DashboardApiClient implements IDashboardApiClient {
-    private final IDashboardRetrofitClient dhisApi;
+    private final DashboardApiClientRetrofit dhisApi;
 
-    public DashboardApiClient(IDashboardRetrofitClient dhisApi) {
+    public DashboardApiClient(DashboardApiClientRetrofit dhisApi) {
         this.dhisApi = dhisApi;
     }
 

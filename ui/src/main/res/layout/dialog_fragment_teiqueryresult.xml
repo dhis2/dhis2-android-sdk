@@ -43,7 +43,7 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        <org.hisp.dhis.java.sdk.ui.views.FontTextView
             android:id="@+id/dialog_label"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -87,7 +87,7 @@
         android:layout_height="1px"
         android:background="@color/dark_navy_blue"/>
 
-    <org.hisp.dhis.android.sdk.ui.views.FontEditText
+    <org.hisp.dhis.java.sdk.ui.views.FontEditText
         android:id="@+id/filter_options"
         android:layout_width="match_parent"
         android:layout_height="48dp"

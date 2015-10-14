@@ -65,7 +65,7 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                <org.hisp.dhis.java.sdk.ui.views.FontEditText
                     android:id="@+id/edittext_username"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -78,7 +78,7 @@
                     android:singleLine="true"
                     app:font="@string/font_regular" />
 
-                <org.hisp.dhis.android.sdk.ui.views.FontEditText
+                <org.hisp.dhis.java.sdk.ui.views.FontEditText
                     android:id="@+id/edittext_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -92,7 +92,7 @@
                     android:singleLine="true"
                     app:font="@string/font_regular" />
 
-                <org.hisp.dhis.android.sdk.ui.views.FontButton
+                <org.hisp.dhis.java.sdk.ui.views.FontButton
                     android:id="@+id/button_re_log_in"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -117,7 +117,7 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <org.hisp.dhis.android.sdk.ui.views.FontButton
+                <org.hisp.dhis.java.sdk.ui.views.FontButton
                     android:id="@+id/button_clear_and_log_out"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

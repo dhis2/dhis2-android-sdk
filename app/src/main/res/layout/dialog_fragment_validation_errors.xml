@@ -36,7 +36,7 @@
     android:minWidth="320dp"
     android:weightSum="1">
 
-    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+    <org.hisp.dhis.java.sdk.ui.views.FontTextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

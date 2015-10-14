@@ -46,7 +46,7 @@
 
         <include layout="@layout/listview_row_text_view_label"/>
 
-    <org.hisp.dhis.android.sdk.ui.views.FontCheckBox
+    <org.hisp.dhis.java.sdk.ui.views.FontCheckBox
         android:id="@+id/checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

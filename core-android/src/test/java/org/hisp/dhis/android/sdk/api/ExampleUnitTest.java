@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.api;
+package org.hisp.dhis.java.sdk.api;
 
 import org.junit.Test;
 

@@ -44,7 +44,7 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        <org.hisp.dhis.java.sdk.ui.views.FontTextView
             android:id="@+id/dialog_label"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -111,7 +111,7 @@
                     android:id="@+id/itemstatus"
                     android:src="@drawable/ic_offline" />
 
-                <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                <org.hisp.dhis.java.sdk.ui.views.FontTextView
                     android:id="@+id/statusinfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1">
-                <org.hisp.dhis.android.sdk.ui.views.FontTextView
+                <org.hisp.dhis.java.sdk.ui.views.FontTextView
                     android:id="@+id/item_detailed_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

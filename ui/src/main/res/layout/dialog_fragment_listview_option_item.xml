@@ -37,7 +37,7 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
-    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+    <org.hisp.dhis.java.sdk.ui.views.FontTextView
         android:id="@+id/textview_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

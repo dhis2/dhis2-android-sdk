@@ -34,12 +34,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
+import org.hisp.dhis.android.sdk.core.models.BaseSerializableModel;
 import org.hisp.dhis.android.sdk.ui.dialogs.CustomDialogFragment;
-import org.hisp.dhis.android.sdk.ui.dialogs.ItemStatusDialogFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.progressdialog.ProgressDialogFragment;
 
 /**

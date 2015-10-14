@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.ui.adapters.rows.events;
 
 import android.widget.Button;
 
-import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.core.models.Event;
 
 /**
  * Created by erling on 6/3/15.

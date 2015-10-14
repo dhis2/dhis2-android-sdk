@@ -32,11 +32,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
@@ -44,10 +40,10 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
-import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.core.models.Program;
+import org.hisp.dhis.android.sdk.core.models.Program$Table;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
 
 import java.util.ArrayList;

@@ -36,9 +36,9 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnitProgramRelationship$Table;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 

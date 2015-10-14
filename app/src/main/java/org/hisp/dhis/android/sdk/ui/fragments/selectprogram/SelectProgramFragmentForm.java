@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.selectprogram;
 
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.core.models.Program;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.EventRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceColumnNamesRow;
 

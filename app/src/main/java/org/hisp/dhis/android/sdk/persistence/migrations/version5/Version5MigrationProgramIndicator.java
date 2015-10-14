@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.core.models.ProgramIndicator;
 
 @Migration(version = 5, databaseName = Dhis2Database.NAME)
 public class Version5MigrationProgramIndicator extends AlterTableMigration<ProgramIndicator> {

@@ -42,9 +42,9 @@ import org.hisp.dhis.android.sdk.job.JobExecutor;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
+import org.hisp.dhis.android.sdk.core.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
-import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.

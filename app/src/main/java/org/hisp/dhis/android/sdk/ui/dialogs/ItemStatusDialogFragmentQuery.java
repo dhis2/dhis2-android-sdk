@@ -33,8 +33,8 @@ import android.content.Context;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.events.OnRowClick;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
-import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.core.models.BaseSerializableModel;
+import org.hisp.dhis.android.sdk.core.models.FailedItem;
 
 /**
  * Created by Simen S. Russnes on 7/9/15.

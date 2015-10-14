@@ -39,11 +39,11 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
+import org.hisp.dhis.android.sdk.core.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
-import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
-import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
+import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
+import org.hisp.dhis.android.sdk.core.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
 
 public final class DhisController {

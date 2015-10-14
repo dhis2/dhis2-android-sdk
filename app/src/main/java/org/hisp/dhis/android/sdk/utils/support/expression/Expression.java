@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.utils.support.expression;
 
 import org.apache.commons.lang3.Validate;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.core.models.DataElement;
 
 import java.io.Serializable;
 import java.util.HashSet;

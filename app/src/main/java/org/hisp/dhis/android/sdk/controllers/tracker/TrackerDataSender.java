@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.sdk.controllers.tracker;
 
-import android.net.Uri;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,21 +38,21 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
-import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
-import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.persistence.models.Relationship;
-import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
+import org.hisp.dhis.android.sdk.core.models.ApiResponse;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.DataValue$Table;
+import org.hisp.dhis.android.sdk.core.models.Enrollment;
+import org.hisp.dhis.android.sdk.core.models.Enrollment$Table;
+import org.hisp.dhis.android.sdk.core.models.Event;
+import org.hisp.dhis.android.sdk.core.models.Event$Table;
+import org.hisp.dhis.android.sdk.core.models.FailedItem;
+import org.hisp.dhis.android.sdk.core.models.ImportSummary;
+import org.hisp.dhis.android.sdk.core.models.Relationship;
+import org.hisp.dhis.android.sdk.core.models.Relationship$Table;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue$Table;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.NetworkUtils;

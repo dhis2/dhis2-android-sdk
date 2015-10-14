@@ -32,7 +32,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.core.models.Event;
 
 import java.io.IOException;
 import java.util.ArrayList;

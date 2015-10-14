@@ -33,12 +33,12 @@ import android.util.Log;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.core.models.DataElement;
+import org.hisp.dhis.android.sdk.core.models.OptionSet;
+import org.hisp.dhis.android.sdk.core.models.Program;
+import org.hisp.dhis.android.sdk.core.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;

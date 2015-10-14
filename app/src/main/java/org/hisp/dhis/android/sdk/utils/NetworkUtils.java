@@ -34,13 +34,12 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.persistence.models.Conflict;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
-import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
-import org.hisp.dhis.android.sdk.utils.StringConverter;
+import org.hisp.dhis.android.sdk.core.models.Conflict;
+import org.hisp.dhis.android.sdk.core.models.Enrollment;
+import org.hisp.dhis.android.sdk.core.models.Event;
+import org.hisp.dhis.android.sdk.core.models.FailedItem;
+import org.hisp.dhis.android.sdk.core.models.ImportSummary;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;

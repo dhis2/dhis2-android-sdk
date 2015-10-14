@@ -31,16 +31,16 @@ package org.hisp.dhis.android.sdk.utils.services;
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
-import org.hisp.dhis.android.sdk.persistence.models.Constant;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.core.models.Constant;
+import org.hisp.dhis.android.sdk.core.models.DataElement;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.Enrollment;
+import org.hisp.dhis.android.sdk.core.models.Event;
+import org.hisp.dhis.android.sdk.core.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.core.models.ProgramStage;
+import org.hisp.dhis.android.sdk.core.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.MathUtils;
@@ -255,7 +255,7 @@ public class ProgramIndicatorService {
     }
 
     /**
-     * Get all {@link org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement} part of the expression of the
+     * Get all {@link org.hisp.dhis.android.sdk.core.models.ProgramStageDataElement} part of the expression of the
      * given indicator.
      *
      * @param indicator the ProgramIndicator.
@@ -296,7 +296,7 @@ public class ProgramIndicatorService {
     }
 
     /**
-     * Get all {@link org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute} part of the expression of the
+     * Get all {@link org.hisp.dhis.android.sdk.core.models.TrackedEntityAttribute} part of the expression of the
      * given indicator.
      *
      * @param indicator the ProgramIndicator.

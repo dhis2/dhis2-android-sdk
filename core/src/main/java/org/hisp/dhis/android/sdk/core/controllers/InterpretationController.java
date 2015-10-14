@@ -38,7 +38,7 @@ import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.android.sdk.persistence.utils.DbUtils;
+import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.meta.DbOperation;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;

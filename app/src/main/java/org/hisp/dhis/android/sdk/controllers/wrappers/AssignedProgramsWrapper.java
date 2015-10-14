@@ -37,9 +37,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
-import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.core.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.core.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 
 import java.io.IOException;

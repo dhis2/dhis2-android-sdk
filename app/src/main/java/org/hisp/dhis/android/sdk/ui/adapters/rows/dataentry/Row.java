@@ -33,13 +33,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.core.models.BaseValue;
+import org.hisp.dhis.android.sdk.core.models.DataElement;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
 
 /**
  * Created by erling on 9/9/15.

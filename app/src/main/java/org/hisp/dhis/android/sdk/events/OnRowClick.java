@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.events;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseSerializableModel;
+import org.hisp.dhis.android.sdk.core.models.BaseSerializableModel;
 
 /**
  * Created by Simen S. Russnes on 7/15/15.

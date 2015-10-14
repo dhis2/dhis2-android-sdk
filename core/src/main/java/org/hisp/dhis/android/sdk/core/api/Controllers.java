@@ -64,7 +64,7 @@ import org.hisp.dhis.android.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.common.Models;
+import org.hisp.dhis.android.sdk.core.common.Models;
 
 final class Controllers {
     private static Controllers controllers;

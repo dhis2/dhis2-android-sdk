@@ -30,10 +30,10 @@ package org.hisp.dhis.android.sdk.utils.services;
 
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.Event;
+import org.hisp.dhis.android.sdk.core.models.ProgramRule;
+import org.hisp.dhis.android.sdk.core.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
 

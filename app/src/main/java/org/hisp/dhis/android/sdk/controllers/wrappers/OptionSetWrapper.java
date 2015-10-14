@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.Option;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
+import org.hisp.dhis.android.sdk.core.models.Option;
+import org.hisp.dhis.android.sdk.core.models.OptionSet;
+import org.hisp.dhis.android.sdk.core.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.joda.time.DateTime;
 

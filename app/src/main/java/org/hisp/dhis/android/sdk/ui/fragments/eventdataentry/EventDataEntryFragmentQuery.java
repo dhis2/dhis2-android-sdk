@@ -29,22 +29,21 @@
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.loaders.Query;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
-import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.core.models.DataElement;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.Enrollment;
+import org.hisp.dhis.android.sdk.core.models.Event;
+import org.hisp.dhis.android.sdk.core.models.OptionSet;
+import org.hisp.dhis.android.sdk.core.models.ProgramIndicator;
+import org.hisp.dhis.android.sdk.core.models.ProgramStage;
+import org.hisp.dhis.android.sdk.core.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.core.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
@@ -52,7 +51,6 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
@@ -65,7 +63,6 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.getDataElement;

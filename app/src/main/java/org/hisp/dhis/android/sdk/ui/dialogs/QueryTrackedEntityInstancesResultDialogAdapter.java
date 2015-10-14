@@ -38,8 +38,8 @@ import android.widget.Filterable;
 import android.widget.LinearLayout;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 
 import java.util.ArrayList;

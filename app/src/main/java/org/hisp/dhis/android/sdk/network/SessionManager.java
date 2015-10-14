@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.network;
 
-import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+import org.hisp.dhis.android.sdk.core.preferences.ResourceType;
 
 import java.util.HashSet;
 import java.util.Set;

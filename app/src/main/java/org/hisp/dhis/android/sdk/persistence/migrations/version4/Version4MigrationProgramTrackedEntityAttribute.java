@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.annotation.Migration;
 import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.core.models.ProgramTrackedEntityAttribute;
 
 /**
  * @author Simen Skogly Russnes on 27.05.15.

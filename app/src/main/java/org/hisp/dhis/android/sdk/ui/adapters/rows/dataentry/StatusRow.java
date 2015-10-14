@@ -37,8 +37,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
@@ -46,8 +44,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonCli
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.core.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 
 import java.util.ArrayList;

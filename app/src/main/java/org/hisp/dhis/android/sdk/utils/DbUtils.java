@@ -31,15 +31,15 @@ package org.hisp.dhis.android.sdk.utils;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
-import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
+import org.hisp.dhis.android.sdk.core.models.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.core.models.meta.DbOperation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject.toMap;
+import static org.hisp.dhis.android.sdk.core.models.BaseIdentifiableObject.toMap;
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 
 /**

@@ -28,10 +28,9 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.dataentry;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
+import org.hisp.dhis.android.sdk.core.models.BaseValue;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.TrackedEntityAttributeValue;
 
 public final class RowValueChangedEvent {
 

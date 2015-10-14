@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.sdk.utils.i18n;
 
-import org.hisp.dhis.android.sdk.persistence.models.BaseIdentifiableObject;
+import org.hisp.dhis.android.sdk.core.models.BaseIdentifiableObject;
 
 import java.util.Locale;
 

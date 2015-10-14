@@ -39,7 +39,7 @@ import org.hisp.dhis.android.sdk.core.network.IDhisApi;
 import org.hisp.dhis.android.sdk.core.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.core.models.ResourceType;
 import org.hisp.dhis.android.sdk.core.providers.ObjectMapperProvider;
-import org.hisp.dhis.android.sdk.persistence.utils.DbUtils;
+import org.hisp.dhis.android.sdk.core.utils.DbUtils;
 import org.hisp.dhis.android.sdk.core.utils.NetworkUtils;
 import org.hisp.dhis.android.sdk.models.common.base.IStore;
 import org.hisp.dhis.android.sdk.models.common.faileditem.FailedItemType;

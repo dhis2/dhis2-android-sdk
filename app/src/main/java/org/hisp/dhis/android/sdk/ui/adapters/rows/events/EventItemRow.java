@@ -40,7 +40,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.OnRowClick;
 import org.hisp.dhis.android.sdk.events.OnTrackerItemClick;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.core.models.Event;
 
 import static org.hisp.dhis.android.sdk.utils.Preconditions.isNull;
 

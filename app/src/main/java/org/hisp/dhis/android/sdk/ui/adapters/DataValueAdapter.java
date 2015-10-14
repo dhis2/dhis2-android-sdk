@@ -29,21 +29,15 @@
 package org.hisp.dhis.android.sdk.ui.adapters;
 
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
-import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.core.models.BaseValue;
+import org.hisp.dhis.android.sdk.core.models.DataValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
 import java.util.HashMap;
 import java.util.List;

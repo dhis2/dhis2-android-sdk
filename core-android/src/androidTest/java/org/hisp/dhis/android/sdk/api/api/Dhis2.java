@@ -42,8 +42,8 @@ import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
 import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
 import org.hisp.dhis.android.sdk.network.modules.NetworkModule;
-import org.hisp.dhis.android.sdk.persistence.api.PersistenceModule;
-import org.hisp.dhis.android.sdk.persistence.api.PreferencesModule;
+import org.hisp.dhis.android.sdk.persistence.common.PersistenceModule;
+import org.hisp.dhis.android.sdk.persistence.common.PreferencesModule;
 
 import java.net.HttpURLConnection;
 

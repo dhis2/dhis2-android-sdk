@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.persistence.api;
+package org.hisp.dhis.android.sdk.persistence.common;
 
 import android.content.Context;
 
@@ -38,9 +38,7 @@ import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardElementStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardItemStore;
 import org.hisp.dhis.android.sdk.corejava.dashboard.IDashboardStore;
-import org.hisp.dhis.android.sdk.models.common.base.IIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
-import org.hisp.dhis.android.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.common.state.StateStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardElementStore;
 import org.hisp.dhis.android.sdk.persistence.models.dashboard.DashboardContentStore;

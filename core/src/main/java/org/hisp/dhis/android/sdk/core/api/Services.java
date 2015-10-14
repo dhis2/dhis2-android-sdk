@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.corejava.interpretation.IInterpretationService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.InterpretationCommentService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.InterpretationElementService;
 import org.hisp.dhis.android.sdk.corejava.interpretation.InterpretationService;
-import org.hisp.dhis.android.sdk.persistence.api.Models;
+import org.hisp.dhis.android.sdk.persistence.common.Models;
 import org.hisp.dhis.android.sdk.persistence.models.common.state.StateStore;
 import org.hisp.dhis.android.sdk.models.common.state.IStateStore;
 import org.hisp.dhis.android.sdk.models.user.IUserAccountService;

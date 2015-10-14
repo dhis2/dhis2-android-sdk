@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.persistence.api;
+package org.hisp.dhis.android.sdk.persistence.common;
 
 import org.hisp.dhis.android.sdk.corejava.common.persistence.ITransactionManager;
 import org.hisp.dhis.android.sdk.models.common.meta.IDbOperation;

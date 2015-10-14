@@ -27,6 +27,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -48,8 +49,12 @@ android {
 
 dependencies {
     compile project(':core-java')
-    compile project(':network')
-    compile project(':persistence')
 
+    // Raizlabs libraries.
+    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
+    compile 'com.raizlabs.android:DBFlow-Core:2.2.1'
+    compile 'com.raizlabs.android:DBFlow:2.2.1'
+
+    // testing dependencies
     testCompile 'junit:junit:4.12'
 }

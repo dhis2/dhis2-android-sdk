@@ -26,4 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava.common;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+
+import okio.ByteString;
+import retrofit.converter.ConversionException;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedInput;
+import retrofit.mime.TypedOutput;
+import retrofit.mime.TypedString;
+
+/**
+ * @author Simen Skogly Russnes on 20.08.15.
+ */
+public class StringConverter implements Converter {
+    @Override public String fromBody(TypedInput body, Type type) throws ConversionException {
+        try {
+            return ByteString.read(body.in(), (int) body.length()).utf8();
+        } catch (IOException e) {
+            throw new ConversionException("Problem when convert string", e);
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+
+    @Override public TypedOutput toBody(Object object) {
+        return new TypedString((String) object);
+    }
+}

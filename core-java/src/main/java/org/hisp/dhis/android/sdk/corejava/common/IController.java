@@ -26,4 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava.common;
+
+
+import org.hisp.dhis.android.sdk.models.common.base.IdentifiableObject;
+
+public interface IController<T extends IdentifiableObject> {
+}

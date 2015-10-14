@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.corejava.common.network.ApiException;
 import org.hisp.dhis.android.sdk.corejava.common.network.Configuration;
 import org.hisp.dhis.android.sdk.corejava.common.network.UserCredentials;
 import org.hisp.dhis.android.sdk.models.user.UserAccount;
-import org.hisp.dhis.android.sdk.network.modules.NetworkModule;
+import org.hisp.dhis.android.sdk.core.modules.NetworkModule;
 import org.hisp.dhis.android.sdk.core.api.modules.PersistenceModule;
 import org.hisp.dhis.android.sdk.core.api.modules.PreferencesModule;
 

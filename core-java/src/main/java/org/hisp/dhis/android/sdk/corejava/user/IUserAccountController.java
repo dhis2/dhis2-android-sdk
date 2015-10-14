@@ -26,4 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava.user;
+
+import com.squareup.okhttp.HttpUrl;
+
+import org.hisp.dhis.android.sdk.corejava.common.IController;
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.core.models.Credentials;
+import org.hisp.dhis.android.sdk.models.user.UserAccount;
+
+public interface IUserAccountController extends IController<UserAccount> {
+    UserAccount logIn(HttpUrl serverUrl, Credentials credentials) throws APIException;
+
+    UserAccount updateAccount() throws APIException;
+}

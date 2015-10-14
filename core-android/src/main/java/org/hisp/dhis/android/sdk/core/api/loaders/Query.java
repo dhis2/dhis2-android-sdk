@@ -26,4 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.core.api.loaders;
+
+import android.content.Context;
+
+public interface Query<T> {
+    T query(Context context);
+}

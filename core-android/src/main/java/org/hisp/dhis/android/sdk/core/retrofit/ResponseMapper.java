@@ -26,4 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.core.retrofit;
+
+import org.hisp.dhis.android.sdk.corejava.common.network.Header;
+import org.hisp.dhis.android.sdk.corejava.common.network.Response;
+
+import java.io.IOException;
+import java.util.List;
+
+public final class ResponseMapper {
+
+    private ResponseMapper() {
+        // private constructor
+    }
+
+    public static Response fromOkResponse(com.squareup.okhttp.Response okResponse) {
+        if (okResponse == null) {
+            return null;
+        }
+
+        List<Header> headers = HeaderMapper
+                .fromOkHeaders(okResponse.headers());
+        byte[] responseBody = null;
+        try {
+            responseBody = okResponse.body().bytes();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return new Response(
+                okResponse.request().urlString(),
+                okResponse.code(),
+                okResponse.message(),
+                headers, responseBody);
+    }
+}

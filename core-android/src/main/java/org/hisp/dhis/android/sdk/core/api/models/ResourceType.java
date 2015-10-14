@@ -26,4 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.core.api.models;
+
+public enum ResourceType {
+    DASHBOARDS_CONTENT,
+    DASHBOARDS,
+    INTERPRETATIONS,
+    USERS,
+    RELATIONSHIPTYPES,
+    OPTIONSETS,
+    PROGRAM,
+    PROGRAMS,
+    ASSIGNEDPROGRAMS,
+    ORGANISATIONUNITS,
+    EVENTS,
+    EVENT,
+    ENROLLMENTS,
+    ENROLLMENT,
+    TRACKEDENTITYINSTANCE,
+    CONSTANTS,
+    PROGRAMRULES,
+    PROGRAMRULEVARIABLES,
+    PROGRAMRULEACTIONS,
+    TRACKEDENTITYATTRIBUTES,
+    DATAELEMENTS
+}

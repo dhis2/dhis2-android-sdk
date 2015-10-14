@@ -26,4 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.core.api.utils;
+
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+
+public final class ObjectMapperProvider {
+    private static ObjectMapper mMapper;
+
+    private ObjectMapperProvider() {
+        // no instances
+    }
+
+    public static ObjectMapper getInstance() {
+        if (mMapper == null) {
+            mMapper = new ObjectMapper();
+            mMapper.registerModule(new JodaModule());
+            mMapper.disable(
+                    MapperFeature.AUTO_DETECT_CREATORS,
+                    MapperFeature.AUTO_DETECT_FIELDS,
+                    MapperFeature.AUTO_DETECT_GETTERS,
+                    MapperFeature.AUTO_DETECT_IS_GETTERS,
+                    MapperFeature.AUTO_DETECT_SETTERS
+            );
+        }
+
+        return mMapper;
+    }
+}

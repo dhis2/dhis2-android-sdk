@@ -26,4 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava;
+
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
+
+import java.util.List;
+
+public interface ITrackedEntityInstanceController {
+    public void sync() throws APIException;
+    public TrackedEntityInstance sync(String uid, boolean getEnrollments) throws APIException;
+    public void sync(List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) throws APIException;
+    public List<TrackedEntityInstance> queryServerTrackedEntityInstances(String organisationUnitUid,
+                                                                         String programUid,
+                                                                         String queryString,
+                                                                         TrackedEntityAttributeValue... params) throws APIException;
+}

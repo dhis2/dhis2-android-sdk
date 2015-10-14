@@ -26,4 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava;
+
+import org.hisp.dhis.android.sdk.corejava.common.IController;
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.models.program.Program;
+
+import java.util.List;
+
+public interface IProgramController extends IController<Program> {
+    void sync() throws APIException;
+    void sync(List<String> programUids);
+}

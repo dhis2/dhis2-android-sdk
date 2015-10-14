@@ -26,4 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.core.api.models;
+
+import org.hisp.dhis.android.sdk.core.network.APIException;
+
+import retrofit.client.Response;
+
+public final class ResponseHolder<T> {
+    private Response mResponse;
+    private APIException mApiException;
+    private T mItem;
+
+    public Response getResponse() {
+        return mResponse;
+    }
+
+    public void setResponse(Response response) {
+        mResponse = response;
+    }
+
+    public APIException getApiException() {
+        return mApiException;
+    }
+
+    public void setApiException(APIException apiException) {
+        mApiException = apiException;
+    }
+
+    public T getItem() {
+        return mItem;
+    }
+
+    public void setItem(T item) {
+        mItem = item;
+    }
+}

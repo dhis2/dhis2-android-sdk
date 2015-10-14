@@ -26,4 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core-java', ':core-android'
+package org.hisp.dhis.android.sdk.corejava;
+
+import org.hisp.dhis.android.sdk.core.network.APIException;
+import org.hisp.dhis.android.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.android.sdk.models.trackedentity.TrackedEntityInstance;
+
+import java.util.List;
+
+public interface IEnrollmentController {
+    public void sync() throws APIException;
+    public Enrollment sync(String uid, boolean getEvents) throws APIException;
+    public List<Enrollment> sync(TrackedEntityInstance trackedEntityInstance) throws APIException;
+    void sendEnrollmentChanges(List<Enrollment> enrollments, boolean sendEvents) throws APIException;
+}

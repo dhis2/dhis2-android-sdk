@@ -30,21 +30,20 @@ package org.hisp.dhis.java.sdk.trackedentity;
 
 import android.net.Uri;
 
-import org.hisp.dhis.java.sdk.IEnrollmentController;
-import org.hisp.dhis.java.sdk.ITrackedEntityInstanceController;
-import org.hisp.dhis.java.sdk.common.PushableDataController;
+import org.hisp.dhis.java.sdk.enrollment.IEnrollmentController;
+import org.hisp.dhis.java.sdk.common.controllers.PushableDataController;
 import org.hisp.dhis.java.sdk.core.network.APIException;
 import org.hisp.dhis.java.sdk.core.network.IDhisApi;
 import org.hisp.dhis.java.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.java.sdk.core.models.ResourceType;
 import org.hisp.dhis.java.sdk.core.api.utils.DbUtils;
 import org.hisp.dhis.java.sdk.core.api.utils.NetworkUtils;
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.common.faileditem.FailedItemType;
 import org.hisp.dhis.java.sdk.common.IFailedItemStore;
 import org.hisp.dhis.java.sdk.models.common.importsummary.ImportSummary;
-import org.hisp.dhis.java.sdk.common.meta.DbOperation;
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.DbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.java.sdk.models.common.state.Action;
 import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;

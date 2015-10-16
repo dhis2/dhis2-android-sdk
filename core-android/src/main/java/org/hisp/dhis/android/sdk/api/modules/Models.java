@@ -70,7 +70,7 @@ import org.hisp.dhis.java.sdk.dashboard.IDashboardItemStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardStore;
 import org.hisp.dhis.java.sdk.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.java.sdk.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.common.IModelsStore;
 import org.hisp.dhis.java.sdk.models.constant.Constant;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;

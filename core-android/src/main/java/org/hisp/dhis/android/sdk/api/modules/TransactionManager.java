@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.api.modules;
 
 import org.hisp.dhis.java.sdk.common.persistence.ITransactionManager;
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
 
 import java.util.Collection;

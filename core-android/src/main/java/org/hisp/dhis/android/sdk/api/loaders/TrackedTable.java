@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.api.loaders;
 
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.java.sdk.common.meta.DbAction;
+import org.hisp.dhis.java.sdk.common.persistence.DbAction;
 
 import java.util.Arrays;
 import java.util.List;

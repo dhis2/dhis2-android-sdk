@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.interpretation;
 
-import org.hisp.dhis.java.sdk.common.IService;
+import org.hisp.dhis.java.sdk.common.services.IService;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 
 public interface IInterpretationCommentService extends IService {

@@ -28,13 +28,7 @@
 
 package org.hisp.dhis.java.sdk.user;
 
-import com.squareup.okhttp.HttpUrl;
-
-import org.hisp.dhis.java.sdk.core.network.APIException;
-import org.hisp.dhis.java.sdk.core.network.IDhisApi;
-import org.hisp.dhis.java.sdk.core.models.Credentials;
-import org.hisp.dhis.java.sdk.core.models.Session;
-import org.hisp.dhis.java.sdk.core.api.preferences.LastUpdatedManager;
+import org.hisp.dhis.java.sdk.common.network.UserCredentials;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
 import java.util.HashMap;
@@ -50,7 +44,7 @@ public final class UserAccountController implements IUserAccountController {
     }
 
     @Override
-    public UserAccount logIn(HttpUrl serverUrl, Credentials credentials) throws APIException {
+    public UserAccount logIn(HttpUrl serverUrl, UserCredentials credentials) throws APIException {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +

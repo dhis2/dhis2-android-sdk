@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.java.sdk.dashboard;
 
-import org.hisp.dhis.java.sdk.common.repository.IGet;
-import org.hisp.dhis.java.sdk.common.repository.IGetUid;
-import org.hisp.dhis.java.sdk.common.repository.IList;
-import org.hisp.dhis.java.sdk.common.repository.IRemove;
-import org.hisp.dhis.java.sdk.common.IService;
+import org.hisp.dhis.java.sdk.common.services.IGet;
+import org.hisp.dhis.java.sdk.common.services.IGetUid;
+import org.hisp.dhis.java.sdk.common.services.IList;
+import org.hisp.dhis.java.sdk.common.services.IRemove;
+import org.hisp.dhis.java.sdk.common.services.IService;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
 

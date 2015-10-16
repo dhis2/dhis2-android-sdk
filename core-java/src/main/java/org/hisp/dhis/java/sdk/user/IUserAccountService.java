@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.user;
 
-import org.hisp.dhis.java.sdk.common.IService;
+import org.hisp.dhis.java.sdk.common.services.IService;
 import org.hisp.dhis.java.sdk.models.user.User;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 

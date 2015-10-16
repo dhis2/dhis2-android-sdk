@@ -36,7 +36,7 @@ import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnitToProgramRelation$Flow;
 import org.hisp.dhis.android.sdk.flow.Program$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStage$Flow;
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.program.IProgramStageStore;
 import org.hisp.dhis.java.sdk.program.IProgramStore;

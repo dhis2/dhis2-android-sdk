@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.event;
 
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.models.event.Event;
 import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;

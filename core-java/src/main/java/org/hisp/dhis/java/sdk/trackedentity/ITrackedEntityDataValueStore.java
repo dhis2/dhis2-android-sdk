@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.trackedentity;
 
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.models.event.Event;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityDataValue;

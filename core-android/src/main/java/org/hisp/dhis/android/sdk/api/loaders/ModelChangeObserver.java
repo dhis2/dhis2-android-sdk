@@ -44,7 +44,7 @@ import org.hisp.dhis.android.sdk.flow.Interpretation$Flow;
 import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow;
 import org.hisp.dhis.android.sdk.flow.InterpretationElement$Flow;
 import org.hisp.dhis.android.sdk.flow.UserAccount$Flow;
-import org.hisp.dhis.java.sdk.common.meta.DbAction;
+import org.hisp.dhis.java.sdk.common.persistence.DbAction;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;

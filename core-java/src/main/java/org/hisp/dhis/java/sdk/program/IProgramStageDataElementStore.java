@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.program;
 
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.models.program.ProgramStage;
 import org.hisp.dhis.java.sdk.models.program.ProgramStageDataElement;

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.optionset;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
 

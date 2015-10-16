@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.program;
 
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;

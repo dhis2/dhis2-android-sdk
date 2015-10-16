@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.organisationunit;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.dataset.DataSet;
 import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 

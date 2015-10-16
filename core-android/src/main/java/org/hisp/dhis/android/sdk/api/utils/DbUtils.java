@@ -31,10 +31,10 @@ package org.hisp.dhis.android.sdk.api.utils;
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.java.sdk.common.meta.DbOperation;
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.DbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 
 import java.util.ArrayList;
 import java.util.Collection;

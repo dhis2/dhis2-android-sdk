@@ -36,7 +36,7 @@ import org.hisp.dhis.java.sdk.core.models.Credentials;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
 public interface IUserAccountController extends IController<UserAccount> {
-    UserAccount logIn(HttpUrl serverUrl, Credentials credentials) throws APIException;
+    UserAccount logIn(HttpUrl serverUrl, UserC credentials) throws APIException;
 
     UserAccount updateAccount() throws APIException;
 }

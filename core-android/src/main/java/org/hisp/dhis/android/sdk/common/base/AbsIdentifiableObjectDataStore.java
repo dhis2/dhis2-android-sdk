@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.common.base;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IModel;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.java.sdk.common.IStateStore;

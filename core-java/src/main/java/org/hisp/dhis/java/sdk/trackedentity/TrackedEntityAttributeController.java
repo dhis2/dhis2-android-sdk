@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.java.sdk.trackedentity;
 
-import org.hisp.dhis.java.sdk.common.ResourceController;
+import org.hisp.dhis.java.sdk.common.controllers.ResourceController;
 import org.hisp.dhis.java.sdk.core.network.APIException;
 import org.hisp.dhis.java.sdk.core.network.IDhisApi;
 import org.hisp.dhis.java.sdk.core.api.preferences.DateTimeManager;
 import org.hisp.dhis.java.sdk.core.models.ResourceType;
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.joda.time.DateTime;
 

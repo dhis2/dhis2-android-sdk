@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.java.sdk.common.persistence;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.java.sdk.common.meta.DbOperation;
 
 import java.util.ArrayList;
 import java.util.List;

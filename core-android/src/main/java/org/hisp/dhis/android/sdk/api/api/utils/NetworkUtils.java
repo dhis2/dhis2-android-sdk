@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.sdk.api.api.utils;
 
 import org.hisp.dhis.java.sdk.core.network.APIException;
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 
 import java.net.HttpURLConnection;

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.java.sdk.common.persistence;
 
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
-
 import java.util.Collection;
 
 public interface ITransactionManager {

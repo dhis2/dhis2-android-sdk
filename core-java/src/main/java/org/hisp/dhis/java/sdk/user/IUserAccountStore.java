@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.user;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
 public interface IUserAccountStore extends IIdentifiableObjectStore<UserAccount> {

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.interpretation;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 

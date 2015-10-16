@@ -30,7 +30,7 @@ package org.hisp.dhis.android.sdk.api.modules;
 
 import android.content.Context;
 
-import org.hisp.dhis.java.sdk.common.modules.IPreferencesModule;
+import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.java.sdk.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;

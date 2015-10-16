@@ -30,8 +30,8 @@ package org.hisp.dhis.android.sdk.common.meta;
 
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.java.sdk.common.meta.DbAction;
-import org.hisp.dhis.java.sdk.common.meta.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.DbAction;
+import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.java.sdk.utils.Preconditions;
 
 /**

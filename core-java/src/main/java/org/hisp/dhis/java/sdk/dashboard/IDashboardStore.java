@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.dashboard;
 
-import org.hisp.dhis.java.sdk.common.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 
 public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {

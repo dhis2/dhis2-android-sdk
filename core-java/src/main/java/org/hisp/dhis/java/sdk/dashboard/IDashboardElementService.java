@@ -29,9 +29,9 @@
 package org.hisp.dhis.java.sdk.dashboard;
 
 
-import org.hisp.dhis.java.sdk.common.repository.IList;
-import org.hisp.dhis.java.sdk.common.repository.IRemove;
-import org.hisp.dhis.java.sdk.common.IService;
+import org.hisp.dhis.java.sdk.common.services.IList;
+import org.hisp.dhis.java.sdk.common.services.IRemove;
+import org.hisp.dhis.java.sdk.common.services.IService;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
 

@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import org.hisp.dhis.android.sdk.dashboard.DashboardContentStore;
 import org.hisp.dhis.android.sdk.dashboard.DashboardItemStore;
 import org.hisp.dhis.android.sdk.dashboard.DashboardStore;
-import org.hisp.dhis.java.sdk.common.modules.IPersistenceModule;
+import org.hisp.dhis.java.sdk.common.persistence.IPersistenceModule;
 import org.hisp.dhis.java.sdk.common.persistence.ITransactionManager;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardElementStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardItemContentStore;

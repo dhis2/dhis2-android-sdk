@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.flow.BaseModel$Flow;
 import org.hisp.dhis.java.sdk.models.common.base.IModel;
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 
 import java.util.List;
 

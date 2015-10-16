@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.java.sdk.common;
 
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.java.sdk.models.common.faileditem.FailedItemType;
 

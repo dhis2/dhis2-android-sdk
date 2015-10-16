@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.java.sdk.relationship;
 
-import org.hisp.dhis.java.sdk.common.IStore;
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.relationship.Relationship;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.java.sdk.common;
 
+import org.hisp.dhis.java.sdk.common.persistence.IStore;
 import org.hisp.dhis.java.sdk.models.common.base.IModel;
 import org.hisp.dhis.java.sdk.models.common.state.Action;
 import org.hisp.dhis.java.sdk.models.common.state.State;
@@ -35,7 +36,6 @@ import org.hisp.dhis.java.sdk.models.common.state.State;
 import java.util.List;
 import java.util.Map;
 
-// TODO do not return null collections.
 public interface IStateStore extends IStore<State> {
 
     //////////////////////////////////////////////////////////////////////////////////////////

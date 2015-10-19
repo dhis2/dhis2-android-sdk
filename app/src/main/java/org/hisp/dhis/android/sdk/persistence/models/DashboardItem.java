@@ -126,8 +126,8 @@ public final class DashboardItem extends BaseMetaDataObject {
                 .getLastUpdated(ResourceType.DASHBOARDS);
 
         DashboardItem item = new DashboardItem();
-        item.setCreated(lastUpdatedDateTime);
-        item.setLastUpdated(lastUpdatedDateTime);
+        item.setCreated(lastUpdatedDateTime.toString());
+        item.setLastUpdated(lastUpdatedDateTime.toString());
         item.setState(State.TO_POST);
         item.setDashboard(dashboard);
         item.setAccess(Access.provideDefaultAccess());

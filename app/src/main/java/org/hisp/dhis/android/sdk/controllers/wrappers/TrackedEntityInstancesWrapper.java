@@ -83,8 +83,8 @@ public class TrackedEntityInstancesWrapper {
             TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
             List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new ArrayList<>();
             trackedEntityInstance.setTrackedEntityInstance(row.get(0));
-            trackedEntityInstance.setCreated(DateTime.parse(row.get(1)));
-            trackedEntityInstance.setLastUpdated(DateTime.parse(row.get(2)));
+            trackedEntityInstance.setCreated(/*DateTime.parse(row.get(1))*/row.get(1));
+            trackedEntityInstance.setLastUpdated(/*DateTime.parse(row.get(2))*/row.get(2));
             trackedEntityInstance.setOrgUnit(row.get(3));
             trackedEntityInstance.setTrackedEntity(row.get(4));
             trackedEntityInstances.add(trackedEntityInstance);

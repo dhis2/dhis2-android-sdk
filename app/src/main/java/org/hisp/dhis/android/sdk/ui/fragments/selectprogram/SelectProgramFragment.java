@@ -66,6 +66,7 @@ import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.OrgUnitDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.ProgramDialogFragment;
 import org.hisp.dhis.android.sdk.ui.views.CardTextViewButton;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.List;
 
@@ -212,7 +213,7 @@ public abstract class SelectProgramFragment extends Fragment
         mProgramButton.setEnabled(false);
     }
 
-    protected abstract Program.ProgramType[] getProgramTypes();
+    protected abstract ProgramType[] getProgramTypes();
 
     @Override
     public void onPause() {

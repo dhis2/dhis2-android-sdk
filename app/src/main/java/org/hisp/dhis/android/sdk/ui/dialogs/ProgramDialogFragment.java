@@ -49,6 +49,7 @@ import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelat
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,19 +59,21 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
         implements LoaderManager.LoaderCallbacks<List<OptionAdapterValue>> {
     public static final int ID = 921345;
     private static final int LOADER_ID = 1;
+    private static final String PROGRAMTYPE = "programType";
+    private static final String ORGANISATIONUNITID = "organisationUnitId";
 
 
     public static ProgramDialogFragment newInstance(OnOptionSelectedListener listener,
-                                                    String orgUnitId, Program.ProgramType... programKinds) {
+                                                    String orgUnitId, ProgramType... programKinds) {
         ProgramDialogFragment fragment = new ProgramDialogFragment();
         Bundle args = new Bundle();
-        args.putString(OrganisationUnit$Table.ID, orgUnitId);
+        args.putString(ORGANISATIONUNITID, orgUnitId);
         if (programKinds != null) {
             String[] programKindStrings = new String[programKinds.length];
             for (int i = 0; i < programKinds.length; i++) {
                 programKindStrings[i] = programKinds[i].name();
             }
-            args.putStringArray(Program$Table.KIND, programKindStrings);
+            args.putStringArray(PROGRAMTYPE, programKindStrings);
         }
         fragment.setArguments(args);
         fragment.setOnOptionSetListener(listener);
@@ -94,13 +97,13 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
     @Override
     public Loader<List<OptionAdapterValue>> onCreateLoader(int id, Bundle args) {
         if (LOADER_ID == id && isAdded()) {
-            String organisationUnitId = args.getString(OrganisationUnit$Table.ID);
-            String[] kinds = args.getStringArray(Program$Table.KIND);
-            Program.ProgramType[] types = null;
+            String organisationUnitId = args.getString(ORGANISATIONUNITID);
+            String[] kinds = args.getStringArray(PROGRAMTYPE);
+            ProgramType[] types = null;
             if (kinds != null) {
-                types = new Program.ProgramType[kinds.length];
+                types = new ProgramType[kinds.length];
                 for (int i = 0; i < kinds.length; i++) {
-                    types[i] = Program.ProgramType.valueOf(kinds[i]);
+                    types[i] = ProgramType.valueOf(kinds[i]);
                 }
             }
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
@@ -131,9 +134,9 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
 
     static class ProgramQuery implements Query<List<OptionAdapterValue>> {
         private final String mOrgUnitId;
-        private final Program.ProgramType[] mKinds;
+        private final ProgramType[] mKinds;
 
-        public ProgramQuery(String orgUnitId, Program.ProgramType[] kinds) {
+        public ProgramQuery(String orgUnitId, ProgramType[] kinds) {
             mOrgUnitId = orgUnitId;
             mKinds = kinds;
         }

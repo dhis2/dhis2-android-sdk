@@ -47,6 +47,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
@@ -244,28 +245,26 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             } else {
                 row = new AutoCompleteRow(dataElementName, dataValue, optionSet);
             }
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_TEXT)) {
+        } else if (dataElement.getValueType().equals(ValueType.TEXT)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.TEXT);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_LONG_TEXT)) {
+        } else if (dataElement.getValueType().equals(ValueType.LONG_TEXT)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_NUMBER)) {
+        } else if (dataElement.getValueType().equals(ValueType.NUMBER)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.NUMBER);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_INT)) {
+        } else if (dataElement.getValueType().equals(ValueType.INTEGER)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_ZERO_OR_POSITIVE_INT)) {
+        } else if (dataElement.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_POSITIVE_INT)) {
+        } else if (dataElement.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_NEGATIVE_INT)) {
+        } else if (dataElement.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_BOOL)) {
+        } else if (dataElement.getValueType().equals(ValueType.BOOLEAN)) {
             row = new RadioButtonsRow(dataElementName, dataValue, DataEntryRowTypes.BOOLEAN);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_TRUE_ONLY)) {
+        } else if (dataElement.getValueType().equals(ValueType.TRUE_ONLY)) {
             row = new CheckBoxRow(dataElementName, dataValue);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_DATE)) {
+        } else if (dataElement.getValueType().equals(ValueType.DATE)) {
             row = new DatePickerRow(dataElementName, dataValue);
-        } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_STRING)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
         }

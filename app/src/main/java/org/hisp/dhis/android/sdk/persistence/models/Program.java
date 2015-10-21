@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.List;
 
@@ -48,28 +49,6 @@ import java.util.List;
 @Table(databaseName = Dhis2Database.NAME)
 public class Program extends BaseMetaDataObject {
 
-    public enum ProgramType {
-        /* pre DHIS 2.20 */
-        SINGLE_EVENT_WITH_REGISTRATION("SINGLE_EVENT_WITH_REGISTRATION"),
-        SINGLE_EVENT_WITHOUT_REGISTRATION("SINGLE_EVENT_WITHOUT_REGISTRATION"),
-        MULTIPLE_EVENTS_WITH_REGISTRATION ("MULTIPLE_EVENTS_WITH_REGISTRATION"),
-        /* DHIS 2.20 and up */
-        WITH_REGISTRATION("WITH_REGISTRATION"),
-        WITHOUT_REGISTRATION("WITHOUT_REGISTRATION");
-        private final String value;
-        private ProgramType(String value) {
-            this.value = value;
-        }
-        @Override
-        public String toString() {
-            return ProgramType.this.value;
-        }
-    }
-
-    /* >= 2.20 kinds */
-    public static final String WITH_REGISTRATION = "WITH_REGISTRATION";
-    public static final String WITHOUT_REGISTRATION = "WITHOUT_REGISTRATION";
-
     @JsonProperty("trackedEntity")
     @Column
     @ForeignKey(references = {
@@ -78,13 +57,9 @@ public class Program extends BaseMetaDataObject {
     })
     TrackedEntity trackedEntity;
 
-    @JsonProperty("type")
-    @Column(name = "type")
-    int type;
-
-    @JsonProperty("kind")
-    @Column(name = "kind")
-    String kind;
+    @JsonProperty("programType")
+    @Column(name = "programType")
+    ProgramType programType;
 
     @JsonProperty("version")
     @Column(name = "version")
@@ -156,6 +131,14 @@ public class Program extends BaseMetaDataObject {
         // do something: put to a Map; log a warning, whatever
     }
 
+    public ProgramType getProgramType() {
+        return programType;
+    }
+
+    public void setProgramType(ProgramType programType) {
+        this.programType = programType;
+    }
+
     public TrackedEntity getTrackedEntity() {
         return trackedEntity;
     }
@@ -205,22 +188,6 @@ public class Program extends BaseMetaDataObject {
 
     public void setRelationshipFromA(boolean relationshipFromA) {
         this.relationshipFromA = relationshipFromA;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
     }
 
     public int getVersion() {

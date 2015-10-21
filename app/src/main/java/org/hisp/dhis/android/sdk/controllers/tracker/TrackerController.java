@@ -61,6 +61,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -356,8 +357,7 @@ public final class TrackerController extends ResourceController {
             List<Program> programsForOrgUnit = new ArrayList<>();
             List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                     (organisationUnit.getId(),
-                            Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                            Program.ProgramType.WITHOUT_REGISTRATION);
+                            ProgramType.WITHOUT_REGISTRATION);
             if (programsForOrgUnitSEWoR != null)
                 programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
 

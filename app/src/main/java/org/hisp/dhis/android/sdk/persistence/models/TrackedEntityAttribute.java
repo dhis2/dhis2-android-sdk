@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
 
 import java.util.Map;
 
@@ -41,18 +42,6 @@ import java.util.Map;
  */
 @Table(databaseName = Dhis2Database.NAME)
 public class TrackedEntityAttribute extends BaseNameableObject {
-
-    public static final String TYPE_DATE = "date";
-    public static final String TYPE_STRING = "string";
-    public static final String TYPE_NUMBER = "number";
-    public static final String TYPE_LETTER = "letter";
-    public static final String TYPE_BOOL = "bool";
-    public static final String TYPE_TRUE_ONLY = "trueOnly";
-    public static final String TYPE_OPTION_SET = "optionSet";
-    public static final String TYPE_PHONE_NUMBER = "phoneNumber";
-    public static final String TYPE_TRACKER_ASSOCIATE = "trackerAssociate";
-    public static final String TYPE_USERS = "users";
-    public static final String TYPE_EMAIL = "email";
 
     @Column(name = "optionSet")
     String optionSet;
@@ -83,7 +72,11 @@ public class TrackedEntityAttribute extends BaseNameableObject {
 
     @JsonProperty("valueType")
     @Column(name = "valueType")
-    String valueType;
+    ValueType valueType;
+
+    @JsonProperty("optionSetValue")
+    @Column(name = "optionSetValue")
+    boolean optionSetValue;
 
     @JsonProperty("confidential")
     @Column(name = "confidential")
@@ -166,12 +159,20 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.externalAccess = externalAccess;
     }
 
-    public String getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
-    public void setValueType(String valueType) {
+    public void setValueType(ValueType valueType) {
         this.valueType = valueType;
+    }
+
+    public boolean isOptionSetValue() {
+        return optionSetValue;
+    }
+
+    public void setOptionSetValue(boolean optionSetValue) {
+        this.optionSetValue = optionSetValue;
     }
 
     public boolean getConfidential() {

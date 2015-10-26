@@ -75,13 +75,13 @@ public class Enrollment extends BaseSerializableModel {
     @Column(name = "program")
     String program;
 
-    @JsonProperty("dateOfEnrollment")
-    @Column(name = "dateOfEnrollment")
-    String dateOfEnrollment;
+    @JsonProperty("enrollmentDate")
+    @Column(name = "enrollmentDate")
+    String enrollmentDate;
 
-    @JsonProperty("dateOfIncident")
-    @Column(name = "dateOfIncident")
-    String dateOfIncident;
+    @JsonProperty("incidentDate")
+    @Column(name = "incidentDate")
+    String incidentDate;
 
     @JsonProperty("followup")
     @Column(name = "followup")
@@ -114,15 +114,15 @@ public class Enrollment extends BaseSerializableModel {
         fromServer = false;
         this.program = program.getUid();
         this.trackedEntityInstance = trackedEntityInstance;
-        this.dateOfEnrollment = DateUtils.getMediumDateString();
-        this.dateOfIncident = DateUtils.getMediumDateString();
+        this.enrollmentDate = DateUtils.getMediumDateString();
+        this.incidentDate = DateUtils.getMediumDateString();
         List<Event> events = new ArrayList<>();
         for (ProgramStage programStage : program.getProgramStages()) {
             if (programStage.getAutoGenerateEvent()) {
                 String status = Event.STATUS_FUTURE_VISIT;
                 Event event = new Event(organisationUnit, status,
                         program.id, programStage,
-                        trackedEntityInstance, enrollment, dateOfEnrollment);
+                        trackedEntityInstance, enrollment, enrollmentDate);
                 events.add(event);
             }
         }
@@ -277,20 +277,20 @@ public class Enrollment extends BaseSerializableModel {
         this.localTrackedEntityInstanceId = localTrackedEntityInstanceId;
     }
 
-    public String getDateOfEnrollment() {
-        return dateOfEnrollment;
+    public String getEnrollmentDate() {
+        return enrollmentDate;
     }
 
-    public void setDateOfEnrollment(String dateOfEnrollment) {
-        this.dateOfEnrollment = dateOfEnrollment;
+    public void setEnrollmentDate(String enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
     }
 
-    public String getDateOfIncident() {
-        return dateOfIncident;
+    public String getIncidentDate() {
+        return incidentDate;
     }
 
-    public void setDateOfIncident(String dateOfIncident) {
-        this.dateOfIncident = dateOfIncident;
+    public void setIncidentDate(String incidentDate) {
+        this.incidentDate = incidentDate;
     }
 
     public boolean getFollowup() {

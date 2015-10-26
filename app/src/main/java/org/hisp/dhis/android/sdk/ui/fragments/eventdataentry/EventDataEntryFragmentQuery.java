@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
@@ -53,7 +52,6 @@ import org.hisp.dhis.android.sdk.utils.support.DateUtils;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.AutoCompleteRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CheckBoxRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
@@ -66,7 +64,6 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController.getDataElement;
@@ -208,7 +205,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     event.setLocalEnrollmentId(enrollmentId);
                     event.setEnrollment(enrollment.getEnrollment());
                     event.setTrackedEntityInstance(enrollment.getTrackedEntityInstance());
-                    LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.getDateOfEnrollment())).plusDays(programStage.getMinDaysFromStart());
+                    LocalDate dueDate = new LocalDate(DateUtils.parseDate(enrollment.getEnrollmentDate())).plusDays(programStage.getMinDaysFromStart());
                     event.setDueDate(dueDate.toString());
                 }
             }

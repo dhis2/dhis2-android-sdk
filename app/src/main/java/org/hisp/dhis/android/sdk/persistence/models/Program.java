@@ -65,9 +65,9 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "version")
     int version;
 
-    @JsonProperty("dateOfEnrollmentDescription")
-    @Column(name = "dateOfEnrollmentDescription")
-    String dateOfEnrollmentDescription;
+    @JsonProperty("enrollmentDateLabel")
+    @Column(name = "enrollmentDateLabel")
+    String enrollmentDateLabel;
 
     @JsonProperty("description")
     @Column(name = "description")
@@ -85,9 +85,9 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "displayIncidentDate")
     boolean displayIncidentDate;
 
-    @JsonProperty("dateOfIncidentDescription")
-    @Column(name = "dateOfIncidentDescription")
-    String dateOfIncidentDescription;
+    @JsonProperty("incidentDateLabel")
+    @Column(name = "incidentDateLabel")
+    String incidentDateLabel;
 
     @JsonProperty("registration")
     @Column(name = "registration")
@@ -198,12 +198,12 @@ public class Program extends BaseMetaDataObject {
         this.version = version;
     }
 
-    public String getDateOfEnrollmentDescription() {
-        return dateOfEnrollmentDescription;
+    public String getEnrollmentDateLabel() {
+        return enrollmentDateLabel;
     }
 
-    public void setDateOfEnrollmentDescription(String dateOfEnrollmentDescription) {
-        this.dateOfEnrollmentDescription = dateOfEnrollmentDescription;
+    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
+        this.enrollmentDateLabel = enrollmentDateLabel;
     }
 
     public String getDescription() {
@@ -238,12 +238,12 @@ public class Program extends BaseMetaDataObject {
         this.displayIncidentDate = displayIncidentDate;
     }
 
-    public String getDateOfIncidentDescription() {
-        return dateOfIncidentDescription;
+    public String getIncidentDateLabel() {
+        return incidentDateLabel;
     }
 
-    public void setDateOfIncidentDescription(String dateOfIncidentDescription) {
-        this.dateOfIncidentDescription = dateOfIncidentDescription;
+    public void setIncidentDateLabel(String incidentDateLabel) {
+        this.incidentDateLabel = incidentDateLabel;
     }
 
     public boolean getRegistration() {

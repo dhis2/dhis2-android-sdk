@@ -210,9 +210,9 @@ public class EnrollmentDatePickerRow extends Row
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
             if(enrollmentDate != null)
-                enrollment.setDateOfEnrollment(EMPTY_FIELD);
+                enrollment.setEnrollmentDate(EMPTY_FIELD);
             else if(incidentDate != null)
-                enrollment.setDateOfIncident(EMPTY_FIELD);
+                enrollment.setIncidentDate(EMPTY_FIELD);
         }
     }
 
@@ -258,9 +258,9 @@ public class EnrollmentDatePickerRow extends Row
                 value.setValue(newValue);
 
                 if(enrollmentDate != null)
-                    enrollment.setDateOfEnrollment(value.getValue());
+                    enrollment.setEnrollmentDate(value.getValue());
                 else if(incidentDate != null)
-                    enrollment.setDateOfIncident(value.getValue());
+                    enrollment.setIncidentDate(value.getValue());
 
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.ENROLLMENT_DATE.toString()));
             }

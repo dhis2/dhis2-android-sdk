@@ -73,6 +73,9 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
     public String getValue() {
         TrackedEntityAttribute tea = MetaDataController.
                 getTrackedEntityAttribute(trackedEntityAttributeId);
+        if(tea == null) {
+            return null;
+        }
         if (tea.isOptionSetValue()) {
             OptionSet optionSet = MetaDataController.getOptionSet(tea.getOptionSet());
             if (optionSet == null) return "";

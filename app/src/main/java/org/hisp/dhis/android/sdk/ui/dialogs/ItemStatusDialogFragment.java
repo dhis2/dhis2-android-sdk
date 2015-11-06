@@ -180,9 +180,13 @@ public abstract class ItemStatusDialogFragment extends DialogFragment
                     mStatus.setText(getString(R.string.status_sent_description));
                     break;
                 case ERROR: {
-                    mItemStatusImage.setImageResource(R.drawable.ic_event_error);
-                    mStatus.setText(getString(R.string.status_error_description));
                     FailedItem failedItem = TrackerController.getFailedItem(data.getType(), data.getItem().getLocalId());
+                    if(failedItem.getHttpStatusCode()==-1) {
+                        mItemStatusImage.setImageResource(R.drawable.ic_offline);
+                    } else {
+                        mItemStatusImage.setImageResource(R.drawable.ic_event_error);
+                    }
+                    mStatus.setText(getString(R.string.status_error_description));
                     if(failedItem!= null) {
                         String details = "";
                         if( failedItem.getErrorMessage() != null) {

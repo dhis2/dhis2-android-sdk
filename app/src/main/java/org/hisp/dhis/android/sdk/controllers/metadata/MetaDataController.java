@@ -32,7 +32,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.ColumnAlias;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
@@ -44,10 +46,15 @@ import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -58,6 +65,8 @@ import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelat
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -191,6 +200,36 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
                 (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getUid())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
+    }
+
+    public static List<AttributeValue> getDataElementAttributeValues(DataElement dataElement){
+        if (dataElement == null) return null;
+        List<AttributeValue> values = new ArrayList<>();
+        List<AttributeValue> attributeValues;
+        List<DataElementAttributeValue> dataElementAttributeValues = new Select().from(DataElementAttributeValue.class)
+                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENT_DATAELEMENTID).is(dataElement.getUid())).queryList();
+
+        for (DataElementAttributeValue dataElementAttributeValue: dataElementAttributeValues){
+            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getUid())).queryList();
+            if (attributeValues != null) values.addAll(attributeValues);
+        }
+
+        return values;
+    }
+
+    public static List<AttributeValue> getProgramAttributeValues(Program program){
+        if (program == null) return null;
+        List<AttributeValue> values = new ArrayList<>();
+        List<AttributeValue> attributeValues;
+        List<ProgramAttributeValue> programAttributeValues = new Select().from(ProgramAttributeValue.class)
+                .where(Condition.column(ProgramAttributeValue$Table.PROGRAM_PROGRAMID).is(program.getUid())).queryList();
+
+        for (ProgramAttributeValue programAttributeValue: programAttributeValues){
+            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getUid())).queryList();
+            if (attributeValues != null) values.addAll(attributeValues);
+        }
+
+        return values;
     }
 
     /**

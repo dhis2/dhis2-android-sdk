@@ -59,15 +59,15 @@ public abstract class BaseIdentifiableObject extends BaseModel {
     @Column(name = "displayName")
     String displayName;
 
-    //@JsonProperty("created")
-    @JsonIgnore
+    @JsonProperty("created")
+    //@JsonIgnore
     @Column(name = "created")
-    DateTime created;
+    String created;
 
-    //@JsonProperty("lastUpdated")
-    @JsonIgnore
+    @JsonProperty("lastUpdated")
+    //@JsonIgnore
     @Column(name = "lastUpdated")
-    DateTime lastUpdated;
+    String lastUpdated;
 
     @JsonProperty("access")
     @Column(name = "access")
@@ -97,19 +97,19 @@ public abstract class BaseIdentifiableObject extends BaseModel {
         this.displayName = displayName;
     }
 
-    public DateTime getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(DateTime created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
-    public DateTime getLastUpdated() {
+    public String getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(DateTime lastUpdated) {
+    public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

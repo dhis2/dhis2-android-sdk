@@ -223,12 +223,16 @@ final class TrackerDataSender {
 
         if(enrollment.getCreated() == null) {
             postEnrollment(enrollment, dhisApi);
+            if( sendEvents ) {
+                List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
+                sendEventChanges(dhisApi, events);
+            }
         } else {
+            if( sendEvents ) {
+                List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
+                sendEventChanges(dhisApi, events);
+            }
             putEnrollment(enrollment, dhisApi);
-        }
-        if( sendEvents ) {
-            List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
-            sendEventChanges(dhisApi, events);
         }
     }
 

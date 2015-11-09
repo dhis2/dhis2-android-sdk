@@ -86,8 +86,8 @@ public final class Dashboard extends BaseMetaDataObject {
         dashboard.setState(State.TO_POST);
         dashboard.setName(name);
         dashboard.setDisplayName(name);
-        dashboard.setCreated(lastUpdatedDateTime);
-        dashboard.setLastUpdated(lastUpdatedDateTime);
+        dashboard.setCreated(lastUpdatedDateTime.toString());
+        dashboard.setLastUpdated(lastUpdatedDateTime.toString());
         dashboard.setAccess(Access.provideDefaultAccess());
 
         return dashboard;

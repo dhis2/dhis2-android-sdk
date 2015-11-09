@@ -30,9 +30,10 @@ package org.hisp.dhis.java.sdk.utils;
 
 import com.raizlabs.android.dbflow.runtime.TransactionManager;
 
-import org.hisp.dhis.java.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.java.sdk.core.models.BaseIdentifiableObject;
 import org.hisp.dhis.java.sdk.core.models.meta.DbOperation;
+import org.hisp.dhis.java.sdk.persistence.Dhis2Database;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,7 +117,7 @@ public final class DbUtils {
             // if there is no particular model with given uid in list of
             // actual (up to date) items, it means it was removed on the server side
             if (newModel == null) {
-                if(!keepOldValues) {
+                if (!keepOldValues) {
                     ops.add(DbOperation.delete(oldModel));
                 }
 
@@ -127,8 +128,24 @@ public final class DbUtils {
 
             // if the last updated field in up to date model is after the same
             // field in persisted model, it means we need to update it.
-            if (oldModel.getLastUpdated() == null || newModel.getLastUpdated() == null ||
-                    newModel.getLastUpdated().isAfter(oldModel.getLastUpdated())) {
+            DateTime oldTime = null;
+            if (oldModel.getLastUpdated() != null) {
+                try {
+                    oldTime = DateTime.parse(oldModel.getLastUpdated());
+                } catch (Exception e) {
+                    //if the date is malformed then there's not much we can do
+                }
+            }
+            DateTime newTime = null;
+            if (newModel.getLastUpdated() != null) {
+                try {
+                    newTime = DateTime.parse(newModel.getLastUpdated());
+                } catch (Exception e) {
+                    //if the date is malformed then there's not much we can do
+                }
+            }
+            if (oldTime == null || newTime == null ||
+                    newTime.isAfter(oldTime)) {
                 // note, we need to pass database primary id to updated model
                 // in order to avoid creation of new object.
                 newModel.setUid(oldModel.getUid());

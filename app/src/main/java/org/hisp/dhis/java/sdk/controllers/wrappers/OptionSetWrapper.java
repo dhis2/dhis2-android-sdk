@@ -61,8 +61,8 @@ public class OptionSetWrapper {
                 int sortIndex = 0;
                 for (Option option : optionSet.getOptions()) {
                     option.setUid(optionSet.getUid() + option.getCode());//options don't have uid, but uid is used in createOperations
-                    option.setLastUpdated(new DateTime());//same with these dates
-                    option.setCreated(new DateTime());
+                    option.setLastUpdated(new DateTime().toString());//same with these dates
+                    option.setCreated(new DateTime().toString());
                     option.setOptionSet(optionSet.getUid());
                     option.setSortIndex(sortIndex);
                     sortIndex++;

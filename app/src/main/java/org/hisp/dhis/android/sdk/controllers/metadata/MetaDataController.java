@@ -161,6 +161,11 @@ public final class MetaDataController extends ResourceController {
                 return false;
             }
         }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ATTRIBUTES) == null) {
+                return false;
+            }
+        }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
             if( DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
                 return false;
@@ -202,12 +207,15 @@ public final class MetaDataController extends ResourceController {
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
-    public static List<AttributeValue> getDataElementAttributeValues(DataElement dataElement){
+    public static List<Attribute> getAttributes() {
+        return new Select().from(Attribute.class).queryList();
+    }
+
+    public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
         List<AttributeValue> values = new ArrayList<>();
         List<AttributeValue> attributeValues;
-        List<DataElementAttributeValue> dataElementAttributeValues = new Select().from(DataElementAttributeValue.class)
-                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENT_DATAELEMENTID).is(dataElement.getUid())).queryList();
+        List<DataElementAttributeValue> dataElementAttributeValues = getDataElementAttributeValues(dataElement.getUid());
 
         for (DataElementAttributeValue dataElementAttributeValue: dataElementAttributeValues){
             attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getUid())).queryList();
@@ -217,12 +225,17 @@ public final class MetaDataController extends ResourceController {
         return values;
     }
 
-    public static List<AttributeValue> getProgramAttributeValues(Program program){
+    public static List<DataElementAttributeValue> getDataElementAttributeValues(String dataElementId){
+        if (dataElementId == null) return null;
+        return new Select().from(DataElementAttributeValue.class)
+                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENT_DATAELEMENTID).is(dataElementId)).queryList();
+    }
+
+    public static List<AttributeValue> getAttributeValues(Program program){
         if (program == null) return null;
         List<AttributeValue> values = new ArrayList<>();
         List<AttributeValue> attributeValues;
-        List<ProgramAttributeValue> programAttributeValues = new Select().from(ProgramAttributeValue.class)
-                .where(Condition.column(ProgramAttributeValue$Table.PROGRAM_PROGRAMID).is(program.getUid())).queryList();
+        List<ProgramAttributeValue> programAttributeValues = getProgramAttributeValues(program.getUid());
 
         for (ProgramAttributeValue programAttributeValue: programAttributeValues){
             attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getUid())).queryList();
@@ -230,6 +243,44 @@ public final class MetaDataController extends ResourceController {
         }
 
         return values;
+    }
+
+    public static AttributeValue getAttributeValue(String id){
+        if (id == null) return null;
+        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(id)).queryList();
+        if (attributeValues.size() != 1) return null;
+        return attributeValues.get(0);
+    }
+
+    public static List<ProgramAttributeValue> getProgramAttributeValues(String programId){
+        if (programId == null) return null;
+        return new Select().from(ProgramAttributeValue.class)
+                .where(Condition.column(ProgramAttributeValue$Table.PROGRAM_PROGRAMID).is(programId)).queryList();
+    }
+
+    public static String getAttributeName(String attributeId){
+        if (attributeId == null) return null;
+        List<Attribute> attributes = new Select().from(Attribute.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
+        if (attributes.size() != 1) return null;
+        return attributes.get(0).getName();
+    }
+
+    public static String getAttributeType(String attributeId){
+        if (attributeId == null) return null;
+        List<Attribute> attributes = new Select().from(Attribute.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
+        if (attributes.size() != 1) return null;
+        return attributes.get(0).getValueType();
+    }
+
+    public static Object getAttributeValueValue(String attributeValueId){
+        if (attributeValueId == null) return null;
+        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(attributeValueId)).queryList();
+        if (attributeValues.size() != 1) return null;
+        return attributeValues.get(0).getValue();
     }
 
     /**
@@ -508,7 +559,11 @@ public final class MetaDataController extends ResourceController {
                 ProgramRule.class,
                 ProgramRuleVariable.class,
                 ProgramRuleAction.class,
-                RelationshipType.class);
+                RelationshipType.class,
+                Attribute.class,
+                AttributeValue.class,
+                DataElementAttributeValue.class,
+                ProgramAttributeValue.class);
     }
 
     /**
@@ -576,6 +631,11 @@ public final class MetaDataController extends ResourceController {
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
             if ( shouldLoad(dhisApi, ResourceType.RELATIONSHIPTYPES) ) {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
+            }
+        }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTES)) {
+            if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTES) ) {
+                getAttributesDataFromServer(dhisApi, serverDateTime);
             }
         }
     }
@@ -699,5 +759,15 @@ public final class MetaDataController extends ResourceController {
         List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
                 .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
+    }
+
+    private static void getAttributesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getAttributesDataFromServer");
+        ResourceType resource = ResourceType.ATTRIBUTES;
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(resource);
+        List<Attribute> attributes = unwrapResponse(dhisApi
+                .getAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ATTRIBUTES);
+        saveResourceDataFromServer(resource, dhisApi, attributes, getAttributes(), serverDateTime);
     }
 }

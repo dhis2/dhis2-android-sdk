@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
@@ -96,6 +98,15 @@ public class ProgramWrapper {
                     }
                 }
             }
+
+            //TODO: save references to Attributes
+            for (ProgramAttributeValue programAttributeValue: program.getProgramAttributeValues()){
+                programAttributeValue.setProgram(program);
+
+                programAttributeValue.setAttributeValue(program.getAttributeValue(programAttributeValue.getAttributeValue().getUid()));
+                operations.add(DbOperation.save(programAttributeValue));
+            }
+
         }
         return operations;
     }

@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 import java.util.Map;
@@ -20,7 +21,7 @@ public class DataElementAttributeValue extends BaseModel {
 
     @Column
     @PrimaryKey(autoincrement = true)
-    long idKey;
+    long id;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "dataElementId",
@@ -50,5 +51,9 @@ public class DataElementAttributeValue extends BaseModel {
 
     public void setAttributeValue(AttributeValue attributeValue) {
         this.attributeValue = attributeValue;
+    }
+
+    public void getAttributeValue(String id){
+        MetaDataController.getAttributeValue(id);
     }
 }

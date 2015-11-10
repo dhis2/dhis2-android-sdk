@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.network;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
@@ -232,6 +233,9 @@ public interface DhisApi {
 
     @GET("/" + ApiEndpointContainer.RELATIONSHIPTYPES + "?paging=false")
     Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + ApiEndpointContainer.ATTRIBUTES + "?paging=false")
+    Map<String, List<Attribute>> getAttributes(@QueryMap Map<String, String> queryParams);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Tracker Data Values

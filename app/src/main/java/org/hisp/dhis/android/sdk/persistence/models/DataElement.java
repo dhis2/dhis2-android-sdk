@@ -32,8 +32,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
+import java.util.List;
 import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
@@ -180,5 +182,17 @@ public class DataElement extends BaseNameableObject {
 
     public void setDisplayFormName(String displayFormName) {
         this.displayFormName = displayFormName;
+    }
+
+    public List<AttributeValue> getAttributeValues(){
+        return MetaDataController.getAttributeValues(this);
+    }
+
+    public List<DataElementAttributeValue> getDataElementAttributeValues(){
+        return MetaDataController.getDataElementAttributeValues(id);
+    }
+
+    public AttributeValue getAttributeValue(String id){
+        return MetaDataController.getAttributeValue(id);
     }
 }

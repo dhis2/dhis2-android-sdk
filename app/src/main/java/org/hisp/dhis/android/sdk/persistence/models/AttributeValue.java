@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 /**
@@ -39,5 +40,13 @@ public class AttributeValue extends BaseMetaDataObject {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getAttributeName(){
+        return MetaDataController.getAttributeName(id);
+    }
+
+    public String getAttributeType(){
+        return MetaDataController.getAttributeType(id);
     }
 }

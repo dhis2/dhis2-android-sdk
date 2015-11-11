@@ -29,7 +29,10 @@
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
@@ -89,6 +92,13 @@ public class ProgramWrapper {
                     for (ProgramStageDataElement programStageDataElement : programStage.
                             getProgramStageDataElements()) {
                         operations.add(DbOperation.save(programStageDataElement));
+                        DataElement dataElement = programStageDataElement.getDataElement();
+                        operations.add(DbOperation.save(dataElement));
+                        for (DataElementAttributeValue dataElementAttributeValue: dataElement.getDataElementAttributeValues()){
+                            dataElementAttributeValue.setDataElement(dataElement);
+                            operations.add(DbOperation.save(dataElementAttributeValue));
+                            //TODO: insert AttributeValue and Attribute
+                        }
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));
@@ -99,14 +109,9 @@ public class ProgramWrapper {
                 }
             }
 
-            //TODO: save references to Attributes
-            for (ProgramAttributeValue programAttributeValue: program.getProgramAttributeValues()){
-                programAttributeValue.setProgram(program);
-
-                programAttributeValue.setAttributeValue(program.getAttributeValue(programAttributeValue.getAttributeValue().getUid()));
-                operations.add(DbOperation.save(programAttributeValue));
+            for (AttributeValue attributeValue : program.getAttributeValues()) {
+                operations.add(DbOperation.save(attributeValue));
             }
-
         }
         return operations;
     }

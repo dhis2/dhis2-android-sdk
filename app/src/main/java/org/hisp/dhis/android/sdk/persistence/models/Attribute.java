@@ -33,11 +33,23 @@ public class Attribute extends BaseMetaDataObject {
     @Column(name = "valueType")
     String valueType;
 
+    @JsonProperty("code")
+    @Column(name = "code")
+    String code;
+
     public String getValueType() {
         return valueType;
     }
 
     public void setValueType(String valueType) {
         this.valueType = valueType;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

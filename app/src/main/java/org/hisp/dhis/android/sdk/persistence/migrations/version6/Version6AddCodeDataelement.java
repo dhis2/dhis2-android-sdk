@@ -19,44 +19,28 @@
 
 package org.hisp.dhis.android.sdk.persistence.migrations.version6;
 
-import android.database.sqlite.SQLiteDatabase;
-
 import com.raizlabs.android.dbflow.annotation.Migration;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.migration.BaseMigration;
-import com.raizlabs.android.dbflow.structure.ModelAdapter;
+import com.raizlabs.android.dbflow.sql.migration.AlterTableMigration;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.persistence.models.Attribute;
-import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 
 /**
  * Created by ignac on 11/11/2015.
  */
 @Migration(version = 6, databaseName = Dhis2Database.NAME)
-public class Version6AddCodeDataelement extends BaseMigration {
+public class Version6AddCodeDataelement extends AlterTableMigration<DataElement> {
+
+    public Version6AddCodeDataelement(Class<DataElement> table) {
+        super(DataElement.class);
+    }
 
     public Version6AddCodeDataelement() {
-        super();
+        super(DataElement.class);
     }
-    public void onPreMigrate() {
-    }
-    @Override
-    public void migrate(SQLiteDatabase database) {
-        ModelAdapter myAdapter = FlowManager.getModelAdapter(Attribute.class);
-        database.execSQL(myAdapter.getCreationQuery());
-        myAdapter = FlowManager.getModelAdapter(AttributeValue.class);
-        database.execSQL(myAdapter.getCreationQuery());
-        myAdapter = FlowManager.getModelAdapter(DataElementAttributeValue.class);
-        database.execSQL(myAdapter.getCreationQuery());
-        myAdapter = FlowManager.getModelAdapter(ProgramAttributeValue.class);
-        database.execSQL(myAdapter.getCreationQuery());
 
-    }
     @Override
-    public void onPostMigrate() {
-        //release migration resources
+    public void onPreMigrate() {
+        addColumn(String.class, "code");
     }
 }

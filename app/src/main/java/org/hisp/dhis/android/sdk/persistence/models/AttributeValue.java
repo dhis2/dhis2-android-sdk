@@ -17,22 +17,23 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  */
 @Table(databaseName = Dhis2Database.NAME)
 public class AttributeValue extends BaseMetaDataObject {
+
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeId",
             columnType = String.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
-    AttributeValue attribute;
+    Attribute attribute;
 
     @JsonProperty("value")
     @Column(name = "value")
     String value;
 
-    public AttributeValue getAttribute() {
+    public Attribute getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(AttributeValue attribute) {
+    public void setAttribute(Attribute attribute) {
         this.attribute = attribute;
     }
 

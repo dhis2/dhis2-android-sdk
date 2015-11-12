@@ -80,6 +80,10 @@ public class DataElement extends BaseNameableObject {
     @Column(name = "formName")
     String formName;
 
+    @JsonProperty("code")
+    @Column(name = "code")
+    String code;
+
     @JsonProperty("numberType")
     @Column(name = "numberType")
     String numberType;
@@ -150,6 +154,14 @@ public class DataElement extends BaseNameableObject {
 
     public void setFormName(String formName) {
         this.formName = formName;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getNumberType() {

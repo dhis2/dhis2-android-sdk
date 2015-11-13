@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -37,6 +39,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.Access;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -51,67 +56,78 @@ import retrofit.client.Response;
 import retrofit.converter.ConversionException;
 
 /**
- * @author Simen Skogly Russnes on 20.08.15.
- * Wrapper to deserialize the contents of the api endpoint api/me/programs
+ * @author Ignacio Foche Pérez on 12.11.15.
+ * Wrapper to deserialize the attributeValues of the api endpoint api/me/programs
  */
-public class AttributeValuesWrapper extends JsonDeserializer<List<OrganisationUnit>> {
+public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue>> {
     @Override
-    public List<OrganisationUnit> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        List<OrganisationUnit> organisationUnits = new ArrayList<>();
+    public List<AttributeValue> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        List<AttributeValue> attributeValues = new ArrayList<>();
         JsonNode node = p.getCodec().readTree(p);
-        JsonNode organisationUnitsNode = node.get(ApiEndpointContainer.ORGANISATIONUNITS);
+        JsonNode attributeValueNode = node.get(ApiEndpointContainer.ATTRIBUTEVALUES);
 
-        if (organisationUnitsNode == null) { /* in case there are no items */
-            return organisationUnits;
+        if (attributeValueNode == null) { /* in case there are no items */
+            return attributeValues;
         } else {
-            Iterator<JsonNode> nodes = organisationUnitsNode.elements();
+            Iterator<JsonNode> nodes = attributeValueNode.elements();
             while(nodes.hasNext()) {
                 JsonNode indexNode = nodes.next();
-                OrganisationUnit item = DhisController.getInstance().getObjectMapper().
-                        readValue(indexNode.toString(), OrganisationUnit.class);
-                organisationUnits.add(item);
+                //indexNode.get("attributeValue");
+                AttributeValue item = DhisController.getInstance().getObjectMapper().
+                        readValue(indexNode.toString(), AttributeValue.class);
+                attributeValues.add(item);
             }
         }
-        return organisationUnits;
+        return attributeValues;
     }
 
-    public List<OrganisationUnit> deserialize(Response response) throws ConversionException, IOException {
-        List<OrganisationUnit> organisationUnits = new ArrayList<>();
+    public List<AttributeValue> deserialize(Response response) throws ConversionException, IOException {
+        List<AttributeValue> attributeValues = new ArrayList<>();
         String responseBodyString = new StringConverter().fromBody(response.getBody(), String.class);
         JsonNode node = DhisController.getInstance().getObjectMapper().
                     readTree(responseBodyString);
-        JsonNode organisationUnitsNode = node.get(ApiEndpointContainer.ORGANISATIONUNITS);
-
-        if (organisationUnitsNode == null) { /* in case there are no items */
-            return organisationUnits;
-        } else {
-            Iterator<JsonNode> nodes = organisationUnitsNode.elements();
-            while(nodes.hasNext()) {
-                JsonNode indexNode = nodes.next();
-                OrganisationUnit item = DhisController.getInstance().getObjectMapper().
-                        readValue(indexNode.toString(), OrganisationUnit.class);
-                organisationUnits.add(item);
+        Log.d(".AttributeValuesWrapper", "deserializing attributeValues");
+        JsonNode rootNode = node.get(ApiEndpointContainer.PROGRAMS);
+        Iterator<JsonNode> programsIterator = rootNode.elements();
+        while(programsIterator.hasNext()) {
+            JsonNode program = programsIterator.next();
+            JsonNode programStages = program.get("programStages");
+            Iterator<JsonNode> programStagesIterator = programStages.elements();
+            while (programStagesIterator.hasNext()) {
+                JsonNode programStage = programStagesIterator.next();
+                JsonNode programStageSections = programStage.get("programStageSections");
+                Iterator<JsonNode> programStageSectionsIterator = programStageSections.elements();
+                while (programStageSectionsIterator.hasNext()) {
+                    JsonNode programStageSection = programStageSectionsIterator.next();
+                    JsonNode programStageDataElements = programStageSection.get("programStageDataElements");
+                    Iterator<JsonNode> programStageDataElementsIterator = programStageDataElements.elements();
+                    while (programStageDataElementsIterator.hasNext()) {
+                        JsonNode programStageDataElement = programStageDataElementsIterator.next();
+                        JsonNode attributeValuesNode = programStageDataElement.get("dataElement").get("attributeValues");
+                        Iterator<JsonNode> attributeValuesIterator = attributeValuesNode.elements();
+                        while (attributeValuesIterator.hasNext()) {
+                            JsonNode attributeValueNode = attributeValuesIterator.next();
+                            if (attributeValueNode == null) { /* in case there are no items */
+                                return attributeValues;
+                            } else {
+                                AttributeValue attributeValue = DhisController.getInstance().getObjectMapper().
+                                        readValue(attributeValueNode.toString(), AttributeValue.class);
+                                attributeValues.add(attributeValue);
+                            }
+                        }
+                    }
+                }
             }
         }
-        return organisationUnits;
+        return attributeValues;
     }
 
-    public static List<DbOperation> getOperations(List<OrganisationUnit> organisationUnits) {
+    public static List<DbOperation> getOperations(List<AttributeValue> attributeValues) {
         List<DbOperation> operations = new ArrayList<>();
-        //delete all old relationships
-        for(OrganisationUnitProgramRelationship oldOrganisationUnitProgramRelationship: MetaDataController.getOrganisationUnitProgramRelationships()) {
-            operations.add(DbOperation.delete(oldOrganisationUnitProgramRelationship));
-        }
 
-        for (OrganisationUnit organisationUnit : organisationUnits) {
-            for (String programId : organisationUnit.getPrograms()) {
-                OrganisationUnitProgramRelationship orgUnitProgram =
-                        new OrganisationUnitProgramRelationship();
-                orgUnitProgram.setOrganisationUnitId(organisationUnit.getId());
-                orgUnitProgram.setProgramId(programId);
-                operations.add(DbOperation.save(orgUnitProgram));
-            }
-            operations.add(DbOperation.save(organisationUnit));
+        for (AttributeValue attributeValue : attributeValues) {
+            operations.add(DbOperation.save(attributeValue));
+            operations.add(DbOperation.save(attributeValue.getAttribute()));
         }
         return operations;
     }

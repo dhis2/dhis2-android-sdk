@@ -16,7 +16,11 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
  * @author Ignacio Foche Pérez on 09.11.15.
  */
 @Table(databaseName = Dhis2Database.NAME)
-public class AttributeValue extends BaseMetaDataObject {
+public class AttributeValue extends BaseModel {
+
+    @Column
+    @PrimaryKey(autoincrement = true)
+    long id;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeId",
@@ -28,6 +32,16 @@ public class AttributeValue extends BaseMetaDataObject {
     @JsonProperty("value")
     @Column(name = "value")
     String value;
+
+    @JsonProperty("created")
+    //@JsonIgnore
+    @Column(name = "created")
+    String created;
+
+    @JsonProperty("lastUpdated")
+    //@JsonIgnore
+    @Column(name = "lastUpdated")
+    String lastUpdated;
 
     public Attribute getAttribute() {
         return attribute;
@@ -45,11 +59,27 @@ public class AttributeValue extends BaseMetaDataObject {
         this.value = value;
     }
 
-    public String getAttributeName(){
-        return MetaDataController.getAttributeName(id);
+    public String getCreated() {
+        return created;
     }
 
-    public String getAttributeType(){
-        return MetaDataController.getAttributeType(id);
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

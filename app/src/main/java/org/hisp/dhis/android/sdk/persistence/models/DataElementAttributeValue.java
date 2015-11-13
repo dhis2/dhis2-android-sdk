@@ -32,7 +32,7 @@ public class DataElementAttributeValue extends BaseModel {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeValueId",
-            columnType = String.class,
+            columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
     AttributeValue attributeValue;
@@ -53,7 +53,7 @@ public class DataElementAttributeValue extends BaseModel {
         this.attributeValue = attributeValue;
     }
 
-    public void getAttributeValue(String id){
+    public void getAttributeValue(long id){
         MetaDataController.getAttributeValue(id);
     }
 }

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
+import org.hisp.dhis.android.sdk.controllers.wrappers.AttributeValuesWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -211,6 +212,10 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(Attribute.class).queryList();
     }
 
+    public static List<AttributeValue> getAttributeValues() {
+        return new Select().from(AttributeValue.class).queryList();
+    }
+
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
         List<AttributeValue> values = new ArrayList<>();
@@ -218,7 +223,7 @@ public final class MetaDataController extends ResourceController {
         List<DataElementAttributeValue> dataElementAttributeValues = getDataElementAttributeValues(dataElement.getUid());
 
         for (DataElementAttributeValue dataElementAttributeValue: dataElementAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getUid())).queryList();
+            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getId())).queryList();
             if (attributeValues != null) values.addAll(attributeValues);
         }
 
@@ -238,14 +243,14 @@ public final class MetaDataController extends ResourceController {
         List<ProgramAttributeValue> programAttributeValues = getProgramAttributeValues(program.getUid());
 
         for (ProgramAttributeValue programAttributeValue: programAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getUid())).queryList();
+            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getId())).queryList();
             if (attributeValues != null) values.addAll(attributeValues);
         }
 
         return values;
     }
 
-    public static AttributeValue getAttributeValue(String id){
+    public static AttributeValue getAttributeValue(Long id){
         if (id == null) return null;
         List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
                 .where(Condition.column(AttributeValue$Table.ID).is(id)).queryList();
@@ -275,7 +280,7 @@ public final class MetaDataController extends ResourceController {
         return attributes.get(0).getValueType();
     }
 
-    public static Object getAttributeValueValue(String attributeValueId){
+    public static Object getAttributeValueValue(Long attributeValueId){
         if (attributeValueId == null) return null;
         List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
                 .where(Condition.column(AttributeValue$Table.ID).is(attributeValueId)).queryList();
@@ -532,6 +537,8 @@ public final class MetaDataController extends ResourceController {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.RELATIONSHIPTYPES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTES);
+        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTEVALUES);
     }
 
     /**
@@ -638,6 +645,11 @@ public final class MetaDataController extends ResourceController {
                 getAttributesDataFromServer(dhisApi, serverDateTime);
             }
         }
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
+            if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTEVALUES) ) {
+                getAttributeValuesDataFromServer(dhisApi, serverDateTime);
+            }
+        }
     }
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
@@ -678,10 +690,10 @@ public final class MetaDataController extends ResourceController {
 
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]],attributes],programIndicators[*]],programStageDataElements" +
-                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
-                "[*,trackedEntityAttribute[*]],!organisationUnits)");
+                        "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                        "dataElement[*,optionSet[id]],attributes],programIndicators[*]],programStageDataElements" +
+                        "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                        "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
@@ -769,5 +781,28 @@ public final class MetaDataController extends ResourceController {
         List<Attribute> attributes = unwrapResponse(dhisApi
                 .getAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ATTRIBUTES);
         saveResourceDataFromServer(resource, dhisApi, attributes, getAttributes(), serverDateTime);
+    }
+
+    private static void getAttributeValuesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
+        Log.d(CLASS_TAG, "getAttributeValuesDataFromServer");
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.ATTRIBUTEVALUES);
+        Response response = dhisApi.getAttributeValues(getBasicQueryMap(lastUpdated));
+
+        List<AttributeValue> attributeValues;
+        try {
+            attributeValues = new AttributeValuesWrapper().deserialize(response);
+        } catch (ConversionException e) {
+            e.printStackTrace();
+            return; //todo: handle
+        } catch (IOException e) {
+            e.printStackTrace();
+            return; //todo: handle
+        }
+        List<DbOperation> operations = AttributeValuesWrapper.getOperations(attributeValues);
+
+        DbUtils.applyBatch(operations);
+        DateTimeManager.getInstance()
+                .setLastUpdated(ResourceType.ATTRIBUTEVALUES, serverDateTime);
     }
 }

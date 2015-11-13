@@ -29,7 +29,7 @@ public class ProgramAttributeValue extends BaseModel {
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeValueId",
-            columnType = String.class,
+            columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
     AttributeValue attributeValue;

@@ -163,8 +163,8 @@ public final class MetaDataController extends ResourceController {
                 return false;
             }
         }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ATTRIBUTES) == null) {
+        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
+            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ATTRIBUTEVALUES) == null) {
                 return false;
             }
         }
@@ -547,7 +547,6 @@ public final class MetaDataController extends ResourceController {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.RELATIONSHIPTYPES);
-        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTEVALUES);
     }
 
@@ -650,11 +649,6 @@ public final class MetaDataController extends ResourceController {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
             }
         }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTES)) {
-            if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTES) ) {
-                getAttributesDataFromServer(dhisApi, serverDateTime);
-            }
-        }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
             if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTEVALUES) ) {
                 getAttributeValuesDataFromServer(dhisApi, serverDateTime);
@@ -701,7 +695,7 @@ public final class MetaDataController extends ResourceController {
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,optionSet[id]],attributes],programIndicators[*]],programStageDataElements" +
+                        "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
@@ -781,16 +775,6 @@ public final class MetaDataController extends ResourceController {
         List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
                 .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
-    }
-
-    private static void getAttributesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
-        Log.d(CLASS_TAG, "getAttributesDataFromServer");
-        ResourceType resource = ResourceType.ATTRIBUTES;
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(resource);
-        List<Attribute> attributes = unwrapResponse(dhisApi
-                .getAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.ATTRIBUTES);
-        saveResourceDataFromServer(resource, dhisApi, attributes, getAttributes(), serverDateTime);
     }
 
     private static void getAttributeValuesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {

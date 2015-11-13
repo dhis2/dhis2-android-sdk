@@ -97,7 +97,7 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
                     Iterator<JsonNode> programStageDataElementsIterator = programStageSectionsIterator.next().get("programStageDataElements").elements();
                     while (programStageDataElementsIterator.hasNext()) {
                         JsonNode programStageDataElement = programStageDataElementsIterator.next();
-                        String dataElementId = programStageDataElement.get("dataElement").get("id").toString();
+                        String dataElementId = programStageDataElement.get("dataElement").get("id").asText();
                         Iterator<JsonNode> attributeValuesIterator = programStageDataElement.get("dataElement").get("attributeValues").elements();
                         while (attributeValuesIterator.hasNext()) {
                             JsonNode attributeValueNode = attributeValuesIterator.next();

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Access;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
@@ -72,7 +73,6 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
             Iterator<JsonNode> nodes = attributeValueNode.elements();
             while(nodes.hasNext()) {
                 JsonNode indexNode = nodes.next();
-                //indexNode.get("attributeValue");
                 AttributeValue item = DhisController.getInstance().getObjectMapper().
                         readValue(indexNode.toString(), AttributeValue.class);
                 attributeValues.add(item);
@@ -81,8 +81,8 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
         return attributeValues;
     }
 
-    public List<AttributeValue> deserialize(Response response) throws ConversionException, IOException {
-        List<AttributeValue> attributeValues = new ArrayList<>();
+    public List<DataElementAttributeValue> deserialize(Response response) throws ConversionException, IOException {
+        List<DataElementAttributeValue> attributeValues = new ArrayList<>();
         String responseBodyString = new StringConverter().fromBody(response.getBody(), String.class);
         JsonNode node = DhisController.getInstance().getObjectMapper().
                     readTree(responseBodyString);
@@ -90,21 +90,15 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
         JsonNode rootNode = node.get(ApiEndpointContainer.PROGRAMS);
         Iterator<JsonNode> programsIterator = rootNode.elements();
         while(programsIterator.hasNext()) {
-            JsonNode program = programsIterator.next();
-            JsonNode programStages = program.get("programStages");
-            Iterator<JsonNode> programStagesIterator = programStages.elements();
+            Iterator<JsonNode> programStagesIterator = programsIterator.next().get("programStages").elements();
             while (programStagesIterator.hasNext()) {
-                JsonNode programStage = programStagesIterator.next();
-                JsonNode programStageSections = programStage.get("programStageSections");
-                Iterator<JsonNode> programStageSectionsIterator = programStageSections.elements();
+                Iterator<JsonNode> programStageSectionsIterator = programStagesIterator.next().get("programStageSections").elements();
                 while (programStageSectionsIterator.hasNext()) {
-                    JsonNode programStageSection = programStageSectionsIterator.next();
-                    JsonNode programStageDataElements = programStageSection.get("programStageDataElements");
-                    Iterator<JsonNode> programStageDataElementsIterator = programStageDataElements.elements();
+                    Iterator<JsonNode> programStageDataElementsIterator = programStageSectionsIterator.next().get("programStageDataElements").elements();
                     while (programStageDataElementsIterator.hasNext()) {
                         JsonNode programStageDataElement = programStageDataElementsIterator.next();
-                        JsonNode attributeValuesNode = programStageDataElement.get("dataElement").get("attributeValues");
-                        Iterator<JsonNode> attributeValuesIterator = attributeValuesNode.elements();
+                        String dataElementId = programStageDataElement.get("dataElement").get("id").toString();
+                        Iterator<JsonNode> attributeValuesIterator = programStageDataElement.get("dataElement").get("attributeValues").elements();
                         while (attributeValuesIterator.hasNext()) {
                             JsonNode attributeValueNode = attributeValuesIterator.next();
                             if (attributeValueNode == null) { /* in case there are no items */
@@ -112,7 +106,10 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
                             } else {
                                 AttributeValue attributeValue = DhisController.getInstance().getObjectMapper().
                                         readValue(attributeValueNode.toString(), AttributeValue.class);
-                                attributeValues.add(attributeValue);
+                                DataElementAttributeValue dataElementAttributeValue = new DataElementAttributeValue();
+                                dataElementAttributeValue.setAttributeValue(attributeValue);
+                                dataElementAttributeValue.setDataElementId(dataElementId);
+                                attributeValues.add(dataElementAttributeValue);
                             }
                         }
                     }
@@ -122,13 +119,15 @@ public class AttributeValuesWrapper extends JsonDeserializer<List<AttributeValue
         return attributeValues;
     }
 
-    public static List<DbOperation> getOperations(List<AttributeValue> attributeValues) {
+    public static List<DbOperation> getOperations(List<DataElementAttributeValue> attributeValues) {
         List<DbOperation> operations = new ArrayList<>();
 
-        for (AttributeValue attributeValue : attributeValues) {
+        for (DataElementAttributeValue attributeValue : attributeValues) {
+            operations.add(DbOperation.save(attributeValue.getAttributeValue().getAttribute()));
+            operations.add(DbOperation.save(attributeValue.getAttributeValue()));
             operations.add(DbOperation.save(attributeValue));
-            operations.add(DbOperation.save(attributeValue.getAttribute()));
         }
+
         return operations;
     }
 }

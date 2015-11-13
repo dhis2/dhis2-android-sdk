@@ -234,7 +234,7 @@ public final class MetaDataController extends ResourceController {
     public static List<DataElementAttributeValue> getDataElementAttributeValues(String dataElementId){
         if (dataElementId == null) return null;
         return new Select().from(DataElementAttributeValue.class)
-                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENT_DATAELEMENTID).is(dataElementId)).queryList();
+                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENTID).is(dataElementId)).queryList();
     }
 
     public static List<AttributeValue> getAttributeValues(Program program){
@@ -799,7 +799,7 @@ public final class MetaDataController extends ResourceController {
                 .getLastUpdated(ResourceType.ATTRIBUTEVALUES);
         Response response = dhisApi.getAttributeValues(getBasicQueryMap(lastUpdated));
 
-        List<AttributeValue> attributeValues;
+        List<DataElementAttributeValue> attributeValues;
         try {
             attributeValues = new AttributeValuesWrapper().deserialize(response);
         } catch (ConversionException e) {

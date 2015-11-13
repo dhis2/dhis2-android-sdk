@@ -215,7 +215,7 @@ public class Program extends BaseMetaDataObject {
         return MetaDataController.getProgramAttributeValues(id);
     }
 
-    public AttributeValue getAttributeValue(String id){
+    public AttributeValue getAttributeValue(long id){
         return MetaDataController.getAttributeValue(id);
     }
 

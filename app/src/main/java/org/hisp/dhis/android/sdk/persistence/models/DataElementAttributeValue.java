@@ -23,26 +23,22 @@ public class DataElementAttributeValue extends BaseModel {
     @PrimaryKey(autoincrement = true)
     long id;
 
-    @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "dataElementId",
-            columnType = String.class,
-            foreignColumnName = "id")},
-            saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
-    DataElement dataElement;
+    @Column (name = "dataElementId")
+    String dataElementId;
 
     @Column
     @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeValueId",
-            columnType = String.class,
+            columnType = Long.class,
             foreignColumnName = "id")},
             saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
     AttributeValue attributeValue;
 
-    public DataElement getDataElement() {
-        return dataElement;
+    public String getDataElementId() {
+        return dataElementId;
     }
 
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
+    public void setDataElementId(String dataElementId) {
+        this.dataElementId = dataElementId;
     }
 
     public AttributeValue getAttributeValue() {
@@ -53,7 +49,15 @@ public class DataElementAttributeValue extends BaseModel {
         this.attributeValue = attributeValue;
     }
 
-    public void getAttributeValue(String id){
+    public void getAttributeValue(long id){
         MetaDataController.getAttributeValue(id);
+    }
+
+    public DataElement getDataElement() {
+        return MetaDataController.getDataElement(dataElementId);
+    }
+
+    public void setDataElement(DataElement dataElement) {
+        this.dataElementId = dataElement.getUid();
     }
 }

@@ -204,7 +204,7 @@ public class DataElement extends BaseNameableObject {
         return MetaDataController.getDataElementAttributeValues(id);
     }
 
-    public AttributeValue getAttributeValue(String id){
+    public AttributeValue getAttributeValue(long id){
         return MetaDataController.getAttributeValue(id);
     }
 }

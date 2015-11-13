@@ -94,11 +94,6 @@ public class ProgramWrapper {
                         operations.add(DbOperation.save(programStageDataElement));
                         DataElement dataElement = programStageDataElement.getDataElement();
                         operations.add(DbOperation.save(dataElement));
-                        for (DataElementAttributeValue dataElementAttributeValue: dataElement.getDataElementAttributeValues()){
-                            dataElementAttributeValue.setDataElement(dataElement);
-                            operations.add(DbOperation.save(dataElementAttributeValue));
-                            //TODO: insert AttributeValue and Attribute
-                        }
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));
@@ -107,10 +102,6 @@ public class ProgramWrapper {
                         operations.add(saveStageRelation(programIndicator, programStage.getUid()));
                     }
                 }
-            }
-
-            for (AttributeValue attributeValue : program.getAttributeValues()) {
-                operations.add(DbOperation.save(attributeValue));
             }
         }
         return operations;

@@ -92,6 +92,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
+import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -461,6 +462,15 @@ public final class MetaDataController extends ResourceController {
      */
     public static User getUser() {
         return new Select().from(User.class).querySingle();
+    }
+
+    /**
+     * Returns a UserAccount object for the currently logged in user.
+     *
+     * @return
+     */
+    public static UserAccount getUserAccount() {
+        return new Select().from(UserAccount.class).querySingle();
     }
 
     /**

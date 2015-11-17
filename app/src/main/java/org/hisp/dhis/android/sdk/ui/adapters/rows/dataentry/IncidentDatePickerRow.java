@@ -1,30 +1,3 @@
-/*
- * Copyright (c) 2015, University of Oslo
- *
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
 import android.app.DatePickerDialog;
@@ -49,19 +22,18 @@ import org.joda.time.LocalDate;
 import static android.text.TextUtils.isEmpty;
 
 
-public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
+public class IncidentDatePickerRow extends AbsEnrollmentDatePickerRow {
 
     private Enrollment mEnrollment;
     private String mLabel;
-    private String mEnrollmentDate;
-    public EnrollmentDatePickerRow(String label, Enrollment enrollment, String enrollmentDate) {
-        super(label, enrollment, enrollmentDate);
+    private String mIncidentDate;
 
+    public IncidentDatePickerRow(String label, Enrollment enrollment, String incidentDate) {
+        super(label, enrollment, incidentDate);
         this.mEnrollment = enrollment;
+        this.mIncidentDate = incidentDate;
         this.mLabel = label;
-        this.mEnrollmentDate = enrollmentDate;
     }
-
 
     @Override
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container) {
@@ -91,12 +63,17 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mEnrollment, mEnrollmentDate);
+        holder.updateViews(mLabel, mEnrollment, mIncidentDate);
 
         if (isDetailedInfoButtonHidden())
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
 
         return view;
+    }
+
+    @Override
+    public int getViewType() {
+        return super.getViewType();
     }
 
     private class DatePickerRowHolder {
@@ -123,18 +100,18 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
 
         }
 
-        public void updateViews(String label, Enrollment enrollment, String enrollmentDate ) {
+        public void updateViews(String label, Enrollment enrollment, String incidentDate ) {
             dateSetListener.setEnrollment(enrollment);
             clearButtonListener.setEnrollment(enrollment);
 
             String eventDate = null;
 
 
-            if(enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate))
+            if(enrollment != null && incidentDate != null && !isEmpty(incidentDate))
             {
-                dateSetListener.setEnrollmentDate(enrollment.getDateOfEnrollment());
-                clearButtonListener.setEnrollmentDate(enrollment.getDateOfEnrollment());
-                DateTime incidentDateTime = DateTime.parse(enrollment.getDateOfEnrollment());
+                dateSetListener.setIncidentDate(enrollment.getDateOfIncident());
+                clearButtonListener.setIncidentDate(enrollment.getDateOfIncident());
+                DateTime incidentDateTime = DateTime.parse(enrollment.getDateOfIncident());
                 eventDate = incidentDateTime.toString(DATE_FORMAT);
             }
 
@@ -168,6 +145,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         private final TextView textView;
         private Enrollment enrollment;
         private String enrollmentDate;
+        private String incidentDate;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
@@ -181,14 +159,17 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             this.enrollmentDate = enrollmentDate;
         }
 
+        public void setIncidentDate(String incidentDate) {
+            this.incidentDate = incidentDate;
+        }
 
         @Override
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
-
-            if (enrollmentDate != null){
+            if (enrollmentDate != null)
                 enrollment.setDateOfEnrollment(EMPTY_FIELD);
-            }
+            else if (incidentDate != null)
+                enrollment.setDateOfIncident(EMPTY_FIELD);
         }
     }
 
@@ -198,6 +179,7 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
         private Enrollment enrollment;
         private DataValue value;
         private String enrollmentDate;
+        private String incidentDate;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
@@ -207,8 +189,8 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             this.enrollment = enrollment;
         }
 
-        public void setEnrollmentDate(String enrollmentDate) {
-            this.enrollmentDate = enrollmentDate;
+        public void setIncidentDate(String incidentDate) {
+            this.incidentDate = incidentDate;
         }
 
         @Override
@@ -218,8 +200,8 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             if (value == null) value = new DataValue();
 
 
-            if (enrollmentDate != null)
-                value.setValue(enrollmentDate);
+            if (incidentDate != null)
+                value.setValue(incidentDate);
 
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
@@ -227,13 +209,12 @@ public class EnrollmentDatePickerRow extends AbsEnrollmentDatePickerRow {
             if (!newValue.equals(value.getValue())) {
                 value.setValue(newValue);
 
-                if (enrollmentDate != null)
-                    enrollment.setDateOfEnrollment(value.getValue());
+                if (incidentDate != null)
+                    enrollment.setDateOfIncident(value.getValue());
 
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.ENROLLMENT_DATE.toString()));
             }
 
         }
     }
-
 }

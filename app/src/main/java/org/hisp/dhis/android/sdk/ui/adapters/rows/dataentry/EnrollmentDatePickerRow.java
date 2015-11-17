@@ -64,8 +64,8 @@ public class EnrollmentDatePickerRow extends Row
 
         mLabel = label;
         mEnrollment = enrollment;
-        this.mEnrollmentDate = enrollmentDate;
-        this.mIncidentDate = incidentDate;
+        this.mEnrollmentDate = enrollment.getEnrollmentDate();
+        this.mIncidentDate = enrollment.getIncidentDate();
 
         checkNeedsForDescriptionButton();
     }
@@ -145,16 +145,16 @@ public class EnrollmentDatePickerRow extends Row
 
             if(enrollment != null && enrollmentDate != null && !isEmpty(enrollmentDate))
             {
-                dateSetListener.setEnrollmentDate(enrollmentDate);
-                clearButtonListener.setEnrollmentDate(enrollmentDate);
-                DateTime enrollmentDateTime = DateTime.parse(enrollmentDate);
+                dateSetListener.setEnrollmentDate(enrollment.getEnrollmentDate());
+                clearButtonListener.setEnrollmentDate(enrollment.getEnrollmentDate());
+                DateTime enrollmentDateTime = DateTime.parse(enrollment.getEnrollmentDate());
                 eventDate = enrollmentDateTime.toString(DATE_FORMAT);
             }
             else if(enrollment != null && incidentDate != null && !isEmpty(incidentDate))
             {
-                dateSetListener.setIncidentDate(incidentDate);
-                clearButtonListener.setIncidentDate(incidentDate);
-                DateTime incidentDateTime= DateTime.parse(incidentDate);
+                dateSetListener.setIncidentDate(enrollment.getIncidentDate());
+                clearButtonListener.setIncidentDate(enrollment.getIncidentDate());
+                DateTime incidentDateTime= DateTime.parse(enrollment.getIncidentDate());
                 eventDate = incidentDateTime.toString(DATE_FORMAT);
             }
 

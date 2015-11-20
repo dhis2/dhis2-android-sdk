@@ -88,6 +88,7 @@ import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -224,7 +225,7 @@ public final class MetaDataController extends ResourceController {
      * @return
      */
     public static List<Program> getProgramsForOrganisationUnit(String organisationUnitId,
-                                                               Program.ProgramType... kinds) {
+                                                               ProgramType... kinds) {
         List<OrganisationUnitProgramRelationship> organisationUnitProgramRelationships =
                 new Select().from(OrganisationUnitProgramRelationship.class).where(
                         Condition.column(OrganisationUnitProgramRelationship$Table.ORGANISATIONUNITID).
@@ -233,10 +234,10 @@ public final class MetaDataController extends ResourceController {
         List<Program> programs = new ArrayList<Program>();
         for (OrganisationUnitProgramRelationship oupr : organisationUnitProgramRelationships) {
             if (kinds != null) {
-                for (Program.ProgramType kind : kinds) {
+                for (ProgramType kind : kinds) {
                     List<Program> plist = new Select().from(Program.class).where(
                             Condition.column(Program$Table.ID).is(oupr.getProgramId())).and(
-                            Condition.column(Program$Table.KIND).is(kind.toString())).queryList();
+                            Condition.column(Program$Table.PROGRAMTYPE).is(kind.toString())).queryList();
                     programs.addAll(plist);
                 }
             }

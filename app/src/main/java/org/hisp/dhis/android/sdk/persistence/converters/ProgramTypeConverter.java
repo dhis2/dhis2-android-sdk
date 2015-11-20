@@ -26,59 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.persistence.models;
+package org.hisp.dhis.android.sdk.persistence.converters;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
-import org.hisp.dhis.android.sdk.utils.api.ValueType;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
-import java.util.List;
+@SuppressWarnings("unused")
+@com.raizlabs.android.dbflow.annotation.TypeConverter
+public final class ProgramTypeConverter extends TypeConverter<String, ProgramType> {
 
-/**
- * @author Simen Skogly Russnes on 20.02.15.
- */
-@Table(databaseName = Dhis2Database.NAME)
-public class OptionSet extends BaseMetaDataObject {
-
-    @JsonProperty("version")
-    @Column(name = "version")
-    int version;
-
-    @JsonProperty("valueType")
-    @Column
-    ValueType valueType;
-
-    @JsonProperty("options")
-    List<Option> options;
-
-    public List<Option> getOptions() {
-        if (options == null) {
-            options = MetaDataController.getOptions(id);
-        }
-        return options;
+    @Override
+    public String getDBValue(ProgramType model) {
+        return model.toString();
     }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
-    }
-
-    public ValueType getValueType() {
-        return valueType;
-    }
-
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
+    @Override
+    public ProgramType getModelValue(String data) {
+        return ProgramType.valueOf(data);
     }
 }

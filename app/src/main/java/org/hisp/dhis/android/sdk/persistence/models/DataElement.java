@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
 
 import java.util.Map;
 
@@ -43,24 +44,14 @@ import static android.text.TextUtils.isEmpty;
  */
 @Table(databaseName = Dhis2Database.NAME)
 public class DataElement extends BaseNameableObject {
-    public static final String VALUE_TYPE_INT = "int";
-    public static final String VALUE_TYPE_STRING = "string";
-    public static final String VALUE_TYPE_USER_NAME = "username";
-    public static final String VALUE_TYPE_BOOL = "bool";
-    public static final String VALUE_TYPE_TRUE_ONLY = "trueOnly";
-    public static final String VALUE_TYPE_DATE = "date";
-    public static final String VALUE_TYPE_UNIT_INTERVAL = "unitInterval";
-    public static final String VALUE_TYPE_PERCENTAGE = "percentage";
-    public static final String VALUE_TYPE_NUMBER = "number";
-    public static final String VALUE_TYPE_POSITIVE_INT = "posInt";
-    public static final String VALUE_TYPE_NEGATIVE_INT = "negInt";
-    public static final String VALUE_TYPE_ZERO_OR_POSITIVE_INT = "zeroPositiveInt";
-    public static final String VALUE_TYPE_TEXT = "text";
-    public static final String VALUE_TYPE_LONG_TEXT = "longText";
 
-    @JsonProperty("type")
-    @Column(name = "type")
-    String type;
+    @JsonProperty("valueType")
+    @Column(name = "valueType")
+    ValueType valueType;
+
+    @JsonProperty("optionSetValue")
+    @Column(name = "optionSetValue")
+    boolean optionSetValue;
 
     @JsonProperty("zeroIsSignificant")
     @Column(name = "zeroIsSignificant")
@@ -102,12 +93,20 @@ public class DataElement extends BaseNameableObject {
         this.optionSet = (String) optionSet.get("id");
     }
 
-    public String getType() {
-        return type;
+    public ValueType getValueType() {
+        return valueType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
+    }
+
+    public boolean isOptionSetValue() {
+        return optionSetValue;
+    }
+
+    public void setOptionSetValue(boolean optionSetValue) {
+        this.optionSetValue = optionSetValue;
     }
 
     public String getOptionSet() {

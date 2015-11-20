@@ -46,6 +46,7 @@ import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EditTextRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.RadioButtonsRow;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,28 +116,26 @@ public class QueryTrackedEntityInstancesResultDialogFragmentQuery implements Que
             } else {
                 row = new AutoCompleteRow(trackedEntityAttributeName, dataValue, optionSet);
             }
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_TEXT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.TEXT)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.TEXT);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_LONG_TEXT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.LONG_TEXT)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.LONG_TEXT);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_NUMBER)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.NUMBER)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.NUMBER);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_INT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.INTEGER);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_ZERO_OR_POSITIVE_INT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_POSITIVE_INT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_NEGATIVE_INT)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_BOOL)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.BOOLEAN)) {
             row = new RadioButtonsRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.BOOLEAN);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_TRUE_ONLY)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.TRUE_ONLY)) {
             row = new CheckBoxRow(trackedEntityAttributeName, dataValue);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_DATE)) {
+        } else if (trackedEntityAttribute.getValueType().equals(ValueType.DATE)) {
             row = new DatePickerRow(trackedEntityAttributeName, dataValue);
-        } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_STRING)) {
-            row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.LONG_TEXT);
         }

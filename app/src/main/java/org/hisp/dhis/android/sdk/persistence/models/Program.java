@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.List;
 
@@ -48,28 +49,6 @@ import java.util.List;
 @Table(databaseName = Dhis2Database.NAME)
 public class Program extends BaseMetaDataObject {
 
-    public enum ProgramType {
-        /* pre DHIS 2.20 */
-        SINGLE_EVENT_WITH_REGISTRATION("SINGLE_EVENT_WITH_REGISTRATION"),
-        SINGLE_EVENT_WITHOUT_REGISTRATION("SINGLE_EVENT_WITHOUT_REGISTRATION"),
-        MULTIPLE_EVENTS_WITH_REGISTRATION ("MULTIPLE_EVENTS_WITH_REGISTRATION"),
-        /* DHIS 2.20 and up */
-        WITH_REGISTRATION("WITH_REGISTRATION"),
-        WITHOUT_REGISTRATION("WITHOUT_REGISTRATION");
-        private final String value;
-        private ProgramType(String value) {
-            this.value = value;
-        }
-        @Override
-        public String toString() {
-            return ProgramType.this.value;
-        }
-    }
-
-    /* >= 2.20 kinds */
-    public static final String WITH_REGISTRATION = "WITH_REGISTRATION";
-    public static final String WITHOUT_REGISTRATION = "WITHOUT_REGISTRATION";
-
     @JsonProperty("trackedEntity")
     @Column
     @ForeignKey(references = {
@@ -78,21 +57,17 @@ public class Program extends BaseMetaDataObject {
     })
     TrackedEntity trackedEntity;
 
-    @JsonProperty("type")
-    @Column(name = "type")
-    int type;
-
-    @JsonProperty("kind")
-    @Column(name = "kind")
-    String kind;
+    @JsonProperty("programType")
+    @Column(name = "programType")
+    ProgramType programType;
 
     @JsonProperty("version")
     @Column(name = "version")
     int version;
 
-    @JsonProperty("dateOfEnrollmentDescription")
-    @Column(name = "dateOfEnrollmentDescription")
-    String dateOfEnrollmentDescription;
+    @JsonProperty("enrollmentDateLabel")
+    @Column(name = "enrollmentDateLabel")
+    String enrollmentDateLabel;
 
     @JsonProperty("description")
     @Column(name = "description")
@@ -110,9 +85,9 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "displayIncidentDate")
     boolean displayIncidentDate;
 
-    @JsonProperty("dateOfIncidentDescription")
-    @Column(name = "dateOfIncidentDescription")
-    String dateOfIncidentDescription;
+    @JsonProperty("incidentDateLabel")
+    @Column(name = "incidentDateLabel")
+    String incidentDateLabel;
 
     @JsonProperty("registration")
     @Column(name = "registration")
@@ -154,6 +129,14 @@ public class Program extends BaseMetaDataObject {
     @JsonAnySetter
     public void handleUnknown(String key, Object value) {
         // do something: put to a Map; log a warning, whatever
+    }
+
+    public ProgramType getProgramType() {
+        return programType;
+    }
+
+    public void setProgramType(ProgramType programType) {
+        this.programType = programType;
     }
 
     public TrackedEntity getTrackedEntity() {
@@ -207,22 +190,6 @@ public class Program extends BaseMetaDataObject {
         this.relationshipFromA = relationshipFromA;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
-
     public int getVersion() {
         return version;
     }
@@ -231,12 +198,12 @@ public class Program extends BaseMetaDataObject {
         this.version = version;
     }
 
-    public String getDateOfEnrollmentDescription() {
-        return dateOfEnrollmentDescription;
+    public String getEnrollmentDateLabel() {
+        return enrollmentDateLabel;
     }
 
-    public void setDateOfEnrollmentDescription(String dateOfEnrollmentDescription) {
-        this.dateOfEnrollmentDescription = dateOfEnrollmentDescription;
+    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
+        this.enrollmentDateLabel = enrollmentDateLabel;
     }
 
     public String getDescription() {
@@ -271,12 +238,12 @@ public class Program extends BaseMetaDataObject {
         this.displayIncidentDate = displayIncidentDate;
     }
 
-    public String getDateOfIncidentDescription() {
-        return dateOfIncidentDescription;
+    public String getIncidentDateLabel() {
+        return incidentDateLabel;
     }
 
-    public void setDateOfIncidentDescription(String dateOfIncidentDescription) {
-        this.dateOfIncidentDescription = dateOfIncidentDescription;
+    public void setIncidentDateLabel(String incidentDateLabel) {
+        this.incidentDateLabel = incidentDateLabel;
     }
 
     public boolean getRegistration() {

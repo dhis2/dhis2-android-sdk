@@ -426,9 +426,9 @@ public class ProgramIndicatorService {
                     Date date = null;
 
                     if (ProgramIndicator.ENROLLMENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(programInstance.getDateOfEnrollment());
+                        date = DateUtils.getMediumDate(programInstance.getEnrollmentDate());
                     } else if (ProgramIndicator.INCIDENT_DATE.equals(uid)) {
-                        date = DateUtils.getMediumDate(programInstance.getDateOfIncident());
+                        date = DateUtils.getMediumDate(programInstance.getIncidentDate());
                     } else if (ProgramIndicator.CURRENT_DATE.equals(uid)) {
                         date = currentDate;
                     }

@@ -57,6 +57,7 @@ import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
 import org.hisp.dhis.android.sdk.utils.DbUtils;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.Utils;
+import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -96,8 +97,7 @@ final class TrackerDataLoader extends ResourceController {
                 List<Program> programsForOrgUnit = new ArrayList<>();
                 List<Program> programsForOrgUnitSEWoR = MetaDataController.getProgramsForOrganisationUnit
                         (organisationUnit.getId(),
-                                Program.ProgramType.SINGLE_EVENT_WITHOUT_REGISTRATION,
-                                Program.ProgramType.WITHOUT_REGISTRATION);
+                                ProgramType.WITHOUT_REGISTRATION);
                 if (programsForOrgUnitSEWoR != null) {
                     programsForOrgUnit.addAll(programsForOrgUnitSEWoR);
                 }

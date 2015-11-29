@@ -221,23 +221,24 @@ final class TrackerDataSender {
         if (Utils.isLocal(enrollment.getTrackedEntityInstance())) {//don't send enrollment with locally made uid
             return;
         }
+        boolean success;
 
         if(enrollment.getCreated() == null) {
-            postEnrollment(enrollment, dhisApi);
-            if( sendEvents ) {
+            success = postEnrollment(enrollment, dhisApi);
+            if( success && sendEvents ) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
         } else {
-            if( sendEvents ) {
+            success = putEnrollment(enrollment, dhisApi);
+            if( success && sendEvents ) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
-            putEnrollment(enrollment, dhisApi);
         }
     }
 
-    private static void postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
+    private static boolean postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postEnrollment(enrollment);
             if(response.getStatus() == 200) {
@@ -257,10 +258,12 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleEnrollmentSendException(apiException, enrollment);
+            return false;
         }
+        return true;
     }
 
-    private static void putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
+    private static boolean putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment);
             if(response.getStatus() == 200) {
@@ -279,7 +282,9 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleEnrollmentSendException(apiException, enrollment);
+            return false;
         }
+        return true;
     }
 
     private static void updateEnrollmentReferences(long localId, String newReference) {
@@ -333,18 +338,19 @@ final class TrackerDataSender {
         if (trackedEntityInstance == null) {
             return;
         }
+        boolean success;
         if(trackedEntityInstance.getCreated() == null) {
-            postTrackedEntityInstance(trackedEntityInstance, dhisApi);
+            success = postTrackedEntityInstance(trackedEntityInstance, dhisApi);
         } else {
-            putTrackedEntityInstance(trackedEntityInstance, dhisApi);
+            success = putTrackedEntityInstance(trackedEntityInstance, dhisApi);
         }
-        if( sendEnrollments ) {
+        if( success && sendEnrollments ) {
             List<Enrollment> enrollments = TrackerController.getEnrollments(trackedEntityInstance);
             sendEnrollmentChanges(dhisApi, enrollments, sendEnrollments);
         }
     }
 
-    private static void postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
+    private static boolean postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance);
             if(response.getStatus() == 200) {
@@ -365,10 +371,12 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleTrackedEntityInstanceSendException(apiException, trackedEntityInstance);
+            return false;
         }
+        return true;
     }
 
-    private static void putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
+    private static boolean putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance);
             if(response.getStatus() == 200) {
@@ -385,7 +393,9 @@ final class TrackerDataSender {
             }
         } catch (APIException apiException) {
             NetworkUtils.handleTrackedEntityInstanceSendException(apiException, trackedEntityInstance);
+            return false;
         }
+        return true;
     }
 
     private static void updateTrackedEntityInstanceReferences(long localId, String newTrackedEntityInstanceReference, String oldTempTrackedEntityInstanceReference) {

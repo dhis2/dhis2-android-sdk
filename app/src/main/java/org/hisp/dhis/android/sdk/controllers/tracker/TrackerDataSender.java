@@ -74,7 +74,8 @@ final class TrackerDataSender {
 
     public static final String CLASS_TAG = TrackerDataSender.class.getSimpleName();
 
-    private TrackerDataSender() {}
+    private TrackerDataSender() {
+    }
 
     static void sendEventChanges(DhisApi dhisApi) throws APIException {
         List<Event> events = new Select().from(Event.class).where
@@ -111,7 +112,7 @@ final class TrackerDataSender {
             return;
         }
 
-        if(event.getCreated() == null) {
+        if (event.getCreated() == null) {
             postEvent(event, dhisApi);
         } else {
             putEvent(event, dhisApi);
@@ -121,10 +122,10 @@ final class TrackerDataSender {
     private static void postEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postEvent(event);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
                     // also, we will need to find UUID of newly created event,
                     // which is contained inside of HTTP Location header
@@ -144,10 +145,10 @@ final class TrackerDataSender {
     private static void putEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putEvent(event.getEvent(), event);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
 
                     event.setFromServer(true);
@@ -223,15 +224,15 @@ final class TrackerDataSender {
         }
         boolean success;
 
-        if(enrollment.getCreated() == null) {
+        if (enrollment.getCreated() == null) {
             success = postEnrollment(enrollment, dhisApi);
-            if( success && sendEvents ) {
+            if (success && sendEvents) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
         } else {
             success = putEnrollment(enrollment, dhisApi);
-            if( success && sendEvents ) {
+            if (success && sendEvents) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
@@ -241,11 +242,11 @@ final class TrackerDataSender {
     private static boolean postEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postEnrollment(enrollment);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
 
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
                     // change state and save enrollment
 
@@ -266,11 +267,11 @@ final class TrackerDataSender {
     private static boolean putEnrollment(Enrollment enrollment, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putEnrollment(enrollment.getEnrollment(), enrollment);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.ENROLLMENT, enrollment.getLocalId());
 
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
 
                     //enrollment.setState(State.SYNCED);
@@ -329,7 +330,7 @@ final class TrackerDataSender {
         }
         Log.d(CLASS_TAG, "got this many teis to send:" + trackedEntityInstances.size());
 
-        for (TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
+        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
             sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, sendEnrollments);
         }
     }
@@ -339,12 +340,12 @@ final class TrackerDataSender {
             return;
         }
         boolean success;
-        if(trackedEntityInstance.getCreated() == null) {
+        if (trackedEntityInstance.getCreated() == null) {
             success = postTrackedEntityInstance(trackedEntityInstance, dhisApi);
         } else {
             success = putTrackedEntityInstance(trackedEntityInstance, dhisApi);
         }
-        if( success && sendEnrollments ) {
+        if (success && sendEnrollments) {
             List<Enrollment> enrollments = TrackerController.getEnrollments(trackedEntityInstance);
             sendEnrollmentChanges(dhisApi, enrollments, sendEnrollments);
         }
@@ -353,10 +354,10 @@ final class TrackerDataSender {
     private static boolean postTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.postTrackedEntityInstance(trackedEntityInstance);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
 
                     // change state and save trackedentityinstance
@@ -379,10 +380,10 @@ final class TrackerDataSender {
     private static boolean putTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance, DhisApi dhisApi) throws APIException {
         try {
             Response response = dhisApi.putTrackedEntityInstance(trackedEntityInstance.getTrackedEntityInstance(), trackedEntityInstance);
-            if(response.getStatus() == 200) {
+            if (response.getStatus() == 200) {
                 ImportSummary importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
-                if(ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
+                if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
                     //trackedentityinstance.setState(State.SYNCED);
                     trackedEntityInstance.setFromServer(true);
@@ -430,25 +431,25 @@ final class TrackerDataSender {
                     * exist >0 relationships that are valid. If >0 relationship is valid, it
                     * should get uploaded, as it is the first time it has been valid. */
         boolean hasValidRelationship = false;
-        if( Utils.isLocal( oldTempTrackedEntityInstanceReference ) ) {
+        if (Utils.isLocal(oldTempTrackedEntityInstanceReference)) {
             List<Relationship> teiIsB = new Select().from(Relationship.class).where(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEB).is(newTrackedEntityInstanceReference)).queryList();
             List<Relationship> teiIsA = new Select().from(Relationship.class).where(Condition.column(Relationship$Table.TRACKEDENTITYINSTANCEA).is(newTrackedEntityInstanceReference)).queryList();
-            if( teiIsB != null ) {
-                for( Relationship relationship: teiIsB ) {
-                    if( !Utils.isLocal( relationship.getTrackedEntityInstanceA() ) ) {
+            if (teiIsB != null) {
+                for (Relationship relationship : teiIsB) {
+                    if (!Utils.isLocal(relationship.getTrackedEntityInstanceA())) {
                         hasValidRelationship = true;
                     }
                 }
             }
-            if( teiIsA != null ) {
-                for( Relationship relationship: teiIsA ) {
-                    if( !Utils.isLocal( relationship.getTrackedEntityInstanceB() ) ) {
+            if (teiIsA != null) {
+                for (Relationship relationship : teiIsA) {
+                    if (!Utils.isLocal(relationship.getTrackedEntityInstanceB())) {
                         hasValidRelationship = true;
                     }
                 }
             }
         }
-        boolean fullySynced = !( hasValidRelationship && updated > 0 );
+        boolean fullySynced = !(hasValidRelationship && updated > 0);
 
         new Update(TrackedEntityInstance.class).set(Condition.column
                 (TrackedEntityInstance$Table.TRACKEDENTITYINSTANCE).is
@@ -481,7 +482,7 @@ final class TrackerDataSender {
     }
 
     private static void handleImportSummary(ImportSummary importSummary, String type, long id) {
-        if ( ImportSummary.ERROR.equals(importSummary.getStatus()) ){
+        if (ImportSummary.ERROR.equals(importSummary.getStatus())) {
             Log.d(CLASS_TAG, "failed.. ");
             NetworkUtils.handleImportSummaryError(importSummary, type, 200, id);
         }
@@ -493,10 +494,10 @@ final class TrackerDataSender {
         try {
             JsonNode node = DhisController.getInstance().getObjectMapper().
                     readTree(new StringConverter().fromBody(response.getBody(), String.class));
-            if(node == null) {
+            if (node == null) {
                 return null;
             }
-            if(node.has("response")) {
+            if (node.has("response")) {
                 return getPutImportSummary(response);
             } else {
                 return getPostImportSummary(response);
@@ -531,8 +532,8 @@ final class TrackerDataSender {
             Log.d(CLASS_TAG, body);
             apiResponse = DhisController.getInstance().getObjectMapper().
                     readValue(body, ApiResponse.class);
-            if(apiResponse !=null && apiResponse.getImportSummaries()!=null && !apiResponse.getImportSummaries().isEmpty()) {
-                return(apiResponse.getImportSummaries().get(0));
+            if (apiResponse != null && apiResponse.getImportSummaries() != null && !apiResponse.getImportSummaries().isEmpty()) {
+                return (apiResponse.getImportSummaries().get(0));
             }
         } catch (IOException e) {
             e.printStackTrace();

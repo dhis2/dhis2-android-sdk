@@ -70,9 +70,13 @@
     <string name="login">Log in</string>
     <string name="custom_url">Custom URL</string>
     <string name="invalid_username_or_password">Unable to log in due to an invalid username or password.</string>
+    <string name="invalid_server_url">Invalid Server URL given.</string>
     <string name="unable_to_login">Unable to log in.</string>
     <string name="syncing">Synchronizing</string>
     <string name="please_wait">Please wait</string>
+    <string name="enter_username">Please enter a username</string>
+    <string name="enter_password">Please enter a password</string>
+    <string name="enter_serverurl">Please enter a server URL</string>
 
     <!-- ProgramOverview Fragment -->
     <string name="profile">Profile</string>

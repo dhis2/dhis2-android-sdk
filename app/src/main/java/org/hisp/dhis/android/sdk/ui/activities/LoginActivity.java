@@ -33,6 +33,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -139,6 +140,21 @@ public class LoginActivity extends Activity implements OnClickListener {
         String password = passwordEditText.getText().toString();
         String serverURL = serverEditText.getText().toString();
 
+        if(username.isEmpty()) {
+            showLoginFailedDialog(getString(R.string.enter_username));
+            return;
+        }
+
+        if(password.isEmpty()) {
+            showLoginFailedDialog(getString(R.string.enter_password));
+            return;
+        }
+
+        if(serverURL.isEmpty()) {
+            showLoginFailedDialog(getString(R.string.enter_serverurl));
+            return;
+        }
+
         //remove whitespace as last character for username
         if (username.charAt(username.length() - 1) == ' ') {
             username = username.substring(0, username.length() - 1);
@@ -149,12 +165,11 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     public void login(String serverUrl, String username, String password) {
         showProgress();
-        //NetworkManager.getInstance().setServerUrl(serverUrl);
-        //NetworkManager.getInstance().setCredentials(NetworkManager.getInstance().getBase64Manager()
-        //        .toBase64(username, password));
-        //Dhis2.getInstance().saveCredentials(this, serverUrl, username, password);
-        //Dhis2.getInstance().login(onLoginCallback, username, password);
         HttpUrl serverUri = HttpUrl.parse(serverUrl);
+        if(serverUri == null) {
+            showLoginFailedDialog(getString(R.string.invalid_server_url));
+            return;
+        }
         DhisService.logInUser(
                 serverUri, new Credentials(username, password)
         );
@@ -178,29 +193,30 @@ public class LoginActivity extends Activity implements OnClickListener {
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    public void onLoginFail(APIException e) {
+    private void showLoginFailedDialog(String error) {
         Dialog.OnClickListener listener = new Dialog.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 showLoginDialog();
             }
         };
+        UiUtils.showErrorDialog(this, getString(R.string.error_message), error, listener);
+    }
 
+    public void onLoginFail(APIException e) {
         if (e.getResponse() == null) {
             String type = "error";
             //if (e.isHttpError()) type = "HttpError";
             //else if (e.isUnknownError()) type = "UnknownError";
             //else if (e.isNetworkError()) type = "NetworkError";
             //else if (e.isConversionError()) type = "ConversionError";
-            UiUtils.showErrorDialog(this, getString(R.string.error_message), type + ": "
-                    + e.getMessage(), listener);
+            showLoginFailedDialog(type + ": "
+                    + e.getMessage());
         } else {
             if (e.getResponse().getStatus() == 401) {
-                UiUtils.showErrorDialog(this, getString(R.string.error_message),
-                        getString(R.string.invalid_username_or_password), listener);
+                showLoginFailedDialog(getString(R.string.invalid_username_or_password));
             } else {
-                UiUtils.showErrorDialog(this, getString(R.string.error_message),
-                        getString(R.string.unable_to_login) + " " + e.getMessage(), listener);
+                showLoginFailedDialog(getString(R.string.unable_to_login) + " " + e.getMessage());
             }
         }
     }

@@ -251,6 +251,7 @@ final class TrackerDataLoader extends ResourceController {
         saveResourceDataFromServer(ResourceType.ENROLLMENTS,
                 trackedEntityInstance.getTrackedEntityInstance(), dhisApi,
                 enrollments, TrackerController.getEnrollments(trackedEntityInstance), serverDateTime);
+        enrollments = TrackerController.getEnrollments(trackedEntityInstance);
         if(enrollments != null) {
             for(Enrollment enrollment: enrollments) {
                 try {

@@ -81,6 +81,9 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
      */
     @Override
     public int getCount() {
+        if(mObjects==null) {
+            return 0;
+        }
         return mObjects.size();
     }
 

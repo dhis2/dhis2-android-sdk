@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -44,6 +46,10 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 public class ProgramTrackedEntityAttribute extends BaseModel {
 
     private static final String CLASS_TAG = ProgramTrackedEntityAttribute.class.getSimpleName();
+
+    @JsonAnySetter
+    public void handleUnknown(String key, Object value) {
+    }
 
     @Column(name = "trackedEntityAttribute")
     @PrimaryKey
@@ -65,6 +71,7 @@ public class ProgramTrackedEntityAttribute extends BaseModel {
     boolean mandatory;
 
     @Column(name = "program")
+    @JsonIgnore
     @PrimaryKey
     String program;
 

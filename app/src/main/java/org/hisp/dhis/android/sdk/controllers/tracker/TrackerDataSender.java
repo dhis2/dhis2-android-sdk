@@ -224,15 +224,15 @@ final class TrackerDataSender {
         }
         boolean success;
 
-        if (enrollment.getCreated() == null) {
+        if(enrollment.getCreated() == null) {
             success = postEnrollment(enrollment, dhisApi);
-            if (success && sendEvents) {
+            if( success && sendEvents ) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
         } else {
             success = putEnrollment(enrollment, dhisApi);
-            if (success && sendEvents) {
+            if( success && sendEvents ) {
                 List<Event> events = TrackerController.getEventsByEnrollment(enrollment.getLocalId());
                 sendEventChanges(dhisApi, events);
             }
@@ -340,12 +340,12 @@ final class TrackerDataSender {
             return;
         }
         boolean success;
-        if (trackedEntityInstance.getCreated() == null) {
+        if(trackedEntityInstance.getCreated() == null) {
             success = postTrackedEntityInstance(trackedEntityInstance, dhisApi);
         } else {
             success = putTrackedEntityInstance(trackedEntityInstance, dhisApi);
         }
-        if (success && sendEnrollments) {
+        if( success && sendEnrollments ) {
             List<Enrollment> enrollments = TrackerController.getEnrollments(trackedEntityInstance);
             sendEnrollmentChanges(dhisApi, enrollments, sendEnrollments);
         }

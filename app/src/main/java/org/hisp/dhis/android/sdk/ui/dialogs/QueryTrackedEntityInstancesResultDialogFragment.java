@@ -43,6 +43,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -77,10 +78,13 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     private QueryTrackedEntityInstancesResultDialogAdapter mAdapter;
     private int mDialogId;
     private ProgressDialogFragment progressDialogFragment;
+    private Button mSelectAllButton;
+    private ListView mListView;
 
     private static final String EXTRA_TRACKEDENTITYINSTANCESLIST = "extra:trackedEntityInstances";
     private static final String EXTRA_TRACKEDENTITYINSTANCESSELECTED = "extra:trackedEntityInstancesSelected";
     private static final String EXTRA_ORGUNIT = "extra:orgUnit";
+    private static final String EXTRA_SELECTALL = "extra:selectAll";
 
     public static QueryTrackedEntityInstancesResultDialogFragment newInstance(List<TrackedEntityInstance> trackedEntityInstances, String orgUnit) {
         QueryTrackedEntityInstancesResultDialogFragment dialogFragment = new QueryTrackedEntityInstancesResultDialogFragment();
@@ -94,6 +98,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
         args.putParcelable(EXTRA_TRACKEDENTITYINSTANCESSELECTED, parcelable2);
         args.putParcelable(EXTRA_TRACKEDENTITYINSTANCESLIST, parcelable1);
         args.putString(EXTRA_ORGUNIT, orgUnit);
+        args.putBoolean(EXTRA_SELECTALL, false);
         dialogFragment.setArguments(args);
         Dhis2Application.getEventBus().register(dialogFragment);
         return dialogFragment;
@@ -132,7 +137,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ListView listView = (ListView) view
+        mListView = (ListView) view
                 .findViewById(R.id.simple_listview);
         ImageView loadDialogButton = (ImageView) view
                 .findViewById(R.id.load_dialog_button);
@@ -148,14 +153,22 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
 
         mAdapter = new QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater.from(getActivity()), getSelectedTrackedEntityInstances());
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(this);
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(this);
 
         mFilter.addTextChangedListener(new AbsTextWatcher() {
             @Override public void afterTextChanged(Editable s) {
                 mAdapter.getFilter().filter(s.toString());
             }
         });
+
+        mSelectAllButton = (Button) view.findViewById(R.id.teiqueryresult_selectall);
+        mSelectAllButton.setOnClickListener(this);
+        mSelectAllButton.setVisibility(View.VISIBLE);
+        boolean selectall = getArguments().getBoolean(EXTRA_SELECTALL);
+        if(selectall) {
+            mSelectAllButton.setText(getString(R.string.deselect_all));
+        }
 
         closeDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -229,6 +242,64 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
         if(v.getId() == R.id.load_dialog_button) {
             initiateLoading();
             dismiss();
+        } else if(v.getId() == R.id.teiqueryresult_selectall) {
+            toggleSelectAll();
+        }
+    }
+
+    public void toggleSelectAll() {
+        Bundle arguments = getArguments();
+        boolean selectall = arguments.getBoolean(EXTRA_SELECTALL);
+        if(selectall) {
+            mSelectAllButton.setText(getText(R.string.select_all));
+            deselectAll();
+        } else {
+            mSelectAllButton.setText(getText(R.string.deselect_all));
+            selectAll();
+        }
+        arguments.putBoolean(EXTRA_SELECTALL, !selectall);
+    }
+
+    public void selectAll() {
+        List<TrackedEntityInstance> allTrackedEntityInstances = getTrackedEntityInstances();
+        List<TrackedEntityInstance> selectedTrackedEntityInstances = getSelectedTrackedEntityInstances();
+        selectedTrackedEntityInstances.clear();
+        selectedTrackedEntityInstances.addAll(allTrackedEntityInstances);
+        View view = null;
+        for(int i = 0; i<allTrackedEntityInstances.size(); i++) {
+            view = mAdapter.getView(i, view, null);
+            CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxTeiQuery);
+            checkBox.setChecked(true);
+        }
+        refreshListView();
+    }
+
+    public void deselectAll() {
+        List<TrackedEntityInstance> allTrackedEntityInstances = getTrackedEntityInstances();
+        List<TrackedEntityInstance> selectedTrackedEntityInstances = getSelectedTrackedEntityInstances();
+        selectedTrackedEntityInstances.clear();
+        View view = null;
+        for(int i = 0; i<allTrackedEntityInstances.size(); i++) {
+            view = mAdapter.getView(i, view, null);
+            CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBoxTeiQuery);
+            checkBox.setChecked(false);
+        }
+        refreshListView();
+    }
+
+    public void refreshListView() {
+        int start = mListView.getFirstVisiblePosition();
+        int end = mListView.getLastVisiblePosition();
+        for (int pos = 0; pos <= end - start; pos++) {
+            View view = mListView.getChildAt(pos);
+            if (view != null) {
+                int adapterPosition = view.getId();
+                if (adapterPosition < 0 || adapterPosition >= mAdapter.getCount())
+                    continue;
+                if (!view.hasFocus()) {
+                    mAdapter.getView(adapterPosition, view, mListView);
+                }
+            }
         }
     }
 

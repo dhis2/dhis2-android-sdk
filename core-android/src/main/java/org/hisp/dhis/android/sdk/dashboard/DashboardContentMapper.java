@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.sdk.dashboard;
 
-import org.hisp.dhis.java.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.common.base.AbsMapper;
 import org.hisp.dhis.android.sdk.flow.DashboardContent$Flow;
+import org.hisp.dhis.java.sdk.models.dashboard.DashboardContent;
 
 public class DashboardContentMapper extends AbsMapper<DashboardContent, DashboardContent$Flow> {
 

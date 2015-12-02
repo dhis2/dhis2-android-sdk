@@ -37,10 +37,10 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.hisp.dhis.android.sdk.clients.DashboardApiClient;
+import org.hisp.dhis.android.sdk.dashboard.DashboardApiClient;
 import org.hisp.dhis.android.sdk.clients.SystemInfoApiClient;
-import org.hisp.dhis.android.sdk.clients.UserApiClient;
-import org.hisp.dhis.android.sdk.clients.UserApiClientRetrofit;
+import org.hisp.dhis.android.sdk.user.UserApiClient;
+import org.hisp.dhis.android.sdk.user.UserApiClientRetrofit;
 import org.hisp.dhis.java.sdk.common.network.INetworkModule;
 import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.network.Configuration;
@@ -50,7 +50,7 @@ import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardApiClient;
 import org.hisp.dhis.java.sdk.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.java.sdk.user.IUserApiClient;
-import org.hisp.dhis.android.sdk.clients.DashboardApiClientRetrofit;
+import org.hisp.dhis.android.sdk.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.android.sdk.clients.SystemInfoApiClientRetrofit;
 
 import java.io.IOException;

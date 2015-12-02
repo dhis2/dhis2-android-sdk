@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.sdk.api.loaders;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
-import android.support.v4.content.AsyncTaskLoader;
 
 import org.hisp.dhis.java.sdk.utils.Preconditions;
 

@@ -61,7 +61,7 @@ public class PersistenceModule implements IPersistenceModule {
         dashboardItemStore = new DashboardItemStore(null);
         dashboardElementStore = new DashboardElementStore(null);
         dashboardItemContentStore = new DashboardContentStore(null);
-        transactionManager = new TransactionManager();
+        transactionManager = new TransactionManager(null);
     }
 
     @Override

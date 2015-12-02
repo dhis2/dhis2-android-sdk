@@ -42,7 +42,11 @@ android {
 }
 
 dependencies {
-    compile project(':core-java')
+    compile fileTree(include: '*.jar', dir: 'libs')
+
+    // square libraries
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
 
     // Raizlabs libraries.
     apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'

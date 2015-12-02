@@ -26,46 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.api.modules;
+package org.hisp.dhis.android.sdk.user;
 
-import org.hisp.dhis.android.sdk.common.meta.DbDhis;
-import org.hisp.dhis.java.sdk.common.persistence.AbsTransactionManager;
-import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
-import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.java.sdk.utils.IModelUtils;
+import org.hisp.dhis.java.sdk.user.IUserApiClient;
+import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.android.sdk.utils.NetworkUtils.call;
 
-public class TransactionManager extends AbsTransactionManager {
+public class UserApiClient implements IUserApiClient {
+    private final UserApiClientRetrofit mApiClient;
 
-    public TransactionManager(IModelUtils modelUtils) {
-        super(modelUtils);
+    public UserApiClient(UserApiClientRetrofit mApiClient) {
+        this.mApiClient = mApiClient;
     }
 
     @Override
-    public void transact(final Collection<IDbOperation> operations) {
-        isNull(operations, "List<DbOperation> object must not be null");
+    public UserAccount getUserAccount() {
+        final Map<String, String> QUERY_PARAMS = new HashMap<>();
+        QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
+                "firstName,surname,gender,birthday,introduction," +
+                "education,employer,interests,jobTitle,languages,email,phoneNumber," +
+                "organisationUnits[id]");
 
-        if (operations.isEmpty()) {
-            return;
-        }
-
-        com.raizlabs.android.dbflow.runtime.TransactionManager.transact(DbDhis.NAME, new Runnable() {
-            @Override
-            public void run() {
-                for (IDbOperation operation : operations) {
-                    operation.execute();
-                }
-            }
-        });
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<IDbOperation> createOperations(IIdentifiableObjectStore<T> iIdentifiableObjectStore, List<T> list, List<T> list1) {
-        return null;
+        return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
     }
 }

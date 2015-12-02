@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.sdk.api.models;
 
-import org.hisp.dhis.java.sdk.core.network.APIException;
 
-import retrofit.client.Response;
+import org.hisp.dhis.java.sdk.common.network.ApiException;
+import org.hisp.dhis.java.sdk.common.network.Response;
 
 public final class ResponseHolder<T> {
     private Response mResponse;
-    private APIException mApiException;
+    private ApiException mApiException;
     private T mItem;
 
     public Response getResponse() {
@@ -45,11 +45,11 @@ public final class ResponseHolder<T> {
         mResponse = response;
     }
 
-    public APIException getApiException() {
+    public ApiException getApiException() {
         return mApiException;
     }
 
-    public void setApiException(APIException apiException) {
+    public void setApiException(ApiException apiException) {
         mApiException = apiException;
     }
 

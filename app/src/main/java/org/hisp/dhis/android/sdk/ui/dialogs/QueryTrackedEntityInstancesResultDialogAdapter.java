@@ -76,6 +76,10 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         this.selectedTrackedEntityInstances = selectedTrackedEntityInstances;
     }
 
+    public List<TrackedEntityInstance> getData() {
+        return mObjects;
+    }
+
     /**
      * {@inheritDoc}
      */

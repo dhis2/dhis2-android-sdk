@@ -177,7 +177,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     @Subscribe
     public void onLoginFinished(NetworkJob.NetworkJobResult<ResourceType> result) {
-        if(result!=null && result.getResourceType().equals(ResourceType.USERS)) {
+        if(result!=null && ResourceType.USERS.equals(result.getResourceType())) {
             if(result.getResponseHolder().getApiException() == null) {
                 launchMainActivity();
             } else {

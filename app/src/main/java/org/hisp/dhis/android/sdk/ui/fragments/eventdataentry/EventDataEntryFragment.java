@@ -250,6 +250,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             mapDataElementsToRulesAndIndicators();
             saveThread.setEvent(form.getEvent());
 
+
             if (form.getStatusRow() != null) {
                 form.getStatusRow().setFragmentActivity(getActivity());
             }
@@ -262,6 +263,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     attachSpinner();
                     spinnerAdapter.swapData(data.getSections());
                 } else {
+                    if(form.getStage() != null) {
+                        getActionBarToolbar().setTitle(form.getStage().getName());
+                    }
                     DataEntryFragmentSection section = data.getSections().get(0);
                     listViewAdapter.swapData(section.getRows());
                 }

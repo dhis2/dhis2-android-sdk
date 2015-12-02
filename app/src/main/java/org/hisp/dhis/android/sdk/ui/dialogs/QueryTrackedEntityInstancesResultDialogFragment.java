@@ -261,7 +261,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     }
 
     public void selectAll() {
-        List<TrackedEntityInstance> allTrackedEntityInstances = getTrackedEntityInstances();
+        List<TrackedEntityInstance> allTrackedEntityInstances = mAdapter.getData();
         List<TrackedEntityInstance> selectedTrackedEntityInstances = getSelectedTrackedEntityInstances();
         selectedTrackedEntityInstances.clear();
         selectedTrackedEntityInstances.addAll(allTrackedEntityInstances);
@@ -275,7 +275,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     }
 
     public void deselectAll() {
-        List<TrackedEntityInstance> allTrackedEntityInstances = getTrackedEntityInstances();
+        List<TrackedEntityInstance> allTrackedEntityInstances = mAdapter.getData();
         List<TrackedEntityInstance> selectedTrackedEntityInstances = getSelectedTrackedEntityInstances();
         selectedTrackedEntityInstances.clear();
         View view = null;

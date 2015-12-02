@@ -96,6 +96,15 @@
         android:hint="@string/search"
         app:font="@string/light_font_name"/>
 
+    <Button
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_all"
+        android:id="@+id/teiqueryresult_selectall"
+        android:layout_gravity="right"
+        android:layout_marginRight="20dp" />
+
     <ListView
         android:id="@+id/simple_listview"
         android:layout_width="match_parent"

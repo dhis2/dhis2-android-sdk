@@ -37,8 +37,8 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.hisp.dhis.android.sdk.clients.SystemInfoApiClient;
-import org.hisp.dhis.android.sdk.clients.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.android.sdk.common.SystemInfoApiClient;
+import org.hisp.dhis.android.sdk.common.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.android.sdk.dashboard.DashboardApiClient;
 import org.hisp.dhis.android.sdk.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.android.sdk.user.UserApiClient;

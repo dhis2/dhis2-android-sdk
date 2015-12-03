@@ -28,99 +28,20 @@
 
 package org.hisp.dhis.android.sdk.optionset;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.android.sdk.flow.Option$Flow;
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.java.sdk.common.persistence.DbOperation;
-import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.java.sdk.optionset.IOptionStore;
-import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.android.sdk.flow.OptionSet$Flow;
-import org.hisp.dhis.java.sdk.core.flow.OptionSet$Flow$Table;
-import org.hisp.dhis.android.sdk.api.utils.DbUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet> {
+public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSet$Flow>
+        implements IIdentifiableObjectStore<OptionSet> {
 
     private final IOptionStore optionStore;
 
-    public OptionSetStore(IOptionStore optionStore) {
+    public OptionSetStore(IMapper<OptionSet, OptionSet$Flow> mapper, IOptionStore optionStore) {
+        super(mapper);
         this.optionStore = optionStore;
-    }
-
-    @Override
-    public boolean insert(OptionSet object) {
-        OptionSet$Flow optionSetFlow = OptionSet$Flow.fromModel(object);
-        optionSetFlow.insert();
-
-        object.setId(optionSetFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(OptionSet object) {
-        OptionSet$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(OptionSet object) {
-        OptionSet$Flow optionSetFlow =
-                OptionSet$Flow.fromModel(object);
-        optionSetFlow.save();
-
-        object.setId(optionSetFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(OptionSet object) {
-        List<Option> options = object.getOptions();
-        List<IDbOperation> operations;
-        if (options != null) {
-            operations = new ArrayList<>();
-            for (Option option : options) {
-                operations.add(DbOperation.with(optionStore).delete(option));
-            }
-            DbUtils.applyBatch(operations);
-        }
-        OptionSet$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<OptionSet> queryAll() {
-        List<OptionSet$Flow> optionSetFlows = new Select()
-                .from(OptionSet$Flow.class)
-                .queryList();
-        for (OptionSet$Flow optionSetFlow : optionSetFlows) {
-            optionSetFlow.setOptions(Option$Flow.fromModels(optionStore.query(OptionSet$Flow.toModel(optionSetFlow))));
-        }
-        return OptionSet$Flow.toModels(optionSetFlows);
-    }
-
-    @Override
-    public OptionSet queryById(long id) {
-        OptionSet$Flow optionSetFlow = new Select()
-                .from(OptionSet$Flow.class)
-                .where(Condition.column(OptionSet$Flow$Table.ID).is(id))
-                .querySingle();
-        optionSetFlow.setOptions(Option$Flow.fromModels(optionStore.query(OptionSet$Flow.toModel(optionSetFlow))));
-        return OptionSet$Flow.toModel(optionSetFlow);
-    }
-
-    @Override
-    public OptionSet queryByUid(String uid) {
-        OptionSet$Flow optionSetFlow = new Select()
-                .from(OptionSet$Flow.class)
-                .where(Condition.column(OptionSet$Flow$Table.UID).is(uid))
-                .querySingle();
-        optionSetFlow.setOptions(Option$Flow.fromModels(optionStore.query(OptionSet$Flow.toModel(optionSetFlow))));
-        return OptionSet$Flow.toModel(optionSetFlow);
     }
 }

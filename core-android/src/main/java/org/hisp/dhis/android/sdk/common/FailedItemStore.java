@@ -32,10 +32,10 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.Conflict$Flow;
+import org.hisp.dhis.android.sdk.flow.Conflict$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.FailedItem$Flow;
+import org.hisp.dhis.android.sdk.flow.FailedItem$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ImportSummary$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Conflict$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.FailedItem$Flow$Table;
 import org.hisp.dhis.java.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.java.sdk.models.common.faileditem.FailedItemType;
 import org.hisp.dhis.java.sdk.common.IFailedItemStore;

@@ -28,76 +28,15 @@
 
 package org.hisp.dhis.android.sdk.constant;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Constant$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Constant$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.constant.Constant;
 
-import java.util.List;
+public final class ConstantStore extends AbsIdentifiableObjectStore<Constant, Constant$Flow> implements IIdentifiableObjectStore<Constant> {
 
-public final class ConstantStore implements IIdentifiableObjectStore<Constant> {
-
-    public ConstantStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(Constant object) {
-        Constant$Flow constantFlow = Constant$Flow.fromModel(object);
-        constantFlow.insert();
-
-        object.setId(constantFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(Constant object) {
-        Constant$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Constant object) {
-        Constant$Flow constantFlow =
-                Constant$Flow.fromModel(object);
-        constantFlow.save();
-
-        object.setId(constantFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(Constant object) {
-        Constant$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<Constant> queryAll() {
-        List<Constant$Flow> constantFlows = new Select()
-                .from(Constant$Flow.class)
-                .queryList();
-        return Constant$Flow.toModels(constantFlows);
-    }
-
-    @Override
-    public Constant queryById(long id) {
-        Constant$Flow constantFlow = new Select()
-                .from(Constant$Flow.class)
-                .where(Condition.column(Constant$Flow$Table.ID).is(id))
-                .querySingle();
-        return Constant$Flow.toModel(constantFlow);
-    }
-
-    @Override
-    public Constant queryByUid(String uid) {
-        Constant$Flow constantFlow = new Select()
-                .from(Constant$Flow.class)
-                .where(Condition.column(Constant$Flow$Table.UID).is(uid))
-                .querySingle();
-        return Constant$Flow.toModel(constantFlow);
+    public ConstantStore(IMapper<Constant, Constant$Flow> mapper) {
+        super(mapper);
     }
 }

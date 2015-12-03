@@ -31,76 +31,20 @@ package org.hisp.dhis.android.sdk.optionset;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Option$Flow;
+import org.hisp.dhis.android.sdk.flow.Option$Flow$Table;
 import org.hisp.dhis.java.sdk.optionset.IOptionStore;
 import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.java.sdk.core.flow.Option$Flow$Table;
 
 import java.util.List;
 
-public final class OptionStore implements IOptionStore {
+public final class OptionStore extends AbsIdentifiableObjectStore<Option, Option$Flow> implements IOptionStore {
 
-    public OptionStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(Option object) {
-        Option$Flow optionFlow = Option$Flow.fromModel(object);
-        optionFlow.insert();
-
-        object.setId(optionFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(Option object) {
-        Option$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Option object) {
-        Option$Flow optionFlow =
-                Option$Flow.fromModel(object);
-        optionFlow.save();
-
-        object.setId(optionFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(Option object) {
-        Option$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<Option> queryAll() {
-        List<Option$Flow> optionFlows = new Select()
-                .from(Option$Flow.class)
-                .queryList();
-        return Option$Flow.toModels(optionFlows);
-    }
-
-    @Override
-    public Option queryById(long id) {
-        Option$Flow optionFlow = new Select()
-                .from(Option$Flow.class)
-                .where(Condition.column(Option$Flow$Table.ID).is(id))
-                .orderBy(Option$Flow$Table.SORTORDER)
-                .querySingle();
-        return Option$Flow.toModel(optionFlow);
-    }
-
-    @Override
-    public Option queryByUid(String uid) {
-        Option$Flow optionFlow = new Select()
-                .from(Option$Flow.class)
-                .where(Condition.column(Option$Flow$Table.UID).is(uid))
-                .querySingle();
-        return Option$Flow.toModel(optionFlow);
+    public OptionStore(IMapper<Option, Option$Flow> mapper) {
+        super(mapper);
     }
 
     @Override

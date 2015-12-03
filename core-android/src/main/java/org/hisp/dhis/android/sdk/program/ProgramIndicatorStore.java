@@ -31,75 +31,21 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
+import org.hisp.dhis.android.sdk.flow.ProgramIndicator$Flow$Table;
 import org.hisp.dhis.java.sdk.program.IProgramIndicatorStore;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.android.sdk.flow.ProgramIndicator$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramIndicator$Flow$Table;
 
 import java.util.List;
 
-public final class ProgramIndicatorStore implements IProgramIndicatorStore {
+public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<ProgramIndicator, ProgramIndicator$Flow> implements IProgramIndicatorStore {
 
-    public ProgramIndicatorStore() {
-        //empty constructor
-    }
 
-    @Override
-    public boolean insert(ProgramIndicator object) {
-        ProgramIndicator$Flow programIndicatorFlow = ProgramIndicator$Flow.fromModel(object);
-        programIndicatorFlow.insert();
-
-        object.setId(programIndicatorFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(ProgramIndicator object) {
-        ProgramIndicator$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(ProgramIndicator object) {
-        ProgramIndicator$Flow programIndicatorFlow =
-                ProgramIndicator$Flow.fromModel(object);
-        programIndicatorFlow.save();
-
-        object.setId(programIndicatorFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(ProgramIndicator object) {
-        ProgramIndicator$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<ProgramIndicator> queryAll() {
-        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
-                .from(ProgramIndicator$Flow.class)
-                .queryList();
-        return ProgramIndicator$Flow.toModels(programIndicatorFlows);
-    }
-
-    @Override
-    public ProgramIndicator queryById(long id) {
-        ProgramIndicator$Flow programIndicatorFlow = new Select()
-                .from(ProgramIndicator$Flow.class)
-                .where(Condition.column(ProgramIndicator$Flow$Table.ID).is(id))
-                .querySingle();
-        return ProgramIndicator$Flow.toModel(programIndicatorFlow);
-    }
-
-    @Override
-    public ProgramIndicator queryByUid(String uid) {
-        ProgramIndicator$Flow programIndicatorFlow = new Select()
-                .from(ProgramIndicator$Flow.class)
-                .where(Condition.column(ProgramIndicator$Flow$Table.UID).is(uid))
-                .querySingle();
-        return ProgramIndicator$Flow.toModel(programIndicatorFlow);
+    public ProgramIndicatorStore(IMapper<ProgramIndicator, ProgramIndicator$Flow> mapper) {
+        super(mapper);
     }
 
     @Override

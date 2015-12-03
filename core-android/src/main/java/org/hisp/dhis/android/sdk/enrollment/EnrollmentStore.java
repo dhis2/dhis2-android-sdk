@@ -31,10 +31,12 @@ package org.hisp.dhis.android.sdk.enrollment;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsDataStore;
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Enrollment$Flow$Table;
-import org.hisp.dhis.android.sdk.flow.Event$Flow;
-import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
+import org.hisp.dhis.android.sdk.flow.Enrollment$Flow$Table;
+import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.enrollment.IEnrollmentStore;
 import org.hisp.dhis.java.sdk.event.IEventStore;
@@ -44,13 +46,15 @@ import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public final class EnrollmentStore implements IEnrollmentStore {
+public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$Flow> implements IEnrollmentStore {
 
     private final IEventStore eventStore;
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
 
-    public EnrollmentStore(IEventStore eventStore,
-                           ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore) {
+    public EnrollmentStore(IEventStore eventStore ,IStateStore stateStore,
+                           ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+                           IMapper<Enrollment, Enrollment$Flow> mapper) {
+        super(mapper, stateStore);
         this.eventStore = eventStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
@@ -65,98 +69,11 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public boolean update(Enrollment object) {
-        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
-            Enrollment$Flow persisted = new Select()
-                    .from(Enrollment$Flow.class)
-                    .where(Condition.column(Enrollment$Flow$Table
-                            .ID).is(object.getId()))
-                    .querySingle();
-            if(persisted != null) {
-                object.setEnrollmentUid(persisted.getEnrollmentUid());
-            }
-        }
-        Enrollment$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Enrollment object) {
-        //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
-            Enrollment$Flow persisted = new Select()
-                    .from(Enrollment$Flow.class)
-                    .where(Condition.column(Enrollment$Flow$Table
-                            .ID).is(object.getId()))
-                    .querySingle();
-            if(persisted != null) {
-                object.setEnrollmentUid(persisted.getEnrollmentUid());
-            }
-        }
-        Enrollment$Flow.fromModel(object).update();
-        Enrollment$Flow enrollmentFlow =
-                Enrollment$Flow.fromModel(object);
-        enrollmentFlow.save();
-
-        return true;
-    }
-
-    @Override
-    public boolean delete(Enrollment object) {
-        Enrollment$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public Enrollment queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<Enrollment> queryAll() {
-        List<Enrollment$Flow> enrollmentFlows = new Select()
-                .from(Enrollment$Flow.class)
-                .queryList();
-        for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
-            setEvents(enrollmentFlow);
-            setTrackedEntityAttributeValues(enrollmentFlow);
-        }
-        return Enrollment$Flow.toModels(enrollmentFlows);
-    }
-
-    @Override
-    public Enrollment query(long id) {
-        Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table
-                        .ID).is(id))
-                .querySingle();
-        setEvents(enrollmentFlow);
-        setTrackedEntityAttributeValues(enrollmentFlow);
-        return Enrollment$Flow.toModel(enrollmentFlow);
-    }
-
-    @Override
-    public Enrollment query(String uid) {
-        Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table
-                        .ENROLLMENTUID).is(uid))
-                .querySingle();
-        setEvents(enrollmentFlow);
-        setTrackedEntityAttributeValues(enrollmentFlow);
-        return Enrollment$Flow.toModel(enrollmentFlow);
-    }
-
-    @Override
     public List<Enrollment> query(Program program, TrackedEntityInstance trackedEntityInstance) {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
                         TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
-        for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
-            setEvents(enrollmentFlow);
-            setTrackedEntityAttributeValues(enrollmentFlow);
-        }
         return Enrollment$Flow.toModels(enrollmentFlows);
     }
 
@@ -168,8 +85,6 @@ public final class EnrollmentStore implements IEnrollmentStore {
                         TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).
                         and(Condition.column(Enrollment$Flow$Table.STATUS).is(Enrollment.ACTIVE)).
                         querySingle();
-        setEvents(enrollmentFlow);
-        setTrackedEntityAttributeValues(enrollmentFlow);
         return Enrollment$Flow.toModel(enrollmentFlow);
     }
 
@@ -178,27 +93,6 @@ public final class EnrollmentStore implements IEnrollmentStore {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
                         TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
-        for(Enrollment$Flow enrollmentFlow : enrollmentFlows) {
-            setEvents(enrollmentFlow);
-            setTrackedEntityAttributeValues(enrollmentFlow);
-        }
         return Enrollment$Flow.toModels(enrollmentFlows);
-    }
-
-    private void setEvents(Enrollment$Flow enrollmentFlow) {
-        if(enrollmentFlow == null) {
-            return;
-        }
-        enrollmentFlow.setEvents(Event$Flow.fromModels(eventStore
-                .query(Enrollment$Flow.toModel(enrollmentFlow))));
-    }
-
-    private void setTrackedEntityAttributeValues(Enrollment$Flow enrollmentFlow) {
-        if(enrollmentFlow == null) {
-            return;
-        }
-        enrollmentFlow.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow
-                .fromModels(trackedEntityAttributeValueStore
-                        .query(Enrollment$Flow.toModel(enrollmentFlow))));
     }
 }

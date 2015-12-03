@@ -7,7 +7,10 @@ import org.hisp.dhis.java.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
 
-public class DashboardScope implements IDashboardService {
+import rx.Observable;
+import rx.Subscriber;
+
+public class DashboardScope implements IDashboardScope {
     private final IDashboardService mDashboardService;
     private final IDashboardController mDashboardController;
 
@@ -17,42 +20,121 @@ public class DashboardScope implements IDashboardService {
     }
 
     @Override
-    public Dashboard create(String s) {
-        return mDashboardService.create(s);
+    public Observable<Boolean> save(final Dashboard dashboard) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    boolean status = mDashboardService.save(dashboard);
+                    subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public boolean addContent(Dashboard dashboard, DashboardContent dashboardContent) {
-        return mDashboardService.addContent(dashboard, dashboardContent);
+    public Observable<Boolean> remove(final Dashboard dashboard) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    boolean status = mDashboardService.remove(dashboard);
+                    subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public int countItems(Dashboard dashboard) {
-        return mDashboardService.countItems(dashboard);
+    public Observable<Dashboard> get(final long id) {
+        return Observable.create(new Observable.OnSubscribe<Dashboard>() {
+            @Override
+            public void call(Subscriber<? super Dashboard> subscriber) {
+                try {
+                    Dashboard dashboard = mDashboardService.get(id);
+                    subscriber.onNext(dashboard);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public Dashboard get(long l) {
-        return mDashboardService.get(l);
+    public Observable<Dashboard> get(final String uid) {
+        return Observable.create(new Observable.OnSubscribe<Dashboard>() {
+            @Override
+            public void call(Subscriber<? super Dashboard> subscriber) {
+                try {
+                    Dashboard dashboard = mDashboardService.get(uid);
+                    subscriber.onNext(dashboard);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public Dashboard get(String s) {
-        return mDashboardService.get(s);
+    public Observable<List<Dashboard>> list() {
+        return Observable.create(new Observable.OnSubscribe<List<Dashboard>>() {
+            @Override
+            public void call(Subscriber<? super List<Dashboard>> subscriber) {
+                try {
+                    List<Dashboard> dashboards = mDashboardService.list();
+                    subscriber.onNext(dashboards);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public List<Dashboard> list() {
-        return mDashboardService.list();
+    public Observable<Integer> countItems(final Dashboard dashboard) {
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                try {
+                    int count = mDashboardService.countItems(dashboard);
+                    subscriber.onNext(count);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public boolean remove(Dashboard dashboard) {
-        return mDashboardService.remove(dashboard);
-    }
+    public Observable<Boolean> addContent(final Dashboard dashboard, final DashboardContent content) {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    boolean status = mDashboardService.addContent(dashboard, content);
+                    subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
 
-    @Override
-    public boolean save(Dashboard dashboard) {
-        return mDashboardService.save(dashboard);
+                subscriber.onCompleted();
+            }
+        });
     }
 }

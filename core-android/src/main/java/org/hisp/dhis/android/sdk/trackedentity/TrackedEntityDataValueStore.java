@@ -31,8 +31,11 @@ package org.hisp.dhis.android.sdk.trackedentity;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsDataStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityDataValue$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityDataValue$Flow$Table;
+import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.models.event.Event;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityDataValueStore;
@@ -40,51 +43,11 @@ import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
-public final class TrackedEntityDataValueStore implements ITrackedEntityDataValueStore {
+public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntityDataValue,
+        TrackedEntityDataValue$Flow> implements ITrackedEntityDataValueStore {
 
-    public TrackedEntityDataValueStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(TrackedEntityDataValue object) {
-        TrackedEntityDataValue$Flow trackedEntityDataValueFlow =
-                TrackedEntityDataValue$Flow.fromModel(object);
-        trackedEntityDataValueFlow.insert();
-        return true;
-    }
-
-    @Override
-    public boolean update(TrackedEntityDataValue object) {
-        TrackedEntityDataValue$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(TrackedEntityDataValue object) {
-        TrackedEntityDataValue$Flow trackedEntityDataValueFlow =
-                TrackedEntityDataValue$Flow.fromModel(object);
-        trackedEntityDataValueFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(TrackedEntityDataValue object) {
-        TrackedEntityDataValue$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public TrackedEntityDataValue queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityDataValue> queryAll() {
-        List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlow = new Select()
-                .from(TrackedEntityDataValue$Flow.class)
-                .queryList();
-        return TrackedEntityDataValue$Flow.toModels(trackedEntityDataValueFlow);
+    public TrackedEntityDataValueStore(IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> mapper, IStateStore stateStore) {
+        super(mapper, stateStore);
     }
 
     @Override

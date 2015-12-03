@@ -28,76 +28,17 @@
 
 package org.hisp.dhis.android.sdk.trackedentity;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttribute$Flow;
-import org.hisp.dhis.android.sdk.flow.TrackedEntityAttribute$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
 
-import java.util.List;
+public final class TrackedEntityAttributeStore extends
+        AbsIdentifiableObjectStore<TrackedEntityAttribute, TrackedEntityAttribute$Flow>
+        implements IIdentifiableObjectStore<TrackedEntityAttribute> {
 
-public final class TrackedEntityAttributeStore implements IIdentifiableObjectStore<TrackedEntityAttribute> {
-
-    public TrackedEntityAttributeStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(TrackedEntityAttribute object) {
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow = TrackedEntityAttribute$Flow.fromModel(object);
-        trackedEntityAttributeFlow.insert();
-
-        object.setId(trackedEntityAttributeFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(TrackedEntityAttribute object) {
-        TrackedEntityAttribute$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(TrackedEntityAttribute object) {
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow =
-                TrackedEntityAttribute$Flow.fromModel(object);
-        trackedEntityAttributeFlow.save();
-
-        object.setId(trackedEntityAttributeFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(TrackedEntityAttribute object) {
-        TrackedEntityAttribute$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<TrackedEntityAttribute> queryAll() {
-        List<TrackedEntityAttribute$Flow> trackedEntityAttributeFlows = new Select()
-                .from(TrackedEntityAttribute$Flow.class)
-                .queryList();
-        return TrackedEntityAttribute$Flow.toModels(trackedEntityAttributeFlows);
-    }
-
-    @Override
-    public TrackedEntityAttribute queryById(long id) {
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new Select()
-                .from(TrackedEntityAttribute$Flow.class)
-                .where(Condition.column(TrackedEntityAttribute$Flow$Table.ID).is(id))
-                .querySingle();
-        return TrackedEntityAttribute$Flow.toModel(trackedEntityAttributeFlow);
-    }
-
-    @Override
-    public TrackedEntityAttribute queryByUid(String uid) {
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new Select()
-                .from(TrackedEntityAttribute$Flow.class)
-                .where(Condition.column(TrackedEntityAttribute$Flow$Table.UID).is(uid))
-                .querySingle();
-        return TrackedEntityAttribute$Flow.toModel(trackedEntityAttributeFlow);
+    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute, TrackedEntityAttribute$Flow> mapper) {
+        super(mapper);
     }
 }

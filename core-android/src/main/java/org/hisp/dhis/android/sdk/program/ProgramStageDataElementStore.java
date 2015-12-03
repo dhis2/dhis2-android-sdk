@@ -31,6 +31,8 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStageDataElement$Flow$Table;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
@@ -41,42 +43,10 @@ import org.hisp.dhis.java.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public final class ProgramStageDataElementStore implements IProgramStageDataElementStore {
+public final class ProgramStageDataElementStore extends AbsStore<ProgramStageDataElement, ProgramStageDataElement$Flow> implements IProgramStageDataElementStore {
 
-    public ProgramStageDataElementStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(ProgramStageDataElement object) {
-        ProgramStageDataElement$Flow programStageDataElementFlow = ProgramStageDataElement$Flow.fromModel(object);
-        programStageDataElementFlow.insert();
-        return true;
-    }
-
-    @Override
-    public boolean update(ProgramStageDataElement object) {
-        ProgramStageDataElement$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(ProgramStageDataElement object) {
-        ProgramStageDataElement$Flow programStageDataElementFlow =
-                ProgramStageDataElement$Flow.fromModel(object);
-        programStageDataElementFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(ProgramStageDataElement object) {
-        ProgramStageDataElement$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public ProgramStageDataElement queryById(long id) {
-        return null;
+    public ProgramStageDataElementStore(IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> mapper) {
+        super(mapper);
     }
 
     @Override

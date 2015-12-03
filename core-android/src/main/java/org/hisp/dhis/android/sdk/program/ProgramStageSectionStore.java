@@ -31,26 +31,24 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramIndicatorToProgramStageSectionRelation$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
-import org.hisp.dhis.android.sdk.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStageSection$Flow$Table;
-import org.hisp.dhis.java.sdk.program.IProgramStageDataElementStore;
 import org.hisp.dhis.java.sdk.program.IProgramStageSectionStore;
 import org.hisp.dhis.java.sdk.models.program.ProgramStage;
 import org.hisp.dhis.java.sdk.models.program.ProgramStageSection;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public final class ProgramStageSectionStore implements IProgramStageSectionStore {
+public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<ProgramStageSection,
+        ProgramStageSection$Flow> implements IProgramStageSectionStore {
 
-    private final IProgramStageDataElementStore programStageDataElementStore;
-
-    public ProgramStageSectionStore(IProgramStageDataElementStore programStageDataElementStore) {
-        this.programStageDataElementStore = programStageDataElementStore;
+    public ProgramStageSectionStore(IMapper<ProgramStageSection, ProgramStageSection$Flow> mapper) {
+        super(mapper);
     }
 
     @Override
@@ -121,80 +119,12 @@ public final class ProgramStageSectionStore implements IProgramStageSectionStore
     }
 
     @Override
-    public List<ProgramStageSection> queryAll() {
-        List<ProgramStageSection$Flow> programStageSectionFlows = new Select()
-                .from(ProgramStageSection$Flow.class)
-                .queryList();
-        for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
-            setProgramStageDataElements(programStageSectionFlow);
-            setProgramIndicators(programStageSectionFlow);
-        }
-        return ProgramStageSection$Flow.toModels(programStageSectionFlows);
-    }
-
-    @Override
-    public ProgramStageSection queryById(long id) {
-        ProgramStageSection$Flow programStageSectionFlow = new Select()
-                .from(ProgramStageSection$Flow.class)
-                .where(Condition.column(ProgramStageSection$Flow$Table.ID).is(id))
-                .querySingle();
-        setProgramStageDataElements(programStageSectionFlow);
-        setProgramIndicators(programStageSectionFlow);
-        return ProgramStageSection$Flow.toModel(programStageSectionFlow);
-    }
-
-    @Override
-    public ProgramStageSection queryByUid(String uid) {
-        ProgramStageSection$Flow programStageSectionFlow = new Select()
-                .from(ProgramStageSection$Flow.class)
-                .where(Condition.column(ProgramStageSection$Flow$Table.UID).is(uid))
-                .querySingle();
-        setProgramStageDataElements(programStageSectionFlow);
-        setProgramIndicators(programStageSectionFlow);
-        return ProgramStageSection$Flow.toModel(programStageSectionFlow);
-    }
-
-    @Override
     public List<ProgramStageSection> query(ProgramStage programStage) {
         List<ProgramStageSection$Flow> programStageSectionFlows = new Select()
                 .from(ProgramStageSection$Flow.class).where(Condition
                         .column(ProgramStageSection$Flow$Table.PROGRAMSTAGE)
                         .is(programStage.getUId()))
                 .queryList();
-        for(ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
-            setProgramStageDataElements(programStageSectionFlow);
-            setProgramIndicators(programStageSectionFlow);
-        }
         return ProgramStageSection$Flow.toModels(programStageSectionFlows);
-    }
-
-    private void setProgramStageDataElements(ProgramStageSection$Flow programStageSectionFlow) {
-        if(programStageSectionFlow == null) {
-            return;
-        }
-        programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(programStageDataElementStore
-                        .query(ProgramStageSection$Flow.toModel(programStageSectionFlow))));
-    }
-
-    private void setProgramIndicators(ProgramStageSection$Flow programStageSectionFlow) {
-        if(programStageSectionFlow == null) {
-            return;
-        }
-        List<ProgramIndicatorToProgramStageSectionRelation$Flow>
-                programIndicatorToProgramStageSectionRelationFlows = new Select()
-                .from(ProgramIndicatorToProgramStageSectionRelation$Flow.class)
-                .where(Condition.column(ProgramIndicatorToProgramStageSectionRelation$Flow$Table
-                        .PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSectionFlow.getUId())).queryList();
-        List<ProgramIndicator$Flow> programIndicatorFlows = new ArrayList<>();
-        for(ProgramIndicatorToProgramStageSectionRelation$Flow
-                programIndicatorToProgramStageSectionRelationFlow :
-                programIndicatorToProgramStageSectionRelationFlows) {
-            ProgramIndicator$Flow programIndicatorFlow = programIndicatorToProgramStageSectionRelationFlow.getProgramIndicator();
-            if(programIndicatorFlow != null) {
-                programIndicatorFlows.add(programIndicatorFlow);
-            }
-        }
-        programStageSectionFlow.setProgramIndicators(programIndicatorFlows);
     }
 }

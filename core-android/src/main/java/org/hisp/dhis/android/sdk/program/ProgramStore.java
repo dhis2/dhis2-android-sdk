@@ -31,6 +31,8 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.common.meta.DbFlowOperation;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnitToProgramRelation$Flow;
@@ -53,101 +55,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class ProgramStore implements IProgramStore {
-
-    private final IProgramStageStore programStageStore;
-    private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
+        Program$Flow> implements IProgramStore {
     private final ITransactionManager transactionManager;
 
-    public ProgramStore(IProgramStageStore programStageStore,
-                        IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+    public ProgramStore(IMapper<Program, Program$Flow> mapper,
                         ITransactionManager transactionManager) {
-        this.programStageStore = programStageStore;
-        this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        super(mapper);
         this.transactionManager = transactionManager;
-    }
-
-    @Override
-    public boolean insert(Program object) {
-        Program$Flow programFlow = Program$Flow.fromModel(object);
-        programFlow.insert();
-
-        object.setId(programFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(Program object) {
-        Program$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Program object) {
-        Program$Flow programFlow =
-                Program$Flow.fromModel(object);
-        programFlow.save();
-
-        object.setId(programFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(Program object) {
-        Program$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<Program> queryAll() {
-        List<Program$Flow> programFlows = new Select()
-                .from(Program$Flow.class)
-                .queryList();
-        for (Program$Flow programFlow : programFlows) {
-            setProgramStages(programFlow);
-            setProgramTrackedEntityAttributes(programFlow);
-        }
-        return Program$Flow.toModels(programFlows);
-    }
-
-    @Override
-    public Program queryById(long id) {
-        Program$Flow programFlow = new Select()
-                .from(Program$Flow.class)
-                .where(Condition.column(Program$Flow$Table.ID).is(id))
-                .querySingle();
-        setProgramStages(programFlow);
-        setProgramTrackedEntityAttributes(programFlow);
-        return Program$Flow.toModel(programFlow);
-    }
-
-    @Override
-    public Program queryByUid(String uid) {
-        Program$Flow programFlow = new Select()
-                .from(Program$Flow.class)
-                .where(Condition.column(Program$Flow$Table.UID).is(uid))
-                .querySingle();
-        setProgramStages(programFlow);
-        setProgramTrackedEntityAttributes(programFlow);
-        return Program$Flow.toModel(programFlow);
-    }
-
-    private void setProgramStages(Program$Flow programFlow) {
-        if (programFlow == null) {
-            return;
-        }
-        programFlow.setProgramStages(ProgramStage$Flow
-                .fromModels(programStageStore
-                        .query(Program$Flow.toModel(programFlow))));
-    }
-
-    private void setProgramTrackedEntityAttributes(Program$Flow programFlow) {
-        if (programFlow == null) {
-            return;
-        }
-        programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow
-                .fromModels(programTrackedEntityAttributeStore
-                        .query(Program$Flow.toModel(programFlow))));
     }
 
     @Override

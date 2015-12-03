@@ -31,61 +31,22 @@ package org.hisp.dhis.android.sdk.relationship;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsDataStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Relationship$Flow;
 import org.hisp.dhis.android.sdk.flow.Relationship$Flow$Table;
+import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.relationship.Relationship;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
 
 import java.util.List;
 
-public final class RelationshipStore implements IRelationshipStore {
+public final class RelationshipStore extends AbsDataStore<Relationship, Relationship$Flow> implements IRelationshipStore {
 
-    public RelationshipStore() {
-        //empty constructor
+    public RelationshipStore(IMapper<Relationship, Relationship$Flow> mapper, IStateStore stateStore) {
+        super(mapper, stateStore);
     }
-
-    @Override
-    public boolean insert(Relationship object) {
-        Relationship$Flow relationshipFlow =
-                Relationship$Flow.fromModel(object);
-        relationshipFlow.insert();
-        return true;
-    }
-
-    @Override
-    public boolean update(Relationship object) {
-        Relationship$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Relationship object) {
-        Relationship$Flow relationshipFlow =
-                Relationship$Flow.fromModel(object);
-        relationshipFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(Relationship object) {
-        Relationship$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public Relationship queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<Relationship> queryAll() {
-        List<Relationship$Flow> relationshipFlow = new Select()
-                .from(Relationship$Flow.class)
-                .queryList();
-        return Relationship$Flow.toModels(relationshipFlow);
-    }
-
 
     @Override
     public List<Relationship> query(TrackedEntityInstance trackedEntityInstance) {

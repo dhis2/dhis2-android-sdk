@@ -31,8 +31,11 @@ package org.hisp.dhis.android.sdk.trackedentity;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsDataStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow$Table;
+import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.models.program.Program;
@@ -45,54 +48,16 @@ import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class TrackedEntityAttributeValueStore implements ITrackedEntityAttributeValueStore {
+public final class TrackedEntityAttributeValueStore extends
+        AbsDataStore<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow>
+        implements ITrackedEntityAttributeValueStore {
 
     private final IIdentifiableObjectStore<Program> programStore;
 
-    public TrackedEntityAttributeValueStore(IIdentifiableObjectStore<Program> programStore) {
+    public TrackedEntityAttributeValueStore(IMapper<TrackedEntityAttributeValue,
+            TrackedEntityAttributeValue$Flow> mapper, IStateStore stateStore, IIdentifiableObjectStore<Program> programStore) {
+        super(mapper, stateStore);
         this.programStore = programStore;
-    }
-
-    @Override
-    public boolean insert(TrackedEntityAttributeValue object) {
-        TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow =
-                TrackedEntityAttributeValue$Flow.fromModel(object);
-        trackedEntityAttributeValueFlow.insert();
-
-        return true;
-    }
-
-    @Override
-    public boolean update(TrackedEntityAttributeValue object) {
-        TrackedEntityAttributeValue$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(TrackedEntityAttributeValue object) {
-        TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow =
-                TrackedEntityAttributeValue$Flow.fromModel(object);
-        trackedEntityAttributeValueFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(TrackedEntityAttributeValue object) {
-        TrackedEntityAttributeValue$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public TrackedEntityAttributeValue queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityAttributeValue> queryAll() {
-        List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlow = new Select()
-                .from(TrackedEntityAttributeValue$Flow.class)
-                .queryList();
-        return TrackedEntityAttributeValue$Flow.toModels(trackedEntityAttributeValueFlow);
     }
 
     @Override

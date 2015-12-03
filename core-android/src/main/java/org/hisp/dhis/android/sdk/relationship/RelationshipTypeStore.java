@@ -28,76 +28,16 @@
 
 package org.hisp.dhis.android.sdk.relationship;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.RelationshipType$Flow;
-import org.hisp.dhis.android.sdk.flow.RelationshipType$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.relationship.RelationshipType;
 
-import java.util.List;
+public final class RelationshipTypeStore extends AbsIdentifiableObjectStore<RelationshipType,
+        RelationshipType$Flow> implements IIdentifiableObjectStore<RelationshipType> {
 
-public final class RelationshipTypeStore implements IIdentifiableObjectStore<RelationshipType> {
-
-    public RelationshipTypeStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(RelationshipType object) {
-        RelationshipType$Flow relationshipTypeFlow = RelationshipType$Flow.fromModel(object);
-        relationshipTypeFlow.insert();
-
-        object.setId(relationshipTypeFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(RelationshipType object) {
-        RelationshipType$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(RelationshipType object) {
-        RelationshipType$Flow relationshipTypeFlow =
-                RelationshipType$Flow.fromModel(object);
-        relationshipTypeFlow.save();
-
-        object.setId(relationshipTypeFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(RelationshipType object) {
-        RelationshipType$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<RelationshipType> queryAll() {
-        List<RelationshipType$Flow> relationshipTypeFlow = new Select()
-                .from(RelationshipType$Flow.class)
-                .queryList();
-        return RelationshipType$Flow.toModels(relationshipTypeFlow);
-    }
-
-    @Override
-    public RelationshipType queryById(long id) {
-        RelationshipType$Flow relationshipTypeFlow = new Select()
-                .from(RelationshipType$Flow.class)
-                .where(Condition.column(RelationshipType$Flow$Table.ID).is(id))
-                .querySingle();
-        return RelationshipType$Flow.toModel(relationshipTypeFlow);
-    }
-
-    @Override
-    public RelationshipType queryByUid(String uid) {
-        RelationshipType$Flow relationshipTypeFlow = new Select()
-                .from(RelationshipType$Flow.class)
-                .where(Condition.column(RelationshipType$Flow$Table.UID).is(uid))
-                .querySingle();
-        return RelationshipType$Flow.toModel(relationshipTypeFlow);
+    public RelationshipTypeStore(IMapper<RelationshipType, RelationshipType$Flow> mapper) {
+        super(mapper);
     }
 }

@@ -31,6 +31,9 @@ package org.hisp.dhis.android.sdk.user;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
+import org.hisp.dhis.android.sdk.flow.User$Flow;
 import org.hisp.dhis.android.sdk.flow.UserAccount$Flow;
 import org.hisp.dhis.android.sdk.flow.UserAccount$Flow$Table;
 import org.hisp.dhis.java.sdk.user.IUserAccountStore;
@@ -38,66 +41,10 @@ import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
 import java.util.List;
 
-public final class UserAccountStore implements IUserAccountStore {
+public final class UserAccountStore extends AbsIdentifiableObjectStore<UserAccount,
+        UserAccount$Flow> implements IUserAccountStore {
 
-    public UserAccountStore() {
-        // empty constructor
-    }
-
-    @Override
-    public boolean insert(UserAccount object) {
-        UserAccount$Flow userAccountFlow = UserAccount$Flow.fromModel(object);
-        userAccountFlow.insert();
-
-        object.setId(userAccountFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(UserAccount object) {
-        UserAccount$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(UserAccount object) {
-        UserAccount$Flow accountFlow =
-                UserAccount$Flow.fromModel(object);
-        accountFlow.save();
-
-        object.setId(accountFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(UserAccount object) {
-        UserAccount$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<UserAccount> queryAll() {
-        List<UserAccount$Flow> userAccounts = new Select()
-                .from(UserAccount$Flow.class)
-                .queryList();
-        return UserAccount$Flow.toModels(userAccounts);
-    }
-
-    @Override
-    public UserAccount queryById(long id) {
-        UserAccount$Flow userAccount = new Select()
-                .from(UserAccount$Flow.class)
-                .where(Condition.column(UserAccount$Flow$Table.ID).is(id))
-                .querySingle();
-        return UserAccount$Flow.toModel(userAccount);
-    }
-
-    @Override
-    public UserAccount queryByUid(String uid) {
-        UserAccount$Flow userAccount = new Select()
-                .from(UserAccount$Flow.class)
-                .where(Condition.column(UserAccount$Flow$Table.UID).is(uid))
-                .querySingle();
-        return UserAccount$Flow.toModel(userAccount);
+    public UserAccountStore(IMapper<UserAccount, UserAccount$Flow> mapper) {
+        super(mapper);
     }
 }

@@ -28,76 +28,15 @@
 
 package org.hisp.dhis.android.sdk.user;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.User$Flow;
-import org.hisp.dhis.android.sdk.flow.User$Flow$Table;
 import org.hisp.dhis.java.sdk.models.user.User;
 import org.hisp.dhis.java.sdk.user.IUserStore;
 
-import java.util.List;
+public final class UserStore extends AbsIdentifiableObjectStore<User, User$Flow> implements IUserStore {
 
-public final class UserStore implements IUserStore {
-
-    public UserStore() {
-        // empty constructor
-    }
-
-    @Override
-    public boolean insert(User object) {
-        User$Flow userFlow = User$Flow.fromModel(object);
-        userFlow.insert();
-
-        object.setId(userFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(User object) {
-        User$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(User object) {
-        User$Flow userFlow =
-                User$Flow.fromModel(object);
-        userFlow.save();
-
-        object.setId(userFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(User object) {
-        User$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<User> queryAll() {
-        List<User$Flow> userFlows = new Select()
-                .from(User$Flow.class)
-                .queryList();
-        return User$Flow.toModels(userFlows);
-    }
-
-    @Override
-    public User queryById(long id) {
-        User$Flow userFlow = new Select()
-                .from(User$Flow.class)
-                .where(Condition.column(User$Flow$Table.ID).is(id))
-                .querySingle();
-        return User$Flow.toModel(userFlow);
-    }
-
-    @Override
-    public User queryByUid(String uid) {
-        User$Flow userFlow = new Select()
-                .from(User$Flow.class)
-                .where(Condition.column(User$Flow$Table.UID).is(uid))
-                .querySingle();
-        return User$Flow.toModel(userFlow);
+    public UserStore(IMapper<User, User$Flow> mapper) {
+        super(mapper);
     }
 }

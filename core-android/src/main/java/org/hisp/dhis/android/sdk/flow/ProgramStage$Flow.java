@@ -283,7 +283,7 @@ public final class ProgramStage$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static ProgramStage toModel(ProgramStage$Flow programStageFlow) {
+    /*public static ProgramStage toModel(ProgramStage$Flow programStageFlow) {
         if (programStageFlow == null) {
             return null;
         }
@@ -387,5 +387,5 @@ public final class ProgramStage$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return programStageFlows;
-    }
+    }*/
 }

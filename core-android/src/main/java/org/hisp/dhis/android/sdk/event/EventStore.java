@@ -49,12 +49,8 @@ import java.util.List;
 
 public final class EventStore extends AbsDataStore<Event, Event$Flow> implements IEventStore {
 
-    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
-
-    public EventStore(IMapper<Event, Event$Flow> mapper, IStateStore stateStore,
-                      ITrackedEntityDataValueStore trackedEntityDataValueStore) {
+    public EventStore(IMapper<Event, Event$Flow> mapper, IStateStore stateStore) {
         super(mapper, stateStore);
-        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
     public Event queryByUid(String uid) {
@@ -62,7 +58,7 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
                 .from(Event$Flow.class)
                 .where(Condition.column(Event$Flow$Table.EVENTUID).is(uid))
                 .querySingle();
-        return Event$Flow.toModel(eventFlow);
+        return getMapper().mapToModel(eventFlow);
     }
 
     @Override
@@ -71,7 +67,7 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
                 .from(Event$Flow.class)
                 .where(Condition.column(Event$Flow$Table
                         .ENROLLMENT_ENROLLMENT).is(enrollment)).queryList();
-        return Event$Flow.toModels(eventFlows);
+        return getMapper().mapToModels(eventFlows);
     }
 
     @Override
@@ -85,6 +81,6 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
                         .ORGANISATIONUNITID).is(organisationUnit.getUId()))
                 .and(Condition.column(Event$Flow$Table
                         .PROGRAMID).is(program.getUId())).queryList();
-        return Event$Flow.toModels(eventFlows);
+        return getMapper().mapToModels(eventFlows);
     }
 }

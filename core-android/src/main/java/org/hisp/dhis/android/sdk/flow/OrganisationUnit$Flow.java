@@ -77,7 +77,7 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static OrganisationUnit toModel(OrganisationUnit$Flow organisationUnitFlow) {
+    /*public static OrganisationUnit toModel(OrganisationUnit$Flow organisationUnitFlow) {
         if (organisationUnitFlow == null) {
             return null;
         }
@@ -137,5 +137,5 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return organisationUnitFlows;
-    }
+    }*/
 }

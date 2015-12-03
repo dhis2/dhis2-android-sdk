@@ -118,7 +118,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static ProgramTrackedEntityAttribute toModel(ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow) {
+    /*public static ProgramTrackedEntityAttribute toModel(ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow) {
         if (programTrackedEntityAttributeFlow == null) {
             return null;
         }
@@ -170,5 +170,5 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
         }
 
         return programTrackedEntityAttributeFlows;
-    }
+    }*/
 }

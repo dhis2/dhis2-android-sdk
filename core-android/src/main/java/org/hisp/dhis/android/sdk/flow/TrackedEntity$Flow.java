@@ -43,7 +43,7 @@ public final class TrackedEntity$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static TrackedEntity toModel(TrackedEntity$Flow trackedEntityFlow) {
+    /*public static TrackedEntity toModel(TrackedEntity$Flow trackedEntityFlow) {
         if (trackedEntityFlow == null) {
             return null;
         }
@@ -97,5 +97,5 @@ public final class TrackedEntity$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return trackedEntityFlows;
-    }
+    }*/
 }

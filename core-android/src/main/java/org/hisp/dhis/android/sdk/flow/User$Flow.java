@@ -44,7 +44,7 @@ public final class User$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static User toModel(User$Flow userFlow) {
+    /*public static User toModel(User$Flow userFlow) {
         if (userFlow == null) {
             return null;
         }
@@ -98,5 +98,5 @@ public final class User$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return userFlows;
-    }
+    }*/
 }

@@ -57,7 +57,7 @@ public final class Constant$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static Constant toModel(Constant$Flow constantFlow) {
+    /*public static Constant toModel(Constant$Flow constantFlow) {
         if (constantFlow == null) {
             return null;
         }
@@ -113,7 +113,7 @@ public final class Constant$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return constantFlows;
-    }
+    }*/
 
     @Override
     public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {

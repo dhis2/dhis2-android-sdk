@@ -60,7 +60,7 @@ public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntit
                 .where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT)
                         .is(event))
                 .queryList();
-        return TrackedEntityDataValue$Flow.toModels(trackedEntityDataValueFlow);
+        return getMapper().mapToModels(trackedEntityDataValueFlow);
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntit
         if(dataElement == null || event == null) {
             return null;
         }
-        return TrackedEntityDataValue$Flow.toModel(new Select().from(TrackedEntityDataValue$Flow.
+        return getMapper().mapToModel(new Select().from(TrackedEntityDataValue$Flow.
                 class).where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT).
                 is(event)).and(Condition.column(TrackedEntityDataValue$Flow$Table.
                 DATAELEMENT).is(dataElement.getUId())).

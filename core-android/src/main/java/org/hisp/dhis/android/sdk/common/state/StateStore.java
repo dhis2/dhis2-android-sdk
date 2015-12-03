@@ -80,15 +80,21 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
     private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;
     private final IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper;
     private final IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper;
+    private final IMapper<Event, Event$Flow> eventMapper;
+    private final IMapper<Enrollment, Enrollment$Flow> enrollmentMapper;
+    private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
 
     public StateStore(IStateMapper mapper,
                       IMapper<Dashboard, Dashboard$Flow> dashboardMapper,
                       IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper,
-                      IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper) {
+                      IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper, IMapper<Event, Event$Flow> eventMapper, IMapper<Enrollment, Enrollment$Flow> enrollmentMapper, IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper) {
         super(mapper);
         this.dashboardMapper = dashboardMapper;
         this.dashboardItemMapper = dashboardItemMapper;
         this.dashboardElementMapper = dashboardElementMapper;
+        this.eventMapper = eventMapper;
+        this.enrollmentMapper = enrollmentMapper;
+        this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
     }
 
     @Override
@@ -240,17 +246,17 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
         if (Event.class.equals(clazz)) {
             List<Event$Flow> eventFlows = (List<Event$Flow>) queryModels(clazz, action, withAction, Event$Flow$Table.ID);
-            return (List<T>) Event$Flow.toModels(eventFlows);
+            return (List<T>) eventMapper.mapToModels(eventFlows);
         }
 
         if (Enrollment.class.equals(clazz)) {
             List<Enrollment$Flow> enrollmentFlows = (List<Enrollment$Flow>) queryModels(clazz, action, withAction, Enrollment$Flow$Table.ID);
-            return (List<T>) Enrollment$Flow.toModels(enrollmentFlows);
+            return (List<T>) enrollmentMapper.mapToModels(enrollmentFlows);
         }
 
         if (TrackedEntityInstance.class.equals(clazz)) {
             List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = (List<TrackedEntityInstance$Flow>) queryModels(clazz, action, withAction, TrackedEntityInstance$Flow$Table.ID);
-            return (List<T>) TrackedEntityInstance$Flow.toModels(trackedEntityInstanceFlows);
+            return (List<T>) trackedEntityInstanceMapper.mapToModels(trackedEntityInstanceFlows);
         }
 
         return null;

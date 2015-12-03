@@ -54,6 +54,6 @@ public final class ProgramRuleActionStore extends AbsIdentifiableObjectStore<Pro
                 .from(ProgramRuleAction$Flow.class).where(Condition
                         .column(ProgramRuleAction$Flow$Table.PROGRAMRULE).is(programRule.getUId()))
                 .queryList();
-        return ProgramRuleAction$Flow.toModels(programRuleActionFlows);
+        return getMapper().mapToModels(programRuleActionFlows);
     }
 }

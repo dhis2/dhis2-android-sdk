@@ -88,7 +88,7 @@ public final class ProgramRuleVariable$Flow extends BaseIdentifiableObject$Flow 
         // empty constructor
     }
 
-    public static ProgramRuleVariable toModel(ProgramRuleVariable$Flow programRuleVariableFlow) {
+    /*public static ProgramRuleVariable toModel(ProgramRuleVariable$Flow programRuleVariableFlow) {
         if (programRuleVariableFlow == null) {
             return null;
         }
@@ -150,5 +150,5 @@ public final class ProgramRuleVariable$Flow extends BaseIdentifiableObject$Flow 
         }
 
         return programRuleVariableFlows;
-    }
+    }*/
 }

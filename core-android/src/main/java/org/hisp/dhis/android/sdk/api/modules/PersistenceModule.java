@@ -56,7 +56,7 @@ public class PersistenceModule implements IPersistenceModule {
     public PersistenceModule(Context context) {
         FlowManager.init(context);
 
-        stateStore = new StateStore(null, null, null, null);
+        stateStore = new StateStore(null, null, null, null, eventMapper, enrollmentMapper, trackedEntityInstanceMapper);
         dashboardStore = new DashboardStore(null);
         dashboardItemStore = new DashboardItemStore(null);
         dashboardElementStore = new DashboardElementStore(null);

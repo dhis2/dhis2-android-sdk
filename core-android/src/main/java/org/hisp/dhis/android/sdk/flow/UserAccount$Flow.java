@@ -289,7 +289,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
     }
 
 
-    public static UserAccount$Flow fromModel(UserAccount userAccount) {
+    /*public static UserAccount$Flow fromModel(UserAccount userAccount) {
         if (userAccount == null) {
             return null;
         }
@@ -358,7 +358,7 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         }
 
         return userAccounts;
-    }
+    }*/
 
     @Override
     public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {

@@ -77,7 +77,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static Option toModel(Option$Flow optionFlow) {
+    /*public static Option toModel(Option$Flow optionFlow) {
         if (optionFlow == null) {
             return null;
         }
@@ -137,5 +137,5 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return optionFlows;
-    }
+    }*/
 }

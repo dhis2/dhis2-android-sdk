@@ -248,7 +248,7 @@ public final class Event$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static Event toModel(Event$Flow eventFlow) {
+    /*public static Event toModel(Event$Flow eventFlow) {
         if (eventFlow == null) {
             return null;
         }
@@ -326,5 +326,5 @@ public final class Event$Flow extends BaseModel$Flow {
         }
 
         return eventFlows;
-    }
+    }*/
 }

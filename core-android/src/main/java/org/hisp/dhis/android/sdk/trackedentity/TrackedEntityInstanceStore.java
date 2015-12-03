@@ -51,6 +51,6 @@ public final class TrackedEntityInstanceStore extends AbsDataStore<TrackedEntity
         TrackedEntityInstance$Flow trackedEntityInstanceFlow = new Select().from(TrackedEntityInstance$Flow
                 .class).where(Condition.column(TrackedEntityInstance$Flow$Table.TRACKEDENTITYINSTANCEUID).is(uid))
                 .querySingle();
-        return TrackedEntityInstance$Flow.toModel(trackedEntityInstanceFlow);
+        return getMapper().mapToModel(trackedEntityInstanceFlow);
     }
 }

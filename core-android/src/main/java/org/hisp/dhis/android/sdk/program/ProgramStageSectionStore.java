@@ -53,7 +53,7 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
 
     @Override
     public boolean insert(ProgramStageSection object) {
-        ProgramStageSection$Flow programStageSectionFlow = ProgramStageSection$Flow.fromModel(object);
+        ProgramStageSection$Flow programStageSectionFlow = getMapper().mapToDatabaseEntity(object);
         programStageSectionFlow.insert();
 
         object.setId(programStageSectionFlow.getId());
@@ -75,14 +75,14 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
 
     @Override
     public boolean update(ProgramStageSection object) {
-        ProgramStageSection$Flow.fromModel(object).update();
+        getMapper().mapToDatabaseEntity(object).update();
         return true;
     }
 
     @Override
     public boolean save(ProgramStageSection object) {
         ProgramStageSection$Flow programStageSectionFlow =
-                ProgramStageSection$Flow.fromModel(object);
+                getMapper().mapToDatabaseEntity(object);
         programStageSectionFlow.save();
 
         object.setId(programStageSectionFlow.getId());
@@ -114,7 +114,7 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
                 : programIndicatorToProgramStageSectionRelationFlows) {
             programIndicatorToProgramStageSectionRelationFlow.delete();
         }
-        ProgramStageSection$Flow.fromModel(object).delete();
+        getMapper().mapToDatabaseEntity(object).delete();
         return true;
     }
 
@@ -125,6 +125,6 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
                         .column(ProgramStageSection$Flow$Table.PROGRAMSTAGE)
                         .is(programStage.getUId()))
                 .queryList();
-        return ProgramStageSection$Flow.toModels(programStageSectionFlows);
+        return getMapper().mapToModels(programStageSectionFlows);
     }
 }

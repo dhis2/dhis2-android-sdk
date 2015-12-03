@@ -58,11 +58,13 @@ import java.util.Set;
 public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         Program$Flow> implements IProgramStore {
     private final ITransactionManager transactionManager;
+    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
 
     public ProgramStore(IMapper<Program, Program$Flow> mapper,
-                        ITransactionManager transactionManager) {
+                        ITransactionManager transactionManager, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
         super(mapper);
         this.transactionManager = transactionManager;
+        this.organisationUnitMapper = organisationUnitMapper;
     }
 
     @Override
@@ -70,11 +72,11 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
                 new Select().from(OrganisationUnitToProgramRelation$Flow.class).
                         where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(OrganisationUnit$Flow
-                                .fromModel(organisationUnit))).queryList();
+                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnitMapper.
+                                mapToDatabaseEntity(organisationUnit))).queryList();
         List<Program> programs = new ArrayList<>();
         for (OrganisationUnitToProgramRelation$Flow relationFlows : organisationUnitToProgramRelations) {
-            programs.add(Program$Flow.toModel(relationFlows.getProgram()));
+            programs.add(getMapper().mapToModel(relationFlows.getProgram()));
         }
         return programs;
     }
@@ -90,7 +92,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select().from(OrganisationUnitToProgramRelation$Flow.class).
                 where(Condition.column
                         (OrganisationUnitToProgramRelation$Flow$Table.PROGRAM_PROGRAM).
-                        is(Program$Flow.fromModel(program))).queryList();
+                        is(getMapper().mapToDatabaseEntity(program))).queryList();
         Map<String, OrganisationUnitToProgramRelation$Flow> relationFlowMap = new HashMap<>();
         for (OrganisationUnitToProgramRelation$Flow relationFlow : relationFlows) {
             relationFlowMap.put(relationFlow.getOrganisationUnit().getUId(), relationFlow);
@@ -98,8 +100,8 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (!relationFlowMap.containsValue(organisationUnit.getUId())) {
                 OrganisationUnitToProgramRelation$Flow newRelationFlow = new OrganisationUnitToProgramRelation$Flow();
-                newRelationFlow.setOrganisationUnit(OrganisationUnit$Flow.fromModel(organisationUnit));
-                newRelationFlow.setProgram(Program$Flow.fromModel(program));
+                newRelationFlow.setOrganisationUnit(organisationUnitMapper.mapToDatabaseEntity(organisationUnit));
+                newRelationFlow.setProgram(getMapper().mapToDatabaseEntity(program));
                 operations.add(DbFlowOperation.insert(newRelationFlow));
             }
         }

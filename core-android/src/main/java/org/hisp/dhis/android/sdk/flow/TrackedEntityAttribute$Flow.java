@@ -187,7 +187,7 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
         // empty constructor
     }
 
-    public static TrackedEntityAttribute toModel(TrackedEntityAttribute$Flow trackedEntityAttributeFlow) {
+    /*public static TrackedEntityAttribute toModel(TrackedEntityAttribute$Flow trackedEntityAttributeFlow) {
         if (trackedEntityAttributeFlow == null) {
             return null;
         }
@@ -267,5 +267,5 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
         }
 
         return trackedEntityAttributeFlows;
-    }
+    }*/
 }

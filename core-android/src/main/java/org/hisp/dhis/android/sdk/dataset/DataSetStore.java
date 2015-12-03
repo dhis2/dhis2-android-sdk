@@ -47,8 +47,11 @@ import java.util.List;
 
 public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSet$Flow> implements IDataSetStore {
 
-    public DataSetStore(IMapper<DataSet, DataSet$Flow> mapper) {
+    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
+
+    public DataSetStore(IMapper<DataSet, DataSet$Flow> mapper, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
         super(mapper);
+        this.organisationUnitMapper = organisationUnitMapper;
     }
 
     @Override
@@ -62,7 +65,7 @@ public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, Data
         List<OrganisationUnit> organisationUnits = new ArrayList<>();
         for (UnitToDataSetRelationShip$Flow relationShipFlow : relationShipFlows) {
             OrganisationUnit$Flow organisationUnitFlow = relationShipFlow.getOrganisationUnit();
-            organisationUnits.add(OrganisationUnit$Flow.toModel(organisationUnitFlow));
+            organisationUnits.add(organisationUnitMapper.mapToModel(organisationUnitFlow));
         }
 
         return organisationUnits;

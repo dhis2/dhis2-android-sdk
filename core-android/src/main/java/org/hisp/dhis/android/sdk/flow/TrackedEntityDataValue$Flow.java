@@ -115,7 +115,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static TrackedEntityDataValue toModel(TrackedEntityDataValue$Flow trackedEntityDataValueFlow) {
+    /*public static TrackedEntityDataValue toModel(TrackedEntityDataValue$Flow trackedEntityDataValueFlow) {
         if (trackedEntityDataValueFlow == null) {
             return null;
         }
@@ -167,5 +167,5 @@ public final class TrackedEntityDataValue$Flow extends BaseModel$Flow {
         }
 
         return trackedEntityDataValueFlows;
-    }
+    }*/
 }

@@ -31,6 +31,9 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.AbsStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramTrackedEntityAttribute$Flow$Table;
 import org.hisp.dhis.java.sdk.program.IProgramTrackedEntityAttributeStore;
@@ -40,50 +43,10 @@ import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-public final class ProgramTrackedEntityAttributeStore implements IProgramTrackedEntityAttributeStore {
+public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> implements IProgramTrackedEntityAttributeStore {
 
-    public ProgramTrackedEntityAttributeStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(ProgramTrackedEntityAttribute object) {
-        ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = ProgramTrackedEntityAttribute$Flow.fromModel(object);
-        programTrackedEntityAttributeFlow.insert();
-        return true;
-    }
-
-    @Override
-    public boolean update(ProgramTrackedEntityAttribute object) {
-        ProgramTrackedEntityAttribute$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(ProgramTrackedEntityAttribute object) {
-        ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow =
-                ProgramTrackedEntityAttribute$Flow.fromModel(object);
-        programTrackedEntityAttributeFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(ProgramTrackedEntityAttribute object) {
-        ProgramTrackedEntityAttribute$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public ProgramTrackedEntityAttribute queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<ProgramTrackedEntityAttribute> queryAll() {
-        List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new Select()
-                .from(ProgramTrackedEntityAttribute$Flow.class)
-                .queryList();
-        return ProgramTrackedEntityAttribute$Flow.toModels(programTrackedEntityAttributeFlows);
+    public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> mapper) {
+        super(mapper);
     }
 
 
@@ -95,7 +58,7 @@ public final class ProgramTrackedEntityAttributeStore implements IProgramTracked
         List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new Select()
                 .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition.column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM).is(program.getUId()))
                 .queryList();
-        return ProgramTrackedEntityAttribute$Flow.toModels(programTrackedEntityAttributeFlows);
+        return getMapper().mapToModels(programTrackedEntityAttributeFlows);
     }
 
     @Override
@@ -109,6 +72,6 @@ public final class ProgramTrackedEntityAttributeStore implements IProgramTracked
                         .is(program.getUId())).and(Condition
                         .column(ProgramTrackedEntityAttribute$Flow$Table.TRACKEDENTITYATTRIBUTE)
                         .is(trackedEntityAttribute.getUId())).querySingle();
-        return ProgramTrackedEntityAttribute$Flow.toModel(programTrackedEntityAttributeFlow);
+        return getMapper().mapToModel(programTrackedEntityAttributeFlow);
     }
 }

@@ -66,7 +66,7 @@ public final class RelationshipType$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static RelationshipType toModel(RelationshipType$Flow relationshipTypeFlow) {
+    /*public static RelationshipType toModel(RelationshipType$Flow relationshipTypeFlow) {
         if (relationshipTypeFlow == null) {
             return null;
         }
@@ -124,5 +124,5 @@ public final class RelationshipType$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return relationshipTypeFlows;
-    }
+    }*/
 }

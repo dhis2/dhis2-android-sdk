@@ -72,7 +72,7 @@ public final class TrackedEntityAttributeValueStore extends
                         .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).and(Condition
                         .column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                         .is(trackedEntityAttribute.getUId())).querySingle();
-        return TrackedEntityAttributeValue$Flow.toModel(trackedEntityInstanceFlow);
+        return getMapper().mapToModel(trackedEntityInstanceFlow);
     }
 
     @Override
@@ -84,7 +84,7 @@ public final class TrackedEntityAttributeValueStore extends
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
                         .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).queryList();
-        return TrackedEntityAttributeValue$Flow.toModels(trackedEntityInstanceFlows);
+        return getMapper().mapToModels(trackedEntityInstanceFlows);
     }
 
     @Override
@@ -110,6 +110,6 @@ public final class TrackedEntityAttributeValueStore extends
                 trackedEntityAttributeValueFlows.add(trackedEntityAttributeValueFlow);
             }
         }
-        return TrackedEntityAttributeValue$Flow.toModels(trackedEntityAttributeValueFlows);
+        return getMapper().mapToModels(trackedEntityAttributeValueFlows);
     }
 }

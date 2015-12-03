@@ -220,7 +220,7 @@ public final class Enrollment$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static Enrollment toModel(Enrollment$Flow enrollmentFlow) {
+    /*public static Enrollment toModel(Enrollment$Flow enrollmentFlow) {
         if (enrollmentFlow == null) {
             return null;
         }
@@ -294,5 +294,5 @@ public final class Enrollment$Flow extends BaseModel$Flow {
         }
 
         return enrollmentFlows;
-    }
+    }*/
 }

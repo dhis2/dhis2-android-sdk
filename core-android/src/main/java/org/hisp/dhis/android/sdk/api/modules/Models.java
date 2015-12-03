@@ -160,7 +160,7 @@ public final class Models {
     public Models(Context context) {
         FlowManager.init(context);
 
-        stateStore = new StateStore(null, null, null, null);
+        stateStore = new StateStore(null, null, null, null, eventMapper, enrollmentMapper, trackedEntityInstanceMapper);
         failedItemStore = new FailedItemStore();
         modelsStore = new ModelsStore();
 

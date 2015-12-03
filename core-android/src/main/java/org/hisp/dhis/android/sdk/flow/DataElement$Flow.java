@@ -145,7 +145,7 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static DataElement toModel(DataElement$Flow dataElementFlow) {
+    /*public static DataElement toModel(DataElement$Flow dataElementFlow) {
         if (dataElementFlow == null) {
             return null;
         }
@@ -217,7 +217,7 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return dataElementFlows;
-    }
+    }*/
 
     @Override
     public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {

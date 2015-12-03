@@ -60,6 +60,6 @@ public final class RelationshipStore extends AbsDataStore<Relationship, Relation
                         .TRACKEDENTITYINSTANCEB_TRACKEDENTITYINSTANCEB).is(trackedEntityInstance
                         ))
                 .queryList();
-        return Relationship$Flow.toModels(relationshipFlow);
+        return getMapper().mapToModels(relationshipFlow);
     }
 }

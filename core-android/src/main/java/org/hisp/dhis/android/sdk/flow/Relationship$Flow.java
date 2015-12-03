@@ -113,7 +113,7 @@ public final class Relationship$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static Relationship toModel(Relationship$Flow relationshipFlow) {
+    /*public static Relationship toModel(Relationship$Flow relationshipFlow) {
         if (relationshipFlow == null) {
             return null;
         }
@@ -169,5 +169,5 @@ public final class Relationship$Flow extends BaseModel$Flow {
         }
 
         return relationshipFlows;
-    }
+    }*/
 }

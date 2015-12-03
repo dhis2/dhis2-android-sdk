@@ -59,6 +59,6 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
                         .column(ProgramStage$Flow$Table.PROGRAM)
                         .is(program.getUId()))
                 .queryList();
-        return ProgramStage$Flow.toModels(programStageFlows);
+        return getMapper().mapToModels(programStageFlows);
     }
 }

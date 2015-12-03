@@ -97,7 +97,7 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
         // empty constructor
     }
 
-    public static ProgramStageSection toModel(ProgramStageSection$Flow programStageSectionFlow) {
+    /*public static ProgramStageSection toModel(ProgramStageSection$Flow programStageSectionFlow) {
         if (programStageSectionFlow == null) {
             return null;
         }
@@ -165,5 +165,5 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
         }
 
         return programStageSectionFlows;
-    }
+    }*/
 }

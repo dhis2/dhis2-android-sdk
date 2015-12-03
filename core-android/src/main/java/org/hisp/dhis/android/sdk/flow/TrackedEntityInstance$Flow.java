@@ -120,7 +120,7 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
         // empty constructor
     }
 
-    public static TrackedEntityInstance toModel(TrackedEntityInstance$Flow trackedEntityInstanceFlow) {
+    /*public static TrackedEntityInstance toModel(TrackedEntityInstance$Flow trackedEntityInstanceFlow) {
         if (trackedEntityInstanceFlow == null) {
             return null;
         }
@@ -176,5 +176,5 @@ public final class TrackedEntityInstance$Flow extends BaseModel$Flow {
         }
 
         return trackedEntityInstanceFlows;
-    }
+    }*/
 }

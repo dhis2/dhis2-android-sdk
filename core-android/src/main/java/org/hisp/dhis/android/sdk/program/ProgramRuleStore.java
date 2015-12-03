@@ -38,6 +38,7 @@ import org.hisp.dhis.android.sdk.flow.ProgramRule$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ProgramRuleAction$Flow;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.models.program.ProgramRule;
+import org.hisp.dhis.java.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.java.sdk.models.program.ProgramStage;
 import org.hisp.dhis.java.sdk.program.IProgramRuleActionStore;
 import org.hisp.dhis.java.sdk.program.IProgramRuleStore;
@@ -47,11 +48,13 @@ import java.util.List;
 public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRule, ProgramRule$Flow> implements IProgramRuleStore {
 
     private final IProgramRuleActionStore programRuleActionStore;
+    private final IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper;
 
     public ProgramRuleStore(IMapper<ProgramRule, ProgramRule$Flow> mapper,
-                            IProgramRuleActionStore programRuleActionStore) {
+                            IProgramRuleActionStore programRuleActionStore, IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper) {
         super(mapper);
         this.programRuleActionStore = programRuleActionStore;
+        this.programRuleActionMapper = programRuleActionMapper;
     }
 
     @Override
@@ -63,7 +66,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
         for (ProgramRule$Flow programRuleFlow : programRuleFlows) {
             setProgramRuleActions(programRuleFlow);
         }
-        return ProgramRule$Flow.toModels(programRuleFlows);
+        return getMapper().mapToModels(programRuleFlows);
     }
 
     @Override
@@ -75,8 +78,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
         if (programRuleFlow == null) {
             return;
         }
-        programRuleFlow.setProgramRuleActions(ProgramRuleAction$Flow.
-                fromModels(programRuleActionStore.
-                        query(ProgramRule$Flow.toModel(programRuleFlow))));
+        programRuleFlow.setProgramRuleActions(programRuleActionMapper.mapToDatabaseEntities(programRuleActionStore.
+                query(getMapper().mapToModel(programRuleFlow))));
     }
 }

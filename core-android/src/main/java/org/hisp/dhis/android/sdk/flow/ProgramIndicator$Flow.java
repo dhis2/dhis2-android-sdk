@@ -132,7 +132,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         // empty constructor
     }
 
-    public static ProgramIndicator toModel(ProgramIndicator$Flow programIndicatorFlow) {
+    /*public static ProgramIndicator toModel(ProgramIndicator$Flow programIndicatorFlow) {
         if (programIndicatorFlow == null) {
             return null;
         }
@@ -202,5 +202,5 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return programIndicatorFlows;
-    }
+    }*/
 }

@@ -54,6 +54,6 @@ public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<Prog
                 .from(ProgramIndicator$Flow.class).where(Condition.
                         column(ProgramIndicator$Flow$Table.PROGRAM).is(program.getUId()))
                 .queryList();
-        return ProgramIndicator$Flow.toModels(programIndicatorFlows);
+        return getMapper().mapToModels(programIndicatorFlows);
     }
 }

@@ -133,7 +133,7 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow impleme
         return map;
     }
 
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     public static <T extends BaseIdentifiableObject> T toModel(BaseIdentifiableObject$Flow flow) {
         if (flow == null) {
             return null;
@@ -148,7 +148,7 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow impleme
         object.setDisplayName(flow.getDisplayName());
         object.setAccess(flow.getAccess());
         return (T) object;
-    }
+    }*/
 
     @Override
     public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {

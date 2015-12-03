@@ -57,7 +57,7 @@ public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<P
                         .is(program.getUId())).and(Condition.column(ProgramRuleVariable$Flow$Table
                         .DATAELEMENT).is(dataElement.getUId()))
                 .querySingle();
-        return ProgramRuleVariable$Flow.toModel(programRuleVariableFlow);
+        return getMapper().mapToModel(programRuleVariableFlow);
     }
 
     @Override
@@ -66,6 +66,6 @@ public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<P
                 .from(ProgramRuleVariable$Flow.class).where(Condition
                         .column(ProgramRuleVariable$Flow$Table.PROGRAM).is(program.getUId()))
                 .queryList();
-        return ProgramRuleVariable$Flow.toModels(programRuleVariableFlow);
+        return getMapper().mapToModels(programRuleVariableFlow);
     }
 }

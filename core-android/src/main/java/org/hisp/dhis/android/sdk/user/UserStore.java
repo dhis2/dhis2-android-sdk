@@ -32,9 +32,9 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.User$Flow;
-import org.hisp.dhis.java.sdk.core.flow.User$Flow$Table;
-import org.hisp.dhis.java.sdk.user.IUserStore;
+import org.hisp.dhis.android.sdk.flow.User$Flow$Table;
 import org.hisp.dhis.java.sdk.models.user.User;
+import org.hisp.dhis.java.sdk.user.IUserStore;
 
 import java.util.List;
 

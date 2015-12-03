@@ -227,7 +227,7 @@ public final class Enrollment$Flow extends BaseModel$Flow {
 
         Enrollment enrollment = new Enrollment();
         enrollment.setId(enrollmentFlow.getId());
-        enrollment.setEnrollmentUid(enrollmentFlow.getEnrollmentUid());
+        enrollment.setUId(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
         enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
         enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
@@ -253,7 +253,7 @@ public final class Enrollment$Flow extends BaseModel$Flow {
 
         Enrollment$Flow enrollmentFlow = new Enrollment$Flow();
         enrollmentFlow.setId(enrollment.getId());
-        enrollmentFlow.setEnrollmentUid(enrollment.getEnrollmentUid());
+        enrollmentFlow.setEnrollmentUid(enrollment.getUId());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
         enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
         enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));

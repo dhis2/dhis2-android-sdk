@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 
 import org.hisp.dhis.java.sdk.models.common.Access;
+import org.hisp.dhis.java.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.java.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
@@ -147,5 +148,10 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow impleme
         object.setDisplayName(flow.getDisplayName());
         object.setAccess(flow.getAccess());
         return (T) object;
+    }
+
+    @Override
+    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
+
     }
 }

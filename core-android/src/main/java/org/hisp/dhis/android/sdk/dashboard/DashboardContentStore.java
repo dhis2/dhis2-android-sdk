@@ -34,10 +34,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
+import org.hisp.dhis.android.sdk.flow.DashboardContent$Flow$Table;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.android.sdk.flow.DashboardContent$Flow;
-import org.hisp.dhis.java.sdk.core.flow.DashboardContent$Flow$Table;
 
 import java.util.List;
 

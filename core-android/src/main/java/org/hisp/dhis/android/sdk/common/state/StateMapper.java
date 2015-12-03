@@ -30,6 +30,16 @@ package org.hisp.dhis.android.sdk.common.state;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
+import org.hisp.dhis.android.sdk.common.base.AbsMapper;
+import org.hisp.dhis.android.sdk.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
+import org.hisp.dhis.android.sdk.flow.Event$Flow;
+import org.hisp.dhis.android.sdk.flow.Interpretation$Flow;
+import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow;
+import org.hisp.dhis.android.sdk.flow.InterpretationElement$Flow;
+import org.hisp.dhis.android.sdk.flow.State$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow;
 import org.hisp.dhis.java.sdk.models.common.base.IModel;
 import org.hisp.dhis.java.sdk.models.common.state.State;
@@ -42,19 +52,9 @@ import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.java.sdk.utils.Preconditions;
-import org.hisp.dhis.android.sdk.common.base.AbsMapper;
-import org.hisp.dhis.android.sdk.flow.Dashboard$Flow;
-import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow;
-import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow;
-import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
-import org.hisp.dhis.android.sdk.flow.Event$Flow;
-import org.hisp.dhis.android.sdk.flow.Interpretation$Flow;
-import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow;
-import org.hisp.dhis.android.sdk.flow.InterpretationElement$Flow;
-import org.hisp.dhis.android.sdk.flow.State$Flow;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+
 
 public class StateMapper extends AbsMapper<State, State$Flow> implements IStateMapper {
 
@@ -98,7 +98,7 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
 
     @Override
     public Class<? extends IModel> getRelatedModelClass(String type) {
-        Preconditions.isNull(type, "type must not be null");
+        isNull(type, "type must not be null");
 
         if (Dashboard.class.getSimpleName().equals(type)) {
             return Dashboard.class;
@@ -147,7 +147,7 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
 
     @Override
     public Class<? extends Model> getRelatedDatabaseEntityClass(Class<? extends IModel> objectClass) {
-        Preconditions.isNull(objectClass, "Class object must not be null");
+        isNull(objectClass, "Class object must not be null");
 
         if (Dashboard.class.equals(objectClass)) {
             return Dashboard$Flow.class;

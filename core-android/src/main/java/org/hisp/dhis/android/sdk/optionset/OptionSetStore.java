@@ -32,15 +32,15 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.Option$Flow;
-import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.flow.OptionSet$Flow;
+import org.hisp.dhis.android.sdk.flow.OptionSet$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.DbOperation;
 import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
-import org.hisp.dhis.java.sdk.optionset.IOptionStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.java.sdk.common.persistence.ITransactionManager;
 import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.android.sdk.flow.OptionSet$Flow;
-import org.hisp.dhis.java.sdk.core.flow.OptionSet$Flow$Table;
-import org.hisp.dhis.android.sdk.api.utils.DbUtils;
+import org.hisp.dhis.java.sdk.optionset.IOptionStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +48,11 @@ import java.util.List;
 public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet> {
 
     private final IOptionStore optionStore;
+    private final ITransactionManager transactionManager;
 
-    public OptionSetStore(IOptionStore optionStore) {
+    public OptionSetStore(IOptionStore optionStore, ITransactionManager transactionManager) {
         this.optionStore = optionStore;
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -87,7 +89,7 @@ public final class OptionSetStore implements IIdentifiableObjectStore<OptionSet>
             for (Option option : options) {
                 operations.add(DbOperation.with(optionStore).delete(option));
             }
-            DbUtils.applyBatch(operations);
+            transactionManager.transact(operations);
         }
         OptionSet$Flow.fromModel(object).delete();
         return true;

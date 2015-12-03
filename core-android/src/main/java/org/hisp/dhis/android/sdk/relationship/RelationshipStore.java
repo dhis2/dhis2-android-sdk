@@ -32,10 +32,10 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.Relationship$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Relationship$Flow$Table;
-import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
+import org.hisp.dhis.android.sdk.flow.Relationship$Flow$Table;
 import org.hisp.dhis.java.sdk.models.relationship.Relationship;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
 
 import java.util.List;
 

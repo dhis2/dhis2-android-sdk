@@ -32,12 +32,13 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Enrollment$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.Enrollment$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.enrollment.IEnrollmentStore;
 import org.hisp.dhis.java.sdk.event.IEventStore;
+import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
@@ -67,14 +68,14 @@ public final class EnrollmentStore implements IEnrollmentStore {
     @Override
     public boolean update(Enrollment object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
+        if(object.getUId() == null || object.getUId().isEmpty()) {
             Enrollment$Flow persisted = new Select()
                     .from(Enrollment$Flow.class)
                     .where(Condition.column(Enrollment$Flow$Table
                             .ID).is(object.getId()))
                     .querySingle();
             if(persisted != null) {
-                object.setEnrollmentUid(persisted.getEnrollmentUid());
+                object.setUId(persisted.getEnrollmentUid());
             }
         }
         Enrollment$Flow.fromModel(object).update();
@@ -84,14 +85,14 @@ public final class EnrollmentStore implements IEnrollmentStore {
     @Override
     public boolean save(Enrollment object) {
         //making sure uid is not overwritten with blank value in case uid was updated from server while object was loaded in memory
-        if(object.getEnrollmentUid() == null || object.getEnrollmentUid().isEmpty()) {
+        if(object.getUId() == null || object.getUId().isEmpty()) {
             Enrollment$Flow persisted = new Select()
                     .from(Enrollment$Flow.class)
                     .where(Condition.column(Enrollment$Flow$Table
                             .ID).is(object.getId()))
                     .querySingle();
             if(persisted != null) {
-                object.setEnrollmentUid(persisted.getEnrollmentUid());
+                object.setUId(persisted.getEnrollmentUid());
             }
         }
         Enrollment$Flow.fromModel(object).update();
@@ -109,11 +110,6 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public Enrollment queryById(long id) {
-        return null;
-    }
-
-    @Override
     public List<Enrollment> queryAll() {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class)
@@ -126,7 +122,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public Enrollment query(long id) {
+    public Enrollment queryById(long id) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table
                         .ID).is(id))
@@ -137,7 +133,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public Enrollment query(String uid) {
+    public Enrollment queryByUid(String uid) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table
                         .ENROLLMENTUID).is(uid))
@@ -161,7 +157,7 @@ public final class EnrollmentStore implements IEnrollmentStore {
     }
 
     @Override
-    public Enrollment queryActiveEnrollment(Program program, TrackedEntityInstance trackedEntityInstance) {
+    public Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance, OrganisationUnit organisationUnit, Program program) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
@@ -183,6 +179,11 @@ public final class EnrollmentStore implements IEnrollmentStore {
             setTrackedEntityAttributeValues(enrollmentFlow);
         }
         return Enrollment$Flow.toModels(enrollmentFlows);
+    }
+
+    @Override
+    public List<Enrollment> query(Program program, OrganisationUnit organisationUnit) {
+        return null;
     }
 
     private void setEvents(Enrollment$Flow enrollmentFlow) {

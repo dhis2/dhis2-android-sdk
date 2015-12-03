@@ -33,10 +33,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramIndicatorToProgramStageSectionRelation$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStageSection$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramStageSection$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.ProgramStageSection$Flow$Table;
 import org.hisp.dhis.java.sdk.program.IProgramStageDataElementStore;
 import org.hisp.dhis.java.sdk.program.IProgramStageSectionStore;
 import org.hisp.dhis.java.sdk.models.program.ProgramStage;

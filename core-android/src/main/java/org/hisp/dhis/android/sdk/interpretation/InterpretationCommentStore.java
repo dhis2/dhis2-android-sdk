@@ -31,9 +31,9 @@ package org.hisp.dhis.android.sdk.interpretation;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.java.sdk.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow;
-import org.hisp.dhis.java.sdk.core.flow.InterpretationComment$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow$Table;
+import org.hisp.dhis.java.sdk.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 

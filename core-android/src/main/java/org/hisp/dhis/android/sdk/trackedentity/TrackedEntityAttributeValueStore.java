@@ -32,6 +32,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
+import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.models.program.Program;
@@ -40,7 +41,6 @@ import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.java.sdk.core.flow.TrackedEntityAttributeValue$Flow$Table;
 
 import java.util.ArrayList;
 import java.util.List;

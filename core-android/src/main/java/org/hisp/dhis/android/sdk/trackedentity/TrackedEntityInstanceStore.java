@@ -34,11 +34,11 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.flow.Relationship$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow$Table;
+import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityInstanceStore;
-import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.java.sdk.core.flow.TrackedEntityInstance$Flow$Table;
 
 import java.util.List;
 

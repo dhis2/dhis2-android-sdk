@@ -34,11 +34,11 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow$Table;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardElementStore;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.java.sdk.utils.Preconditions;
-import org.hisp.dhis.java.sdk.core.flow.DashboardElement$Flow$Table;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 import java.util.List;
 

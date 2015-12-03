@@ -255,7 +255,7 @@ public final class Event$Flow extends BaseModel$Flow {
 
         Event event = new Event();
         event.setId(eventFlow.getId());
-        event.setEventUid(eventFlow.getEventUid());
+        event.setUId(eventFlow.getEventUid());
         event.setStatus(eventFlow.getStatus());
         event.setLatitude(eventFlow.getLatitude());
         event.setLongitude(eventFlow.getLongitude());
@@ -284,7 +284,7 @@ public final class Event$Flow extends BaseModel$Flow {
 
         Event$Flow eventFlow = new Event$Flow();
         eventFlow.setId(event.getId());
-        eventFlow.setEventUid(event.getEventUid());
+        eventFlow.setEventUid(event.getUId());
         eventFlow.setStatus(event.getStatus());
         eventFlow.setLatitude(event.getLatitude());
         eventFlow.setLongitude(event.getLongitude());

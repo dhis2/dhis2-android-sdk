@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.sdk.dashboard;
 
+import org.hisp.dhis.android.sdk.retrofit.IDhisApi;
 import org.hisp.dhis.java.sdk.common.network.Response;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardApiClient;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.android.sdk.retrofit.IDhisApi;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class DashboardApiClient implements IDashboardApiClient {
     }
 
     @Override
-    public List<Dashboard> getBasicDashboards(DateTime lastUpdated) {
+    public List<Dashboard> getDashboardUids(DateTime lastUpdated) {
         final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
         QUERY_MAP_BASIC.put("fields", "id");
 
@@ -71,7 +71,7 @@ public class DashboardApiClient implements IDashboardApiClient {
     }
 
     @Override
-    public List<Dashboard> getFullDashboards(DateTime lastUpdated) {
+    public List<Dashboard> getDashboards(DateTime lastUpdated) {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         final String BASE = "id,created,lastUpdated,name,displayName,access";
 
@@ -115,7 +115,7 @@ public class DashboardApiClient implements IDashboardApiClient {
     }
 
     @Override
-    public List<DashboardItem> getBasicDashboardItems(DateTime lastUpdated) {
+    public List<DashboardItem> getBaseDashboardItems(DateTime lastUpdated) {
         final Map<String, String> QUERY_MAP_BASIC = new HashMap<>();
         QUERY_MAP_BASIC.put("fields", "id,created,lastUpdated,shape");
 
@@ -134,7 +134,12 @@ public class DashboardApiClient implements IDashboardApiClient {
     }
 
     @Override
-    public Dashboard getBasicDashboardByUid(String uid) {
+    public List<DashboardItem> getDashboardItems(DateTime dateTime) {
+        return null;
+    }
+
+    @Override
+    public Dashboard getBaseDashboardByUid(String uid) {
         final Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "created,lastUpdated");
         return call(dhisApi.getDashboard(uid, QUERY_PARAMS));
@@ -171,42 +176,42 @@ public class DashboardApiClient implements IDashboardApiClient {
     }
 
     @Override
-    public List<DashboardContent> getBasicCharts() {
+    public List<DashboardContent> getBaseCharts() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicEventCharts() {
+    public List<DashboardContent> getBaseEventCharts() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicMaps() {
+    public List<DashboardContent> getBaseMaps() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicReportTables() {
+    public List<DashboardContent> getBaseReportTables() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicEventReports() {
+    public List<DashboardContent> getBaseEventReports() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicUsers() {
+    public List<DashboardContent> getBaseUsers() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicReports() {
+    public List<DashboardContent> getBaseReports() {
         return null;
     }
 
     @Override
-    public List<DashboardContent> getBasicResources() {
+    public List<DashboardContent> getBaseResources() {
         return null;
     }
 

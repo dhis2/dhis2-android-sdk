@@ -31,11 +31,11 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.flow.ProgramRuleAction$Flow$Table;
 import org.hisp.dhis.java.sdk.program.IProgramRuleActionStore;
 import org.hisp.dhis.java.sdk.models.program.ProgramRule;
 import org.hisp.dhis.java.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.flow.ProgramRuleAction$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramRuleAction$Flow$Table;
 
 import java.util.List;
 

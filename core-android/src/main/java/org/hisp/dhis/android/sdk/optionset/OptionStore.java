@@ -32,10 +32,10 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.Option$Flow;
+import org.hisp.dhis.android.sdk.flow.Option$Flow$Table;
 import org.hisp.dhis.java.sdk.optionset.IOptionStore;
 import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.java.sdk.core.flow.Option$Flow$Table;
 
 import java.util.List;
 

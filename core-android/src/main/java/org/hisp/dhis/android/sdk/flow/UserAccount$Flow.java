@@ -35,6 +35,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
 import org.hisp.dhis.java.sdk.models.common.Access;
+import org.hisp.dhis.java.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
@@ -357,5 +358,10 @@ public final class UserAccount$Flow extends BaseModel implements IdentifiableObj
         }
 
         return userAccounts;
+    }
+
+    @Override
+    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
+
     }
 }

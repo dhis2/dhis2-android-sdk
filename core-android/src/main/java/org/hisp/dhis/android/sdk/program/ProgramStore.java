@@ -31,36 +31,40 @@ package org.hisp.dhis.android.sdk.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.android.sdk.api.utils.DbUtils;
+import org.hisp.dhis.android.sdk.common.meta.DbFlowOperation;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnitToProgramRelation$Flow;
+import org.hisp.dhis.android.sdk.flow.OrganisationUnitToProgramRelation$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.Program$Flow;
+import org.hisp.dhis.android.sdk.flow.Program$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ProgramStage$Flow;
+import org.hisp.dhis.android.sdk.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
+import org.hisp.dhis.java.sdk.common.persistence.ITransactionManager;
 import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.program.IProgramStageStore;
 import org.hisp.dhis.java.sdk.program.IProgramStore;
 import org.hisp.dhis.java.sdk.program.IProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.java.sdk.models.program.Program;
-import org.hisp.dhis.android.sdk.common.meta.DbFlowOperation;
-import org.hisp.dhis.java.sdk.core.flow.Program$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.OrganisationUnitToProgramRelation$Flow$Table;
-import org.hisp.dhis.android.sdk.flow.ProgramTrackedEntityAttribute$Flow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class ProgramStore implements IProgramStore {
 
     private final IProgramStageStore programStageStore;
     private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private final ITransactionManager transactionManager;
 
     public ProgramStore(IProgramStageStore programStageStore,
-                        IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore) {
+                        IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                        ITransactionManager transactionManager) {
         this.programStageStore = programStageStore;
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -161,7 +165,12 @@ public final class ProgramStore implements IProgramStore {
     }
 
     @Override
-    public void assign(Program program, List<OrganisationUnit> organisationUnits) {
+    public List<Program> query(OrganisationUnit organisationUnit, Program.ProgramType... programTypes) {
+        return null;
+    }
+
+    @Override
+    public void assign(Program program, Set<OrganisationUnit> organisationUnits) {
         List<IDbOperation> operations = new ArrayList<>();
         List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select().from(OrganisationUnitToProgramRelation$Flow.class).
                 where(Condition.column
@@ -179,6 +188,6 @@ public final class ProgramStore implements IProgramStore {
                 operations.add(DbFlowOperation.insert(newRelationFlow));
             }
         }
-        DbUtils.applyBatch(operations);
+        transactionManager.transact(operations);
     }
 }

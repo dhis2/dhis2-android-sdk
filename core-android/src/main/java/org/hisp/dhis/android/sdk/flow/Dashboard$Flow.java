@@ -31,11 +31,18 @@ package org.hisp.dhis.android.sdk.flow;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
+import org.hisp.dhis.java.sdk.models.common.MergeStrategy;
+import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 
 @Table(databaseName = DbDhis.NAME)
 public final class Dashboard$Flow extends BaseIdentifiableObject$Flow {
 
     public Dashboard$Flow() {
+    }
+
+    @Override
+    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
+
     }
 
     /////////////////////////////////////////////////////////////////////////

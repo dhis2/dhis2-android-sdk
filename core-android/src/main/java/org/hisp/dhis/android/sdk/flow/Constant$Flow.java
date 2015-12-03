@@ -32,6 +32,8 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
+import org.hisp.dhis.java.sdk.models.common.MergeStrategy;
+import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.java.sdk.models.constant.Constant;
 
 import java.util.ArrayList;
@@ -111,5 +113,10 @@ public final class Constant$Flow extends BaseIdentifiableObject$Flow {
         }
 
         return constantFlows;
+    }
+
+    @Override
+    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
+
     }
 }

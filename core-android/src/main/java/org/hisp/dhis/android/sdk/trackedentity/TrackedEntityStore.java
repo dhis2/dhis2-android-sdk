@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.TrackedEntity$Flow;
-import org.hisp.dhis.java.sdk.core.flow.TrackedEntity$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.TrackedEntity$Flow$Table;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntity;
 

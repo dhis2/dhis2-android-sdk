@@ -34,14 +34,15 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow$Table;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardItemStore;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.java.sdk.core.flow.DashboardItem$Flow$Table;
 
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+
 
 public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
 

@@ -39,8 +39,8 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import org.hisp.dhis.java.sdk.utils.Preconditions;
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {

@@ -32,12 +32,13 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.ProgramRule$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramRule$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.ProgramRule$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ProgramRuleAction$Flow;
 import org.hisp.dhis.java.sdk.models.program.Program;
-import org.hisp.dhis.java.sdk.program.IProgramRuleStore;
 import org.hisp.dhis.java.sdk.models.program.ProgramRule;
+import org.hisp.dhis.java.sdk.models.program.ProgramStage;
 import org.hisp.dhis.java.sdk.program.IProgramRuleActionStore;
+import org.hisp.dhis.java.sdk.program.IProgramRuleStore;
 
 import java.util.List;
 
@@ -85,7 +86,7 @@ public final class ProgramRuleStore implements IProgramRuleStore {
         List<ProgramRule$Flow> programRuleFlows = new Select()
                 .from(ProgramRule$Flow.class)
                 .queryList();
-        for(ProgramRule$Flow programRuleFlow : programRuleFlows) {
+        for (ProgramRule$Flow programRuleFlow : programRuleFlows) {
             setProgramRuleActions(programRuleFlow);
         }
         return ProgramRule$Flow.toModels(programRuleFlows);
@@ -117,14 +118,19 @@ public final class ProgramRuleStore implements IProgramRuleStore {
                 .from(ProgramRule$Flow.class).where(Condition
                         .column(ProgramRule$Flow$Table.PROGRAM).is(program.getUId()))
                 .queryList();
-        for(ProgramRule$Flow programRuleFlow : programRuleFlows) {
+        for (ProgramRule$Flow programRuleFlow : programRuleFlows) {
             setProgramRuleActions(programRuleFlow);
         }
         return ProgramRule$Flow.toModels(programRuleFlows);
     }
 
+    @Override
+    public List<ProgramRule> query(ProgramStage programStage) {
+        return null;
+    }
+
     private void setProgramRuleActions(ProgramRule$Flow programRuleFlow) {
-        if(programRuleFlow == null) {
+        if (programRuleFlow == null) {
             return;
         }
         programRuleFlow.setProgramRuleActions(ProgramRuleAction$Flow.

@@ -168,7 +168,7 @@ public final class Models {
         relationshipTypeStore = new RelationshipTypeStore();
 
         optionStore = new OptionStore();
-        optionSetStore = new OptionSetStore(optionStore);
+        optionSetStore = new OptionSetStore(optionStore, null);
 
         organisationUnitStore = new OrganisationUnitStore();
         dataSetStore = new DataSetStore();
@@ -209,7 +209,7 @@ public final class Models {
         programIndicatorStore = new ProgramIndicatorStore();
         programStageSectionStore = new ProgramStageSectionStore(programStageDataElementStore);
         programStageStore = new ProgramStageStore(programStageDataElementStore, programStageSectionStore);
-        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore);
+        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore, null);
         programRuleActionStore = new ProgramRuleActionStore();
         programRuleStore = new ProgramRuleStore(programRuleActionStore);
         programRuleVariableStore = new ProgramRuleVariableStore();

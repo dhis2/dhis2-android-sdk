@@ -36,9 +36,10 @@ import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.flow.Event$Flow$Table;
 import org.hisp.dhis.java.sdk.common.IStateStore;
+
+import org.hisp.dhis.java.sdk.event.IEventStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.models.event.Event;
-import org.hisp.dhis.java.sdk.event.IEventStore;
 import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityDataValueStore;
@@ -56,20 +57,6 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
-    @Override
-    public Event queryById(long id) {
-        return null;
-    }
-
-    @Override
-    public List<Event> queryAll() {
-        List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class)
-                .queryList();
-        return Event$Flow.toModels(eventFlows);
-    }
-
-    @Override
     public Event queryByUid(String uid) {
         Event$Flow eventFlow = new Select()
                 .from(Event$Flow.class)
@@ -89,7 +76,7 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
 
     @Override
     public List<Event> query(OrganisationUnit organisationUnit, Program program) {
-        if(organisationUnit == null || program == null) {
+        if (organisationUnit == null || program == null) {
             return new ArrayList<>();
         }
         List<Event$Flow> eventFlows = new Select()

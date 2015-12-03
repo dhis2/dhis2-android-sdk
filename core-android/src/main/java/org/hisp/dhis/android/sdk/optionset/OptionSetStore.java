@@ -38,10 +38,7 @@ import org.hisp.dhis.android.sdk.flow.OptionSet$Flow;
 public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSet$Flow>
         implements IIdentifiableObjectStore<OptionSet> {
 
-    private final IOptionStore optionStore;
-
     public OptionSetStore(IMapper<OptionSet, OptionSet$Flow> mapper, IOptionStore optionStore) {
         super(mapper);
-        this.optionStore = optionStore;
     }
 }

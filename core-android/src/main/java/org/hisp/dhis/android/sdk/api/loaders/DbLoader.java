@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.api.loaders;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import org.hisp.dhis.java.sdk.utils.Preconditions;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;

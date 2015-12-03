@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.java.sdk.common.persistence.DbAction;
 import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
-import org.hisp.dhis.java.sdk.utils.Preconditions;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 /**
  * This class is intended to implement partial

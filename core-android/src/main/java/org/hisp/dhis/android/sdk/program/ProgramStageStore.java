@@ -32,14 +32,14 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.ProgramStage$Flow;
-import org.hisp.dhis.java.sdk.core.flow.ProgramStage$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.ProgramStage$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.android.sdk.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.java.sdk.models.program.Program;
-import org.hisp.dhis.java.sdk.program.IProgramStageStore;
 import org.hisp.dhis.java.sdk.models.program.ProgramStage;
 import org.hisp.dhis.java.sdk.program.IProgramStageDataElementStore;
 import org.hisp.dhis.java.sdk.program.IProgramStageSectionStore;
+import org.hisp.dhis.java.sdk.program.IProgramStageStore;
 
 import java.util.List;
 
@@ -90,7 +90,7 @@ public final class ProgramStageStore implements IProgramStageStore {
         List<ProgramStage$Flow> programStageFlows = new Select()
                 .from(ProgramStage$Flow.class)
                 .queryList();
-        for(ProgramStage$Flow programStageFlow : programStageFlows) {
+        for (ProgramStage$Flow programStageFlow : programStageFlows) {
             setProgramStageDataElements(programStageFlow);
             setProgramStageSections(programStageFlow);
         }
@@ -126,7 +126,7 @@ public final class ProgramStageStore implements IProgramStageStore {
                         .column(ProgramStage$Flow$Table.PROGRAM)
                         .is(program.getUId()))
                 .queryList();
-        for(ProgramStage$Flow programStageFlow : programStageFlows) {
+        for (ProgramStage$Flow programStageFlow : programStageFlows) {
             setProgramStageDataElements(programStageFlow);
             setProgramStageSections(programStageFlow);
         }
@@ -134,7 +134,7 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     private void setProgramStageDataElements(ProgramStage$Flow programStageFlow) {
-        if(programStageFlow == null) {
+        if (programStageFlow == null) {
             return;
         }
         programStageFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
@@ -143,7 +143,7 @@ public final class ProgramStageStore implements IProgramStageStore {
     }
 
     private void setProgramStageSections(ProgramStage$Flow programStageFlow) {
-        if(programStageFlow == null) {
+        if (programStageFlow == null) {
             return;
         }
         programStageFlow.setProgramStageSections(ProgramStageSection$Flow

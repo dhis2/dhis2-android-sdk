@@ -32,7 +32,7 @@ import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.flow.TrackedEntityDataValue$Flow;
-import org.hisp.dhis.java.sdk.core.flow.TrackedEntityDataValue$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.TrackedEntityDataValue$Flow$Table;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.models.event.Event;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityDataValueStore;

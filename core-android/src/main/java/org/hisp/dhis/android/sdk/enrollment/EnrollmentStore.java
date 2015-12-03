@@ -40,6 +40,7 @@ import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.enrollment.IEnrollmentStore;
 import org.hisp.dhis.java.sdk.event.IEventStore;
+import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.models.program.Program;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
@@ -60,12 +61,12 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
     }
 
     @Override
-    public boolean insert(Enrollment object) {
-        Enrollment$Flow enrollmentFlow =
-                Enrollment$Flow.fromModel(object);
-        enrollmentFlow.insert();
-
-        return true;
+    public Enrollment queryByUid(String uid) {
+        Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
+                .where(Condition.column(Enrollment$Flow$Table
+                        .ENROLLMENTUID).is(uid))
+                .querySingle();
+        return Enrollment$Flow.toModel(enrollmentFlow);
     }
 
     @Override
@@ -78,7 +79,7 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
     }
 
     @Override
-    public Enrollment queryActiveEnrollment(Program program, TrackedEntityInstance trackedEntityInstance) {
+    public Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance, OrganisationUnit organisationUnit, Program program) {
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.

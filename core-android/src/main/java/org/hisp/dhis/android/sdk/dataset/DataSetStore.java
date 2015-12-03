@@ -34,6 +34,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.DataSet$Flow;
+import org.hisp.dhis.android.sdk.flow.DataSet$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.android.sdk.flow.UnitToDataSetRelationShip$Flow$Table;
 import org.hisp.dhis.java.sdk.models.dataset.DataSet;

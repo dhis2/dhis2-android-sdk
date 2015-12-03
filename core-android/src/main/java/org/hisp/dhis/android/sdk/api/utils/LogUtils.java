@@ -30,7 +30,8 @@ package org.hisp.dhis.android.sdk.api.utils;
 
 import android.util.Log;
 
-import org.hisp.dhis.java.sdk.core.BuildConfig;
+import org.hisp.dhis.android.sdk.api.BuildConfig;
+
 
 /**
  * Allows to eliminate logs from production releases.

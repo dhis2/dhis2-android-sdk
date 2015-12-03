@@ -34,7 +34,7 @@ import android.content.SharedPreferences;
 import org.hisp.dhis.java.sdk.common.network.Configuration;
 import org.hisp.dhis.java.sdk.common.preferences.IConfigurationPreferences;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class ConfigurationPreferences implements IConfigurationPreferences {
     private static final String CONFIGURATION_PREFERENCES = "preferences:configuration";

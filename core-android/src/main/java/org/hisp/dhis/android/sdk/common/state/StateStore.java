@@ -35,18 +35,31 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.Model;
 
+import org.hisp.dhis.android.sdk.common.base.AbsStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
+import org.hisp.dhis.android.sdk.flow.Dashboard$Flow;
+import org.hisp.dhis.android.sdk.flow.Dashboard$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow;
+import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
+import org.hisp.dhis.android.sdk.flow.Enrollment$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.Event$Flow;
+import org.hisp.dhis.android.sdk.flow.Event$Flow$Table;
+import org.hisp.dhis.android.sdk.flow.Interpretation$Flow;
+import org.hisp.dhis.android.sdk.flow.Interpretation$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow;
+import org.hisp.dhis.android.sdk.flow.InterpretationComment$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.InterpretationElement$Flow;
+import org.hisp.dhis.android.sdk.flow.InterpretationElement$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.State$Flow;
+import org.hisp.dhis.android.sdk.flow.State$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow$Table;
+import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.common.base.IModel;
 import org.hisp.dhis.java.sdk.models.common.state.Action;
-import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.common.state.State;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
@@ -57,20 +70,7 @@ import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.java.sdk.utils.Preconditions;
-import org.hisp.dhis.android.sdk.common.base.AbsStore;
-import org.hisp.dhis.android.sdk.flow.Dashboard$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Dashboard$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.DashboardElement$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.DashboardItem$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.Enrollment$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.Event$Flow$Table;
-import org.hisp.dhis.android.sdk.flow.Interpretation$Flow;
-import org.hisp.dhis.java.sdk.core.flow.Interpretation$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.InterpretationComment$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.InterpretationElement$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.State$Flow$Table;
-import org.hisp.dhis.java.sdk.core.flow.TrackedEntityInstance$Flow$Table;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -163,16 +163,6 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
     }
 
     @Override
-    public <T extends IModel> List<T> filterModelsByAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, false);
-    }
-
-    @Override
-    public <T extends IModel> List<T> queryModelsWithAction(Class<T> clazz, Action action) {
-        return getObjectsByAction(clazz, action, true);
-    }
-
-    @Override
     public <T extends IModel> List<State> queryStatesForModelClass(Class<T> clazz) {
         if (clazz == null) {
             return null;
@@ -203,6 +193,11 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         }
 
         return actionMap;
+    }
+
+    @Override
+    public <T extends IModel> List<T> queryModelsWithActions(Class<T> aClass, Action... actions) {
+        return null;
     }
 
     @SuppressWarnings("unchecked")

@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.flow.DashboardItem$Flow;
 import org.hisp.dhis.android.sdk.flow.User$Flow;
-import org.hisp.dhis.java.sdk.utils.Preconditions;
 import org.hisp.dhis.android.sdk.flow.Dashboard$Flow;
 import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow;
 import org.hisp.dhis.android.sdk.flow.DashboardContent$Flow;
@@ -54,6 +53,7 @@ import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.user.User;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
+import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 public class ModelChangeObserver implements FlowContentObserver.OnModelStateChangedListener {
     private static final String TAG = ModelChangeObserver.class.getSimpleName();

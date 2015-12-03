@@ -37,28 +37,27 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import org.hisp.dhis.android.sdk.dashboard.DashboardApiClient;
 import org.hisp.dhis.android.sdk.clients.SystemInfoApiClient;
+import org.hisp.dhis.android.sdk.clients.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.android.sdk.dashboard.DashboardApiClient;
+import org.hisp.dhis.android.sdk.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.android.sdk.user.UserApiClient;
 import org.hisp.dhis.android.sdk.user.UserApiClientRetrofit;
-import org.hisp.dhis.java.sdk.common.network.INetworkModule;
-import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.network.Configuration;
+import org.hisp.dhis.java.sdk.common.network.INetworkModule;
 import org.hisp.dhis.java.sdk.common.network.UserCredentials;
 import org.hisp.dhis.java.sdk.common.preferences.IConfigurationPreferences;
+import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardApiClient;
 import org.hisp.dhis.java.sdk.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.java.sdk.user.IUserApiClient;
-import org.hisp.dhis.android.sdk.dashboard.DashboardApiClientRetrofit;
-import org.hisp.dhis.android.sdk.clients.SystemInfoApiClientRetrofit;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.BaseUrl;
-import retrofit.JacksonConverterFactory;
 import retrofit.Retrofit;
 
 import static com.squareup.okhttp.Credentials.basic;
@@ -94,7 +93,7 @@ public class NetworkModule implements INetworkModule {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
                 .client(okHttpClient)
-                .addConverterFactory(JacksonConverterFactory.create(mapper))
+//                .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
         mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));

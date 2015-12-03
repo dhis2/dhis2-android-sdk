@@ -26,4 +26,4 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':ui', ':core-android'
+include ':core-android'

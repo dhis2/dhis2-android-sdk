@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class LastUpdatedPreferences implements ILastUpdatedPreferences {
     private static final String PREFERENCES = "preferences:lastUpdated";

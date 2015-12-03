@@ -33,12 +33,12 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.android.sdk.flow.BaseModel$Flow;
-import org.hisp.dhis.java.sdk.models.common.base.IModel;
 import org.hisp.dhis.java.sdk.common.persistence.IStore;
+import org.hisp.dhis.java.sdk.models.common.base.IModel;
 
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public abstract class AbsStore<ModelType extends IModel, DatabaseEntityType extends Model & IModel> implements IStore<ModelType> {
     private final IMapper<ModelType, DatabaseEntityType> mapper;

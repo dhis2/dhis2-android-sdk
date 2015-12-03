@@ -55,7 +55,6 @@ import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 
 import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
-
 public class StateMapper extends AbsMapper<State, State$Flow> implements IStateMapper {
 
     @Override

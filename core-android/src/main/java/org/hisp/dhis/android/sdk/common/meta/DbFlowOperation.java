@@ -32,7 +32,8 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.java.sdk.common.persistence.DbAction;
 import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
+
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 /**
  * This class is intended to implement partial
@@ -43,8 +44,8 @@ public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<
     private final T mModel;
 
     private DbFlowOperation(DbAction dbAction, T model) {
-        mModel = Preconditions.isNull(model, "IdentifiableObject object must nto be null,");
-        mDbAction = Preconditions.isNull(dbAction, "BaseModel.DbAction object must not be null");
+        mModel = isNull(model, "IdentifiableObject object must nto be null,");
+        mDbAction = isNull(dbAction, "BaseModel.DbAction object must not be null");
     }
 
     public T getModel() {

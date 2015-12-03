@@ -43,7 +43,6 @@ import java.util.List;
 
 import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
-
 public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
 
     public DashboardItemStore(IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper) {

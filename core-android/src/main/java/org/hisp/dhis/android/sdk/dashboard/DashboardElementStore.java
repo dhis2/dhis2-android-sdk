@@ -38,9 +38,10 @@ import org.hisp.dhis.android.sdk.flow.DashboardElement$Flow$Table;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardElementStore;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 import java.util.List;
+
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardElement, DashboardElement$Flow> implements IDashboardElementStore {
 
@@ -50,7 +51,7 @@ public class DashboardElementStore extends AbsIdentifiableObjectStore<DashboardE
 
     @Override
     public List<DashboardElement> queryByDashboardItem(DashboardItem dashboardItem) {
-        Preconditions.isNull(dashboardItem, "dashboard item must not be null");
+        isNull(dashboardItem, "dashboard item must not be null");
 
         List<DashboardElement$Flow> elementFlows = new Select()
                 .from(DashboardElement$Flow.class)

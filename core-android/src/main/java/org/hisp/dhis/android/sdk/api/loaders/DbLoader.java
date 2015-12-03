@@ -31,10 +31,10 @@ package org.hisp.dhis.android.sdk.api.loaders;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class DbLoader<T> extends AsyncTaskLoader<T> {
     // Model Classes which we want to observe
@@ -50,8 +50,8 @@ public class DbLoader<T> extends AsyncTaskLoader<T> {
     public DbLoader(Context context, List<TrackedTable> trackedTables, Query<T> query) {
         super(context);
 
-        mTrackedTables = Preconditions.isNull(trackedTables, "List of tables to track");
-        mQuery = Preconditions.isNull(query, "Query object must not be null");
+        mTrackedTables = isNull(trackedTables, "List of tables to track");
+        mQuery = isNull(query, "Query object must not be null");
     }
 
     private void registerObservers() {

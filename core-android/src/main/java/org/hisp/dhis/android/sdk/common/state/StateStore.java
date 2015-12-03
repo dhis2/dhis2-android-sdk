@@ -70,11 +70,12 @@ import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class StateStore extends AbsStore<State, State$Flow> implements IStateStore {
     private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;
@@ -99,7 +100,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> boolean insertActionForModel(T object, Action action) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State state = new State();
         state.setItemId(object.getId());
@@ -111,7 +112,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> boolean updateActionForModel(T object, Action action) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State state = new State();
         state.setItemId(object.getId());
@@ -123,7 +124,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> boolean saveActionForModel(T object, Action action) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State state = new State();
         state.setItemId(object.getId());
@@ -135,7 +136,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> boolean deleteActionForModel(T object) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State state = queryStateForModel(object);
         return state != null && delete(state);
@@ -143,7 +144,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> State queryStateForModel(T object) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State$Flow stateFlow = new Select()
                 .from(State$Flow.class)
@@ -158,7 +159,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> Action queryActionForModel(T object) {
-        Preconditions.isNull(object, "State object must not be null");
+        isNull(object, "State object must not be null");
 
         State state = queryStateForModel(object);
         if (state == null) {

@@ -53,7 +53,8 @@ import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.user.User;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
+
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 public class ModelChangeObserver implements FlowContentObserver.OnModelStateChangedListener {
     private static final String TAG = ModelChangeObserver.class.getSimpleName();
@@ -63,8 +64,8 @@ public class ModelChangeObserver implements FlowContentObserver.OnModelStateChan
     private final FlowContentObserver mObserver;
 
     public ModelChangeObserver(TrackedTable trackedTable, DbLoader<?> loader) {
-        mTrackedTable = Preconditions.isNull(trackedTable, "TrackedTable object must not be null");
-        mLoader = Preconditions.isNull(loader, "DbLoader must not be null");
+        mTrackedTable = isNull(trackedTable, "TrackedTable object must not be null");
+        mLoader = isNull(loader, "DbLoader must not be null");
         mObserver = new FlowContentObserver();
     }
 

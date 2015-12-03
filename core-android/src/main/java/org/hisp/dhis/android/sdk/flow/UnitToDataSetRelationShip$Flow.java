@@ -40,8 +40,8 @@ import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
-import org.hisp.dhis.java.sdk.models.utils.Preconditions;
 
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = UnitToDataSetRelationShip$Flow.UNIQUE_ORGUNIT_DATASET_GROUP, uniqueConflict = ConflictAction.FAIL)
@@ -78,11 +78,11 @@ public final class UnitToDataSetRelationShip$Flow extends BaseModel {
     }
 
     public void setOrganisationUnit(OrganisationUnit$Flow unit) {
-        this.organisationUnit = Preconditions.isNull(unit, "OrganisationUnit object must not be null");
+        this.organisationUnit = isNull(unit, "OrganisationUnit object must not be null");
     }
 
     public void setDataSet(DataSet$Flow dataSet) {
-        this.dataSet = Preconditions.isNull(dataSet, "DataSet object must not be null");
+        this.dataSet = isNull(dataSet, "DataSet object must not be null");
     }
 
     public OrganisationUnit$Flow getOrganisationUnit() {

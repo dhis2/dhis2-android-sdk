@@ -31,9 +31,12 @@ package org.hisp.dhis.android.sdk.event;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsDataStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.flow.Event$Flow$Table;
-import org.hisp.dhis.android.sdk.flow.TrackedEntityDataValue$Flow;
+import org.hisp.dhis.java.sdk.common.IStateStore;
+
 import org.hisp.dhis.java.sdk.event.IEventStore;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.java.sdk.models.event.Event;
@@ -44,94 +47,21 @@ import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityDataValueStore;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class EventStore implements IEventStore {
+public final class EventStore extends AbsDataStore<Event, Event$Flow> implements IEventStore {
 
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
 
-    public EventStore(ITrackedEntityDataValueStore trackedEntityDataValueStore) {
+    public EventStore(IMapper<Event, Event$Flow> mapper, IStateStore stateStore,
+                      ITrackedEntityDataValueStore trackedEntityDataValueStore) {
+        super(mapper, stateStore);
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
     }
 
-    @Override
-    public boolean insert(Event object) {
-        Event$Flow eventFlow =
-                Event$Flow.fromModel(object);
-        eventFlow.insert();
-        return true;
-    }
-
-    @Override
-    public boolean update(Event object) {
-        //making sure uid is not overwritten with blank value in case uid was updated from server while event was loaded in memory
-        if (object.getUId() == null || object.getUId().isEmpty()) {
-            Event$Flow persisted = new Select()
-                    .from(Event$Flow.class)
-                    .where(Condition.column(Event$Flow$Table
-                            .ID).is(object.getId()))
-                    .querySingle();
-            if (persisted != null) {
-                object.setUId(persisted.getEventUid());
-            }
-        }
-        Event$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(Event object) {
-        //making sure uid is not overwritten with blank value in case uid was updated from
-        // server while event was loaded in memory
-        if (object.getUId() == null || object.getUId().isEmpty()) {
-            Event$Flow persisted = new Select()
-                    .from(Event$Flow.class)
-                    .where(Condition.column(Event$Flow$Table
-                            .ID).is(object.getId()))
-                    .querySingle();
-            if (persisted != null) {
-                object.setUId(persisted.getEventUid());
-            }
-        }
-        Event$Flow.fromModel(object).update();
-        Event$Flow eventFlow =
-                Event$Flow.fromModel(object);
-        eventFlow.save();
-        return true;
-    }
-
-    @Override
-    public boolean delete(Event object) {
-        Event$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<Event> queryAll() {
-        List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class)
-                .queryList();
-        for (Event$Flow eventFlow : eventFlows) {
-            setTrackedEntityDataValues(eventFlow);
-        }
-        return Event$Flow.toModels(eventFlows);
-    }
-
-    @Override
-    public Event queryById(long id) {
-        Event$Flow eventFlow = new Select()
-                .from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table.ID).is(id))
-                .querySingle();
-        setTrackedEntityDataValues(eventFlow);
-        return Event$Flow.toModel(eventFlow);
-    }
-
-    @Override
     public Event queryByUid(String uid) {
         Event$Flow eventFlow = new Select()
                 .from(Event$Flow.class)
                 .where(Condition.column(Event$Flow$Table.EVENTUID).is(uid))
                 .querySingle();
-        setTrackedEntityDataValues(eventFlow);
         return Event$Flow.toModel(eventFlow);
     }
 
@@ -141,9 +71,6 @@ public final class EventStore implements IEventStore {
                 .from(Event$Flow.class)
                 .where(Condition.column(Event$Flow$Table
                         .ENROLLMENT_ENROLLMENT).is(enrollment)).queryList();
-        for (Event$Flow eventFlow : eventFlows) {
-            setTrackedEntityDataValues(eventFlow);
-        }
         return Event$Flow.toModels(eventFlows);
     }
 
@@ -158,17 +85,6 @@ public final class EventStore implements IEventStore {
                         .ORGANISATIONUNITID).is(organisationUnit.getUId()))
                 .and(Condition.column(Event$Flow$Table
                         .PROGRAMID).is(program.getUId())).queryList();
-        for (Event$Flow eventFlow : eventFlows) {
-            setTrackedEntityDataValues(eventFlow);
-        }
         return Event$Flow.toModels(eventFlows);
-    }
-
-    private void setTrackedEntityDataValues(Event$Flow eventFlow) {
-        if (eventFlow == null) {
-            return;
-        }
-        eventFlow.setTrackedEntityDataValues(TrackedEntityDataValue$Flow
-                .fromModels(trackedEntityDataValueStore.query(Event$Flow.toModel(eventFlow))));
     }
 }

@@ -31,9 +31,10 @@ package org.hisp.dhis.android.sdk.organisationunit;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.UnitToDataSetRelationShip$Flow;
 import org.hisp.dhis.android.sdk.flow.UnitToDataSetRelationShip$Flow$Table;
 import org.hisp.dhis.java.sdk.models.dataset.DataSet;
@@ -43,68 +44,10 @@ import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class OrganisationUnitStore implements IOrganisationUnitStore {
+public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<OrganisationUnit, OrganisationUnit$Flow> implements IOrganisationUnitStore {
 
-    public OrganisationUnitStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(OrganisationUnit object) {
-        OrganisationUnit$Flow organisationUnitFlow
-                = OrganisationUnit$Flow.fromModel(object);
-        organisationUnitFlow.insert();
-
-        object.setId(organisationUnitFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(OrganisationUnit object) {
-        OrganisationUnit$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(OrganisationUnit object) {
-        OrganisationUnit$Flow organisationUnitFlow
-                = OrganisationUnit$Flow.fromModel(object);
-        organisationUnitFlow.save();
-
-        object.setId(organisationUnitFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(OrganisationUnit object) {
-        OrganisationUnit$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<OrganisationUnit> queryAll() {
-        List<OrganisationUnit$Flow> organisationUnitFlow = new Select()
-                .from(OrganisationUnit$Flow.class)
-                .queryList();
-        return OrganisationUnit$Flow.toModels(organisationUnitFlow);
-    }
-
-    @Override
-    public OrganisationUnit queryById(long id) {
-        OrganisationUnit$Flow organisationUnitFlow = new Select()
-                .from(OrganisationUnit$Flow.class)
-                .where(Condition.column(OrganisationUnit$Flow$Table.ID).is(id))
-                .querySingle();
-        return OrganisationUnit$Flow.toModel(organisationUnitFlow);
-    }
-
-    @Override
-    public OrganisationUnit queryByUid(String uid) {
-        OrganisationUnit$Flow organisationUnitFlow = new Select()
-                .from(OrganisationUnit$Flow.class)
-                .where(Condition.column(OrganisationUnit$Flow$Table.UID).is(uid))
-                .querySingle();
-        return OrganisationUnit$Flow.toModel(organisationUnitFlow);
+    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnit$Flow> mapper) {
+        super(mapper);
     }
 
     @Override

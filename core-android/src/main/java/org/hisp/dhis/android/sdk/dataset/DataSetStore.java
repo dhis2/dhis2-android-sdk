@@ -31,6 +31,8 @@ package org.hisp.dhis.android.sdk.dataset;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.DataSet$Flow;
 import org.hisp.dhis.android.sdk.flow.DataSet$Flow$Table;
 import org.hisp.dhis.android.sdk.flow.OrganisationUnit$Flow;
@@ -43,7 +45,11 @@ import org.hisp.dhis.android.sdk.flow.UnitToDataSetRelationShip$Flow;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DataSetStore implements IDataSetStore {
+public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSet$Flow> implements IDataSetStore {
+
+    public DataSetStore(IMapper<DataSet, DataSet$Flow> mapper) {
+        super(mapper);
+    }
 
     @Override
     public List<OrganisationUnit> query(DataSet dataSet) {
@@ -60,63 +66,5 @@ public final class DataSetStore implements IDataSetStore {
         }
 
         return organisationUnits;
-    }
-
-    @Override
-    public DataSet queryById(long id) {
-        DataSet$Flow dataSetFlow = new Select()
-                .from(DataSet$Flow.class)
-                .where(Condition.column(DataSet$Flow$Table.ID).is(id))
-                .querySingle();
-        return DataSet$Flow.toModel(dataSetFlow);
-    }
-
-    @Override
-    public DataSet queryByUid(String uid) {
-        DataSet$Flow dataSetFlow = new Select()
-                .from(DataSet$Flow.class)
-                .where(Condition.column(DataSet$Flow$Table.UID).is(uid))
-                .querySingle();
-        return DataSet$Flow.toModel(dataSetFlow);
-    }
-
-    @Override
-    public List<DataSet> queryAll() {
-        List<DataSet$Flow> dataSetFlows = new Select()
-                .from(DataSet$Flow.class).queryList();
-        return DataSet$Flow.toModels(dataSetFlows);
-    }
-
-    @Override
-    public boolean insert(DataSet object) {
-        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
-        dataSetFlow.insert();
-
-        object.setId(dataSetFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(DataSet object) {
-        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
-        dataSetFlow.update();
-
-        return true;
-    }
-
-    @Override
-    public boolean save(DataSet object) {
-        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
-        dataSetFlow.save();
-
-        object.setId(dataSetFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(DataSet object) {
-        DataSet$Flow dataSetFlow = DataSet$Flow.fromModel(object);
-        dataSetFlow.delete();
-        return true;
     }
 }

@@ -28,76 +28,15 @@
 
 package org.hisp.dhis.android.sdk.dataelement;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.android.sdk.flow.DataElement$Flow$Table;
+import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.android.sdk.flow.DataElement$Flow;
 
-import java.util.List;
+public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElement$Flow> implements IIdentifiableObjectStore<DataElement> {
 
-public final class DataElementStore implements IIdentifiableObjectStore<DataElement> {
-
-    public DataElementStore() {
-        //empty constructor
-    }
-
-    @Override
-    public boolean insert(DataElement object) {
-        DataElement$Flow dataElementFlow = DataElement$Flow.fromModel(object);
-        dataElementFlow.insert();
-
-        object.setId(dataElementFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean update(DataElement object) {
-        DataElement$Flow.fromModel(object).update();
-        return true;
-    }
-
-    @Override
-    public boolean save(DataElement object) {
-        DataElement$Flow dataElementFlow =
-                DataElement$Flow.fromModel(object);
-        dataElementFlow.save();
-
-        object.setId(dataElementFlow.getId());
-        return true;
-    }
-
-    @Override
-    public boolean delete(DataElement object) {
-        DataElement$Flow.fromModel(object).delete();
-        return true;
-    }
-
-    @Override
-    public List<DataElement> queryAll() {
-        List<DataElement$Flow> dataElementFlows = new Select()
-                .from(DataElement$Flow.class)
-                .queryList();
-        return DataElement$Flow.toModels(dataElementFlows);
-    }
-
-    @Override
-    public DataElement queryById(long id) {
-        DataElement$Flow dataElementFlow = new Select()
-                .from(DataElement$Flow.class)
-                .where(Condition.column(DataElement$Flow$Table.ID).is(id))
-                .querySingle();
-        return DataElement$Flow.toModel(dataElementFlow);
-    }
-
-    @Override
-    public DataElement queryByUid(String uid) {
-        DataElement$Flow dataElementFlow = new Select()
-                .from(DataElement$Flow.class)
-                .where(Condition.column(DataElement$Flow$Table.UID).is(uid))
-                .querySingle();
-        return DataElement$Flow.toModel(dataElementFlow);
+    public DataElementStore(IMapper<DataElement, DataElement$Flow> mapper) {
+        super(mapper);
     }
 }

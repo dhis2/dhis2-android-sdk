@@ -64,39 +64,39 @@ import org.hisp.dhis.android.sdk.trackedentity.TrackedEntityInstanceStore;
 import org.hisp.dhis.android.sdk.trackedentity.TrackedEntityStore;
 import org.hisp.dhis.android.sdk.user.UserAccountStore;
 import org.hisp.dhis.android.sdk.user.UserStore;
+import org.hisp.dhis.java.sdk.common.IFailedItemStore;
+import org.hisp.dhis.java.sdk.common.IModelsStore;
+import org.hisp.dhis.java.sdk.common.IStateStore;
+import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardElementStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardItemStore;
 import org.hisp.dhis.java.sdk.dashboard.IDashboardStore;
-import org.hisp.dhis.java.sdk.interpretation.IInterpretationCommentStore;
-import org.hisp.dhis.java.sdk.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.java.sdk.common.IModelsStore;
-import org.hisp.dhis.java.sdk.models.constant.Constant;
-import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.dataset.IDataSetStore;
 import org.hisp.dhis.java.sdk.enrollment.IEnrollmentStore;
 import org.hisp.dhis.java.sdk.event.IEventStore;
-import org.hisp.dhis.java.sdk.common.IFailedItemStore;
+import org.hisp.dhis.java.sdk.interpretation.IInterpretationCommentStore;
+import org.hisp.dhis.java.sdk.interpretation.IInterpretationElementStore;
+import org.hisp.dhis.java.sdk.models.constant.Constant;
+import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
+import org.hisp.dhis.java.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.java.sdk.models.interpretation.Interpretation;
-import org.hisp.dhis.java.sdk.optionset.IOptionStore;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.java.sdk.organisationunit.IOrganisationUnitStore;
-import org.hisp.dhis.java.sdk.program.IProgramStore;
-import org.hisp.dhis.java.sdk.program.IProgramIndicatorStore;
-import org.hisp.dhis.java.sdk.program.IProgramRuleStore;
-import org.hisp.dhis.java.sdk.program.IProgramRuleActionStore;
-import org.hisp.dhis.java.sdk.program.IProgramRuleVariableStore;
-import org.hisp.dhis.java.sdk.program.IProgramStageStore;
-import org.hisp.dhis.java.sdk.program.IProgramStageDataElementStore;
-import org.hisp.dhis.java.sdk.program.IProgramStageSectionStore;
-import org.hisp.dhis.java.sdk.program.IProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
 import org.hisp.dhis.java.sdk.models.relationship.RelationshipType;
-import org.hisp.dhis.java.sdk.common.IStateStore;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.java.sdk.optionset.IOptionStore;
+import org.hisp.dhis.java.sdk.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.java.sdk.program.IProgramIndicatorStore;
+import org.hisp.dhis.java.sdk.program.IProgramRuleActionStore;
+import org.hisp.dhis.java.sdk.program.IProgramRuleStore;
+import org.hisp.dhis.java.sdk.program.IProgramRuleVariableStore;
+import org.hisp.dhis.java.sdk.program.IProgramStageDataElementStore;
+import org.hisp.dhis.java.sdk.program.IProgramStageSectionStore;
+import org.hisp.dhis.java.sdk.program.IProgramStageStore;
+import org.hisp.dhis.java.sdk.program.IProgramStore;
+import org.hisp.dhis.java.sdk.program.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.java.sdk.relationship.IRelationshipStore;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityInstanceStore;
@@ -160,23 +160,23 @@ public final class Models {
     public Models(Context context) {
         FlowManager.init(context);
 
-        stateStore = new StateStore(null, null, null, null, eventMapper, enrollmentMapper, trackedEntityInstanceMapper);
+        stateStore = new StateStore(null, null, null, null, null, null, null);
         failedItemStore = new FailedItemStore();
         modelsStore = new ModelsStore();
 
-        relationshipStore = new RelationshipStore();
-        relationshipTypeStore = new RelationshipTypeStore();
+        relationshipStore = new RelationshipStore(null, null);
+        relationshipTypeStore = new RelationshipTypeStore(null);
 
-        optionStore = new OptionStore();
-        optionSetStore = new OptionSetStore(optionStore, null);
+        optionStore = new OptionStore(null);
+        optionSetStore = new OptionSetStore(null, null);
 
-        organisationUnitStore = new OrganisationUnitStore();
-        dataSetStore = new DataSetStore();
-        dataElementStore = new DataElementStore();
-        constantStore = new ConstantStore();
+        organisationUnitStore = new OrganisationUnitStore(null);
+        dataSetStore = new DataSetStore(null, null);
+        dataElementStore = new DataElementStore(null);
+        constantStore = new ConstantStore(null);
 
-        userAccountStore = new UserAccountStore();
-        userStore = new UserStore();
+        userAccountStore = new UserAccountStore(null);
+        userStore = new UserStore(null);
 
 
         /////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,6 @@ public final class Models {
         // dashboardItemContentStore = new DashboardContentStore();
 
 
-
         /////////////////////////////////////////////////////////////////////////////////////
         // Interpretation stores.
         /////////////////////////////////////////////////////////////////////////////////////
@@ -199,40 +198,38 @@ public final class Models {
         interpretationElementStore = new InterpretationElementStore();
 
 
-
         /////////////////////////////////////////////////////////////////////////////////////
         // Program stores.
         /////////////////////////////////////////////////////////////////////////////////////
 
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore();
-        programStageDataElementStore = new ProgramStageDataElementStore();
-        programIndicatorStore = new ProgramIndicatorStore();
-        programStageSectionStore = new ProgramStageSectionStore(programStageDataElementStore);
-        programStageStore = new ProgramStageStore(programStageDataElementStore, programStageSectionStore);
-        programStore = new ProgramStore(programStageStore, programTrackedEntityAttributeStore, null);
-        programRuleActionStore = new ProgramRuleActionStore();
-        programRuleStore = new ProgramRuleStore(programRuleActionStore);
-        programRuleVariableStore = new ProgramRuleVariableStore();
-
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore(null);
+        programStageDataElementStore = new ProgramStageDataElementStore(null);
+        programIndicatorStore = new ProgramIndicatorStore(null);
+        programStageSectionStore = new ProgramStageSectionStore(null);
+        programStageStore = new ProgramStageStore(null);
+        programStore = new ProgramStore(null, null, null);
+        programRuleActionStore = new ProgramRuleActionStore(null);
+        programRuleStore = new ProgramRuleStore(null, null, null);
+        programRuleVariableStore = new ProgramRuleVariableStore(null);
 
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Tracker meta-data stores.
         /////////////////////////////////////////////////////////////////////////////////////
 
-        trackedEntityStore = new TrackedEntityStore();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(programStore);
-        trackedEntityInstanceStore = new TrackedEntityInstanceStore(relationshipStore, trackedEntityAttributeValueStore);
-        trackedEntityDataValueStore = new TrackedEntityDataValueStore();
+        trackedEntityStore = new TrackedEntityStore(null);
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore(null);
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(null, null, null);
+        trackedEntityInstanceStore = new TrackedEntityInstanceStore(null, null);
+        trackedEntityDataValueStore = new TrackedEntityDataValueStore(null, null);
 
 
         /////////////////////////////////////////////////////////////////////////////////////
         // Tracker data stores.
         /////////////////////////////////////////////////////////////////////////////////////
 
-        eventStore = new EventStore(trackedEntityDataValueStore);
-        enrollmentStore = new EnrollmentStore(eventStore, trackedEntityAttributeValueStore);
+        eventStore = new EventStore(null, null);
+        enrollmentStore = new EnrollmentStore(null, null, null, null);
     }
 
     public static void init(Context context) {

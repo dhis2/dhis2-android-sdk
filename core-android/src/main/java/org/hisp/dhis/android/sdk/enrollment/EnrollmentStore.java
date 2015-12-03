@@ -96,4 +96,9 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
                         TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
         return getMapper().mapToModels(enrollmentFlows);
     }
+
+    @Override
+    public List<Enrollment> query(Program program, OrganisationUnit organisationUnit) {
+        return null;
+    }
 }

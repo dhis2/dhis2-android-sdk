@@ -105,7 +105,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         commentFlow.setText(comment.getText());
         commentFlow.setInterpretation(Interpretation$Flow
                 .fromModel(comment.getInterpretation()));
-        commentFlow.setUser(User$Flow.fromModel(comment.getUser()));
+        // commentFlow.setUser(User$Flow.fromModel(comment.getUser()));
         return commentFlow;
     }
 
@@ -125,7 +125,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
         comment.setText(commentFlow.getText());
         comment.setInterpretation(Interpretation$Flow
                 .toModel(commentFlow.getInterpretation()));
-        comment.setUser(User$Flow.toModel(commentFlow.getUser()));
+        // comment.setUser(User$Flow.toModel(commentFlow.getUser()));
         return comment;
     }
 

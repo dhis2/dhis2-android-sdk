@@ -34,14 +34,14 @@ import android.content.SharedPreferences;
 import org.hisp.dhis.java.sdk.common.network.UserCredentials;
 import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;
 
+import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
-import static org.hisp.dhis.java.sdk.utils.StringUtils.isEmpty;
 
 public class UserPreferences implements IUserPreferences {
     private static final String USER_CREDENTIALS = "preferences:userCredentials";
     private static final String USERNAME = "key:username";
     private static final String PASSWORD = "key:password";
-    private static final String IS_USER_SIGNED_IN = "key:isUserSignedIn";
+    private static final String USER_STATE = "key:userState";
 
     private final SharedPreferences mPrefs;
 
@@ -63,28 +63,23 @@ public class UserPreferences implements IUserPreferences {
     }
 
     @Override
-    public synchronized boolean invalidateUserCredentials() {
-        if (!isUserInvalidated()) {
-            UserCredentials userCredentials = get();
-            UserCredentials invalidatedUserCredentials
-                    = new UserCredentials(userCredentials.getUsername(), null);
-            save(invalidatedUserCredentials);
-            return true;
-        }
-
-        return false;
+    public boolean confirmUser() {
+        return hasUserCredentials() && setUserState(UserState.CONFIRMED);
     }
 
     @Override
-    public synchronized boolean isUserSignedIn() {
-        UserCredentials credentials = get();
-        return !isEmpty(credentials.getUsername()) && !isEmpty(credentials.getPassword());
+    public boolean isUserConfirmed() {
+        return hasUserCredentials() && UserState.CONFIRMED.equals(getUserState());
+    }
+
+    @Override
+    public synchronized boolean invalidateUser() {
+        return hasUserCredentials() && isUserConfirmed() && setUserState(UserState.INVALIDATED);
     }
 
     @Override
     public synchronized boolean isUserInvalidated() {
-        UserCredentials credentials = get();
-        return !isEmpty(credentials.getUsername()) && isEmpty(credentials.getPassword());
+        return hasUserCredentials() && UserState.INVALIDATED.equals(getUserState());
     }
 
     @Override
@@ -100,11 +95,33 @@ public class UserPreferences implements IUserPreferences {
         return new UserCredentials(username, password);
     }
 
+    private boolean hasUserCredentials() {
+        UserCredentials userCredentials = get();
+        return !isEmpty(userCredentials.getUsername()) && !isEmpty(userCredentials.getPassword());
+    }
+
+    private boolean setUserState(UserState userState) {
+        return putString(USER_STATE, userState.toString());
+    }
+
+    private UserState getUserState() {
+        String stateString = getString(USER_STATE, UserState.NO_USER.toString());
+        return UserState.valueOf(stateString);
+    }
+
     private boolean putString(String key, String value) {
         return mPrefs.edit().putString(key, value).commit();
     }
 
     private String getString(String key) {
         return mPrefs.getString(key, null);
+    }
+
+    private String getString(String key, String def) {
+        return mPrefs.getString(key, def);
+    }
+
+    private enum UserState {
+        NO_USER, CONFIRMED, INVALIDATED,
     }
 }

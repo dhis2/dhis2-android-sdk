@@ -11,10 +11,8 @@ import org.hisp.dhis.android.sdk.user.IUserAccountScope;
 import org.hisp.dhis.android.sdk.user.UserAccountScope;
 import org.hisp.dhis.java.sdk.common.controllers.ControllersModule;
 import org.hisp.dhis.java.sdk.common.controllers.IControllersModule;
-import org.hisp.dhis.java.sdk.common.network.ApiException;
 import org.hisp.dhis.java.sdk.common.network.Configuration;
 import org.hisp.dhis.java.sdk.common.network.INetworkModule;
-import org.hisp.dhis.java.sdk.common.network.UserCredentials;
 import org.hisp.dhis.java.sdk.common.persistence.IPersistenceModule;
 import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;
@@ -24,7 +22,6 @@ import org.hisp.dhis.java.sdk.models.user.UserAccount;
 import org.hisp.dhis.java.sdk.models.utils.IModelUtils;
 
 import rx.Observable;
-import rx.Subscriber;
 
 import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
@@ -46,7 +43,7 @@ public class D2 {
 
         mDashboardScope = new DashboardScope(servicesModule.getDashboardService(),
                 controllersModule.getDashboardController());
-        mUserAccountScope = new UserAccountScope(null);
+        mUserAccountScope = new UserAccountScope(null, null);
 
         mUserPreferences = preferencesModule.getUserPreferences();
     }
@@ -64,43 +61,11 @@ public class D2 {
     }
 
     public static Observable<UserAccount> signIn(final String username, final String password) {
-        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
-
-            @Override
-            public void call(Subscriber<? super UserAccount> subscriber) {
-                try {
-                    UserCredentials credentials = getInstance().mUserPreferences.get();
-                    if (credentials != null) {
-                        throw new IllegalArgumentException("User is already signed in");
-                    }
-
-                    UserCredentials userCredentials = new UserCredentials(username, password);
-                    getInstance().mUserPreferences.save(userCredentials);
-
-                    UserAccount userAccount = getInstance().mUserAccountScope.signIn();
-                    subscriber.onNext(userAccount);
-                } catch (Throwable throwable) {
-                    if (throwable instanceof ApiException) {
-                        ApiException apiException = (ApiException) throwable;
-                        if (ApiException.Kind.HTTP.equals(apiException.getKind())) {
-                            getInstance().mUserPreferences.clear();
-                        }
-                    }
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
+        return getInstance().mUserAccountScope.signIn(username, password);
     }
 
     public static Observable<Boolean> signOut() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-
-            }
-        });
+        return getInstance().mUserAccountScope.signOut();
     }
 
     public static DashboardScope dashboards() {

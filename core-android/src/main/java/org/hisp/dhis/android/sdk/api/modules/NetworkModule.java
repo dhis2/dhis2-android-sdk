@@ -141,8 +141,7 @@ public class NetworkModule implements INetworkModule {
         @Override
         public Response intercept(Chain chain) throws IOException {
             UserCredentials userCredentials = mUserPreferences.get();
-            if (isEmpty(userCredentials.getUsername())
-                    || isEmpty(userCredentials.getPassword())) {
+            if (isEmpty(userCredentials.getUsername()) || isEmpty(userCredentials.getPassword())) {
                 return chain.proceed(chain.request());
             }
 
@@ -155,7 +154,17 @@ public class NetworkModule implements INetworkModule {
 
             Response response = chain.proceed(request);
             if (!response.isSuccessful() && response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                mUserPreferences.invalidateUserCredentials();
+                if (mUserPreferences.isUserConfirmed()) {
+                    // invalidate existing user
+                    mUserPreferences.invalidateUser();
+                } else {
+                    // remove username/password
+                    mUserPreferences.clear();
+                }
+            } else {
+                if (!mUserPreferences.isUserConfirmed()) {
+                    mUserPreferences.confirmUser();
+                }
             }
             return response;
         }

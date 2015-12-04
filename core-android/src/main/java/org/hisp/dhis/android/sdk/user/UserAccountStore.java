@@ -28,18 +28,11 @@
 
 package org.hisp.dhis.android.sdk.user;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
 import org.hisp.dhis.android.sdk.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.android.sdk.common.base.IMapper;
-import org.hisp.dhis.android.sdk.flow.User$Flow;
 import org.hisp.dhis.android.sdk.flow.UserAccount$Flow;
-import org.hisp.dhis.android.sdk.flow.UserAccount$Flow$Table;
-import org.hisp.dhis.java.sdk.user.IUserAccountStore;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
-
-import java.util.List;
+import org.hisp.dhis.java.sdk.user.IUserAccountStore;
 
 public final class UserAccountStore extends AbsIdentifiableObjectStore<UserAccount,
         UserAccount$Flow> implements IUserAccountStore {

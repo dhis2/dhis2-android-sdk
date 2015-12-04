@@ -34,7 +34,7 @@ import android.content.SharedPreferences;
 import org.hisp.dhis.java.sdk.common.network.UserCredentials;
 import org.hisp.dhis.java.sdk.common.preferences.IUserPreferences;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 import static org.hisp.dhis.java.sdk.utils.StringUtils.isEmpty;
 
 public class UserPreferences implements IUserPreferences {

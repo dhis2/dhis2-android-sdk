@@ -34,7 +34,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 
 public class DbLoader<T> extends AsyncTaskLoader<T> {
     // Model Classes which we want to observe

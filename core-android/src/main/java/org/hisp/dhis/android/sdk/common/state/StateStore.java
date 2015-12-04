@@ -75,7 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 
 public class StateStore extends AbsStore<State, State$Flow> implements IStateStore {
     private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;

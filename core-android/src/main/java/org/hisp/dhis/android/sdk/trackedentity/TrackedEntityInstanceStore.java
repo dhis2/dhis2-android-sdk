@@ -47,12 +47,7 @@ public final class TrackedEntityInstanceStore extends AbsDataStore<TrackedEntity
     }
 
     @Override
-    public TrackedEntityInstance query(long l) {
-        return null;
-    }
-
-    @Override
-    public TrackedEntityInstance query(String uid) {
+    public TrackedEntityInstance queryByUid(String uid) {
         TrackedEntityInstance$Flow trackedEntityInstanceFlow = new Select().from(TrackedEntityInstance$Flow
                 .class).where(Condition.column(TrackedEntityInstance$Flow$Table.TRACKEDENTITYINSTANCEUID).is(uid))
                 .querySingle();

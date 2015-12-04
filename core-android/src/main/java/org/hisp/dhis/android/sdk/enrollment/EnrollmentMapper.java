@@ -29,22 +29,23 @@
 package org.hisp.dhis.android.sdk.enrollment;
 
 import org.hisp.dhis.android.sdk.common.base.AbsMapper;
-import org.hisp.dhis.android.sdk.event.EventMapper;
+import org.hisp.dhis.android.sdk.common.base.IMapper;
 import org.hisp.dhis.android.sdk.flow.Enrollment$Flow;
 import org.hisp.dhis.android.sdk.flow.Event$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityAttributeValue$Flow;
 import org.hisp.dhis.android.sdk.flow.TrackedEntityInstance$Flow;
-import org.hisp.dhis.android.sdk.trackedentity.TrackedEntityAttributeValueMapper;
-import org.hisp.dhis.android.sdk.trackedentity.TrackedEntityInstanceMapper;
 import org.hisp.dhis.java.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.java.sdk.models.event.Event;
+import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
 
-    private final TrackedEntityInstanceMapper trackedEntityInstanceMapper;
-    private final EventMapper eventMapper;
-    private final TrackedEntityAttributeValueMapper trackedEntityAttributeValueMapper;
+    private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
+    private final IMapper<Event, Event$Flow> eventMapper;
+    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper;
 
-    public EnrollmentMapper(TrackedEntityInstanceMapper trackedEntityInstanceMapper, EventMapper eventMapper, TrackedEntityAttributeValueMapper trackedEntityAttributeValueMapper) {
+    public EnrollmentMapper(IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper, IMapper<Event, Event$Flow> eventMapper, IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper) {
         this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
         this.eventMapper = eventMapper;
         this.trackedEntityAttributeValueMapper = trackedEntityAttributeValueMapper;

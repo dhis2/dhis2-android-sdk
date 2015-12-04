@@ -31,7 +31,7 @@ package org.hisp.dhis.android.sdk.common;
 import org.hisp.dhis.java.sdk.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.java.sdk.models.common.SystemInfo;
 
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.call;
+import static org.hisp.dhis.android.sdk.api.utils.NetworkUtils.call;
 
 public class SystemInfoApiClient implements ISystemInfoApiClient {
     private final SystemInfoApiClientRetrofit mClient;

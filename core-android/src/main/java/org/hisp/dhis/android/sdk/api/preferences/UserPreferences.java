@@ -41,12 +41,12 @@ public class UserPreferences implements IUserPreferences {
     private static final String USER_CREDENTIALS = "preferences:userCredentials";
     private static final String USERNAME = "key:username";
     private static final String PASSWORD = "key:password";
+    private static final String IS_USER_SIGNED_IN = "key:isUserSignedIn";
 
     private final SharedPreferences mPrefs;
 
     public UserPreferences(Context context) {
-        mPrefs = context.getSharedPreferences(USER_CREDENTIALS,
-                Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(USER_CREDENTIALS, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UserPreferences implements IUserPreferences {
     }
 
     @Override
-    public boolean invalidateUserCredentials() {
+    public synchronized boolean invalidateUserCredentials() {
         if (!isUserInvalidated()) {
             UserCredentials userCredentials = get();
             UserCredentials invalidatedUserCredentials

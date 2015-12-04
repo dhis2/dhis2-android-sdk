@@ -55,6 +55,7 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
 
     // Raizlabs libraries.
+    compile 'com.squareup.retrofit:converter-jackson:2.0.0-beta2'
     apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
     compile 'com.raizlabs.android:DBFlow-Core:2.2.1'
     compile 'com.raizlabs.android:DBFlow:2.2.1'

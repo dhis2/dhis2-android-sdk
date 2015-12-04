@@ -28,15 +28,20 @@
 
 package org.hisp.dhis.android.sdk.api.utils;
 
+import org.hisp.dhis.android.sdk.retrofit.ResponseMapper;
 import org.hisp.dhis.java.sdk.common.network.ApiException;
 import org.hisp.dhis.java.sdk.common.network.Header;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import retrofit.Call;
+import retrofit.Response;
 
 public class NetworkUtils {
     private NetworkUtils() {
@@ -144,6 +149,37 @@ public class NetworkUtils {
                 // for now, just rethrow exception.
                 throw apiException;
             }
+        }
+    }
+
+
+    public static <T> T call(Call<T> call) {
+        Response<T> response = null;
+        ApiException apiException = null;
+
+        try {
+            response = call.execute();
+        } catch (IOException ioException) {
+            apiException = ApiException.networkError(null, ioException);
+        }
+
+        if (apiException != null) {
+            throw apiException;
+        }
+
+        if (!response.isSuccess()) {
+            throw ApiException.httpError(response.raw().request().urlString(),
+                    ResponseMapper.fromOkResponse(response.raw()));
+        }
+
+        return response.body();
+    }
+
+    public static <T> List<T> unwrap(Map<String, List<T>> response, String key) {
+        if (response != null && response.containsKey(key) && response.get(key) != null) {
+            return response.get(key);
+        } else {
+            return new ArrayList<>();
         }
     }
 }

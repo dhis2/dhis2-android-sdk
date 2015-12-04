@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.sdk.modules;
+package org.hisp.dhis.android.sdk.api.modules;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +58,7 @@ import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.BaseUrl;
+import retrofit.JacksonConverterFactory;
 import retrofit.Retrofit;
 
 import static com.squareup.okhttp.Credentials.basic;
@@ -93,7 +94,7 @@ public class NetworkModule implements INetworkModule {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
                 .client(okHttpClient)
-//                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
         mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));

@@ -42,8 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.call;
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrap;
+import static org.hisp.dhis.android.sdk.common.NetworkUtils.call;
+import static org.hisp.dhis.android.sdk.common.NetworkUtils.unwrap;
 
 public class DashboardApiClient implements IDashboardApiClient {
     private final DashboardApiClientRetrofit dhisApi;

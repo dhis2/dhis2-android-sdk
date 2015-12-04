@@ -34,7 +34,7 @@ import org.hisp.dhis.java.sdk.models.user.UserAccount;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.utils.NetworkUtils.call;
+import static org.hisp.dhis.android.sdk.common.NetworkUtils.call;
 
 public class UserApiClient implements IUserApiClient {
     private final UserApiClientRetrofit mApiClient;

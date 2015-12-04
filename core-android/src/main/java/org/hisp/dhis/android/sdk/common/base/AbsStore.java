@@ -38,7 +38,7 @@ import org.hisp.dhis.java.sdk.models.common.base.IModel;
 
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
 
 
 public abstract class AbsStore<ModelType extends IModel, DatabaseEntityType extends Model & IModel> implements IStore<ModelType> {

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.sdk.user;
 
-import org.hisp.dhis.java.sdk.user.IUserApiClient;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
+import org.hisp.dhis.java.sdk.user.IUserApiClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hisp.dhis.android.sdk.common.NetworkUtils.call;
+import static org.hisp.dhis.android.sdk.api.utils.NetworkUtils.call;
 
 public class UserApiClient implements IUserApiClient {
     private final UserApiClientRetrofit mApiClient;

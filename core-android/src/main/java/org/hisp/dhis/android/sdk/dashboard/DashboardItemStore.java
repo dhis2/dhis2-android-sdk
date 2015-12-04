@@ -41,7 +41,8 @@ import org.hisp.dhis.java.sdk.models.dashboard.DashboardItem;
 
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+
 
 public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
 

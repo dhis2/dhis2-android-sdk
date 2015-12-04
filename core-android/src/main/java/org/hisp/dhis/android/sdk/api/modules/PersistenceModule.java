@@ -375,4 +375,154 @@ public class PersistenceModule implements IPersistenceModule {
     public IDashboardItemContentStore getDashboardContentStore() {
         return dashboardItemContentStore;
     }
+
+    @Override
+    public IIdentifiableObjectStore<Constant> getConstantStore() {
+        return constantStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<DataElement> getDataElementStore() {
+        return dataElementStore;
+    }
+
+    @Override
+    public IOptionStore getOptionStore() {
+        return optionStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<OptionSet> getOptionSetStore() {
+        return optionSetStore;
+    }
+
+    @Override
+    public IOrganisationUnitStore getOrganisationUnitStore() {
+        return organisationUnitStore;
+    }
+
+    @Override
+    public IProgramStore getProgramStore() {
+        return programStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<TrackedEntity> getTrackedEntityStore() {
+        return trackedEntityStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<TrackedEntityAttribute> getTrackedEntityAttributeStore() {
+        return trackedEntityAttributeStore;
+    }
+
+    @Override
+    public IProgramTrackedEntityAttributeStore getProgramTrackedEntityAttributeStore() {
+        return programTrackedEntityAttributeStore;
+    }
+
+    @Override
+    public IProgramStageDataElementStore getProgramStageDataElementStore() {
+        return programStageDataElementStore;
+    }
+
+    @Override
+    public IProgramIndicatorStore getProgramIndicatorStore() {
+        return programIndicatorStore;
+    }
+
+    @Override
+    public IProgramStageSectionStore getProgramStageSectionStore() {
+        return programStageSectionStore;
+    }
+
+    @Override
+    public IProgramStageStore getProgramStageStore() {
+        return programStageStore;
+    }
+
+    @Override
+    public IProgramRuleStore getProgramRuleStore() {
+        return programRuleStore;
+    }
+
+    @Override
+    public IProgramRuleActionStore getProgramRuleActionStore() {
+        return programRuleActionStore;
+    }
+
+    @Override
+    public IProgramRuleVariableStore getProgramRuleVariableStore() {
+        return programRuleVariableStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<RelationshipType> getRelationshipTypeStore() {
+        return relationshipTypeStore;
+    }
+
+    @Override
+    public IDataSetStore getDataStore() {
+        return dataSetStore;
+    }
+
+    @Override
+    public ITrackedEntityAttributeValueStore getTrackedEntityAttributeValueStore() {
+        return trackedEntityAttributeValueStore;
+    }
+
+    @Override
+    public IRelationshipStore getRelationshipStore() {
+        return relationshipStore;
+    }
+
+    @Override
+    public ITrackedEntityInstanceStore getTrackedEntityInstanceStore() {
+        return trackedEntityInstanceStore;
+    }
+
+    @Override
+    public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
+        return trackedEntityDataValueStore;
+    }
+
+    @Override
+    public IEventStore getEventStore() {
+        return eventStore;
+    }
+
+    @Override
+    public IEnrollmentStore getEnrollmentStore() {
+        return enrollmentStore;
+    }
+
+    @Override
+    public IIdentifiableObjectStore<Interpretation> getInterpretationStore() {
+        return interpretationStore;
+    }
+
+    @Override
+    public IInterpretationCommentStore getInterpretationCommentStore() {
+        return interpretationCommentStore;
+    }
+
+    @Override
+    public IInterpretationElementStore getInterpretationElementStore() {
+        return interpretationElementStore;
+    }
+
+    @Override
+    public IUserAccountStore getUserAccountStore() {
+        return userAccountStore;
+    }
+
+    @Override
+    public IUserStore getUserStore() {
+        return userStore;
+    }
+
+    @Override
+    public IFailedItemStore getFailedItemStore() {
+        return failedItemStore;
+    }
 }

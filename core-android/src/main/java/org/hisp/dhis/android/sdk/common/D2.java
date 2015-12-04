@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.sdk.common;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import org.hisp.dhis.android.sdk.api.modules.NetworkModule;
 import org.hisp.dhis.android.sdk.api.modules.PersistenceModule;
@@ -44,7 +45,6 @@ public class D2 {
         mDashboardScope = new DashboardScope(servicesModule.getDashboardService(),
                 controllersModule.getDashboardController());
         mUserAccountScope = new UserAccountScope(null, null);
-
         mUserPreferences = preferencesModule.getUserPreferences();
     }
 
@@ -60,7 +60,7 @@ public class D2 {
         return mD2;
     }
 
-    public static Observable<UserAccount> signIn(final String username, final String password) {
+    public static Observable<UserAccount> signIn(String username, String password) {
         return getInstance().mUserAccountScope.signIn(username, password);
     }
 
@@ -68,8 +68,8 @@ public class D2 {
         return getInstance().mUserAccountScope.signOut();
     }
 
-    public static DashboardScope dashboards() {
-
-        return null;
+    @NonNull
+    public static IDashboardScope dashboards() {
+        return getInstance().mDashboardScope;
     }
 }

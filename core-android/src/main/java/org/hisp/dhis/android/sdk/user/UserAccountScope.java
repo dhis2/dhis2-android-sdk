@@ -20,6 +20,7 @@ public class UserAccountScope implements IUserAccountScope {
     @Override
     public Observable<UserAccount> signIn(final String username, final String password) {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
+
             @Override
             public void call(Subscriber<? super UserAccount> subscriber) {
                 try {
@@ -44,6 +45,7 @@ public class UserAccountScope implements IUserAccountScope {
     @Override
     public Observable<Boolean> signOut() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
+
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {

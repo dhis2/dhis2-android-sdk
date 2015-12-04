@@ -33,12 +33,12 @@ import org.hisp.dhis.java.sdk.common.persistence.AbsTransactionManager;
 import org.hisp.dhis.java.sdk.common.persistence.IDbOperation;
 import org.hisp.dhis.java.sdk.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.java.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.java.sdk.utils.IModelUtils;
 
 import java.util.Collection;
 import java.util.List;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 
 public class TransactionManager extends AbsTransactionManager {
 

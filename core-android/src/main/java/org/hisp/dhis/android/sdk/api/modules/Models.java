@@ -103,6 +103,7 @@ import org.hisp.dhis.java.sdk.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.java.sdk.user.IUserAccountStore;
 import org.hisp.dhis.java.sdk.user.IUserStore;
 
+@Deprecated
 public final class Models {
     private static Models models;
 

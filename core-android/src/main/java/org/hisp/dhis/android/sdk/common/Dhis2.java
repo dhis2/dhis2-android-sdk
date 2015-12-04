@@ -15,13 +15,13 @@ import org.hisp.dhis.java.sdk.common.preferences.IPreferencesModule;
 import org.hisp.dhis.java.sdk.common.services.IServicesModule;
 import org.hisp.dhis.java.sdk.common.services.ServicesModule;
 import org.hisp.dhis.java.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.java.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.java.sdk.utils.IModelUtils;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 
 public class Dhis2 {
     private static Dhis2 mDhis2;

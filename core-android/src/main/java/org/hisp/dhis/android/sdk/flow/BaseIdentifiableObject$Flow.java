@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.flow;
 import com.raizlabs.android.dbflow.annotation.Column;
 
 import org.hisp.dhis.java.sdk.models.common.Access;
-import org.hisp.dhis.java.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.java.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 

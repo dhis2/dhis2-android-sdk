@@ -53,7 +53,7 @@ import org.hisp.dhis.java.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.java.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityInstance;
 
-import static org.hisp.dhis.java.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.java.sdk.utils.Preconditions.isNull;
 
 public class StateMapper extends AbsMapper<State, State$Flow> implements IStateMapper {
 

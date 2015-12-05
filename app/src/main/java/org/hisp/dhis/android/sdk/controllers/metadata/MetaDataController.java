@@ -781,21 +781,31 @@ public final class MetaDataController extends ResourceController {
         Log.d(CLASS_TAG, "getAttributeValuesDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ATTRIBUTEVALUES);
-        Response response = dhisApi.getAttributeValues(getBasicQueryMap(lastUpdated));
 
-        List<DataElementAttributeValue> attributeValues;
-        try {
-            attributeValues = new AttributeValuesWrapper().deserialize(response);
-        } catch (ConversionException e) {
-            e.printStackTrace();
-            return; //todo: handle
-        } catch (IOException e) {
-            e.printStackTrace();
-            return; //todo: handle
+        AttributeValuesWrapper.PaginatedListDataElementAttributeValue paginatedListDataElementAttributeValue=null;
+        AttributeValuesWrapper attributeValuesWrapper = new AttributeValuesWrapper();
+
+        //Looping over server data pages
+        while(paginatedListDataElementAttributeValue==null || paginatedListDataElementAttributeValue.hasMorePages()){
+            Integer currentPage = (paginatedListDataElementAttributeValue==null)?1:paginatedListDataElementAttributeValue.getCurrentPage();
+            Log.d(CLASS_TAG, "getAttributeValuesDataFromServer page "+currentPage);
+            Response response = dhisApi.getAttributeValues(getBasicQueryMapWithPagination(lastUpdated, currentPage, 5));
+
+            try {
+                paginatedListDataElementAttributeValue = attributeValuesWrapper.deserialize(response);
+            }catch (Exception ex){
+                Log.e(CLASS_TAG, "Retrieving attributeValues " + ex.getLocalizedMessage());
+                throw  APIException.unexpectedError(ApiEndpointContainer.PROGRAMS,ex);
+            }
+
+            //Save data in chunks
+            List<DbOperation> operations = AttributeValuesWrapper.getOperations(paginatedListDataElementAttributeValue.getDataElementAttributeValues());
+            DbUtils.applyBatch(operations);
+
+            //Go next page
+            paginatedListDataElementAttributeValue.next();
         }
-        List<DbOperation> operations = AttributeValuesWrapper.getOperations(attributeValues);
 
-        DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.ATTRIBUTEVALUES, serverDateTime);
     }

@@ -241,7 +241,7 @@ public interface DhisApi {
     @GET("/" + ApiEndpointContainer.ATTRIBUTES + "/{attributeUid}")
     Attribute getAttribute(@Path("attributeUid") String attributeUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/" + ApiEndpointContainer.PROGRAMS + "?fields=programStages[programStageSections[programStageDataElements[dataElement[id,attributeValues[*,attribute[*]]]]]]&paging=false")
+    @GET("/" + ApiEndpointContainer.PROGRAMS + "?fields=programStages[programStageSections[programStageDataElements[dataElement[id,attributeValues[*,attribute[*]]]]]]&paging=true")
     Response getAttributeValues(@QueryMap Map<String, String> queryMap);
 
     /////////////////////////////////////////////////////////////////////////

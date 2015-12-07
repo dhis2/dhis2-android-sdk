@@ -76,11 +76,18 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         this.selectedTrackedEntityInstances = selectedTrackedEntityInstances;
     }
 
+    public List<TrackedEntityInstance> getData() {
+        return mObjects;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public int getCount() {
+        if(mObjects==null) {
+            return 0;
+        }
         return mObjects.size();
     }
 
@@ -134,7 +141,6 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
                 }
             }
 
-
             holder = new ViewHolder(views);
             view.setTag(holder);
         } else {
@@ -147,6 +153,7 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         if(trackedEntityInstance!=null) {
             holder.setData(trackedEntityInstance.getAttributes());
         }
+        view.setId(position);
         return view;
     }
 

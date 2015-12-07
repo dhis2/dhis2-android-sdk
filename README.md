@@ -12,4 +12,4 @@ However, briefly it can be said that the SDK includes:
 + Existing implementations for connection to DHIS 2 server for retrieving data and sending data.
 + Local persistence for offline support.
 
-The SDK requires functionality in the Web API added to trunk and is currently targeting the upcoming release of 2.21, so DHIS 2 versions 2.20 and lower will experience problems.
+The SDK requires functionality in the Web API added in the release of 2.21, so DHIS 2 versions 2.20 and lower will experience problems.

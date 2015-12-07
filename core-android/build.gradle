@@ -50,6 +50,9 @@ android {
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
 
+    // Android support libraries
+    compile 'com.android.support:support-annotations:23.1.1'
+
     // square libraries
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'

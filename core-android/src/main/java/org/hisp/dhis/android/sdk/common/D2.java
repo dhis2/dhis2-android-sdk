@@ -21,6 +21,7 @@ import org.hisp.dhis.java.sdk.common.services.IServicesModule;
 import org.hisp.dhis.java.sdk.common.services.ServicesModule;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 import org.hisp.dhis.java.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.java.sdk.models.utils.ModelUtils;
 
 import rx.Observable;
 
@@ -34,7 +35,9 @@ public class D2 {
     private final IUserAccountScope mUserAccountScope;
 
     private D2(Context context, Configuration configuration) {
-        IModelUtils modelUtils = null;
+        IModelUtils modelUtils = new ModelUtils();
+
+
         INetworkModule networkModule = new NetworkModule(null);
         IPersistenceModule persistenceModule = new PersistenceModule(context);
         IPreferencesModule preferencesModule = new PreferencesModule(context);
@@ -42,7 +45,8 @@ public class D2 {
         IControllersModule controllersModule = new ControllersModule(networkModule,
                 persistenceModule, preferencesModule, modelUtils);
 
-        mDashboardScope = new DashboardScope(servicesModule.getDashboardService(),
+        mDashboardScope = new DashboardScope(
+                servicesModule.getDashboardService(),
                 controllersModule.getDashboardController());
         mUserAccountScope = new UserAccountScope(null, null);
         mUserPreferences = preferencesModule.getUserPreferences();

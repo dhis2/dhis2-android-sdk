@@ -695,7 +695,7 @@ public final class MetaDataController extends ResourceController {
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                        "dataElement[*,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits)");
 

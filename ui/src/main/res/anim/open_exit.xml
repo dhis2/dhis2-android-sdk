@@ -28,16 +28,26 @@
   ~  */
   -->
 
-<resources>
-  <dimen name="activity_horizontal_margin">8dp</dimen>
-  <dimen name="activity_vertical_margin">4dp</dimen>
-  <dimen name="xsmall_text_size">14sp</dimen>
-  <dimen name="small_text_size">18sp</dimen>
-  <dimen name="medium_text_size">22sp</dimen>
-  <dimen name="large_text_size">24sp</dimen>
-  <dimen name="xlarge_text_size">26sp</dimen>
-  <dimen name="padding_default">16dp</dimen>
-  <dimen name="margin_default">16dp</dimen>
-
-  <integer name="activity_anim_duration">300</integer>
-</resources>
+<set
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:background="#ff000000" 
+    android:shareInterpolator="false" 
+    android:fillBefore="false" 
+    android:fillAfter="true" 
+    android:zAdjustment="normal" 
+    android:fillEnabled="true">
+    <alpha 
+        android:interpolator="@anim/decelerate_quint" 
+        android:duration="@integer/activity_anim_duration" 
+        android:fromAlpha="1.0" 
+        android:toAlpha="0.2" />
+    <scale 
+        android:interpolator="@anim/decelerate_quint" 
+        android:duration="@integer/activity_anim_duration" 
+        android:pivotX="50.0%p" 
+        android:pivotY="50.0%p" 
+        android:fromXScale="1.0" 
+        android:toXScale="0.9" 
+        android:fromYScale="1.0" 
+        android:toYScale="0.9" />
+</set>

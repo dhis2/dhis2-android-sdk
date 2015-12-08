@@ -8,6 +8,10 @@ import org.hisp.dhis.android.sdk.api.modules.PersistenceModule;
 import org.hisp.dhis.android.sdk.api.modules.PreferencesModule;
 import org.hisp.dhis.android.sdk.dashboard.DashboardScope;
 import org.hisp.dhis.android.sdk.dashboard.IDashboardScope;
+import org.hisp.dhis.android.sdk.organisationunit.IOrganisationUnitScope;
+import org.hisp.dhis.android.sdk.organisationunit.OrganisationUnitScope;
+import org.hisp.dhis.android.sdk.program.IProgramScope;
+import org.hisp.dhis.android.sdk.program.ProgramScope;
 import org.hisp.dhis.android.sdk.user.IUserAccountScope;
 import org.hisp.dhis.android.sdk.user.UserAccountScope;
 import org.hisp.dhis.java.sdk.common.controllers.ControllersModule;
@@ -33,6 +37,8 @@ public class D2 {
     private final IUserPreferences mUserPreferences;
     private final IDashboardScope mDashboardScope;
     private final IUserAccountScope mUserAccountScope;
+    private final IOrganisationUnitScope mOrganisationUnitScope;
+    private final IProgramScope mProgramScope;
 
     private D2(Context context, Configuration configuration) {
         IModelUtils modelUtils = new ModelUtils();
@@ -45,10 +51,12 @@ public class D2 {
         IControllersModule controllersModule = new ControllersModule(networkModule,
                 persistenceModule, preferencesModule, modelUtils);
 
+        mOrganisationUnitScope = new OrganisationUnitScope(null);
+        mProgramScope = new ProgramScope(null);
         mDashboardScope = new DashboardScope(
                 servicesModule.getDashboardService(),
                 controllersModule.getDashboardController());
-        mUserAccountScope = new UserAccountScope(null, null);
+        mUserAccountScope = new UserAccountScope(null, null, null);
         mUserPreferences = preferencesModule.getUserPreferences();
     }
 
@@ -75,5 +83,15 @@ public class D2 {
     @NonNull
     public static IDashboardScope dashboards() {
         return getInstance().mDashboardScope;
+    }
+
+    @NonNull
+    public static IOrganisationUnitScope organisationUnits() {
+        return getInstance().mOrganisationUnitScope;
+    }
+
+    @NonNull
+    public static IUserAccountScope currentUser() {
+        return getInstance().mUserAccountScope;
     }
 }

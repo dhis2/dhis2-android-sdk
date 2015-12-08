@@ -45,5 +45,4 @@
             <enum name="mini" value="1" />
         </attr>
     </declare-styleable>
-
 </resources>

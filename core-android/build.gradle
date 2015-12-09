@@ -26,46 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+def cfg = rootProject.ext.configuration
+def libs = rootProject.ext.libraries
+
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion cfg.compileSdkVersion
+    buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        applicationId cfg.package
+        minSdkVersion cfg.minSdkVersion
+        targetSdkVersion cfg.targetSdkVersion
+        versionCode cfg.versionCode
+        versionName cfg.versionName
     }
 
-    android {
-        lintOptions {
-            abortOnError false
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
+    // Local
+    compile fileTree(include: "*.jar", dir: "libs")
 
-    // Android support libraries
-    compile 'com.android.support:support-annotations:23.1.1'
+    // Google
+    compile "com.android.support:support-annotations:${libs.supportVersion}"
 
-    // square libraries
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    // Square
+    compile "com.squareup.okhttp:okhttp:${libs.okhttpVersion}"
+    compile "com.squareup.retrofit:retrofit:${libs.retrofitVersion}"
+    compile "com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}"
 
-    // Raizlabs libraries.
-    compile 'com.squareup.retrofit:converter-jackson:2.0.0-beta2'
-    apt 'com.raizlabs.android:DBFlow-Compiler:2.2.1'
-    compile 'com.raizlabs.android:DBFlow-Core:2.2.1'
-    compile 'com.raizlabs.android:DBFlow:2.2.1'
+    // ReactiveX
+    compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}"
 
-    // RxAndroid
-    compile 'io.reactivex:rxandroid:1.0.1'
+    // Raizlabs.
+    apt "com.raizlabs.android:DBFlow-Compiler:${libs.dbFlowVersion}"
+    compile "com.raizlabs.android:DBFlow-Core:${libs.dbFlowVersion}"
+    compile "com.raizlabs.android:DBFlow:${libs.dbFlowVersion}"
 
-    // testing dependencies
-    testCompile 'junit:junit:4.12'
+    // Test
+    testCompile "junit:junit:${libs.junitVersion}"
 }

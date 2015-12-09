@@ -76,10 +76,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         hideProgressBar(false);
         onTextChanged();
 
-        mServerUrl.setText("https://play.dhis2.org/demo");
-        mUsername.setText("android");
-        mPassword.setText("Android123");
-
         mLogInButton.setOnClickListener(new View.OnClickListener() {
 
             @Override

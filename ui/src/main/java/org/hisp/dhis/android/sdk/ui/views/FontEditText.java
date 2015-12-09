@@ -32,13 +32,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.widget.EditText;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
 
-public class FontEditText extends EditText {
+public class FontEditText extends AppCompatEditText {
 
     public FontEditText(Context context) {
         super(context);

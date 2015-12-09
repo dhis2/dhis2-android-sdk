@@ -32,13 +32,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
 
-public class FontTextView extends TextView {
+public class FontTextView extends AppCompatTextView {
 
     public FontTextView(Context context) {
         super(context);

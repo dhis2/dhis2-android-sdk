@@ -70,9 +70,14 @@ public class EventSaveThread extends AsyncHelperThread {
 
     protected void work() {
         if(this.dataEntryFragment!=null && this.event != null) {
+            if(event.getLocalId() < 0) {
+                saveEvent = true;
+            }
+
             while(saveEvent) {
                 saveEvent();
             }
+
             boolean invalidateEvent = false;
             while(!queuedDataValues.isEmpty()) {
                 saveDataValue();
@@ -113,11 +118,13 @@ public class EventSaveThread extends AsyncHelperThread {
         tempEvent.setLastUpdated(event.getLastUpdated());
         tempEvent.setAccess(event.getAccess());
         tempEvent.save();
+        event.setLocalId(tempEvent.getLocalId());
     }
 
     private void saveDataValue() {
         String dataElementDataValue = queuedDataValues.poll();
         DataValue dataValue = dataValues.get(dataElementDataValue);
+        dataValue.setLocalEventId(event.getLocalId());
         if(dataValue != null) {
             dataValue.save();
         }

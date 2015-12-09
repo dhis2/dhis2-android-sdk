@@ -209,7 +209,6 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                     event.setDueDate(dueDate.toString());
                 }
             }
-            event.save();
 
             List<DataValue> dataValues = new ArrayList<>();
             for (ProgramStageDataElement dataElement : programStage.getProgramStageDataElements()) {

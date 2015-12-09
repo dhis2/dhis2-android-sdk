@@ -32,11 +32,14 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 import org.hisp.dhis.android.sdk.ui.R;
 import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
+
+import static org.hisp.dhis.android.sdk.ui.utils.Preconditions.isNull;
 
 public class FontButton extends AppCompatButton {
 
@@ -62,13 +65,15 @@ public class FontButton extends AppCompatButton {
         }
     }
 
-    public void setFont(int resId) {
+    public void setFont(@StringRes int resId) {
         String name = getResources().getString(resId);
         setFont(name);
     }
 
     private void setFont(final String fontName) {
-        if (getContext() != null && getContext().getAssets() != null && fontName != null) {
+        isNull(fontName, "fontName must not be null");
+
+        if (getContext() != null && getContext().getAssets() != null) {
             Typeface typeface = TypefaceManager.getTypeface(getContext().getAssets(), fontName);
             if (typeface != null) {
                 setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);

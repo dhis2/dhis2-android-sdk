@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2015, University of Oslo
   ~
   ~ All rights reserved.
@@ -52,7 +53,7 @@
             android:src="@drawable/dhis2_logo" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/edittext_server_url"
+            android:id="@+id/edit_text_server_url"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
@@ -69,7 +70,7 @@
             app:font="@string/font_name_regular" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/edittext_username"
+            android:id="@+id/edit_text_username"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="1px"
@@ -86,7 +87,7 @@
             app:font="@string/font_name_regular" />
 
         <org.hisp.dhis.android.sdk.ui.views.FontEditText
-            android:id="@+id/edittext_password"
+            android:id="@+id/edit_text_password"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="8dp"

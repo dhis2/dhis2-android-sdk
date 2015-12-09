@@ -67,7 +67,7 @@
                 android:orientation="vertical">
 
                 <org.hisp.dhis.android.sdk.ui.views.FontEditText
-                    android:id="@+id/edittext_username"
+                    android:id="@+id/edit_text_username"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/edittext_custom_shape"
@@ -77,10 +77,10 @@
                     android:inputType="text"
                     android:paddingLeft="6dp"
                     android:singleLine="true"
-                    app:font="@string/regular_font_name" />
+                    app:font="@string/font_name_regular" />
 
                 <org.hisp.dhis.android.sdk.ui.views.FontEditText
-                    android:id="@+id/edittext_password"
+                    android:id="@+id/edit_text_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:layout_marginBottom="6dp"
@@ -91,7 +91,7 @@
                     android:inputType="textPassword"
                     android:paddingLeft="6dp"
                     android:singleLine="true"
-                    app:font="@string/regular_font_name" />
+                    app:font="@string/font_name_regular" />
 
                 <org.hisp.dhis.android.sdk.ui.views.FontButton
                     android:id="@+id/button_re_log_in"
@@ -102,7 +102,7 @@
                     android:singleLine="true"
                     android:text="@string/re_log_in"
                     android:textColor="@color/white"
-                    app:font="@string/medium_font_name" />
+                    app:font="@string/font_name_medium" />
 
             </LinearLayout>
 
@@ -126,7 +126,7 @@
                     android:singleLine="true"
                     android:text="@string/clear_and_logout"
                     android:textColor="@color/white"
-                    app:font="@string/medium_font_name" />
+                    app:font="@string/font_name_medium" />
 
             </LinearLayout>
 

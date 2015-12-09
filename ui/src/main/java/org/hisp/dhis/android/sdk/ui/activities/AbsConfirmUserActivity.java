@@ -66,8 +66,8 @@ public abstract class AbsConfirmUserActivity extends AppCompatActivity implement
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
         mViewsContainer = findViewById(R.id.container_re_log_in_views);
-        mUsername = (EditText) findViewById(R.id.edittext_username);
-        mPassword = (EditText) findViewById(R.id.edittext_password);
+        mUsername = (EditText) findViewById(R.id.edit_text_username);
+        mPassword = (EditText) findViewById(R.id.edit_text_password);
         mReLogIn = (Button) findViewById(R.id.button_re_log_in);
         mClearAndLogoutButton = (Button) findViewById(R.id.button_clear_and_log_out);
 

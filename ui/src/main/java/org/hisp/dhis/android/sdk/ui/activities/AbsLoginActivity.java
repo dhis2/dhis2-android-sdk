@@ -64,9 +64,9 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_white);
         mLogInButton = (Button) findViewById(R.id.button_log_in);
 
-        mServerUrl = (EditText) findViewById(R.id.edittext_server_url);
-        mUsername = (EditText) findViewById(R.id.edittext_username);
-        mPassword = (EditText) findViewById(R.id.edittext_password);
+        mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);
+        mUsername = (EditText) findViewById(R.id.edit_text_username);
+        mPassword = (EditText) findViewById(R.id.edit_text_password);
 
         FieldTextWatcher watcher = new FieldTextWatcher();
         mServerUrl.addTextChangedListener(watcher);

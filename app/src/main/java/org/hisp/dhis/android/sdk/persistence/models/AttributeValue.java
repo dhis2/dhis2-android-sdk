@@ -22,12 +22,8 @@ public class AttributeValue extends BaseModel {
     @PrimaryKey(autoincrement = true)
     long id;
 
-    @Column
-    @ForeignKey(references = {@ForeignKeyReference(columnName = "attributeId",
-            columnType = String.class,
-            foreignColumnName = "id")},
-            saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE)
-    Attribute attribute;
+    @Column(name = "attributeId")
+    String attribute;
 
     @JsonProperty("value")
     @Column(name = "value")
@@ -44,11 +40,16 @@ public class AttributeValue extends BaseModel {
     String lastUpdated;
 
     public Attribute getAttribute() {
-        return attribute;
+        return MetaDataController.getAttribute(attribute);
     }
 
-    public void setAttribute(Attribute attribute) {
-        this.attribute = attribute;
+    @JsonProperty("attribute")
+    public void setAttribute(Attribute attributeObj){
+        attribute = attributeObj.getUid();
+    }
+
+    public void setAttribute(String attributeId) {
+        this.attribute = attributeId;
     }
 
     public String getValue() {

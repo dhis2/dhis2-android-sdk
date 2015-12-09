@@ -225,7 +225,6 @@ public interface DhisApi {
     @GET("/" + ApiEndpointContainer.PROGRAMRULES + "?paging=false")
     Map<String, List<ProgramRule>> getProgramRules(@QueryMap Map<String, String> queryParams);
 
-
     @GET("/" + ApiEndpointContainer.PROGRAMRULEVARIABLES + "?paging=false")
     Map<String, List<ProgramRuleVariable>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
 

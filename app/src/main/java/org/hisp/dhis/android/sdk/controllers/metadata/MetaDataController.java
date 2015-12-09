@@ -48,6 +48,7 @@ import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
@@ -460,6 +461,10 @@ public final class MetaDataController extends ResourceController {
                 is(dataElementId)).querySingle();
     }
 
+    public static Attribute getAttribute(String attributeId){
+        return new Select().from(Attribute.class).where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
+    }
+
     /**
      * Returns a User object for the currently logged in user.
      *
@@ -695,7 +700,7 @@ public final class MetaDataController extends ResourceController {
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
@@ -707,6 +712,7 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
+
         return updatedProgram;
     }
 

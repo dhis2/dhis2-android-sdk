@@ -32,6 +32,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,7 @@ public final class AutoCompleteRow extends Row {
         if (convertView != null && convertView.getTag() instanceof ViewHolder) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
+            holder.clearOnTextChangedListener();
         } else {
             view = inflater.inflate(R.layout.listview_row_autocomplete, container, false);
             detailedInfoButton =  view.findViewById(R.id.detailed_info_button_layout);
@@ -119,6 +121,8 @@ public final class AutoCompleteRow extends Row {
 
         holder.valueTextView.setText(name);
         holder.valueTextView.clearFocus();
+
+        holder.setOnTextChangedListener();
 
         if(!isEditable())
         {
@@ -168,8 +172,15 @@ public final class AutoCompleteRow extends Row {
             onDropDownButtonListener.setListener(onOptionListener);
 
             clearButton.setOnClickListener(onClearButtonListener);
-            valueTextView.addTextChangedListener(onTextChangedListener);
             valueTextView.setOnClickListener(onDropDownButtonListener);
+        }
+
+        private void setOnTextChangedListener() {
+            valueTextView.addTextChangedListener(onTextChangedListener);
+        }
+
+        private void clearOnTextChangedListener() {
+            valueTextView.removeTextChangedListener(onTextChangedListener);
         }
     }
 

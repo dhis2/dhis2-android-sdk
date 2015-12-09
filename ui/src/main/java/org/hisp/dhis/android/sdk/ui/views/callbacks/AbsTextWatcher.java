@@ -26,30 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-    }
-}
+package org.hisp.dhis.android.sdk.ui.views.callbacks;
 
-allprojects {
-    repositories {
-        jcenter()
+import android.text.Editable;
+import android.text.TextWatcher;
+
+public class AbsTextWatcher implements TextWatcher {
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // default implementation
     }
-}
 
-ext {
-    // SDK version.
-    versionCode = 1
-    versionName = "0.1"
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // default implementation
+    }
 
-    // Compilation configuration.
-    minSdkVersion = 15
-    compileSdkVersion = 22
-    targetSdkVersion = 22
-    buildToolsVersion = "22.0.1"
+    @Override
+    public void afterTextChanged(Editable s) {
+        // default implementation
+    }
 }

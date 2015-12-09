@@ -26,30 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-    }
-}
+package org.hisp.dhis.android.sdk.ui.views;
 
-allprojects {
-    repositories {
-        jcenter()
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.util.AttributeSet;
+import android.widget.CheckBox;
+
+import org.hisp.dhis.android.sdk.ui.R;
+import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
+
+public class FontCheckBox extends CheckBox {
+    public FontCheckBox(Context context) {
+        super(context);
     }
-}
 
-ext {
-    // SDK version.
-    versionCode = 1
-    versionName = "0.1"
+    public FontCheckBox(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init(context, attrs);
+    }
 
-    // Compilation configuration.
-    minSdkVersion = 15
-    compileSdkVersion = 22
-    targetSdkVersion = 22
-    buildToolsVersion = "22.0.1"
+    public FontCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attributeSet) {
+        if (!isInEditMode()) {
+            TypedArray attrs = context.obtainStyledAttributes(
+                    attributeSet, R.styleable.ViewFont);
+            setFont(attrs.getString(R.styleable.ViewFont_font));
+            attrs.recycle();
+        }
+    }
+
+    private void setFont(final String fontName) {
+        if (getContext() != null && getContext().getAssets() != null && fontName != null) {
+            Typeface typeface = TypefaceManager.getTypeface(
+                    getContext().getAssets(), fontName);
+            if (typeface != null) {
+                setPaintFlags(getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
+                setTypeface(typeface);
+            }
+        }
+    }
 }

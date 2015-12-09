@@ -26,30 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.3.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
-    }
-}
+package org.hisp.dhis.android.sdk.ui.utils;
 
-allprojects {
-    repositories {
-        jcenter()
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
+
+public final class TypefaceManager {
+    private static final String FONTS_PATH = "fonts/";
+
+    private TypefaceManager() {
     }
-}
 
-ext {
-    // SDK version.
-    versionCode = 1
-    versionName = "0.1"
+    public static Typeface getTypeface(AssetManager assetManager, final String fontName) {
+        if (assetManager == null) {
+            throw new IllegalArgumentException("AssetManager must not be null");
+        }
 
-    // Compilation configuration.
-    minSdkVersion = 15
-    compileSdkVersion = 22
-    targetSdkVersion = 22
-    buildToolsVersion = "22.0.1"
+        if (fontName == null) {
+            throw new IllegalArgumentException("AssetManager must not be null");
+        }
+
+        return Typeface.createFromAsset(assetManager, FONTS_PATH + fontName);
+    }
 }

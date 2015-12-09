@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.sdk.api.utils;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.hisp.dhis.android.sdk.retrofit.ResponseMapper;
 import org.hisp.dhis.java.sdk.common.network.ApiException;
 import org.hisp.dhis.java.sdk.common.network.Header;
@@ -152,8 +155,8 @@ public class NetworkUtils {
         }
     }
 
-
-    public static <T> T call(Call<T> call) {
+    @Nullable
+    public static <T> T call(@NonNull Call<T> call) {
         Response<T> response = null;
         ApiException apiException = null;
 
@@ -175,7 +178,8 @@ public class NetworkUtils {
         return response.body();
     }
 
-    public static <T> List<T> unwrap(Map<String, List<T>> response, String key) {
+    @NonNull
+    public static <T> List<T> unwrap(@Nullable Map<String, List<T>> response, @NonNull String key) {
         if (response != null && response.containsKey(key) && response.get(key) != null) {
             return response.get(key);
         } else {

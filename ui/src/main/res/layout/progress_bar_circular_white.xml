@@ -29,7 +29,7 @@
 
 <fr.castorflex.android.circularprogressbar.CircularProgressBar
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/lib/fr.castorflex.android.circularprogressbar"
     android:id="@+id/progress_bar_circular_white"
     android:layout_width="64dp"
     android:layout_height="64dp"

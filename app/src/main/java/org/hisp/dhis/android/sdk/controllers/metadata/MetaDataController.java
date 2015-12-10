@@ -42,7 +42,6 @@ import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
-import org.hisp.dhis.android.sdk.controllers.wrappers.AttributeValuesWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
@@ -55,8 +54,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
-import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -215,22 +212,7 @@ public final class MetaDataController extends ResourceController {
 
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
-        List<AttributeValue> values = new ArrayList<>();
-        List<AttributeValue> attributeValues;
-        List<DataElementAttributeValue> dataElementAttributeValues = getDataElementAttributeValues(dataElement.getUid());
-
-        for (DataElementAttributeValue dataElementAttributeValue: dataElementAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getId())).queryList();
-            if (attributeValues != null) values.addAll(attributeValues);
-        }
-
-        return values;
-    }
-
-    public static List<DataElementAttributeValue> getDataElementAttributeValues(String dataElementId){
-        if (dataElementId == null) return null;
-        return new Select().from(DataElementAttributeValue.class)
-                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENTID).is(dataElementId)).queryList();
+        return dataElement.getAttributeValues();
     }
 
     public static List<AttributeValue> getAttributeValues(Program program){
@@ -577,7 +559,6 @@ public final class MetaDataController extends ResourceController {
                 RelationshipType.class,
                 Attribute.class,
                 AttributeValue.class,
-                DataElementAttributeValue.class,
                 ProgramAttributeValue.class);
     }
 

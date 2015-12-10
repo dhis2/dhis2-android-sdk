@@ -77,6 +77,12 @@ public class ProgramWrapper {
                         for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                             programStageDataElement.setProgramStageSection(programStageSection.getUid());
                             operations.add(DbOperation.save(programStageDataElement));
+                            if (programStageDataElement.getDataElementObj().getAttributeValues()!=null && !programStageDataElement.getDataElementObj().getAttributeValues().isEmpty()) {
+                                for (AttributeValue attributeValue : programStageDataElement.getDataElementObj().getAttributeValues()) {
+                                    operations.add(DbOperation.save(attributeValue));
+                                    operations.add(DbOperation.save(attributeValue.getAttributeObj()));
+                                }
+                            }
                         }
                         for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
                             operations.add(DbOperation.save(programIndicator));
@@ -94,6 +100,11 @@ public class ProgramWrapper {
                         operations.add(DbOperation.save(programStageDataElement));
                         DataElement dataElement = programStageDataElement.getDataElement();
                         operations.add(DbOperation.save(dataElement));
+                        if (dataElement.getAttributeValues()!=null && !dataElement.getAttributeValues().isEmpty()) {
+                            for (AttributeValue attributeValue : dataElement.getAttributeValues()) {
+                                operations.add(DbOperation.save(attributeValue));
+                            }
+                        }
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));

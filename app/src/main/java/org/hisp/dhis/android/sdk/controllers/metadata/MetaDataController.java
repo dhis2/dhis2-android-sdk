@@ -164,11 +164,6 @@ public final class MetaDataController extends ResourceController {
                 return false;
             }
         }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ATTRIBUTEVALUES) == null) {
-                return false;
-            }
-        }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
             if( DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
                 return false;
@@ -552,7 +547,6 @@ public final class MetaDataController extends ResourceController {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.RELATIONSHIPTYPES);
-        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTEVALUES);
     }
 
     /**
@@ -652,11 +646,6 @@ public final class MetaDataController extends ResourceController {
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
             if ( shouldLoad(dhisApi, ResourceType.RELATIONSHIPTYPES) ) {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
-            }
-        }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
-            if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTEVALUES) ) {
-                getAttributeValuesDataFromServer(dhisApi, serverDateTime);
             }
         }
     }
@@ -781,38 +770,5 @@ public final class MetaDataController extends ResourceController {
         List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
                 .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
-    }
-
-    private static void getAttributeValuesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
-        Log.d(CLASS_TAG, "getAttributeValuesDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.ATTRIBUTEVALUES);
-
-        AttributeValuesWrapper.PaginatedListDataElementAttributeValue paginatedListDataElementAttributeValue=null;
-        AttributeValuesWrapper attributeValuesWrapper = new AttributeValuesWrapper();
-
-        //Looping over server data pages
-        while(paginatedListDataElementAttributeValue==null || paginatedListDataElementAttributeValue.hasMorePages()){
-            Integer currentPage = (paginatedListDataElementAttributeValue==null)?1:paginatedListDataElementAttributeValue.getCurrentPage();
-            Log.d(CLASS_TAG, "getAttributeValuesDataFromServer page "+currentPage);
-            Response response = dhisApi.getAttributeValues(getBasicQueryMapWithPagination(lastUpdated, currentPage, 5));
-
-            try {
-                paginatedListDataElementAttributeValue = attributeValuesWrapper.deserialize(response);
-            }catch (Exception ex){
-                Log.e(CLASS_TAG, "Retrieving attributeValues " + ex.getLocalizedMessage());
-                throw  APIException.unexpectedError(ApiEndpointContainer.PROGRAMS,ex);
-            }
-
-            //Save data in chunks
-            List<DbOperation> operations = AttributeValuesWrapper.getOperations(paginatedListDataElementAttributeValue.getDataElementAttributeValues());
-            DbUtils.applyBatch(operations);
-
-            //Go next page
-            paginatedListDataElementAttributeValue.next();
-        }
-
-        DateTimeManager.getInstance()
-                .setLastUpdated(ResourceType.ATTRIBUTEVALUES, serverDateTime);
     }
 }

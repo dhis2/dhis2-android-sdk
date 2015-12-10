@@ -37,6 +37,8 @@ public class Attribute extends BaseMetaDataObject {
     @Column(name = "code")
     String code;
 
+    public Attribute(){}
+
     public String getValueType() {
         return valueType;
     }

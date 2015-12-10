@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.ui.utils.TypefaceManager;
 import static org.hisp.dhis.android.sdk.ui.utils.Preconditions.isNull;
 
 public class FontCheckBox extends AppCompatCheckBox {
+
     public FontCheckBox(Context context) {
         super(context);
     }

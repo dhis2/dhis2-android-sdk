@@ -29,11 +29,9 @@
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
@@ -78,6 +76,7 @@ public class ProgramWrapper {
                             operations.add(DbOperation.save(programStageDataElement));
                             if (programStageDataElement.getDataElementObj().getAttributeValues()!=null && !programStageDataElement.getDataElementObj().getAttributeValues().isEmpty()) {
                                 for (AttributeValue attributeValue : programStageDataElement.getDataElementObj().getAttributeValues()) {
+                                    attributeValue.setDataElement(programStageDataElement.getDataElementObj().getUid());
                                     operations.add(DbOperation.save(attributeValue));
                                     operations.add(DbOperation.save(attributeValue.getAttributeObj()));
                                 }

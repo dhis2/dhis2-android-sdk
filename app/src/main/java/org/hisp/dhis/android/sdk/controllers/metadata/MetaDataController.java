@@ -212,21 +212,7 @@ public final class MetaDataController extends ResourceController {
 
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
-        return dataElement.getAttributeValues();
-    }
-
-    public static List<AttributeValue> getAttributeValues(Program program){
-        if (program == null) return null;
-        List<AttributeValue> values = new ArrayList<>();
-        List<AttributeValue> attributeValues;
-        List<ProgramAttributeValue> programAttributeValues = getProgramAttributeValues(program.getUid());
-
-        for (ProgramAttributeValue programAttributeValue: programAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getId())).queryList();
-            if (attributeValues != null) values.addAll(attributeValues);
-        }
-
-        return values;
+        return new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid())).queryList();
     }
 
     public static AttributeValue getAttributeValue(Long id){
@@ -235,12 +221,6 @@ public final class MetaDataController extends ResourceController {
                 .where(Condition.column(AttributeValue$Table.ID).is(id)).queryList();
         if (attributeValues.size() != 1) return null;
         return attributeValues.get(0);
-    }
-
-    public static List<ProgramAttributeValue> getProgramAttributeValues(String programId){
-        if (programId == null) return null;
-        return new Select().from(ProgramAttributeValue.class)
-                .where(Condition.column(ProgramAttributeValue$Table.PROGRAM_PROGRAMID).is(programId)).queryList();
     }
 
     public static String getAttributeName(String attributeId){

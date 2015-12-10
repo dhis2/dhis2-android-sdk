@@ -22,12 +22,12 @@ public class AttributeValue extends BaseModel {
 
     public AttributeValue(){}
 
-    /*@Column(name = "dataElement")
-    String dataElement;*/
-
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
+
+    @Column(name = "dataElement")
+    String dataElement;
 
     @Column(name = "attributeId")
     String attribute;
@@ -94,7 +94,7 @@ public class AttributeValue extends BaseModel {
         this.id = id;
     }
 
-    /*@JsonProperty("dataElement")
+    @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement){
         this.dataElement = (String) dataElement.get("id");
     }
@@ -105,7 +105,7 @@ public class AttributeValue extends BaseModel {
 
     public void setDataElement(String dataElement){
         this.dataElement = dataElement;
-    }*/
+    }
 
     public Attribute getAttributeObj(){
         return attributeObj;

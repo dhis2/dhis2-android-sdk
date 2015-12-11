@@ -41,7 +41,7 @@ import org.hisp.dhis.android.sdk.common.SystemInfoApiClient;
 import org.hisp.dhis.android.sdk.common.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.android.sdk.dashboard.DashboardApiClient;
 import org.hisp.dhis.android.sdk.dashboard.DashboardApiClientRetrofit;
-import org.hisp.dhis.android.sdk.user.UserApiClient;
+import org.hisp.dhis.android.sdk.user.UserAccountApiClient;
 import org.hisp.dhis.android.sdk.user.UserApiClientRetrofit;
 import org.hisp.dhis.java.sdk.common.network.Configuration;
 import org.hisp.dhis.java.sdk.common.network.INetworkModule;
@@ -99,7 +99,7 @@ public class NetworkModule implements INetworkModule {
 
         mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));
         mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(SystemInfoApiClientRetrofit.class));
-        mUserApiClient = new UserApiClient(retrofit.create(UserApiClientRetrofit.class));
+        mUserApiClient = new UserAccountApiClient(retrofit.create(UserApiClientRetrofit.class));
     }
 
     @Override

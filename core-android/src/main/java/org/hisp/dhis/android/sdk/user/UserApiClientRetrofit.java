@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.android.sdk.user;
 
+import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
@@ -44,4 +46,7 @@ public interface UserApiClientRetrofit {
 
     @GET("/me/")
     Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
+
+    @GET("/me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
+    Call<List<OrganisationUnit>> getOrganisationUnitsWithAssignedPrograms();
 }

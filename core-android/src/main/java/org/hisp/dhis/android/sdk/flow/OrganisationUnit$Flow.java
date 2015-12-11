@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.sdk.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.common.meta.DbDhis;
@@ -39,23 +42,18 @@ import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
-
-    @Column
-    String label;
+    private final String ORGANISATION_UNIT_PARENT_KEY = "parent";
 
     @Column
     int level;
 
     @Column
-    String parent;
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    OrganisationUnit$Flow parent;
 
     public int getLevel() {
         return level;
@@ -65,11 +63,11 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
         this.level = level;
     }
 
-    public String getParent() {
+    public OrganisationUnit$Flow getParent() {
         return parent;
     }
 
-    public void setParent(String parent) {
+    public void setParent(OrganisationUnit$Flow parent) {
         this.parent = parent;
     }
 

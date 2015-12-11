@@ -52,9 +52,8 @@ public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, Organisa
         organisationUnitFlow.setName(organisationUnit.getName());
         organisationUnitFlow.setDisplayName(organisationUnit.getDisplayName());
         organisationUnitFlow.setAccess(organisationUnit.getAccess());
-        organisationUnitFlow.setLabel(organisationUnit.getLabel());
         organisationUnitFlow.setLevel(organisationUnit.getLevel());
-        organisationUnitFlow.setParent(organisationUnit.getParent());
+        organisationUnitFlow.setParent(mapToDatabaseEntity(organisationUnit.getParent()));
         return organisationUnitFlow;
     }
 
@@ -72,9 +71,8 @@ public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, Organisa
         organisationUnit.setName(organisationUnitFlow.getName());
         organisationUnit.setDisplayName(organisationUnitFlow.getDisplayName());
         organisationUnit.setAccess(organisationUnitFlow.getAccess());
-        organisationUnit.setLabel(organisationUnitFlow.getLabel());
         organisationUnit.setLevel(organisationUnitFlow.getLevel());
-        organisationUnit.setParent(organisationUnitFlow.getParent());
+        organisationUnit.setParent(mapToModel(organisationUnitFlow.getParent()));
         return organisationUnit;
     }
 

@@ -28,18 +28,20 @@
 
 package org.hisp.dhis.android.sdk.user;
 
+import org.hisp.dhis.java.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.java.sdk.models.user.UserAccount;
 import org.hisp.dhis.java.sdk.user.IUserApiClient;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hisp.dhis.android.sdk.api.utils.NetworkUtils.call;
 
-public class UserApiClient implements IUserApiClient {
+public class UserAccountApiClient implements IUserApiClient {
     private final UserApiClientRetrofit mApiClient;
 
-    public UserApiClient(UserApiClientRetrofit mApiClient) {
+    public UserAccountApiClient(UserApiClientRetrofit mApiClient) {
         this.mApiClient = mApiClient;
     }
 
@@ -52,5 +54,10 @@ public class UserApiClient implements IUserApiClient {
                 "organisationUnits[id]");
 
         return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
+    }
+
+    @Override
+    public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
+        return call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
     }
 }

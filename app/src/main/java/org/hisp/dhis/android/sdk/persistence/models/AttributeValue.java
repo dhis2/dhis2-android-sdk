@@ -110,4 +110,8 @@ public class AttributeValue extends BaseModel {
     public Attribute getAttributeObj(){
         return attributeObj;
     }
+
+    public String getAttributeId(){
+        return attribute;
+    }
 }

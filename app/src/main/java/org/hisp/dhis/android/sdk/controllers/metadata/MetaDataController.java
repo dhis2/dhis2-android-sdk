@@ -64,8 +64,6 @@ import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelat
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -203,11 +201,11 @@ public final class MetaDataController extends ResourceController {
     }
 
     public static List<Attribute> getAttributes() {
-        return new Select().from(Attribute.class).queryList();
+        return new Select().from(Attribute.class).orderBy(Attribute$Table.ID).queryList();
     }
 
     public static List<AttributeValue> getAttributeValues() {
-        return new Select().from(AttributeValue.class).queryList();
+        return new Select().from(AttributeValue.class).orderBy(AttributeValue$Table.ID).queryList();
     }
 
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
@@ -217,34 +215,9 @@ public final class MetaDataController extends ResourceController {
 
     public static AttributeValue getAttributeValue(Long id){
         if (id == null) return null;
-        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(id)).queryList();
-        if (attributeValues.size() != 1) return null;
-        return attributeValues.get(0);
-    }
-
-    public static String getAttributeName(String attributeId){
-        if (attributeId == null) return null;
-        List<Attribute> attributes = new Select().from(Attribute.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
-        if (attributes.size() != 1) return null;
-        return attributes.get(0).getName();
-    }
-
-    public static String getAttributeType(String attributeId){
-        if (attributeId == null) return null;
-        List<Attribute> attributes = new Select().from(Attribute.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
-        if (attributes.size() != 1) return null;
-        return attributes.get(0).getValueType();
-    }
-
-    public static Object getAttributeValueValue(Long attributeValueId){
-        if (attributeValueId == null) return null;
-        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeValueId)).queryList();
-        if (attributeValues.size() != 1) return null;
-        return attributeValues.get(0).getValue();
+        AttributeValue attributeValues = new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
+        return attributeValues;
     }
 
     /**
@@ -538,8 +511,7 @@ public final class MetaDataController extends ResourceController {
                 ProgramRuleAction.class,
                 RelationshipType.class,
                 Attribute.class,
-                AttributeValue.class,
-                ProgramAttributeValue.class);
+                AttributeValue.class);
     }
 
     /**

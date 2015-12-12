@@ -42,20 +42,18 @@ import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.LoadingController;
 import org.hisp.dhis.android.sdk.controllers.ResourceController;
 import org.hisp.dhis.android.sdk.controllers.wrappers.AssignedProgramsWrapper;
-import org.hisp.dhis.android.sdk.controllers.wrappers.AttributeValuesWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement$Table;
-import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Option;
 import org.hisp.dhis.android.sdk.persistence.models.Option$Table;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
@@ -66,8 +64,6 @@ import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelat
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.Program$Table;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -163,11 +159,6 @@ public final class MetaDataController extends ResourceController {
                 return false;
             }
         }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
-            if( DateTimeManager.getInstance().getLastUpdated(ResourceType.ATTRIBUTEVALUES) == null) {
-                return false;
-            }
-        }
         if (LoadingController.isLoadFlagEnabled(context, ResourceType.RELATIONSHIPTYPES)) {
             if( DateTimeManager.getInstance().getLastUpdated(ResourceType.RELATIONSHIPTYPES) == null) {
                 return false;
@@ -210,83 +201,23 @@ public final class MetaDataController extends ResourceController {
     }
 
     public static List<Attribute> getAttributes() {
-        return new Select().from(Attribute.class).queryList();
+        return new Select().from(Attribute.class).orderBy(Attribute$Table.ID).queryList();
     }
 
     public static List<AttributeValue> getAttributeValues() {
-        return new Select().from(AttributeValue.class).queryList();
+        return new Select().from(AttributeValue.class).orderBy(AttributeValue$Table.ID).queryList();
     }
 
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
-        List<AttributeValue> values = new ArrayList<>();
-        List<AttributeValue> attributeValues;
-        List<DataElementAttributeValue> dataElementAttributeValues = getDataElementAttributeValues(dataElement.getUid());
-
-        for (DataElementAttributeValue dataElementAttributeValue: dataElementAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(dataElementAttributeValue.getAttributeValue().getId())).queryList();
-            if (attributeValues != null) values.addAll(attributeValues);
-        }
-
-        return values;
-    }
-
-    public static List<DataElementAttributeValue> getDataElementAttributeValues(String dataElementId){
-        if (dataElementId == null) return null;
-        return new Select().from(DataElementAttributeValue.class)
-                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENTID).is(dataElementId)).queryList();
-    }
-
-    public static List<AttributeValue> getAttributeValues(Program program){
-        if (program == null) return null;
-        List<AttributeValue> values = new ArrayList<>();
-        List<AttributeValue> attributeValues;
-        List<ProgramAttributeValue> programAttributeValues = getProgramAttributeValues(program.getUid());
-
-        for (ProgramAttributeValue programAttributeValue: programAttributeValues){
-            attributeValues = new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.ID).is(programAttributeValue.getAttributeValue().getId())).queryList();
-            if (attributeValues != null) values.addAll(attributeValues);
-        }
-
-        return values;
+        return new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid())).queryList();
     }
 
     public static AttributeValue getAttributeValue(Long id){
         if (id == null) return null;
-        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(id)).queryList();
-        if (attributeValues.size() != 1) return null;
-        return attributeValues.get(0);
-    }
-
-    public static List<ProgramAttributeValue> getProgramAttributeValues(String programId){
-        if (programId == null) return null;
-        return new Select().from(ProgramAttributeValue.class)
-                .where(Condition.column(ProgramAttributeValue$Table.PROGRAM_PROGRAMID).is(programId)).queryList();
-    }
-
-    public static String getAttributeName(String attributeId){
-        if (attributeId == null) return null;
-        List<Attribute> attributes = new Select().from(Attribute.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
-        if (attributes.size() != 1) return null;
-        return attributes.get(0).getName();
-    }
-
-    public static String getAttributeType(String attributeId){
-        if (attributeId == null) return null;
-        List<Attribute> attributes = new Select().from(Attribute.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeId)).queryList();
-        if (attributes.size() != 1) return null;
-        return attributes.get(0).getValueType();
-    }
-
-    public static Object getAttributeValueValue(Long attributeValueId){
-        if (attributeValueId == null) return null;
-        List<AttributeValue> attributeValues = new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(attributeValueId)).queryList();
-        if (attributeValues.size() != 1) return null;
-        return attributeValues.get(0).getValue();
+        AttributeValue attributeValues = new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
+        return attributeValues;
     }
 
     /**
@@ -460,6 +391,10 @@ public final class MetaDataController extends ResourceController {
                 is(dataElementId)).querySingle();
     }
 
+    public static Attribute getAttribute(String attributeId){
+        return new Select().from(Attribute.class).where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
+    }
+
     /**
      * Returns a User object for the currently logged in user.
      *
@@ -547,7 +482,6 @@ public final class MetaDataController extends ResourceController {
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEVARIABLES);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.PROGRAMRULEACTIONS);
         DateTimeManager.getInstance().deleteLastUpdated(ResourceType.RELATIONSHIPTYPES);
-        DateTimeManager.getInstance().deleteLastUpdated(ResourceType.ATTRIBUTEVALUES);
     }
 
     /**
@@ -577,9 +511,7 @@ public final class MetaDataController extends ResourceController {
                 ProgramRuleAction.class,
                 RelationshipType.class,
                 Attribute.class,
-                AttributeValue.class,
-                DataElementAttributeValue.class,
-                ProgramAttributeValue.class);
+                AttributeValue.class);
     }
 
     /**
@@ -649,11 +581,6 @@ public final class MetaDataController extends ResourceController {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
             }
         }
-        if (LoadingController.isLoadFlagEnabled(context, ResourceType.ATTRIBUTEVALUES)) {
-            if ( shouldLoad(dhisApi, ResourceType.ATTRIBUTEVALUES) ) {
-                getAttributeValuesDataFromServer(dhisApi, serverDateTime);
-            }
-        }
     }
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
@@ -695,7 +622,7 @@ public final class MetaDataController extends ResourceController {
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
                         "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
@@ -707,6 +634,7 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
+
         return updatedProgram;
     }
 
@@ -775,38 +703,5 @@ public final class MetaDataController extends ResourceController {
         List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
                 .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
-    }
-
-    private static void getAttributeValuesDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
-        Log.d(CLASS_TAG, "getAttributeValuesDataFromServer");
-        DateTime lastUpdated = DateTimeManager.getInstance()
-                .getLastUpdated(ResourceType.ATTRIBUTEVALUES);
-
-        AttributeValuesWrapper.PaginatedListDataElementAttributeValue paginatedListDataElementAttributeValue=null;
-        AttributeValuesWrapper attributeValuesWrapper = new AttributeValuesWrapper();
-
-        //Looping over server data pages
-        while(paginatedListDataElementAttributeValue==null || paginatedListDataElementAttributeValue.hasMorePages()){
-            Integer currentPage = (paginatedListDataElementAttributeValue==null)?1:paginatedListDataElementAttributeValue.getCurrentPage();
-            Log.d(CLASS_TAG, "getAttributeValuesDataFromServer page "+currentPage);
-            Response response = dhisApi.getAttributeValues(getBasicQueryMapWithPagination(lastUpdated, currentPage, 5));
-
-            try {
-                paginatedListDataElementAttributeValue = attributeValuesWrapper.deserialize(response);
-            }catch (Exception ex){
-                Log.e(CLASS_TAG, "Retrieving attributeValues " + ex.getLocalizedMessage());
-                throw  APIException.unexpectedError(ApiEndpointContainer.PROGRAMS,ex);
-            }
-
-            //Save data in chunks
-            List<DbOperation> operations = AttributeValuesWrapper.getOperations(paginatedListDataElementAttributeValue.getDataElementAttributeValues());
-            DbUtils.applyBatch(operations);
-
-            //Go next page
-            paginatedListDataElementAttributeValue.next();
-        }
-
-        DateTimeManager.getInstance()
-                .setLastUpdated(ResourceType.ATTRIBUTEVALUES, serverDateTime);
     }
 }

@@ -108,6 +108,9 @@ public class DataElement extends BaseNameableObject {
         this.optionSet = (String) optionSet.get("id");
     }
 
+    @JsonProperty("attributeValues")
+    List<AttributeValue> attributeValues;
+
     public String getType() {
         return type;
     }
@@ -196,12 +199,20 @@ public class DataElement extends BaseNameableObject {
         this.displayFormName = displayFormName;
     }
 
-    public List<AttributeValue> getAttributeValues(){
-        return MetaDataController.getAttributeValues(this);
+    public List<AttributeValue> getAttributeValues() {
+        if (attributeValues == null) {
+            attributeValues = MetaDataController.getAttributeValues(this);
+        }
+        return attributeValues;
     }
 
-    public List<DataElementAttributeValue> getDataElementAttributeValues(){
-        return MetaDataController.getDataElementAttributeValues(id);
+    public AttributeValue getAttributeValue(String attributeId){
+        if (getAttributeValues() == null) return null;
+        for (AttributeValue attributeValue: getAttributeValues()){
+            if (attributeValue.getAttribute().equals(attributeId))
+                return attributeValue;
+        }
+        return null;
     }
 
     public AttributeValue getAttributeValue(long id){

@@ -68,7 +68,7 @@ public final class JobExecutor {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static <T> void enqueueJob(Job<T> job) {
+    public static <T> Job enqueueJob(Job<T> job) {
         isNull(job, "Job object must not be null");
 
         JobExecutor executor = getInstance();
@@ -76,6 +76,7 @@ public final class JobExecutor {
             executor.enqueuePendingJob(job);
             executor.executeNextJob();
         }
+        return job;
     }
 
     public static boolean isJobRunning(int jobId) {

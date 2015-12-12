@@ -56,7 +56,7 @@ public final class JobExecutor {
         mRunningJobIds = new HashMap<>();
     }
 
-    private static JobExecutor getInstance() {
+    public static JobExecutor getInstance() {
         if (mJobExecutor == null) {
             mJobExecutor = new JobExecutor();
         }
@@ -128,7 +128,7 @@ public final class JobExecutor {
         mRunningJobs.add(job);
     }
 
-    private void dequeueRunningJob(Job job) {
+    public void dequeueRunningJob(Job job) {
         mRunningJobIds.remove(job.getJobId());
         mRunningJobs.remove(job);
     }

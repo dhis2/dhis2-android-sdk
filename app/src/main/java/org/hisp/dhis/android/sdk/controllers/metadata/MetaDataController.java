@@ -32,7 +32,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.ColumnAlias;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
@@ -44,6 +46,10 @@ import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -83,6 +89,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
+import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -191,6 +198,26 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
                 (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getUid())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
+    }
+
+    public static List<Attribute> getAttributes() {
+        return new Select().from(Attribute.class).orderBy(Attribute$Table.ID).queryList();
+    }
+
+    public static List<AttributeValue> getAttributeValues() {
+        return new Select().from(AttributeValue.class).orderBy(AttributeValue$Table.ID).queryList();
+    }
+
+    public static List<AttributeValue> getAttributeValues(DataElement dataElement){
+        if (dataElement == null) return null;
+        return new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid())).queryList();
+    }
+
+    public static AttributeValue getAttributeValue(Long id){
+        if (id == null) return null;
+        AttributeValue attributeValues = new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
+        return attributeValues;
     }
 
     /**
@@ -364,6 +391,10 @@ public final class MetaDataController extends ResourceController {
                 is(dataElementId)).querySingle();
     }
 
+    public static Attribute getAttribute(String attributeId){
+        return new Select().from(Attribute.class).where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
+    }
+
     /**
      * Returns a User object for the currently logged in user.
      *
@@ -371,6 +402,15 @@ public final class MetaDataController extends ResourceController {
      */
     public static User getUser() {
         return new Select().from(User.class).querySingle();
+    }
+
+    /**
+     * Returns a UserAccount object for the currently logged in user.
+     *
+     * @return
+     */
+    public static UserAccount getUserAccount() {
+        return new Select().from(UserAccount.class).querySingle();
     }
 
     /**
@@ -469,7 +509,9 @@ public final class MetaDataController extends ResourceController {
                 ProgramRule.class,
                 ProgramRuleVariable.class,
                 ProgramRuleAction.class,
-                RelationshipType.class);
+                RelationshipType.class,
+                Attribute.class,
+                AttributeValue.class);
     }
 
     /**
@@ -579,10 +621,10 @@ public final class MetaDataController extends ResourceController {
 
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
-                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
-                "[*,trackedEntityAttribute[*]],!organisationUnits)");
+                        "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                        "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                        "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
@@ -592,6 +634,7 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
+
         return updatedProgram;
     }
 

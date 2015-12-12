@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -39,7 +42,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribut
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 21.08.15.
@@ -49,6 +54,7 @@ public class ProgramWrapper {
 
     public static List<DbOperation> setReferences(Program program) {
         List<DbOperation> operations = new ArrayList<>();
+        Map<String, Attribute> attributes = new HashMap<>();
         if(program != null) {
             operations.addAll(update(program));
             operations.add(DbOperation.save(program));
@@ -72,6 +78,20 @@ public class ProgramWrapper {
                         for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                             programStageDataElement.setProgramStageSection(programStageSection.getUid());
                             operations.add(DbOperation.save(programStageDataElement));
+                            if (programStageDataElement.getDataElementObj().getAttributeValues()!=null && !programStageDataElement.getDataElementObj().getAttributeValues().isEmpty()) {
+                                for (AttributeValue attributeValue : programStageDataElement.getDataElementObj().getAttributeValues()) {
+                                    attributeValue.setDataElement(programStageDataElement.getDataElementObj().getUid());
+                                    //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
+                                    operations.add(DbOperation.save(attributeValue));
+                                    Attribute attribute = attributes.get(attributeValue.getAttributeId());
+                                    if (attribute == null)
+                                        attribute = attributeValue.getAttributeObj();
+                                    if (attribute == null)
+                                        attribute = attributeValue.getAttribute();
+                                    attributes.put(attributeValue.getAttributeId(), attribute);
+                                    operations.add(DbOperation.save(attribute));
+                                }
+                            }
                         }
                         for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
                             operations.add(DbOperation.save(programIndicator));
@@ -87,6 +107,20 @@ public class ProgramWrapper {
                     for (ProgramStageDataElement programStageDataElement : programStage.
                             getProgramStageDataElements()) {
                         operations.add(DbOperation.save(programStageDataElement));
+                        DataElement dataElement = programStageDataElement.getDataElement();
+                        operations.add(DbOperation.save(dataElement));
+                        if (dataElement.getAttributeValues()!=null && !dataElement.getAttributeValues().isEmpty()) {
+                            for (AttributeValue attributeValue : dataElement.getAttributeValues()) {
+                                operations.add(DbOperation.save(attributeValue));
+                                Attribute attribute = attributes.get(attributeValue.getAttributeId());
+                                if (attribute == null)
+                                    attribute = attributeValue.getAttributeObj();
+                                if (attribute == null)
+                                    attribute = attributeValue.getAttribute();
+                                attributes.put(attributeValue.getAttributeId(), attribute);
+                                operations.add(DbOperation.save(attribute));
+                            }
+                        }
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));

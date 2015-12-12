@@ -114,4 +114,26 @@ public abstract class ResourceController {
         }
         return map;
     }
+
+    /**
+     * Prepares a query map that includes pagination parameters
+     * @param lastUpdated Date to filter out data
+     * @param page Sets which page to retrieve from server
+     * @param pageSize Sets the size of each page
+     * @return
+     */
+    public static Map<String,String> getBasicQueryMapWithPagination(DateTime lastUpdated, Integer page, Integer pageSize){
+        final Map<String, String> map = new HashMap<>();
+        map.put("fields", "[:all]");
+        if (lastUpdated != null) {
+            map.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+        }
+        if(page!=null){
+            map.put("page",page.toString());
+        }
+        if(pageSize!=null){
+            map.put("pageSize",pageSize.toString());
+        }
+        return map;
+    }
 }

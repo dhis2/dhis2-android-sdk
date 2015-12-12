@@ -31,6 +31,8 @@ package org.hisp.dhis.android.sdk.network;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
@@ -223,7 +225,6 @@ public interface DhisApi {
     @GET("/" + ApiEndpointContainer.PROGRAMRULES + "?paging=false")
     Map<String, List<ProgramRule>> getProgramRules(@QueryMap Map<String, String> queryParams);
 
-
     @GET("/" + ApiEndpointContainer.PROGRAMRULEVARIABLES + "?paging=false")
     Map<String, List<ProgramRuleVariable>> getProgramRuleVariables(@QueryMap Map<String, String> queryParams);
 
@@ -232,6 +233,15 @@ public interface DhisApi {
 
     @GET("/" + ApiEndpointContainer.RELATIONSHIPTYPES + "?paging=false")
     Map<String, List<RelationshipType>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + ApiEndpointContainer.ATTRIBUTES + "?paging=false")
+    Map<String, List<Attribute>> getAttributes(@QueryMap Map<String, String> queryParams);
+
+    @GET("/" + ApiEndpointContainer.ATTRIBUTES + "/{attributeUid}")
+    Attribute getAttribute(@Path("attributeUid") String attributeUid, @QueryMap Map<String, String> queryMap);
+
+    @GET("/" + ApiEndpointContainer.PROGRAMS + "?fields=programStages[programStageSections[programStageDataElements[dataElement[id,attributeValues[*,attribute[*]]]]]]&paging=true")
+    Response getAttributeValues(@QueryMap Map<String, String> queryMap);
 
     /////////////////////////////////////////////////////////////////////////
     // Methods for working with Tracker Data Values

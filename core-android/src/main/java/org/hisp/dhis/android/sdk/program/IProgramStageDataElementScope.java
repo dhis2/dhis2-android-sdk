@@ -15,11 +15,11 @@ public interface IProgramStageDataElementScope {
 
     Observable<List<ProgramStageDataElement>> list();
 
-    Observable<List<ProgramStageDataElement>> getProgramStageDataElements(ProgramStage programStage);
+    Observable<List<ProgramStageDataElement>> list(ProgramStage programStage);
 
-    Observable<ProgramStageDataElement> getProgramStageDataElements(ProgramStage programStage, DataElement dataElement);
+    Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
 
-    Observable<List<ProgramStageDataElement>> getProgramStageDataElements(ProgramStageSection programStageSection);
+    Observable<List<ProgramStageDataElement>> list(ProgramStageSection programStageSection);
 
     Observable<Boolean> save(ProgramStageDataElement object);
 

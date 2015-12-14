@@ -15,7 +15,7 @@ public interface IProgramIndicatorScope {
 
     Observable<List<ProgramIndicator>> list();
 
-    Observable<List<ProgramIndicator>> getProgramIndicators(Program program);
+    Observable<List<ProgramIndicator>> list(Program program);
 
     Observable<Boolean> save(ProgramIndicator object);
 

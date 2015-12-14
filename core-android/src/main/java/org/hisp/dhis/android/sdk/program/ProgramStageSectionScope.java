@@ -68,7 +68,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> getProgramStageSections(final ProgramStage programStage) {
+    public Observable<List<ProgramStageSection>> list(final ProgramStage programStage) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {

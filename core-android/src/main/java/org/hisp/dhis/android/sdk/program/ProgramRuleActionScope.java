@@ -68,7 +68,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
     }
 
     @Override
-    public Observable<List<ProgramRuleAction>> getProgramRuleActions(final ProgramRule programRule) {
+    public Observable<List<ProgramRuleAction>> list(final ProgramRule programRule) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {

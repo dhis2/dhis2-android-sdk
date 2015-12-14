@@ -69,7 +69,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
     }
 
     @Override
-    public Observable<List<ProgramIndicator>> getProgramIndicators(final Program program) {
+    public Observable<List<ProgramIndicator>> list(final Program program) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {

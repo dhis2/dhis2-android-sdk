@@ -54,7 +54,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> getProgramStageDataElements(final ProgramStage programStage) {
+    public Observable<List<ProgramStageDataElement>> list(final ProgramStage programStage) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
@@ -71,7 +71,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<ProgramStageDataElement> getProgramStageDataElements(final ProgramStage programStage, final DataElement dataElement) {
+    public Observable<ProgramStageDataElement> list(final ProgramStage programStage, final DataElement dataElement) {
         return Observable.create(new Observable.OnSubscribe<ProgramStageDataElement>() {
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
@@ -88,7 +88,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> getProgramStageDataElements(final ProgramStageSection programStageSection) {
+    public Observable<List<ProgramStageDataElement>> list(final ProgramStageSection programStageSection) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {

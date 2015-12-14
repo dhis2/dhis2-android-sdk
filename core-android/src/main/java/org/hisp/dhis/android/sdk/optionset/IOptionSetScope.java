@@ -14,7 +14,7 @@ public interface IOptionSetScope {
 
     Observable<List<OptionSet>> list();
 
-    Observable<List<Option>> getOptions(OptionSet optionSet);
+    Observable<List<Option>> list(OptionSet optionSet);
 
     Observable<Boolean> save(OptionSet object);
 

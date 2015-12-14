@@ -68,7 +68,7 @@ public class OptionSetScope implements IOptionSetScope {
     }
 
     @Override
-    public Observable<List<Option>> getOptions(final OptionSet optionSet) {
+    public Observable<List<Option>> list(final OptionSet optionSet) {
         return Observable.create(new Observable.OnSubscribe<List<Option>>() {
             @Override
             public void call(Subscriber<? super List<Option>> subscriber) {

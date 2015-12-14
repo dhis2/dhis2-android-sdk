@@ -15,7 +15,7 @@ public interface IProgramRuleActionScope {
 
     Observable<List<ProgramRuleAction>> list();
 
-    Observable<List<ProgramRuleAction>> getProgramRuleActions(ProgramRule programRule);
+    Observable<List<ProgramRuleAction>> list(ProgramRule programRule);
 
     Observable<Boolean> save(ProgramRuleAction object);
 

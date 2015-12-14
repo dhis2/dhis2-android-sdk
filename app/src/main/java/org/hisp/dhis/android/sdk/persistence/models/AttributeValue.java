@@ -14,9 +14,6 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 import java.util.Map;
 
-/**
- * @author Ignacio Foche Pérez on 09.11.15.
- */
 @Table(databaseName = Dhis2Database.NAME)
 public class AttributeValue extends BaseModel {
 
@@ -39,12 +36,10 @@ public class AttributeValue extends BaseModel {
     String value;
 
     @JsonProperty("created")
-    //@JsonIgnore
     @Column(name = "created")
     String created;
 
     @JsonProperty("lastUpdated")
-    //@JsonIgnore
     @Column(name = "lastUpdated")
     String lastUpdated;
 

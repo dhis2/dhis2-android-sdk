@@ -78,20 +78,7 @@ public class ProgramWrapper {
                         for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                             programStageDataElement.setProgramStageSection(programStageSection.getUid());
                             operations.add(DbOperation.save(programStageDataElement));
-                            if (programStageDataElement.getDataElementObj().getAttributeValues()!=null && !programStageDataElement.getDataElementObj().getAttributeValues().isEmpty()) {
-                                for (AttributeValue attributeValue : programStageDataElement.getDataElementObj().getAttributeValues()) {
-                                    attributeValue.setDataElement(programStageDataElement.getDataElementObj().getUid());
-                                    //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
-                                    operations.add(DbOperation.save(attributeValue));
-                                    Attribute attribute = attributes.get(attributeValue.getAttributeId());
-                                    if (attribute == null)
-                                        attribute = attributeValue.getAttributeObj();
-                                    if (attribute == null)
-                                        attribute = attributeValue.getAttribute();
-                                    attributes.put(attributeValue.getAttributeId(), attribute);
-                                    operations.add(DbOperation.save(attribute));
-                                }
-                            }
+                            operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElementObj(), attributes));
                         }
                         for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
                             operations.add(DbOperation.save(programIndicator));
@@ -107,20 +94,7 @@ public class ProgramWrapper {
                     for (ProgramStageDataElement programStageDataElement : programStage.
                             getProgramStageDataElements()) {
                         operations.add(DbOperation.save(programStageDataElement));
-                        DataElement dataElement = programStageDataElement.getDataElement();
-                        operations.add(DbOperation.save(dataElement));
-                        if (dataElement.getAttributeValues()!=null && !dataElement.getAttributeValues().isEmpty()) {
-                            for (AttributeValue attributeValue : dataElement.getAttributeValues()) {
-                                operations.add(DbOperation.save(attributeValue));
-                                Attribute attribute = attributes.get(attributeValue.getAttributeId());
-                                if (attribute == null)
-                                    attribute = attributeValue.getAttributeObj();
-                                if (attribute == null)
-                                    attribute = attributeValue.getAttribute();
-                                attributes.put(attributeValue.getAttributeId(), attribute);
-                                operations.add(DbOperation.save(attribute));
-                            }
-                        }
+                        operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElement(), attributes));
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));
@@ -178,5 +152,25 @@ public class ProgramWrapper {
             stageRelation.setProgramIndicator(programIndicator);
             stageRelation.setProgramSection(programSection);
             return DbOperation.save(stageRelation);
+    }
+
+    private static List<DbOperation> saveDataElementAttributes(DataElement dataElement, Map<String, Attribute> attributes){
+        List<DbOperation> operations = new ArrayList<>();
+        List<AttributeValue> attributeValues = dataElement.getAttributeValues();
+        if (attributeValues!=null && !attributeValues.isEmpty()) {
+            for (AttributeValue attributeValue : attributeValues) {
+                attributeValue.setDataElement(dataElement.getUid());
+                //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
+                operations.add(DbOperation.save(attributeValue));
+                Attribute attribute = attributes.get(attributeValue.getAttributeId());
+                if (attribute == null)
+                    attribute = attributeValue.getAttributeObj();
+                if (attribute == null)
+                    attribute = attributeValue.getAttribute();
+                attributes.put(attributeValue.getAttributeId(), attribute);
+                operations.add(DbOperation.save(attribute));
+            }
+        }
+        return operations;
     }
 }

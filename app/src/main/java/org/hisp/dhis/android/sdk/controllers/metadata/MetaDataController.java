@@ -32,9 +32,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.ColumnAlias;
 import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.android.sdk.R;
@@ -200,24 +198,61 @@ public final class MetaDataController extends ResourceController {
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
     }
 
+    /**
+     * Get every entry in Attribute table as a List of Attribute objects
+     *
+     * @return List of Attribute objects with all the Attribute table content
+     */
     public static List<Attribute> getAttributes() {
-        return new Select().from(Attribute.class).orderBy(Attribute$Table.ID).queryList();
+        return new Select().from(Attribute.class)
+                .orderBy(Attribute$Table.ID).queryList();
     }
 
+    /**
+     * Get every entry in AttributeValue table as a List of AttributeValue objects
+     *
+     * @return List of AttributeValue objects with all the AttributeValue content
+     */
     public static List<AttributeValue> getAttributeValues() {
-        return new Select().from(AttributeValue.class).orderBy(AttributeValue$Table.ID).queryList();
+        return new Select().from(AttributeValue.class)
+                .orderBy(AttributeValue$Table.ID).queryList();
     }
 
+    /**
+     * Get all the AttributeValues that belongs to a given DataElement
+     *
+     * @param dataElement to get the Attributes from
+     * @return List of AttributeValue objects that belongs to the given DataElement
+     */
     public static List<AttributeValue> getAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
-        return new Select().from(AttributeValue.class).where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid())).queryList();
+        return new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid()))
+                .orderBy(AttributeValue$Table.ID).queryList();
     }
 
+    /**
+     * Get a concrete AttributeValue entry given its id
+     *
+     * @param id PK of the AttributeValue table
+     * @return The AttributeValue object or null if not found
+     */
     public static AttributeValue getAttributeValue(Long id){
         if (id == null) return null;
-        AttributeValue attributeValues = new Select().from(AttributeValue.class)
+        return new Select().from(AttributeValue.class)
                 .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
-        return attributeValues;
+    }
+
+    /**
+     * Get a concrete Attribute entry given its string ID
+     *
+     * @param attributeId The ID used in DHIS2 to identify the Attribute
+     * @return The Attribute object or null if not found
+     */
+    public static Attribute getAttribute(String attributeId){
+        if (attributeId == null) return null;
+        return new Select().from(Attribute.class)
+                .where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
     }
 
     /**
@@ -389,10 +424,6 @@ public final class MetaDataController extends ResourceController {
     public static DataElement getDataElement(String dataElementId) {
         return new Select().from(DataElement.class).where(Condition.column(DataElement$Table.ID).
                 is(dataElementId)).querySingle();
-    }
-
-    public static Attribute getAttribute(String attributeId){
-        return new Select().from(Attribute.class).where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
     }
 
     /**

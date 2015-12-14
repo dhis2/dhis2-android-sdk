@@ -207,10 +207,6 @@ public class Program extends BaseMetaDataObject {
         this.relationshipFromA = relationshipFromA;
     }
 
-    public AttributeValue getAttributeValue(long id){
-        return MetaDataController.getAttributeValue(id);
-    }
-
     public int getType() {
         return type;
     }

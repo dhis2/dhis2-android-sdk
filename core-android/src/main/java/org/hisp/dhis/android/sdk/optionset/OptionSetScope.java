@@ -73,7 +73,7 @@ public class OptionSetScope implements IOptionSetScope {
             @Override
             public void call(Subscriber<? super List<Option>> subscriber) {
                 try {
-                    List<Option> options = mOptionSetService.getOptions(optionSet);
+                    List<Option> options = mOptionSetService.list(optionSet);
                     subscriber.onNext(options);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

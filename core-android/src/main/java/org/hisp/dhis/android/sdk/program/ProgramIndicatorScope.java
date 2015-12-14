@@ -74,7 +74,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.query(program);
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(program);
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

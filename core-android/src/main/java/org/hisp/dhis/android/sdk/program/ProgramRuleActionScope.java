@@ -73,7 +73,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
                 try {
-                    List<ProgramRuleAction> programRuleActions = mProgramRuleActionService.query(programRule);
+                    List<ProgramRuleAction> programRuleActions = mProgramRuleActionService.list(programRule);
                     subscriber.onNext(programRuleActions);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

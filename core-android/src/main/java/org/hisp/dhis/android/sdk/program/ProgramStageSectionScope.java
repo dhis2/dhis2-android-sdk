@@ -73,7 +73,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
-                    List<ProgramStageSection> programStageSections = mProgramStageSectionService.query(programStage);
+                    List<ProgramStageSection> programStageSections = mProgramStageSectionService.list(programStage);
                     subscriber.onNext(programStageSections);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -59,7 +59,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.query(programStage);
+                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.list(programStage);
                     subscriber.onNext(programRuleActions);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -76,7 +76,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.query(programStage, dataElement);
+                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.list(programStage, dataElement);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -93,7 +93,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.query(programStageSection);
+                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.list(programStageSection);
                     subscriber.onNext(programRuleActions);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

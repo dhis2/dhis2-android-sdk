@@ -14,7 +14,7 @@ import rx.Subscriber;
 public class ProgramStageDataElementScope implements IProgramStageDataElementScope {
 
     private ProgramStageDataElementService mProgramStageDataElementService;
-    
+
     public ProgramStageDataElementScope(ProgramStageDataElementService programStageDataElementService) {
         this.mProgramStageDataElementService = programStageDataElementService;
     }

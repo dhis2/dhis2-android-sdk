@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.sdk.optionset;
 
+import org.hisp.dhis.java.sdk.models.optionset.Option;
 import org.hisp.dhis.java.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.java.sdk.optionset.OptionSetService;
 
@@ -57,6 +58,23 @@ public class OptionSetScope implements IOptionSetScope {
                 try {
                     List<OptionSet> optionSets = mOptionSetService.list();
                     subscriber.onNext(optionSets);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Option>> getOptions(final OptionSet optionSet) {
+        return Observable.create(new Observable.OnSubscribe<List<Option>>() {
+            @Override
+            public void call(Subscriber<? super List<Option>> subscriber) {
+                try {
+                    List<Option> options = mOptionSetService.getOptions(optionSet);
+                    subscriber.onNext(options);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

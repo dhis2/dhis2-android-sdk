@@ -1,6 +1,7 @@
 package org.hisp.dhis.android.sdk.trackedentity;
 
 import org.hisp.dhis.java.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.java.sdk.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.java.sdk.trackedentity.TrackedEntityAttributeService;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import rx.Subscriber;
 
 public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope {
     private TrackedEntityAttributeService mTrackedEntityAttributeService;
+    private TrackedEntityAttributeController mTrackedEntityAttributeController;
 
-    public TrackedEntityAttributeScope(TrackedEntityAttributeService trackedEntityAttributeService) {
+    public TrackedEntityAttributeScope(TrackedEntityAttributeService trackedEntityAttributeService, TrackedEntityAttributeController trackedEntityAttributeController) {
         this.mTrackedEntityAttributeService = trackedEntityAttributeService;
+        this.mTrackedEntityAttributeController = trackedEntityAttributeController;
     }
 
     @Override
@@ -91,6 +94,24 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
                 try {
                     boolean status = mTrackedEntityAttributeService.remove(object);
                     subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> send() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    mTrackedEntityAttributeController.sync();
+//                    boolean status = mTrackedEntityAttributeController.sync();
+//                    subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

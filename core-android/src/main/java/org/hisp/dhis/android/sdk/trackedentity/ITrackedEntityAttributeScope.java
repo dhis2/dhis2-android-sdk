@@ -16,4 +16,7 @@ public interface ITrackedEntityAttributeScope {
     Observable<Boolean> save(TrackedEntityAttribute object);
 
     Observable<Boolean> remove(TrackedEntityAttribute object);
+
+    Observable<Boolean> send();
+
 }

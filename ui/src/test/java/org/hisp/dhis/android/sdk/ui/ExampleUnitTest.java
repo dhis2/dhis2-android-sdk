@@ -27,7 +27,7 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui;
+package org.hisp.dhis.client.sdk.ui;
 
 import org.junit.Test;
 

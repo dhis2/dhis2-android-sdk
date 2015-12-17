@@ -26,4 +26,4 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.hisp.dhis.android.sdk.api" />
+<manifest package="org.hisp.dhis.client.sdk.android.api" />

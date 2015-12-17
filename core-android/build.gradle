@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
 
 def cfg = rootProject.ext.configuration
@@ -63,7 +63,7 @@ dependencies {
     compile "com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}"
 
     // ReactiveX
-    compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}"
+    compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
 
     // Raizlabs.
     apt "com.raizlabs.android:DBFlow-Compiler:${libs.dbFlowVersion}"

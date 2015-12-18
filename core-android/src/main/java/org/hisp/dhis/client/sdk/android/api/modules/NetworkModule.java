@@ -75,7 +75,8 @@ public class NetworkModule implements INetworkModule {
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.interceptors().add(new AuthInterceptor(preferencesModule.getUserPreferences()));
+        okHttpClient.interceptors().add(new AuthInterceptor(preferencesModule.getUserPreferences(),
+                preferencesModule.getConfigurationPreferences()));
         okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
@@ -133,9 +134,11 @@ public class NetworkModule implements INetworkModule {
 
     private static class AuthInterceptor implements Interceptor {
         private final IUserPreferences mUserPreferences;
+        private final IConfigurationPreferences mConfigurationPreferences;
 
-        public AuthInterceptor(IUserPreferences preferences) {
+        public AuthInterceptor(IUserPreferences preferences, IConfigurationPreferences configurationPreferences) {
             mUserPreferences = preferences;
+            mConfigurationPreferences = configurationPreferences;
         }
 
         @Override
@@ -158,6 +161,11 @@ public class NetworkModule implements INetworkModule {
                     // invalidate existing user
                     mUserPreferences.invalidateUser();
                 } else {
+                    if (!mUserPreferences.isUserInvalidated()) {
+                        // remove server URL address
+                        mConfigurationPreferences.clear();
+                    }
+
                     // remove username/password
                     mUserPreferences.clear();
                 }

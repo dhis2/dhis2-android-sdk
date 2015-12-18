@@ -33,6 +33,7 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.common.FailedItemStore;
+import org.hisp.dhis.client.sdk.android.common.ModelStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.common.state.IStateMapper;
 import org.hisp.dhis.client.sdk.android.common.state.StateMapper;
@@ -128,6 +129,7 @@ import org.hisp.dhis.client.sdk.android.user.UserStore;
 import org.hisp.dhis.client.sdk.android.common.state.StateStore;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementStore;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
+import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
@@ -273,6 +275,8 @@ public class PersistenceModule implements IPersistenceModule {
     private final IMapper<UserAccount, UserAccount$Flow> userAccountMapper;
     private final IMapper<User, User$Flow> userMapper;
 
+    private final IModelsStore modelsStore;
+
     public PersistenceModule(Context context) {
         FlowManager.init(context);
         transactionManager = new TransactionManager(modelUtils);
@@ -343,6 +347,8 @@ public class PersistenceModule implements IPersistenceModule {
         userAccountStore = new UserAccountStore(userAccountMapper);
         userStore = new UserStore(userMapper);
         failedItemStore = new FailedItemStore();
+
+        modelsStore = new ModelStore();
     }
 
     @Override
@@ -513,6 +519,11 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public IUserAccountStore getUserAccountStore() {
         return userAccountStore;
+    }
+
+    @Override
+    public IModelsStore getModelStore() {
+        return modelsStore;
     }
 
     @Override

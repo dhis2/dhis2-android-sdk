@@ -44,20 +44,22 @@ public class D2 {
     private D2(Context context) {
         IModelUtils modelUtils = new ModelUtils();
 
-        INetworkModule networkModule = new NetworkModule(null);
         IPersistenceModule persistenceModule = new PersistenceModule(context);
         IPreferencesModule preferencesModule = new PreferencesModule(context);
-        IServicesModule servicesModule = new ServicesModule(persistenceModule, null);
+        INetworkModule networkModule = new NetworkModule(preferencesModule);
+        IServicesModule servicesModule = new ServicesModule(persistenceModule);
         IControllersModule controllersModule = new ControllersModule(networkModule,
                 persistenceModule, preferencesModule, modelUtils);
 
-        mUserAccountScope = new UserAccountScope(null, null, null);
+        mUserPreferences = preferencesModule.getUserPreferences();
+
+        mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
+                servicesModule.getUserAccountService(), mUserPreferences);
 
         mOrganisationUnitScope = new OrganisationUnitScope(null);
         mProgramScope = new ProgramScope(null);
         mDashboardScope = new DashboardScope(servicesModule.getDashboardService(),
                 controllersModule.getDashboardController());
-        mUserPreferences = preferencesModule.getUserPreferences();
     }
 
     public static void init(Context context) {
@@ -71,7 +73,8 @@ public class D2 {
         return mD2;
     }
 
-    public static Observable<UserAccount> signIn(Configuration configuration, String username, String password) {
+    public static Observable<UserAccount> signIn(Configuration configuration, String username,
+                                                 String password) {
         return getInstance().mUserAccountScope.signIn(configuration, username, password);
     }
 

@@ -54,6 +54,7 @@ dependencies {
     // Google
     compile "com.android.support:support-annotations:${libs.supportVersion}"
     compile "com.android.support:appcompat-v7:${libs.supportVersion}"
+    compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
 
     // Other
     compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"

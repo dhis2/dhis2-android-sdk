@@ -59,4 +59,5 @@ dependencies {
 
     // Test
     testCompile "junit:junit:${libs.junitVersion}"
+    compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
 }

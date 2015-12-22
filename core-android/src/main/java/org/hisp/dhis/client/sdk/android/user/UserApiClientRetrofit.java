@@ -45,9 +45,9 @@ public interface UserApiClientRetrofit {
     // Methods for getting user information
     /////////////////////////////////////////////////////////////////////////
 
-    @GET("/me/")
+    @GET("me/")
     Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
 
-    @GET("/me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
+    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
     Call<List<OrganisationUnit>> getOrganisationUnitsWithAssignedPrograms();
 }

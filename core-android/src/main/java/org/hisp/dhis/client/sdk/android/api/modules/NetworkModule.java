@@ -36,6 +36,7 @@ import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
@@ -74,9 +75,14 @@ public class NetworkModule implements INetworkModule {
     private final IUserApiClient mUserApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
+        AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
+                preferencesModule.getConfigurationPreferences());
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.interceptors().add(new AuthInterceptor(preferencesModule.getUserPreferences(),
-                preferencesModule.getConfigurationPreferences()));
+        okHttpClient.interceptors().add(authInterceptor);
+        okHttpClient.interceptors().add(loggingInterceptor);
         okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
@@ -128,7 +134,13 @@ public class NetworkModule implements INetworkModule {
         @Override
         public HttpUrl url() {
             Configuration configuration = mConfigurationPreferences.get();
-            return HttpUrl.parse(configuration.getServerUrl());
+            HttpUrl url = HttpUrl.parse(configuration.getServerUrl())
+                    .newBuilder()
+                    .addPathSegment("api")
+                    .build();
+            HttpUrl modifiedUrl = HttpUrl.parse(url.toString() + "/");
+            System.out.println("ApiBaseUrl.url: " + modifiedUrl);
+            return modifiedUrl;
         }
     }
 
@@ -154,6 +166,7 @@ public class NetworkModule implements INetworkModule {
                     .newBuilder()
                     .addHeader("Authorization", base64Credentials)
                     .build();
+            System.out.println("Request: " + request.urlString());
 
             Response response = chain.proceed(request);
             if (!response.isSuccessful() && response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {

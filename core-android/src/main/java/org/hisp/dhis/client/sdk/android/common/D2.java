@@ -1,17 +1,10 @@
 package org.hisp.dhis.client.sdk.android.common;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardScope;
-import org.hisp.dhis.client.sdk.android.dashboard.IDashboardScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.program.IProgramScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -36,10 +29,7 @@ public class D2 {
     private static D2 mD2;
 
     private final IUserPreferences mUserPreferences;
-    private final IDashboardScope mDashboardScope;
     private final IUserAccountScope mUserAccountScope;
-    private final IOrganisationUnitScope mOrganisationUnitScope;
-    private final IProgramScope mProgramScope;
 
     private D2(Context context) {
         IModelUtils modelUtils = new ModelUtils();
@@ -54,12 +44,7 @@ public class D2 {
         mUserPreferences = preferencesModule.getUserPreferences();
 
         mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
-                servicesModule.getUserAccountService(), mUserPreferences);
-
-        mOrganisationUnitScope = new OrganisationUnitScope(null);
-        mProgramScope = new ProgramScope(null);
-        mDashboardScope = new DashboardScope(servicesModule.getDashboardService(),
-                controllersModule.getDashboardController());
+                mUserPreferences, preferencesModule.getConfigurationPreferences());
     }
 
     public static void init(Context context) {
@@ -70,6 +55,7 @@ public class D2 {
 
     private static D2 getInstance() {
         isNull(mD2, "You have to call init first");
+
         return mD2;
     }
 
@@ -80,20 +66,5 @@ public class D2 {
 
     public static Observable<Boolean> signOut() {
         return getInstance().mUserAccountScope.signOut();
-    }
-
-    @NonNull
-    public static IDashboardScope dashboards() {
-        return getInstance().mDashboardScope;
-    }
-
-    @NonNull
-    public static IOrganisationUnitScope organisationUnits() {
-        return getInstance().mOrganisationUnitScope;
-    }
-
-    @NonNull
-    public static IUserAccountScope currentUser() {
-        return getInstance().mUserAccountScope;
     }
 }

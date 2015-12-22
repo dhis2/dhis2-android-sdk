@@ -37,7 +37,7 @@ android {
     buildToolsVersion cfg.buildToolsVersion
 
     defaultConfig {
-        applicationId cfg.package
+        // applicationId cfg.package
         minSdkVersion cfg.minSdkVersion
         targetSdkVersion cfg.targetSdkVersion
         versionCode cfg.versionCode
@@ -59,8 +59,11 @@ dependencies {
 
     // Square
     compile "com.squareup.okhttp:okhttp:${libs.okhttpVersion}"
+    compile "com.squareup.okhttp:logging-interceptor:${libs.okhttpVersion}"
     compile "com.squareup.retrofit:retrofit:${libs.retrofitVersion}"
-    compile "com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}"
+    compile("com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}") {
+        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
+    }
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";

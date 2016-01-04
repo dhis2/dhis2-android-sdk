@@ -32,9 +32,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
 
+import java.util.List;
 import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
@@ -69,6 +71,10 @@ public class DataElement extends BaseNameableObject {
     @Column(name = "formName")
     String formName;
 
+    @JsonProperty("code")
+    @Column(name = "code")
+    String code;
+
     @JsonProperty("numberType")
     @Column(name = "numberType")
     String numberType;
@@ -84,6 +90,9 @@ public class DataElement extends BaseNameableObject {
     @JsonProperty("displayFormName")
     @Column(name = "displayFormName")
     String displayFormName;
+
+    @JsonProperty("attributeValues")
+    List<AttributeValue> attributeValues;
 
     @Column(name = "optionSet")
     String optionSet;
@@ -149,6 +158,14 @@ public class DataElement extends BaseNameableObject {
         this.formName = formName;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     public String getNumberType() {
         return numberType;
     }
@@ -179,5 +196,25 @@ public class DataElement extends BaseNameableObject {
 
     public void setDisplayFormName(String displayFormName) {
         this.displayFormName = displayFormName;
+    }
+
+    public List<AttributeValue> getAttributeValues() {
+        if (attributeValues == null) {
+            attributeValues = MetaDataController.getAttributeValues(this);
+        }
+        return attributeValues;
+    }
+
+    public AttributeValue getAttributeValue(String attributeId){
+        if (getAttributeValues() == null) return null;
+        for (AttributeValue attributeValue: getAttributeValues()){
+            if (attributeValue.getAttribute().equals(attributeId))
+                return attributeValue;
+        }
+        return null;
+    }
+
+    public AttributeValue getAttributeValue(long id){
+        return MetaDataController.getAttributeValue(id);
     }
 }

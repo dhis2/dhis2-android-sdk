@@ -82,7 +82,7 @@ public interface IDhisApi {
     String PROGRAM_RULES = "programRules";
     String PROGRAM_RULE_VARIABLES = "programRuleVariables";
     String PROGRAM_RULE_ACTIONS = "programRuleActions";
-    String RELATION_SHIP_TYPES = "relationshipTypes";
+    String RELATIONSHIP_TYPES = "relationshipTypes";
     String EVENTS = "events";
     String TRACKED_ENTITY_INSTANCES = "trackedEntityInstances";
     String ENROLLMENTS = "enrollments";
@@ -177,7 +177,7 @@ public interface IDhisApi {
     @GET("/" + PROGRAM_RULE_ACTIONS + "?paging=false")
     Call<Map<String, List<ProgramRuleAction>>> getProgramRuleActions(@QueryMap Map<String, String> queryParams);
 
-    @GET("/" + RELATION_SHIP_TYPES + "?paging=false")
+    @GET("/" + RELATIONSHIP_TYPES + "?paging=false")
     Call<Map<String, List<RelationshipType>>> getRelationshipTypes(@QueryMap Map<String, String> queryParams);
 
     @GET("/" + OPTION_SETS + "?paging=false")

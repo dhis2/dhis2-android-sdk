@@ -52,6 +52,25 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
+    public Observable<Boolean> isSignedIn() {
+        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                try {
+                    if(mUserPreferences.isUserConfirmed()) {
+                        subscriber.onNext(true);
+                    }
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
     public Observable<Boolean> signOut() {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
 

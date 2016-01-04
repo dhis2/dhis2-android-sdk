@@ -64,6 +64,10 @@ public class D2 {
         return getInstance().mUserAccountScope.signIn(configuration, username, password);
     }
 
+    public static Observable<Boolean> isSignedIn() {
+        return getInstance().mUserAccountScope.isSignedIn();
+    }
+
     public static Observable<Boolean> signOut() {
         return getInstance().mUserAccountScope.signOut();
     }

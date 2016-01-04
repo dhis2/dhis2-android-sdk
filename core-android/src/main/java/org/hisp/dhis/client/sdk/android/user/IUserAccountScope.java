@@ -10,5 +10,7 @@ public interface IUserAccountScope {
 
     Observable<UserAccount> signIn(Configuration configuration, String username, String password);
 
+    Observable<Boolean> isSignedIn();
+
     Observable<Boolean> signOut();
 }

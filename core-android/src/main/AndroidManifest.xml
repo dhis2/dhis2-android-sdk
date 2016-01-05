@@ -26,4 +26,8 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.hisp.dhis.client.sdk.android.api" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.hisp.dhis.client.sdk.android.api">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

@@ -33,6 +33,12 @@ import android.content.Context;
 import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.event.EventScope;
+import org.hisp.dhis.client.sdk.android.event.IEventScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -44,6 +50,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
+import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -58,6 +65,9 @@ public class D2 {
 
     private final IUserPreferences mUserPreferences;
     private final IUserAccountScope mUserAccountScope;
+    private final IProgramScope mProgramScope;
+    private final IOrganisationUnitScope mOrganisationUnitScope;
+    private final IEventScope mEventScope;
 
     private D2(Context context) {
         IModelUtils modelUtils = new ModelUtils();
@@ -73,6 +83,12 @@ public class D2 {
 
         mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
                 mUserPreferences, preferencesModule.getConfigurationPreferences());
+
+        mProgramScope = new ProgramScope(servicesModule.getProgramService());
+
+        mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService());
+
+        mEventScope = new EventScope(servicesModule.getEventService(), controllersModule.getEventController());
     }
 
     public static void init(Context context) {
@@ -98,5 +114,21 @@ public class D2 {
 
     public static Observable<Boolean> signOut() {
         return getInstance().mUserAccountScope.signOut();
+    }
+
+    public static IEventScope event() {
+        return getInstance().mEventScope;
+    }
+
+    public static IOrganisationUnitScope organisationUnit() {
+        return getInstance().mOrganisationUnitScope;
+    }
+
+    public static IProgramScope program() {
+        return getInstance().mProgramScope;
+    }
+
+    public static IUserAccountScope userAccount() {
+        return getInstance().mUserAccountScope;
     }
 }

@@ -42,6 +42,8 @@ import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClient;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.event.EventApiClient;
+import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -51,6 +53,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreference
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
+import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
@@ -73,6 +76,7 @@ public class NetworkModule implements INetworkModule {
     private final IDashboardApiClient mDashboardApiClient;
     private final ISystemInfoApiClient mSystemInfoApiClient;
     private final IUserApiClient mUserApiClient;
+    private final IEventApiClient mEventApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
@@ -107,6 +111,7 @@ public class NetworkModule implements INetworkModule {
         mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));
         mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(SystemInfoApiClientRetrofit.class));
         mUserApiClient = new UserAccountApiClient(retrofit.create(UserApiClientRetrofit.class));
+        mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
     }
 
     @Override
@@ -117,6 +122,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public ISystemInfoApiClient getSystemInfoApiClient() {
         return mSystemInfoApiClient;
+    }
+
+    @Override
+    public IEventApiClient getEventApiClient() {
+        return mEventApiClient;
     }
 
     @Override

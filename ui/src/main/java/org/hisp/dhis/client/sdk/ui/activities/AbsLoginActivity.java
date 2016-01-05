@@ -80,7 +80,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(), mPassword.getText());
+                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
+                        mPassword.getText());
             }
         });
     }
@@ -150,5 +151,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         hideProgressBar(true);
     }
 
-    protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username, Editable password);
+    protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username,
+                                                 Editable password);
 }

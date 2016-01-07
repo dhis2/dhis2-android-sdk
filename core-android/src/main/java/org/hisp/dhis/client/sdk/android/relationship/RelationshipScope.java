@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.relationship;
 
 
-import org.hisp.dhis.client.sdk.core.relationship.RelationshipService;
+import org.hisp.dhis.client.sdk.core.relationship.IRelationshipService;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
@@ -39,9 +39,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class RelationshipScope implements IRelationshipScope {
-    private RelationshipService mRelationshipService;
+    private IRelationshipService mRelationshipService;
 
-    public RelationshipScope(RelationshipService relationshipService) {
+    public RelationshipScope(IRelationshipService relationshipService) {
         this.mRelationshipService = relationshipService;
     }
 

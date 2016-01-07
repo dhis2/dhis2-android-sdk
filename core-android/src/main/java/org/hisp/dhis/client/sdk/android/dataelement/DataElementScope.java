@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 
-import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import java.util.List;
@@ -38,9 +38,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class DataElementScope implements IDataElementScope {
-    private final DataElementService mDataElementService;
+    private final IDataElementService mDataElementService;
 
-    public DataElementScope(DataElementService dataElementService) {
+    public DataElementScope(IDataElementService dataElementService) {
         this.mDataElementService = dataElementService;
     }
 

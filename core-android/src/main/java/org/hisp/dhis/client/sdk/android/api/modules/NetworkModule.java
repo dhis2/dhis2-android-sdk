@@ -53,8 +53,10 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreference
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
+import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 import java.io.IOException;
@@ -77,6 +79,8 @@ public class NetworkModule implements INetworkModule {
     private final ISystemInfoApiClient mSystemInfoApiClient;
     private final IUserApiClient mUserApiClient;
     private final IEventApiClient mEventApiClient;
+    private final IEnrollmentApiClient mEnrollmentApiClient;
+    private final ITrackedEntityAttributeApiClient mTrackedEntityAttributeApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
@@ -112,6 +116,10 @@ public class NetworkModule implements INetworkModule {
         mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(SystemInfoApiClientRetrofit.class));
         mUserApiClient = new UserAccountApiClient(retrofit.create(UserApiClientRetrofit.class));
         mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
+
+        mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.
+
+        mTrackedEntityAttributeApiClient = null; // TODO: implement TrackedEntityAttributeApiClient class.
     }
 
     @Override
@@ -127,6 +135,16 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IEventApiClient getEventApiClient() {
         return mEventApiClient;
+    }
+
+    @Override
+    public IEnrollmentApiClient getEnrollmentApiClient() {
+        return null;
+    }
+
+    @Override
+    public ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient() {
+        return mTrackedEntityAttributeApiClient;
     }
 
     @Override

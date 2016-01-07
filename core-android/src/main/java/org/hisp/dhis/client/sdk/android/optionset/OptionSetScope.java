@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
@@ -39,9 +39,9 @@ import rx.Subscriber;
 
 public class OptionSetScope implements IOptionSetScope {
 
-    private OptionSetService mOptionSetService;
+    private IOptionSetService mOptionSetService;
 
-    public OptionSetScope(OptionSetService optionSetService) {
+    public OptionSetScope(IOptionSetService optionSetService) {
         this.mOptionSetService = optionSetService;
     }
 

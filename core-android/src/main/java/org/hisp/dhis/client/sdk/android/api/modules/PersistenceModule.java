@@ -42,15 +42,18 @@ import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.constant.IConstantStore;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardElementStore;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemStore;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardStore;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.dataset.IDataSetStore;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
@@ -68,10 +71,7 @@ import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 import org.hisp.dhis.client.sdk.core.user.IUserStore;
-import org.hisp.dhis.client.sdk.models.constant.Constant;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
@@ -292,13 +292,13 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public IIdentifiableObjectStore<Constant> getConstantStore() {
+    public IConstantStore getConstantStore() {
 //        return constantStore;
         return null;
     }
 
     @Override
-    public IIdentifiableObjectStore<DataElement> getDataElementStore() {
+    public IDataElementStore getDataElementStore() {
 //        return dataElementStore;
         return null;
     }
@@ -310,7 +310,7 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public IIdentifiableObjectStore<OptionSet> getOptionSetStore() {
+    public IOptionSetStore getOptionSetStore() {
 //        return optionSetStore;
         return null;
     }

@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
@@ -40,9 +40,9 @@ import rx.Subscriber;
 
 public class ProgramStageSectionScope implements IProgramStageSectionScope {
 
-    private ProgramStageSectionService mProgramStageSectionService;
+    private IProgramStageSectionService mProgramStageSectionService;
 
-    public ProgramStageSectionScope(ProgramStageSectionService programStageSectionService) {
+    public ProgramStageSectionScope(IProgramStageSectionService programStageSectionService) {
         this.mProgramStageSectionService = programStageSectionService;
     }
     @Override

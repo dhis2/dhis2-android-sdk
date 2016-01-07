@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.constant;
 
 
-import org.hisp.dhis.client.sdk.core.constant.ConstantService;
+import org.hisp.dhis.client.sdk.core.constant.IConstantService;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 import java.util.List;
@@ -39,9 +39,9 @@ import rx.Subscriber;
 
 public class ConstantScope implements IConstantScope {
 
-    private ConstantService mConstantService;
+    private IConstantService mConstantService;
 
-    public ConstantScope(ConstantService constantService) {
+    public ConstantScope(IConstantService constantService) {
         this.mConstantService = constantService;
     }
 

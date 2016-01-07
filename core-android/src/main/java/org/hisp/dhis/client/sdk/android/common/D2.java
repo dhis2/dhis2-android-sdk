@@ -33,12 +33,36 @@ import android.content.Context;
 import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.constant.ConstantScope;
+import org.hisp.dhis.client.sdk.android.constant.IConstantScope;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
+import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
+import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentScope;
+import org.hisp.dhis.client.sdk.android.enrollment.IEnrollmentScope;
 import org.hisp.dhis.client.sdk.android.event.EventScope;
 import org.hisp.dhis.client.sdk.android.event.IEventScope;
+import org.hisp.dhis.client.sdk.android.optionset.IOptionSetScope;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
+import org.hisp.dhis.client.sdk.android.relationship.IRelationshipScope;
+import org.hisp.dhis.client.sdk.android.relationship.IRelationshipTypeScope;
+import org.hisp.dhis.client.sdk.android.relationship.RelationshipScope;
+import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeValueScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityDataValueScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -50,7 +74,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
-import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -68,6 +91,21 @@ public class D2 {
     private final IProgramScope mProgramScope;
     private final IOrganisationUnitScope mOrganisationUnitScope;
     private final IEventScope mEventScope;
+    private final IConstantScope mConstantScope;
+    private final IDataElementScope mDataElementScope;
+    private final IEnrollmentScope mEnrollmentScope;
+    private final IOptionSetScope mOptionSetScope;
+    private final IProgramStageScope mProgramStageScope;
+
+    private final IProgramStageDataElementScope mProgramStageDataElementScope;
+    private final IProgramStageSectionScope mProgramStageSectionScope;
+    private final IRelationshipScope mRelationshipScope;
+    private final IRelationshipTypeScope mRelationshipTypeScope;
+    private final ITrackedEntityAttributeScope mTrackedEntityAttributeScope;
+    private final ITrackedEntityAttributeValueScope mTrackedEntityAttributeValueScope;
+    private final ITrackedEntityDataValueScope mTrackedEntityDataValueScope;
+
+
 
     private D2(Context context) {
         IModelUtils modelUtils = new ModelUtils();
@@ -89,6 +127,37 @@ public class D2 {
         mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService());
 
         mEventScope = new EventScope(servicesModule.getEventService(), controllersModule.getEventController());
+
+        mConstantScope = new ConstantScope(servicesModule.getConstantService());
+
+        mDataElementScope = new DataElementScope(servicesModule.getDataElementService());
+
+        mEnrollmentScope = new EnrollmentScope(
+                servicesModule.getEnrollmentService(),
+                controllersModule.getEnrollmentController());
+
+        mOptionSetScope = new OptionSetScope(servicesModule.getOptionSetService());
+
+        mProgramStageScope = new ProgramStageScope(servicesModule.getProgramStageService());
+
+        mProgramStageDataElementScope = new ProgramStageDataElementScope(servicesModule.getProgramStageDataElementService());
+
+        mProgramStageSectionScope = new ProgramStageSectionScope(servicesModule.getProgramStageSectionService());
+
+        mRelationshipScope = new RelationshipScope(servicesModule.getRelationshipService());
+
+        mRelationshipTypeScope = new RelationshipTypeScope(servicesModule.getRelationshipTypeService());
+
+        mTrackedEntityAttributeScope = new TrackedEntityAttributeScope(
+                servicesModule.getTrackedEntityAttributeService(),
+                controllersModule.getTrackedEntityAttributeController());
+
+        mTrackedEntityAttributeValueScope = new TrackedEntityAttributeValueScope(servicesModule.getTrackedEntityAttributeValueService());
+
+        mTrackedEntityDataValueScope = new TrackedEntityDataValueScope(
+                servicesModule.getTrackedEntityDataValueService(),
+                controllersModule.getEventController());
+
     }
 
     public static void init(Context context) {
@@ -118,6 +187,26 @@ public class D2 {
 
     public static IEventScope event() {
         return getInstance().mEventScope;
+    }
+
+    public static IConstantScope constant() {
+        return getInstance().mConstantScope;
+    }
+
+    public static IDataElementScope dataElement() {
+        return getInstance().mDataElementScope;
+    }
+
+    public static IEnrollmentScope enrollment() {
+        return getInstance().mEnrollmentScope;
+    }
+
+    public static IOptionSetScope optionSet() {
+        return getInstance().mOptionSetScope;
+    }
+
+    public static IProgramStageScope programStage() {
+        return getInstance().mProgramStageScope;
     }
 
     public static IOrganisationUnitScope organisationUnit() {

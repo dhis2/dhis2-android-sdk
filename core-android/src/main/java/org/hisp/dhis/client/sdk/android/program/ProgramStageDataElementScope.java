@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -42,9 +42,9 @@ import rx.Subscriber;
 
 public class ProgramStageDataElementScope implements IProgramStageDataElementScope {
 
-    private ProgramStageDataElementService mProgramStageDataElementService;
+    private IProgramStageDataElementService mProgramStageDataElementService;
 
-    public ProgramStageDataElementScope(ProgramStageDataElementService programStageDataElementService) {
+    public ProgramStageDataElementScope(IProgramStageDataElementService programStageDataElementService) {
         this.mProgramStageDataElementService = programStageDataElementService;
     }
 

@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.relationship;
 
 
-import org.hisp.dhis.client.sdk.core.relationship.RelationshipTypeService;
+import org.hisp.dhis.client.sdk.core.relationship.IRelationshipTypeService;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 import java.util.List;
@@ -39,9 +39,9 @@ import rx.Subscriber;
 
 public class RelationshipTypeScope implements IRelationshipTypeScope {
 
-    private RelationshipTypeService mRelationshipTypeService;
+    private IRelationshipTypeService mRelationshipTypeService;
 
-    public RelationshipTypeScope(RelationshipTypeService relationshipTypeService) {
+    public RelationshipTypeScope(IRelationshipTypeService relationshipTypeService) {
         this.mRelationshipTypeService = relationshipTypeService;
     }
 

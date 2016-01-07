@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentController;
-import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentService;
+import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
+import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentService;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -42,10 +42,10 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class EnrollmentScope implements IEnrollmentScope {
-    private final EnrollmentService mEnrollmentService;
-    private final EnrollmentController mEnrollmentController;
+    private final IEnrollmentService mEnrollmentService;
+    private final IEnrollmentController mEnrollmentController;
 
-    public EnrollmentScope(EnrollmentService enrollmentService, EnrollmentController enrollmentController) {
+    public EnrollmentScope(IEnrollmentService enrollmentService, IEnrollmentController enrollmentController) {
         this.mEnrollmentService = enrollmentService;
         this.mEnrollmentController = enrollmentController;
     }

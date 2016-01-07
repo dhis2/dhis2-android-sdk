@@ -42,9 +42,12 @@ import org.hisp.dhis.android.sdk.job.JobExecutor;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+
+import java.util.Map;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
@@ -185,6 +188,17 @@ public final class DhisService extends Service {
             public Object execute() throws APIException {
                 DhisController.sendData();
                 return new Object();
+            }
+        });
+    }
+
+    public static void sendEventChanges() {
+        JobExecutor.enqueueJob(new NetworkJob<Map<Long,ImportSummary>>(0,
+                null) {
+            @Override
+            public Map<Long,ImportSummary> execute() throws APIException {
+                Map<Long,ImportSummary> importSummaryMap=DhisController.sendEventChanges();
+                return importSummaryMap;
             }
         });
     }

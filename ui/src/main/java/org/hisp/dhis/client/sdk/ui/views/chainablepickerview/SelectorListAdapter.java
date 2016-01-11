@@ -95,6 +95,9 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
             ArrayList<String> values = new ArrayList<>();
+            values.add("aaa");
+            values.add("bbb");
+            values.add("ccc");
             filterResults.values = values;
             filterResults.count = values.size();
             return filterResults;

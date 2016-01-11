@@ -38,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.hisp.dhis.client.sdk.ui.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
@@ -67,6 +68,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);
         mUsername = (EditText) findViewById(R.id.edit_text_username);
         mPassword = (EditText) findViewById(R.id.edit_text_password);
+
+        setDebugLoginCredentials();
 
         FieldTextWatcher watcher = new FieldTextWatcher();
         mServerUrl.addTextChangedListener(watcher);
@@ -109,6 +112,12 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                         !isEmpty(mUsername.getText()) &&
                         !isEmpty(mPassword.getText())
         );
+    }
+
+    private void setDebugLoginCredentials() {
+        mServerUrl.setText("https://play.dhis2.org/demo");
+        mUsername.setText("android");
+        mPassword.setText("Android123");
     }
 
     private void showProgressBar(boolean withAnimation) {

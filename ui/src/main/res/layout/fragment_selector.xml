@@ -24,7 +24,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:src="@drawable/ic_cancel"
-        app:layout_anchor="@id/itemFragment"
+        app:layout_anchor="@id/pickerFragment"
         app:layout_anchorGravity="bottom|right|end"
         />
 

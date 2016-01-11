@@ -191,7 +191,7 @@ public class Picker implements Parcelable, TextWatcher {
         dest.writeString(hint);
         dest.writeString(mimeType);
         dest.writeParcelable(pickedItem, flags);
-        IPickable[] pickers = new Pickable[pickableItems.size()];
+        IPickable[] pickers = new IPickable[pickableItems.size()];
         dest.writeParcelableArray(pickableItems.toArray(pickers), flags);
         boolean[] booleanValues = new boolean[1];
         booleanValues[0] = added;

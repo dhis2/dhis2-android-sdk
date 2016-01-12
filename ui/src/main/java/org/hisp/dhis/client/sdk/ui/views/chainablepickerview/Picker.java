@@ -55,7 +55,7 @@ public class Picker implements Parcelable, TextWatcher {
     private String hint;
     private String mimeType;
     private boolean added;
-    private IPickedItemClearListener pickedItemClearListener;
+    private IPickableItemClearListener pickedItemClearListener;
 
     public Picker(final List<IPickable> pickableItems1, String hint, String mimeType) {
         this.pickableItems = pickableItems1;
@@ -92,7 +92,7 @@ public class Picker implements Parcelable, TextWatcher {
         }
     };
 
-    public void registerPickedItemClearListener(IPickedItemClearListener listener) {
+    public void registerPickedItemClearListener(IPickableItemClearListener listener) {
         this.pickedItemClearListener = listener;
     }
 

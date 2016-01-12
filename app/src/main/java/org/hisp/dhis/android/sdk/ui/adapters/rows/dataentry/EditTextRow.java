@@ -56,11 +56,11 @@ public class EditTextRow extends Row {
 
 
 
-    public EditTextRow(String label, BaseValue baseValue, DataEntryRowTypes rowType) {
+    public EditTextRow(String label, String warning, BaseValue baseValue, DataEntryRowTypes rowType) {
         mLabel = label;
+        mWarning = warning;
         mValue = baseValue;
         mRowType = rowType;
-
 
         if (!DataEntryRowTypes.TEXT.equals(rowType) &&
                 !DataEntryRowTypes.LONG_TEXT.equals(rowType) &&
@@ -87,6 +87,7 @@ public class EditTextRow extends Row {
         } else {
             View root = inflater.inflate(R.layout.listview_row_edit_text, container, false);
             TextView label = (TextView) root.findViewById(R.id.text_label);
+            TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
@@ -128,7 +129,7 @@ public class EditTextRow extends Row {
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
-            holder = new ValueEntryHolder(label, editText, detailedInfoButton, listener );
+            holder = new ValueEntryHolder(label, warningLabel, editText, detailedInfoButton, listener );
             holder.editText.addTextChangedListener(listener);
 
             if(!isEditable())
@@ -148,10 +149,18 @@ public class EditTextRow extends Row {
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
         holder.editText.setText(mValue.getValue());
-        holder.editText.clearFocus();
+        holder.editText.setSelection(holder.editText.getText().length());
 
-        if(isDetailedInfoButtonHidden())
+        if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+
+        if(mWarning == null) {
+            holder.warningLabel.setVisibility(View.GONE);
+        } else {
+            holder.warningLabel.setVisibility(View.VISIBLE);
+            holder.warningLabel.setText(mWarning);
+        }
 
         return view;
     }
@@ -165,16 +174,19 @@ public class EditTextRow extends Row {
 
     private static class ValueEntryHolder {
         final TextView textLabel;
+        final TextView warningLabel;
         final EditText editText;
         final View detailedInfoButton;
         final OnTextChangeListener listener;
 
 
         public ValueEntryHolder(TextView textLabel,
+                                TextView warningLabel,
                                 EditText editText,
                                 View detailedInfoButton,
                                 OnTextChangeListener listener) {
             this.textLabel = textLabel;
+            this.warningLabel = warningLabel;
             this.editText = editText;
             this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.AsyncHelperThread;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.HideLoadingDialogEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
 
@@ -38,21 +39,21 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
  * This thread enables thread safe scheduling of ProgramRule and Indicator evaluation and updating,
  * typically triggered by data changed in data entry rows.
  */
-class RulesEvaluatorThread extends AsyncHelperThread {
-    private EventDataEntryFragment eventDataEntryFragment;
+public class RulesEvaluatorThread extends AsyncHelperThread {
+    private DataEntryFragment dataEntryFragment;
 
-    void init(EventDataEntryFragment eventDataEntryFragment) {
-        setEventDataEntryFragment(eventDataEntryFragment);
+    public void init(DataEntryFragment dataEntryFragment) {
+        setDataEntryFragment(dataEntryFragment);
     }
 
-    public void setEventDataEntryFragment(EventDataEntryFragment eventDataEntryFragment) {
-        this.eventDataEntryFragment = eventDataEntryFragment;
+    public void setDataEntryFragment(DataEntryFragment dataEntryFragment) {
+        this.dataEntryFragment = dataEntryFragment;
     }
 
     protected void work() {
-        if(eventDataEntryFragment!=null) {
-            eventDataEntryFragment.resetHiding(eventDataEntryFragment.getListViewAdapter(), eventDataEntryFragment.getSpinnerAdapter());
-            eventDataEntryFragment.evaluateAndApplyProgramRules();
+        if (dataEntryFragment != null) {
+            dataEntryFragment.resetHidingAndWarnings(dataEntryFragment.getListViewAdapter(), dataEntryFragment.getSpinnerAdapter());
+            dataEntryFragment.evaluateAndApplyProgramRules();
             Dhis2Application.getEventBus().post(new RefreshListViewEvent());
             Dhis2Application.getEventBus().post(new HideLoadingDialogEvent());
         }
@@ -60,6 +61,6 @@ class RulesEvaluatorThread extends AsyncHelperThread {
 
     public void kill() {
         super.kill();
-        setEventDataEntryFragment(null);
+        setDataEntryFragment(null);
     }
 }

@@ -53,11 +53,10 @@ public class CheckBoxRow extends Row {
 
     private final String mLabel;
 
-
-
-    public CheckBoxRow(String label, BaseValue mValue) {
+    public CheckBoxRow(String label, String warning, BaseValue mValue) {
         mLabel = label;
         this.mValue = mValue;
+        this.mWarning = warning;
 
         checkNeedsForDescriptionButton();
     }
@@ -74,11 +73,12 @@ public class CheckBoxRow extends Row {
         } else {
             View root = inflater.inflate(R.layout.listview_row_checkbox, container, false);
             TextView textLabel = (TextView) root.findViewById(R.id.text_label);
+            TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             CheckBox checkBox = (CheckBox) root.findViewById(R.id.checkbox);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             CheckBoxListener listener = new CheckBoxListener();
-            holder = new CheckBoxHolder(textLabel, checkBox, detailedInfoButton ,listener);
+            holder = new CheckBoxHolder(textLabel, warningLabel, checkBox, detailedInfoButton ,listener);
 
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
@@ -108,8 +108,16 @@ public class CheckBoxRow extends Row {
             holder.checkBox.setChecked(false);
         }
 
-        if(isDetailedInfoButtonHidden())
+        if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+
+        if(mWarning == null) {
+            holder.warningLabel.setVisibility(View.GONE);
+        } else {
+            holder.warningLabel.setVisibility(View.VISIBLE);
+            holder.warningLabel.setText(mWarning);
+        }
 
         return view;
     }
@@ -146,13 +154,15 @@ public class CheckBoxRow extends Row {
 
     private static class CheckBoxHolder {
         final TextView textLabel;
+        final TextView warningLabel;
         final CheckBox checkBox;
         final View detailedInfoButton;
         final CheckBoxListener listener;
 
-        public CheckBoxHolder(TextView textLabel, CheckBox checkBox, View detailedInfoButton,
+        public CheckBoxHolder(TextView textLabel, TextView warningLabel, CheckBox checkBox, View detailedInfoButton,
                               CheckBoxListener listener) {
             this.textLabel = textLabel;
+            this.warningLabel = warningLabel;
             this.checkBox = checkBox;
             this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;

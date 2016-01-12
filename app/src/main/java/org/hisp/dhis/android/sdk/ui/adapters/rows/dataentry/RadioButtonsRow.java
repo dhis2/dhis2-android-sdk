@@ -53,10 +53,7 @@ public class RadioButtonsRow extends Row {
     public static final String MALE = "gender_male";
     public static final String OTHER = "gender_other";
 
-
-
-
-    public RadioButtonsRow(String label, BaseValue baseValue, DataEntryRowTypes type) {
+    public RadioButtonsRow(String label, String warning, BaseValue baseValue, DataEntryRowTypes type) {
         if (!DataEntryRowTypes.GENDER.equals(type) && !DataEntryRowTypes.BOOLEAN.equals(type)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -64,6 +61,7 @@ public class RadioButtonsRow extends Row {
         mLabel = label;
         mValue = baseValue;
         mRowType = type;
+        mWarning = warning;
 
         checkNeedsForDescriptionButton();
     }
@@ -82,6 +80,7 @@ public class RadioButtonsRow extends Row {
                     R.layout.listview_row_radio_buttons, container, false);
             TextView label = (TextView)
                     root.findViewById(R.id.text_label);
+            TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
             CompoundButton firstButton = (CompoundButton)
                     root.findViewById(R.id.first_radio_button);
             CompoundButton secondButton = (CompoundButton)
@@ -103,7 +102,7 @@ public class RadioButtonsRow extends Row {
             }
 
             CheckedChangeListener listener = new CheckedChangeListener();
-            holder = new BooleanRowHolder(mRowType, label, firstButton,
+            holder = new BooleanRowHolder(mRowType, label, warningLabel, firstButton,
                     secondButton, thirdButton, detailedInfoButton, listener);
 
             holder.firstButton.setOnCheckedChangeListener(listener);
@@ -123,15 +122,22 @@ public class RadioButtonsRow extends Row {
                 holder.thirdButton.setEnabled(true);
             }
 
-
             root.setTag(holder);
             view = root;
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
 
-        if(isDetailedInfoButtonHidden())
+        if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+
+        if(mWarning == null) {
+            holder.warningLabel.setVisibility(View.GONE);
+        } else {
+            holder.warningLabel.setVisibility(View.VISIBLE);
+            holder.warningLabel.setText(mWarning);
+        }
 
         return view;
     }
@@ -144,6 +150,7 @@ public class RadioButtonsRow extends Row {
 
     private static class BooleanRowHolder {
         final TextView textLabel;
+        final TextView warningLabel;
         final CompoundButton firstButton;
         final CompoundButton secondButton;
         final CompoundButton thirdButton;
@@ -151,11 +158,12 @@ public class RadioButtonsRow extends Row {
         final CheckedChangeListener listener;
         final DataEntryRowTypes type;
 
-        public BooleanRowHolder(DataEntryRowTypes type, TextView textLabel, CompoundButton firstButton,
+        public BooleanRowHolder(DataEntryRowTypes type, TextView textLabel, TextView warningLabel, CompoundButton firstButton,
                                 CompoundButton secondButton, CompoundButton thirdButton,
                                 View detailedInfoButton, CheckedChangeListener listener) {
             this.type = type;
             this.textLabel = textLabel;
+            this.warningLabel = warningLabel;
             this.firstButton = firstButton;
             this.secondButton = secondButton;
             this.thirdButton = thirdButton;

@@ -28,10 +28,18 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.util.Log;
+
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
+import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Months;
+import org.joda.time.Years;
+
+import java.text.ParseException;
+
+import static android.text.TextUtils.isEmpty;
 
 public class ExpressionFunctions {
     public static final String NAMESPACE = "d2";
@@ -110,12 +118,175 @@ public class ExpressionFunctions {
      */
     public static Integer daysBetween(String start, String end) 
 		throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat();
-        format.applyPattern("yyyy-MM-dd");
-        
-        Date startDate = format.parse(start);
-        Date endDate = format.parse(end);
-        
-        return new Long((endDate.getTime() - startDate.getTime()) / 86400000).intValue();
+        if(isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+        return new Long((endDate.getMillis() - startDate.getMillis()) / 86400000).intValue();
+    }
+
+    public static Integer weeksBetween(String start, String end) throws ParseException {
+        if(isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+        int weeks = new Long((endDate.getMillis() - startDate.getMillis()) / (86400000 * 7)).intValue();
+        return weeks;
+    }
+
+    public static Integer monthsBetween(String start, String end)  throws ParseException {
+        if(isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+        int months = Months.monthsBetween(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1)).getMonths();
+        return months;
+    }
+
+    public static Integer yearsBetween(String start, String end) {
+        if(isEmpty(start) || isEmpty(end)) {
+            return 0;
+        }
+        DateTime startDate = new DateTime(start);
+        DateTime endDate = new DateTime(end);
+        int years = Years.yearsBetween(startDate.withDayOfMonth(1).withMonthOfYear(1), endDate.withDayOfMonth(1).withMonthOfYear(1)).getYears();
+        return years;
+    }
+
+    public static Integer floor(Number value) {
+        return new Double(Math.floor(value.doubleValue())).intValue();
+    }
+
+    public static Integer modulus(Number dividend, Number divisor) {
+        int rest = dividend.intValue() % divisor.intValue();
+        return rest;
+    }
+
+    public static String concatenate(Object... values) {
+        String returnString = "";
+        for(Object value : values) {
+            returnString += String.valueOf(value);;
+        }
+        return returnString;
+    }
+
+    public static String addDays(String date, Number daysToAdd) {
+        DateTime dateTime = new DateTime(date);
+        DateTime newDateTime = dateTime.plusDays(daysToAdd.intValue());
+        return newDateTime.toString();
+    }
+
+    public static Integer count(String variableName) {
+        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        Integer count = 0;
+        if(programRuleVariable != null)
+        {
+            if(programRuleVariable.isHasValue()){
+                if(programRuleVariable.getAllValues() != null)
+                {
+                    count = programRuleVariable.getAllValues().size();
+                } else {
+                    //If there is a value found for the variable, the count is 1 even if there is no list of alternate values
+                    //This happens for variables of "DATAELEMENT_CURRENT_STAGE" and "TEI_ATTRIBUTE"
+                    count = 1;
+                }
+            }
+        }
+        return count;
+    }
+
+    public static Integer countIfZeroPos(String variableName) {
+        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+
+        Integer count = 0;
+        if(programRuleVariable != null)
+        {
+            if( programRuleVariable.isHasValue() ) {
+                if(programRuleVariable.getAllValues() != null && programRuleVariable.getAllValues().size() > 0)
+                {
+                    for(int i = 0; i < programRuleVariable.getAllValues().size(); i++)
+                    {
+                        if(programRuleVariable.getAllValues().get(i) != null) {
+                            count++;
+                        }
+                    }
+                }
+                else {
+                    //The variable has a value, but no list of alternates. This means we only compare the elements real value
+                    if(programRuleVariable.getVariableValue() != null) {
+                        count = 1;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public static Integer countIfValue(String variableName) {
+        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+
+        String valueToCompare = programRuleVariable.getVariableValue();
+
+        Integer count = 0;
+        if(programRuleVariable != null)
+        {
+            if( programRuleVariable.isHasValue() )
+            {
+                if( programRuleVariable.getAllValues() != null )
+                {
+                    for(int i = 0; i < programRuleVariable.getAllValues().size(); i++)
+                    {
+                        if(valueToCompare.equals(programRuleVariable.getAllValues().get(i))) {
+                            count++;
+                        }
+                    }
+                } else {
+                    //The variable has a value, but no list of alternates. This means we compare the standard variablevalue
+                    if(valueToCompare.equals(programRuleVariable.getVariableValue())) {
+                        count = 1;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    public Double ceil(double value) {
+        Double ceiled = Math.ceil(value);
+        return ceiled;
+    }
+
+    public Long round(double value) {
+        Long rounded = Math.round(value);
+        return rounded;
+    }
+
+    public Boolean hasValue(String variableName) {
+        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        boolean valueFound = false;
+        if(programRuleVariable != null)
+        {
+            if(programRuleVariable.isHasValue()){
+                valueFound = true;
+            }
+        }
+        return valueFound;
+    }
+
+    public String lastEventDate(String variableName) {
+        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        String valueFound = "''";
+        if(programRuleVariable != null)
+        {
+            if(programRuleVariable.getVariableEventDate() != null){
+                valueFound = programRuleVariable.getVariableEventDate();
+            }
+        }
+        return valueFound;
     }
 }

@@ -134,9 +134,10 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
             List<FontTextView> views = new ArrayList<>();
             if(trackedEntityInstance!=null && trackedEntityInstance.getAttributes()!=null) {
                 for (int i = 0; i < trackedEntityInstance.getAttributes().size(); i++) {
-                    FontTextView textView = (FontTextView) mInflater.inflate(R.layout.listview_row_text_view_label, parent, false);
+                    LinearLayout textViewLayout = (LinearLayout) mInflater.inflate(R.layout.listview_row_text_view_label, parent, false);
+                    FontTextView textView = (FontTextView) textViewLayout.findViewById(R.id.text_label);
                     LinearLayout ll = (LinearLayout) view.findViewById(R.id.textviewcontainer);
-                    ll.addView(textView);
+                    ll.addView(textViewLayout);
                     views.add(textView);
                 }
             }

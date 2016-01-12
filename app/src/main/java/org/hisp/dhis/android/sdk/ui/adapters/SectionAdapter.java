@@ -92,6 +92,17 @@ public final class SectionAdapter extends AbsAdapter<DataEntryFragmentSection> {
         }
     }
 
+    public void hideAll() {
+        for(int i = 0; i<mData.size(); i++) {
+            DataEntryFragmentSection section = mData.get(i);
+            if(i > 0) {
+                section.setHidden(true);
+                mData.remove(section);
+                return;
+            }
+        }
+    }
+
     /**
      * Flags a section to be hidden
      * @param id

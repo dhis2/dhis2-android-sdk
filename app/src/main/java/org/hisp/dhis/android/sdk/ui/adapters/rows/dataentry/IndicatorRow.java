@@ -41,64 +41,16 @@ import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 
-public final class IndicatorRow extends Row {
+public final class IndicatorRow extends NonEditableTextViewRow {
     private static final String EMPTY_FIELD = "";
 
     private final ProgramIndicator mIndicator;
-    private String mValue;
-
-
 
     public IndicatorRow(ProgramIndicator indicator, String value) {
+        super(value);
         mIndicator = indicator;
         mValue = value;
-
         checkNeedsForDescriptionButton();
-    }
-
-    @Override
-    public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
-                        View convertView, ViewGroup container) {
-        View view;
-        IndicatorViewHolder holder;
-
-        if (convertView != null && convertView.getTag() instanceof IndicatorViewHolder) {
-            view = convertView;
-            holder = (IndicatorViewHolder) view.getTag();
-        } else {
-            View root = inflater.inflate(
-                    R.layout.listview_row_indicator, container, false);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
-            holder = new IndicatorViewHolder(
-                    (TextView) root.findViewById(R.id.text_label),
-                    (TextView) root.findViewById(R.id.indicator_row),
-                    detailedInfoButton
-            );
-
-            root.setTag(holder);
-            view = root;
-        }
-
-        if (mIndicator.getName()!= null) {
-            holder.textLabel.setText(mIndicator.getName());
-        } else {
-            holder.textLabel.setText(EMPTY_FIELD);
-        }
-
-        if(!isEditable())
-        {
-            holder.textValue.setEnabled(false);
-        }
-        else
-            holder.textValue.setEnabled(true);
-
-        holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this)); // add this when support for indicator.getDescription
-        holder.textValue.setText(mValue);
-
-        if(isDetailedInfoButtonHidden())
-            holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-
-        return view;
     }
 
     @Override
@@ -106,30 +58,16 @@ public final class IndicatorRow extends Row {
         return DataEntryRowTypes.INDICATOR.ordinal();
     }
 
-    public void updateValue(String value) {
-        mValue = value;
-    }
-
-    public String getStringValue() {
-        return mValue;
-    }
-
     public ProgramIndicator getIndicator() {
         return mIndicator;
     }
 
-    public static class IndicatorViewHolder {
-        final TextView textLabel;
-        final TextView textValue;
-        final View detailedInfoButton;
-
-        public IndicatorViewHolder(TextView textLabel,
-                                   TextView textValue,
-                                   View detailedInfoButton) {
-            this.textLabel = textLabel;
-            this.textValue = textValue;
-            this.detailedInfoButton = detailedInfoButton;
-
+    @Override
+    public String getName() {
+        if (mIndicator.getName()!= null) {
+            return mIndicator.getName();
+        } else {
+             return EMPTY_FIELD;
         }
     }
 }

@@ -79,6 +79,9 @@ public class ProgramRule extends BaseMetaDataObject {
     @Column(name = "externalAction")
     boolean externalAction;
 
+    @Column(name = "priority")
+    Integer priority;
+
     @JsonIgnore
     List<ProgramRuleAction> programRuleActions;
 
@@ -134,5 +137,13 @@ public class ProgramRule extends BaseMetaDataObject {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 }

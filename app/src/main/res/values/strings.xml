@@ -81,6 +81,7 @@
     <!-- ProgramOverview Fragment -->
     <string name="profile">Profile</string>
     <string name="relationships">Relationships</string>
+    <string name="indicators">Indicators</string>
     <string name="notes">Notes</string>
     <string name="of">of</string>
     <string name="new_string">New</string>
@@ -144,7 +145,7 @@
     <string name="discard">Discard</string>
     <string name="discard_confirm_changes">Are you sure you want to discard the current changes?</string>
     <string name="save_and_close">Save and close</string>
-    <string name="terminate">Terminate</string>
+    <string name="terminate">Cancel</string>
     <string name="unknown">Unknown</string>
     <string name="sending_data_server">Sending data to server</string>
 

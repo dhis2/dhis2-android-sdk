@@ -32,7 +32,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
@@ -51,22 +50,23 @@ import android.widget.ProgressBar;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
-import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
+import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.StatusRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.common.AbsProgramRuleFragment;
+import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.RulesEvaluatorThread;
+import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.UpdateSectionsEvent;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 
 import java.util.ArrayList;
 
-public abstract class DataEntryFragment<D> extends Fragment
+public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         implements LoaderManager.LoaderCallbacks<D>, AdapterView.OnItemSelectedListener {
     public static final String TAG = DataEntryFragment.class.getSimpleName();
 
@@ -81,6 +81,7 @@ public abstract class DataEntryFragment<D> extends Fragment
     protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
     private INavigationHandler navigationHandler;
+    protected RulesEvaluatorThread rulesEvaluatorThread;
 
     @Override
     public void onAttach(Activity activity) {
@@ -122,6 +123,18 @@ public abstract class DataEntryFragment<D> extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if(rulesEvaluatorThread==null || rulesEvaluatorThread.isKilled()) {
+            rulesEvaluatorThread = new RulesEvaluatorThread();
+            rulesEvaluatorThread.start();
+        }
+        rulesEvaluatorThread.init(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        rulesEvaluatorThread.kill();
+        rulesEvaluatorThread = null;
     }
 
     @Override
@@ -215,6 +228,43 @@ public abstract class DataEntryFragment<D> extends Fragment
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
+    public static void resetHidingAndWarnings(DataValueAdapter dataValueAdapter, SectionAdapter sectionAdapter) {
+        if(dataValueAdapter!=null) {
+            dataValueAdapter.resetHiding();
+            dataValueAdapter.resetWarnings();
+        }
+        if (sectionAdapter != null) {
+            sectionAdapter.resetHiding();
+        }
+    }
+
+    public static boolean containsValue(BaseValue value) {
+        if (value != null && value.getValue() != null && !value.getValue().isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void updateSections() {
+        UpdateSectionsAsyncTask task = new UpdateSectionsAsyncTask();
+        task.execute();
+    }
+
+    protected static class UpdateSectionsAsyncTask extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            Dhis2Application.getEventBus().post(new UpdateSectionsEvent());
+        }
+    }
+
+
     public DataValueAdapter getListViewAdapter() {
         return listViewAdapter;
     }
@@ -232,7 +282,7 @@ public abstract class DataEntryFragment<D> extends Fragment
         task.execute();
     }
 
-    protected void flagDataChanged(boolean changed) {
+    public void flagDataChanged(boolean changed) {
         if (hasDataChanged != changed) {
             hasDataChanged = changed;
             if(isAdded()) {
@@ -268,6 +318,14 @@ public abstract class DataEntryFragment<D> extends Fragment
         }
     }
 
+    public ValidationErrorDialog getValidationErrorDialog() {
+        return validationErrorDialog;
+    }
+
+    public void setValidationErrorDialog(ValidationErrorDialog validationErrorDialog) {
+        this.validationErrorDialog = validationErrorDialog;
+    }
+
     @Subscribe
     public void onRowValueChanged(final RowValueChangedEvent event) {
         flagDataChanged(true);
@@ -281,11 +339,10 @@ public abstract class DataEntryFragment<D> extends Fragment
             View view = listView.getChildAt(pos);
             if (view != null) {
                 int adapterPosition = view.getId();
-                if (adapterPosition < 0 || adapterPosition >= listViewAdapter.getCount())
+                if (adapterPosition < 0 || adapterPosition >= listViewAdapter.getCount()) {
                     continue;
-                if (!view.hasFocus()) {
-                    listViewAdapter.getView(adapterPosition, view, listView);
                 }
+                listViewAdapter.getView(adapterPosition, view, listView);
             }
         }
         refreshing = false;
@@ -333,6 +390,8 @@ public abstract class DataEntryFragment<D> extends Fragment
             Dhis2Application.getEventBus().post(new RefreshListViewEvent());
         }
     }
+
+    public abstract SectionAdapter getSpinnerAdapter();
 
     protected abstract ArrayList<String> getValidationErrors();
 

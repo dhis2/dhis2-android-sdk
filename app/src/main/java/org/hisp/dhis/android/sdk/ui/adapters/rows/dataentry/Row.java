@@ -48,6 +48,7 @@ public abstract class Row implements DataEntryRow
 {
 
     protected String mLabel;
+    protected String mWarning;
     protected BaseValue mValue;
     protected String mDescription;
     protected DataEntryRowTypes mRowType;
@@ -121,5 +122,13 @@ public abstract class Row implements DataEntryRow
 
     public void setHideDetailedInfoButton(boolean hideDetailedInfoButton) {
         this.hideDetailedInfoButton = hideDetailedInfoButton;
+    }
+
+    public String getWarning() {
+        return mWarning;
+    }
+
+    public void setWarning(String mWarning) {
+        this.mWarning = mWarning;
     }
 }

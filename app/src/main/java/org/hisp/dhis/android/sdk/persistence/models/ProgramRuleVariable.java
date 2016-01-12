@@ -28,12 +28,17 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ProgramRuleVariableSourceType;
+import org.hisp.dhis.android.sdk.utils.api.ValueType;
+import org.joda.time.DateTime;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,18 +47,44 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class ProgramRuleVariable extends BaseMetaDataObject {
 
+    @Column(name = "trackedEntityAttribute")
+    String trackedEntityAttribute;
+
     @Column(name = "dataElement")
     String dataElement;
 
     @JsonProperty("programRuleVariableSourceType")
     @Column(name = "sourceType")
-    String sourceType;
+    ProgramRuleVariableSourceType sourceType;
 
     @Column(name = "externalAccess")
     boolean externalAccess;
 
     @Column(name = "program")
     String program;
+
+    @Column(name = "programStage")
+    String programStage;
+
+    @JsonIgnore
+    String variableValue;
+
+    @JsonIgnore
+    ValueType variableType;
+
+    @JsonIgnore
+    boolean hasValue;
+
+    @JsonIgnore
+    String variableEventDate;
+
+    @JsonIgnore
+    List<String> allValues;
+
+    @JsonProperty("programStage")
+    public void setProgramStage(Map<String, Object> programStage) {
+        this.programStage = (String) programStage.get("id");
+    }
 
     @JsonProperty("program")
     public void setProgram(Map<String, Object> program) {
@@ -63,6 +94,27 @@ public class ProgramRuleVariable extends BaseMetaDataObject {
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
+    }
+
+    @JsonProperty("trackedEntityAttribute")
+    public void setTrackedEntityAttribute(Map<String, Object> trackedEntityAttribute) {
+        this.trackedEntityAttribute = (String) trackedEntityAttribute.get("id");
+    }
+
+    public String getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
+    }
+
+    public String getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
     }
 
     public String getDataElement() {
@@ -89,11 +141,51 @@ public class ProgramRuleVariable extends BaseMetaDataObject {
         this.externalAccess = externalAccess;
     }
 
-    public String getSourceType() {
+    public ProgramRuleVariableSourceType getSourceType() {
         return sourceType;
     }
 
-    public void setSourceType(String sourceType) {
+    public void setSourceType(ProgramRuleVariableSourceType sourceType) {
         this.sourceType = sourceType;
+    }
+
+    public String getVariableValue() {
+        return variableValue;
+    }
+
+    public void setVariableValue(String variableValue) {
+        this.variableValue = variableValue;
+    }
+
+    public ValueType getVariableType() {
+        return variableType;
+    }
+
+    public void setVariableType(ValueType variableType) {
+        this.variableType = variableType;
+    }
+
+    public boolean isHasValue() {
+        return hasValue;
+    }
+
+    public void setHasValue(boolean hasValue) {
+        this.hasValue = hasValue;
+    }
+
+    public String getVariableEventDate() {
+        return variableEventDate;
+    }
+
+    public void setVariableEventDate(String variableEventDate) {
+        this.variableEventDate = variableEventDate;
+    }
+
+    public List<String> getAllValues() {
+        return allValues;
+    }
+
+    public void setAllValues(List<String> allValues) {
+        this.allValues = allValues;
     }
 }

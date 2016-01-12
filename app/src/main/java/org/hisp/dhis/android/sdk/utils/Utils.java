@@ -36,6 +36,8 @@ import org.joda.time.DateTime;
 
 import java.util.UUID;
 
+import static android.text.TextUtils.isEmpty;
+
 /**
  * @author Simen Skogly Russnes on 23.02.15.
  */
@@ -53,7 +55,7 @@ public class Utils {
     }
 
     public static String removeTimeFromDateString(String dateTime) {
-        if(dateTime==null) return null;
+        if(isEmpty(dateTime)) return null;
         DateTime dt = new DateTime(dateTime);
         return dt.toLocalDate().toString();
     }

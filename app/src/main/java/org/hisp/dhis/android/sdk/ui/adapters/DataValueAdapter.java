@@ -56,23 +56,26 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     private Map<String, Integer> dataElementsToRowIndexMap;
     private final FragmentManager mFragmentManager;
     private Map<String, Boolean> hiddenDataElementRows;
+    private Map<String, String> warningDataElementRows;
 
     public DataValueAdapter(FragmentManager fragmentManager,
                             LayoutInflater inflater) {
         super(inflater);
         mFragmentManager = fragmentManager;
         hiddenDataElementRows = new HashMap<>();
+        warningDataElementRows = new HashMap<>();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (getData() != null) {
-            Row dataEntryRow = (Row) getData().get(position);
+            Row dataEntryRow = getData().get(position);
+            String id = dataEntryRow.getItemId();
+            dataEntryRow.setWarning(warningDataElementRows.get(id));
             View view = dataEntryRow.getView(mFragmentManager, getInflater(), convertView, parent);
             view.setVisibility(View.VISIBLE); //in case recycling invisible view
             view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
                     AbsListView.LayoutParams.WRAP_CONTENT));
-            String id = dataEntryRow.getItemId();
             view.setId(position);
             if(hiddenDataElementRows.containsKey(id)) {
                 view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
@@ -138,6 +141,26 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
         if (mData == null) return;
         if(hiddenDataElementRows != null) {
             hiddenDataElementRows.clear();
+        }
+    }
+
+    public void showWarningOnIndex(String dataElement, String warning) {
+        if(warningDataElementRows == null) {
+            warningDataElementRows = new HashMap<>();
+        }
+        warningDataElementRows.put(dataElement, warning);
+    }
+
+    public void resetWarnings() {
+        if (mData == null) return;
+        if(warningDataElementRows != null) {
+            warningDataElementRows.clear();
+        }
+    }
+
+    public void hideAll() {
+        for(String dataElement : dataElementsToRowIndexMap.keySet()) {
+            hideIndex(dataElement);
         }
     }
 

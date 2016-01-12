@@ -34,6 +34,7 @@ import com.raizlabs.android.dbflow.annotation.InheritedColumn;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
+import org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType;
 
 import java.util.Map;
 
@@ -43,25 +44,32 @@ import java.util.Map;
 @Table(databaseName = Dhis2Database.NAME)
 public class ProgramRuleAction extends BaseMetaDataObject{
 
-    public static final String TYPE_HIDEFIELD = "HIDEFIELD";
-    public static final String TYPE_HIDESECTION = "HIDESECTION";
-    public static final String TYPE_SHOWWARNING = "SHOWWARNING";
-    public static final String TYPE_SHOWERROR = "SHOWERROR";
-
     @Column(name = "programRule")
     String programRule;
 
     @Column(name = "dataElement")
     String dataElement;
 
+    @Column(name = "trackedEntityAttribute")
+    String trackedEntityAttribute;
+
     @Column(name = "programStageSection")
     String programStageSection;
 
     @Column(name = "programRuleActionType")
-    String programRuleActionType;
+    ProgramRuleActionType programRuleActionType;
 
     @Column(name = "externalAccess")
     boolean externalAccess;
+
+    @Column(name = "location")
+    String location;
+
+    @Column(name = "content")
+    String content;
+
+    @Column(name = "data")
+    String data;
 
     @JsonProperty("programRule")
     public void setProgramRule(Map<String, Object> programRule) {
@@ -71,6 +79,11 @@ public class ProgramRuleAction extends BaseMetaDataObject{
     @JsonProperty("dataElement")
     public void setDataElement(Map<String, Object> dataElement) {
         this.dataElement = (String) dataElement.get("id");
+    }
+
+    @JsonProperty("trackedEntityAttribute")
+    public void setTrackedEntityAttribute(Map<String, Object> trackedEntityAttribute) {
+        this.trackedEntityAttribute = (String) trackedEntityAttribute.get("id");
     }
 
     @JsonProperty("programStageSection")
@@ -84,6 +97,14 @@ public class ProgramRuleAction extends BaseMetaDataObject{
 
     public void setProgramStageSection(String programStageSection) {
         this.programStageSection = programStageSection;
+    }
+
+    public String getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
     }
 
     public String getDataElement() {
@@ -106,11 +127,11 @@ public class ProgramRuleAction extends BaseMetaDataObject{
         return externalAccess;
     }
 
-    public String getProgramRuleActionType() {
+    public ProgramRuleActionType getProgramRuleActionType() {
         return programRuleActionType;
     }
 
-    public void setProgramRuleActionType(String programRuleActionType) {
+    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
         this.programRuleActionType = programRuleActionType;
     }
 
@@ -120,5 +141,29 @@ public class ProgramRuleAction extends BaseMetaDataObject{
 
     public void setExternalAccess(boolean externalAccess) {
         this.externalAccess = externalAccess;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

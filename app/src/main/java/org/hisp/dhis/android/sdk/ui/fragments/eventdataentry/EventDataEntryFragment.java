@@ -30,13 +30,10 @@ package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,35 +45,28 @@ import com.raizlabs.android.dbflow.structure.Model;
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
-import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.controllers.GpsController;
-import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
+import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.HideLoadingDialogEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.SaveThread;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
-import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
-import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,9 +81,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     private Map<String, List<ProgramRule>> programRulesForDataElements;
     private Map<String, List<ProgramIndicator>> programIndicatorsForDataElements;
 
-    private RulesEvaluatorThread rulesEvaluatorThread;
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
     private EventSaveThread saveThread;
+    private RulesEvaluatorBufferThread rulesEvaluatorBufferThread;
+
     private static final String ORG_UNIT_ID = "extra:orgUnitId";
     private static final String PROGRAM_ID = "extra:ProgramId";
     private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
@@ -105,8 +96,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     private Spinner spinner;
     private SectionAdapter spinnerAdapter;
     private EventDataEntryFragmentForm form;
-//    private TimerTask timerTask;
-//    private final Timer timer = new Timer();
+
+    public EventDataEntryFragment() {
+        setProgramRuleFragmentHelper(new EventDataEntryRuleHelper(this));
+    }
 
     public static EventDataEntryFragment newInstance(String unitId, String programId, String programStageId) {
         EventDataEntryFragment fragment = new EventDataEntryFragment();
@@ -188,11 +181,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     public void onCreate(Bundle onSavedInstanceState) {
         super.onCreate(onSavedInstanceState);
-        if(rulesEvaluatorThread==null || rulesEvaluatorThread.isKilled()) {
-            rulesEvaluatorThread = new RulesEvaluatorThread();
-            rulesEvaluatorThread.start();
-        }
-        rulesEvaluatorThread.init(this);
         if(saveThread == null || saveThread.isKilled()) {
             saveThread = new EventSaveThread();
             saveThread.start();
@@ -203,6 +191,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread.start();
         }
         indicatorEvaluatorThread.init(this);
+        rulesEvaluatorBufferThread = new RulesEvaluatorBufferThread(this);
+        rulesEvaluatorBufferThread.start();
     }
 
     @Override
@@ -210,14 +200,19 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         new Thread() {
             public void run() {
                 saveThread.kill();
-                rulesEvaluatorThread.kill();
                 indicatorEvaluatorThread.kill();
-                rulesEvaluatorThread = null;
                 indicatorEvaluatorThread = null;
                 saveThread = null;
+                rulesEvaluatorBufferThread.kill();
             }
         }.start();
         super.onDestroy();
+    }
+
+    void hideSection(String programStageSectionId) {
+        if(spinnerAdapter!=null) {
+            spinnerAdapter.hideSection(programStageSectionId);
+        }
     }
 
     @Override
@@ -247,9 +242,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             progressBar.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
             form = data;
-            mapDataElementsToRulesAndIndicators();
             saveThread.setEvent(form.getEvent());
-
 
             if (form.getStatusRow() != null) {
                 form.getStatusRow().setFragmentActivity(getActivity());
@@ -271,35 +264,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 }
             }
             initiateEvaluateProgramRules();
-        }
-    }
-
-    private void mapDataElementsToRulesAndIndicators() {
-        programRulesForDataElements = new HashMap<>();
-        programIndicatorsForDataElements = new HashMap<>();
-        for(ProgramRule programRule: form.getStage().getProgram().getProgramRules()) {
-            for(String dataElement: ProgramRuleService.getDataElementsInRule(programRule)) {
-                List<ProgramRule> rulesForDataElement = programRulesForDataElements.get(dataElement);
-                if(rulesForDataElement == null) {
-                    rulesForDataElement = new ArrayList<>();
-                    rulesForDataElement.add(programRule);
-                    programRulesForDataElements.put(dataElement, rulesForDataElement);
-                } else {
-                    rulesForDataElement.add(programRule);
-                }
-            }
-        }
-        for(ProgramIndicator programIndicator: form.getStage().getProgramIndicators()) {
-            for(String dataElement: ProgramIndicatorService.getDataElementsInExpression(programIndicator)) {
-                List<ProgramIndicator> programIndicatorsForDataElement = programIndicatorsForDataElements.get(dataElement);
-                if(programIndicatorsForDataElement == null) {
-                    programIndicatorsForDataElement = new ArrayList<>();
-                    programIndicatorsForDataElement.add(programIndicator);
-                    programIndicatorsForDataElements.put(dataElement, programIndicatorsForDataElement);
-                } else {
-                    programIndicatorsForDataElement.add(programIndicator);
-                }
-            }
         }
     }
 
@@ -426,7 +390,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             return;
         }
         if(hasRules(dataElement)) {
-            initiateEvaluateProgramRules();
+            rulesEvaluatorBufferThread.trigger();
         }
         if(hasIndicators(dataElement)) {
             initiateEvaluateProgramIndicators(dataElement);
@@ -448,6 +412,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     /**
+     * Schedules evaluation and updating of views based on ProgramRules in a thread.
+     * This is used to avoid stacking up calls to evaluateAndApplyProgramRules
+     */
+    public void initiateEvaluateProgramRules() {
+        if(rulesEvaluatorThread!=null) {
+            rulesEvaluatorThread.schedule();
+        }
+    }
+
+    /**
      * Schedules evaluation and updating of views based on ProgramIndicators in a thread.
      * This is used to avoid stacking up calls to evaluateAndApplyProgramIndicators
      * @param dataElement
@@ -458,36 +432,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
         List<ProgramIndicator> programIndicators = programIndicatorsForDataElements.get(dataElement);
         indicatorEvaluatorThread.schedule(programIndicators);
-    }
-
-    /**
-     * Schedules evaluation and updating of views based on ProgramRules in a thread.
-     * This is used to avoid stacking up calls to evaluateAndApplyProgramRules
-     */
-    private void initiateEvaluateProgramRules() {
-        showLoadingDialog();
-        if(rulesEvaluatorThread!=null) {
-            rulesEvaluatorThread.schedule();
-        }
-    }
-
-    /**
-     * Evaluates the ProgramRules for the current program and the current data values and applies
-     * the results. This is for example used for hiding views if a rule contains skip logic
-     */
-    void evaluateAndApplyProgramRules() {
-        ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
-        if(form != null && form.getStage() != null ) {
-            for (ProgramRule programRule : form.getStage().getProgram().getProgramRules()) {
-                if (ProgramRuleService.evaluate(programRule.getCondition(), form.getEvent())) {
-                    applyProgramRuleActions(programRule.getProgramRuleActions(), affectedFieldsWithValue);
-                }
-            }
-            if (!affectedFieldsWithValue.isEmpty()) {
-                showWarningHiddenValuesDialog(this, validationErrorDialog, affectedFieldsWithValue);
-            }
-            updateSections();
-        }
     }
 
     void evaluateAndApplyProgramIndicator(ProgramIndicator programIndicator) {
@@ -510,68 +454,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         if (!newValue.equals(indicatorRow.getValue())) {
             indicatorRow.updateValue(newValue);
         }
-    }
-
-    private void applyProgramRuleActions(List<ProgramRuleAction> programRuleActions, List<String> affectedFieldsWithValue) {
-        for (ProgramRuleAction programRuleAction : programRuleActions) {
-            applyProgramRuleAction(programRuleAction, affectedFieldsWithValue);
-        }
-    }
-
-    private void applyProgramRuleAction(ProgramRuleAction programRuleAction, List<String> affectedFieldsWithValue) {
-        switch (programRuleAction.getProgramRuleActionType()) {
-            case ProgramRuleAction.TYPE_HIDEFIELD: {
-                applyHideFieldRuleAction(programRuleAction, affectedFieldsWithValue);
-                break;
-            }
-            case ProgramRuleAction.TYPE_HIDESECTION: {
-                applyHideSectionRuleAction(programRuleAction);
-                break;
-            }
-            case ProgramRuleAction.TYPE_SHOWWARNING: {
-                showWarning(programRuleAction);
-                affectedFieldsWithValue.add(programRuleAction.getDataElement());
-            }
-            case ProgramRuleAction.TYPE_SHOWERROR: {
-                showError(programRuleAction);
-                affectedFieldsWithValue.add(programRuleAction.getDataElement());
-            }
-        }
-    }
-
-    private void applyHideFieldRuleAction(ProgramRuleAction programRuleAction, List<String> affectedFieldsWithValue) {
-        listViewAdapter.hideIndex(programRuleAction.getDataElement());
-        if(containsValue(form.getDataValues().get(programRuleAction.getDataElement()))) {
-            affectedFieldsWithValue.add(programRuleAction.getDataElement());
-        }
-    }
-
-    private void applyHideSectionRuleAction(ProgramRuleAction programRuleAction) {
-        if(spinnerAdapter!=null) {
-            spinnerAdapter.hideSection(programRuleAction.getProgramStageSection());
-        }
-    }
-
-    static void resetHiding(DataValueAdapter dataValueAdapter, SectionAdapter sectionAdapter) {
-        if(dataValueAdapter!=null) {
-            dataValueAdapter.resetHiding();
-        }
-        if (sectionAdapter != null) {
-            sectionAdapter.resetHiding();
-        }
-    }
-
-    private void showWarning(ProgramRuleAction programRuleAction) {
-        //todo: implement
-    }
-
-    private void showError(ProgramRuleAction programRuleAction) {
-        //todo: implement
-    }
-
-    private void updateSections() {
-        UpdateSectionsAsyncTask task = new UpdateSectionsAsyncTask();
-        task.execute();
     }
 
     private static Map<String, ProgramStageDataElement> toMap(List<ProgramStageDataElement> dataElements) {
@@ -599,41 +481,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         }
     }
 
-    SectionAdapter getSpinnerAdapter() {
+    @Override
+    public SectionAdapter getSpinnerAdapter() {
         return spinnerAdapter;
-    }
-
-    /**
-     * Displays a warning dialog to the user, indicating the data entry rows with values in them
-     * are being hidden due to program rules.
-     * @param fragment
-     * @param validationErrorDialog
-     * @param affectedValues
-     */
-    private static void showWarningHiddenValuesDialog(Fragment fragment, ValidationErrorDialog validationErrorDialog, ArrayList<String> affectedValues) {
-        ArrayList<String> dataElementNames = new ArrayList<>();
-        for (String s : affectedValues) {
-            DataElement de = MetaDataController.getDataElement(s);
-            if (de != null) {
-                dataElementNames.add(de.getDisplayName());
-            }
-        }
-        if (validationErrorDialog == null || !validationErrorDialog.isVisible()) {
-            validationErrorDialog = ValidationErrorDialog
-                    .newInstance(fragment.getString(R.string.warning_hidefieldwithvalue), dataElementNames
-                    );
-            if(fragment.isAdded()) {
-                validationErrorDialog.show(fragment.getChildFragmentManager());
-            }
-        }
-    }
-
-    private static boolean containsValue(DataValue dataValue) {
-        if (dataValue != null && dataValue.getValue() != null && !dataValue.getValue().isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public static ArrayList<String> getValidationErrors(Event event, ProgramStage programStage, Context context) {
@@ -724,18 +574,43 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         } else {// save data element
             saveThread.scheduleSaveDataValue(event.getId());
         }
+
+        //rules evaluation are triggered depending on the data element uid and if it has rules
+        //for event date, we have to trigger it manually
+        if(DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
+            rulesEvaluatorBufferThread.trigger();
+        }
     }
 
-    private static class UpdateSectionsAsyncTask extends AsyncTask {
+    public EventSaveThread getSaveThread() {
+        return saveThread;
+    }
 
-        @Override
-        protected Object doInBackground(Object... params) {
-            return null;
-        }
+    public void setSaveThread(EventSaveThread saveThread) {
+        this.saveThread = saveThread;
+    }
 
-        @Override
-        protected void onPostExecute(Object result) {
-            Dhis2Application.getEventBus().post(new UpdateSectionsEvent());
-        }
+    public EventDataEntryFragmentForm getForm() {
+        return form;
+    }
+
+    public void setForm(EventDataEntryFragmentForm form) {
+        this.form = form;
+    }
+
+    public Map<String, List<ProgramRule>> getProgramRulesForDataElements() {
+        return programRulesForDataElements;
+    }
+
+    public void setProgramRulesForDataElements(Map<String, List<ProgramRule>> programRulesForDataElements) {
+        this.programRulesForDataElements = programRulesForDataElements;
+    }
+
+    public Map<String, List<ProgramIndicator>> getProgramIndicatorsForDataElements() {
+        return programIndicatorsForDataElements;
+    }
+
+    public void setProgramIndicatorsForDataElements(Map<String, List<ProgramIndicator>> programIndicatorsForDataElements) {
+        this.programIndicatorsForDataElements = programIndicatorsForDataElements;
     }
 }

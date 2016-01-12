@@ -34,6 +34,7 @@ import org.apache.commons.jexl2.JexlEngine;
 import org.apache.commons.jexl2.JexlException;
 import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.lang3.StringUtils;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions;
 
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class ExpressionUtils {
     static
     {
         Map<String, Object> functions = new HashMap<>();
-        functions.put( ExpressionFunctions.NAMESPACE, ExpressionFunctions.class );
+        functions.put( ExpressionFunctions.NAMESPACE, new ExpressionFunctions() );
 
         JEXL.setFunctions( functions );
         JEXL.setCache( 512 );
@@ -85,7 +86,7 @@ public class ExpressionUtils {
      */
     public static Object evaluate( String expression, Map<String, Object> vars )
     {
-        return evaluate( expression, vars, false );
+        return evaluate(expression, vars, false);
     }
 
     /**
@@ -104,7 +105,14 @@ public class ExpressionUtils {
 
         JexlContext context = vars != null ? new MapContext( vars ) : new MapContext();
 
-        return exp.evaluate( context );
+        Object result = false;
+        try {
+            result = exp.evaluate( context );
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
+        }
+        return result;
     }
 
     /**
@@ -167,6 +175,16 @@ public class ExpressionUtils {
         }
         catch ( JexlException ex )
         {
+            return false;
+        }
+    }
+
+    public static boolean isBoolean( String value ) {
+        if(value == null) {
+            return false;
+        } else if(value.equals("true") || value.equals("false")) {
+            return true;
+        } else {
             return false;
         }
     }

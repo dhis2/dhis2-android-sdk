@@ -354,6 +354,10 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(OrganisationUnitProgramRelationship.class).queryList();
     }
 
+    public static List<DataElement> getDataElements() {
+        return new Select().from(DataElement.class).queryList();
+    }
+
     /**
      * Returns the data element for the given uid or null if the dataElement does not exist
      *

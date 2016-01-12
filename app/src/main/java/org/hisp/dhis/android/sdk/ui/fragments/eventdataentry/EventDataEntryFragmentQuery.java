@@ -44,6 +44,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.EventDueDatePickerRow;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragmentSection;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
@@ -104,16 +107,25 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         );
 
         form.setEvent(event);
+        if(enrollmentId > 0) {
+            Enrollment enrollment = TrackerController.getEnrollment(enrollmentId);
+            enrollment.getEvents(true);
+            form.setEnrollment(enrollment);
+        }
         form.setStage(stage);
         form.setSections(new ArrayList<DataEntryFragmentSection>());
         form.setDataElementNames(new HashMap<String, String>());
         form.setDataValues(new HashMap<String, DataValue>());
+        form.setTrackedEntityAttributeValues(new HashMap<String, TrackedEntityAttributeValue>());
         form.setIndicatorRows(new ArrayList<IndicatorRow>());
         form.setIndicatorToIndicatorRowMap(new HashMap<String, IndicatorRow>());
 
         if (stage.getProgramStageSections() == null || stage.getProgramStageSections().isEmpty()) {
             List<Row> rows = new ArrayList<>();
             addStatusRow(context, form, rows);
+            if(form.getEnrollment() != null) {
+                addDueDateRow(context, form, rows);
+            }
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);
             populateDataEntryRows(form, stage.getProgramStageDataElements(), rows, username);
@@ -129,6 +141,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 List<Row> rows = new ArrayList<>();
                 if (i == 0) {
                     addStatusRow(context, form, rows);
+                    if(form.getEnrollment() != null) {
+                        addDueDateRow(context, form, rows);
+                    }
                     addEventDateRow(context, form, rows);
                     addCoordinateRow(form, rows);
                 }
@@ -140,6 +155,20 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         return form;
     }
 
+    private static void populateTrackedEntityDataValues(EventDataEntryFragmentForm form) {
+        if(form.getEnrollment() != null && !isEmpty(form.getEnrollment().getTrackedEntityInstance())) {
+            TrackedEntityInstance trackedEntityInstance = TrackerController.getTrackedEntityInstance(form.getEnrollment().getTrackedEntityInstance());
+            if(trackedEntityInstance != null) {
+                List<TrackedEntityAttributeValue> trackedEntityAttributeValues = trackedEntityInstance.getAttributes();
+                if(trackedEntityAttributeValues != null) {
+                    for(TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
+                        form.getTrackedEntityAttributeValues().put(trackedEntityAttributeValue.getTrackedEntityAttributeId(), trackedEntityAttributeValue);
+                    }
+                }
+            }
+        }
+    }
+
     private static void addStatusRow(Context context, EventDataEntryFragmentForm form,
                                      List<Row> rows) {
         Event event = form.getEvent();
@@ -149,11 +178,17 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         form.setStatusRow(row);
     }
 
+    private static void addDueDateRow(Context context, EventDataEntryFragmentForm form,
+                                        List<Row> rows) {
+        String reportDateDescription = context.getString(R.string.duedate);
+        rows.add(new EventDueDatePickerRow(reportDateDescription, form.getEvent(), true));
+    }
+
     private static void addEventDateRow(Context context, EventDataEntryFragmentForm form,
                                         List<Row> rows) {
         String reportDateDescription = form.getStage().getReportDateDescription()== null ?
                 context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
-        rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent()));
+        rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent(), false));
     }
 
     private static void addCoordinateRow(EventDataEntryFragmentForm form, List<Row> rows) {
@@ -173,7 +208,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
-                rows.add(createDataEntryRow(dataElement, dataValue));
+                rows.add(createDataEntryRow(stageDataElement, dataElement, dataValue));
             }
         }
     }
@@ -224,7 +259,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         return event;
     }
 
-    private static Row createDataEntryRow(DataElement dataElement, DataValue dataValue) {
+    private static Row createDataEntryRow(ProgramStageDataElement programStageDataElement, DataElement dataElement, DataValue dataValue) {
         Row row;
 
         String dataElementName;
@@ -237,32 +272,32 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         if (dataElement.getOptionSet() != null) {
             OptionSet optionSet = MetaDataController.getOptionSet(dataElement.getOptionSet());
             if (optionSet == null) {
-                row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.TEXT);
+                row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.TEXT);
             } else {
-                row = new AutoCompleteRow(dataElementName, dataValue, optionSet);
+                row = new AutoCompleteRow(dataElementName, null, dataValue, optionSet);
             }
         } else if (dataElement.getValueType().equals(ValueType.TEXT)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.TEXT);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.TEXT);
         } else if (dataElement.getValueType().equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else if (dataElement.getValueType().equals(ValueType.NUMBER)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.NUMBER);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.NUMBER);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
         } else if (dataElement.getValueType().equals(ValueType.BOOLEAN)) {
-            row = new RadioButtonsRow(dataElementName, dataValue, DataEntryRowTypes.BOOLEAN);
+            row = new RadioButtonsRow(dataElementName, null, dataValue, DataEntryRowTypes.BOOLEAN);
         } else if (dataElement.getValueType().equals(ValueType.TRUE_ONLY)) {
-            row = new CheckBoxRow(dataElementName, dataValue);
+            row = new CheckBoxRow(dataElementName, null, dataValue);
         } else if (dataElement.getValueType().equals(ValueType.DATE)) {
-            row = new DatePickerRow(dataElementName, dataValue);
+            row = new DatePickerRow(dataElementName, null, dataValue, programStageDataElement.getAllowFutureDate());
         } else {
-            row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }
         return row;
     }

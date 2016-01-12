@@ -45,6 +45,7 @@ import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -129,22 +130,16 @@ public class Event extends BaseSerializableModel {
 
     public Event(String organisationUnitId, String status, String programId,
                  ProgramStage programStage, String trackedEntityInstanceId,
-                 String enrollment, String dateOfEnrollment) {
+                 String enrollment, String dueDate) {
         this.event = CodeGenerator.generateCode();
         this.fromServer = false;
-        this.dueDate = DateUtils.getMediumDateString();
-        this.eventDate = DateUtils.getMediumDateString();
+        this.dueDate = dueDate;
         this.organisationUnitId = organisationUnitId;
         this.programId = programId;
         this.programStageId = programStage.getUid();
         this.status = status;
         this.trackedEntityInstance = trackedEntityInstanceId;
         this.enrollment = enrollment;
-
-        if (dateOfEnrollment != null) {
-            LocalDate currentDateTime = new LocalDate(DateUtils.parseDate(dateOfEnrollment));
-            this.dueDate = currentDateTime.plusDays(programStage.getMinDaysFromStart()).toString();
-        }
         dataValues = new ArrayList<>();
     }
 

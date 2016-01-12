@@ -40,25 +40,30 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
-import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-public class DatePickerRow extends Row {
+import static android.text.TextUtils.isEmpty;
+
+public class EventDueDatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
+    private static final String DATE_FORMAT = "YYYY-MM-dd";
+    private final Event mEvent;
     private final boolean mAllowDatesInFuture;
 
-    public DatePickerRow(String label, String warning, BaseValue value, boolean allowDatesInFuture) {
-        mAllowDatesInFuture = allowDatesInFuture;
+    public EventDueDatePickerRow(String label, Event event, boolean allowDatesInFuture) {
+        this.mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
-        mValue = value;
-        mWarning = warning;
+        mEvent = event;
 
         checkNeedsForDescriptionButton();
     }
+
 
     @Override
     public View getView(FragmentManager fragmentManager, LayoutInflater inflater,
@@ -71,50 +76,39 @@ public class DatePickerRow extends Row {
             holder = (DatePickerRowHolder) view.getTag();
         } else {
             View root = inflater.inflate(
-                    R.layout.listview_row_datepicker, container, false);
-            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+                    R.layout.listview_row_event_datepicker, container, false);
+            detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout); // need to keep reference
             holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton, mAllowDatesInFuture);
 
             root.setTag(holder);
             view = root;
         }
 
-        if(!isEditable())
-        {
+        if (!isEditable()) {
             holder.clearButton.setEnabled(false);
+            holder.textLabel.setEnabled(false); //change color
             holder.pickerInvoker.setEnabled(false);
-        }
-        else
-        {
+        } else {
             holder.clearButton.setEnabled(true);
+            holder.textLabel.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
-        holder.updateViews(mLabel, mValue);
+        holder.updateViews(mLabel, mEvent);
 
-        if(isDetailedInfoButtonHidden()) {
+        if(isDetailedInfoButtonHidden())
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
-        }
-
-        if(mWarning == null) {
-            holder.warningLabel.setVisibility(View.GONE);
-        } else {
-            holder.warningLabel.setVisibility(View.VISIBLE);
-            holder.warningLabel.setText(mWarning);
-        }
 
         return view;
     }
 
     @Override
     public int getViewType() {
-        return DataEntryRowTypes.DATE.ordinal();
+        return DataEntryRowTypes.EVENT_DATE.ordinal();
     }
-
 
     private class DatePickerRowHolder {
         final TextView textLabel;
-        final TextView warningLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
         final View detailedInfoButton;
@@ -124,7 +118,6 @@ public class DatePickerRow extends Row {
 
         public DatePickerRowHolder(View root, Context context, View detailedInfoButton, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
-            warningLabel = (TextView) root.findViewById(R.id.warning_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
             this.detailedInfoButton = detailedInfoButton;
@@ -137,12 +130,19 @@ public class DatePickerRow extends Row {
             pickerInvoker.setOnClickListener(invokerListener);
         }
 
-        public void updateViews(String label, BaseValue baseValue) {
-            dateSetListener.setBaseValue(baseValue);
-            clearButtonListener.setBaseValue(baseValue);
+        public void updateViews(String label, Event event) {
+            dateSetListener.setEvent(event);
+            clearButtonListener.setEvent(event);
+
+            String eventDueDate = null;
+            if (event != null && event.getDueDate() != null
+                    && !isEmpty(event.getDueDate())) {
+                DateTime eventDateTime = DateTime.parse(event.getDueDate());
+                eventDueDate = eventDateTime.toString(DATE_FORMAT);
+            }
 
             textLabel.setText(label);
-            pickerInvoker.setText(baseValue.getValue());
+            pickerInvoker.setText(eventDueDate);
         }
     }
 
@@ -155,6 +155,8 @@ public class DatePickerRow extends Row {
                                        DateSetListener listener, boolean allowDatesInFuture) {
             this.context = context;
             this.listener = listener;
+
+
             this.allowDatesInFuture = allowDatesInFuture;
         }
 
@@ -172,47 +174,58 @@ public class DatePickerRow extends Row {
 
     private static class ClearButtonListener implements OnClickListener {
         private final TextView textView;
-        private BaseValue value;
+        private Event event;
+        private DataValue value;
 
         public ClearButtonListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
-            this.value = value;
+        public void setEvent(Event event) {
+            this.event = event;
         }
 
         @Override
         public void onClick(View view) {
             textView.setText(EMPTY_FIELD);
+            event.setDueDate(null);
+            if(value == null) value = new DataValue();
             value.setValue(EMPTY_FIELD);
-            Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
+            Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.EVENT_DATE.toString()));
         }
     }
 
-    private static class DateSetListener implements DatePickerDialog.OnDateSetListener {
+    private class DateSetListener implements DatePickerDialog.OnDateSetListener {
         private static final String DATE_FORMAT = "YYYY-MM-dd";
         private final TextView textView;
-        private BaseValue value;
+        private Event event;
+        private DataValue value;
 
         public DateSetListener(TextView textView) {
             this.textView = textView;
         }
 
-        public void setBaseValue(BaseValue value) {
-            this.value = value;
+        public void setEvent(Event event) {
+            this.event = event;
         }
 
         @Override
         public void onDateSet(DatePicker view, int year,
                               int monthOfYear, int dayOfMonth) {
             LocalDate date = new LocalDate(year, monthOfYear + 1, dayOfMonth);
+            if (value == null) value = new DataValue();
+
+            if (event.getDueDate() != null)
+                value.setValue(event.getDueDate());
+
             String newValue = date.toString(DATE_FORMAT);
             textView.setText(newValue);
-            value.setValue(newValue);
-            Dhis2Application.getEventBus()
-                    .post(new RowValueChangedEvent(value, DataEntryRowTypes.DATE.toString()));
+
+            if (!newValue.equals(value.getValue())) {
+                value.setValue(newValue);
+                event.setDueDate(value.getValue());
+                Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.EVENT_DATE.toString()));
+            }
         }
     }
 }

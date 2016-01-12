@@ -31,6 +31,7 @@
     <color name="Red">#FF8080</color>
     <color name="Green">#99FF80</color>
     <color name="Yellow">#FBFF80</color>
+    <color name="Yellow_dark">#dee600</color>
     <color name="Purple">#9580FF</color>
     <color name="Pink">#FF80DB</color>
     <color name="White">#FFFFFF</color>

@@ -67,10 +67,11 @@ public final class AutoCompleteRow extends Row {
     private final Map<String, String> mNameToCodeMap;
     private final ArrayList<String> mOptions;
 
-    public AutoCompleteRow(String label, BaseValue value,
+    public AutoCompleteRow(String label, String warning, BaseValue value,
                            OptionSet optionSet) {
         mLabel = label;
         mValue = value;
+        mWarning = warning;
 
         mCodeToNameMap = new LinkedHashMap<>();
         mNameToCodeMap = new LinkedHashMap<>();
@@ -120,25 +121,28 @@ public final class AutoCompleteRow extends Row {
         }
 
         holder.valueTextView.setText(name);
-        holder.valueTextView.clearFocus();
 
         holder.setOnTextChangedListener();
 
-        if(!isEditable())
-        {
+        if(!isEditable()) {
             holder.valueTextView.setEnabled(false);
             holder.valueTextView.setTextColor(Color.parseColor("#C6C6C6")); //setEnabled(false) won't set disabled text on some devices
             holder.clearButton.setEnabled(false);
-        }
-        else
-        {
+        } else {
             holder.valueTextView.setEnabled(true);
             holder.valueTextView.setTextColor(Color.BLACK);
             holder.clearButton.setEnabled(true);
-
         }
-        if(isDetailedInfoButtonHidden())
+        if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+
+        if(mWarning == null) {
+            holder.warningLabel.setVisibility(View.GONE);
+        } else {
+            holder.warningLabel.setVisibility(View.VISIBLE);
+            holder.warningLabel.setText(mWarning);
+        }
 
         return view;
     }
@@ -151,6 +155,7 @@ public final class AutoCompleteRow extends Row {
 
     private static class ViewHolder {
         public final TextView textView;
+        public final TextView warningLabel;
         public final TextView valueTextView;
         public final ImageButton clearButton;
         public final View detailedInfoButton;
@@ -160,6 +165,7 @@ public final class AutoCompleteRow extends Row {
 
         private ViewHolder(View view, View detailedInfoButton) {
             textView = (TextView) view.findViewById(R.id.text_label);
+            warningLabel = (TextView) view.findViewById(R.id.warning_label);
             valueTextView = (TextView) view.findViewById(R.id.choose_option);
             clearButton = (ImageButton) view.findViewById(R.id.clear_option_value);
             this.detailedInfoButton = detailedInfoButton;

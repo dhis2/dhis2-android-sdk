@@ -107,8 +107,15 @@ public class Picker implements Parcelable, TextWatcher {
         this.parentView = recyclerView;
     }
 
-    public void setListener(AdapterView.OnItemClickListener listener) {
-        this.listener = listener;
+    public void setListener(final AdapterView.OnItemClickListener listener) {
+        AutoCompleteOnItemClickListener mergedListener = new AutoCompleteOnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                super.onItemClick(parent, view, position, id);
+                listener.onItemClick(parent, view, position, id);
+            }
+        };
+        this.listener = mergedListener;
     }
 
     public boolean isAdded() {

@@ -68,24 +68,24 @@ public class PickerFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.pickerRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         mSelectorAdapter = new SelectorAdapter();
+        mRecyclerView.setAdapter(null);
 
-        List<Picker> pickers;
+        List<Picker> pickers = new ArrayList<>();
 
         if(state == null) {
-
             mRootPickerList = getArguments().getParcelableArrayList(EXTRA_PICKER_LIST);
 
             for(Picker parentPicker : mRootPickerList) {
-                parentPicker.setParentList(mRootPickerList);
+                parentPicker.setParentList(pickers);
                 parentPicker.setParentView(mRecyclerView);
-
+                pickers.add(parentPicker);
             }
 
-            mSelectorAdapter.setPickers(mRootPickerList);
+            mSelectorAdapter.setPickers(pickers);
         }
         else {
-            pickers = state.getRootNodes();
-            for(Picker rootPicker : pickers) {
+            mRootPickerList = state.getRootNodes();
+            for(Picker rootPicker : mRootPickerList) {
                 Picker current = rootPicker;
                 current.setParentList(pickers);
                 current.setParentView(mRecyclerView);
@@ -99,11 +99,9 @@ public class PickerFragment extends Fragment {
                         pickers.add(current);
                     }
                 }
-                mRootPickerList.add(rootPicker);
             }
             mSelectorAdapter.setPickers(pickers);
         }
-
 
         mRecyclerView.setAdapter(mSelectorAdapter);
     }

@@ -56,7 +56,7 @@ public final class JobExecutor {
         mRunningJobIds = new HashMap<>();
     }
 
-    private static JobExecutor getInstance() {
+    public static JobExecutor getInstance() {
         if (mJobExecutor == null) {
             mJobExecutor = new JobExecutor();
         }
@@ -68,7 +68,7 @@ public final class JobExecutor {
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static <T> void enqueueJob(Job<T> job) {
+    public static <T> Job enqueueJob(Job<T> job) {
         isNull(job, "Job object must not be null");
 
         JobExecutor executor = getInstance();
@@ -76,6 +76,7 @@ public final class JobExecutor {
             executor.enqueuePendingJob(job);
             executor.executeNextJob();
         }
+        return job;
     }
 
     public static boolean isJobRunning(int jobId) {
@@ -127,7 +128,7 @@ public final class JobExecutor {
         mRunningJobs.add(job);
     }
 
-    private void dequeueRunningJob(Job job) {
+    public void dequeueRunningJob(Job job) {
         mRunningJobIds.remove(job.getJobId());
         mRunningJobs.remove(job);
     }

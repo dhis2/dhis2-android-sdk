@@ -65,6 +65,10 @@ public class PickerFragment extends Fragment {
         if(savedInstanceState != null) {
             state = savedInstanceState.getParcelable(PICKER_KEY);
         }
+        if(mRootPickerList == null) {
+            mRootPickerList = new ArrayList<>();
+        }
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.pickerRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         mSelectorAdapter = new SelectorAdapter();
@@ -112,6 +116,9 @@ public class PickerFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
+        if(mRootPickerList == null) {
+            mRootPickerList = new ArrayList<>();
+        }
         ChainablePickerState state = new ChainablePickerState(mRootPickerList);
         bundle.putParcelable(PICKER_KEY, state);
         super.onSaveInstanceState(bundle);

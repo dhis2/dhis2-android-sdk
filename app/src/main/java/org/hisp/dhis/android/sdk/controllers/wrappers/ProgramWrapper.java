@@ -30,6 +30,9 @@
 package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElement;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -40,7 +43,9 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribut
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 21.08.15.
@@ -50,6 +55,7 @@ public class ProgramWrapper {
 
     public static List<DbOperation> setReferences(Program program) {
         List<DbOperation> operations = new ArrayList<>();
+        Map<String, Attribute> attributes = new HashMap<>();
         if(program != null) {
             operations.addAll(update(program));
             operations.add(DbOperation.save(program));
@@ -73,6 +79,7 @@ public class ProgramWrapper {
                         for (ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
                             programStageDataElement.setProgramStageSection(programStageSection.getUid());
                             operations.add(DbOperation.save(programStageDataElement));
+                            operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElementObj(), attributes));
                         }
                         for (ProgramIndicator programIndicator : programStageSection.getProgramIndicators()) {
                             operations.add(DbOperation.save(programIndicator));
@@ -88,6 +95,7 @@ public class ProgramWrapper {
                     for (ProgramStageDataElement programStageDataElement : programStage.
                             getProgramStageDataElements()) {
                         operations.add(DbOperation.save(programStageDataElement));
+                        operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElement(), attributes));
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));
@@ -145,5 +153,25 @@ public class ProgramWrapper {
             stageRelation.setProgramIndicator(programIndicator);
             stageRelation.setProgramSection(programSection);
             return DbOperation.save(stageRelation);
+    }
+
+    private static List<DbOperation> saveDataElementAttributes(DataElement dataElement, Map<String, Attribute> attributes){
+        List<DbOperation> operations = new ArrayList<>();
+        List<AttributeValue> attributeValues = dataElement.getAttributeValues();
+        if (attributeValues!=null && !attributeValues.isEmpty()) {
+            for (AttributeValue attributeValue : attributeValues) {
+                attributeValue.setDataElement(dataElement.getUid());
+                //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
+                operations.add(DbOperation.save(attributeValue));
+                Attribute attribute = attributes.get(attributeValue.getAttributeId());
+                if (attribute == null)
+                    attribute = attributeValue.getAttributeObj();
+                if (attribute == null)
+                    attribute = attributeValue.getAttribute();
+                attributes.put(attributeValue.getAttributeId(), attribute);
+                operations.add(DbOperation.save(attribute));
+            }
+        }
+        return operations;
     }
 }

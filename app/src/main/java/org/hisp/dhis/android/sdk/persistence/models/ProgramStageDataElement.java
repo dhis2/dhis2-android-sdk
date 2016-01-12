@@ -57,6 +57,8 @@ public class ProgramStageDataElement extends BaseModel {
     @PrimaryKey
     String dataElement;
 
+    DataElement dataElementObj;
+
     @JsonProperty("allowFutureDate")
     @Column(name = "allowFutureDate")
     boolean allowFutureDate;
@@ -93,7 +95,8 @@ public class ProgramStageDataElement extends BaseModel {
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.id;
-        dataElement.async().save();
+        dataElement.save();
+        dataElementObj = dataElement;
     }
 
     public boolean getAllowFutureDate() {
@@ -166,5 +169,9 @@ public class ProgramStageDataElement extends BaseModel {
 
     public String getDataelement() {
         return dataElement;
+    }
+
+    public DataElement getDataElementObj(){
+        return dataElementObj;
     }
 }

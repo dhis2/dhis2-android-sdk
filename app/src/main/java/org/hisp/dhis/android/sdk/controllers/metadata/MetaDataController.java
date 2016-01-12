@@ -44,6 +44,10 @@ import org.hisp.dhis.android.sdk.controllers.wrappers.OptionSetWrapper;
 import org.hisp.dhis.android.sdk.controllers.wrappers.ProgramWrapper;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -83,6 +87,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
+import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
@@ -192,6 +197,63 @@ public final class MetaDataController extends ResourceController {
         return new Select().from(ProgramStageDataElement.class).where(Condition.column
                 (ProgramStageDataElement$Table.PROGRAMSTAGE).is(programStage.getUid())).orderBy
                 (ProgramStageDataElement$Table.SORTORDER).queryList();
+    }
+
+    /**
+     * Get every entry in Attribute table as a List of Attribute objects
+     *
+     * @return List of Attribute objects with all the Attribute table content
+     */
+    public static List<Attribute> getAttributes() {
+        return new Select().from(Attribute.class)
+                .orderBy(Attribute$Table.ID).queryList();
+    }
+
+    /**
+     * Get every entry in AttributeValue table as a List of AttributeValue objects
+     *
+     * @return List of AttributeValue objects with all the AttributeValue content
+     */
+    public static List<AttributeValue> getAttributeValues() {
+        return new Select().from(AttributeValue.class)
+                .orderBy(AttributeValue$Table.ID).queryList();
+    }
+
+    /**
+     * Get all the AttributeValues that belongs to a given DataElement
+     *
+     * @param dataElement to get the Attributes from
+     * @return List of AttributeValue objects that belongs to the given DataElement
+     */
+    public static List<AttributeValue> getAttributeValues(DataElement dataElement){
+        if (dataElement == null) return null;
+        return new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid()))
+                .orderBy(AttributeValue$Table.ID).queryList();
+    }
+
+    /**
+     * Get a concrete AttributeValue entry given its id
+     *
+     * @param id PK of the AttributeValue table
+     * @return The AttributeValue object or null if not found
+     */
+    public static AttributeValue getAttributeValue(Long id){
+        if (id == null) return null;
+        return new Select().from(AttributeValue.class)
+                .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
+    }
+
+    /**
+     * Get a concrete Attribute entry given its string ID
+     *
+     * @param attributeId The ID used in DHIS2 to identify the Attribute
+     * @return The Attribute object or null if not found
+     */
+    public static Attribute getAttribute(String attributeId){
+        if (attributeId == null) return null;
+        return new Select().from(Attribute.class)
+                .where(Condition.column(Attribute$Table.ID).is(attributeId)).querySingle();
     }
 
     /**
@@ -375,6 +437,15 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
+     * Returns a UserAccount object for the currently logged in user.
+     *
+     * @return
+     */
+    public static UserAccount getUserAccount() {
+        return new Select().from(UserAccount.class).querySingle();
+    }
+
+    /**
      * Returns an option set for the given Id or null of the option set doesn't exist.
      *
      * @param optionSetId
@@ -470,7 +541,9 @@ public final class MetaDataController extends ResourceController {
                 ProgramRule.class,
                 ProgramRuleVariable.class,
                 ProgramRuleAction.class,
-                RelationshipType.class);
+                RelationshipType.class,
+                Attribute.class,
+                AttributeValue.class);
     }
 
     /**
@@ -580,10 +653,10 @@ public final class MetaDataController extends ResourceController {
 
         QUERY_MAP_FULL.put("fields",
                 "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                "dataElement[*,optionSet[id]]],programIndicators[*]],programStageDataElements" +
-                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
-                "[*,trackedEntityAttribute[*]],!organisationUnits)");
+                        "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                        "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                        "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
@@ -593,6 +666,7 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
+
         return updatedProgram;
     }
 

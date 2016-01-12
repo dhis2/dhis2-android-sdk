@@ -167,8 +167,8 @@ public final class DhisService extends Service {
         });
     }
 
-    public static void loadData(final Context context) {
-        JobExecutor.enqueueJob(new NetworkJob<Object>(0,
+    public static Job loadData(final Context context) {
+        Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,
                 null) {
             @Override
             public Object execute() throws APIException {
@@ -176,6 +176,7 @@ public final class DhisService extends Service {
                 return new Object();
             }
         });
+        return job;
     }
 
     public static void sendData() {

@@ -657,7 +657,7 @@ public final class MetaDataController extends ResourceController {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
-                "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
+                "*,trackedEntity[*],programIndicators[*],programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
                         "programStageSections[*,programStageDataElements[*,programStage[id]," +
                         "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
                         "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
@@ -677,10 +677,17 @@ public final class MetaDataController extends ResourceController {
 
     private static void getOptionSetDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
         Log.d(CLASS_TAG, "getOptionSetDataFromServer");
+        Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+        QUERY_MAP_FULL.put("fields", "*,options[*]");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.OPTIONSETS);
+
+        if (lastUpdated != null) {
+            QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
+        }
+
         List<OptionSet> optionSets = unwrapResponse(dhisApi
-                .getOptionSets(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.OPTION_SETS);
+                .getOptionSets(QUERY_MAP_FULL), ApiEndpointContainer.OPTION_SETS);
         List<DbOperation> operations = OptionSetWrapper.getOperations(optionSets);
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()

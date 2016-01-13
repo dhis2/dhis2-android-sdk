@@ -124,7 +124,6 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     @Override
     public void save() {
-        Log.d("TrackedEntityInstance", "save is actually being called..");
         /* check if there is an existing tei with the same UID to avoid duplicates */
         TrackedEntityInstance existingTei = TrackerController.
                 getTrackedEntityInstance(trackedEntityInstance);

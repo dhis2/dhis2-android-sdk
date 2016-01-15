@@ -33,11 +33,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -68,11 +66,12 @@ public final class AutoCompleteRow extends Row {
     private final Map<String, String> mNameToCodeMap;
     private final ArrayList<String> mOptions;
 
-    public AutoCompleteRow(String label, String warning, BaseValue value,
+    public AutoCompleteRow(String label, boolean mandatory, String warning, BaseValue value,
                            OptionSet optionSet) {
         mLabel = label;
         mValue = value;
         mWarning = warning;
+        mMandatory = mandatory;
 
         mCodeToNameMap = new LinkedHashMap<>();
         mNameToCodeMap = new LinkedHashMap<>();
@@ -145,6 +144,19 @@ public final class AutoCompleteRow extends Row {
             holder.warningLabel.setText(mWarning);
         }
 
+        if(mError == null) {
+            holder.errorLabel.setVisibility(View.GONE);
+        } else {
+            holder.errorLabel.setVisibility(View.VISIBLE);
+            holder.errorLabel.setText(mWarning);
+        }
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
 
@@ -156,7 +168,9 @@ public final class AutoCompleteRow extends Row {
 
     private static class ViewHolder {
         public final TextView textView;
+        public final TextView mandatoryIndicator;
         public final TextView warningLabel;
+        public final TextView errorLabel;
         public final TextView valueTextView;
         public final ImageButton clearButton;
         public final View detailedInfoButton;
@@ -165,8 +179,10 @@ public final class AutoCompleteRow extends Row {
         public final DropDownButtonListener onDropDownButtonListener;
 
         private ViewHolder(View view, View detailedInfoButton) {
+            mandatoryIndicator = (TextView) view.findViewById(R.id.mandatory_indicator);
             textView = (TextView) view.findViewById(R.id.text_label);
             warningLabel = (TextView) view.findViewById(R.id.warning_label);
+            errorLabel = (TextView) view.findViewById(R.id.error_label);
             valueTextView = (TextView) view.findViewById(R.id.choose_option);
             clearButton = (ImageButton) view.findViewById(R.id.clear_option_value);
             this.detailedInfoButton = detailedInfoButton;

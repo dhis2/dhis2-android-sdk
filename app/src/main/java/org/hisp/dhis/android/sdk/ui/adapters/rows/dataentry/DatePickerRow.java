@@ -52,9 +52,10 @@ public class DatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
     private final boolean mAllowDatesInFuture;
 
-    public DatePickerRow(String label, String warning, BaseValue value, boolean allowDatesInFuture) {
+    public DatePickerRow(String label, boolean mandatory, String warning, BaseValue value, boolean allowDatesInFuture) {
         mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
+        mMandatory = mandatory;
         mValue = value;
         mWarning = warning;
 
@@ -80,13 +81,10 @@ public class DatePickerRow extends Row {
             view = root;
         }
 
-        if(!isEditable())
-        {
+        if(!isEditable()) {
             holder.clearButton.setEnabled(false);
             holder.pickerInvoker.setEnabled(false);
-        }
-        else
-        {
+        } else {
             holder.clearButton.setEnabled(true);
             holder.pickerInvoker.setEnabled(true);
         }
@@ -104,6 +102,19 @@ public class DatePickerRow extends Row {
             holder.warningLabel.setText(mWarning);
         }
 
+        if(mError == null) {
+            holder.errorLabel.setVisibility(View.GONE);
+        } else {
+            holder.errorLabel.setVisibility(View.VISIBLE);
+            holder.errorLabel.setText(mWarning);
+        }
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
 
@@ -115,7 +126,9 @@ public class DatePickerRow extends Row {
 
     private class DatePickerRowHolder {
         final TextView textLabel;
+        final TextView mandatoryIndicator;
         final TextView warningLabel;
+        final TextView errorLabel;
         final TextView pickerInvoker;
         final ImageButton clearButton;
         final View detailedInfoButton;
@@ -125,7 +138,9 @@ public class DatePickerRow extends Row {
 
         public DatePickerRowHolder(View root, Context context, View detailedInfoButton, boolean allowDatesInFuture) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
+            mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             warningLabel = (TextView) root.findViewById(R.id.warning_label);
+            errorLabel = (TextView) root.findViewById(R.id.error_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
             this.detailedInfoButton = detailedInfoButton;

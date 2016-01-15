@@ -36,6 +36,19 @@ import org.hisp.dhis.android.sdk.utils.StringUtils;
 
 public final class Access {
 
+    public Access() {
+
+    }
+
+    public Access(Access access) {
+        this.manage = access.manage;
+        this.externalize = access.externalize;
+        this.write = access.write;
+        this.read = access.read;
+        this.update = access.update;
+        this.delete = access.delete;
+    }
+
     @JsonProperty("manage")
     boolean manage;
 

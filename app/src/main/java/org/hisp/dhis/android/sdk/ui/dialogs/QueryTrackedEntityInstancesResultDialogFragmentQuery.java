@@ -99,32 +99,32 @@ public class QueryTrackedEntityInstancesResultDialogFragmentQuery implements Que
         if (trackedEntityAttribute.getOptionSet() != null) {
             OptionSet optionSet = MetaDataController.getOptionSet(trackedEntityAttribute.getOptionSet());
             if (optionSet == null) {
-                row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.TEXT);
+                row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.TEXT);
             } else {
-                row = new AutoCompleteRow(trackedEntityAttributeName, null, dataValue, optionSet);
+                row = new AutoCompleteRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, optionSet);
             }
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.TEXT)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.TEXT);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.TEXT);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.NUMBER)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.NUMBER);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.NUMBER);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.INTEGER);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.INTEGER);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.BOOLEAN)) {
-            row = new RadioButtonsRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.BOOLEAN);
+            row = new RadioButtonsRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.BOOLEAN);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.TRUE_ONLY)) {
-            row = new CheckBoxRow(trackedEntityAttributeName, null, dataValue);
+            row = new CheckBoxRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue);
         } else if (trackedEntityAttribute.getValueType().equals(ValueType.DATE)) {
-            row = new DatePickerRow(trackedEntityAttributeName, null, dataValue, programTrackedEntityAttribute.getAllowFutureDate());
+            row = new DatePickerRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, programTrackedEntityAttribute.getAllowFutureDate());
         } else {
-            row = new EditTextRow(trackedEntityAttributeName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(trackedEntityAttributeName, programTrackedEntityAttribute.getMandatory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }
         return row;
     }

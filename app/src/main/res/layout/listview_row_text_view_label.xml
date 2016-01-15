@@ -35,16 +35,38 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <org.hisp.dhis.android.sdk.ui.views.FontTextView
-        android:id="@+id/text_label"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/label_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:textSize="@dimen/medium_text_size"
-        app:font="@string/condensed_font_name"/>
+        android:orientation="horizontal">
+
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
+            android:id="@+id/mandatory_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="@dimen/medium_text_size"
+            android:text="@string/mandatory_indicator"
+            android:textColor="@color/red"
+            android:visibility="gone"
+            app:font="@string/condensed_font_name"/>
+
+        <org.hisp.dhis.android.sdk.ui.views.FontTextView
+            android:id="@+id/text_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="@dimen/medium_text_size"
+            app:font="@string/condensed_font_name"/>
+
+    </LinearLayout>
 
     <org.hisp.dhis.android.sdk.ui.views.FontTextView
         android:visibility="gone"
@@ -56,6 +78,19 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:textSize="@dimen/medium_text_size"
-        android:textColor="@color/Yellow_dark"
+        android:textColor="@color/orange"
+        app:font="@string/condensed_font_name"/>
+
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:visibility="gone"
+        android:id="@+id/error_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="@dimen/medium_text_size"
+        android:textColor="@color/Red"
         app:font="@string/condensed_font_name"/>
 </LinearLayout>

@@ -79,6 +79,7 @@
                 android:layout_weight="1"
                 android:id="@+id/validate"
                 android:text="@string/validate"
+                android:visibility="gone"
                 android:background="@drawable/rounded_imagebutton_teal"/>
 
         </LinearLayout>

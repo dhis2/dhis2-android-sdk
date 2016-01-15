@@ -36,6 +36,8 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -210,6 +212,12 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         super.onDestroy();
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.action_new_event);
+        menuItem.setVisible(false);
+    }
+
     void hideSection(String programStageSectionId) {
         if(spinnerAdapter!=null) {
             spinnerAdapter.hideSection(programStageSectionId);
@@ -361,6 +369,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         if (form != null && form.getEvent()!=null) {
             flagDataChanged(false);
         }
+    }
+
+    @Override
+    protected void proceed() {
+
     }
 
     @Override
@@ -557,7 +570,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
-            showValidationErrorDialog(getValidationErrors());
+            showValidationErrorDialog(getValidationErrors(), getProgramRuleFragmentHelper().getProgramRuleValidationErrors());
         }
     }
 

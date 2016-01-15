@@ -54,6 +54,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
+import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
@@ -81,7 +82,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected boolean refreshing = false;
     protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
-    private INavigationHandler navigationHandler;
+    protected INavigationHandler navigationHandler;
     protected RulesEvaluatorThread rulesEvaluatorThread;
 
     @Override
@@ -94,7 +95,6 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
         if (activity instanceof INavigationHandler) {
             navigationHandler = (INavigationHandler) activity;
-//            navigationHandler.setBackPressedListener(this); //dunno if this is necessary for some devices
         } else {
             throw new IllegalArgumentException("Activity must implement INavigationHandler interface");
         }
@@ -151,23 +151,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItem = menu.findItem(R.id.action_new_event);
-        menuItem.setEnabled(false);
-
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_data_entry, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_new_event);
-        if (!hasDataChanged) {
-            menuItem.setEnabled(false);
-            menuItem.getIcon().setAlpha(0x30);
-        } else {
-            menuItem.setEnabled(true);
-            menuItem.getIcon().setAlpha(0xFF);
-        }
     }
 
     @Override
@@ -201,14 +186,10 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
-            getFragmentManager().popBackStack();
+            navigationHandler.onBackPressed();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
-            if (isValid()) {
-                save();
-            } else {
-                showValidationErrorDialog(getValidationErrors());
-            }
+            proceed();
         }
         return super.onOptionsItemSelected(menuItem);
     }
@@ -233,6 +214,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         if(dataValueAdapter!=null) {
             dataValueAdapter.resetHiding();
             dataValueAdapter.resetWarnings();
+            dataValueAdapter.resetErrors();
         }
         if (sectionAdapter != null) {
             sectionAdapter.resetHiding();
@@ -292,9 +274,20 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    protected void showValidationErrorDialog(ArrayList<String> errors) {
+    protected void showValidationErrorDialog(ArrayList<String> mandatoryFieldsMissingErrors, ArrayList<String> programRulesErrors) {
+        ArrayList<String> errors = new ArrayList<>();
+        if(mandatoryFieldsMissingErrors != null) {
+            for(String mandatoryFieldsError : mandatoryFieldsMissingErrors) {
+                errors.add(getActivity().getString(R.string.missing_mandatory_field) + ": " + mandatoryFieldsError);
+            }
+        }
+        if(programRulesErrors != null) {
+            for(String programRulesError : programRulesErrors) {
+                errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
+            }
+        }
         validationErrorDialog = ValidationErrorDialog
-                .newInstance(errors);
+                .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
         validationErrorDialog.show(getChildFragmentManager());
     }
 
@@ -399,6 +392,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected abstract boolean isValid();
 
     protected abstract void save();
+
+    protected abstract void proceed();
 
     @Override
     public abstract void onLoadFinished(Loader<D> loader, D data);

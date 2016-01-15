@@ -50,9 +50,19 @@ import java.util.Map;
  */
 public abstract class BaseIdentifiableObject extends BaseModel {
 
-    //@JsonProperty("id")
-    //@Column(name = "id")
-    //protected String id;
+    public BaseIdentifiableObject() {
+
+    }
+
+    public BaseIdentifiableObject(BaseIdentifiableObject baseIdentifiableObject) {
+        this.name = baseIdentifiableObject.name;
+        this.displayName = baseIdentifiableObject.displayName;
+        this.created = baseIdentifiableObject.created;
+        this.lastUpdated = baseIdentifiableObject.lastUpdated;
+        if(baseIdentifiableObject.access != null) {
+            this.access = new Access(baseIdentifiableObject.access);
+        }
+    }
 
     @JsonProperty("name")
     @Column(name = "name")

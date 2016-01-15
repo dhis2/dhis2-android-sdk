@@ -33,7 +33,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minHeight="520dp"
-    android:minWidth="320dp"
+    android:minWidth="720dp"
     android:orientation="vertical">
 
     <LinearLayout

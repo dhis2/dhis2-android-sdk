@@ -108,6 +108,18 @@ public class Enrollment extends BaseSerializableModel {
         enrollment = CodeGenerator.generateCode();
     }
 
+    public Enrollment(Enrollment enrollment) {
+        this.orgUnit = enrollment.orgUnit;
+        this.trackedEntityInstance = enrollment.trackedEntityInstance;
+        this.localTrackedEntityInstanceId = enrollment.localTrackedEntityInstanceId;
+        this.program = enrollment.program;
+        this.enrollmentDate = enrollment.enrollmentDate;
+        this.incidentDate = enrollment.incidentDate;
+        this.followup = enrollment.followup;
+        this.status = enrollment.status;
+        this.enrollment = enrollment.enrollment;
+    }
+
     public Enrollment(String organisationUnit, String trackedEntityInstance, Program program, String enrollmentDate, String incidentDate) {
         orgUnit = organisationUnit;
         status = Enrollment.ACTIVE;
@@ -331,5 +343,24 @@ public class Enrollment extends BaseSerializableModel {
     @JsonIgnore
     public void setUid(String uid) {
         this.enrollment = uid;
+    }
+
+    public boolean equals(Enrollment enrollment) {
+        if(enrollment == null) {
+            return false;
+        } else if(enrollmentDate == null && enrollment.getEnrollmentDate() != null) {
+            return false;
+        } else if(enrollmentDate != null && !enrollmentDate.equals(enrollment.getEnrollmentDate())) {
+            return false;
+        } else if(incidentDate == null && enrollment.getIncidentDate() != null) {
+            return false;
+        } else if(incidentDate != null && !incidentDate.equals(enrollment.getIncidentDate())) {
+            return false;
+        } else if(status == null && enrollment.getStatus() != null) {
+            return false;
+        } else if(status != null && !status.equals(enrollment.getStatus())) {
+            return false;
+        }
+        return true;
     }
 }

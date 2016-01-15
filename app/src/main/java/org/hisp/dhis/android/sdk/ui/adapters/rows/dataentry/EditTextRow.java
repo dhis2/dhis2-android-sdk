@@ -38,12 +38,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -55,10 +52,9 @@ public class EditTextRow extends Row {
     private static int LONG_TEXT_LINE_COUNT = 3;
     private static String rowTypeTemp;
 
-
-
-    public EditTextRow(String label, String warning, BaseValue baseValue, DataEntryRowTypes rowType) {
+    public EditTextRow(String label, boolean mandatory, String warning, BaseValue baseValue, DataEntryRowTypes rowType) {
         mLabel = label;
+        mMandatory = mandatory;
         mWarning = warning;
         mValue = baseValue;
         mRowType = rowType;
@@ -88,7 +84,9 @@ public class EditTextRow extends Row {
         } else {
             View root = inflater.inflate(R.layout.listview_row_edit_text, container, false);
             TextView label = (TextView) root.findViewById(R.id.text_label);
+            TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
+            TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
             EditText editText = (EditText) root.findViewById(R.id.edit_text_row);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
@@ -130,13 +128,12 @@ public class EditTextRow extends Row {
             }
 
             OnTextChangeListener listener = new OnTextChangeListener();
-            holder = new ValueEntryHolder(label, warningLabel, editText, detailedInfoButton, listener );
+            holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
             holder.editText.addTextChangedListener(listener);
 
-            if(!isEditable())
+            if(!isEditable()) {
                 holder.editText.setEnabled(false);
-            else
-            {
+            } else {
                 holder.editText.setEnabled(true);
             }
 
@@ -163,6 +160,19 @@ public class EditTextRow extends Row {
             holder.warningLabel.setText(mWarning);
         }
 
+        if(mError == null) {
+            holder.errorLabel.setVisibility(View.GONE);
+        } else {
+            holder.errorLabel.setVisibility(View.VISIBLE);
+            holder.errorLabel.setText(mWarning);
+        }
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
 
@@ -171,23 +181,24 @@ public class EditTextRow extends Row {
         return mRowType.ordinal();
     }
 
-
-
     private static class ValueEntryHolder {
         final TextView textLabel;
+        final TextView mandatoryIndicator;
         final TextView warningLabel;
+        final TextView errorLabel;
         final EditText editText;
         final View detailedInfoButton;
         final OnTextChangeListener listener;
 
-
         public ValueEntryHolder(TextView textLabel,
-                                TextView warningLabel,
-                                EditText editText,
+                                TextView mandatoryIndicator, TextView warningLabel,
+                                TextView errorLabel, EditText editText,
                                 View detailedInfoButton,
                                 OnTextChangeListener listener) {
             this.textLabel = textLabel;
+            this.mandatoryIndicator = mandatoryIndicator;
             this.warningLabel = warningLabel;
+            this.errorLabel = errorLabel;
             this.editText = editText;
             this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;

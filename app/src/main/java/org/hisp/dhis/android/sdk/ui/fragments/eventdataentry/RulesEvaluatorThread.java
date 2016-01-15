@@ -56,7 +56,6 @@ public class RulesEvaluatorThread extends AsyncHelperThread {
             dataEntryFragment.resetHidingAndWarnings(dataEntryFragment.getListViewAdapter(), dataEntryFragment.getSpinnerAdapter());
             dataEntryFragment.evaluateAndApplyProgramRules();
             Dhis2Application.getEventBus().post(new RefreshListViewEvent());
-            Dhis2Application.getEventBus().post(new HideLoadingDialogEvent());
         }
     }
 

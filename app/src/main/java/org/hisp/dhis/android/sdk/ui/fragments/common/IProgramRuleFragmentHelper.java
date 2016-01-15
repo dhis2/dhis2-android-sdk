@@ -43,6 +43,8 @@ import java.util.List;
 
 public interface IProgramRuleFragmentHelper {
 
+    ArrayList<String> getProgramRuleValidationErrors();
+    void recycle();
     void initiateEvaluateProgramRules();
     void mapFieldsToRulesAndIndicators();
     Fragment getFragment();

@@ -36,8 +36,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
@@ -54,10 +52,11 @@ public class CheckBoxRow extends Row {
 
     private final String mLabel;
 
-    public CheckBoxRow(String label, String warning, BaseValue mValue) {
+    public CheckBoxRow(String label, boolean mandatory, String warning, BaseValue mValue) {
         mLabel = label;
         this.mValue = mValue;
         this.mWarning = warning;
+        this.mMandatory = mandatory;
 
         checkNeedsForDescriptionButton();
     }
@@ -74,24 +73,23 @@ public class CheckBoxRow extends Row {
         } else {
             View root = inflater.inflate(R.layout.listview_row_checkbox, container, false);
             TextView textLabel = (TextView) root.findViewById(R.id.text_label);
+            TextView mandatoryIndicator = (TextView) root.findViewById(R.id.mandatory_indicator);
             TextView warningLabel = (TextView) root.findViewById(R.id.warning_label);
+            TextView errorLabel = (TextView) root.findViewById(R.id.error_label);
             CheckBox checkBox = (CheckBox) root.findViewById(R.id.checkbox);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
 
             CheckBoxListener listener = new CheckBoxListener();
-            holder = new CheckBoxHolder(textLabel, warningLabel, checkBox, detailedInfoButton ,listener);
+            holder = new CheckBoxHolder(textLabel, mandatoryIndicator, warningLabel, errorLabel, checkBox, detailedInfoButton ,listener);
 
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
 
-            if(!isEditable())
-            {
+            if(!isEditable()) {
                 holder.checkBox.setEnabled(false);
                 holder.textLabel.setEnabled(false);
-            }
-            else
-            {
+            } else {
                 holder.textLabel.setEnabled(true);
                 holder.checkBox.setEnabled(true);
             }
@@ -120,6 +118,19 @@ public class CheckBoxRow extends Row {
             holder.warningLabel.setText(mWarning);
         }
 
+        if(mError == null) {
+            holder.errorLabel.setVisibility(View.GONE);
+        } else {
+            holder.errorLabel.setVisibility(View.VISIBLE);
+            holder.errorLabel.setText(mWarning);
+        }
+
+        if(!mMandatory) {
+            holder.mandatoryIndicator.setVisibility(View.GONE);
+        } else {
+            holder.mandatoryIndicator.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
 
@@ -139,13 +150,13 @@ public class CheckBoxRow extends Row {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String newValue;
-            if(isChecked)
+            if(isChecked) {
                 newValue = TRUE;
-            else
+            } else {
                 newValue = EMPTY_FIELD;
+            }
 
-            if(!newValue.toString().equals(value.getValue()))
-            {
+            if(!newValue.toString().equals(value.getValue())) {
                 value.setValue(newValue);
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(value, DataEntryRowTypes.TRUE_ONLY.toString()));
             }
@@ -155,15 +166,19 @@ public class CheckBoxRow extends Row {
 
     private static class CheckBoxHolder {
         final TextView textLabel;
+        final TextView mandatoryIndicator;
         final TextView warningLabel;
+        final TextView errorLabel;
         final CheckBox checkBox;
         final View detailedInfoButton;
         final CheckBoxListener listener;
 
-        public CheckBoxHolder(TextView textLabel, TextView warningLabel, CheckBox checkBox, View detailedInfoButton,
+        public CheckBoxHolder(TextView textLabel, TextView mandatoryIndicator, TextView warningLabel, TextView errorLabel, CheckBox checkBox, View detailedInfoButton,
                               CheckBoxListener listener) {
             this.textLabel = textLabel;
+            this.mandatoryIndicator = mandatoryIndicator;
             this.warningLabel = warningLabel;
+            this.errorLabel = errorLabel;
             this.checkBox = checkBox;
             this.detailedInfoButton = detailedInfoButton;
             this.listener = listener;

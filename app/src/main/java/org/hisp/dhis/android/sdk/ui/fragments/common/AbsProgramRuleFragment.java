@@ -96,12 +96,10 @@ public abstract class AbsProgramRuleFragment<D> extends Fragment {
             }
             case SHOWWARNING: {
                 programRuleFragmentHelper.applyShowWarningRuleAction(programRuleAction);
-                affectedFieldsWithValue.add(programRuleAction.getDataElement());
                 break;
             }
             case SHOWERROR: {
                 programRuleFragmentHelper.applyShowErrorRuleAction(programRuleAction);
-                affectedFieldsWithValue.add(programRuleAction.getDataElement());
                 break;
             }
             case ASSIGN: {

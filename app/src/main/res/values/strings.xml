@@ -59,7 +59,9 @@
     <string name="logout_option">Log out</string>
     <string name="cancel_option">Cancel</string>
     <string name="delete">Delete</string>
-
+    <string name="missing_mandatory_field">Missing mandatory field</string>
+    <string name="unable_to_complete_registration">Unable to complete registration.</string>
+    <string name="review_errors">Please review the errors below and try again.</string>
 
 
 
@@ -191,6 +193,7 @@
     <string name="eventname">Event name</string>
     <string name="startdate">Start date</string>
     <string name="enddate">End date</string>
+    <string name="mandatory_indicator">*</string>
 
     <string name="registered_events">Registered events</string>
     <string name="status">Status</string>

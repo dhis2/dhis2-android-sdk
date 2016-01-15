@@ -75,12 +75,17 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
 
     public TrackedEntityInstance() { this.trackedEntityInstance = CodeGenerator.generateCode(); }
 
+    public TrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        super(trackedEntityInstance);
+        this.trackedEntityInstance = trackedEntityInstance.trackedEntityInstance;
+        this.trackedEntity = trackedEntityInstance.trackedEntity;
+        this.orgUnit = trackedEntityInstance.orgUnit;
+    }
+
     public TrackedEntityInstance(Program program, String organisationUnit) {
         fromServer = false;
         trackedEntityInstance = CodeGenerator.generateCode();
         trackedEntity = program.getTrackedEntity().getId();
-        //created = Utils.getCurrentTime();
-        //lastUpdated = Utils.getCurrentTime();
         orgUnit = organisationUnit;
     }
 
@@ -128,10 +133,8 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
         /* check if there is an existing tei with the same UID to avoid duplicates */
         TrackedEntityInstance existingTei = TrackerController.
                 getTrackedEntityInstance(trackedEntityInstance);
-        boolean exists = false;
         if (existingTei != null) {
             localId = existingTei.localId;
-            exists = true;
         }
         if (getTrackedEntityInstance() == null && TrackerController.getTrackedEntityInstance(localId) != null) {
             //means that the tei is local and has previosuly been saved
@@ -196,4 +199,5 @@ public class TrackedEntityInstance extends BaseSerializableModel implements Seri
     public void setUid(String uid) {
         this.trackedEntityInstance = uid;
     }
+
 }

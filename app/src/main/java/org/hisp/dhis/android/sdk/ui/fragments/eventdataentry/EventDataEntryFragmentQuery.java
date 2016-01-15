@@ -273,32 +273,32 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         if (dataElement.getOptionSet() != null) {
             OptionSet optionSet = MetaDataController.getOptionSet(dataElement.getOptionSet());
             if (optionSet == null) {
-                row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.TEXT);
+                row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
             } else {
-                row = new AutoCompleteRow(dataElementName, null, dataValue, optionSet);
+                row = new AutoCompleteRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, optionSet);
             }
         } else if (dataElement.getValueType().equals(ValueType.TEXT)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.TEXT);
         } else if (dataElement.getValueType().equals(ValueType.LONG_TEXT)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else if (dataElement.getValueType().equals(ValueType.NUMBER)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.NUMBER);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.NUMBER);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_ZERO_OR_POSITIVE)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_ZERO_OR_POSITIVE);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_POSITIVE)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_POSITIVE);
         } else if (dataElement.getValueType().equals(ValueType.INTEGER_NEGATIVE)) {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.INTEGER_NEGATIVE);
         } else if (dataElement.getValueType().equals(ValueType.BOOLEAN)) {
-            row = new RadioButtonsRow(dataElementName, null, dataValue, DataEntryRowTypes.BOOLEAN);
+            row = new RadioButtonsRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.BOOLEAN);
         } else if (dataElement.getValueType().equals(ValueType.TRUE_ONLY)) {
-            row = new CheckBoxRow(dataElementName, null, dataValue);
+            row = new CheckBoxRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue);
         } else if (dataElement.getValueType().equals(ValueType.DATE)) {
-            row = new DatePickerRow(dataElementName, null, dataValue, programStageDataElement.getAllowFutureDate());
+            row = new DatePickerRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, programStageDataElement.getAllowFutureDate());
         } else {
-            row = new EditTextRow(dataElementName, null, dataValue, DataEntryRowTypes.LONG_TEXT);
+            row = new EditTextRow(dataElementName, programStageDataElement.getCompulsory(), null, dataValue, DataEntryRowTypes.LONG_TEXT);
         }
         return row;
     }

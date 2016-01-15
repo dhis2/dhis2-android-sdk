@@ -27,16 +27,21 @@
  *
  */
 
-package org.hisp.dhis.android.sdk.ui.activities;
+package org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry;
 
-/**
- * Created by araz on 04.04.2015.
- */
-public interface OnBackPressedListener {
-    /**
-     *
-     * @return true if normal back-press behaviour should follow after doBack is called,
-     * false if not.
-     */
-    boolean doBack();
+public class PlainTextRow extends NonEditableTextViewRow {
+
+    public PlainTextRow(String value) {
+        super(value);
+    }
+
+    @Override
+    public String getName() {
+        return mLabel;
+    }
+
+    @Override
+    public int getViewType() {
+        return 0;
+    }
 }

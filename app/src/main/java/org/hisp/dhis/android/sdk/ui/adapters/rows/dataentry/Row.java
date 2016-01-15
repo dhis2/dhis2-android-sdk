@@ -45,17 +45,17 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 /**
  * Created by erling on 9/9/15.
  */
-public abstract class Row implements DataEntryRow
-{
-
+public abstract class Row implements DataEntryRow {
     protected String mLabel;
     protected String mWarning;
+    protected String mError;
     protected BaseValue mValue;
     protected String mDescription;
     protected DataEntryRowTypes mRowType;
     protected View detailedInfoButton;
     private boolean hideDetailedInfoButton;
     private boolean editable = true;
+    protected boolean mMandatory = false;
 
     public View getDetailedInfoButton(){
         return detailedInfoButton;
@@ -76,7 +76,6 @@ public abstract class Row implements DataEntryRow
     @Override
     public abstract View getView(FragmentManager fragmentManager, LayoutInflater inflater, View convertView, ViewGroup container);
 
-
     @Override
     public abstract int getViewType();
 
@@ -91,22 +90,23 @@ public abstract class Row implements DataEntryRow
     }
 
     public String getDescription() {
-        if(this instanceof CoordinatesRow)
-            mDescription =  "";
-        else if (this instanceof StatusRow)
+        if(this instanceof CoordinatesRow) {
             mDescription = "";
-        else if(this instanceof IndicatorRow)
+        } else if (this instanceof StatusRow) {
             mDescription = "";
+        } else if(this instanceof IndicatorRow) {
+            mDescription = "";
+        }
 
         String itemId = getItemId();
         DataElement dataElement = MetaDataController.getDataElement(itemId);
-        if(dataElement != null)
+        if(dataElement != null) {
             mDescription = dataElement.getDescription();
-        else
-        {
+        } else {
             TrackedEntityAttribute attribute = MetaDataController.getTrackedEntityAttribute(itemId);
-            if(attribute != null)
+            if(attribute != null) {
                 mDescription = attribute.getDescription();
+            }
         }
 
         return mDescription;
@@ -114,8 +114,9 @@ public abstract class Row implements DataEntryRow
     public void checkNeedsForDescriptionButton()
     {
         mDescription = getDescription();
-        if(mDescription == null || mDescription.equals(""))
+        if(mDescription == null || mDescription.equals("")) {
             setHideDetailedInfoButton(true);
+        }
     }
     public boolean isDetailedInfoButtonHidden() {
         return hideDetailedInfoButton;
@@ -131,5 +132,13 @@ public abstract class Row implements DataEntryRow
 
     public void setWarning(String mWarning) {
         this.mWarning = mWarning;
+    }
+
+    public String getError() {
+        return mError;
+    }
+
+    public void setError(String mError) {
+        this.mError = mError;
     }
 }

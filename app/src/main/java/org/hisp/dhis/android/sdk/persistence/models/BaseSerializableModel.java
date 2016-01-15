@@ -48,6 +48,17 @@ public abstract class BaseSerializableModel extends BaseIdentifiableObject {
         // do something: put to a Map; log a warning, whatever
     }
 
+    public BaseSerializableModel() {
+
+    }
+
+    public BaseSerializableModel(BaseSerializableModel baseSerializableModel) {
+        super(baseSerializableModel);
+        this.id = baseSerializableModel.id;
+        this.fromServer = baseSerializableModel.fromServer;
+        this.localId = baseSerializableModel.localId;
+    }
+
     @JsonProperty("id")
     @Column(name = "id")
     String id;

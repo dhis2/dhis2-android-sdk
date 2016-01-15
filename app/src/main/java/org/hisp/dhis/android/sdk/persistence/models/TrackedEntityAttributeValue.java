@@ -65,6 +65,17 @@ public class TrackedEntityAttributeValue extends BaseValue implements Serializab
     @Column(name = "localTrackedEntityInstanceId")
     long localTrackedEntityInstanceId;
 
+    public TrackedEntityAttributeValue() {
+
+    }
+
+    public TrackedEntityAttributeValue(TrackedEntityAttributeValue trackedEntityAttributeValue) {
+        this.value = trackedEntityAttributeValue.getValue();
+        this.trackedEntityAttributeId = trackedEntityAttributeValue.getTrackedEntityAttributeId();
+        this.trackedEntityInstanceId = trackedEntityAttributeValue.getTrackedEntityInstanceId();
+        this.localTrackedEntityInstanceId = trackedEntityAttributeValue.getLocalTrackedEntityInstanceId();
+    }
+
     /**
      * workaround for sending code if attribute is option set.
      *

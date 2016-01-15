@@ -87,7 +87,12 @@ public class ExpressionUtils {
      */
     public static Object evaluate( String expression, Map<String, Object> vars )
     {
-        return evaluate(expression, vars, false);
+        try {
+            return evaluate(expression, vars, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -106,14 +111,7 @@ public class ExpressionUtils {
 
         JexlContext context = vars != null ? new MapContext( vars ) : new MapContext();
 
-        Object result = false;
-        try {
-            result = exp.evaluate( context );
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = false;
-        }
-        return result;
+        return exp.evaluate( context );
     }
 
     /**

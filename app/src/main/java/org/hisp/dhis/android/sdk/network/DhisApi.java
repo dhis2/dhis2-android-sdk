@@ -243,7 +243,7 @@ public interface DhisApi {
                                        @Query("pageSize") int eventLimit,
                                        @QueryMap Map<String, String> queryParams);
 
-    @GET("/" + ApiEndpointContainer.EVENTS + "?paging=false&ouMode=ACCESSIBLE")
+    @GET("/" + ApiEndpointContainer.EVENTS + "?skipPaging=true&ouMode=ACCESSIBLE")
     JsonNode getEventsForEnrollment(@Query("program") String programUid,
                                                     @Query("programStatus") String programStatus,
                                                     @Query("trackedEntityInstance") String
@@ -262,7 +262,7 @@ public interface DhisApi {
     @GET("/"+ApiEndpointContainer.ENROLLMENTS+"/{enrollmentUid}")
     Enrollment getEnrollment(@Path("enrollmentUid") String enrollmentUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?ouMode=ACCESSIBLE")
+    @GET("/"+ApiEndpointContainer.ENROLLMENTS+"?skipPaging=true&ouMode=ACCESSIBLE")
     Map<String, List<Enrollment>> getEnrollments(@Query("trackedEntityInstance") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
 
     @POST("/"+ApiEndpointContainer.ENROLLMENTS+"/")
@@ -274,7 +274,7 @@ public interface DhisApi {
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/{trackedEntityInstanceUid}")
     TrackedEntityInstance getTrackedEntityInstance(@Path("trackedEntityInstanceUid") String trackedEntityInstanceUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES)
+    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true")
     Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
 
     @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")

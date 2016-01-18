@@ -70,6 +70,7 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RefreshListViewEvent;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
+import org.hisp.dhis.android.sdk.utils.services.VariableService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +87,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
     private EventSaveThread saveThread;
-    private RulesEvaluatorBufferThread rulesEvaluatorBufferThread;
 
     private static final String ORG_UNIT_ID = "extra:orgUnitId";
     private static final String PROGRAM_ID = "extra:ProgramId";
@@ -184,6 +184,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     @Override
     public void onCreate(Bundle onSavedInstanceState) {
         super.onCreate(onSavedInstanceState);
+        VariableService.reset();
         if(saveThread == null || saveThread.isKilled()) {
             saveThread = new EventSaveThread();
             saveThread.start();
@@ -194,8 +195,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread.start();
         }
         indicatorEvaluatorThread.init(this);
-        rulesEvaluatorBufferThread = new RulesEvaluatorBufferThread(this);
-        rulesEvaluatorBufferThread.start();
     }
 
     @Override
@@ -206,7 +205,6 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 indicatorEvaluatorThread.kill();
                 indicatorEvaluatorThread = null;
                 saveThread = null;
-                rulesEvaluatorBufferThread.kill();
             }
         }.start();
         super.onDestroy();
@@ -404,7 +402,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             return;
         }
         if(hasRules(dataElement)) {
-            rulesEvaluatorBufferThread.trigger();
+            initiateEvaluateProgramRules();
         }
         if(hasIndicators(dataElement)) {
             initiateEvaluateProgramIndicators(dataElement);
@@ -449,6 +447,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     }
 
     void evaluateAndApplyProgramIndicator(ProgramIndicator programIndicator) {
+        if(VariableService.getInstance().getProgramRuleVariableMap() == null) {
+            VariableService.initialize(form.getEnrollment(), form.getEvent());
+        }
         IndicatorRow indicatorRow = form.getIndicatorToIndicatorRowMap().get(programIndicator.getUid());
         updateIndicatorRow(indicatorRow, form.getEvent());
         refreshListView();
@@ -592,7 +593,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         //rules evaluation are triggered depending on the data element uid and if it has rules
         //for event date, we have to trigger it manually
         if(DataEntryRowTypes.EVENT_DATE.toString().equals(event.getRowType())) {
-            rulesEvaluatorBufferThread.trigger();
+            initiateEvaluateProgramRules();
         }
     }
 

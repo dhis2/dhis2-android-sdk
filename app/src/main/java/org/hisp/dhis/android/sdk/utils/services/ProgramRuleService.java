@@ -59,7 +59,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.android.sdk.utils.support.ExpressionUtils.isBoolean;
 import static org.hisp.dhis.android.sdk.utils.support.ExpressionUtils.isNumeric;
 
@@ -69,83 +68,10 @@ public class ProgramRuleService {
 
     private static final Pattern CONDITION_PATTERN = Pattern.compile("([#AV])\\{(.+?)\\}");
 
-    private Map<String, ProgramRuleVariable> programRuleVariableMap;
-    private List<Event> eventsForEnrollment;
-    private Enrollment currentEnrollment;
-    private Event currentEvent;
-    private Map<String, DataElement> dataElementMap;
-    private Map<String, TrackedEntityAttribute> trackedEntityAttributeMap;
-    private Map<String, List<Event>> eventsForProgramStages;
-    private Map<Event, Map<String, DataValue>> eventDataValueMaps;
-
     private static ProgramRuleService programRuleService;
 
     public static ProgramRuleService getInstance() {
         return programRuleService;
-    }
-
-    public Map<String, ProgramRuleVariable> getProgramRuleVariableMap() {
-        return programRuleVariableMap;
-    }
-
-    public static void setProgramRuleVariableMap(Map<String, ProgramRuleVariable> programRuleVariableMap) {
-        getInstance().programRuleVariableMap = programRuleVariableMap;
-    }
-
-    public List<Event> getEventsForEnrollment() {
-        return eventsForEnrollment;
-    }
-
-    public void setEventsForEnrollment(List<Event> eventsForEnrollment) {
-        this.eventsForEnrollment = eventsForEnrollment;
-    }
-
-    public Enrollment getCurrentEnrollment() {
-        return currentEnrollment;
-    }
-
-    public void setCurrentEnrollment(Enrollment currentEnrollment) {
-        this.currentEnrollment = currentEnrollment;
-    }
-
-    public Event getCurrentEvent() {
-        return currentEvent;
-    }
-
-    public void setCurrentEvent(Event currentEvent) {
-        this.currentEvent = currentEvent;
-    }
-
-    public Map<String, DataElement> getDataElementMap() {
-        return dataElementMap;
-    }
-
-    public void setDataElementMap(Map<String, DataElement> dataElementMap) {
-        this.dataElementMap = dataElementMap;
-    }
-
-    public Map<String, TrackedEntityAttribute> getTrackedEntityAttributeMap() {
-        return trackedEntityAttributeMap;
-    }
-
-    public void setTrackedEntityAttributeMap(Map<String, TrackedEntityAttribute> trackedEntityAttributeMap) {
-        this.trackedEntityAttributeMap = trackedEntityAttributeMap;
-    }
-
-    public Map<String, List<Event>> getEventsForProgramStages() {
-        return eventsForProgramStages;
-    }
-
-    public void setEventsForProgramStages(Map<String, List<Event>> eventsForProgramStages) {
-        this.eventsForProgramStages = eventsForProgramStages;
-    }
-
-    public Map<Event, Map<String, DataValue>> getEventDataValueMaps() {
-        return eventDataValueMaps;
-    }
-
-    public void setEventDataValueMaps(Map<Event, Map<String, DataValue>> eventDataValueMaps) {
-        this.eventDataValueMaps = eventDataValueMaps;
     }
 
     public static ProgramRuleService getProgramRuleService() {
@@ -158,77 +84,6 @@ public class ProgramRuleService {
 
     static {
         programRuleService = new ProgramRuleService();
-    }
-
-    /**
-     * Initializes the ProgramRuleService before evaluations can be made
-     * @param enrollment
-     * @param currentEvent
-     */
-    public static void initialize(Enrollment enrollment, Event currentEvent) {
-        //setting current enrollment and event
-        getInstance().setCurrentEnrollment(enrollment);
-        getInstance().setCurrentEvent(currentEvent);
-
-        //setting list of events for enrollment
-        List<Event> events;
-        if(getInstance().getCurrentEnrollment() != null) {
-            events = getInstance().getCurrentEnrollment().getEvents();
-        } else {
-            events = new ArrayList<>();
-        }
-        getInstance().setEventsForEnrollment(events);
-        if(getInstance().getCurrentEvent() != null &&
-                !getInstance().getEventsForEnrollment().contains(getInstance().getCurrentEvent())) {
-            getInstance().getEventsForEnrollment().add(getInstance().getCurrentEvent());
-        }
-        Collections.sort(getInstance().getEventsForEnrollment(), new EventDateComparator());
-
-        //setting data elements map
-        List<DataElement> dataElements = MetaDataController.getDataElements();
-        getInstance().setDataElementMap(new HashMap<String, DataElement>());
-        for(DataElement dataElement : dataElements) {
-            getInstance().getDataElementMap().put(dataElement.getUid(), dataElement);
-        }
-
-        //setting trackedEntityAttribute map
-        List<TrackedEntityAttribute> trackedEntityAttributes = MetaDataController.getTrackedEntityAttributes();
-        getInstance().setTrackedEntityAttributeMap(new HashMap<String, TrackedEntityAttribute>());
-        for(TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
-            getInstance().getTrackedEntityAttributeMap().put(trackedEntityAttribute.getUid(), trackedEntityAttribute);
-        }
-
-        //setting events in map for each program stage
-        getInstance().setEventsForProgramStages(new HashMap<String, List<Event>>());
-        for(Event event : getInstance().getEventsForEnrollment()) {
-            List<Event> eventsForProgramStage = getInstance().getEventsForProgramStages().get(event.getProgramStageId());
-            if(eventsForProgramStage == null) {
-                eventsForProgramStage = new ArrayList<>();
-                getInstance().getEventsForProgramStages().put(event.getProgramStageId(), eventsForProgramStage);
-            }
-            eventsForProgramStage.add(event);
-        }
-
-        //setting data values in map for each event
-        getInstance().setEventDataValueMaps(new HashMap<Event, Map<String, DataValue>>());
-        for(Event event : getInstance().getEventsForEnrollment()) {
-            Map<String, DataValue> dataValueMap = new HashMap<>();
-            for(DataValue dataValue : event.getDataValues()) {
-                dataValueMap.put(dataValue.getDataElement(), dataValue);
-            }
-            getInstance().getEventDataValueMaps().put(event, dataValueMap);
-        }
-
-        //setting programRuleVariables
-        List<ProgramRuleVariable> programRuleVariables = MetaDataController.getProgramRuleVariables();
-        ProgramRuleVariableService.populateDataElementAndAttributeVariables(programRuleVariables);
-        programRuleVariables.addAll(ProgramRuleVariableService.createContextVariables());
-        programRuleVariables.addAll(ProgramRuleVariableService.createConstantVariables());
-        Map<String, ProgramRuleVariable> programRuleVariableMap = new HashMap<>();
-        for(ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            programRuleVariableMap.put(programRuleVariable.getName(), programRuleVariable);
-        }
-        getInstance().setProgramRuleVariableMap(programRuleVariableMap);
     }
 
     public static boolean evaluate(final String condition) {
@@ -251,7 +106,7 @@ public class ProgramRuleService {
             String value;
             String variablePrefix = matcher.group(1);
             String variableName = matcher.group(2);
-            value = ProgramRuleVariableService.getReplacementForProgramRuleVariable(variableName);
+            value = VariableService.getReplacementForProgramRuleVariable(variableName);
 
             if(!isNumeric(value) && !isBoolean(value)) {
                 value = '\'' + value + '\'';
@@ -267,33 +122,6 @@ public class ProgramRuleService {
         Object result = ExpressionUtils.evaluate(conditionReplaced, null);
         String stringResult = String.valueOf(result);
         return stringResult;
-    }
-
-    public static String getDefaultValue(ValueType valueType) {
-        String value;
-        switch (valueType) {
-            case BOOLEAN:
-            case TRUE_ONLY:
-                value = "false";
-                break;
-            case INTEGER_POSITIVE:
-            case INTEGER:
-            case INTEGER_ZERO_OR_POSITIVE:
-            case INTEGER_NEGATIVE:
-            case NUMBER:
-            case PERCENTAGE:
-            case UNIT_INTERVAL:
-                value = "0";
-                break;
-            case DATE:
-            case DATETIME:
-            case LONG_TEXT:
-            case TEXT:
-                value = "";
-                break;
-            default: value = "";
-        }
-        return value;
     }
 
     public static List<String> getDataElementsInRule(ProgramRule programRule) {
@@ -312,7 +140,7 @@ public class ProgramRuleService {
         for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
             if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
                 String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
-                ProgramRuleVariable programRuleVariable = getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
+                ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
                 if(programRuleVariable.getDataElement() != null) {
                     dataElementsInRule.add(programRuleVariable.getDataElement());
                 }
@@ -341,7 +169,7 @@ public class ProgramRuleService {
         for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
             if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
                 String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
-                ProgramRuleVariable programRuleVariable = getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
+                ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
                 if(programRuleVariable.getTrackedEntityAttribute() != null) {
                     trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute());
                 }

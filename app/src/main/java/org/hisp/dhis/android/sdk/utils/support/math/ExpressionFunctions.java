@@ -29,12 +29,10 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
-import android.util.Log;
-
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
-import org.hisp.dhis.android.sdk.utils.services.ProgramRuleVariableService;
+import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
@@ -183,7 +181,7 @@ public class ExpressionFunctions {
     }
 
     public static Integer count(String variableName) {
-        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
         Integer count = 0;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()) {
@@ -200,7 +198,7 @@ public class ExpressionFunctions {
     }
 
     public static Integer countIfZeroPos(String variableName) {
-        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
 
         Integer count = 0;
         if(programRuleVariable != null) {
@@ -224,10 +222,10 @@ public class ExpressionFunctions {
     }
 
     public static Integer countIfValue(String variableName) {
-        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
 
         String valueToCompare = programRuleVariable.getVariableValue();
-        valueToCompare = ProgramRuleVariableService.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
+        valueToCompare = VariableService.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
 
         Integer count = 0;
         if(programRuleVariable != null) {
@@ -261,7 +259,7 @@ public class ExpressionFunctions {
     }
 
     public Boolean hasValue(String variableName) {
-        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
         boolean valueFound = false;
         if(programRuleVariable != null) {
             if(programRuleVariable.isHasValue()){
@@ -272,12 +270,12 @@ public class ExpressionFunctions {
     }
 
     public String lastEventDate(String variableName) {
-        ProgramRuleVariable programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
         String valueFound = "''";
         if(programRuleVariable != null) {
             if(programRuleVariable.getVariableEventDate() != null) {
                 valueFound = programRuleVariable.getVariableEventDate();
-                valueFound = ProgramRuleVariableService.processSingleValue(valueFound, ValueType.DATE);
+                valueFound = VariableService.processSingleValue(valueFound, ValueType.DATE);
             }
         }
         return valueFound;

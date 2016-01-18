@@ -41,6 +41,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.utils.comparators.ProgramRulePriorityComparator;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
+import org.hisp.dhis.android.sdk.utils.services.VariableService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +65,7 @@ public abstract class AbsProgramRuleFragment<D> extends Fragment {
      * the results. This is for example used for hiding views if a rule contains skip logic
      */
     public void evaluateAndApplyProgramRules() {
-        ProgramRuleService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
+        VariableService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
         programRuleFragmentHelper.mapFieldsToRulesAndIndicators();
         ArrayList<String> affectedFieldsWithValue = new ArrayList<>();
         List<ProgramRule> programRules = programRuleFragmentHelper.getProgramRules();
@@ -127,7 +128,7 @@ public abstract class AbsProgramRuleFragment<D> extends Fragment {
         ProgramRuleVariable programRuleVariable;
         if(programRuleVariableName != null) {
             programRuleVariableName = programRuleVariableName.substring(2, programRuleVariableName.length()-1);
-            programRuleVariable = ProgramRuleService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
+            programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(programRuleVariableName);
             programRuleVariable.setVariableValue(stringResult);
             programRuleVariable.setHasValue(true);
         }
@@ -151,44 +152,44 @@ public abstract class AbsProgramRuleFragment<D> extends Fragment {
         }
     }
 
-    public class RulesEvaluatorBufferThread extends Thread {
-
-        private boolean wait = true;
-        private boolean doEvaluate = false;
-        private boolean killed = false;
-        private final static long bufferTime = 10;
-        private AbsProgramRuleFragment programRuleFragment;
-
-        public RulesEvaluatorBufferThread(AbsProgramRuleFragment programRuleFragment) {
-            this.programRuleFragment = programRuleFragment;
-        }
-
-        @Override
-        public void run() {
-            while (!killed) {
-                try {
-                    Thread.sleep(bufferTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (doEvaluate) {
-                    if (!wait) {
-                        doEvaluate = false;
-                        programRuleFragment.getProgramRuleFragmentHelper().initiateEvaluateProgramRules();
-                    }
-                }
-                wait = false;
-            }
-            programRuleFragment = null;
-        }
-
-        public void trigger() {
-            wait = true;
-            doEvaluate = true;
-        }
-
-        public void kill() {
-            killed = true;
-        }
-    }
+//    public class RulesEvaluatorBufferThread extends Thread {
+//
+//        private boolean wait = true;
+//        private boolean doEvaluate = false;
+//        private boolean killed = false;
+//        private final static long bufferTime = 10;
+//        private AbsProgramRuleFragment programRuleFragment;
+//
+//        public RulesEvaluatorBufferThread(AbsProgramRuleFragment programRuleFragment) {
+//            this.programRuleFragment = programRuleFragment;
+//        }
+//
+//        @Override
+//        public void run() {
+//            while (!killed) {
+//                try {
+//                    Thread.sleep(bufferTime);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                if (doEvaluate) {
+//                    if (!wait) {
+//                        doEvaluate = false;
+//                        programRuleFragment.getProgramRuleFragmentHelper().initiateEvaluateProgramRules();
+//                    }
+//                }
+//                wait = false;
+//            }
+//            programRuleFragment = null;
+//        }
+//
+//        public void trigger() {
+//            wait = true;
+//            doEvaluate = true;
+//        }
+//
+//        public void kill() {
+//            killed = true;
+//        }
+//    }
 }

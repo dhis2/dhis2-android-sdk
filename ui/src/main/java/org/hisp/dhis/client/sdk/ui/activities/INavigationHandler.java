@@ -37,4 +37,7 @@ public interface INavigationHandler {
     void onBackPressed();
 
     void addFragmentToLayout(int resId, Fragment fragment, String tag);
+
+    void showBackButton(Boolean enable);
+
 }

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -18,10 +20,12 @@ public abstract class AbsSelectorFragment extends Fragment {
     public INavigationHandler mNavigationHandler;
     private FrameLayout mPickerFrameLayout;
     private FrameLayout mItemListFrameLayout;
+    private AbsSettingsFragment mSettingsFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -48,6 +52,17 @@ public abstract class AbsSelectorFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
@@ -55,6 +70,7 @@ public abstract class AbsSelectorFragment extends Fragment {
 
         if(activity instanceof INavigationHandler) {
             mNavigationHandler = (INavigationHandler) activity;
+            mNavigationHandler.showBackButton(false);
         }
         else {
             throw new IllegalArgumentException("Activity must " +

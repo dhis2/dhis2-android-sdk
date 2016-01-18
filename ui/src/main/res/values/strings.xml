@@ -40,4 +40,37 @@
     <string name="activity_confirm_user">Confirm user</string>
     <string name="re_log_in">Re-Log in</string>
     <string name="clear_and_logout">Clear and log out</string>
+
+    <!-- AbsSettingsFragment -->
+    <string name="update_frequency">Automatic synchronization frequency</string>
+    <string name="synchronize_with_server">Synchronize with server</string>
+    <string name="logout">Log out</string>
+
+    <string-array name="update_frequencies">
+        <item>1 Minute</item>
+        <item>15 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+        <item>Disabled</item>
+    </string-array>
+
+    <!--<string name="medium_font_name">Roboto-Medium.ttf</string>
+    <string name="light_font_name">Roboto-Light.ttf</string> -->
+
+    <!--Settings menu label -->
+    <string name="action_settings">Settings</string>
+
+    <!-- Status indicators: -->
+    <string name="syncing">Synchronizing</string>
+    <string name="logout_title">Logging out</string>
+    <string name="logout_option">Log out</string>
+    <string name="cancel_option">Cancel</string>
+
+    <!-- Messages: -->
+    <string name="error_message">Error</string>
+    <string name="logout_message">Are you sure you want to log out? All your data stored on the device will get lost if you choose to log out.</string>
+
+    <string name="unsynchronized_data_values">You need to synchronize your changes with the server before logging out. Please check your Internet connection and press the synchronization button</string>
+
+
 </resources>

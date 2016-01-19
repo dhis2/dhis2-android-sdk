@@ -72,5 +72,8 @@
 
     <string name="unsynchronized_data_values">You need to synchronize your changes with the server before logging out. Please check your Internet connection and press the synchronization button</string>
 
+    <!-- Logout confirmation dialog: -->
+
+
 
 </resources>

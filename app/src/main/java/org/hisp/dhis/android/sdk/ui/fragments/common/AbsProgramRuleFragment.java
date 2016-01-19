@@ -47,6 +47,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Abstract Fragment that can be extended by Fragments that want to make use of Program Rules.
+ * @param <D>
+ */
 public abstract class AbsProgramRuleFragment<D> extends Fragment {
 
     private static final String TAG = AbsProgramRuleFragment.class.getSimpleName();
@@ -151,45 +155,4 @@ public abstract class AbsProgramRuleFragment<D> extends Fragment {
             }
         }
     }
-
-//    public class RulesEvaluatorBufferThread extends Thread {
-//
-//        private boolean wait = true;
-//        private boolean doEvaluate = false;
-//        private boolean killed = false;
-//        private final static long bufferTime = 10;
-//        private AbsProgramRuleFragment programRuleFragment;
-//
-//        public RulesEvaluatorBufferThread(AbsProgramRuleFragment programRuleFragment) {
-//            this.programRuleFragment = programRuleFragment;
-//        }
-//
-//        @Override
-//        public void run() {
-//            while (!killed) {
-//                try {
-//                    Thread.sleep(bufferTime);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                if (doEvaluate) {
-//                    if (!wait) {
-//                        doEvaluate = false;
-//                        programRuleFragment.getProgramRuleFragmentHelper().initiateEvaluateProgramRules();
-//                    }
-//                }
-//                wait = false;
-//            }
-//            programRuleFragment = null;
-//        }
-//
-//        public void trigger() {
-//            wait = true;
-//            doEvaluate = true;
-//        }
-//
-//        public void kill() {
-//            killed = true;
-//        }
-//    }
 }

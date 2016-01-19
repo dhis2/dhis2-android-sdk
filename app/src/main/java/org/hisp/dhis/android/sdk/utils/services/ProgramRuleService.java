@@ -31,31 +31,19 @@ package org.hisp.dhis.android.sdk.utils.services;
 
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
-import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.sdk.utils.api.ContextVariableType;
 import org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType;
-import org.hisp.dhis.android.sdk.utils.api.ProgramRuleVariableSourceType;
-import org.hisp.dhis.android.sdk.utils.api.ValueType;
-import org.hisp.dhis.android.sdk.utils.comparators.EventDateComparator;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.hisp.dhis.android.sdk.utils.support.TextUtils;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -86,6 +74,13 @@ public class ProgramRuleService {
         programRuleService = new ProgramRuleService();
     }
 
+    /**
+     * Evaluates a passed expression from a {@link ProgramRule} to true or false.
+     * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
+     * to calling this method.
+     * @param condition
+     * @return
+     */
     public static boolean evaluate(final String condition) {
         String conditionReplaced = getReplacedCondition(condition);
         boolean isTrue = false;
@@ -97,6 +92,13 @@ public class ProgramRuleService {
         return isTrue;
     }
 
+    /**
+     * Returns a condition with replaced values for {@link ProgramRuleVariable}s.
+     * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
+     * to calling this method.
+     * @param condition
+     * @return
+     */
     public static String getReplacedCondition(String condition) {
         StringBuffer buffer = new StringBuffer();
 
@@ -117,6 +119,14 @@ public class ProgramRuleService {
         return TextUtils.appendTail(matcher, buffer);
     }
 
+    /**
+     * Calculates and returns the value of a passed condition from a {@link ProgramRuleAction} or
+     * {@link ProgramRuleVariable}.
+     * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
+     * to calling this method.
+     * @param condition
+     * @return
+     */
     public static String getCalculatedConditionValue(String condition) {
         String conditionReplaced = getReplacedCondition(condition);
         Object result = ExpressionUtils.evaluate(conditionReplaced, null);
@@ -124,6 +134,13 @@ public class ProgramRuleService {
         return stringResult;
     }
 
+    /**
+     * Returns a list of Uids of {@link DataElement}s contained in the given {@link ProgramRule}.
+     * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
+     * to calling this method.
+     * @param programRule
+     * @return
+     */
     public static List<String> getDataElementsInRule(ProgramRule programRule) {
         String condition = programRule.getCondition();
         Matcher matcher = CONDITION_PATTERN.matcher(condition);
@@ -153,6 +170,13 @@ public class ProgramRuleService {
         return dataElementsInRule;
     }
 
+    /**
+     * Returns a list of Uids of {@link TrackedEntityAttribute}s contained in the given {@link ProgramRule}.
+     * Please note that {@link VariableService#initialize(Enrollment, Event)} must be called prior
+     * to calling this method.
+     * @param programRule
+     * @return
+     */
     public static List<String> getTrackedEntityAttributesInRule(ProgramRule programRule) {
         String condition = programRule.getCondition();
         Matcher matcher = CONDITION_PATTERN.matcher(condition);

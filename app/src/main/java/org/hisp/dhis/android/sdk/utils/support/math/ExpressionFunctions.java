@@ -29,9 +29,10 @@
 
 package org.hisp.dhis.android.sdk.utils.support.math;
 
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
+import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleVariable;
 import org.hisp.dhis.android.sdk.utils.api.ValueType;
-import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.hisp.dhis.android.sdk.utils.support.ExpressionUtils;
 import org.joda.time.DateTime;
@@ -42,6 +43,12 @@ import java.text.ParseException;
 
 import static android.text.TextUtils.isEmpty;
 
+/**
+ * Defines a set of functions that can be used in expressions in {@link org.hisp.dhis.android.sdk.persistence.models.ProgramRule}s
+ * and {@link org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator}s
+ * Please note that {@link VariableService#initialize(Enrollment, Event)} needs to be called before
+ * the functions in this class are called.
+ */
 public class ExpressionFunctions {
     public static final String NAMESPACE = "d2";
 

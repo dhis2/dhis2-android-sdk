@@ -41,28 +41,143 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface used by {@link AbsProgramRuleFragment} to be implemented in different scenarios
+ * where {@link ProgramRule}s should be used and applied.
+ */
 public interface IProgramRuleFragmentHelper {
 
+    /**
+     * Returns a list of the names of {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}s
+     * that have {@link ProgramRule} errors affecting them.
+     * @return
+     */
     ArrayList<String> getProgramRuleValidationErrors();
+
+    /**
+     * Nullifies all necessary references
+     */
     void recycle();
+
     void initiateEvaluateProgramRules();
+
+    /**
+     * Maps {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}s and {@link org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute}s
+     * to {@link ProgramRule}s and {@link org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator}s
+     * so that they can later be looked up to see what Rules or Indicators are affected by value changes.
+     */
     void mapFieldsToRulesAndIndicators();
+
+    /**
+     * Returns the current Fragment for displaying UI changes.
+     * @return
+     */
     Fragment getFragment();
+
+    /**
+     * Displays a Dialog showing a warning if Data Entry Rows are hidden.
+     * @param fragment
+     * @param affectedValues
+     */
     void showWarningHiddenValuesDialog(Fragment fragment, ArrayList<String> affectedValues);
+
+    /**
+     * Triggers an update of the UI, usually because the contents of the UI has changed based on Program Rules
+     */
     void updateUi();
+
+    /**
+     * Returns a list of all {@link ProgramRule} for the current context
+     * @return
+     */
     List<ProgramRule> getProgramRules();
+
+    /**
+     * Returns the {@link Enrollment} for the current context
+     * @return
+     */
     Enrollment getEnrollment();
+
+    /**
+     * Returns the {@link Event} for the current context.
+     * @return
+     */
     Event getEvent();
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#SHOWWARNING}
+     * @param programRuleAction
+     */
     void applyShowWarningRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#SHOWERROR}
+     * @param programRuleAction
+     */
     void applyShowErrorRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#HIDEFIELD}
+     * @param programRuleAction
+     * @param affectedFieldsWithValue a list of Strings for the name of the {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}
+     *                                or {@link org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute} that are affected by
+     *                                the {@link ProgramRuleAction}
+     */
     void applyHideFieldRuleAction(ProgramRuleAction programRuleAction, List<String> affectedFieldsWithValue);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#HIDESECTION}
+     * @param programRuleAction
+     */
     void applyHideSectionRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#CREATEEVENT}
+     * @param programRuleAction
+     */
     void applyCreateEventRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#DISPLAYKEYVALUEPAIR}
+     * @param programRuleAction
+     */
     void applyDisplayKeyValuePairRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Applies a {@link ProgramRuleAction} of type {@link org.hisp.dhis.android.sdk.utils.api.ProgramRuleActionType#DISPLAYTEXT}
+     * @param programRuleAction
+     */
     void applyDisplayTextRuleAction(ProgramRuleAction programRuleAction);
+
+    /**
+     * Returns the {@link DataValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}
+     * @param uid
+     * @return
+     */
     DataValue getDataElementValue(String uid);
+
+    /**
+     * Returns the {@link TrackedEntityAttributeValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute}
+     * @param uid
+     * @return
+     */
     TrackedEntityAttributeValue getTrackedEntityAttributeValue(String uid);
+
+    /**
+     * Marks that data has changed and that the UI needs updating
+     * @param dataChanged
+     */
     void flagDataChanged(boolean dataChanged);
+
+    /**
+     * Triggers saving of a {@link DataValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.DataElement}
+     * @param uid
+     */
     void saveDataElement(String uid);
+
+    /**
+     * Triggers saving of a {@link TrackedEntityAttributeValue} for a given {@link org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute}
+     * @param uid
+     */
     void saveTrackedEntityAttribute(String uid);
 }

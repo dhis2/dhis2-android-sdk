@@ -53,17 +53,61 @@ import java.util.Map;
 
 import static android.text.TextUtils.isEmpty;
 
+/**
+ * Class for handling {@link ProgramRuleVariable}s that can be used in expressions of {@link org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator}
+ * and {@link org.hisp.dhis.android.sdk.persistence.models.ProgramRule}s
+ */
 public class VariableService {
 
     private static VariableService variableService;
 
+    /**
+     * Map of all {@link ProgramRuleVariable}s generated in {@link #initialize(Enrollment, Event)}
+     * mapped by key {@link ProgramRuleVariable#getName()}
+     */
     private Map<String, ProgramRuleVariable> programRuleVariableMap;
+
+    /**
+     * List of all {@link Event}s linked to the {@link Enrollment} passed in {@link #initialize(Enrollment, Event)}
+     */
     private List<Event> eventsForEnrollment;
+
+    /**
+     * The current {@link Enrollment} set in {@link #initialize(Enrollment, Event)}
+     */
     private Enrollment currentEnrollment;
+
+    /**
+     * The current {@link Event} set in {@link #initialize(Enrollment, Event)}
+     */
     private Event currentEvent;
+
+    /**
+     * Map of all {@link DataElement}s that are contained in either {@link org.hisp.dhis.android.sdk.persistence.models.ProgramStage}
+     * for the {@link org.hisp.dhis.android.sdk.persistence.models.Program} of the {@link Enrollment}
+     * passed in {@link #initialize(Enrollment, Event)}. The key is the Uid of the {@link DataElement}
+     */
     private Map<String, DataElement> dataElementMap;
+
+    /**
+     * Map of all {@link TrackedEntityAttribute} for the {@link org.hisp.dhis.android.sdk.persistence.models.Program}
+     * of the {@link Enrollment} passed in {@link #initialize(Enrollment, Event)}.
+     * The key is the Uid of the {@link TrackedEntityAttribute}
+     */
     private Map<String, TrackedEntityAttribute> trackedEntityAttributeMap;
+
+    /**
+     * Map of {@link List}s of {@link Event}s for each {@link org.hisp.dhis.android.sdk.persistence.models.ProgramStage}
+     * of the {@link org.hisp.dhis.android.sdk.persistence.models.Program} of the {@link Enrollment}
+     * passed in {@link #initialize(Enrollment, Event)}. The key is the Uid of the {@link org.hisp.dhis.android.sdk.persistence.models.ProgramStage}
+     */
     private Map<String, List<Event>> eventsForProgramStages;
+
+    /**
+     * Map of all {@link DataValue}s for each {@link Event} for either the {@link Event} passed in
+     * {@link #initialize(Enrollment, Event)}, or for the {@link Event}s of the {@link Enrollment}
+     * passed in {@link #initialize(Enrollment, Event)}.
+     */
     private Map<Event, Map<String, DataValue>> eventDataValueMaps;
 
     static {
@@ -85,6 +129,16 @@ public class VariableService {
         getInstance().eventDataValueMaps = null;
     }
 
+    /**
+     * Initializes the VariableService so that it can be used for calculating Indicators and Program Rules
+     * This method generates a set of ProgramRuleVariables, that are later used in expression calculations
+     * from {@link org.hisp.dhis.android.sdk.utils.support.math.ExpressionFunctions},
+     * {@link ProgramRuleService}, and {@link ProgramIndicatorService}
+     *
+     * Note that you may have to reset this singleton by calling {@link #reset()}
+     * @param enrollment can be null
+     * @param currentEvent can be null
+     */
     public static void initialize(Enrollment enrollment, Event currentEvent) {
         //setting current enrollment and event
         getInstance().setCurrentEnrollment(enrollment);
@@ -215,6 +269,13 @@ public class VariableService {
         this.eventDataValueMaps = eventDataValueMaps;
     }
 
+    /**
+     * Processes a value to make sure the actually content corresponds to the {@link ValueType},
+     * so that expression calculations can be done without errors.
+     * @param processedValue
+     * @param valueType
+     * @return
+     */
     public static String processSingleValue(String processedValue, ValueType valueType){
         switch (valueType) {
             case LONG_TEXT:
@@ -252,12 +313,24 @@ public class VariableService {
         return processedValue;
     }
 
+    /**
+     * Populates the passed {@link ProgramRuleVariable}s with data based on its {@link ProgramRuleVariableSourceType}
+     * The values that are populated in the {@link ProgramRuleVariable}s are either taken from a {@link DataValue} or
+     * from a {@link TrackedEntityAttributeValue}.
+     * @param programRuleVariables
+     */
     private static void populateDataElementAndAttributeVariables(List<ProgramRuleVariable> programRuleVariables) {
         for(ProgramRuleVariable programRuleVariable : programRuleVariables) {
             populateDataElementOrAttributeVariable(programRuleVariable);
         }
     }
 
+    /**
+     * Populates the passed {@link ProgramRuleVariable} with data based on its {@link ProgramRuleVariableSourceType}
+     * The value that is populated in the {@link ProgramRuleVariable} is either taken from a {@link DataValue} or
+     * from a {@link TrackedEntityAttributeValue}.
+     * @param programRuleVariable
+     */
     private static void populateDataElementOrAttributeVariable(ProgramRuleVariable programRuleVariable) {
         String value = null;
         String defaultValue = "";
@@ -368,6 +441,11 @@ public class VariableService {
         programRuleVariable.setAllValues(allValues);
     }
 
+    /**
+     * Returns a list of populated {@link ProgramRuleVariable}s based on all {@link Constant}
+     * currently stored in the database.
+     * @return
+     */
     private static List<ProgramRuleVariable> createConstantVariables() {
         List<Constant> constants = MetaDataController.getConstants();
         List<ProgramRuleVariable> programRuleVariables = new ArrayList<>();
@@ -377,6 +455,11 @@ public class VariableService {
         return programRuleVariables;
     }
 
+    /**
+     * Returns a populated {@link ProgramRuleVariable} based on a {@link Constant}.
+     * @param constant
+     * @return
+     */
     private static ProgramRuleVariable createConstantVariable(Constant constant) {
         if(constant != null) {
             ProgramRuleVariable programRuleVariable = new ProgramRuleVariable();
@@ -390,6 +473,11 @@ public class VariableService {
         }
     }
 
+    /**
+     * Generates and returns a {@link List} of populated {@link ProgramRuleVariable} for the context set in {@link #initialize(Enrollment, Event)}.
+     * Context variables are a set of pre-defined {@link ProgramRuleVariable}s that the user can use when writing expressions.
+     * @return
+     */
     private static List<ProgramRuleVariable> createContextVariables() {
         List<ProgramRuleVariable> programRuleVariables = new ArrayList<>();
         for(ContextVariableType type : ContextVariableType.values()) {
@@ -400,6 +488,15 @@ public class VariableService {
         return programRuleVariables;
     }
 
+    /**
+     * Generates and returns a populated {@link ProgramRuleVariable} for the context of the passed parameters.
+     * Context variables are a set of pre-defined {@link ProgramRuleVariable}s that the user can use when writing expressions.
+     * @param variableName
+     * @param executingEvent
+     * @param executingEnrollment
+     * @param events
+     * @return
+     */
     private static ProgramRuleVariable createContextVariable(String variableName, Event executingEvent, Enrollment executingEnrollment, List<Event> events) {
         ContextVariableType contextVariableType = ContextVariableType.fromValue(variableName);
         ProgramRuleVariable programRuleVariable = new ProgramRuleVariable();
@@ -510,6 +607,11 @@ public class VariableService {
         return programRuleVariable;
     }
 
+    /**
+     * Returns the value of a {@link ProgramRuleVariable}
+     * @param variableName
+     * @return
+     */
     public static String getReplacementForProgramRuleVariable(String variableName) {
         String value;
         ProgramRuleVariable programRuleVariable = VariableService.getInstance().getProgramRuleVariableMap().get(variableName);
@@ -517,6 +619,11 @@ public class VariableService {
         return value;
     }
 
+    /**
+     * Returns the value of a {@link ProgramRuleVariable}
+     * @param programRuleVariable
+     * @return
+     */
     public static String retrieveVariableValue(ProgramRuleVariable programRuleVariable) {
         String defaultValue = "";
         if (programRuleVariable == null) {
@@ -529,6 +636,11 @@ public class VariableService {
         return value;
     }
 
+    /**
+     * Returns a valid default value for a given {@link ValueType}
+     * @param valueType
+     * @return
+     */
     public static String getDefaultValue(ValueType valueType) {
         String value;
         switch (valueType) {

@@ -34,7 +34,10 @@ import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
+import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -43,13 +46,16 @@ public class UserAccountScope implements IUserAccountScope {
     private final IUserAccountController mUserAccountController;
     private final IUserPreferences mUserPreferences;
     private final IConfigurationPreferences mConfigurationPreferences;
+    private final IUserAccountStore mUserAccountStore;
 
     public UserAccountScope(IUserAccountController userAccountController,
                             IUserPreferences userPreferences,
-                            IConfigurationPreferences configurationPreferences) {
+                            IConfigurationPreferences configurationPreferences,
+                            IUserAccountStore userAccountStore) {
         mUserAccountController = userAccountController;
         mUserPreferences = userPreferences;
         mConfigurationPreferences = configurationPreferences;
+        mUserAccountStore = userAccountStore;
     }
 
     @Override
@@ -86,7 +92,7 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    if(mUserPreferences.isUserConfirmed()) {
+                    if (mUserPreferences.isUserConfirmed()) {
                         subscriber.onNext(true);
                     }
                 } catch (Throwable throwable) {
@@ -106,6 +112,27 @@ public class UserAccountScope implements IUserAccountScope {
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
                     subscriber.onNext(mUserPreferences.clear());
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<UserAccount> account() {
+        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
+            @Override
+            public void call(Subscriber<? super UserAccount> subscriber) {
+                try {
+                    List<UserAccount> userAccounts = mUserAccountStore.queryAll();
+                    if (userAccounts != null && !userAccounts.isEmpty()) {
+                        for (UserAccount userAccount : userAccounts) {
+                            subscriber.onNext(userAccount);
+                        }
+                    }
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

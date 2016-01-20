@@ -176,7 +176,8 @@ public class NetworkModule implements INetworkModule {
         private final IUserPreferences mUserPreferences;
         private final IConfigurationPreferences mConfigurationPreferences;
 
-        public AuthInterceptor(IUserPreferences preferences, IConfigurationPreferences configurationPreferences) {
+        public AuthInterceptor(IUserPreferences preferences,
+                               IConfigurationPreferences configurationPreferences) {
             mUserPreferences = preferences;
             mConfigurationPreferences = configurationPreferences;
         }
@@ -190,8 +191,7 @@ public class NetworkModule implements INetworkModule {
 
             String base64Credentials = basic(userCredentials.getUsername(),
                     userCredentials.getPassword());
-            Request request = chain.request()
-                    .newBuilder()
+            Request request = chain.request().newBuilder()
                     .addHeader("Authorization", base64Credentials)
                     .build();
             System.out.println("Request: " + request.urlString());

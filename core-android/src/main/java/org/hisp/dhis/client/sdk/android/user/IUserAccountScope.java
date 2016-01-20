@@ -41,4 +41,6 @@ public interface IUserAccountScope {
     Observable<Boolean> isSignedIn();
 
     Observable<Boolean> signOut();
+
+    Observable<UserAccount> account();
 }

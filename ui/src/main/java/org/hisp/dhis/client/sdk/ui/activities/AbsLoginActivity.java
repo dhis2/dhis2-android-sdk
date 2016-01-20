@@ -38,7 +38,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.hisp.dhis.client.sdk.ui.BuildConfig;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
@@ -62,7 +61,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mViewsContainer = findViewById(R.id.container_log_in_views);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_white);
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
         mLogInButton = (Button) findViewById(R.id.button_log_in);
 
         mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);

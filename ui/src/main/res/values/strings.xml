@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -54,9 +55,6 @@
         <item>Disabled</item>
     </string-array>
 
-    <!--<string name="medium_font_name">Roboto-Medium.ttf</string>
-    <string name="light_font_name">Roboto-Light.ttf</string> -->
-
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>
 
@@ -68,12 +66,13 @@
 
     <!-- Messages: -->
     <string name="error_message">Error</string>
-    <string name="logout_message">Are you sure you want to log out? All your data stored on the device will get lost if you choose to log out.</string>
+    <string name="logout_message">
+        Are you sure you want to log out? All your data stored on the device will
+        get lost if you choose to log out.
+    </string>
 
-    <string name="unsynchronized_data_values">You need to synchronize your changes with the server before logging out. Please check your Internet connection and press the synchronization button</string>
-
-    <!-- Logout confirmation dialog: -->
-
-
-
+    <string name="unsynchronized_data_values">You need to synchronize your changes with the
+        server before logging out. Please check your Internet connection and press
+        the synchronization button
+    </string>
 </resources>

@@ -28,7 +28,7 @@
   -->
 
 <resources>-->
-    <!-- Colour scheme -->
+    <!-- Theme colours -->
     <color name="color_primary_dark">#FF1976D2</color>
     <color name="color_primary_default">#FF2196F3</color>
     <color name="color_primary_light">#FFBBDEFB</color>
@@ -39,4 +39,7 @@
     <color name="color_text_primary">#FFFFFFFF</color>
     <color name="color_text_default">#FF212121</color>
     <color name="color_text_secondary">#FF727272</color>
+
+    <!-- Other colours -->
+    <color name="white">#FFFFFFFF</color>
 </resources>

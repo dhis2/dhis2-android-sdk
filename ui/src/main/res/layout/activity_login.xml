@@ -32,7 +32,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_primary_dark"
     android:gravity="center"
-    android:padding="@dimen/padding_default">
+    android:padding="@dimen/keyline_default">
 
     <include layout="@layout/progress_bar_circular_white" />
 

@@ -27,7 +27,7 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/button_login_state_enabled_false" android:state_enabled="false" />
-    <item android:drawable="@color/button_login_state_pressed" android:state_pressed="true" />
-    <item android:drawable="@color/button_login_state_unpressed" />
+    <item android:drawable="@color/color_accent" android:state_enabled="false" />
+    <item android:drawable="@color/color_accent" android:state_pressed="true" />
+    <item android:drawable="@color/color_accent" />
 </selector>

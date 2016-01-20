@@ -106,7 +106,6 @@ public class D2 {
     private final ITrackedEntityDataValueScope mTrackedEntityDataValueScope;
 
 
-
     private D2(Context context) {
         IModelUtils modelUtils = new ModelUtils();
 
@@ -120,7 +119,8 @@ public class D2 {
         mUserPreferences = preferencesModule.getUserPreferences();
 
         mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
-                mUserPreferences, preferencesModule.getConfigurationPreferences(), controllersModule.getAssignedProgramsController());
+                mUserPreferences, preferencesModule.getConfigurationPreferences(),
+                controllersModule.getAssignedProgramsController(),persistenceModule.getUserAccountStore());
 
         mProgramScope = new ProgramScope(servicesModule.getProgramService(), controllersModule.getProgramController());
 
@@ -217,7 +217,7 @@ public class D2 {
         return getInstance().mProgramScope;
     }
 
-    public static IUserAccountScope userAccount() {
+    public static IUserAccountScope me() {
         return getInstance().mUserAccountScope;
     }
 }

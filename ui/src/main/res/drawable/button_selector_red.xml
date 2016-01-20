@@ -31,22 +31,22 @@
 
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp"/>
-            <solid android:color="@color/button_log_out_state_enabled_false"/>
+            <corners android:radius="1dp" />
+            <solid android:color="@color/color_accent" />
         </shape>
     </item>
 
     <item android:state_pressed="false">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp"/>
-            <solid android:color="@color/button_log_out_state_unpressed"/>
+            <corners android:radius="1dp" />
+            <solid android:color="@color/color_accent" />
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp"/>
-            <solid android:color="@color/button_log_out_state_pressed"/>
+            <corners android:radius="1dp" />
+            <solid android:color="@color/color_accent" />
         </shape>
     </item>
 </selector>

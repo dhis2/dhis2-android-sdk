@@ -34,7 +34,7 @@
     android:layout_width="64dp"
     android:layout_height="64dp"
     android:indeterminate="true"
-    library:cpb_color="@color/navy_blue_light"
+    library:cpb_color="@color/color_primary_light"
     library:cpb_max_sweep_angle="300"
     library:cpb_min_sweep_angle="10"
     library:cpb_rotation_speed="0.8"

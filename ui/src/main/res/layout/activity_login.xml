@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -30,89 +29,115 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_dark"
-    android:gravity="center"
-    android:padding="@dimen/padding_default">
+    android:background="@color/color_primary_default"
+    android:padding="8dp">
 
-    <include layout="@layout/progress_bar_circular_white" />
+    <include layout="@layout/progress_bar_circular_blue" />
+
+    <ImageView
+        android:layout_width="112dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="72dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/description"
+        android:src="@drawable/ic_dhis2_logo" />
 
     <LinearLayout
         android:id="@+id/container_log_in_views"
         android:layout_width="390dp"
         android:layout_height="340dp"
-        android:gravity="center"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/description"
-            android:src="@drawable/dhis2_logo" />
-
-        <org.hisp.dhis.client.sdk.ui.views.FontEditText
-            android:id="@+id/edit_text_server_url"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginBottom="1px"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/edittext_custom_shape"
-            android:drawableLeft="@drawable/ic_server"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:hint="@string/server_url"
-            android:inputType="textUri"
-            android:paddingLeft="6dp"
-            android:singleLine="true"
-            app:font="@string/font_name_regular" />
+            android:layout_height="match_parent"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true">
 
-        <org.hisp.dhis.client.sdk.ui.views.FontEditText
-            android:id="@+id/edit_text_username"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginBottom="1px"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/edittext_custom_shape"
-            android:drawableLeft="@drawable/ic_username"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:hint="@string/username"
-            android:inputType="text"
-            android:paddingLeft="6dp"
-            android:singleLine="true"
-            app:font="@string/font_name_regular" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <org.hisp.dhis.client.sdk.ui.views.FontEditText
-            android:id="@+id/edit_text_password"
-            android:layout_width="match_parent"
-            android:layout_height="42dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/edittext_custom_shape"
-            android:drawableLeft="@drawable/ic_password"
-            android:drawablePadding="8dp"
-            android:gravity="center_vertical"
-            android:hint="@string/password"
-            android:inputType="textPassword"
-            android:paddingLeft="6dp"
-            android:singleLine="true"
-            app:font="@string/font_name_regular" />
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
 
-        <org.hisp.dhis.client.sdk.ui.views.FontButton
-            android:id="@+id/button_log_in"
-            android:layout_width="180dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_selector_blue_dark"
-            android:text="@string/log_in"
-            android:textColor="@color/white"
-            android:textSize="17sp"
-            app:font="@string/font_name_bold" />
+                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                        android:id="@+id/edit_text_server_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/server_url"
+                        android:inputType="textUri"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+
+                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                        android:id="@+id/edit_text_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/username"
+                        android:inputType="text"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp">
+
+                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                        android:id="@+id/edit_text_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:gravity="center_vertical"
+                        android:hint="@string/password"
+                        android:inputType="textPassword"
+                        android:singleLine="true"
+                        app:font="@string/font_name_regular" />
+                </android.support.design.widget.TextInputLayout>
+
+                <org.hisp.dhis.client.sdk.ui.views.FontButton
+                    android:id="@+id/button_log_in"
+                    android:layout_width="180dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/button_selector_blue_dark"
+                    android:text="@string/log_in"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    app:font="@string/font_name_bold" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
+
 </RelativeLayout>

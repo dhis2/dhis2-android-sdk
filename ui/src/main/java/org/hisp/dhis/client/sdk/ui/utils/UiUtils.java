@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, University of Oslo
+ * Copyright (c) 2015, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.client.sdk.ui.utils;
 
-def cfg = rootProject.ext.configuration
-def libs = rootProject.ext.libraries
+import android.support.v4.app.FragmentManager;
+import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
-android {
-    compileSdkVersion cfg.compileSdkVersion
-    buildToolsVersion cfg.buildToolsVersion
+import org.hisp.dhis.client.sdk.ui.dialogs.CustomDialogFragment;
 
-    defaultConfig {
-        // applicationId cfg.package
-        minSdkVersion cfg.minSdkVersion
-        targetSdkVersion cfg.targetSdkVersion
-        versionCode cfg.versionCode
-        versionName cfg.versionName
+/**
+ * @author Simen Skogly Russnes on 25.08.15.
+ */
+public final class UiUtils {
+
+    private static UiUtils uiUtils;
+
+    static {
+        uiUtils = new UiUtils();
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+    private UiUtils() {}
+
+    private static UiUtils getInstance() {
+        return uiUtils;
     }
-}
 
-dependencies {
-
-    // Google
-    compile "com.android.support:support-annotations:${libs.supportVersion}"
-    compile "com.android.support:appcompat-v7:${libs.supportVersion}"
-    compile "com.android.support:cardview-v7:${libs.supportVersion}"
-    compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
-    compile 'com.android.support:design:23.1.1'
-
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"
-
-    // Test
-    testCompile "junit:junit:${libs.junitVersion}"
+    public static void showConfirmDialog(final FragmentManager activity, final String title, final String message,
+                                         final String confirmOption, final String cancelOption,
+                                         DialogInterface.OnClickListener onClickListener) {
+        new CustomDialogFragment(title, message, confirmOption, cancelOption, onClickListener).
+                show(activity, title);
+    }
 }

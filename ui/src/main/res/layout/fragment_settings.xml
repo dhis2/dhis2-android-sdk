@@ -31,7 +31,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="8dp"
     >
 
 
@@ -40,21 +40,14 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-            <!--<org.hisp.dhis.android.sdk.ui.views.FontTextView
+            <org.hisp.dhis.client.sdk.ui.views.FontTextView
                 android:id="@+id/update_frequency_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:text="@string/update_frequency"
-                android:textSize="@dimen/medium_text_size"/>-->
-
-            <TextView
-                android:id="@+id/update_frequency_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text="@string/update_frequency"
-                android:textSize="@dimen/medium_text_size"/>
+                android:textSize="@dimen/medium_text_size"
+                app:font="@string/font_name_regular"/>
 
             <Spinner
                 android:id="@+id/settings_update_frequency_spinner"
@@ -74,8 +67,8 @@
                 android:paddingTop="40dp"
                 android:weightSum="1">
 
-                <!--
-            <org.hisp.dhis.android.sdk.ui.views.FontButton
+
+            <org.hisp.dhis.client.sdk.ui.views.FontButton
                 android:id="@+id/settings_sync_button"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -86,20 +79,9 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_below="@+id/settings_update_frequency_spinner"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.5" />
--->
-                <Button
-                    android:id="@+id/settings_sync_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/button_blue_selector"
-                    android:singleLine="true"
-                    android:text="@string/synchronize_with_server"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/medium_text_size"
-                    android:layout_below="@+id/settings_update_frequency_spinner"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="0.5" />
+                android:layout_weight="0.5"
+                app:font="@string/font_name_regular"
+                />
 
                 <ProgressBar
                     android:layout_width="wrap_content"
@@ -123,8 +105,7 @@
                     android:layout_gravity="center_horizontal"/>
             </LinearLayout>
 
-            <!--
-            <org.hisp.dhis.android.sdk.ui.views.FontButton
+            <org.hisp.dhis.client.sdk.ui.views.FontButton
                 android:id="@+id/settings_logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -135,20 +116,8 @@
                 android:textSize="@dimen/medium_text_size"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="6dp"
+                app:font="@string/font_name_regular"
                  />
-                 -->
-            <Button
-                android:id="@+id/settings_logout_button"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/button_red_selector"
-                android:singleLine="true"
-                android:text="@string/logout"
-                android:textColor="@color/white"
-                android:textSize="@dimen/medium_text_size"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="6dp"
-                />
         </RelativeLayout>
 
 

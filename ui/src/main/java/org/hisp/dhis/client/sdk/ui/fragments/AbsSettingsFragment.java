@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.ui.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
+import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
 
 /**
  * This is the view, using MVP.
@@ -73,8 +75,16 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.settings_logout_button) {
-            //Extend and logout
-            mSettingsPresenter.logout();
+
+            UiUtils.showConfirmDialog(getActivity().getSupportFragmentManager(), getString(R.string.logout_title), getString(R.string.logout_message),
+                    getString(R.string.logout_option), getString(R.string.cancel_option),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mSettingsPresenter.logout(getContext());
+                            getActivity().finish();
+                        }
+                    });
         } else if (view.getId() == R.id.settings_sync_button) {
             if (isAdded()) {
                 final Context context = getActivity().getBaseContext();

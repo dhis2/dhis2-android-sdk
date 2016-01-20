@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
@@ -41,19 +42,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class EventMapper extends AbsMapper<Event, Event$Flow> {
 
-    private final IMapper<Enrollment, Enrollment$Flow> enrollmentMapper;
-    private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
-    private final IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> trackedEntityDataValueMapper;
-
-    public EventMapper(IMapper<Enrollment, Enrollment$Flow> enrollmentMapper,
-                       IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow>
-                               trackedEntityInstanceMapper, IMapper<TrackedEntityDataValue,
-            TrackedEntityDataValue$Flow> trackedEntityDataValueMapper) {
-        this.enrollmentMapper = enrollmentMapper;
-        this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
-        this.trackedEntityDataValueMapper = trackedEntityDataValueMapper;
-    }
-
     @Override
     public Event$Flow mapToDatabaseEntity(Event event) {
         if (event == null) {
@@ -66,14 +54,14 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
         eventFlow.setStatus(event.getStatus());
         eventFlow.setLatitude(event.getLatitude());
         eventFlow.setLongitude(event.getLongitude());
-        eventFlow.setTrackedEntityInstance(trackedEntityInstanceMapper.mapToDatabaseEntity(event.getTrackedEntityInstance()));
-        eventFlow.setEnrollment(enrollmentMapper.mapToDatabaseEntity(event.getEnrollment()));
+        eventFlow.setTrackedEntityInstance(MapperModule.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(event.getTrackedEntityInstance()));
+        eventFlow.setEnrollment(MapperModule.getInstance().getEnrollmentMapper().mapToDatabaseEntity(event.getEnrollment()));
         eventFlow.setProgramId(event.getProgramId());
         eventFlow.setProgramStageId(event.getProgramStageId());
         eventFlow.setOrganisationUnitId(event.getOrganisationUnitId());
         eventFlow.setEventDate(event.getEventDate());
         eventFlow.setDueDate(event.getDueDate());
-        eventFlow.setTrackedEntityDataValues(trackedEntityDataValueMapper.mapToDatabaseEntities(event.getTrackedEntityDataValues()));
+        eventFlow.setTrackedEntityDataValues(MapperModule.getInstance().getTrackedEntityDataValueMapper().mapToDatabaseEntities(event.getTrackedEntityDataValues()));
         eventFlow.setName(event.getName());
         eventFlow.setDisplayName(event.getDisplayName());
         eventFlow.setCreated(event.getCreated());
@@ -94,14 +82,14 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
         event.setStatus(eventFlow.getStatus());
         event.setLatitude(eventFlow.getLatitude());
         event.setLongitude(eventFlow.getLongitude());
-        event.setTrackedEntityInstance(trackedEntityInstanceMapper.mapToModel(eventFlow.getTrackedEntityInstance()));
-        event.setEnrollment(enrollmentMapper.mapToModel(eventFlow.getEnrollment()));
+        event.setTrackedEntityInstance(MapperModule.getInstance().getTrackedEntityInstanceMapper().mapToModel(eventFlow.getTrackedEntityInstance()));
+        event.setEnrollment(MapperModule.getInstance().getEnrollmentMapper().mapToModel(eventFlow.getEnrollment()));
         event.setProgramId(eventFlow.getProgramId());
         event.setProgramStageId(eventFlow.getProgramStageId());
         event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());
         event.setEventDate(eventFlow.getEventDate());
         event.setDueDate(eventFlow.getDueDate());
-        event.setTrackedEntityDataValues(trackedEntityDataValueMapper.mapToModels(eventFlow.getTrackedEntityDataValues()));
+        event.setTrackedEntityDataValues(MapperModule.getInstance().getTrackedEntityDataValueMapper().mapToModels(eventFlow.getTrackedEntityDataValues()));
         event.setName(eventFlow.getName());
         event.setDisplayName(eventFlow.getDisplayName());
         event.setCreated(eventFlow.getCreated());

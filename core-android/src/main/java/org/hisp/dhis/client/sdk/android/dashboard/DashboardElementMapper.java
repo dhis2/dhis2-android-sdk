@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
@@ -36,11 +37,6 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 public class DashboardElementMapper extends AbsMapper<DashboardElement, DashboardElement$Flow> {
-    private final IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper;
-
-    public DashboardElementMapper(IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper) {
-        this.dashboardItemMapper = dashboardItemMapper;
-    }
 
     @Override
     public DashboardElement$Flow mapToDatabaseEntity(DashboardElement dashboardElement) {
@@ -56,7 +52,7 @@ public class DashboardElementMapper extends AbsMapper<DashboardElement, Dashboar
         dashboardElementFlow.setAccess(dashboardElement.getAccess());
         dashboardElementFlow.setName(dashboardElement.getName());
         dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
-        dashboardElementFlow.setDashboardItem(dashboardItemMapper
+        dashboardElementFlow.setDashboardItem(MapperModule.getInstance().getDashboardItemMapper()
                 .mapToDatabaseEntity(dashboardElement.getDashboardItem()));
         return dashboardElementFlow;
     }
@@ -75,7 +71,7 @@ public class DashboardElementMapper extends AbsMapper<DashboardElement, Dashboar
         dashboardElement.setAccess(dashboardElementFlow.getAccess());
         dashboardElement.setName(dashboardElementFlow.getName());
         dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
-        dashboardElement.setDashboardItem(dashboardItemMapper
+        dashboardElement.setDashboardItem(MapperModule.getInstance().getDashboardItemMapper()
                 .mapToModel(dashboardElementFlow.getDashboardItem()));
         return dashboardElement;
     }

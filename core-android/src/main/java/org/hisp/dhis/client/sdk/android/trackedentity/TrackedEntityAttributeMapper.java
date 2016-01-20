@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.base.IMapper;
+import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
 import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttribute$Flow;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribute,
         TrackedEntityAttribute$Flow> {
-
-    public TrackedEntityAttributeMapper() {
-        // empty constructor
-    }
 
     @Override
     public TrackedEntityAttribute$Flow mapToDatabaseEntity(TrackedEntityAttribute trackedEntityAttribute) {
@@ -53,7 +54,7 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
         trackedEntityAttributeFlow.setName(trackedEntityAttribute.getName());
         trackedEntityAttributeFlow.setDisplayName(trackedEntityAttribute.getDisplayName());
         trackedEntityAttributeFlow.setAccess(trackedEntityAttribute.getAccess());
-        trackedEntityAttributeFlow.setOptionSet(trackedEntityAttribute.getOptionSet());
+        trackedEntityAttributeFlow.setOptionSet(MapperModule.getInstance().getOptionSetMapper().mapToDatabaseEntity(trackedEntityAttribute.getOptionSet()));
         trackedEntityAttributeFlow.setUnique(trackedEntityAttribute.isUnique());
         trackedEntityAttributeFlow.setProgramScope(trackedEntityAttribute.isProgramScope());
         trackedEntityAttributeFlow.setOrgunitScope(trackedEntityAttribute.isOrgunitScope());
@@ -83,7 +84,7 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
         trackedEntityAttribute.setName(trackedEntityAttributeFlow.getName());
         trackedEntityAttribute.setDisplayName(trackedEntityAttributeFlow.getDisplayName());
         trackedEntityAttribute.setAccess(trackedEntityAttributeFlow.getAccess());
-        trackedEntityAttribute.setOptionSet(trackedEntityAttributeFlow.getOptionSet());
+        trackedEntityAttribute.setOptionSet(MapperModule.getInstance().getOptionSetMapper().mapToModel(trackedEntityAttributeFlow.getOptionSet()));
         trackedEntityAttribute.setUnique(trackedEntityAttributeFlow.isUnique());
         trackedEntityAttribute.setProgramScope(trackedEntityAttributeFlow.isProgramScope());
         trackedEntityAttribute.setOrgunitScope(trackedEntityAttributeFlow.isOrgunitScope());

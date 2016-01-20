@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
@@ -36,11 +37,6 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$Flow> {
-    private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;
-
-    public DashboardItemMapper(IMapper<Dashboard, Dashboard$Flow> dashboardMapper) {
-        this.dashboardMapper = dashboardMapper;
-    }
 
     @Override
     public DashboardItem$Flow mapToDatabaseEntity(DashboardItem dashboardItem) {
@@ -56,7 +52,7 @@ public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$
         dashboardItemFlow.setAccess(dashboardItem.getAccess());
         dashboardItemFlow.setName(dashboardItem.getName());
         dashboardItemFlow.setDisplayName(dashboardItem.getDisplayName());
-        dashboardItemFlow.setDashboard(dashboardMapper
+        dashboardItemFlow.setDashboard(MapperModule.getInstance().getDashboardMapper()
                 .mapToDatabaseEntity(dashboardItem.getDashboard()));
         dashboardItemFlow.setType(dashboardItem.getType());
         dashboardItemFlow.setShape(dashboardItem.getShape());
@@ -77,7 +73,7 @@ public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$
         dashboardItem.setAccess(dashboardItemFlow.getAccess());
         dashboardItem.setName(dashboardItemFlow.getName());
         dashboardItem.setDisplayName(dashboardItemFlow.getDisplayName());
-        dashboardItem.setDashboard(dashboardMapper
+        dashboardItem.setDashboard(MapperModule.getInstance().getDashboardMapper()
                 .mapToModel(dashboardItemFlow.getDashboard()));
         dashboardItem.setType(dashboardItemFlow.getType());
         dashboardItem.setShape(dashboardItemFlow.getShape());

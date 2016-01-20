@@ -120,9 +120,9 @@ public class D2 {
         mUserPreferences = preferencesModule.getUserPreferences();
 
         mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
-                mUserPreferences, preferencesModule.getConfigurationPreferences());
+                mUserPreferences, preferencesModule.getConfigurationPreferences(), controllersModule.getAssignedProgramsController());
 
-        mProgramScope = new ProgramScope(servicesModule.getProgramService());
+        mProgramScope = new ProgramScope(servicesModule.getProgramService(), controllersModule.getProgramController());
 
         mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService());
 

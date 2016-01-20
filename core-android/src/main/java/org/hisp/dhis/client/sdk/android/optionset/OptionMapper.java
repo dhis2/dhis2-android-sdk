@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
+import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 public class OptionMapper extends AbsMapper<Option, Option$Flow> {
-
-    public OptionMapper() {
-        // empty constructor
-    }
 
     @Override
     public Option$Flow mapToDatabaseEntity(Option option) {
@@ -53,7 +53,7 @@ public class OptionMapper extends AbsMapper<Option, Option$Flow> {
         optionFlow.setDisplayName(option.getDisplayName());
         optionFlow.setAccess(option.getAccess());
         optionFlow.setSortOrder(option.getSortOrder());
-        optionFlow.setOptionSet(option.getOptionSet());
+        optionFlow.setOptionSet(MapperModule.getInstance().getOptionSetMapper().mapToDatabaseEntity(option.getOptionSet()));
         optionFlow.setCode(option.getCode());
         return optionFlow;
     }
@@ -73,7 +73,7 @@ public class OptionMapper extends AbsMapper<Option, Option$Flow> {
         option.setDisplayName(optionFlow.getDisplayName());
         option.setAccess(optionFlow.getAccess());
         option.setSortOrder(optionFlow.getSortOrder());
-        option.setOptionSet(optionFlow.getOptionSet());
+        option.setOptionSet(MapperModule.getInstance().getOptionSetMapper().mapToModel(optionFlow.getOptionSet()));
         option.setCode(optionFlow.getCode());
         return option;
     }

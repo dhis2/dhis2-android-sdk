@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
@@ -36,12 +37,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> {
-
-    private final IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper;
-
-    public ProgramRuleMapper(IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper) {
-        this.programRuleActionMapper = programRuleActionMapper;
-    }
 
     @Override
     public ProgramRule$Flow mapToDatabaseEntity(ProgramRule programRule) {
@@ -61,7 +56,7 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRuleFlow.setProgram(programRule.getProgram());
         programRuleFlow.setCondition(programRule.getCondition());
         programRuleFlow.setExternalAction(programRule.isExternalAction());
-        programRuleFlow.setProgramRuleActions(programRuleActionMapper.mapToDatabaseEntities(programRule.getProgramRuleActions()));
+        programRuleFlow.setProgramRuleActions(MapperModule.getInstance().getProgramRuleActionMapper().mapToDatabaseEntities(programRule.getProgramRuleActions()));
         return programRuleFlow;
     }
 
@@ -83,7 +78,7 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRule.setProgram(programRuleFlow.getProgram());
         programRule.setCondition(programRuleFlow.getCondition());
         programRule.setExternalAction(programRuleFlow.isExternalAction());
-        programRule.setProgramRuleActions(programRuleActionMapper.mapToModels(programRuleFlow.getProgramRuleActions()));
+        programRule.setProgramRuleActions(MapperModule.getInstance().getProgramRuleActionMapper().mapToModels(programRuleFlow.getProgramRuleActions()));
         return programRule;
     }
 

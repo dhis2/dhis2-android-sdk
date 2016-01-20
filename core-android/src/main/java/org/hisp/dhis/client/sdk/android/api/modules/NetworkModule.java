@@ -44,6 +44,10 @@ import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClient;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.ProgramApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -55,6 +59,8 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
@@ -81,6 +87,8 @@ public class NetworkModule implements INetworkModule {
     private final IEventApiClient mEventApiClient;
     private final IEnrollmentApiClient mEnrollmentApiClient;
     private final ITrackedEntityAttributeApiClient mTrackedEntityAttributeApiClient;
+    private final IProgramApiClient mProgramApiClient;
+    private final IOrganisationUnitApiClient mOrganisationUnitApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
@@ -119,6 +127,9 @@ public class NetworkModule implements INetworkModule {
 
         mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.
 
+        mProgramApiClient = new ProgramApiClient(retrofit.create(ProgramApiClientRetrofit.class));
+        mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(OrganisationUnitApiClientRetrofit.class));
+
         mTrackedEntityAttributeApiClient = null; // TODO: implement TrackedEntityAttributeApiClient class.
     }
 
@@ -145,6 +156,16 @@ public class NetworkModule implements INetworkModule {
     @Override
     public ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient() {
         return mTrackedEntityAttributeApiClient;
+    }
+
+    @Override
+    public IProgramApiClient getProgramApiClient() {
+        return mProgramApiClient;
+    }
+
+    @Override
+    public IOrganisationUnitApiClient getOrganisationUnitApiClient() {
+        return mOrganisationUnitApiClient;
     }
 
     @Override

@@ -30,6 +30,9 @@ package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
@@ -41,14 +44,24 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 })
 public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
     static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
+    static final String PROGRAM_STAGE_KEY = "programstage";
+    static final String DATA_ELEMENT_KEY = "dataelement";
 
     @Column
-    @Unique(unique = false, uniqueGroups = {UNIQUE_PROGRAM_DATA_ELEMENT_GROUP})
-    String programStage;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramStage$Flow programStage;
 
     @Column
-    @Unique(unique = false, uniqueGroups = {UNIQUE_PROGRAM_DATA_ELEMENT_GROUP})
-    String dataElement;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    DataElement$Flow dataElement;
 
     @Column
     boolean allowFutureDate;
@@ -68,19 +81,19 @@ public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
     @Column
     String programStageSection;
 
-    public String getProgramStage() {
+    public ProgramStage$Flow getProgramStage() {
         return programStage;
     }
 
-    public void setProgramStage(String programStage) {
+    public void setProgramStage(ProgramStage$Flow programStage) {
         this.programStage = programStage;
     }
 
-    public String getDataElement() {
+    public DataElement$Flow getDataElement() {
         return dataElement;
     }
 
-    public void setDataElement(String dataElement) {
+    public void setDataElement(DataElement$Flow dataElement) {
         this.dataElement = dataElement;
     }
 

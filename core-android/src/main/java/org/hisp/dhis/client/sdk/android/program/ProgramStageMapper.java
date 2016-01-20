@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
@@ -40,18 +41,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flow> {
-
-    private final IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> programStageDataElementMapper;
-    private final IMapper<ProgramStageSection, ProgramStageSection$Flow> programStageSectionMapper;
-    private final IMapper<ProgramIndicator, ProgramIndicator$Flow> programIndicatorMapper;
-
-    public ProgramStageMapper(IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> programStageDataElementMapper,
-                              IMapper<ProgramStageSection, ProgramStageSection$Flow> programStageSectionMapper,
-                              IMapper<ProgramIndicator, ProgramIndicator$Flow> programIndicatorMapper) {
-        this.programStageDataElementMapper = programStageDataElementMapper;
-        this.programStageSectionMapper = programStageSectionMapper;
-        this.programIndicatorMapper = programIndicatorMapper;
-    }
 
     @Override
     public ProgramStage$Flow mapToDatabaseEntity(ProgramStage programStage) {
@@ -86,9 +75,9 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStageFlow.setAllowGenerateNextVisit(programStage.isAllowGenerateNextVisit());
         programStageFlow.setRepeatable(programStage.isRepeatable());
         programStageFlow.setMinDaysFromStart(programStage.getMinDaysFromStart());
-        programStageFlow.setProgramStageDataElements(programStageDataElementMapper.mapToDatabaseEntities(programStage.getProgramStageDataElements()));
-        programStageFlow.setProgramStageSections(programStageSectionMapper.mapToDatabaseEntities(programStage.getProgramStageSections()));
-        programStageFlow.setProgramIndicators(programIndicatorMapper.mapToDatabaseEntities(programStage.getProgramIndicators()));
+        programStageFlow.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStage.getProgramStageDataElements()));
+        programStageFlow.setProgramStageSections(MapperModule.getInstance().getProgramStageSectionMapper().mapToDatabaseEntities(programStage.getProgramStageSections()));
+        programStageFlow.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStage.getProgramIndicators()));
         return programStageFlow;
     }
 
@@ -125,9 +114,9 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStage.setAllowGenerateNextVisit(programStageFlow.isAllowGenerateNextVisit());
         programStage.setRepeatable(programStageFlow.isRepeatable());
         programStage.setMinDaysFromStart(programStageFlow.getMinDaysFromStart());
-        programStage.setProgramStageDataElements(programStageDataElementMapper.mapToModels(programStageFlow.getProgramStageDataElements()));
-        programStage.setProgramStageSections(programStageSectionMapper.mapToModels(programStageFlow.getProgramStageSections()));
-        programStage.setProgramIndicators(programIndicatorMapper.mapToModels(programStageFlow.getProgramIndicators()));
+        programStage.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToModels(programStageFlow.getProgramStageDataElements()));
+        programStage.setProgramStageSections(MapperModule.getInstance().getProgramStageSectionMapper().mapToModels(programStageFlow.getProgramStageSections()));
+        programStage.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToModels(programStageFlow.getProgramIndicators()));
         return programStage;
     }
 

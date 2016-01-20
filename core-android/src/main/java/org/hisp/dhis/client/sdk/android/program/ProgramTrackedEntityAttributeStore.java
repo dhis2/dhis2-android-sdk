@@ -55,7 +55,7 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
             return null;
         }
         List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new Select()
-                .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition.column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM).is(program.getUId()))
+                .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition.column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
                 .queryList();
         return getMapper().mapToModels(programTrackedEntityAttributeFlows);
     }
@@ -67,9 +67,9 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
         }
         ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = new Select()
                 .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition
-                        .column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM)
+                        .column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM_PROGRAM)
                         .is(program.getUId())).and(Condition
-                        .column(ProgramTrackedEntityAttribute$Flow$Table.TRACKEDENTITYATTRIBUTE)
+                        .column(ProgramTrackedEntityAttribute$Flow$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
                         .is(trackedEntityAttribute.getUId())).querySingle();
         return getMapper().mapToModel(programTrackedEntityAttributeFlow);
     }

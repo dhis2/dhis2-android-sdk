@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
@@ -38,15 +39,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
-
-    private final IMapper<ProgramStage, ProgramStage$Flow> programStageMapper;
-    private final IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeMapper;
-
-    public ProgramMapper(IMapper<ProgramStage, ProgramStage$Flow> programStageMapper,
-                         IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeMapper) {
-        this.programStageMapper = programStageMapper;
-        this.programTrackedEntityAttributeMapper = programTrackedEntityAttributeMapper;
-    }
 
     @Override
     public Program$Flow mapToDatabaseEntity(Program program) {
@@ -69,7 +61,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setDateOfEnrollmentDescription(program.getDateOfEnrollmentDescription());
         programFlow.setDescription(program.getDescription());
         programFlow.setOnlyEnrollOnce(program.isOnlyEnrollOnce());
-        programFlow.setExtenalAccess(program.isExtenalAccess());
+        programFlow.setExtenalAccess(program.isExternalAccess());
         programFlow.setDisplayIncidentDate(program.isDisplayIncidentDate());
         programFlow.setDateOfIncidentDescription(program.getDateOfIncidentDescription());
         programFlow.setRegistration(program.isRegistration());
@@ -79,8 +71,8 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
         programFlow.setRelationshipFromA(program.isRelationshipFromA());
         programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
-        programFlow.setProgramStages(programStageMapper.mapToDatabaseEntities(program.getProgramStages()));
-        programFlow.setProgramTrackedEntityAttributes(programTrackedEntityAttributeMapper.mapToDatabaseEntities(program.getProgramTrackedEntityAttributes()));
+        programFlow.setProgramStages(MapperModule.getInstance().getProgramStageMapper().mapToDatabaseEntities(program.getProgramStages()));
+        programFlow.setProgramTrackedEntityAttributes(MapperModule.getInstance().getProgramTrackedEntityAttributeMapper().mapToDatabaseEntities(program.getProgramTrackedEntityAttributes()));
         return programFlow;
     }
 
@@ -105,7 +97,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setDateOfEnrollmentDescription(programFlow.getDateOfEnrollmentDescription());
         program.setDescription(programFlow.getDescription());
         program.setOnlyEnrollOnce(programFlow.isOnlyEnrollOnce());
-        program.setExtenalAccess(programFlow.isExtenalAccess());
+        program.setExternalAccess(programFlow.isExtenalAccess());
         program.setDisplayIncidentDate(programFlow.isDisplayIncidentDate());
         program.setDateOfIncidentDescription(programFlow.getDateOfIncidentDescription());
         program.setRegistration(programFlow.isRegistration());
@@ -115,8 +107,8 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
         program.setRelationshipFromA(programFlow.isRelationshipFromA());
         program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
-        program.setProgramStages(programStageMapper.mapToModels(programFlow.getProgramStages()));
-        program.setProgramTrackedEntityAttributes(programTrackedEntityAttributeMapper.mapToModels(programFlow.getProgramTrackedEntityAttributes()));
+        program.setProgramStages(MapperModule.getInstance().getProgramStageMapper().mapToModels(programFlow.getProgramStages()));
+        program.setProgramTrackedEntityAttributes(MapperModule.getInstance().getProgramTrackedEntityAttributeMapper().mapToModels(programFlow.getProgramTrackedEntityAttributes()));
         return program;
     }
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -29,14 +28,15 @@
 
 <fr.castorflex.android.circularprogressbar.CircularProgressBar
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:library="http://schemas.android.com/apk/lib/fr.castorflex.android.circularprogressbar"
     android:id="@+id/progress_bar_circular_blue"
-    android:layout_width="64dp"
-    android:layout_height="64dp"
-    android:indeterminate="true"/>
-    <!--xmlns:library="http://schemas.android.com/apk/lib/fr.castorflex.android.circularprogressbar"-->
-    <!--library:cpb_color="@color/color_primary_light"-->
-    <!--library:cpb_max_sweep_angle="300"-->
-    <!--library:cpb_min_sweep_angle="10"-->
-    <!--library:cpb_rotation_speed="0.8"-->
-    <!--library:cpb_stroke_width="6dp"-->
-    <!--library:cpb_sweep_speed="1.0" />-->
+    android:layout_width="112dp"
+    android:layout_height="112dp"
+    android:indeterminate="true"
+    android:padding="8dp"
+    library:cpb_color="@color/color_accent"
+    library:cpb_max_sweep_angle="300"
+    library:cpb_min_sweep_angle="10"
+    library:cpb_rotation_speed="0.8"
+    library:cpb_stroke_width="8dp"
+    library:cpb_sweep_speed="1.0" />

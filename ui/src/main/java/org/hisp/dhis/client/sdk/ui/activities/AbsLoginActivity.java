@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.ui.activities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
@@ -42,6 +43,7 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
+import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -55,54 +57,78 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     private EditText mPassword;
     private Button mLogInButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_2);
+        setContentView(R.layout.activity_login);
 
-//        mViewsContainer = findViewById(R.id.container_log_in_views);
-//        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
-//        mLogInButton = (Button) findViewById(R.id.button_log_in);
-//
-//        mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);
-//        mUsername = (EditText) findViewById(R.id.edit_text_username);
-//        mPassword = (EditText) findViewById(R.id.edit_text_password);
-//
-//        setDebugLoginCredentials();
-//
-//        FieldTextWatcher watcher = new FieldTextWatcher();
-//        mServerUrl.addTextChangedListener(watcher);
-//        mUsername.addTextChangedListener(watcher);
-//        mPassword.addTextChangedListener(watcher);
-//
-//        hideProgressBar(false);
-//        onTextChanged();
-//
-//        mLogInButton.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
+        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
+        mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable.Builder(this)
+                .color(ContextCompat.getColor(this, R.color.color_accent))
+                .sweepSpeed(1f)
+                .strokeWidth(20)
+                .style(CircularProgressDrawable.STYLE_ROUNDED)
+                .build());
+
+        mViewsContainer = findViewById(R.id.layout_login_views);
+        mLogInButton = (Button) findViewById(R.id.button_log_in);
+
+        mServerUrl = (EditText) findViewById(R.id.edittext_server_url);
+        mUsername = (EditText) findViewById(R.id.edittext_username);
+        mPassword = (EditText) findViewById(R.id.edittext_password);
+
+        setDebugLoginCredentials();
+
+        FieldTextWatcher watcher = new FieldTextWatcher();
+        mServerUrl.addTextChangedListener(watcher);
+        mUsername.addTextChangedListener(watcher);
+        mPassword.addTextChangedListener(watcher);
+
+        hideProgressBar(false);
+        onTextChanged();
+
+        if (savedInstanceState == null) {
+            startIntroAnimation();
+        }
+
+        mLogInButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (mProgressBar.isShown()) {
+                    // hideProgressBar(true);
+                    mProgressBar.progressiveStop();
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    // showProgressBar(true);
+                }
 //                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
 //                        mPassword.getText());
-//            }
-//        });
+            }
+        });
     }
 
     @Override
     protected final void onSaveInstanceState(Bundle outState) {
-//        outState.putBoolean(IS_LOADING, mProgressBar.isShown());
+        outState.putBoolean(IS_LOADING, mProgressBar.isShown());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected final void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
-//        if (savedInstanceState != null &&
-//                savedInstanceState.getBoolean(IS_LOADING, false)) {
-//            showProgressBar(false);
-//        } else {
-//            hideProgressBar(false);
-//        }
+        if (savedInstanceState != null &&
+                savedInstanceState.getBoolean(IS_LOADING, false)) {
+            showProgressBar(false);
+        } else {
+            hideProgressBar(false);
+        }
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void startIntroAnimation() {
+
     }
 
     private void onTextChanged() {
@@ -124,6 +150,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
             mViewsContainer.startAnimation(anim);
         }
+
         mViewsContainer.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
     }
@@ -133,6 +160,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
             Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
             mViewsContainer.startAnimation(anim);
         }
+
         mViewsContainer.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
     }

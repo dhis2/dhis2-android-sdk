@@ -32,6 +32,8 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.FailedItemStore;
 import org.hisp.dhis.client.sdk.android.common.ModelStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
@@ -129,6 +131,7 @@ import org.hisp.dhis.client.sdk.android.user.UserStore;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -258,49 +261,48 @@ public class PersistenceModule implements IPersistenceModule {
         modelUtils = new ModelUtils();
         transactionManager = new TransactionManager(modelUtils);
 
+        userAccountStore = new UserAccountStore(MapperModuleProvider.getInstance().getUserAccountMapper());
 
-        userAccountStore = new UserAccountStore(MapperModule.getInstance().getUserAccountMapper());
-
-        stateStore = new StateStore(MapperModule.getInstance().getStateMapper(),
-                MapperModule.getInstance().getDashboardMapper(),
-                MapperModule.getInstance().getDashboardItemMapper(),
-                MapperModule.getInstance().getDashboardElementMapper(),
-                MapperModule.getInstance().getEventMapper(),
-                MapperModule.getInstance().getEnrollmentMapper(),
-                MapperModule.getInstance().getTrackedEntityInstanceMapper());
-        dashboardStore = new DashboardStore(MapperModule.getInstance().getDashboardMapper());
-        dashboardItemStore = new DashboardItemStore(MapperModule.getInstance().getDashboardItemMapper());
-        dashboardElementStore = new DashboardElementStore(MapperModule.getInstance().getDashboardElementMapper());
-        dashboardItemContentStore = new DashboardContentStore(MapperModule.getInstance().getDashboardContentMapper());
-        constantStore = new ConstantStore(MapperModule.getInstance().getConstantMapper());
-        dataElementStore = new DataElementStore(MapperModule.getInstance().getDataElementMapper());
-        optionStore = new OptionStore(MapperModule.getInstance().getOptionMapper());
-        optionSetStore = new OptionSetStore(MapperModule.getInstance().getOptionSetMapper(), optionStore);
-        organisationUnitStore = new OrganisationUnitStore(MapperModule.getInstance().getOrganisationUnitMapper());
-        programStore = new ProgramStore(MapperModule.getInstance().getProgramMapper(), transactionManager, MapperModule.getInstance().getOrganisationUnitMapper());
-        trackedEntityStore = new TrackedEntityStore(MapperModule.getInstance().getTrackedEntityMapper());
-        trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModule.getInstance().getTrackedEntityAttributeMapper());
-        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore(MapperModule.getInstance().getProgramTrackedEntityAttributeMapper());
-        programStageDataElementStore = new ProgramStageDataElementStore(MapperModule.getInstance().getProgramStageDataElementMapper());
-        programIndicatorStore = new ProgramIndicatorStore(MapperModule.getInstance().getProgramIndicatorMapper());
-        programStageSectionStore = new ProgramStageSectionStore(MapperModule.getInstance().getProgramStageSectionMapper());
-        programStageStore = new ProgramStageStore(MapperModule.getInstance().getProgramStageMapper());
-        programRuleActionStore = new ProgramRuleActionStore(MapperModule.getInstance().getProgramRuleActionMapper());
-        programRuleStore = new ProgramRuleStore(MapperModule.getInstance().getProgramRuleMapper(), programRuleActionStore, MapperModule.getInstance().getProgramRuleActionMapper());
-        programRuleVariableStore = new ProgramRuleVariableStore(MapperModule.getInstance().getProgramRuleVariableMapper());
-        relationshipTypeStore = new RelationshipTypeStore(MapperModule.getInstance().getRelationshipTypeMapper());
+        stateStore = new StateStore(MapperModuleProvider.getInstance().getStateMapper(),
+                MapperModuleProvider.getInstance().getDashboardMapper(),
+                MapperModuleProvider.getInstance().getDashboardItemMapper(),
+                MapperModuleProvider.getInstance().getDashboardElementMapper(),
+                MapperModuleProvider.getInstance().getEventMapper(),
+                MapperModuleProvider.getInstance().getEnrollmentMapper(),
+                MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper());
+        dashboardStore = new DashboardStore(MapperModuleProvider.getInstance().getDashboardMapper());
+        dashboardItemStore = new DashboardItemStore(MapperModuleProvider.getInstance().getDashboardItemMapper());
+        dashboardElementStore = new DashboardElementStore(MapperModuleProvider.getInstance().getDashboardElementMapper());
+        dashboardItemContentStore = new DashboardContentStore(MapperModuleProvider.getInstance().getDashboardContentMapper());
+        constantStore = new ConstantStore(MapperModuleProvider.getInstance().getConstantMapper());
+        dataElementStore = new DataElementStore(MapperModuleProvider.getInstance().getDataElementMapper());
+        optionStore = new OptionStore(MapperModuleProvider.getInstance().getOptionMapper());
+        optionSetStore = new OptionSetStore(MapperModuleProvider.getInstance().getOptionSetMapper(), optionStore);
+        organisationUnitStore = new OrganisationUnitStore(MapperModuleProvider.getInstance().getOrganisationUnitMapper());
+        programStore = new ProgramStore(MapperModuleProvider.getInstance().getProgramMapper(), transactionManager, MapperModuleProvider.getInstance().getOrganisationUnitMapper());
+        trackedEntityStore = new TrackedEntityStore(MapperModuleProvider.getInstance().getTrackedEntityMapper());
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper());
+        programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore(MapperModuleProvider.getInstance().getProgramTrackedEntityAttributeMapper());
+        programStageDataElementStore = new ProgramStageDataElementStore(MapperModuleProvider.getInstance().getProgramStageDataElementMapper());
+        programIndicatorStore = new ProgramIndicatorStore(MapperModuleProvider.getInstance().getProgramIndicatorMapper());
+        programStageSectionStore = new ProgramStageSectionStore(MapperModuleProvider.getInstance().getProgramStageSectionMapper());
+        programStageStore = new ProgramStageStore(MapperModuleProvider.getInstance().getProgramStageMapper());
+        programRuleActionStore = new ProgramRuleActionStore(MapperModuleProvider.getInstance().getProgramRuleActionMapper());
+        programRuleStore = new ProgramRuleStore(MapperModuleProvider.getInstance().getProgramRuleMapper(), programRuleActionStore, MapperModuleProvider.getInstance().getProgramRuleActionMapper());
+        programRuleVariableStore = new ProgramRuleVariableStore(MapperModuleProvider.getInstance().getProgramRuleVariableMapper());
+        relationshipTypeStore = new RelationshipTypeStore(MapperModuleProvider.getInstance().getRelationshipTypeMapper());
 //        dataSetStore = new DataSetStore(dataSetMapper, organisationUnitMapper);
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(MapperModule.getInstance().getTrackedEntityAttributeValueMapper(), stateStore, programStore);
-        relationshipStore = new RelationshipStore(MapperModule.getInstance().getRelationshipMapper(), stateStore);
-        trackedEntityInstanceStore = new TrackedEntityInstanceStore(MapperModule.getInstance().getTrackedEntityInstanceMapper(), stateStore);
-        trackedEntityDataValueStore = new TrackedEntityDataValueStore(MapperModule.getInstance().getTrackedEntityDataValueMapper(), stateStore);
-        eventStore = new EventStore(MapperModule.getInstance().getEventMapper(), stateStore);
-        enrollmentStore = new EnrollmentStore(eventStore, stateStore, trackedEntityAttributeValueStore, MapperModule.getInstance().getEnrollmentMapper());
+        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper(), stateStore, programStore);
+        relationshipStore = new RelationshipStore(MapperModuleProvider.getInstance().getRelationshipMapper(), stateStore);
+        trackedEntityInstanceStore = new TrackedEntityInstanceStore(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper(), stateStore);
+        trackedEntityDataValueStore = new TrackedEntityDataValueStore(MapperModuleProvider.getInstance().getTrackedEntityDataValueMapper(), stateStore);
+        eventStore = new EventStore(MapperModuleProvider.getInstance().getEventMapper(), stateStore);
+        enrollmentStore = new EnrollmentStore(eventStore, stateStore, trackedEntityAttributeValueStore, MapperModuleProvider.getInstance().getEnrollmentMapper());
         interpretationStore = new InterpretationStore();
         interpretationCommentStore = new InterpretationCommentStore();
         interpretationElementStore = new InterpretationElementStore();
         failedItemStore = new FailedItemStore();
-        userStore = new UserStore(MapperModule.getInstance().getUserMapper());
+        userStore = new UserStore(MapperModuleProvider.getInstance().getUserMapper());
 
         modelsStore = new ModelStore();
     }

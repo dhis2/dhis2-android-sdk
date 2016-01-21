@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
@@ -59,7 +61,7 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicatorFlow.setExternalAccess(programIndicator.isExternalAccess());
         programIndicatorFlow.setValueType(programIndicator.getValueType());
         programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
-        programIndicatorFlow.setProgram(MapperModule.getInstance().getProgramMapper().mapToDatabaseEntity(programIndicator.getProgram()));
+        programIndicatorFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programIndicator.getProgram()));
         return programIndicatorFlow;
     }
 
@@ -84,7 +86,7 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicator.setExternalAccess(programIndicatorFlow.isExternalAccess());
         programIndicator.setValueType(programIndicatorFlow.getValueType());
         programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
-        programIndicator.setProgram(MapperModule.getInstance().getProgramMapper().mapToModel(programIndicatorFlow.getProgram()));
+        programIndicator.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programIndicatorFlow.getProgram()));
         return programIndicator;
     }
 

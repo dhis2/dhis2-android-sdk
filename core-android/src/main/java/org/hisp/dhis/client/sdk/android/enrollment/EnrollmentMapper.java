@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.enrollment;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
@@ -52,7 +54,7 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getUId());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
-        enrollmentFlow.setTrackedEntityInstance(MapperModule.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(enrollment.getTrackedEntityInstance()));
+        enrollmentFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(enrollment.getTrackedEntityInstance()));
         enrollmentFlow.setProgram(enrollment.getProgram());
         enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
         enrollmentFlow.setDateOfIncident(enrollment.getDateOfIncident());
@@ -63,8 +65,8 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollmentFlow.setCreated(enrollment.getCreated());
         enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
         enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setEvents(MapperModule.getInstance().getEventMapper().mapToDatabaseEntities(enrollment.getEvents()));
-        enrollmentFlow.setTrackedEntityAttributeValues(MapperModule.getInstance().getTrackedEntityAttributeValueMapper().mapToDatabaseEntities(enrollment.getTrackedEntityAttributeValues()));
+        enrollmentFlow.setEvents(MapperModuleProvider.getInstance().getEventMapper().mapToDatabaseEntities(enrollment.getEvents()));
+        enrollmentFlow.setTrackedEntityAttributeValues(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToDatabaseEntities(enrollment.getTrackedEntityAttributeValues()));
         return enrollmentFlow;
     }
 
@@ -78,7 +80,7 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollment.setId(enrollmentFlow.getId());
         enrollment.setUId(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
-        enrollment.setTrackedEntityInstance(MapperModule.getInstance().getTrackedEntityInstanceMapper().mapToModel(enrollmentFlow.getTrackedEntityInstance()));
+        enrollment.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(enrollmentFlow.getTrackedEntityInstance()));
         enrollment.setProgram(enrollmentFlow.getProgram());
         enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
         enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());
@@ -89,8 +91,8 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollment.setCreated(enrollmentFlow.getCreated());
         enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
         enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setEvents(MapperModule.getInstance().getEventMapper().mapToModels(enrollmentFlow.getEvents()));
-        enrollment.setTrackedEntityAttributeValues(MapperModule.getInstance().getTrackedEntityAttributeValueMapper().mapToModels(enrollmentFlow.getTrackedEntityAttributeValues()));
+        enrollment.setEvents(MapperModuleProvider.getInstance().getEventMapper().mapToModels(enrollmentFlow.getEvents()));
+        enrollment.setTrackedEntityAttributeValues(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToModels(enrollmentFlow.getTrackedEntityAttributeValues()));
         return enrollment;
     }
 

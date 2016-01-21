@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import android.content.Context;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;

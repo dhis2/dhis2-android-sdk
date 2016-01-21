@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
@@ -47,8 +49,8 @@ public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTracke
         }
 
         ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = new ProgramTrackedEntityAttribute$Flow();
-        programTrackedEntityAttributeFlow.setTrackedEntityAttribute(MapperModule.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getTrackedEntityAttribute()));
-        programTrackedEntityAttributeFlow.setProgram(MapperModule.getInstance().getProgramMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getProgram()));
+        programTrackedEntityAttributeFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getTrackedEntityAttribute()));
+        programTrackedEntityAttributeFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getProgram()));
         programTrackedEntityAttributeFlow.setSortOrder(programTrackedEntityAttribute.getSortOrder());
         programTrackedEntityAttributeFlow.setAllowFutureDate(programTrackedEntityAttribute.isAllowFutureDate());
         programTrackedEntityAttributeFlow.setDisplayInList(programTrackedEntityAttribute.isDisplayInList());
@@ -63,8 +65,8 @@ public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTracke
         }
 
         ProgramTrackedEntityAttribute programTrackedEntityAttribute = new ProgramTrackedEntityAttribute();
-        programTrackedEntityAttribute.setTrackedEntityAttribute(MapperModule.getInstance().getTrackedEntityAttributeMapper().mapToModel(programTrackedEntityAttributeFlow.getTrackedEntityAttribute()));
-        programTrackedEntityAttribute.setProgram(MapperModule.getInstance().getProgramMapper().mapToModel(programTrackedEntityAttributeFlow.getProgram()));
+        programTrackedEntityAttribute.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programTrackedEntityAttributeFlow.getTrackedEntityAttribute()));
+        programTrackedEntityAttribute.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programTrackedEntityAttributeFlow.getProgram()));
         programTrackedEntityAttribute.setSortOrder(programTrackedEntityAttributeFlow.getSortOrder());
         programTrackedEntityAttribute.setAllowFutureDate(programTrackedEntityAttributeFlow.isAllowFutureDate());
         programTrackedEntityAttribute.setDisplayInList(programTrackedEntityAttributeFlow.isDisplayInList());

@@ -81,8 +81,10 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeMapper;
+import org.hisp.dhis.client.sdk.android.relationship.RelationshipMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeMapper;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityMapper;
@@ -120,12 +122,6 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public class MapperModule {
 
-    private static MapperModule mapperModule;
-
-    static {
-        mapperModule = new MapperModule();
-    }
-
     private final IMapper<UserAccount, UserAccount$Flow> userAccountMapper;
     private final IStateMapper stateMapper;
     private final IMapper<Dashboard, Dashboard$Flow> dashboardMapper;
@@ -133,12 +129,12 @@ public class MapperModule {
     private final IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper;
     private final IMapper<DashboardContent, DashboardContent$Flow> dashboardContentMapper;
 
-    private IMapper<Event, Event$Flow> eventMapper = null;
-    private IMapper<Enrollment, Enrollment$Flow> enrollmentMapper = null;
-    private IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper = null;
-    private IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> trackedEntityDataValueMapper = null;
-    private IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper = null;
-    private IMapper<Relationship, Relationship$Flow> relationshipMapper = null;
+    private final IMapper<Event, Event$Flow> eventMapper;
+    private final IMapper<Enrollment, Enrollment$Flow> enrollmentMapper;
+    private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
+    private final IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> trackedEntityDataValueMapper;
+    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper;
+    private final IMapper<Relationship, Relationship$Flow> relationshipMapper;
 
     private final IMapper<Constant, Constant$Flow> constantMapper;
     private final IMapper<DataElement, DataElement$Flow> dataElementMapper;
@@ -172,6 +168,7 @@ public class MapperModule {
         eventMapper = new EventMapper();
         enrollmentMapper = new EnrollmentMapper();
         trackedEntityInstanceMapper = new TrackedEntityInstanceMapper();
+        relationshipMapper = new RelationshipMapper();
         constantMapper = new ConstantMapper();
         optionMapper = new OptionMapper();
         optionSetMapper = new OptionSetMapper();
@@ -181,6 +178,7 @@ public class MapperModule {
         trackedEntityAttributeMapper = new TrackedEntityAttributeMapper();
         programTrackedEntityAttributeMapper = new ProgramTrackedEntityAttributeMapper();
         programStageDataElementMapper = new ProgramStageDataElementMapper();
+        trackedEntityAttributeValueMapper = new TrackedEntityAttributeValueMapper();
 
         programRuleActionMapper = new ProgramRuleActionMapper();
         programRuleMapper = new ProgramRuleMapper();
@@ -194,10 +192,6 @@ public class MapperModule {
         programStageSectionMapper = new ProgramStageSectionMapper();
 
         userMapper = new UserMapper();
-    }
-
-    public static MapperModule getInstance() {
-        return mapperModule;
     }
 
     public IMapper<UserAccount, UserAccount$Flow> getUserAccountMapper() {
@@ -228,48 +222,24 @@ public class MapperModule {
         return eventMapper;
     }
 
-    public void setEventMapper(IMapper<Event, Event$Flow> eventMapper) {
-        this.eventMapper = eventMapper;
-    }
-
     public IMapper<Enrollment, Enrollment$Flow> getEnrollmentMapper() {
         return enrollmentMapper;
-    }
-
-    public void setEnrollmentMapper(IMapper<Enrollment, Enrollment$Flow> enrollmentMapper) {
-        this.enrollmentMapper = enrollmentMapper;
     }
 
     public IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> getTrackedEntityInstanceMapper() {
         return trackedEntityInstanceMapper;
     }
 
-    public void setTrackedEntityInstanceMapper(IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper) {
-        this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
-    }
-
     public IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> getTrackedEntityDataValueMapper() {
         return trackedEntityDataValueMapper;
-    }
-
-    public void setTrackedEntityDataValueMapper(IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> trackedEntityDataValueMapper) {
-        this.trackedEntityDataValueMapper = trackedEntityDataValueMapper;
     }
 
     public IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> getTrackedEntityAttributeValueMapper() {
         return trackedEntityAttributeValueMapper;
     }
 
-    public void setTrackedEntityAttributeValueMapper(IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper) {
-        this.trackedEntityAttributeValueMapper = trackedEntityAttributeValueMapper;
-    }
-
     public IMapper<Relationship, Relationship$Flow> getRelationshipMapper() {
         return relationshipMapper;
-    }
-
-    public void setRelationshipMapper(IMapper<Relationship, Relationship$Flow> relationshipMapper) {
-        this.relationshipMapper = relationshipMapper;
     }
 
     public IMapper<Constant, Constant$Flow> getConstantMapper() {

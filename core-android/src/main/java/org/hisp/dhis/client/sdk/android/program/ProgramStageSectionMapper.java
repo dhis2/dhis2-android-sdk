@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
@@ -57,8 +59,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
         programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
         programStageSectionFlow.setProgramStage(programStageSection.getProgramStage());
-        programStageSectionFlow.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStageSection.getProgramStageDataElements()));
-        programStageSectionFlow.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStageSection.getProgramIndicators()));
+        programStageSectionFlow.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStageSection.getProgramStageDataElements()));
+        programStageSectionFlow.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStageSection.getProgramIndicators()));
         return programStageSectionFlow;
     }
 
@@ -79,8 +81,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
         programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
         programStageSection.setProgramStage(programStageSectionFlow.getProgramStage());
-        programStageSection.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToModels(programStageSectionFlow.getProgramStageDataElements()));
-        programStageSection.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToModels(programStageSectionFlow.getProgramIndicators()));
+        programStageSection.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToModels(programStageSectionFlow.getProgramStageDataElements()));
+        programStageSection.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModels(programStageSectionFlow.getProgramIndicators()));
         return programStageSection;
     }
 

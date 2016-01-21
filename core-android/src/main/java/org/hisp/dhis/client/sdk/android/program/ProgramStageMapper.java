@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
@@ -75,9 +77,9 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStageFlow.setAllowGenerateNextVisit(programStage.isAllowGenerateNextVisit());
         programStageFlow.setRepeatable(programStage.isRepeatable());
         programStageFlow.setMinDaysFromStart(programStage.getMinDaysFromStart());
-        programStageFlow.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStage.getProgramStageDataElements()));
-        programStageFlow.setProgramStageSections(MapperModule.getInstance().getProgramStageSectionMapper().mapToDatabaseEntities(programStage.getProgramStageSections()));
-        programStageFlow.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStage.getProgramIndicators()));
+        programStageFlow.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStage.getProgramStageDataElements()));
+        programStageFlow.setProgramStageSections(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntities(programStage.getProgramStageSections()));
+        programStageFlow.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStage.getProgramIndicators()));
         return programStageFlow;
     }
 
@@ -114,9 +116,9 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStage.setAllowGenerateNextVisit(programStageFlow.isAllowGenerateNextVisit());
         programStage.setRepeatable(programStageFlow.isRepeatable());
         programStage.setMinDaysFromStart(programStageFlow.getMinDaysFromStart());
-        programStage.setProgramStageDataElements(MapperModule.getInstance().getProgramStageDataElementMapper().mapToModels(programStageFlow.getProgramStageDataElements()));
-        programStage.setProgramStageSections(MapperModule.getInstance().getProgramStageSectionMapper().mapToModels(programStageFlow.getProgramStageSections()));
-        programStage.setProgramIndicators(MapperModule.getInstance().getProgramIndicatorMapper().mapToModels(programStageFlow.getProgramIndicators()));
+        programStage.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToModels(programStageFlow.getProgramStageDataElements()));
+        programStage.setProgramStageSections(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModels(programStageFlow.getProgramStageSections()));
+        programStage.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModels(programStageFlow.getProgramIndicators()));
         return programStage;
     }
 

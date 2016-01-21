@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
@@ -52,7 +54,7 @@ public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$
         dashboardItemFlow.setAccess(dashboardItem.getAccess());
         dashboardItemFlow.setName(dashboardItem.getName());
         dashboardItemFlow.setDisplayName(dashboardItem.getDisplayName());
-        dashboardItemFlow.setDashboard(MapperModule.getInstance().getDashboardMapper()
+        dashboardItemFlow.setDashboard(MapperModuleProvider.getInstance().getDashboardMapper()
                 .mapToDatabaseEntity(dashboardItem.getDashboard()));
         dashboardItemFlow.setType(dashboardItem.getType());
         dashboardItemFlow.setShape(dashboardItem.getShape());
@@ -73,7 +75,7 @@ public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$
         dashboardItem.setAccess(dashboardItemFlow.getAccess());
         dashboardItem.setName(dashboardItemFlow.getName());
         dashboardItem.setDisplayName(dashboardItemFlow.getDisplayName());
-        dashboardItem.setDashboard(MapperModule.getInstance().getDashboardMapper()
+        dashboardItem.setDashboard(MapperModuleProvider.getInstance().getDashboardMapper()
                 .mapToModel(dashboardItemFlow.getDashboard()));
         dashboardItem.setType(dashboardItemFlow.getType());
         dashboardItem.setShape(dashboardItemFlow.getShape());

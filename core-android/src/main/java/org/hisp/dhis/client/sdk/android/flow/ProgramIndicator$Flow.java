@@ -29,12 +29,17 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
+
+    static final String PROGRAM_KEY = "program";
 
     @Column
     String code;
@@ -58,7 +63,12 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     String displayShortName;
 
     @Column
-    String program;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    Program$Flow program;
 
     public String getCode() {
         return code;
@@ -116,11 +126,11 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         this.displayShortName = displayShortName;
     }
 
-    public String getProgram() {
+    public Program$Flow getProgram() {
         return program;
     }
 
-    public void setProgram(String program) {
+    public void setProgram(Program$Flow program) {
         this.program = program;
     }
 

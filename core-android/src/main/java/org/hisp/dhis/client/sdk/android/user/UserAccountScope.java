@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
@@ -46,15 +47,17 @@ public class UserAccountScope implements IUserAccountScope {
     private final IUserAccountController mUserAccountController;
     private final IUserPreferences mUserPreferences;
     private final IConfigurationPreferences mConfigurationPreferences;
+    private final IAssignedProgramsController mAssignedProgramsController;
     private final IUserAccountStore mUserAccountStore;
 
     public UserAccountScope(IUserAccountController userAccountController,
                             IUserPreferences userPreferences,
-                            IConfigurationPreferences configurationPreferences,
+                            IConfigurationPreferences configurationPreferences, IAssignedProgramsController mAssignedProgramsController,
                             IUserAccountStore userAccountStore) {
         mUserAccountController = userAccountController;
         mUserPreferences = userPreferences;
         mConfigurationPreferences = configurationPreferences;
+        this.mAssignedProgramsController = mAssignedProgramsController;
         mUserAccountStore = userAccountStore;
     }
 
@@ -122,6 +125,11 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
+
+    public void syncAssignedPrograms() {
+        mAssignedProgramsController.sync();
+    }
+
     public Observable<UserAccount> account() {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
             @Override

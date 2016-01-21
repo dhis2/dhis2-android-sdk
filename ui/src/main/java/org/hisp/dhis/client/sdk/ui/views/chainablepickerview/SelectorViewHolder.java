@@ -50,6 +50,12 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
     public SelectorViewHolder(View itemView) {
         super(itemView);
         autoCompleteTextView = (AutoCompleteTextView) itemView.findViewById(R.id.autoCompleteTextView);
+        autoCompleteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((AutoCompleteTextView) v).showDropDown();
+            }
+        });
         clearButton = (ImageView) itemView.findViewById(R.id.clear_text_view);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override

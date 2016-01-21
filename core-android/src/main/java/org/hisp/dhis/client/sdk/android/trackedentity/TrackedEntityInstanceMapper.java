@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Relationship$Flow;
@@ -40,14 +43,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance,
         TrackedEntityInstance$Flow> {
 
-    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper;
-    private final IMapper<Relationship, Relationship$Flow> relationshipMapper;
-
-    public TrackedEntityInstanceMapper(IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueMapper, IMapper<Relationship, Relationship$Flow> relationshipMapper) {
-        this.trackedEntityAttributeValueMapper = trackedEntityAttributeValueMapper;
-        this.relationshipMapper = relationshipMapper;
-    }
-
     @Override
     public TrackedEntityInstance$Flow mapToDatabaseEntity(TrackedEntityInstance trackedEntityInstance) {
         if (trackedEntityInstance == null) {
@@ -59,8 +54,8 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
         trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance.getTrackedEntityInstanceUid());
         trackedEntityInstanceFlow.setTrackedEntity(trackedEntityInstance.getTrackedEntity());
         trackedEntityInstanceFlow.setOrgUnit(trackedEntityInstance.getOrgUnit());
-        trackedEntityInstanceFlow.setAttributes(trackedEntityAttributeValueMapper.mapToDatabaseEntities(trackedEntityInstance.getAttributes()));
-        trackedEntityInstanceFlow.setRelationships(relationshipMapper.mapToDatabaseEntities(trackedEntityInstance.getRelationships()));
+        trackedEntityInstanceFlow.setAttributes(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToDatabaseEntities(trackedEntityInstance.getAttributes()));
+        trackedEntityInstanceFlow.setRelationships(MapperModuleProvider.getInstance().getRelationshipMapper().mapToDatabaseEntities(trackedEntityInstance.getRelationships()));
         trackedEntityInstanceFlow.setCreated(trackedEntityInstance.getCreated());
         trackedEntityInstanceFlow.setLastUpdated(trackedEntityInstance.getLastUpdated());
         return trackedEntityInstanceFlow;
@@ -77,8 +72,8 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
         trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceFlow.getTrackedEntityInstanceUid());
         trackedEntityInstance.setTrackedEntity(trackedEntityInstanceFlow.getTrackedEntity());
         trackedEntityInstance.setOrgUnit(trackedEntityInstanceFlow.getOrgUnit());
-        trackedEntityInstance.setAttributes(trackedEntityAttributeValueMapper.mapToModels(trackedEntityInstanceFlow.getAttributes()));
-        trackedEntityInstance.setRelationships(relationshipMapper.mapToModels(trackedEntityInstanceFlow.getRelationships()));
+        trackedEntityInstance.setAttributes(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToModels(trackedEntityInstanceFlow.getAttributes()));
+        trackedEntityInstance.setRelationships(MapperModuleProvider.getInstance().getRelationshipMapper().mapToModels(trackedEntityInstanceFlow.getRelationships()));
         trackedEntityInstance.setCreated(trackedEntityInstanceFlow.getCreated());
         trackedEntityInstance.setLastUpdated(trackedEntityInstanceFlow.getLastUpdated());
         return trackedEntityInstance;

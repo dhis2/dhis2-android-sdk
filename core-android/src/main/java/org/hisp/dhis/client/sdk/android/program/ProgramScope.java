@@ -29,10 +29,12 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -40,9 +42,11 @@ import rx.Subscriber;
 public class ProgramScope implements IProgramScope {
 
     private final IProgramService mProgramService;
+    private final IProgramController mProgramController;
 
-    public ProgramScope(IProgramService mProgramService) {
+    public ProgramScope(IProgramService mProgramService, IProgramController mProgramController) {
         this.mProgramService = mProgramService;
+        this.mProgramController = mProgramController;
     }
 
     @Override
@@ -128,5 +132,20 @@ public class ProgramScope implements IProgramScope {
                 subscriber.onCompleted();
             }
         });
+    }
+
+    @Override
+    public void sync() {
+        mProgramController.sync();
+    }
+
+    @Override
+    public void sync(Set<String> uids) {
+        mProgramController.sync(uids);
+    }
+
+    @Override
+    public void sync(String uid) {
+        mProgramController.sync();
     }
 }

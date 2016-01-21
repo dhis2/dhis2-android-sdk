@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -45,4 +46,10 @@ public interface IProgramScope {
     Observable<Program> get(String uid);
 
     Observable<List<Program>> list();
+
+    void sync();
+
+    void sync(Set<String> uids);
+
+    void sync(String uid);
 }

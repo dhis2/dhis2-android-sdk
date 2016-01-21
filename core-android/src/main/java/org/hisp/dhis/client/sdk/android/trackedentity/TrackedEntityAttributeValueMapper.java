@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValue$Flow;
@@ -38,12 +39,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttributeValue,
         TrackedEntityAttributeValue$Flow> {
 
-    private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
-
-    public TrackedEntityAttributeValueMapper(IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper) {
-        this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
-    }
-
     @Override
     public TrackedEntityAttributeValue$Flow mapToDatabaseEntity(TrackedEntityAttributeValue trackedEntityAttributeValue) {
         if (trackedEntityAttributeValue == null) {
@@ -53,7 +48,7 @@ public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAt
         TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
         trackedEntityAttributeValueFlow.setId(trackedEntityAttributeValue.getId());
         trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstance(trackedEntityInstanceMapper.mapToDatabaseEntity(trackedEntityAttributeValue.getTrackedEntityInstance()));
+        trackedEntityAttributeValueFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(trackedEntityAttributeValue.getTrackedEntityInstance()));
         trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
         return trackedEntityAttributeValueFlow;
     }
@@ -67,7 +62,7 @@ public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAt
         TrackedEntityAttributeValue trackedEntityAttributeValue = new TrackedEntityAttributeValue();
         trackedEntityAttributeValue.setId(trackedEntityAttributeValueFlow.getId());
         trackedEntityAttributeValue.setTrackedEntityAttributeUId(trackedEntityAttributeValueFlow.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValue.setTrackedEntityInstance(trackedEntityInstanceMapper.mapToModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
+        trackedEntityAttributeValue.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
         trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
         return trackedEntityAttributeValue;
     }

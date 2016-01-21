@@ -29,6 +29,9 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
@@ -36,8 +39,15 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 @Table(databaseName = DbDhis.NAME)
 public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Flow {
 
+    final static String OPTION_SET_KEY = "optionset";
+
     @Column
-    String optionSet;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    OptionSet$Flow optionSet;
 
     @Column
     boolean isUnique;
@@ -75,11 +85,11 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     @Column
     int sortOrderInListNoProgram;
 
-    public String getOptionSet() {
+    public OptionSet$Flow getOptionSet() {
         return optionSet;
     }
 
-    public void setOptionSet(String optionSet) {
+    public void setOptionSet(OptionSet$Flow optionSet) {
         this.optionSet = optionSet;
     }
 

@@ -1,0 +1,176 @@
+/*
+ *  Copyright (c) 2016, University of Oslo
+ *  * All rights reserved.
+ *  *
+ *  * Redistribution and use in source and binary forms, with or without
+ *  * modification, are permitted provided that the following conditions are met:
+ *  * Redistributions of source code must retain the above copyright notice, this
+ *  * list of conditions and the following disclaimer.
+ *  *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *  * this list of conditions and the following disclaimer in the documentation
+ *  * and/or other materials provided with the distribution.
+ *  * Neither the name of the HISP project nor the names of its contributors may
+ *  * be used to endorse or promote products derived from this software without
+ *  * specific prior written permission.
+ *  *
+ *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+package org.hisp.dhis.client.sdk.android.program;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
+
+public class ProgramApiClient implements IProgramApiClient {
+
+    private final ProgramApiClientRetrofit mProgramApiClientRetrofit;
+
+    public ProgramApiClient(ProgramApiClientRetrofit programApiClientRetrofit) {
+        this.mProgramApiClientRetrofit = programApiClientRetrofit;
+    }
+
+    @Override
+    public List<Program> getPrograms(Fields fields, DateTime dateTime) {
+        switch (fields) {
+            case ALL:
+                return getFullPrograms(dateTime);
+            case BASIC:
+                return getBasicPrograms(dateTime);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public Program getProgram(String s, Fields fields, DateTime dateTime) {
+        switch (fields) {
+            case ALL:
+                return getFullProgram(s, dateTime);
+            case BASIC:
+                return getBasicProgram(s, dateTime);
+            default:
+                return null;
+        }
+    }
+
+    private List<Program> getFullPrograms(DateTime lastUpdated) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("fields", getFieldsFilter());
+        queryMap.put("paging", "false");
+        if (lastUpdated != null) {
+            queryMap.put("lastUpdated", lastUpdated.toString());
+        }
+        List<Program> updatedPrograms = call(mProgramApiClientRetrofit.getPrograms(queryMap));
+        return updatedPrograms;
+    }
+
+    private List<Program> getBasicPrograms(DateTime lastUpdated) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("fields", "id");
+        queryMap.put("paging", "false");
+        if (lastUpdated != null) {
+            queryMap.put("lastUpdated", lastUpdated.toString());
+        }
+        List<Program> updatedPrograms = call(mProgramApiClientRetrofit.getPrograms(queryMap));
+        return updatedPrograms;
+    }
+
+    public Program getFullProgram(String uid, DateTime lastUpdated) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("fields", getFieldsFilter());
+        if (lastUpdated != null) {
+            queryMap.put("lastUpdated", lastUpdated.toString());
+        }
+        Program program = call(mProgramApiClientRetrofit.getProgram(uid, queryMap));
+        return program;
+    }
+
+    public Program getBasicProgram(String uid, DateTime lastUpdated) {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("fields", "id");
+        if (lastUpdated != null) {
+            queryMap.put("lastUpdated", lastUpdated.toString());
+        }
+        Program program = call(mProgramApiClientRetrofit.getProgram(uid, queryMap));
+        return program;
+    }
+
+    public static List<Program> unwrapList(JsonNode jsonNode) {
+        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
+        List<Program> programs;
+        try {
+            if (jsonNode.has("events")) {
+                programs = ObjectMapperProvider.getInstance().
+                        readValue(jsonNode.get("events").traverse(), typeRef);
+            } else {
+                programs = new ArrayList<>();
+            }
+        } catch (IOException e) {
+            programs = new ArrayList<>();
+            e.printStackTrace();
+        }
+        return programs;
+    }
+
+    private static String getFieldsFilter() {
+        return "lastUpdated," +
+                "id,created,name,shortName,ignoreOverdueEvents,skipOffline,dataEntryMethod," +
+                "enrollmentDateLabel,onlyEnrollOnce,version,selectIncidentDatesInFuture," +
+                "incidentDateLabel,selectEnrollmentDatesInFuture,displayName,displayShortName," +
+                "externalAccess,displayFrontPageList,programType,relationshipFromA,relationshipText" +
+                "displayIncidentDate,trackedEntity[created,lastUpdated,name,id,displayDescription," +
+                "externalAccess],programIndicators[lastUpdated,id,created,name,shortName," +
+                "aggregationType,dimensionType,displayName,displayInForm,publicAccess,description," +
+                "displayShortName,externalAccess,displayDescription,expression,decimals,program[id]]," +
+                "programTrackedEntityAttributes[lastUpdated,id,created,name,shortName,displayName," +
+                "mandatory,displayShortName,externalAccess,valueType,allowFutureDate,dimensionItem," +
+                "displayInList,program[id],trackedEntityAttribute[lastUpdated,id,created,name," +
+                "shortName,dimensionType,programScope,displayInListNoProgram,displayName," +
+                "description,displayShortName,externalAccess,sortOrderInListNoProgram," +
+                "displayOnVisitSchedule,valueType,sortOrderInVisitSchedule,orgunitScope," +
+                "confidential,displayDescription,dimensionItem,unique,inherit,optionSetValue," +
+                "optionSet[created,lastUpdated,name,id,displayName,version,externalAccess," +
+                "valueType,options[code,created,lastUpdated,name,id,displayName,externalAccess" +
+                "]]]],programStages[lastUpdated,id,created,name,executionDateLabel," +
+                "allowGenerateNextVisit,validCompleteOnly,pregenerateUid,displayName,description," +
+                "externalAccess,openAfterEnrollment,repeatable,captureCoordinates,formType," +
+                "remindCompleted,displayGenerateEventBox,generatedByEnrollmentDate," +
+                "defaultTemplateMessage,autoGenerateEvent,sortOrder,hideDueDate,blockEntryForm," +
+                "minDaysFromStart,program[id],programStageDataElements[created,lastUpdated,id," +
+                "displayInReports,externalAccess,compulsory,allowProvidedElsewhere,sortOrder," +
+                "allowFutureDates,programStage[id],dataElement[code,lastUpdated,id,created,name," +
+                "shortName,aggregationType,dimensionType,domainType,displayName,publicAccess," +
+                "displayShortName,externalAccess,valueType,formName,dimensionItem,displayFormName," +
+                "zeroIsSignificant,url,optionSetValue,optionSet[created,lastUpdated,name,id," +
+                "displayName,version,externalAccess,valueType,options[code,created,lastUpdated," +
+                "name,id,displayName,externalAccess]]]],programStageSections[created,lastUpdated," +
+                "name,id,displayName,externalAccess,sortOrder,programStage[id]," +
+                "programIndicators[id],programStageDataElements[id]]]";
+    }
+}

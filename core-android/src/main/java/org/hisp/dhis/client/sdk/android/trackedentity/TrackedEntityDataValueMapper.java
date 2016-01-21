@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
@@ -38,13 +41,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue,
         TrackedEntityDataValue$Flow> {
 
-    private final IMapper<Event, Event$Flow> eventMapper;
-
-    public TrackedEntityDataValueMapper(IMapper<Event, Event$Flow> eventMapper) {
-        // empty constructor
-        this.eventMapper = eventMapper;
-    }
-
     @Override
     public TrackedEntityDataValue$Flow mapToDatabaseEntity(TrackedEntityDataValue trackedEntityDataValue) {
         if (trackedEntityDataValue == null) {
@@ -53,7 +49,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
 
         TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
         trackedEntityDataValueFlow.setId(trackedEntityDataValue.getId());
-        trackedEntityDataValueFlow.setEvent(eventMapper.mapToDatabaseEntity(trackedEntityDataValue.getEvent()));
+        trackedEntityDataValueFlow.setEvent(MapperModuleProvider.getInstance().getEventMapper().mapToDatabaseEntity(trackedEntityDataValue.getEvent()));
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
         trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
         trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
@@ -69,7 +65,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
 
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
         trackedEntityDataValue.setId(trackedEntityDataValueFlow.getId());
-        trackedEntityDataValue.setEvent(eventMapper.mapToModel(trackedEntityDataValueFlow.getEvent()));
+        trackedEntityDataValue.setEvent(MapperModuleProvider.getInstance().getEventMapper().mapToModel(trackedEntityDataValueFlow.getEvent()));
         trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
         trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
         trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());

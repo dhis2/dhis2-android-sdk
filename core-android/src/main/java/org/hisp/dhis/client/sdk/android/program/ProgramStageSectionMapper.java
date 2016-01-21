@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
@@ -38,15 +41,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, ProgramStageSection$Flow> {
-
-    private final IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> programStageDataElementMapper;
-    private final IMapper<ProgramIndicator, ProgramIndicator$Flow> programIndicatorMapper;
-
-    public ProgramStageSectionMapper(IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> programStageDataElementMapper, IMapper<ProgramIndicator, ProgramIndicator$Flow> programIndicatorMapper) {
-        this.programStageDataElementMapper = programStageDataElementMapper;
-        // empty constructor
-        this.programIndicatorMapper = programIndicatorMapper;
-    }
 
     @Override
     public ProgramStageSection$Flow mapToDatabaseEntity(ProgramStageSection programStageSection) {
@@ -65,8 +59,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
         programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
         programStageSectionFlow.setProgramStage(programStageSection.getProgramStage());
-        programStageSectionFlow.setProgramStageDataElements(programStageDataElementMapper.mapToDatabaseEntities(programStageSection.getProgramStageDataElements()));
-        programStageSectionFlow.setProgramIndicators(programIndicatorMapper.mapToDatabaseEntities(programStageSection.getProgramIndicators()));
+        programStageSectionFlow.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStageSection.getProgramStageDataElements()));
+        programStageSectionFlow.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStageSection.getProgramIndicators()));
         return programStageSectionFlow;
     }
 
@@ -87,8 +81,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
         programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
         programStageSection.setProgramStage(programStageSectionFlow.getProgramStage());
-        programStageSection.setProgramStageDataElements(programStageDataElementMapper.mapToModels(programStageSectionFlow.getProgramStageDataElements()));
-        programStageSection.setProgramIndicators(programIndicatorMapper.mapToModels(programStageSectionFlow.getProgramIndicators()));
+        programStageSection.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToModels(programStageSectionFlow.getProgramStageDataElements()));
+        programStageSection.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModels(programStageSectionFlow.getProgramIndicators()));
         return programStageSection;
     }
 

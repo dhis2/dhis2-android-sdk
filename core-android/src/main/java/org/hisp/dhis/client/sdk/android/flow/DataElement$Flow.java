@@ -29,6 +29,9 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
@@ -37,6 +40,8 @@ import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
+
+    final static String OPTION_SET_KEY = "optionset";
 
     @Column
     String type;
@@ -63,7 +68,12 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
     String displayFormName;
 
     @Column
-    String optionSet;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    OptionSet$Flow optionSet;
 
     public String getType() {
         return type;
@@ -129,11 +139,11 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
         this.displayFormName = displayFormName;
     }
 
-    public String getOptionSet() {
+    public OptionSet$Flow getOptionSet() {
         return optionSet;
     }
 
-    public void setOptionSet(String optionSet) {
+    public void setOptionSet(OptionSet$Flow optionSet) {
         this.optionSet = optionSet;
     }
 

@@ -61,7 +61,7 @@ public final class ProgramStageDataElementStore extends AbsStore<ProgramStageDat
     public List<ProgramStageDataElement> query(ProgramStage programStage) {
         List<ProgramStageDataElement$Flow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElement$Flow.class)
-                .where(Condition.column(ProgramStageDataElement$Flow$Table.PROGRAMSTAGE)
+                .where(Condition.column(ProgramStageDataElement$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE)
                         .is(programStage.getUId())).queryList();
         return getMapper().mapToModels(programStageDataElementFlows);
     }
@@ -79,9 +79,9 @@ public final class ProgramStageDataElementStore extends AbsStore<ProgramStageDat
     public ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement) {
         ProgramStageDataElement$Flow programStageDataElementFlow = new Select()
                 .from(ProgramStageDataElement$Flow.class)
-                .where(Condition.column(ProgramStageDataElement$Flow$Table.PROGRAMSTAGE)
+                .where(Condition.column(ProgramStageDataElement$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE)
                         .is(programStage.getUId())).and(Condition
-                        .column(ProgramStageDataElement$Flow$Table.DATAELEMENT)
+                        .column(ProgramStageDataElement$Flow$Table.DATAELEMENT_DATAELEMENT)
                         .is(dataElement.getUId())).querySingle();
         return getMapper().mapToModel(programStageDataElementFlow);
     }

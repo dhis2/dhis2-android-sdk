@@ -52,7 +52,7 @@ public final class OptionStore extends AbsIdentifiableObjectStore<Option, Option
         List<Option$Flow> optionFlows = new Select()
                 .from(Option$Flow.class)
                 .where(Condition.column(Option$Flow$Table
-                        .OPTIONSET).is(optionSet.getUId()))
+                        .OPTIONSET_OPTIONSET).is(optionSet.getUId()))
                 .queryList();
         return getMapper().mapToModels(optionFlows);
     }

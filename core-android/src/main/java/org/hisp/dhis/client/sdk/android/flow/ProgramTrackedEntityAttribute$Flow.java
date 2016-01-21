@@ -30,6 +30,9 @@ package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
@@ -41,14 +44,24 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 })
 public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
     static final int UNIQUE_TRACKED_ENTITY_PROGRAM = 1;
+    static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
+    static final String PROGRAM_KEY = "program";
 
     @Column
-    @Unique(unique = false, uniqueGroups = {UNIQUE_TRACKED_ENTITY_PROGRAM})
-    String trackedEntityAttribute;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    TrackedEntityAttribute$Flow trackedEntityAttribute;
 
     @Column
-    @Unique(unique = false, uniqueGroups = {UNIQUE_TRACKED_ENTITY_PROGRAM})
-    String program;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    Program$Flow program;
 
     @Column
     int sortOrder;
@@ -62,19 +75,19 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
     @Column
     boolean mandatory;
 
-    public String getTrackedEntityAttribute() {
+    public TrackedEntityAttribute$Flow getTrackedEntityAttribute() {
         return trackedEntityAttribute;
     }
 
-    public void setTrackedEntityAttribute(String trackedEntityAttribute) {
+    public void setTrackedEntityAttribute(TrackedEntityAttribute$Flow trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute;
     }
 
-    public String getProgram() {
+    public Program$Flow getProgram() {
         return program;
     }
 
-    public void setProgram(String program) {
+    public void setProgram(Program$Flow program) {
         this.program = program;
     }
 

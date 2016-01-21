@@ -58,50 +58,50 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_2);
 
-        mViewsContainer = findViewById(R.id.container_log_in_views);
-        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
-        mLogInButton = (Button) findViewById(R.id.button_log_in);
-
-        mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);
-        mUsername = (EditText) findViewById(R.id.edit_text_username);
-        mPassword = (EditText) findViewById(R.id.edit_text_password);
-
-        setDebugLoginCredentials();
-
-        FieldTextWatcher watcher = new FieldTextWatcher();
-        mServerUrl.addTextChangedListener(watcher);
-        mUsername.addTextChangedListener(watcher);
-        mPassword.addTextChangedListener(watcher);
-
-        hideProgressBar(false);
-        onTextChanged();
-
-        mLogInButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
-                        mPassword.getText());
-            }
-        });
+//        mViewsContainer = findViewById(R.id.container_log_in_views);
+//        mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular_blue);
+//        mLogInButton = (Button) findViewById(R.id.button_log_in);
+//
+//        mServerUrl = (EditText) findViewById(R.id.edit_text_server_url);
+//        mUsername = (EditText) findViewById(R.id.edit_text_username);
+//        mPassword = (EditText) findViewById(R.id.edit_text_password);
+//
+//        setDebugLoginCredentials();
+//
+//        FieldTextWatcher watcher = new FieldTextWatcher();
+//        mServerUrl.addTextChangedListener(watcher);
+//        mUsername.addTextChangedListener(watcher);
+//        mPassword.addTextChangedListener(watcher);
+//
+//        hideProgressBar(false);
+//        onTextChanged();
+//
+//        mLogInButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
+//                        mPassword.getText());
+//            }
+//        });
     }
 
     @Override
     protected final void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(IS_LOADING, mProgressBar.isShown());
+//        outState.putBoolean(IS_LOADING, mProgressBar.isShown());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected final void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null &&
-                savedInstanceState.getBoolean(IS_LOADING, false)) {
-            showProgressBar(false);
-        } else {
-            hideProgressBar(false);
-        }
+//        if (savedInstanceState != null &&
+//                savedInstanceState.getBoolean(IS_LOADING, false)) {
+//            showProgressBar(false);
+//        } else {
+//            hideProgressBar(false);
+//        }
         super.onRestoreInstanceState(savedInstanceState);
     }
 

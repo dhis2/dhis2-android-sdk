@@ -25,78 +25,74 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_primary_default"
-    android:padding="8dp">
+    android:background="@color/color_primary_default">
 
-    <include layout="@layout/progress_bar_circular_blue" />
+    <FrameLayout
+        android:id="@+id/layout_loading_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="112dp"
+        <include layout="@layout/progress_bar_circular_blue" />
+
+    </FrameLayout>
+
+    <!--android:gravity="bottom"-->
+    <RelativeLayout
+        android:id="@+id/layout_login_views"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="72dp"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/description"
-        android:src="@drawable/ic_dhis2_logo" />
-
-    <LinearLayout
-        android:id="@+id/container_log_in_views"
-        android:layout_width="390dp"
-        android:layout_height="340dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
         <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/cardview_login_views"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:minHeight="380dp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="16dp"
+                android:weightSum="1">
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginBottom="8dp">
 
                     <org.hisp.dhis.client.sdk.ui.views.FontEditText
                         android:id="@+id/edit_text_server_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="42dp"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:hint="@string/server_url"
                         android:inputType="textUri"
+                        android:minWidth="390dp"
                         android:singleLine="true"
                         app:font="@string/font_name_regular" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginBottom="8dp">
 
                     <org.hisp.dhis.client.sdk.ui.views.FontEditText
                         android:id="@+id/edit_text_username"
                         android:layout_width="match_parent"
-                        android:layout_height="42dp"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:hint="@string/username"
                         android:inputType="text"
@@ -106,15 +102,13 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_marginBottom="8dp">
 
                     <org.hisp.dhis.client.sdk.ui.views.FontEditText
                         android:id="@+id/edit_text_password"
                         android:layout_width="match_parent"
-                        android:layout_height="42dp"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"
+                        android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:hint="@string/password"
                         android:inputType="textPassword"
@@ -138,6 +132,18 @@
 
         </android.support.v7.widget.CardView>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/imageview_dhis_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/cardview_login_views"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/description"
+            android:maxHeight="112dp"
+            android:maxWidth="112dp"
+            android:src="@drawable/ic_dhis2_logo" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

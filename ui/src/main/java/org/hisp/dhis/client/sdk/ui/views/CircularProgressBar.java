@@ -78,8 +78,6 @@ public class CircularProgressBar extends fr.castorflex.android.circularprogressb
                     getIndeterminateDrawable();
             strokeWidth = progressDrawable.getCurrentPaint().getStrokeWidth();
         }
-        System.out.println("StrokeWidth: " + strokeWidth);
-        System.out.println("CircleRadius: " + getCircleRadius(strokeWidth));
 
         canvas.drawCircle(ox, oy, getCircleRadius(strokeWidth), getStroke(strokeWidth,
                 mStrokeBackgroundColor));
@@ -88,8 +86,12 @@ public class CircularProgressBar extends fr.castorflex.android.circularprogressb
     }
 
     private Paint getStroke(float strokeWidth, int strokeColor) {
+        // Made background stroke 2px less wide than progress drawable,
+        // in order to avoid un-hidden background parts
+        float adjustedStrokeWidth = strokeWidth - 2 > 0 ? strokeWidth - 2 : strokeWidth;
+
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStrokeWidth(strokeWidth);
+        paint.setStrokeWidth(adjustedStrokeWidth);
         paint.setColor(strokeColor);
         paint.setStyle(Paint.Style.STROKE);
         return paint;
@@ -99,10 +101,7 @@ public class CircularProgressBar extends fr.castorflex.android.circularprogressb
         float w = this.getWidth();
         float h = this.getHeight();
 
-        // Removing one pixel to make sure that background circle
-        float strokeWidthHalf = (strokeWidth - 1) / 2.0f;
-
-        float radius = (w > h ? w / 2.0f : h / 2.0f) - strokeWidthHalf;
+        float radius = (w > h ? w / 2.0f : h / 2.0f) - (strokeWidth / 2.0f);
         return radius <= 0 ? 1 : radius;
     }
 

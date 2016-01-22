@@ -100,12 +100,12 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                     // hideProgressBar(true);
                     mProgressBar.progressiveStop();
                     mProgressBar.setVisibility(View.GONE);
+
                 } else {
                     mProgressBar.setVisibility(View.VISIBLE);
                     // showProgressBar(true);
                 }
-//                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
-//                        mPassword.getText());
+                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(), mPassword.getText());
             }
         });
     }

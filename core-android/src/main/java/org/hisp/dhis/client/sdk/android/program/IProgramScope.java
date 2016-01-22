@@ -52,22 +52,6 @@ public interface IProgramScope {
 
     Observable<List<Program>> list();
 
-    Observable<List<ProgramTrackedEntityAttribute>> listProgramTrackedEntityAttributes(Program program);
-
-    Observable<List<ProgramStage>> listProgramStages(Program program);
-
-    Observable<List<ProgramStageSection>> listProgramStageSections(ProgramStage programStage);
-
-    Observable<List<ProgramIndicator>> listProgramIndicators(Program program);
-
-    Observable<List<ProgramIndicator>> listProgramIndicators(ProgramStage programStage);
-
-    Observable<List<ProgramIndicator>> listProgramIndicators(ProgramStageSection programStageSection);
-
-    Observable<List<ProgramStageDataElement>> listProgramStageDataElements(ProgramStage programStage);
-
-    Observable<List<ProgramStageDataElement>> listProgramStageDataElements(ProgramStageSection programStageSection);
-
     void sync();
 
     void sync(Set<String> uids);

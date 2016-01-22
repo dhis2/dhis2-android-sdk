@@ -13,3 +13,77 @@ However, briefly it can be said that the SDK includes:
 + Local persistence for offline support.
 
 The SDK requires functionality in the Web API added in the release of 2.21, so DHIS 2 versions 2.20 and lower will experience problems.
+
+##Getting Started:
+In this section it is briefly explained how you can get started by logging in, loading assigned programs to device, and loading it from local storage.
+
+###Working with RX:
+The SDK uses RxJava for asynchronous loading, which we encourage you to use, but if you don't want to it can simply be avoided. An example of loading Programs from local persistence into memory either using it or not using it follows:
+####Using RxJava:
+```java
+Observable<List<Program>> programObservable = D2.programs().list();
+        programObservable.subscribe(new Action1<List<Program>>() {
+            @Override
+            public void call(List<Program> programs) {
+                //do something
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                //handle error
+            }
+        });
+  ```
+        
+####Not using RxJava:
+  ```java
+  List<Program> programs = D2.programs().list().toBlocking().first();
+  ```
+
+###Logging in:
+```java
+Configuration configuration = new Configuration(serverUrl);
+Observable<UserAccount> observable = D2.signIn(configuration, username, password);
+        observable.subscribe(new Action1<UserAccount>() {
+            @Override
+            public void call(UserAccount userAccount) {
+                // do something
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                // do something
+            }
+        });
+  ```
+
+###Synchronizing Assigned Programs onto device:
+After you have successfully logged in, you can simply load Assigned Programs by calling:
+```java
+D2.me().syncAssignedPrograms();
+```
+
+This will load the assigned programs according to your user on the provided server, and save in local storage.
+
+###Synchronizing Organisation Units onto device:
+The method for synchronizing Assigned Programs above will synchronize all Organisation Units that have Programs assigned to them, but if you want to load all Organisation Units onto your device, you can call:
+```java
+D2.organisationUnits().sync();
+```
+
+Loading Programs from local persistence into memory:
+After you have successfully synchronized programs from the server onto the device, you can load it from persistence by calling:
+```java
+Observable<List<Program>> programObservable = D2.programs().list();
+        programObservable.subscribe(new Action1<List<Program>>() {
+            @Override
+            public void call(List<Program> programs) {
+                //do something
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                //handle error
+            }
+        });
+  ```

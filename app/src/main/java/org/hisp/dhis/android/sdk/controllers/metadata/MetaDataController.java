@@ -442,10 +442,9 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
-     * Returns a UserAccount object for the currently logged in user.
-     *
-     * @return
-     */
+    * Returns a UserAccount object for the currently logged in user.
+    * @return
+    */
     public static UserAccount getUserAccount() {
         return new Select().from(UserAccount.class).querySingle();
     }
@@ -657,11 +656,11 @@ public final class MetaDataController extends ResourceController {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
-                "*,trackedEntity[*],programIndicators[*],programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                        "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
-                        "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
-                        "[*,trackedEntityAttribute[*]],!organisationUnits)");
+                "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
+                "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());

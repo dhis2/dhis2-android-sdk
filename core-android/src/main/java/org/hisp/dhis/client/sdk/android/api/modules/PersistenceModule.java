@@ -33,105 +33,45 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.FailedItemStore;
 import org.hisp.dhis.client.sdk.android.common.ModelStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.common.state.IStateMapper;
-import org.hisp.dhis.client.sdk.android.common.state.StateMapper;
 import org.hisp.dhis.client.sdk.android.common.state.StateStore;
-import org.hisp.dhis.client.sdk.android.constant.ConstantMapper;
 import org.hisp.dhis.client.sdk.android.constant.ConstantStore;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentStore;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementStore;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardItemMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardItemStore;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardStore;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
-import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentMapper;
+import org.hisp.dhis.client.sdk.android.dataset.DataSetStore;
 import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentStore;
-import org.hisp.dhis.client.sdk.android.event.EventMapper;
 import org.hisp.dhis.client.sdk.android.event.EventStore;
-import org.hisp.dhis.client.sdk.android.flow.Constant$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Dashboard$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardContent$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DataElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleAction$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Relationship$Flow;
-import org.hisp.dhis.client.sdk.android.flow.RelationshipType$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntity$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttribute$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValue$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityDataValue$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
-import org.hisp.dhis.client.sdk.android.flow.User$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UserAccount$Flow;
 import org.hisp.dhis.client.sdk.android.interpretation.InterpretationCommentStore;
 import org.hisp.dhis.client.sdk.android.interpretation.InterpretationElementStore;
 import org.hisp.dhis.client.sdk.android.interpretation.InterpretationStore;
-import org.hisp.dhis.client.sdk.android.optionset.OptionMapper;
-import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionStore;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitMapper;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipStore;
-import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityStore;
-import org.hisp.dhis.client.sdk.android.user.UserAccountMapper;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
-import org.hisp.dhis.client.sdk.android.user.UserMapper;
 import org.hisp.dhis.client.sdk.android.user.UserStore;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -165,36 +105,9 @@ import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 import org.hisp.dhis.client.sdk.core.user.IUserStore;
-import org.hisp.dhis.client.sdk.models.constant.Constant;
-import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
-import org.hisp.dhis.client.sdk.models.optionset.Option;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
-import org.hisp.dhis.client.sdk.models.program.ProgramRule;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.user.User;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
@@ -215,14 +128,14 @@ public class PersistenceModule implements IPersistenceModule {
     private final IDashboardItemContentStore dashboardItemContentStore;
 
     // Meta data store objects
-    private final IIdentifiableObjectStore<Constant> constantStore;
-    private final IIdentifiableObjectStore<DataElement> dataElementStore;
+    private final IConstantStore constantStore;
+    private final IDataElementStore dataElementStore;
     private final IOptionStore optionStore;
-    private final IIdentifiableObjectStore<OptionSet> optionSetStore;
+    private final IOptionSetStore optionSetStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IProgramStore programStore;
     private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
-    private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final ITrackedEntityAttributeStore trackedEntityAttributeStore;
     private final IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
     private final IProgramStageDataElementStore programStageDataElementStore;
     private final IProgramIndicatorStore programIndicatorStore;
@@ -233,7 +146,7 @@ public class PersistenceModule implements IPersistenceModule {
     private final IProgramRuleVariableStore programRuleVariableStore;
     private final IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
-//    private final IDataSetStore dataSetStore;
+    private final IDataSetStore dataSetStore;
 
     //Tracker store objects
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
@@ -269,7 +182,8 @@ public class PersistenceModule implements IPersistenceModule {
                 MapperModuleProvider.getInstance().getDashboardElementMapper(),
                 MapperModuleProvider.getInstance().getEventMapper(),
                 MapperModuleProvider.getInstance().getEnrollmentMapper(),
-                MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper());
+                MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper(),
+                MapperModuleProvider.getInstance().getOrganisationUnitMapper());
         dashboardStore = new DashboardStore(MapperModuleProvider.getInstance().getDashboardMapper());
         dashboardItemStore = new DashboardItemStore(MapperModuleProvider.getInstance().getDashboardItemMapper());
         dashboardElementStore = new DashboardElementStore(MapperModuleProvider.getInstance().getDashboardElementMapper());
@@ -279,19 +193,19 @@ public class PersistenceModule implements IPersistenceModule {
         optionStore = new OptionStore(MapperModuleProvider.getInstance().getOptionMapper());
         optionSetStore = new OptionSetStore(MapperModuleProvider.getInstance().getOptionSetMapper(), optionStore);
         organisationUnitStore = new OrganisationUnitStore(MapperModuleProvider.getInstance().getOrganisationUnitMapper());
-        programStore = new ProgramStore(MapperModuleProvider.getInstance().getProgramMapper(), transactionManager, MapperModuleProvider.getInstance().getOrganisationUnitMapper());
         trackedEntityStore = new TrackedEntityStore(MapperModuleProvider.getInstance().getTrackedEntityMapper());
-        trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper());
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper(), optionSetStore);
         programTrackedEntityAttributeStore = new ProgramTrackedEntityAttributeStore(MapperModuleProvider.getInstance().getProgramTrackedEntityAttributeMapper());
         programStageDataElementStore = new ProgramStageDataElementStore(MapperModuleProvider.getInstance().getProgramStageDataElementMapper());
         programIndicatorStore = new ProgramIndicatorStore(MapperModuleProvider.getInstance().getProgramIndicatorMapper());
-        programStageSectionStore = new ProgramStageSectionStore(MapperModuleProvider.getInstance().getProgramStageSectionMapper());
-        programStageStore = new ProgramStageStore(MapperModuleProvider.getInstance().getProgramStageMapper());
+        programStageSectionStore = new ProgramStageSectionStore(MapperModuleProvider.getInstance().getProgramStageSectionMapper(), programIndicatorStore, programStageDataElementStore);
+        programStageStore = new ProgramStageStore(MapperModuleProvider.getInstance().getProgramStageMapper(), programIndicatorStore, programStageDataElementStore, programStageSectionStore);
         programRuleActionStore = new ProgramRuleActionStore(MapperModuleProvider.getInstance().getProgramRuleActionMapper());
         programRuleStore = new ProgramRuleStore(MapperModuleProvider.getInstance().getProgramRuleMapper(), programRuleActionStore, MapperModuleProvider.getInstance().getProgramRuleActionMapper());
         programRuleVariableStore = new ProgramRuleVariableStore(MapperModuleProvider.getInstance().getProgramRuleVariableMapper());
+        programStore = new ProgramStore(MapperModuleProvider.getInstance().getProgramMapper(), transactionManager, MapperModuleProvider.getInstance().getOrganisationUnitMapper(), programTrackedEntityAttributeStore, programStageStore, programIndicatorStore);
         relationshipTypeStore = new RelationshipTypeStore(MapperModuleProvider.getInstance().getRelationshipTypeMapper());
-//        dataSetStore = new DataSetStore(dataSetMapper, organisationUnitMapper);
+        dataSetStore = new DataSetStore(MapperModuleProvider.getInstance().getDataSetMapper(), MapperModuleProvider.getInstance().getOrganisationUnitMapper());
         trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStore(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper(), stateStore, programStore);
         relationshipStore = new RelationshipStore(MapperModuleProvider.getInstance().getRelationshipMapper(), stateStore);
         trackedEntityInstanceStore = new TrackedEntityInstanceStore(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper(), stateStore);
@@ -320,211 +234,176 @@ public class PersistenceModule implements IPersistenceModule {
 
     @Override
     public IStateStore getStateStore() {
-//        return stateStore;
-        return null;
+        return stateStore;
     }
 
     @Override
     public IDashboardStore getDashboardStore() {
-//        return dashboardStore;
-        return null;
+        return dashboardStore;
     }
 
     @Override
     public IDashboardItemStore getDashboardItemStore() {
-//        return dashboardItemStore;
-        return null;
+        return dashboardItemStore;
     }
 
     @Override
     public IDashboardElementStore getDashboardElementStore() {
-//        return dashboardElementStore;
-        return null;
+        return dashboardElementStore;
     }
 
     @Override
     public IDashboardItemContentStore getDashboardContentStore() {
-//        return dashboardItemContentStore;
-        return null;
+        return dashboardItemContentStore;
     }
 
     @Override
     public IConstantStore getConstantStore() {
-//        return constantStore;
-        return null;
+        return constantStore;
     }
 
     @Override
     public IDataElementStore getDataElementStore() {
-//        return dataElementStore;
-        return null;
+        return dataElementStore;
     }
 
     @Override
     public IOptionStore getOptionStore() {
-//        return optionStore;
-        return null;
+        return optionStore;
     }
 
     @Override
     public IOptionSetStore getOptionSetStore() {
-//        return optionSetStore;
-        return null;
+        return optionSetStore;
     }
 
     @Override
     public IOrganisationUnitStore getOrganisationUnitStore() {
-//        return organisationUnitStore;
-        return null;
+        return organisationUnitStore;
     }
 
     @Override
     public IProgramStore getProgramStore() {
-//        return programStore;
-        return null;
+        return programStore;
     }
 
     @Override
     public IIdentifiableObjectStore<TrackedEntity> getTrackedEntityStore() {
-//        return trackedEntityStore;
-        return null;
+        return trackedEntityStore;
     }
 
     @Override
     public ITrackedEntityAttributeStore getTrackedEntityAttributeStore() {
-//        return trackedEntityAttributeStore;
-        return null;
+        return trackedEntityAttributeStore;
     }
 
     @Override
     public IProgramTrackedEntityAttributeStore getProgramTrackedEntityAttributeStore() {
-//        return programTrackedEntityAttributeStore;
-        return null;
+        return programTrackedEntityAttributeStore;
     }
 
     @Override
     public IProgramStageDataElementStore getProgramStageDataElementStore() {
-//        return programStageDataElementStore;
-        return null;
+        return programStageDataElementStore;
     }
 
     @Override
     public IProgramIndicatorStore getProgramIndicatorStore() {
-//        return programIndicatorStore;
-        return null;
+        return programIndicatorStore;
     }
 
     @Override
     public IProgramStageSectionStore getProgramStageSectionStore() {
-//        return programStageSectionStore;
-        return null;
+        return programStageSectionStore;
     }
 
     @Override
     public IProgramStageStore getProgramStageStore() {
-//        return programStageStore;
-        return null;
+        return programStageStore;
     }
 
     @Override
     public IProgramRuleStore getProgramRuleStore() {
-//        return programRuleStore;
-        return null;
+        return programRuleStore;
     }
 
     @Override
     public IProgramRuleActionStore getProgramRuleActionStore() {
-//        return programRuleActionStore;
-        return null;
+        return programRuleActionStore;
     }
 
     @Override
     public IProgramRuleVariableStore getProgramRuleVariableStore() {
-//        return programRuleVariableStore;
-        return null;
+        return programRuleVariableStore;
     }
 
     @Override
     public IIdentifiableObjectStore<RelationshipType> getRelationshipTypeStore() {
-//        return relationshipTypeStore;
-        return null;
+        return relationshipTypeStore;
     }
 
     @Override
     public IDataSetStore getDataStore() {
-//        return dataSetStore;
-        return null;
+        return dataSetStore;
     }
 
     @Override
     public ITrackedEntityAttributeValueStore getTrackedEntityAttributeValueStore() {
-//        return trackedEntityAttributeValueStore;
-        return null;
+        return trackedEntityAttributeValueStore;
     }
 
     @Override
     public IRelationshipStore getRelationshipStore() {
-//        return relationshipStore;
-        return null;
+        return relationshipStore;
     }
 
     @Override
     public ITrackedEntityInstanceStore getTrackedEntityInstanceStore() {
-//        return trackedEntityInstanceStore;
-        return null;
+        return trackedEntityInstanceStore;
     }
 
     @Override
     public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
-//        return trackedEntityDataValueStore;
-        return null;
+        return trackedEntityDataValueStore;
     }
 
     @Override
     public IEventStore getEventStore() {
-//        return eventStore;
-        return null;
+        return eventStore;
     }
 
     @Override
     public IEnrollmentStore getEnrollmentStore() {
-//        return enrollmentStore;
-        return null;
+        return enrollmentStore;
     }
 
     @Override
     public IIdentifiableObjectStore<Interpretation> getInterpretationStore() {
-//        return interpretationStore;
-        return null;
+        return interpretationStore;
     }
 
     @Override
     public IInterpretationCommentStore getInterpretationCommentStore() {
-//        return interpretationCommentStore;
-        return null;
+        return interpretationCommentStore;
     }
 
     @Override
     public IInterpretationElementStore getInterpretationElementStore() {
-//        return interpretationElementStore;
-        return null;
+        return interpretationElementStore;
     }
 
     @Override
     public IModelsStore getModelStore() {
-//        return modelsStore;
-        return null;
+        return modelsStore;
     }
 
     @Override
     public IUserStore getUserStore() {
-//        return userStore;
-        return null;
+        return userStore;
     }
 
     @Override
     public IFailedItemStore getFailedItemStore() {
-//        return failedItemStore;
-        return null;
+        return failedItemStore;
     }
 }

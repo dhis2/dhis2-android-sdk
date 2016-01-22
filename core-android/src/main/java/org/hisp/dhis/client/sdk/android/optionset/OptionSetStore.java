@@ -28,17 +28,46 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
+import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
+import java.util.List;
+
 public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSet$Flow>
-        implements IIdentifiableObjectStore<OptionSet> {
+        implements IOptionSetStore {
+    private final IOptionStore mOptionStore;
 
     public OptionSetStore(IMapper<OptionSet, OptionSet$Flow> mapper, IOptionStore optionStore) {
         super(mapper);
+        this.mOptionStore = optionStore;
+    }
+
+    @Override
+    public boolean save(OptionSet optionSet) {
+        OptionSet$Flow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+        if (databaseEntity != null) {
+            databaseEntity.save();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            optionSet.setId(databaseEntity.getId());
+
+            List<Option> options = optionSet.getOptions();
+            for(Option option : options) {
+                if(!mOptionStore.save(option)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 }

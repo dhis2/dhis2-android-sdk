@@ -49,6 +49,13 @@ public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTracke
         }
 
         ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = new ProgramTrackedEntityAttribute$Flow();
+        programTrackedEntityAttributeFlow.setId(programTrackedEntityAttribute.getId());
+        programTrackedEntityAttributeFlow.setUId(programTrackedEntityAttribute.getUId());
+        programTrackedEntityAttributeFlow.setCreated(programTrackedEntityAttribute.getCreated());
+        programTrackedEntityAttributeFlow.setLastUpdated(programTrackedEntityAttribute.getLastUpdated());
+        programTrackedEntityAttributeFlow.setName(programTrackedEntityAttribute.getName());
+        programTrackedEntityAttributeFlow.setDisplayName(programTrackedEntityAttribute.getDisplayName());
+        programTrackedEntityAttributeFlow.setAccess(programTrackedEntityAttribute.getAccess());
         programTrackedEntityAttributeFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getTrackedEntityAttribute()));
         programTrackedEntityAttributeFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getProgram()));
         programTrackedEntityAttributeFlow.setSortOrder(programTrackedEntityAttribute.getSortOrder());
@@ -65,6 +72,13 @@ public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTracke
         }
 
         ProgramTrackedEntityAttribute programTrackedEntityAttribute = new ProgramTrackedEntityAttribute();
+        programTrackedEntityAttribute.setId(programTrackedEntityAttributeFlow.getId());
+        programTrackedEntityAttribute.setUId(programTrackedEntityAttributeFlow.getUId());
+        programTrackedEntityAttribute.setCreated(programTrackedEntityAttributeFlow.getCreated());
+        programTrackedEntityAttribute.setLastUpdated(programTrackedEntityAttributeFlow.getLastUpdated());
+        programTrackedEntityAttribute.setName(programTrackedEntityAttributeFlow.getName());
+        programTrackedEntityAttribute.setDisplayName(programTrackedEntityAttributeFlow.getDisplayName());
+        programTrackedEntityAttribute.setAccess(programTrackedEntityAttributeFlow.getAccess());
         programTrackedEntityAttribute.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programTrackedEntityAttributeFlow.getTrackedEntityAttribute()));
         programTrackedEntityAttribute.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programTrackedEntityAttributeFlow.getProgram()));
         programTrackedEntityAttribute.setSortOrder(programTrackedEntityAttributeFlow.getSortOrder());

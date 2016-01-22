@@ -32,13 +32,18 @@ import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttribute$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+
+import java.util.List;
 
 public final class TrackedEntityAttributeStore extends
         AbsIdentifiableObjectStore<TrackedEntityAttribute, TrackedEntityAttribute$Flow>
-        implements IIdentifiableObjectStore<TrackedEntityAttribute> {
+        implements ITrackedEntityAttributeStore {
 
-    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute, TrackedEntityAttribute$Flow> mapper) {
+    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute, TrackedEntityAttribute$Flow> mapper, IOptionSetStore mOptionSetStore) {
         super(mapper);
     }
 }

@@ -28,10 +28,16 @@
 
 package org.hisp.dhis.client.sdk.android.user;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +65,24 @@ public class UserAccountApiClient implements IUserApiClient {
     // TODO move to programs controller (sync() method).
     @Override
     public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
-        return call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
+        JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
+        return unwrap(meNode);
+    }
+
+    private static List<OrganisationUnit> unwrap(JsonNode meNode) {
+        List<OrganisationUnit> organisationUnits;
+        if(meNode.has("organisationUnits")) {
+            TypeReference<List<OrganisationUnit>> typeRef = new TypeReference<List<OrganisationUnit>>() {};
+            try {
+                organisationUnits = ObjectMapperProvider.getInstance().
+                        readValue(meNode.get("organisationUnits").traverse(), typeRef);
+            } catch (IOException e) {
+                e.printStackTrace();
+                organisationUnits = new ArrayList<>();
+            }
+        } else {
+            organisationUnits = new ArrayList<>();
+        }
+        return organisationUnits;
     }
 }

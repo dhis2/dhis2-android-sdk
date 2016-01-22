@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;
@@ -125,7 +124,7 @@ public class D2 {
 
         mProgramScope = new ProgramScope(servicesModule.getProgramService(), controllersModule.getProgramController());
 
-        mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService());
+        mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
 
         mEventScope = new EventScope(servicesModule.getEventService(), controllersModule.getEventController());
 

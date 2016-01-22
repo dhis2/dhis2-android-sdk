@@ -27,24 +27,21 @@
  *
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.android.organisationunit;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Comparator;
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
-
-public interface ProgramApiClientRetrofit {
-
-    @GET("programs/{programUid}")
-    Call<Program> getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
-
-    @GET("programs/")
-    Call<List<Program>> getPrograms(@QueryMap Map<String, String> queryMap);
-
+public class OrganisationUnitCompareByLevelComparator implements Comparator<OrganisationUnit> {
+    @Override
+    public int compare(OrganisationUnit lhs, OrganisationUnit rhs) {
+        if(lhs.getLevel() == rhs.getLevel()) {
+            return 0;
+        } else if(lhs.getLevel() > rhs.getLevel()) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
 }

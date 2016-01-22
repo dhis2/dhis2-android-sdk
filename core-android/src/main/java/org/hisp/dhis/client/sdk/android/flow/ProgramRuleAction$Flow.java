@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramRuleAction$Flow extends BaseIdentifiableObject$Flow {
+
     @Column
     String programRule;
 

@@ -45,4 +45,6 @@ public interface IOrganisationUnitScope {
     Observable<OrganisationUnit> get(String uid);
 
     Observable<List<OrganisationUnit>> list();
+
+    void sync();
 }

@@ -29,6 +29,9 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
@@ -38,6 +41,8 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow {
 
+    static final String PROGRAM_STAGE_KEY = "programstage";
+
     @Column
     int sortOrder;
 
@@ -45,7 +50,12 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
     boolean externalAccess;
 
     @Column
-    String programStage;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    ProgramStage$Flow programStage;
 
     List<ProgramStageDataElement$Flow> programStageDataElements;
 
@@ -67,11 +77,11 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
         this.externalAccess = externalAccess;
     }
 
-    public String getProgramStage() {
+    public ProgramStage$Flow getProgramStage() {
         return programStage;
     }
 
-    public void setProgramStage(String programStage) {
+    public void setProgramStage(ProgramStage$Flow programStage) {
         this.programStage = programStage;
     }
 

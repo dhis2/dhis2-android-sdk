@@ -36,6 +36,6 @@ import retrofit.http.GET;
 
 public interface SystemInfoApiClientRetrofit {
 
-    @GET("/system/info/")
+    @GET("system/info/")
     Call<SystemInfo> getSystemInfo();
 }

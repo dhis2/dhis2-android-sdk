@@ -35,8 +35,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -172,5 +182,64 @@ public class ProgramApiClient implements IProgramApiClient {
                 "name,id,displayName,externalAccess]]]],programStageSections[created,lastUpdated," +
                 "name,id,displayName,externalAccess,sortOrder,programStage[id]," +
                 "programIndicators[id],programStageDataElements[id]]]";
+    }
+
+    private void fixRelationships(Program program) {
+        ModelUtils modelUtils = new ModelUtils();
+        Map<String, ProgramIndicator> programIndicatorMap = modelUtils.toMap(program.getProgramIndicators());
+        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap = modelUtils.toMap(program.getProgramTrackedEntityAttributes());
+        for(ProgramIndicator programIndicator : programIndicatorMap.values()) {
+            programIndicator.setProgram(program);
+        }
+        for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributeMap.values()) {
+            programTrackedEntityAttribute.setProgram(program);
+            TrackedEntityAttribute trackedEntityAttribute = programTrackedEntityAttribute.getTrackedEntityAttribute();
+            if(trackedEntityAttribute.getOptionSet() != null) {
+                OptionSet optionSet = trackedEntityAttribute.getOptionSet();
+                for(Option option : optionSet.getOptions()) {
+                    option.setOptionSet(optionSet);
+                }
+            }
+        }
+        for(ProgramStage programStage : program.getProgramStages()) {
+            programStage.setProgram(program);
+            List<ProgramIndicator> fullProgramStageProgramIndicators = new ArrayList<>();
+            for(ProgramIndicator programIndicatorWithOnlyUid : programStage.getProgramIndicators()) {
+                ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                fullProgramIndicator.setProgramStage(programStage);
+                fullProgramStageProgramIndicators.add(fullProgramIndicator);
+            }
+            programStage.setProgramIndicators(fullProgramStageProgramIndicators);
+
+            Map<String, ProgramStageDataElement> programStageDataElementMap = modelUtils.toMap(programStage.getProgramStageDataElements());
+            for(ProgramStageDataElement programStageDataElement : programStageDataElementMap.values()) {
+                programStageDataElement.setProgramStage(programStage);
+                DataElement dataElement = programStageDataElement.getDataElement();
+                if(dataElement.getOptionSet() != null) {
+                    OptionSet optionSet = dataElement.getOptionSet();
+                    for(Option option : optionSet.getOptions()) {
+                        option.setOptionSet(optionSet);
+                    }
+                }
+            }
+            for(ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
+                programStageSection.setProgramStage(programStage);
+                List<ProgramIndicator> fullProgramStageSectionProgramIndicators = new ArrayList<>();
+                for(ProgramIndicator programIndicatorWithOnlyUid : programStageSection.getProgramIndicators()) {
+                    ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                    fullProgramIndicator.setProgramStageSection(programStageSection);
+                    fullProgramStageSectionProgramIndicators.add(fullProgramIndicator);
+                }
+                programStageSection.setProgramIndicators(fullProgramStageProgramIndicators);
+
+                List<ProgramStageDataElement> fullProgramStageDataElementsForProgramStageSection = new ArrayList<>();
+                for(ProgramStageDataElement programStageDataElementWithOnlyUid : programStageSection.getProgramStageDataElements()) {
+                    ProgramStageDataElement fullProgramStageDataElement = programStageDataElementMap.get(programStageDataElementWithOnlyUid.getUId());
+                    fullProgramStageDataElement.setProgramStageSection(programStageSection);
+                    fullProgramStageDataElementsForProgramStageSection.add(fullProgramStageDataElement);
+                }
+                programStageSection.setProgramStageDataElements(fullProgramStageDataElementsForProgramStageSection);
+            }
+        }
     }
 }

@@ -64,31 +64,30 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true">
 
-                <org.hisp.dhis.client.sdk.ui.views.CircleView
-                    android:id="@+id/imageview_dhis_logo"
-                    android:layout_width="112dp"
-                    android:layout_height="112dp"
-                    app:circle_gap="8dp"
-                    app:circle_radius="48dp"
-                    app:fill_color="@color/white"
-                    app:stroke_color="@color/white"
-                    app:stroke_width="4dp" />
+                <!--<org.hisp.dhis.client.sdk.ui.views.CircleView-->
+                    <!--android:id="@+id/imageview_dhis_logo"-->
+                    <!--android:layout_width="112dp"-->
+                    <!--android:layout_height="112dp"-->
+                    <!--app:circle_gap="52dp"-->
+                    <!--app:circle_radius="52dp"-->
+                    <!--app:fill_color="@color/white"-->
+                    <!--app:stroke_color="@color/white"-->
+                    <!--app:stroke_width="4dp" />-->
 
                 <org.hisp.dhis.client.sdk.ui.views.FontTextView
                     android:layout_width="112dp"
                     android:layout_height="112dp"
                     android:gravity="center"
                     android:text="2"
-                    android:textColor="@color/color_primary_default"
+                    android:textColor="@color/white"
                     android:textSize="74sp"
                     app:font="@string/font_name_regular" />
 
-                <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                <org.hisp.dhis.client.sdk.ui.views.CircularProgressBar
                     android:id="@+id/progress_bar_circular"
                     android:layout_width="112dp"
                     android:layout_height="112dp"
-                    android:indeterminate="true"
-                    android:padding="10dp" />
+                    android:indeterminate="true" />
 
                 <!--library:cpb_color="@color/color_accent"-->
                 <!--library:cpb_max_sweep_angle="300"-->

@@ -33,6 +33,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,9 +41,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.views.CircularProgressBar;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
-import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
@@ -63,11 +64,15 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Configuring progress bar (setting width of 6dp)
+        float progressBarWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
+                getResources().getDisplayMetrics());
         mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
+        mProgressBar.setStrokeBackgroundColor(ContextCompat.getColor(this, R.color.white));
         mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable.Builder(this)
-                .color(ContextCompat.getColor(this, R.color.color_accent))
+                .color(ContextCompat.getColor(this, R.color.color_primary_default))
                 .sweepSpeed(1f)
-                .strokeWidth(20)
+                .strokeWidth(progressBarWidth)
                 .style(CircularProgressDrawable.STYLE_ROUNDED)
                 .build());
 
@@ -85,24 +90,30 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         mUsername.addTextChangedListener(watcher);
         mPassword.addTextChangedListener(watcher);
 
-        hideProgressBar(false);
+        // hideProgressBar(false);
         onTextChanged();
 
         if (savedInstanceState == null) {
             startIntroAnimation();
         }
 
+        mProgressBar.setVisibility(View.VISIBLE);
         mLogInButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (mProgressBar.isShown()) {
-                    // hideProgressBar(true);
-                    mProgressBar.progressiveStop();
-                    mProgressBar.setVisibility(View.GONE);
+                if (((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).isRunning()) {
+                    ((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).progressiveStop();
+//                    mProgressBar.progressiveStop(new CircularProgressDrawable.OnEndListener() {
+//                        @Override
+//                        public void onEnd(CircularProgressDrawable circularProgressDrawable) {
+//                            // mProgressBar.setVisibility(View.GONE);
+//                        }
+//                    });
                 } else {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    // showProgressBar(true);
+                    ((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).start();
+                    // mProgressBar.ge
+                    // mProgressBar.setVisibility(View.VISIBLE);
                 }
 //                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
 //                        mPassword.getText());

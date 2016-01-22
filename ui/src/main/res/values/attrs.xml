@@ -35,11 +35,7 @@
         <attr name="hint" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="CircleView">
-        <attr name="stroke_width" format="dimension" />
-        <attr name="stroke_color" format="color|reference" />
-        <attr name="fill_color" format="color|reference" />
-        <attr name="circle_radius" format="dimension" />
-        <attr name="circle_gap" format="dimension" />
+    <declare-styleable name="CircularProgressBar">
+        <attr name="cpb_stroke_background_color" format="color|reference" />
     </declare-styleable>
 </resources>

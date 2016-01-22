@@ -38,6 +38,7 @@ import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardItemMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardMapper;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
+import org.hisp.dhis.client.sdk.android.dataset.DataSetMapper;
 import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentMapper;
 import org.hisp.dhis.client.sdk.android.event.EventMapper;
 import org.hisp.dhis.client.sdk.android.flow.Constant$Flow;
@@ -46,6 +47,7 @@ import org.hisp.dhis.client.sdk.android.flow.DashboardContent$Flow;
 import org.hisp.dhis.client.sdk.android.flow.DashboardElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
 import org.hisp.dhis.client.sdk.android.flow.DataElement$Flow;
+import org.hisp.dhis.client.sdk.android.flow.DataSet$Flow;
 import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
 import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
 import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
@@ -96,6 +98,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -153,7 +156,7 @@ public class MapperModule {
     private final IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper;
     private final IMapper<ProgramRuleVariable, ProgramRuleVariable$Flow> programRuleVariableMapper;
     private final IMapper<RelationshipType, RelationshipType$Flow> relationshipTypeMapper;
-    //    private final IMapper<DataSet, DataSet$Flow> dataSetMapper;
+    private final IMapper<DataSet, DataSet$Flow> dataSetMapper;
 
     private final IMapper<User, User$Flow> userMapper;
 
@@ -184,7 +187,7 @@ public class MapperModule {
         programRuleMapper = new ProgramRuleMapper();
         programRuleVariableMapper = new ProgramRuleVariableMapper();
         relationshipTypeMapper = new RelationshipTypeMapper();
-//        dataSetMapper = null;//new DataSetMapper();
+        dataSetMapper = new DataSetMapper();
 
         programMapper = new ProgramMapper();
         programStageMapper = new ProgramStageMapper();
@@ -312,5 +315,9 @@ public class MapperModule {
 
     public IMapper<User, User$Flow> getUserMapper() {
         return userMapper;
+    }
+
+    public IMapper<DataSet, DataSet$Flow> getDataSetMapper() {
+        return dataSetMapper;
     }
 }

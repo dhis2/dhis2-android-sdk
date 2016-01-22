@@ -29,6 +29,8 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -42,10 +44,10 @@ import retrofit.http.QueryMap;
 
 public interface OrganisationUnitApiClientRetrofit {
 
-    @GET("/organisationUnits/{organisationUnitUid}")
+    @GET("organisationUnits/{organisationUnitUid}")
     Call<OrganisationUnit> getOrganisationUnit(@Path("organisationUnitUid") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
 
-    @GET("/organisationUnits/")
-    Call<List<OrganisationUnit>> getOrganisationUnits(@QueryMap Map<String, String> queryMap);
+    @GET("organisationUnits")
+    Call<JsonNode> getOrganisationUnits(@QueryMap Map<String, String> queryMap);
 
 }

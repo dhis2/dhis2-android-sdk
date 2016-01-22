@@ -58,7 +58,7 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSectionFlow.setAccess(programStageSection.getAccess());
         programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
         programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
-        programStageSectionFlow.setProgramStage(programStageSection.getProgramStage());
+        programStageSectionFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programStageSection.getProgramStage()));
         programStageSectionFlow.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStageSection.getProgramStageDataElements()));
         programStageSectionFlow.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStageSection.getProgramIndicators()));
         return programStageSectionFlow;
@@ -80,7 +80,7 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSection.setAccess(programStageSectionFlow.getAccess());
         programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
         programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
-        programStageSection.setProgramStage(programStageSectionFlow.getProgramStage());
+        programStageSection.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programStageSectionFlow.getProgramStage()));
         programStageSection.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToModels(programStageSectionFlow.getProgramStageDataElements()));
         programStageSection.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModels(programStageSectionFlow.getProgramIndicators()));
         return programStageSection;

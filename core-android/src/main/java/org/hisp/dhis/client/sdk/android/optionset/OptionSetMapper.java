@@ -56,7 +56,6 @@ public class OptionSetMapper extends AbsMapper<OptionSet, OptionSet$Flow> {
         optionSetFlow.setDisplayName(optionSet.getDisplayName());
         optionSetFlow.setAccess(optionSet.getAccess());
         optionSetFlow.setVersion(optionSet.getVersion());
-        optionSetFlow.setOptions(MapperModuleProvider.getInstance().getOptionMapper().mapToDatabaseEntities(optionSet.getOptions()));
         return optionSetFlow;
     }
 
@@ -75,7 +74,6 @@ public class OptionSetMapper extends AbsMapper<OptionSet, OptionSet$Flow> {
         optionSet.setDisplayName(optionSetFlow.getDisplayName());
         optionSet.setAccess(optionSetFlow.getAccess());
         optionSet.setVersion(optionSetFlow.getVersion());
-        optionSet.setOptions(MapperModuleProvider.getInstance().getOptionMapper().mapToModels(optionSetFlow.getOptions()));
         return optionSet;
     }
 

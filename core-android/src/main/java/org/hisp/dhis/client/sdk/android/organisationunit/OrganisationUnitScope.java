@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
 
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
@@ -40,9 +41,11 @@ import rx.Subscriber;
 public class OrganisationUnitScope implements IOrganisationUnitScope {
 
     private final IOrganisationUnitService mOrganisationUnitService;
+    private final IOrganisationUnitController mOrganisationUnitController;
 
-    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService) {
+    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService, IOrganisationUnitController mOrganisationUnitController) {
         this.mOrganisationUnitService = mOrganisationUnitService;
+        this.mOrganisationUnitController = mOrganisationUnitController;
     }
 
     @Override
@@ -128,5 +131,10 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
                 subscriber.onCompleted();
             }
         });
+    }
+
+    @Override
+    public void sync() {
+        mOrganisationUnitController.sync();
     }
 }

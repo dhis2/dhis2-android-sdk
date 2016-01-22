@@ -58,7 +58,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStageFlow.setName(programStage.getName());
         programStageFlow.setDisplayName(programStage.getDisplayName());
         programStageFlow.setAccess(programStage.getAccess());
-        programStageFlow.setProgram(programStage.getProgram());
+        programStageFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programStage.getProgram()));
         programStageFlow.setDataEntryType(programStage.getDataEntryType());
         programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
         programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
@@ -77,9 +77,6 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStageFlow.setAllowGenerateNextVisit(programStage.isAllowGenerateNextVisit());
         programStageFlow.setRepeatable(programStage.isRepeatable());
         programStageFlow.setMinDaysFromStart(programStage.getMinDaysFromStart());
-        programStageFlow.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToDatabaseEntities(programStage.getProgramStageDataElements()));
-        programStageFlow.setProgramStageSections(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntities(programStage.getProgramStageSections()));
-        programStageFlow.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntities(programStage.getProgramIndicators()));
         return programStageFlow;
     }
 
@@ -97,7 +94,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStage.setName(programStageFlow.getName());
         programStage.setDisplayName(programStageFlow.getDisplayName());
         programStage.setAccess(programStageFlow.getAccess());
-        programStage.setProgram(programStageFlow.getProgram());
+        programStage.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programStageFlow.getProgram()));
         programStage.setDataEntryType(programStageFlow.getDataEntryType());
         programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
         programStage.setReportDateDescription(programStageFlow.getReportDateDescription());
@@ -116,9 +113,6 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStage.setAllowGenerateNextVisit(programStageFlow.isAllowGenerateNextVisit());
         programStage.setRepeatable(programStageFlow.isRepeatable());
         programStage.setMinDaysFromStart(programStageFlow.getMinDaysFromStart());
-        programStage.setProgramStageDataElements(MapperModuleProvider.getInstance().getProgramStageDataElementMapper().mapToModels(programStageFlow.getProgramStageDataElements()));
-        programStage.setProgramStageSections(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModels(programStageFlow.getProgramStageSections()));
-        programStage.setProgramIndicators(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModels(programStageFlow.getProgramIndicators()));
         return programStage;
     }
 

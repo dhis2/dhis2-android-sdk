@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.common.state;
 
+import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.From;
 import com.raizlabs.android.dbflow.sql.language.Join;
@@ -53,6 +54,8 @@ import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow;
 import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.State$Flow;
 import org.hisp.dhis.client.sdk.android.flow.State$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
@@ -69,6 +72,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.HashMap;
@@ -85,6 +89,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
     private final IMapper<Event, Event$Flow> eventMapper;
     private final IMapper<Enrollment, Enrollment$Flow> enrollmentMapper;
     private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
+    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
 
     public StateStore(IStateMapper mapper,
                       IMapper<Dashboard, Dashboard$Flow> dashboardMapper,
@@ -92,7 +97,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
                       IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper,
                       IMapper<Event, Event$Flow> eventMapper,
                       IMapper<Enrollment, Enrollment$Flow> enrollmentMapper,
-                      IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper) {
+                      IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
         super(mapper);
         this.dashboardMapper = dashboardMapper;
         this.dashboardItemMapper = dashboardItemMapper;
@@ -100,6 +105,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         this.eventMapper = eventMapper;
         this.enrollmentMapper = enrollmentMapper;
         this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
+        this.organisationUnitMapper = organisationUnitMapper;
     }
 
     @Override
@@ -208,84 +214,107 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
 
     @Override
     public <T extends IModel> List<T> queryModelsWithActions(Class<T> aClass, Action... actions) {
-        return null;
+        return getObjectsByAction(aClass, true, actions);
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IModel> List<T> getObjectsByAction(Class<T> clazz, Action action, boolean withAction) {
+    private <T extends IModel> List<T> getObjectsByAction(Class<T> clazz, boolean withAction, Action... actions) {
         if (Dashboard.class.equals(clazz)) {
             List<Dashboard$Flow> dashboardFlows = (List<Dashboard$Flow>) queryModels(
-                    clazz, action, withAction, Dashboard$Flow$Table.ID);
+                    clazz, Dashboard$Flow$Table.ID, withAction, actions);
             return (List<T>) dashboardMapper.mapToModels(dashboardFlows);
         }
 
         if (DashboardItem.class.equals(clazz)) {
             List<DashboardItem$Flow> dashboardItemFlows = (List<DashboardItem$Flow>) queryModels(
-                    clazz, action, withAction, DashboardItem$Flow$Table.ID);
+                    clazz, DashboardItem$Flow$Table.ID, withAction, actions);
             return (List<T>) dashboardItemMapper.mapToModels(dashboardItemFlows);
         }
 
         if (DashboardElement.class.equals(clazz)) {
             List<DashboardElement$Flow> dashboardElementFlows = (List<DashboardElement$Flow>) queryModels(
-                    clazz, action, withAction, DashboardElement$Flow$Table.ID);
+                    clazz, DashboardElement$Flow$Table.ID, withAction, actions);
             return (List<T>) dashboardElementMapper.mapToModels(dashboardElementFlows);
         }
 
         if (Interpretation.class.equals(clazz)) {
             List<Interpretation$Flow> interpretationFlows = (List<Interpretation$Flow>) queryModels(
-                    clazz, action, withAction, Interpretation$Flow$Table.ID);
+                    clazz, Interpretation$Flow$Table.ID, withAction, actions);
             return (List<T>) Interpretation$Flow.toModels(interpretationFlows);
         }
 
         if (InterpretationElement.class.equals(clazz)) {
             List<InterpretationElement$Flow> interpretationElementFlows = (List<InterpretationElement$Flow>) queryModels(
-                    clazz, action, withAction, InterpretationElement$Flow$Table.ID);
+                    clazz, InterpretationElement$Flow$Table.ID, withAction, actions);
             return (List<T>) InterpretationElement$Flow.toModels(interpretationElementFlows);
         }
 
         if (InterpretationComment.class.equals(clazz)) {
             List<InterpretationComment$Flow> interpretationCommentFlows = (List<InterpretationComment$Flow>) queryModels(
-                    clazz, action, withAction, InterpretationComment$Flow$Table.ID);
+                    clazz, InterpretationComment$Flow$Table.ID, withAction, actions);
             return (List<T>) InterpretationComment$Flow.toModels(interpretationCommentFlows);
         }
 
         if (Event.class.equals(clazz)) {
-            List<Event$Flow> eventFlows = (List<Event$Flow>) queryModels(clazz, action, withAction, Event$Flow$Table.ID);
+            List<Event$Flow> eventFlows = (List<Event$Flow>) queryModels(clazz, Event$Flow$Table.ID, withAction, actions);
             return (List<T>) eventMapper.mapToModels(eventFlows);
         }
 
         if (Enrollment.class.equals(clazz)) {
-            List<Enrollment$Flow> enrollmentFlows = (List<Enrollment$Flow>) queryModels(clazz, action, withAction, Enrollment$Flow$Table.ID);
+            List<Enrollment$Flow> enrollmentFlows = (List<Enrollment$Flow>) queryModels(clazz, Enrollment$Flow$Table.ID, withAction, actions);
             return (List<T>) enrollmentMapper.mapToModels(enrollmentFlows);
         }
 
         if (TrackedEntityInstance.class.equals(clazz)) {
-            List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = (List<TrackedEntityInstance$Flow>) queryModels(clazz, action, withAction, TrackedEntityInstance$Flow$Table.ID);
+            List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = (List<TrackedEntityInstance$Flow>) queryModels(clazz, TrackedEntityInstance$Flow$Table.ID, withAction, actions);
             return (List<T>) trackedEntityInstanceMapper.mapToModels(trackedEntityInstanceFlows);
+        }
+
+        if (OrganisationUnit.class.equals(clazz)) {
+            List<OrganisationUnit$Flow> organisationUnitFlows = (List<OrganisationUnit$Flow>) queryModels(clazz, OrganisationUnit$Flow$Table.ID, withAction, actions);
+            return (List<T>) organisationUnitMapper.mapToModels(organisationUnitFlows);
         }
 
         return null;
     }
 
-    private List<? extends Model> queryModels(Class<? extends IModel> clazz, Action action,
-                                              boolean withAction, String columnName) {
+    private List<? extends Model> queryModels(Class<? extends IModel> clazz, String columnName, boolean withAction, @NotNull Action... actions
+                                              ) {
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
         From<? extends Model> from = new Select()
                 .from(getStateMapper().getRelatedDatabaseEntityClass(clazz))
                 .join(State$Flow.class, Join.JoinType.LEFT)
                 .on(Condition.column(State$Flow$Table.ITEMID)
-                        .eq(columnName));
+                        .eq(getStateMapper().getRelatedDatabaseEntityClass(clazz).getSimpleName() + "." + columnName));
 
         Where<? extends Model> where = from
                 .where(Condition.column(State$Flow$Table
                         .ITEMTYPE).is(getStateMapper().getRelatedModelClass(clazz)));
         if (withAction) {
-            where = where.and(Condition.column(State$Flow$Table
-                    .ACTION).is(action.toString()));
+            int i = 0;
+            for(Action action : actions) {
+                if(i > 0) {
+                    where = where.or(Condition.column(State$Flow$Table
+                            .ACTION).is(action.toString()));
+                } else {
+                    where = where.and(Condition.column(State$Flow$Table
+                            .ACTION).is(action.toString()));
+                }
+                i++;
+            }
         } else {
-            where = where.and(Condition.column(State$Flow$Table
-                    .ACTION).isNot(action.toString()));
+            int i = 0;
+            for(Action action : actions) {
+                if(i > 0) {
+                    where = where.or(Condition.column(State$Flow$Table
+                            .ACTION).isNot(action.toString()));
+                } else {
+                    where = where.and(Condition.column(State$Flow$Table
+                            .ACTION).isNot(action.toString()));
+                }
+                i++;
+            }
         }
 
         List<? extends Model> list = where.queryList();

@@ -32,9 +32,10 @@ import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Constant$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.constant.IConstantStore;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
-public final class ConstantStore extends AbsIdentifiableObjectStore<Constant, Constant$Flow> implements IIdentifiableObjectStore<Constant> {
+public final class ConstantStore extends AbsIdentifiableObjectStore<Constant, Constant$Flow> implements IConstantStore {
 
     public ConstantStore(IMapper<Constant, Constant$Flow> mapper) {
         super(mapper);

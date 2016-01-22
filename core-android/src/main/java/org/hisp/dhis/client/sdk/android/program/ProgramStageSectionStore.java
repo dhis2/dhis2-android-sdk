@@ -31,98 +31,69 @@ package org.hisp.dhis.client.sdk.android.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorToProgramStageSectionRelation$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow$Table;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
 public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<ProgramStageSection,
         ProgramStageSection$Flow> implements IProgramStageSectionStore {
+    private final IProgramIndicatorStore mProgramIndicatorStore;
+    private final IProgramStageDataElementStore mProgramStageDataElementStore;
 
-    public ProgramStageSectionStore(IMapper<ProgramStageSection, ProgramStageSection$Flow> mapper) {
+    public ProgramStageSectionStore(IMapper<ProgramStageSection, ProgramStageSection$Flow> mapper, IProgramIndicatorStore mProgramIndicatorStore, IProgramStageDataElementStore mProgramStageDataElementStore) {
         super(mapper);
-    }
-
-    @Override
-    public boolean insert(ProgramStageSection object) {
-        ProgramStageSection$Flow programStageSectionFlow = getMapper().mapToDatabaseEntity(object);
-        programStageSectionFlow.insert();
-
-        object.setId(programStageSectionFlow.getId());
-
-        //saving programindicator programstagesection relationship
-        List<ProgramIndicator$Flow> programIndicatorFlows = programStageSectionFlow
-                .getProgramIndicators();
-        if(programIndicatorFlows != null) {
-            for(ProgramIndicator$Flow programIndicatorFlow : programIndicatorFlows) {
-                ProgramIndicatorToProgramStageSectionRelation$Flow relationFlow = new
-                        ProgramIndicatorToProgramStageSectionRelation$Flow();
-                relationFlow.setProgramIndicator(programIndicatorFlow);
-                relationFlow.setProgramStageSection(programStageSectionFlow);
-                relationFlow.insert();
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public boolean update(ProgramStageSection object) {
-        getMapper().mapToDatabaseEntity(object).update();
-        return true;
+        this.mProgramIndicatorStore = mProgramIndicatorStore;
+        this.mProgramStageDataElementStore = mProgramStageDataElementStore;
     }
 
     @Override
     public boolean save(ProgramStageSection object) {
-        ProgramStageSection$Flow programStageSectionFlow =
-                getMapper().mapToDatabaseEntity(object);
-        programStageSectionFlow.save();
+        ProgramStageSection$Flow databaseEntity = getMapper().mapToDatabaseEntity(object);
+        if (databaseEntity != null) {
+            databaseEntity.save();
 
-        object.setId(programStageSectionFlow.getId());
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            object.setId(databaseEntity.getId());
 
-        //saving programindicator programstagesection relationship
-        List<ProgramIndicator$Flow> programIndicatorFlows = programStageSectionFlow
-                .getProgramIndicators();
-        if(programIndicatorFlows != null) {
-            for(ProgramIndicator$Flow programIndicatorFlow : programIndicatorFlows) {
-                ProgramIndicatorToProgramStageSectionRelation$Flow relationFlow = new
-                        ProgramIndicatorToProgramStageSectionRelation$Flow();
-                relationFlow.setProgramIndicator(programIndicatorFlow);
-                relationFlow.setProgramStageSection(programStageSectionFlow);
-                relationFlow.save();
+            List<ProgramIndicator> programIndicators = object.getProgramIndicators();
+            for(ProgramIndicator programIndicator : programIndicators) {
+                if(!mProgramIndicatorStore.save(programIndicator)) {
+                    return false;
+                }
             }
-        }
-        return true;
-    }
 
-    @Override
-    public boolean delete(ProgramStageSection object) {
-        List<ProgramIndicatorToProgramStageSectionRelation$Flow>
-                programIndicatorToProgramStageSectionRelationFlows = new Select()
-                .from(ProgramIndicatorToProgramStageSectionRelation$Flow.class)
-                .where(Condition.column(ProgramIndicatorToProgramStageSectionRelation$Flow$Table
-                        .PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(object.getUId())).queryList();
-        for(ProgramIndicatorToProgramStageSectionRelation$Flow
-                programIndicatorToProgramStageSectionRelationFlow
-                : programIndicatorToProgramStageSectionRelationFlows) {
-            programIndicatorToProgramStageSectionRelationFlow.delete();
+            List<ProgramStageDataElement> programStageDataElements = object.getProgramStageDataElements();
+            for(ProgramStageDataElement programStageDataElement : programStageDataElements) {
+                if(!mProgramStageDataElementStore.save(programStageDataElement)) {
+                    return false;
+                }
+            }
+            return true;
         }
-        getMapper().mapToDatabaseEntity(object).delete();
-        return true;
+
+        return false;
     }
 
     @Override
     public List<ProgramStageSection> query(ProgramStage programStage) {
         List<ProgramStageSection$Flow> programStageSectionFlows = new Select()
                 .from(ProgramStageSection$Flow.class).where(Condition
-                        .column(ProgramStageSection$Flow$Table.PROGRAMSTAGE)
+                        .column(ProgramStageSection$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE)
                         .is(programStage.getUId()))
                 .queryList();
         return getMapper().mapToModels(programStageSectionFlows);

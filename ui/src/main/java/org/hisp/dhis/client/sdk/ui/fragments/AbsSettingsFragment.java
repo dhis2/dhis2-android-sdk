@@ -26,10 +26,9 @@ import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
  *
  * Created by Vladislav Georgiev Alfredov on 1/15/16.
  */
-public class AbsSettingsFragment extends Fragment  implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public abstract class AbsSettingsFragment extends Fragment  implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public static final String TAG = AbsSettingsFragment.class.getSimpleName();
     public INavigationHandler mNavigationHandler;
-    public ISettingsPresenter mSettingsPresenter;
 
     private Button logoutButton;
     private Button synchronizeButton;
@@ -54,9 +53,9 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         updateFrequencySpinner = (Spinner) view.findViewById(R.id.settings_update_frequency_spinner);
-        if(mSettingsPresenter != null) {
-            updateFrequencySpinner.setSelection(mSettingsPresenter.getUpdateFrequency(getActivity()));
-        }
+
+        updateFrequencySpinner.setSelection(getUpdateFrequency(getActivity()));
+
         updateFrequencySpinner.setOnItemSelectedListener(this);
 
         synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
@@ -68,10 +67,6 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
         synchronizeButton.setOnClickListener(this);
     }
 
-    public void setSettingsPresenter(ISettingsPresenter settings) {
-        this.mSettingsPresenter = settings;
-    }
-
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.settings_logout_button) {
@@ -81,7 +76,7 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mSettingsPresenter.logout(getContext());
+                            logout(getContext());
                             getActivity().finish();
                         }
                     });
@@ -90,7 +85,7 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
                 final Context context = getActivity().getBaseContext();
                 Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
                 //Extend and synchronize...
-                mSettingsPresenter.synchronize(context);
+                synchronize(context);
 
                 synchronizeButton.setEnabled(false);
                 mProgessBar.setVisibility(View.VISIBLE);
@@ -101,8 +96,8 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)  {
-        if(mSettingsPresenter != null && view != null) {
-            mSettingsPresenter.setUpdateFrequency(view.getContext(), position);
+        if(view != null) {
+           setUpdateFrequency(view.getContext(), position);
         }
     }
 
@@ -157,4 +152,12 @@ public class AbsSettingsFragment extends Fragment  implements View.OnClickListen
         mNavigationHandler.showBackButton(false);
         mNavigationHandler = null;
     }
+
+    protected abstract void  logout(Context context);
+
+    protected abstract void synchronize(Context context);
+
+    protected abstract void setUpdateFrequency(Context context, int frequency);
+
+    protected abstract int getUpdateFrequency(Context context);
 }

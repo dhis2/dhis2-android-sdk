@@ -115,8 +115,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                     // mProgressBar.ge
                     // mProgressBar.setVisibility(View.VISIBLE);
                 }
-//                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
-//                        mPassword.getText());
+                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
+                        mPassword.getText());
             }
         });
     }

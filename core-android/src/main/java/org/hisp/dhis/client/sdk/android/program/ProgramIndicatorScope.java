@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -42,9 +42,9 @@ import rx.Subscriber;
 
 public class ProgramIndicatorScope implements IProgramIndicatorScope {
 
-    private ProgramIndicatorService mProgramIndicatorService;
+    private IProgramIndicatorService mProgramIndicatorService;
 
-    public ProgramIndicatorScope(ProgramIndicatorService mProgramIndicatorService) {
+    public ProgramIndicatorScope(IProgramIndicatorService mProgramIndicatorService) {
         this.mProgramIndicatorService = mProgramIndicatorService;
     }
 

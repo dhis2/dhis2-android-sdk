@@ -45,14 +45,18 @@ import org.hisp.dhis.client.sdk.android.optionset.IOptionSetScope;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramIndicatorScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramTrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeScope;
 import org.hisp.dhis.client.sdk.android.relationship.IRelationshipScope;
 import org.hisp.dhis.client.sdk.android.relationship.IRelationshipTypeScope;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipScope;
@@ -96,7 +100,8 @@ public class D2 {
     private final IEnrollmentScope mEnrollmentScope;
     private final IOptionSetScope mOptionSetScope;
     private final IProgramStageScope mProgramStageScope;
-
+    private final IProgramIndicatorScope mProgramIndicatorScope;
+    private final IProgramTrackedEntityAttributeScope mProgramTrackedEntityAttributeScope;
     private final IProgramStageDataElementScope mProgramStageDataElementScope;
     private final IProgramStageSectionScope mProgramStageSectionScope;
     private final IRelationshipScope mRelationshipScope;
@@ -129,6 +134,10 @@ public class D2 {
                 servicesModule.getProgramIndicatorService(),
                 servicesModule.getProgramStageDataElementService(),
                 servicesModule.getProgramTrackedEntityAttributeService());
+
+        mProgramTrackedEntityAttributeScope = new ProgramTrackedEntityAttributeScope(servicesModule.getProgramTrackedEntityAttributeService());
+
+        mProgramIndicatorScope = new ProgramIndicatorScope(servicesModule.getProgramIndicatorService());
 
         mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
 
@@ -191,35 +200,51 @@ public class D2 {
         return getInstance().mUserAccountScope.signOut();
     }
 
-    public static IEventScope event() {
+    public static IEventScope events() {
         return getInstance().mEventScope;
     }
 
-    public static IConstantScope constant() {
+    public static IConstantScope constants() {
         return getInstance().mConstantScope;
     }
 
-    public static IDataElementScope dataElement() {
+    public static IDataElementScope dataElements() {
         return getInstance().mDataElementScope;
     }
 
-    public static IEnrollmentScope enrollment() {
+    public static IEnrollmentScope enrollments() {
         return getInstance().mEnrollmentScope;
     }
 
-    public static IOptionSetScope optionSet() {
+    public static IOptionSetScope optionSets() {
         return getInstance().mOptionSetScope;
     }
 
-    public static IProgramStageScope programStage() {
+    public static IProgramStageScope programStages() {
         return getInstance().mProgramStageScope;
     }
 
-    public static IOrganisationUnitScope organisationUnit() {
+    public static IProgramIndicatorScope programIndicators() {
+        return getInstance().mProgramIndicatorScope;
+    }
+
+    public static IProgramTrackedEntityAttributeScope programTrackedEntityAttributes() {
+        return getInstance().mProgramTrackedEntityAttributeScope;
+    }
+
+    public static IProgramStageSectionScope programStageSections() {
+        return getInstance().mProgramStageSectionScope;
+    }
+
+    public static IProgramStageDataElementScope programStageDataElements() {
+        return getInstance().mProgramStageDataElementScope;
+    }
+
+    public static IOrganisationUnitScope organisationUnits() {
         return getInstance().mOrganisationUnitScope;
     }
 
-    public static IProgramScope program() {
+    public static IProgramScope programs() {
         return getInstance().mProgramScope;
     }
 

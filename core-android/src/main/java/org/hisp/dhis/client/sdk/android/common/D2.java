@@ -122,7 +122,13 @@ public class D2 {
                 mUserPreferences, preferencesModule.getConfigurationPreferences(),
                 controllersModule.getAssignedProgramsController(),persistenceModule.getUserAccountStore());
 
-        mProgramScope = new ProgramScope(servicesModule.getProgramService(), controllersModule.getProgramController());
+        mProgramScope = new ProgramScope(servicesModule.getProgramService(),
+                controllersModule.getProgramController(),
+                servicesModule.getProgramStageService(),
+                servicesModule.getProgramStageSectionService(),
+                servicesModule.getProgramIndicatorService(),
+                servicesModule.getProgramStageDataElementService(),
+                servicesModule.getProgramTrackedEntityAttributeService());
 
         mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
 

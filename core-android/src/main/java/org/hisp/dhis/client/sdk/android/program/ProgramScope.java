@@ -30,8 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 import java.util.List;
 import java.util.Set;
@@ -43,10 +53,20 @@ public class ProgramScope implements IProgramScope {
 
     private final IProgramService mProgramService;
     private final IProgramController mProgramController;
+    private final IProgramStageService mProgramStageService;
+    private final IProgramStageSectionService mProgramStageSectionService;
+    private final IProgramIndicatorService mProgramIndicatorService;
+    private final IProgramStageDataElementService mProgramStageDataElementService;
+    private final IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService;
 
-    public ProgramScope(IProgramService mProgramService, IProgramController mProgramController) {
+    public ProgramScope(IProgramService mProgramService, IProgramController mProgramController, IProgramStageService mProgramStageService, IProgramStageSectionService mProgramStageSectionService, IProgramIndicatorService mProgramIndicatorService, IProgramStageDataElementService mProgramStageDataElementService, IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService) {
         this.mProgramService = mProgramService;
         this.mProgramController = mProgramController;
+        this.mProgramStageService = mProgramStageService;
+        this.mProgramStageSectionService = mProgramStageSectionService;
+        this.mProgramIndicatorService = mProgramIndicatorService;
+        this.mProgramStageDataElementService = mProgramStageDataElementService;
+        this.mProgramTrackedEntityAttributeService = mProgramTrackedEntityAttributeService;
     }
 
     @Override
@@ -125,6 +145,142 @@ public class ProgramScope implements IProgramScope {
                 try {
                     List<Program> programs = mProgramService.list();
                     subscriber.onNext(programs);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramTrackedEntityAttribute>> listProgramTrackedEntityAttributes(final Program program) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramTrackedEntityAttribute>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramTrackedEntityAttribute>> subscriber) {
+                try {
+                    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = mProgramTrackedEntityAttributeService.list(program);
+                    subscriber.onNext(programTrackedEntityAttributes);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStage>> listProgramStages(final Program program) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStage>> subscriber) {
+                try {
+                    List<ProgramStage> programStages = mProgramStageService.list(program);
+                    subscriber.onNext(programStages);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStageSection>> listProgramStageSections(final ProgramStage programStage) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
+                try {
+                    List<ProgramStageSection> programStageSections = mProgramStageSectionService.list(programStage);
+                    subscriber.onNext(programStageSections);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> listProgramIndicators(final Program program) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(program);
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> listProgramIndicators(final ProgramStage programStage) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(programStage);
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> listProgramIndicators(final ProgramStageSection programStageSection) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(programStageSection);
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStageDataElement>> listProgramStageDataElements(final ProgramStage programStage) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
+                try {
+                    List<ProgramStageDataElement> programStageDataElements = mProgramStageDataElementService.list(programStage);
+                    subscriber.onNext(programStageDataElements);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStageDataElement>> listProgramStageDataElements(final ProgramStageSection programStageSection) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
+                try {
+                    List<ProgramStageDataElement> programStageDataElements = mProgramStageDataElementService.list(programStageSection);
+                    subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

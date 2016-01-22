@@ -29,7 +29,12 @@
 
 <resources>
     <dimen name="keyline_default">16dp</dimen>
+
+    <dimen name="xsmall_text_size">14sp</dimen>
+    <dimen name="small_text_size">18sp</dimen>
     <dimen name="medium_text_size">22sp</dimen>
+    <dimen name="large_text_size">24sp</dimen>
+    <dimen name="xlarge_text_size">26sp</dimen>
 
     <integer name="activity_anim_duration">300</integer>
 </resources>

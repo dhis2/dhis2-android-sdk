@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/color_primary_default"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tracked_entity_title"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:textSize="@dimen/medium_text_size"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_weight="0.86"
+            />
+
+        <Button
+            android:id="@+id/displayAttributeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.14"/>
+    </LinearLayout>
+</LinearLayout>

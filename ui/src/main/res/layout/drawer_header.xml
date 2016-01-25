@@ -32,7 +32,7 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <TextView
+        <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/drawer_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,15 +40,17 @@
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="14sp"
+            app:font="@string/font_name_regular"
             />
 
-        <TextView
+        <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/drawer_user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="13sp"
+            app:font="@string/font_name_regular"
             />
 
     </LinearLayout>

@@ -136,7 +136,6 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
 
         if(activity instanceof INavigationHandler) {
             mNavigationHandler = (INavigationHandler) activity;
-            mNavigationHandler.showBackButton(true);
         } else {
             throw new IllegalArgumentException("Activity must " +
                     "implement INavigationHandler interface");

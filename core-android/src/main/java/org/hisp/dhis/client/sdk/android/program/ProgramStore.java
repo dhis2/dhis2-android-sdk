@@ -40,9 +40,15 @@ import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$F
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,16 +56,60 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+
 public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         Program$Flow> implements IProgramStore {
-    private final ITransactionManager transactionManager;
-    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
+    private final ITransactionManager mTransactionManager;
+    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> mOrganisationUnitMapper;
+    private final IProgramTrackedEntityAttributeStore mProgramTrackedEntityAttributeStore;
+    private final IProgramStageStore mProgramStageStore;
+    private final IProgramIndicatorStore mProgramIndicatorStore;
 
     public ProgramStore(IMapper<Program, Program$Flow> mapper,
-                        ITransactionManager transactionManager, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
+                        ITransactionManager transactionManager, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper, IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore, IProgramStageStore programStageStore, IProgramIndicatorStore programIndicatorStore) {
         super(mapper);
-        this.transactionManager = transactionManager;
-        this.organisationUnitMapper = organisationUnitMapper;
+        this.mTransactionManager = transactionManager;
+        this.mOrganisationUnitMapper = organisationUnitMapper;
+        this.mProgramTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
+        this.mProgramStageStore = programStageStore;
+        this.mProgramIndicatorStore = programIndicatorStore;
+    }
+
+    @Override
+    public boolean save(Program program) {
+        isNull(program, "object must not be null");
+
+        Program$Flow databaseEntity = getMapper().mapToDatabaseEntity(program);
+        if (databaseEntity != null) {
+            databaseEntity.save();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            program.setId(databaseEntity.getId());
+
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program.getProgramTrackedEntityAttributes();
+            for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
+                if(!mProgramTrackedEntityAttributeStore.save(programTrackedEntityAttribute)) {
+                    return false;
+                }
+            }
+
+            List<ProgramIndicator> programIndicators = program.getProgramIndicators();
+            for(ProgramIndicator programIndicator : programIndicators) {
+                if(!mProgramIndicatorStore.save(programIndicator)) {
+                    return false;
+                }
+            }
+
+            List<ProgramStage> programStages = program.getProgramStages();
+            for(ProgramStage programStage : programStages) {
+                if(!mProgramStageStore.save(programStage)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -67,7 +117,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
                 new Select().from(OrganisationUnitToProgramRelation$Flow.class).
                         where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnitMapper.
+                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(mOrganisationUnitMapper.
                                 mapToDatabaseEntity(organisationUnit))).queryList();
         List<Program> programs = new ArrayList<>();
         for (OrganisationUnitToProgramRelation$Flow relationFlows : organisationUnitToProgramRelations) {
@@ -95,11 +145,11 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (!relationFlowMap.containsValue(organisationUnit.getUId())) {
                 OrganisationUnitToProgramRelation$Flow newRelationFlow = new OrganisationUnitToProgramRelation$Flow();
-                newRelationFlow.setOrganisationUnit(organisationUnitMapper.mapToDatabaseEntity(organisationUnit));
+                newRelationFlow.setOrganisationUnit(mOrganisationUnitMapper.mapToDatabaseEntity(organisationUnit));
                 newRelationFlow.setProgram(getMapper().mapToDatabaseEntity(program));
                 operations.add(DbFlowOperation.insert(newRelationFlow));
             }
         }
-        transactionManager.transact(operations);
+        mTransactionManager.transact(operations);
     }
 }

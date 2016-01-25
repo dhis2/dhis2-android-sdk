@@ -42,24 +42,33 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = ProgramStageDataElement$Flow.UNIQUE_PROGRAM_DATA_ELEMENT_GROUP, uniqueConflict = ConflictAction.FAIL)
 })
-public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
+public final class ProgramStageDataElement$Flow extends BaseIdentifiableObject$Flow {
     static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
     static final String PROGRAM_STAGE_KEY = "programstage";
     static final String DATA_ELEMENT_KEY = "dataelement";
+    static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
 
     @Column
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStage$Flow programStage;
 
     @Column
     @ForeignKey(
             references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
+    )
+    ProgramStageSection$Flow programStageSection;
+
+    @Column
+    @ForeignKey(
+            references = {
                     @ForeignKeyReference(columnName = DATA_ELEMENT_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.CASCADE
     )
     DataElement$Flow dataElement;
 
@@ -77,9 +86,6 @@ public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
 
     @Column
     boolean compulsory;
-
-    @Column
-    String programStageSection;
 
     public ProgramStage$Flow getProgramStage() {
         return programStage;
@@ -137,73 +143,15 @@ public final class ProgramStageDataElement$Flow extends BaseModel$Flow {
         this.compulsory = compulsory;
     }
 
-    public String getProgramStageSection() {
+    public ProgramStageSection$Flow getProgramStageSection() {
         return programStageSection;
     }
 
-    public void setProgramStageSection(String programStageSection) {
+    public void setProgramStageSection(ProgramStageSection$Flow programStageSection) {
         this.programStageSection = programStageSection;
     }
 
     public ProgramStageDataElement$Flow() {
         // empty constructor
     }
-
-    /*public static ProgramStageDataElement toModel(ProgramStageDataElement$Flow programStageDataElementFlow) {
-        if (programStageDataElementFlow == null) {
-            return null;
-        }
-
-        ProgramStageDataElement programStageDataElement = new ProgramStageDataElement();
-        programStageDataElement.setProgramStage(programStageDataElementFlow.getProgramStage());
-        programStageDataElement.setDataElement(programStageDataElementFlow.getDataElement());
-        programStageDataElement.setAllowFutureDate(programStageDataElementFlow.isAllowFutureDate());
-        programStageDataElement.setSortOrder(programStageDataElementFlow.getSortOrder());
-        programStageDataElement.setDisplayInReports(programStageDataElementFlow.isDisplayInReports());
-        programStageDataElement.setAllowProvidedElsewhere(programStageDataElementFlow.isAllowProvidedElsewhere());
-        programStageDataElement.setCompulsory(programStageDataElementFlow.isCompulsory());
-        programStageDataElement.setProgramStageSection(programStageDataElementFlow.getProgramStageSection());
-        return programStageDataElement;
-    }
-
-    public static ProgramStageDataElement$Flow fromModel(ProgramStageDataElement programStageDataElement) {
-        if (programStageDataElement == null) {
-            return null;
-        }
-
-        ProgramStageDataElement$Flow programStageDataElementFlow = new ProgramStageDataElement$Flow();
-        programStageDataElementFlow.setProgramStage(programStageDataElement.getProgramStage());
-        programStageDataElementFlow.setDataElement(programStageDataElement.getDataElement());
-        programStageDataElementFlow.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
-        programStageDataElementFlow.setSortOrder(programStageDataElement.getSortOrder());
-        programStageDataElementFlow.setDisplayInReports(programStageDataElement.isDisplayInReports());
-        programStageDataElementFlow.setAllowProvidedElsewhere(programStageDataElement.isAllowProvidedElsewhere());
-        programStageDataElementFlow.setCompulsory(programStageDataElement.isCompulsory());
-        programStageDataElementFlow.setProgramStageSection(programStageDataElement.getProgramStageSection());
-        return programStageDataElementFlow;
-    }
-
-    public static List<ProgramStageDataElement> toModels(List<ProgramStageDataElement$Flow> programStageDataElementFlows) {
-        List<ProgramStageDataElement> programStageDataElements = new ArrayList<>();
-
-        if (programStageDataElementFlows != null && !programStageDataElementFlows.isEmpty()) {
-            for (ProgramStageDataElement$Flow programStageDataElementFlow : programStageDataElementFlows) {
-                programStageDataElements.add(toModel(programStageDataElementFlow));
-            }
-        }
-
-        return programStageDataElements;
-    }
-
-    public static List<ProgramStageDataElement$Flow> fromModels(List<ProgramStageDataElement> programStageDataElements) {
-        List<ProgramStageDataElement$Flow> programStageDataElementFlows = new ArrayList<>();
-
-        if (programStageDataElements != null && !programStageDataElements.isEmpty()) {
-            for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
-                programStageDataElementFlows.add(fromModel(programStageDataElement));
-            }
-        }
-
-        return programStageDataElementFlows;
-    }*/
 }

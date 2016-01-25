@@ -75,4 +75,9 @@
         server before logging out. Please check your Internet connection and press
         the synchronization button
     </string>
+
+    <string name="settings">Settings</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>

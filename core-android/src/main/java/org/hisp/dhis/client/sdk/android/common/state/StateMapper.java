@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
 import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow;
 import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow;
 import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.client.sdk.android.flow.State$Flow;
 import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
@@ -51,6 +52,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
@@ -136,6 +138,10 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
             return Event.class;
         }
 
+        if (OrganisationUnit.class.getSimpleName().equals(type)) {
+            return OrganisationUnit.class;
+        }
+
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
@@ -183,6 +189,10 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
 
         if (Event.class.equals(objectClass)) {
             return Event$Flow.class;
+        }
+
+        if (OrganisationUnit.class.equals(objectClass)) {
+            return OrganisationUnit$Flow.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());

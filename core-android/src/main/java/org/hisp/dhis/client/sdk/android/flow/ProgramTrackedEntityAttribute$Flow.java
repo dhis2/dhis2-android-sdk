@@ -42,7 +42,7 @@ import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 @Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
         @UniqueGroup(groupNumber = ProgramTrackedEntityAttribute$Flow.UNIQUE_TRACKED_ENTITY_PROGRAM, uniqueConflict = ConflictAction.FAIL)
 })
-public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
+public final class ProgramTrackedEntityAttribute$Flow extends BaseIdentifiableObject$Flow {
     static final int UNIQUE_TRACKED_ENTITY_PROGRAM = 1;
     static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
     static final String PROGRAM_KEY = "program";
@@ -51,7 +51,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntityAttribute$Flow trackedEntityAttribute;
 
@@ -59,7 +59,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseModel$Flow {
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
 

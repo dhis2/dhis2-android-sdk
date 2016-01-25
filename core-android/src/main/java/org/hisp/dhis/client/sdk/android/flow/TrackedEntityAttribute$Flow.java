@@ -45,7 +45,7 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSet$Flow optionSet;
 
@@ -192,86 +192,4 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     public TrackedEntityAttribute$Flow() {
         // empty constructor
     }
-
-    /*public static TrackedEntityAttribute toModel(TrackedEntityAttribute$Flow trackedEntityAttributeFlow) {
-        if (trackedEntityAttributeFlow == null) {
-            return null;
-        }
-
-        TrackedEntityAttribute trackedEntityAttribute = new TrackedEntityAttribute();
-        trackedEntityAttribute.setId(trackedEntityAttributeFlow.getId());
-        trackedEntityAttribute.setUId(trackedEntityAttributeFlow.getUId());
-        trackedEntityAttribute.setCreated(trackedEntityAttributeFlow.getCreated());
-        trackedEntityAttribute.setLastUpdated(trackedEntityAttributeFlow.getLastUpdated());
-        trackedEntityAttribute.setName(trackedEntityAttributeFlow.getName());
-        trackedEntityAttribute.setDisplayName(trackedEntityAttributeFlow.getDisplayName());
-        trackedEntityAttribute.setAccess(trackedEntityAttributeFlow.getAccess());
-        trackedEntityAttribute.setOptionSet(trackedEntityAttributeFlow.getOptionSet());
-        trackedEntityAttribute.setUnique(trackedEntityAttributeFlow.isUnique());
-        trackedEntityAttribute.setProgramScope(trackedEntityAttributeFlow.isProgramScope());
-        trackedEntityAttribute.setOrgunitScope(trackedEntityAttributeFlow.isOrgunitScope());
-        trackedEntityAttribute.setDisplayInListNoProgram(trackedEntityAttributeFlow.isDisplayInListNoProgram());
-        trackedEntityAttribute.setDisplayOnVisitSchedule(trackedEntityAttributeFlow.isDisplayOnVisitSchedule());
-        trackedEntityAttribute.setExternalAccess(trackedEntityAttributeFlow.isExternalAccess());
-        trackedEntityAttribute.setValueType(trackedEntityAttributeFlow.getValueType());
-        trackedEntityAttribute.setConfidential(trackedEntityAttributeFlow.isConfidential());
-        trackedEntityAttribute.setInherit(trackedEntityAttributeFlow.isInherit());
-        trackedEntityAttribute.setSortOrderVisitSchedule(trackedEntityAttributeFlow.getSortOrderVisitSchedule());
-        trackedEntityAttribute.setDimension(trackedEntityAttributeFlow.getDimension());
-        trackedEntityAttribute.setSortOrderInListNoProgram(trackedEntityAttributeFlow.getSortOrderInListNoProgram());
-        return trackedEntityAttribute;
-    }
-
-    public static TrackedEntityAttribute$Flow fromModel(TrackedEntityAttribute trackedEntityAttribute) {
-        if (trackedEntityAttribute == null) {
-            return null;
-        }
-
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new TrackedEntityAttribute$Flow();
-        trackedEntityAttributeFlow.setId(trackedEntityAttribute.getId());
-        trackedEntityAttributeFlow.setUId(trackedEntityAttribute.getUId());
-        trackedEntityAttributeFlow.setCreated(trackedEntityAttribute.getCreated());
-        trackedEntityAttributeFlow.setLastUpdated(trackedEntityAttribute.getLastUpdated());
-        trackedEntityAttributeFlow.setName(trackedEntityAttribute.getName());
-        trackedEntityAttributeFlow.setDisplayName(trackedEntityAttribute.getDisplayName());
-        trackedEntityAttributeFlow.setAccess(trackedEntityAttribute.getAccess());
-        trackedEntityAttributeFlow.setOptionSet(trackedEntityAttribute.getOptionSet());
-        trackedEntityAttributeFlow.setUnique(trackedEntityAttribute.isUnique());
-        trackedEntityAttributeFlow.setProgramScope(trackedEntityAttribute.isProgramScope());
-        trackedEntityAttributeFlow.setOrgunitScope(trackedEntityAttribute.isOrgunitScope());
-        trackedEntityAttributeFlow.setDisplayInListNoProgram(trackedEntityAttribute.isDisplayInListNoProgram());
-        trackedEntityAttributeFlow.setDisplayOnVisitSchedule(trackedEntityAttribute.isDisplayOnVisitSchedule());
-        trackedEntityAttributeFlow.setExternalAccess(trackedEntityAttribute.isExternalAccess());
-        trackedEntityAttributeFlow.setValueType(trackedEntityAttribute.getValueType());
-        trackedEntityAttributeFlow.setConfidential(trackedEntityAttribute.isConfidential());
-        trackedEntityAttributeFlow.setInherit(trackedEntityAttribute.isInherit());
-        trackedEntityAttributeFlow.setSortOrderVisitSchedule(trackedEntityAttribute.getSortOrderVisitSchedule());
-        trackedEntityAttributeFlow.setDimension(trackedEntityAttribute.getDimension());
-        trackedEntityAttributeFlow.setSortOrderInListNoProgram(trackedEntityAttribute.getSortOrderInListNoProgram());
-        return trackedEntityAttributeFlow;
-    }
-
-    public static List<TrackedEntityAttribute> toModels(List<TrackedEntityAttribute$Flow> trackedEntityAttributeFlows) {
-        List<TrackedEntityAttribute> trackedEntityAttributes = new ArrayList<>();
-
-        if (trackedEntityAttributeFlows != null && !trackedEntityAttributeFlows.isEmpty()) {
-            for (TrackedEntityAttribute$Flow trackedEntityAttributeFlow : trackedEntityAttributeFlows) {
-                trackedEntityAttributes.add(toModel(trackedEntityAttributeFlow));
-            }
-        }
-
-        return trackedEntityAttributes;
-    }
-
-    public static List<TrackedEntityAttribute$Flow> fromModels(List<TrackedEntityAttribute> trackedEntityAttributes) {
-        List<TrackedEntityAttribute$Flow> trackedEntityAttributeFlows = new ArrayList<>();
-
-        if (trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
-            for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
-                trackedEntityAttributeFlows.add(fromModel(trackedEntityAttribute));
-            }
-        }
-
-        return trackedEntityAttributeFlows;
-    }*/
 }

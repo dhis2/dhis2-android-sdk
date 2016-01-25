@@ -29,17 +29,28 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
 
 @Table(databaseName = DbDhis.NAME)
 public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
+    static final String TRACKED_ENTITY_KEY = "trackedentity";
+
     @Column
-    String trackedEntity;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    TrackedEntity$Flow trackedEntity;
 
     @Column
     int type;
@@ -93,11 +104,11 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
     private List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes;
 
-    public String getTrackedEntity() {
+    public TrackedEntity$Flow getTrackedEntity() {
         return trackedEntity;
     }
 
-    public void setTrackedEntity(String trackedEntity) {
+    public void setTrackedEntity(TrackedEntity$Flow trackedEntity) {
         this.trackedEntity = trackedEntity;
     }
 

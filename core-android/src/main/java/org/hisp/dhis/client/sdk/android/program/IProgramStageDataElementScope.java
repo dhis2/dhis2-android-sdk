@@ -46,9 +46,9 @@ public interface IProgramStageDataElementScope {
 
     Observable<List<ProgramStageDataElement>> list(ProgramStage programStage);
 
-    Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
-
     Observable<List<ProgramStageDataElement>> list(ProgramStageSection programStageSection);
+
+    Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
 
     Observable<Boolean> save(ProgramStageDataElement object);
 

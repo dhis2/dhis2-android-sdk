@@ -35,11 +35,14 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
 
     static final String PROGRAM_KEY = "program";
+    static final String PROGRAM_STAGE_KEY = "programstage";
+    static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
 
     @Column
     String code;
@@ -69,6 +72,22 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.SET_NULL
+    )
+    ProgramStage$Flow programStage;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = long.class, foreignColumnName = "id"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.SET_NULL
+    )
+    ProgramStageSection$Flow programStageSection;
 
     public String getCode() {
         return code;
@@ -126,6 +145,10 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         this.displayShortName = displayShortName;
     }
 
+    public ProgramIndicator$Flow() {
+        // empty constructor
+    }
+
     public Program$Flow getProgram() {
         return program;
     }
@@ -134,79 +157,19 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         this.program = program;
     }
 
-    public ProgramIndicator$Flow() {
-        // empty constructor
+    public ProgramStageSection$Flow getProgramStageSection() {
+        return programStageSection;
     }
 
-    /*public static ProgramIndicator toModel(ProgramIndicator$Flow programIndicatorFlow) {
-        if (programIndicatorFlow == null) {
-            return null;
-        }
-
-        ProgramIndicator programIndicator = new ProgramIndicator();
-        programIndicator.setId(programIndicatorFlow.getId());
-        programIndicator.setUId(programIndicatorFlow.getUId());
-        programIndicator.setCreated(programIndicatorFlow.getCreated());
-        programIndicator.setLastUpdated(programIndicatorFlow.getLastUpdated());
-        programIndicator.setName(programIndicatorFlow.getName());
-        programIndicator.setDisplayName(programIndicatorFlow.getDisplayName());
-        programIndicator.setAccess(programIndicatorFlow.getAccess());
-        programIndicator.setCode(programIndicatorFlow.getCode());
-        programIndicator.setExpression(programIndicatorFlow.getExpression());
-        programIndicator.setDisplayDescription(programIndicatorFlow.getDisplayDescription());
-        programIndicator.setRootDate(programIndicatorFlow.getRootDate());
-        programIndicator.setExternalAccess(programIndicatorFlow.isExternalAccess());
-        programIndicator.setValueType(programIndicatorFlow.getValueType());
-        programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
-        programIndicator.setProgram(programIndicatorFlow.getProgram());
-        return programIndicator;
+    public void setProgramStageSection(ProgramStageSection$Flow programStageSection) {
+        this.programStageSection = programStageSection;
     }
 
-    public static ProgramIndicator$Flow fromModel(ProgramIndicator programIndicator) {
-        if (programIndicator == null) {
-            return null;
-        }
-
-        ProgramIndicator$Flow programIndicatorFlow = new ProgramIndicator$Flow();
-        programIndicatorFlow.setId(programIndicator.getId());
-        programIndicatorFlow.setUId(programIndicator.getUId());
-        programIndicatorFlow.setCreated(programIndicator.getCreated());
-        programIndicatorFlow.setLastUpdated(programIndicator.getLastUpdated());
-        programIndicatorFlow.setName(programIndicator.getName());
-        programIndicatorFlow.setDisplayName(programIndicator.getDisplayName());
-        programIndicatorFlow.setAccess(programIndicator.getAccess());
-        programIndicatorFlow.setCode(programIndicator.getCode());
-        programIndicatorFlow.setExpression(programIndicator.getExpression());
-        programIndicatorFlow.setDisplayDescription(programIndicator.getDisplayDescription());
-        programIndicatorFlow.setRootDate(programIndicator.getRootDate());
-        programIndicatorFlow.setExternalAccess(programIndicator.isExternalAccess());
-        programIndicatorFlow.setValueType(programIndicator.getValueType());
-        programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
-        programIndicatorFlow.setProgram(programIndicator.getProgram());
-        return programIndicatorFlow;
+    public ProgramStage$Flow getProgramStage() {
+        return programStage;
     }
 
-    public static List<ProgramIndicator> toModels(List<ProgramIndicator$Flow> programIndicatorFlows) {
-        List<ProgramIndicator> programIndicators = new ArrayList<>();
-
-        if (programIndicatorFlows != null && !programIndicatorFlows.isEmpty()) {
-            for (ProgramIndicator$Flow programIndicatorFlow : programIndicatorFlows) {
-                programIndicators.add(toModel(programIndicatorFlow));
-            }
-        }
-
-        return programIndicators;
+    public void setProgramStage(ProgramStage$Flow programStage) {
+        this.programStage = programStage;
     }
-
-    public static List<ProgramIndicator$Flow> fromModels(List<ProgramIndicator> programIndicators) {
-        List<ProgramIndicator$Flow> programIndicatorFlows = new ArrayList<>();
-
-        if (programIndicators != null && !programIndicators.isEmpty()) {
-            for (ProgramIndicator programIndicator : programIndicators) {
-                programIndicatorFlows.add(fromModel(programIndicator));
-            }
-        }
-
-        return programIndicatorFlows;
-    }*/
 }

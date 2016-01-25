@@ -29,9 +29,11 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
@@ -40,9 +42,9 @@ import rx.Subscriber;
 
 public class ProgramIndicatorScope implements IProgramIndicatorScope {
 
-    private ProgramIndicatorService mProgramIndicatorService;
+    private IProgramIndicatorService mProgramIndicatorService;
 
-    public ProgramIndicatorScope(ProgramIndicatorService mProgramIndicatorService) {
+    public ProgramIndicatorScope(IProgramIndicatorService mProgramIndicatorService) {
         this.mProgramIndicatorService = mProgramIndicatorService;
     }
 
@@ -104,6 +106,40 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
                     List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(program);
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> list(final ProgramStage programStage) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(programStage);
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> list(final ProgramStageSection programStageSection) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list(programStageSection);
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -48,7 +48,7 @@ public final class Conflict$Flow extends BaseModel$Flow {
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = IMPORT_SUMMARY_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false
+            }, saveForeignKeyModel = true
     )
     ImportSummary$Flow importSummary;
 

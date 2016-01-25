@@ -47,7 +47,7 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     OrganisationUnit$Flow parent;
 
@@ -70,66 +70,4 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
     public OrganisationUnit$Flow() {
         // empty constructor
     }
-
-    /*public static OrganisationUnit toModel(OrganisationUnit$Flow organisationUnitFlow) {
-        if (organisationUnitFlow == null) {
-            return null;
-        }
-
-        OrganisationUnit organisationUnit = new OrganisationUnit();
-        organisationUnit.setId(organisationUnitFlow.getId());
-        organisationUnit.setUId(organisationUnitFlow.getUId());
-        organisationUnit.setCreated(organisationUnitFlow.getCreated());
-        organisationUnit.setLastUpdated(organisationUnitFlow.getLastUpdated());
-        organisationUnit.setName(organisationUnitFlow.getName());
-        organisationUnit.setDisplayName(organisationUnitFlow.getDisplayName());
-        organisationUnit.setAccess(organisationUnitFlow.getAccess());
-        organisationUnit.setLabel(organisationUnitFlow.getLabel());
-        organisationUnit.setLevel(organisationUnitFlow.getLevel());
-        organisationUnit.setParent(organisationUnitFlow.getParent());
-        return organisationUnit;
-    }
-
-    public static OrganisationUnit$Flow fromModel(OrganisationUnit organisationUnit) {
-        if (organisationUnit == null) {
-            return null;
-        }
-
-        OrganisationUnit$Flow organisationUnitFlow = new OrganisationUnit$Flow();
-        organisationUnitFlow.setId(organisationUnit.getId());
-        organisationUnitFlow.setUId(organisationUnit.getUId());
-        organisationUnitFlow.setCreated(organisationUnit.getCreated());
-        organisationUnitFlow.setLastUpdated(organisationUnit.getLastUpdated());
-        organisationUnitFlow.setName(organisationUnit.getName());
-        organisationUnitFlow.setDisplayName(organisationUnit.getDisplayName());
-        organisationUnitFlow.setAccess(organisationUnit.getAccess());
-        organisationUnitFlow.setLabel(organisationUnit.getLabel());
-        organisationUnitFlow.setLevel(organisationUnit.getLevel());
-        organisationUnitFlow.setParent(organisationUnit.getParent());
-        return organisationUnitFlow;
-    }
-
-    public static List<OrganisationUnit> toModels(List<OrganisationUnit$Flow> organisationUnitFlows) {
-        List<OrganisationUnit> organisationUnits = new ArrayList<>();
-
-        if (organisationUnitFlows != null && !organisationUnitFlows.isEmpty()) {
-            for (OrganisationUnit$Flow organisationUnitFlow : organisationUnitFlows) {
-                organisationUnits.add(toModel(organisationUnitFlow));
-            }
-        }
-
-        return organisationUnits;
-    }
-
-    public static List<OrganisationUnit$Flow> fromModels(List<OrganisationUnit> organisationUnits) {
-        List<OrganisationUnit$Flow> organisationUnitFlows = new ArrayList<>();
-
-        if (organisationUnits != null && !organisationUnits.isEmpty()) {
-            for (OrganisationUnit organisationUnit : organisationUnits) {
-                organisationUnitFlows.add(fromModel(organisationUnit));
-            }
-        }
-
-        return organisationUnitFlows;
-    }*/
 }

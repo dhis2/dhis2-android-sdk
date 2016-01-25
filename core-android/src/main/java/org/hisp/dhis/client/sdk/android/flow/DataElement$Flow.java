@@ -71,7 +71,7 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSet$Flow optionSet;
 

@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
@@ -44,6 +46,10 @@ public interface IProgramIndicatorScope {
     Observable<List<ProgramIndicator>> list();
 
     Observable<List<ProgramIndicator>> list(Program program);
+
+    Observable<List<ProgramIndicator>> list(ProgramStage programStage);
+
+    Observable<List<ProgramIndicator>> list(ProgramStageSection programStageSection);
 
     Observable<Boolean> save(ProgramIndicator object);
 

@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
 
@@ -56,7 +49,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setName(program.getName());
         programFlow.setDisplayName(program.getDisplayName());
         programFlow.setAccess(program.getAccess());
-        programFlow.setTrackedEntity(program.getTrackedEntity());
+        programFlow.setTrackedEntity(MapperModuleProvider.getInstance().getTrackedEntityMapper().mapToDatabaseEntity(program.getTrackedEntity()));
         programFlow.setType(program.getType());
         programFlow.setKind(program.getKind());
         programFlow.setVersion(program.getVersion());
@@ -73,8 +66,6 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
         programFlow.setRelationshipFromA(program.isRelationshipFromA());
         programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
-        programFlow.setProgramStages(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntities(program.getProgramStages()));
-        programFlow.setProgramTrackedEntityAttributes(MapperModuleProvider.getInstance().getProgramTrackedEntityAttributeMapper().mapToDatabaseEntities(program.getProgramTrackedEntityAttributes()));
         return programFlow;
     }
 
@@ -92,7 +83,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setName(programFlow.getName());
         program.setDisplayName(programFlow.getDisplayName());
         program.setAccess(programFlow.getAccess());
-        program.setTrackedEntity(programFlow.getTrackedEntity());
+        program.setTrackedEntity(MapperModuleProvider.getInstance().getTrackedEntityMapper().mapToModel(programFlow.getTrackedEntity()));
         program.setType(programFlow.getType());
         program.setKind(programFlow.getKind());
         program.setVersion(programFlow.getVersion());
@@ -109,8 +100,6 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
         program.setRelationshipFromA(programFlow.isRelationshipFromA());
         program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
-        program.setProgramStages(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModels(programFlow.getProgramStages()));
-        program.setProgramTrackedEntityAttributes(MapperModuleProvider.getInstance().getProgramTrackedEntityAttributeMapper().mapToModels(programFlow.getProgramTrackedEntityAttributes()));
         return program;
     }
 

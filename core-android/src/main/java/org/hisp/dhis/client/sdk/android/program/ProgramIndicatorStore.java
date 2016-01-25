@@ -38,6 +38,8 @@ import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow$Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
@@ -54,6 +56,24 @@ public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<Prog
         List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
                 .from(ProgramIndicator$Flow.class).where(Condition.
                         column(ProgramIndicator$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
+                .queryList();
+        return getMapper().mapToModels(programIndicatorFlows);
+    }
+
+    @Override
+    public List<ProgramIndicator> query(ProgramStage programStage) {
+        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
+                .from(ProgramIndicator$Flow.class).where(Condition.
+                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE).is(programStage.getUId()))
+                .queryList();
+        return getMapper().mapToModels(programIndicatorFlows);
+    }
+
+    @Override
+    public List<ProgramIndicator> query(ProgramStageSection programStageSection) {
+        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
+                .from(ProgramIndicator$Flow.class).where(Condition.
+                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSection.getUId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }

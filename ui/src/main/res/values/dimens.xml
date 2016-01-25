@@ -28,6 +28,7 @@
   -->
 
 <resources>
+    <dimen name="default_stroke_width">6dp</dimen>
     <dimen name="keyline_default">16dp</dimen>
 
     <dimen name="xsmall_text_size">14sp</dimen>

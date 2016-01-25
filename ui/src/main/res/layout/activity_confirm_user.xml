@@ -97,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@drawable/button_selector_blue_dark"
+                    android:background="@drawable/button_login_selector"
                     android:singleLine="true"
                     android:text="@string/re_log_in"
                     android:textColor="@color/white"

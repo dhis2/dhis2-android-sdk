@@ -30,6 +30,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/color_primary_default"
     android:orientation="vertical">
 
@@ -39,67 +40,43 @@
         android:fillViewport="true">
 
         <RelativeLayout
-            android:id="@+id/layout_login_views"
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="8dp">
 
-            <!--<ImageView-->
-            <!--android:id="@+id/imageview_dhis_logo"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginBottom="16dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:adjustViewBounds="true"-->
-            <!--android:contentDescription="@string/description"-->
-            <!--android:maxHeight="112dp"-->
-            <!--android:maxWidth="112dp"-->
-            <!--android:src="@drawable/ic_dhis2_logo" />-->
-
             <FrameLayout
                 android:id="@+id/layout_dhis_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
                 android:layout_centerHorizontal="true">
 
-                <!--<org.hisp.dhis.client.sdk.ui.views.CircleView-->
-                    <!--android:id="@+id/imageview_dhis_logo"-->
-                    <!--android:layout_width="112dp"-->
-                    <!--android:layout_height="112dp"-->
-                    <!--app:circle_gap="52dp"-->
-                    <!--app:circle_radius="52dp"-->
-                    <!--app:fill_color="@color/white"-->
-                    <!--app:stroke_color="@color/white"-->
-                    <!--app:stroke_width="4dp" />-->
+                <org.hisp.dhis.client.sdk.ui.views.CircleView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:stroke_color="@color/white"
+                    app:stroke_width="@dimen/default_stroke_width" />
+
+                <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                    android:id="@+id/progress_bar_circular"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="true" />
 
                 <org.hisp.dhis.client.sdk.ui.views.FontTextView
-                    android:layout_width="112dp"
-                    android:layout_height="112dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="2"
+                    android:text="@string/two"
                     android:textColor="@color/white"
                     android:textSize="74sp"
                     app:font="@string/font_name_regular" />
 
-                <org.hisp.dhis.client.sdk.ui.views.CircularProgressBar
-                    android:id="@+id/progress_bar_circular"
-                    android:layout_width="112dp"
-                    android:layout_height="112dp"
-                    android:indeterminate="true" />
-
-                <!--library:cpb_color="@color/color_accent"-->
-                <!--library:cpb_max_sweep_angle="300"-->
-                <!--library:cpb_min_sweep_angle="10"-->
-                <!--library:cpb_rotation_speed="0.8"-->
-                <!--library:cpb_stroke_width="8dp"-->
-                <!--library:cpb_sweep_speed="1.0"-->
-
             </FrameLayout>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/cardview_login_views"
+                android:id="@+id/layout_login_views"
                 android:layout_width="384dp"
                 android:layout_height="384dp"
                 android:layout_below="@id/layout_dhis_logo"
@@ -170,8 +147,9 @@
                         android:layout_width="180dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@drawable/button_selector_blue_dark"
+                        android:background="@drawable/button_login_selector"
                         android:text="@string/log_in"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="17sp"
                         app:font="@string/font_name_bold" />

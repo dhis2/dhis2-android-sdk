@@ -35,32 +35,34 @@ import android.graphics.Paint;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.R;
 
-import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
-
-public class CircularProgressBar extends fr.castorflex.android.circularprogressbar.CircularProgressBar {
+public class CircleView extends View {
     private int mStrokeBackgroundColor;
+    private float mStrokeWidth;
 
-    public CircularProgressBar(Context context) {
-        super(context);
+    public CircleView(Context context) {
+        this(context, null);
     }
 
-    public CircularProgressBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public CircleView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.style.AppTheme_Base);
     }
 
-    public CircularProgressBar(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public CircleView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
 
         TypedArray ars = context.obtainStyledAttributes(attrs,
-                R.styleable.CircularProgressBar, defStyle, 0);
-        mStrokeBackgroundColor = ars.getColor(R.styleable.CircularProgressBar_cpb_stroke_background_color,
-                ContextCompat.getColor(getContext(), R.color.cpb_default_color));
+                R.styleable.CircleView, defStyleAttr, 0);
+        mStrokeBackgroundColor = ars.getColor(R.styleable.CircleView_stroke_color,
+                ContextCompat.getColor(getContext(), R.color.white));
+        mStrokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width,
+                getResources().getDimensionPixelSize(R.dimen.default_stroke_width));
+
         ars.recycle();
     }
-
 
     @Override
     public void onDraw(Canvas canvas) {
@@ -70,46 +72,43 @@ public class CircularProgressBar extends fr.castorflex.android.circularprogressb
         float ox = w / 2.0f;
         float oy = h / 2.0f;
 
-        float strokeWidth = getContext().getResources()
-                .getDimension(R.dimen.cpb_default_stroke_width);
-        if (getIndeterminateDrawable() != null &&
-                getIndeterminateDrawable() instanceof CircularProgressDrawable) {
-            CircularProgressDrawable progressDrawable = (CircularProgressDrawable)
-                    getIndeterminateDrawable();
-            strokeWidth = progressDrawable.getCurrentPaint().getStrokeWidth();
-        }
-
-        canvas.drawCircle(ox, oy, getCircleRadius(strokeWidth), getStroke(strokeWidth,
-                mStrokeBackgroundColor));
-
+        canvas.drawCircle(ox, oy, getCircleRadius(), getStroke());
         super.onDraw(canvas);
     }
 
-    private Paint getStroke(float strokeWidth, int strokeColor) {
+    private Paint getStroke() {
         // Made background stroke 2px less wide than progress drawable,
         // in order to avoid un-hidden background parts
-        float adjustedStrokeWidth = strokeWidth - 2 > 0 ? strokeWidth - 2 : strokeWidth;
+        float adjustedStrokeWidth = mStrokeWidth - 2 > 0 ? mStrokeWidth - 2 : mStrokeWidth;
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(adjustedStrokeWidth);
-        paint.setColor(strokeColor);
+        paint.setColor(mStrokeBackgroundColor);
         paint.setStyle(Paint.Style.STROKE);
         return paint;
     }
 
-    private float getCircleRadius(float strokeWidth) {
+    private float getCircleRadius() {
         float w = this.getWidth();
         float h = this.getHeight();
 
-        float radius = (w > h ? w / 2.0f : h / 2.0f) - (strokeWidth / 2.0f);
+        float radius = (w > h ? w / 2.0f : h / 2.0f) - (mStrokeWidth / 2.0f);
         return radius <= 0 ? 1 : radius;
-    }
-
-    public void setStrokeBackgroundColor(@ColorInt int strokeBackgroundColor) {
-        mStrokeBackgroundColor = strokeBackgroundColor;
     }
 
     public int getStrokeBackgroundColor() {
         return mStrokeBackgroundColor;
+    }
+
+    public void setStrokeBackgroundColor(@ColorInt int mStrokeBackgroundColor) {
+        this.mStrokeBackgroundColor = mStrokeBackgroundColor;
+    }
+
+    public float getStrokeWidth() {
+        return mStrokeWidth;
+    }
+
+    public void setStrokeWidth(float mStrokeWidth) {
+        this.mStrokeWidth = mStrokeWidth;
     }
 }

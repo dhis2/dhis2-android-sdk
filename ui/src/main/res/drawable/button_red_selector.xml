@@ -32,14 +32,14 @@
     <item android:state_pressed="false">
         <shape android:shape="rectangle">
             <corners android:radius="1dp"/>
-            <solid android:color="@color/color_accent"/>
+            <solid android:color="@color/color_accent_default"/>
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="1dp"/>
-            <solid android:color="@color/color_accent"/>
+            <solid android:color="@color/color_accent_default"/>
         </shape>
     </item>
 </selector>

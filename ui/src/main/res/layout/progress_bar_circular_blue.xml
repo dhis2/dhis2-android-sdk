@@ -34,7 +34,7 @@
     android:layout_height="112dp"
     android:indeterminate="true"
     android:padding="8dp"
-    library:cpb_color="@color/color_accent"
+    library:cpb_color="@color/color_accent_default"
     library:cpb_max_sweep_angle="300"
     library:cpb_min_sweep_angle="10"
     library:cpb_rotation_speed="0.8"

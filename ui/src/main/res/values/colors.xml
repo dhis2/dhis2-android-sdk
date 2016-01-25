@@ -33,7 +33,10 @@
     <color name="color_primary_default">#FF2196F3</color>
     <color name="color_primary_light">#FFBBDEFB</color>
 
-    <color name="color_accent">#FFFF9800</color>
+    <color name="color_accent_dark">#FFF57C00</color>
+    <color name="color_accent_default">#FFFF9800</color>
+    <color name="color_accent_light">#FFFFE0B2</color>
+
     <color name="color_divider">#FFB6B6B6</color>
 
     <color name="color_text_primary">#FFFFFFFF</color>

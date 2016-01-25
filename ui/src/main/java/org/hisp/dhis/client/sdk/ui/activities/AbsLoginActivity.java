@@ -29,21 +29,23 @@
 package org.hisp.dhis.client.sdk.ui.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.views.CircularProgressBar;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
+import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
@@ -51,75 +53,75 @@ import static android.text.TextUtils.isEmpty;
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
-    private View mViewsContainer;
+    private RelativeLayout mLayoutContent;
+
+    private FrameLayout mProgressBarContainer;
     private CircularProgressBar mProgressBar;
+
+    private View mLoginViewsContainer;
     private EditText mServerUrl;
     private EditText mUsername;
     private EditText mPassword;
     private Button mLogInButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
+        mProgressBarContainer = (FrameLayout) findViewById(R.id.layout_dhis_logo);
+
         // Configuring progress bar (setting width of 6dp)
-        float progressBarWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6,
-                getResources().getDisplayMetrics());
+        float progressBarStrokeWidth = getResources()
+                .getDimensionPixelSize(R.dimen.default_stroke_width);
         mProgressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
-        mProgressBar.setStrokeBackgroundColor(ContextCompat.getColor(this, R.color.white));
         mProgressBar.setIndeterminateDrawable(new CircularProgressDrawable.Builder(this)
                 .color(ContextCompat.getColor(this, R.color.color_primary_default))
-                .sweepSpeed(1f)
-                .strokeWidth(progressBarWidth)
                 .style(CircularProgressDrawable.STYLE_ROUNDED)
+                .strokeWidth(progressBarStrokeWidth)
+                .rotationSpeed(1f)
+                .sweepSpeed(1f)
                 .build());
 
-        mViewsContainer = findViewById(R.id.layout_login_views);
+        mLoginViewsContainer = findViewById(R.id.layout_login_views);
         mLogInButton = (Button) findViewById(R.id.button_log_in);
 
         mServerUrl = (EditText) findViewById(R.id.edittext_server_url);
         mUsername = (EditText) findViewById(R.id.edittext_username);
         mPassword = (EditText) findViewById(R.id.edittext_password);
 
-        setDebugLoginCredentials();
-
         FieldTextWatcher watcher = new FieldTextWatcher();
         mServerUrl.addTextChangedListener(watcher);
         mUsername.addTextChangedListener(watcher);
         mPassword.addTextChangedListener(watcher);
 
-        // hideProgressBar(false);
+        hideProgress(false);
         onTextChanged();
 
         if (savedInstanceState == null) {
             startIntroAnimation();
         }
 
-        mProgressBar.setVisibility(View.VISIBLE);
         mLogInButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).isRunning()) {
-                    ((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).progressiveStop();
-//                    mProgressBar.progressiveStop(new CircularProgressDrawable.OnEndListener() {
-//                        @Override
-//                        public void onEnd(CircularProgressDrawable circularProgressDrawable) {
-//                            // mProgressBar.setVisibility(View.GONE);
-//                        }
-//                    });
-                } else {
-                    ((CircularProgressDrawable) mProgressBar.getIndeterminateDrawable()).start();
-                    // mProgressBar.ge
-                    // mProgressBar.setVisibility(View.VISIBLE);
-                }
+                showProgress(true);
+
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        hideProgress(true);
+                    }
+                }, 3000);
+
 //                onLogInButtonClicked(mServerUrl.getText(), mUsername.getText(),
 //                        mPassword.getText());
             }
         });
     }
+
 
     @Override
     protected final void onSaveInstanceState(Bundle outState) {
@@ -131,11 +133,45 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     protected final void onRestoreInstanceState(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null &&
                 savedInstanceState.getBoolean(IS_LOADING, false)) {
-            showProgressBar(false);
+            showProgress(false);
         } else {
-            hideProgressBar(false);
+            hideProgress(false);
         }
+
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void showProgress(boolean withAnimation) {
+        if (withAnimation) {
+            Animation loginViewsAnimation = AnimationUtils
+                    .loadAnimation(this, R.anim.out_down);
+//            Animation progressBarAnimation = AnimationUtils
+//                    .loadAnimation(this, R.anim.out_down_half);
+
+            mLoginViewsContainer.startAnimation(loginViewsAnimation);
+//            mProgressBarContainer.startAnimation(progressBarAnimation);
+        }
+
+        mLoginViewsContainer.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgress(boolean withAnimation) {
+        if (withAnimation) {
+            Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_up);
+            mLoginViewsContainer.startAnimation(anim);
+
+            mProgressBar.progressiveStop(new CircularProgressDrawable.OnEndListener() {
+                @Override
+                public void onEnd(CircularProgressDrawable circularProgressDrawable) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                }
+            });
+        } else {
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
+
+        mLoginViewsContainer.setVisibility(View.VISIBLE);
     }
 
     private void startIntroAnimation() {
@@ -150,32 +186,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         );
     }
 
-    private void setDebugLoginCredentials() {
-        mServerUrl.setText("https://play.dhis2.org/demo");
-        mUsername.setText("android");
-        mPassword.setText("Android123");
-    }
-
-    private void showProgressBar(boolean withAnimation) {
-        if (withAnimation) {
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.out_up);
-            mViewsContainer.startAnimation(anim);
-        }
-
-        mViewsContainer.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideProgressBar(boolean withAnimation) {
-        if (withAnimation) {
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_down);
-            mViewsContainer.startAnimation(anim);
-        }
-
-        mViewsContainer.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
-    }
-
     private class FieldTextWatcher extends AbsTextWatcher {
 
         @Override
@@ -188,14 +198,30 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
      * Should be called in order to show progressbar.
      */
     protected final void onStartLoading() {
-        showProgressBar(true);
+        showProgress(true);
     }
 
     /**
      * Should be called after the loading is complete.
      */
     protected final void onFinishLoading() {
-        hideProgressBar(true);
+        hideProgress(true);
+    }
+
+    protected EditText getServerUrl() {
+        return mServerUrl;
+    }
+
+    protected EditText getUsername() {
+        return mUsername;
+    }
+
+    protected EditText getPassword() {
+        return mPassword;
+    }
+
+    protected Button getLoginButton() {
+        return mLogInButton;
     }
 
     protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username,

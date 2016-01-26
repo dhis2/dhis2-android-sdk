@@ -113,7 +113,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected final void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(IS_LOADING, progressBar.isShown());

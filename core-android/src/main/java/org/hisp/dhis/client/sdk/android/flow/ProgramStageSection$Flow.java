@@ -52,7 +52,7 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStage$Flow programStage;
@@ -104,74 +104,4 @@ public final class ProgramStageSection$Flow extends BaseIdentifiableObject$Flow 
     public ProgramStageSection$Flow() {
         // empty constructor
     }
-
-    /*public static ProgramStageSection toModel(ProgramStageSection$Flow programStageSectionFlow) {
-        if (programStageSectionFlow == null) {
-            return null;
-        }
-
-        ProgramStageSection programStageSection = new ProgramStageSection();
-        programStageSection.setId(programStageSectionFlow.getId());
-        programStageSection.setUId(programStageSectionFlow.getUId());
-        programStageSection.setCreated(programStageSectionFlow.getCreated());
-        programStageSection.setLastUpdated(programStageSectionFlow.getLastUpdated());
-        programStageSection.setName(programStageSectionFlow.getName());
-        programStageSection.setDisplayName(programStageSectionFlow.getDisplayName());
-        programStageSection.setAccess(programStageSectionFlow.getAccess());
-        programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
-        programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
-        programStageSection.setProgramStage(programStageSectionFlow.getProgramStage());
-        programStageSection.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .toModels(programStageSectionFlow.getProgramStageDataElements()));
-        programStageSection.setProgramIndicators(ProgramIndicator$Flow
-                .toModels(programStageSectionFlow.getProgramIndicators()));
-        return programStageSection;
-    }
-
-    public static ProgramStageSection$Flow fromModel(ProgramStageSection programStageSection) {
-        if (programStageSection == null) {
-            return null;
-        }
-
-        ProgramStageSection$Flow programStageSectionFlow = new ProgramStageSection$Flow();
-        programStageSectionFlow.setId(programStageSection.getId());
-        programStageSectionFlow.setUId(programStageSection.getUId());
-        programStageSectionFlow.setCreated(programStageSection.getCreated());
-        programStageSectionFlow.setLastUpdated(programStageSection.getLastUpdated());
-        programStageSectionFlow.setName(programStageSection.getName());
-        programStageSectionFlow.setDisplayName(programStageSection.getDisplayName());
-        programStageSectionFlow.setAccess(programStageSection.getAccess());
-        programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
-        programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
-        programStageSectionFlow.setProgramStage(programStageSection.getProgramStage());
-        programStageSectionFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(programStageSection.getProgramStageDataElements()));
-        programStageSectionFlow.setProgramIndicators(ProgramIndicator$Flow
-                .fromModels(programStageSection.getProgramIndicators()));
-        return programStageSectionFlow;
-    }
-
-    public static List<ProgramStageSection> toModels(List<ProgramStageSection$Flow> programStageSectionFlows) {
-        List<ProgramStageSection> programStageSections = new ArrayList<>();
-
-        if (programStageSectionFlows != null && !programStageSectionFlows.isEmpty()) {
-            for (ProgramStageSection$Flow programStageSectionFlow : programStageSectionFlows) {
-                programStageSections.add(toModel(programStageSectionFlow));
-            }
-        }
-
-        return programStageSections;
-    }
-
-    public static List<ProgramStageSection$Flow> fromModels(List<ProgramStageSection> programStageSections) {
-        List<ProgramStageSection$Flow> programStageSectionFlows = new ArrayList<>();
-
-        if (programStageSections != null && !programStageSections.isEmpty()) {
-            for (ProgramStageSection programStageSection : programStageSections) {
-                programStageSectionFlows.add(fromModel(programStageSection));
-            }
-        }
-
-        return programStageSectionFlows;
-    }*/
 }

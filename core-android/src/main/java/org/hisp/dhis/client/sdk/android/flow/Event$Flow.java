@@ -61,7 +61,7 @@ public final class Event$Flow extends BaseModel$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = String.class, foreignColumnName = "trackedEntityInstanceUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstance;
@@ -69,7 +69,7 @@ public final class Event$Flow extends BaseModel$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = ENROLLMENT_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = ENROLLMENT_KEY, columnType = String.class, foreignColumnName = "enrollmentUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Enrollment$Flow enrollment;
@@ -245,84 +245,4 @@ public final class Event$Flow extends BaseModel$Flow {
     public Event$Flow() {
         // empty constructor
     }
-
-    /*public static Event toModel(Event$Flow eventFlow) {
-        if (eventFlow == null) {
-            return null;
-        }
-
-        Event event = new Event();
-        event.setId(eventFlow.getId());
-        event.setUId(eventFlow.getEventUid());
-        event.setStatus(eventFlow.getStatus());
-        event.setLatitude(eventFlow.getLatitude());
-        event.setLongitude(eventFlow.getLongitude());
-        event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
-        event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
-        event.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(eventFlow.getTrackedEntityInstance()));
-        event.setEnrollment(Enrollment$Flow.toModel(eventFlow.getEnrollment()));
-        event.setProgramId(eventFlow.getProgramId());
-        event.setProgramStageId(eventFlow.getProgramStageId());
-        event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());
-        event.setEventDate(eventFlow.getEventDate());
-        event.setDueDate(eventFlow.getDueDate());
-        event.setTrackedEntityDataValues(TrackedEntityDataValue$Flow.toModels(eventFlow.getTrackedEntityDataValues()));
-        event.setName(eventFlow.getName());
-        event.setDisplayName(eventFlow.getDisplayName());
-        event.setCreated(eventFlow.getCreated());
-        event.setLastUpdated(eventFlow.getLastUpdated());
-        event.setAccess(eventFlow.getAccess());
-        return event;
-    }
-
-    public static Event$Flow fromModel(Event event) {
-        if (event == null) {
-            return null;
-        }
-
-        Event$Flow eventFlow = new Event$Flow();
-        eventFlow.setId(event.getId());
-        eventFlow.setEventUid(event.getUId());
-        eventFlow.setStatus(event.getStatus());
-        eventFlow.setLatitude(event.getLatitude());
-        eventFlow.setLongitude(event.getLongitude());
-        eventFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(event.getTrackedEntityInstance()));
-        eventFlow.setEnrollment(Enrollment$Flow.fromModel(event.getEnrollment()));
-        eventFlow.setProgramId(event.getProgramId());
-        eventFlow.setProgramStageId(event.getProgramStageId());
-        eventFlow.setOrganisationUnitId(event.getOrganisationUnitId());
-        eventFlow.setEventDate(event.getEventDate());
-        eventFlow.setDueDate(event.getDueDate());
-        eventFlow.setTrackedEntityDataValues(TrackedEntityDataValue$Flow.fromModels(event.getTrackedEntityDataValues()));
-        eventFlow.setName(event.getName());
-        eventFlow.setDisplayName(event.getDisplayName());
-        eventFlow.setCreated(event.getCreated());
-        eventFlow.setLastUpdated(event.getLastUpdated());
-        eventFlow.setAccess(event.getAccess());
-        return eventFlow;
-    }
-
-    public static List<Event> toModels(List<Event$Flow> eventFlows) {
-        List<Event> events = new ArrayList<>();
-
-        if (eventFlows != null && !eventFlows.isEmpty()) {
-            for (Event$Flow eventFlow : eventFlows) {
-                events.add(toModel(eventFlow));
-            }
-        }
-
-        return events;
-    }
-
-    public static List<Event$Flow> fromModels(List<Event> events) {
-        List<Event$Flow> eventFlows = new ArrayList<>();
-
-        if (events != null && !events.isEmpty()) {
-            for (Event event : events) {
-                eventFlows.add(fromModel(event));
-            }
-        }
-
-        return eventFlows;
-    }*/
 }

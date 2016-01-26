@@ -31,7 +31,9 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> {
 
@@ -49,6 +51,7 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElementFlow.setName(programStageDataElement.getName());
         programStageDataElementFlow.setDisplayName(programStageDataElement.getDisplayName());
         programStageDataElementFlow.setAccess(programStageDataElement.getAccess());
+        programStageDataElementFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programStageDataElement.getProgramStageSection()));
         programStageDataElementFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programStageDataElement.getProgramStage()));
         programStageDataElementFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programStageDataElement.getDataElement()));
         programStageDataElementFlow.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
@@ -56,7 +59,6 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElementFlow.setDisplayInReports(programStageDataElement.isDisplayInReports());
         programStageDataElementFlow.setAllowProvidedElsewhere(programStageDataElement.isAllowProvidedElsewhere());
         programStageDataElementFlow.setCompulsory(programStageDataElement.isCompulsory());
-        programStageDataElementFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programStageDataElement.getProgramStageSection()));
         return programStageDataElementFlow;
     }
 

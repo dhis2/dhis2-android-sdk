@@ -35,6 +35,7 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 @Table(databaseName = DbDhis.NAME)
@@ -60,7 +61,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     boolean externalAccess;
 
     @Column
-    String valueType;
+    ValueType valueType;
 
     @Column
     String displayShortName;
@@ -68,7 +69,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
@@ -76,7 +77,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.SET_NULL
     )
     ProgramStage$Flow programStage;
@@ -84,7 +85,7 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.SET_NULL
     )
     ProgramStageSection$Flow programStageSection;
@@ -129,11 +130,11 @@ public final class ProgramIndicator$Flow extends BaseIdentifiableObject$Flow {
         this.externalAccess = externalAccess;
     }
 
-    public String getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
-    public void setValueType(String valueType) {
+    public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
 

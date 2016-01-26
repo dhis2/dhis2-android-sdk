@@ -62,6 +62,7 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -88,6 +89,7 @@ public class NetworkModule implements INetworkModule {
     private final IEventApiClient mEventApiClient;
     private final IEnrollmentApiClient mEnrollmentApiClient;
     private final ITrackedEntityAttributeApiClient mTrackedEntityAttributeApiClient;
+    private final ITrackedEntityApiClient mTrackedEntityApiClient;
     private final IProgramApiClient mProgramApiClient;
     private final IOrganisationUnitApiClient mOrganisationUnitApiClient;
 
@@ -132,6 +134,7 @@ public class NetworkModule implements INetworkModule {
         mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(OrganisationUnitApiClientRetrofit.class), new ModelUtils());
 
         mTrackedEntityAttributeApiClient = null; // TODO: implement TrackedEntityAttributeApiClient class.
+        mTrackedEntityApiClient = null;
     }
 
     @Override
@@ -167,6 +170,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IOrganisationUnitApiClient getOrganisationUnitApiClient() {
         return mOrganisationUnitApiClient;
+    }
+
+    @Override
+    public ITrackedEntityApiClient getTrackedEntityApiClient() {
+        return mTrackedEntityApiClient;
     }
 
     @Override

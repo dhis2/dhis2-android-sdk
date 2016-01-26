@@ -65,8 +65,6 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollmentFlow.setCreated(enrollment.getCreated());
         enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
         enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setEvents(MapperModuleProvider.getInstance().getEventMapper().mapToDatabaseEntities(enrollment.getEvents()));
-        enrollmentFlow.setTrackedEntityAttributeValues(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToDatabaseEntities(enrollment.getTrackedEntityAttributeValues()));
         return enrollmentFlow;
     }
 
@@ -91,8 +89,6 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
         enrollment.setCreated(enrollmentFlow.getCreated());
         enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
         enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setEvents(MapperModuleProvider.getInstance().getEventMapper().mapToModels(enrollmentFlow.getEvents()));
-        enrollment.setTrackedEntityAttributeValues(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToModels(enrollmentFlow.getTrackedEntityAttributeValues()));
         return enrollment;
     }
 

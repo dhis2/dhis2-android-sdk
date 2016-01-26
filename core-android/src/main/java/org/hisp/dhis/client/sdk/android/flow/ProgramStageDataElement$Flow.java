@@ -51,7 +51,7 @@ public final class ProgramStageDataElement$Flow extends BaseIdentifiableObject$F
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStage$Flow programStage;
@@ -59,7 +59,7 @@ public final class ProgramStageDataElement$Flow extends BaseIdentifiableObject$F
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageSection$Flow programStageSection;
@@ -67,7 +67,7 @@ public final class ProgramStageDataElement$Flow extends BaseIdentifiableObject$F
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.CASCADE
     )
     DataElement$Flow dataElement;

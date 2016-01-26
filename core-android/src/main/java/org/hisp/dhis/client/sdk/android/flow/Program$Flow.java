@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 
@@ -47,22 +47,19 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntity$Flow trackedEntity;
 
     @Column
-    int type;
-
-    @Column
-    String kind;
+    ProgramType programType;
 
     @Column
     int version;
 
     @Column
-    String dateOfEnrollmentDescription;
+    String enrollmentDateLabel;
 
     @Column
     String description;
@@ -77,7 +74,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
     boolean displayIncidentDate;
 
     @Column
-    String dateOfIncidentDescription;
+    String incidentDateLabel;
 
     @Column
     boolean registration;
@@ -112,20 +109,12 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.trackedEntity = trackedEntity;
     }
 
-    public int getType() {
-        return type;
+    public ProgramType getProgramType() {
+        return programType;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public String getKind() {
-        return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
+    public void setProgramType(ProgramType programType) {
+        this.programType = programType;
     }
 
     public int getVersion() {
@@ -136,12 +125,12 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.version = version;
     }
 
-    public String getDateOfEnrollmentDescription() {
-        return dateOfEnrollmentDescription;
+    public String getEnrollmentDateLabel() {
+        return enrollmentDateLabel;
     }
 
-    public void setDateOfEnrollmentDescription(String dateOfEnrollmentDescription) {
-        this.dateOfEnrollmentDescription = dateOfEnrollmentDescription;
+    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
+        this.enrollmentDateLabel = enrollmentDateLabel;
     }
 
     public String getDescription() {
@@ -176,12 +165,12 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.displayIncidentDate = displayIncidentDate;
     }
 
-    public String getDateOfIncidentDescription() {
-        return dateOfIncidentDescription;
+    public String getIncidentDateLabel() {
+        return incidentDateLabel;
     }
 
-    public void setDateOfIncidentDescription(String dateOfIncidentDescription) {
-        this.dateOfIncidentDescription = dateOfIncidentDescription;
+    public void setIncidentDateLabel(String incidentDateLabel) {
+        this.incidentDateLabel = incidentDateLabel;
     }
 
     public boolean isRegistration() {
@@ -259,98 +248,4 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
     public Program$Flow() {
         // empty constructor
     }
-
-    /*public static Program toModel(Program$Flow programFlow) {
-        if (programFlow == null) {
-            return null;
-        }
-
-        Program program = new Program();
-        program.setId(programFlow.getId());
-        program.setUId(programFlow.getUId());
-        program.setCreated(programFlow.getCreated());
-        program.setLastUpdated(programFlow.getLastUpdated());
-        program.setName(programFlow.getName());
-        program.setDisplayName(programFlow.getDisplayName());
-        program.setAccess(programFlow.getAccess());
-        program.setTrackedEntity(programFlow.getTrackedEntity());
-        program.setType(programFlow.getType());
-        program.setKind(programFlow.getKind());
-        program.setVersion(programFlow.getVersion());
-        program.setDateOfEnrollmentDescription(programFlow.getDateOfEnrollmentDescription());
-        program.setDescription(programFlow.getDescription());
-        program.setOnlyEnrollOnce(programFlow.isOnlyEnrollOnce());
-        program.setExtenalAccess(programFlow.isExtenalAccess());
-        program.setDisplayIncidentDate(programFlow.isDisplayIncidentDate());
-        program.setDateOfIncidentDescription(programFlow.getDateOfIncidentDescription());
-        program.setRegistration(programFlow.isRegistration());
-        program.setSelectEnrollmentDatesInFuture(programFlow.isSelectEnrollmentDatesInFuture());
-        program.setDataEntryMethod(programFlow.isDataEntryMethod());
-        program.setSingleEvent(programFlow.isSingleEvent());
-        program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
-        program.setRelationshipFromA(programFlow.isRelationshipFromA());
-        program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
-        program.setProgramStages(ProgramStage$Flow.toModels(programFlow.getProgramStages()));
-        program.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow.toModels(programFlow.getProgramTrackedEntityAttributes()));
-        return program;
-    }
-
-    public static Program$Flow fromModel(Program program) {
-        if (program == null) {
-            return null;
-        }
-
-        Program$Flow programFlow = new Program$Flow();
-        programFlow.setId(program.getId());
-        programFlow.setUId(program.getUId());
-        programFlow.setCreated(program.getCreated());
-        programFlow.setLastUpdated(program.getLastUpdated());
-        programFlow.setName(program.getName());
-        programFlow.setDisplayName(program.getDisplayName());
-        programFlow.setAccess(program.getAccess());
-        programFlow.setTrackedEntity(program.getTrackedEntity());
-        programFlow.setType(program.getType());
-        programFlow.setKind(program.getKind());
-        programFlow.setVersion(program.getVersion());
-        programFlow.setDateOfEnrollmentDescription(program.getDateOfEnrollmentDescription());
-        programFlow.setDescription(program.getDescription());
-        programFlow.setOnlyEnrollOnce(program.isOnlyEnrollOnce());
-        programFlow.setExtenalAccess(program.isExtenalAccess());
-        programFlow.setDisplayIncidentDate(program.isDisplayIncidentDate());
-        programFlow.setDateOfIncidentDescription(program.getDateOfIncidentDescription());
-        programFlow.setRegistration(program.isRegistration());
-        programFlow.setSelectEnrollmentDatesInFuture(program.isSelectEnrollmentDatesInFuture());
-        programFlow.setDataEntryMethod(program.isDataEntryMethod());
-        programFlow.setSingleEvent(program.isSingleEvent());
-        programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
-        programFlow.setRelationshipFromA(program.isRelationshipFromA());
-        programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
-        programFlow.setProgramStages(ProgramStage$Flow.fromModels(program.getProgramStages()));
-        programFlow.setProgramTrackedEntityAttributes(ProgramTrackedEntityAttribute$Flow.fromModels(program.getProgramTrackedEntityAttributes()));
-        return programFlow;
-    }
-
-    public static List<Program> toModels(List<Program$Flow> programFlows) {
-        List<Program> programs = new ArrayList<>();
-
-        if (programFlows != null && !programFlows.isEmpty()) {
-            for (Program$Flow programFlow : programFlows) {
-                programs.add(toModel(programFlow));
-            }
-        }
-
-        return programs;
-    }
-
-    public static List<Program$Flow> fromModels(List<Program> programs) {
-        List<Program$Flow> programFlows = new ArrayList<>();
-
-        if (programs != null && !programs.isEmpty()) {
-            for (Program program : programs) {
-                programFlows.add(fromModel(program));
-            }
-        }
-
-        return programFlows;
-    }*/
 }

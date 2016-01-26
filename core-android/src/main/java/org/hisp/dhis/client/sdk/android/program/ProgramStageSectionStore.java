@@ -62,6 +62,38 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
     }
 
     @Override
+    public boolean insert(ProgramStageSection object) {
+        ProgramStageSection$Flow databaseEntity = getMapper().mapToDatabaseEntity(object);
+        if (databaseEntity != null) {
+            databaseEntity.insert();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            object.setId(databaseEntity.getId());
+
+            List<ProgramIndicator> programIndicators = object.getProgramIndicators();
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.insert(programIndicator)) {
+                        return false;
+                    }
+                }
+            }
+
+            List<ProgramStageDataElement> programStageDataElements = object.getProgramStageDataElements();
+            if(programStageDataElements != null) {
+                for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
+                    if (!mProgramStageDataElementStore.insert(programStageDataElement)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean save(ProgramStageSection object) {
         ProgramStageSection$Flow databaseEntity = getMapper().mapToDatabaseEntity(object);
         if (databaseEntity != null) {
@@ -71,16 +103,20 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
             object.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = object.getProgramIndicators();
-            for(ProgramIndicator programIndicator : programIndicators) {
-                if(!mProgramIndicatorStore.save(programIndicator)) {
-                    return false;
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.save(programIndicator)) {
+                        return false;
+                    }
                 }
             }
 
             List<ProgramStageDataElement> programStageDataElements = object.getProgramStageDataElements();
-            for(ProgramStageDataElement programStageDataElement : programStageDataElements) {
-                if(!mProgramStageDataElementStore.save(programStageDataElement)) {
-                    return false;
+            if(programStageDataElements != null) {
+                for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
+                    if (!mProgramStageDataElementStore.save(programStageDataElement)) {
+                        return false;
+                    }
                 }
             }
             return true;

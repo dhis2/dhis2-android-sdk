@@ -27,26 +27,22 @@
  *
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
-import java.util.Map;
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
+import rx.Observable;
 
-public interface ProgramApiClientRetrofit {
+public interface ITrackedEntityScope {
+    Observable<TrackedEntity> get(long id);
 
-    @GET("programs/{programUid}")
-    Call<Program> getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
+    Observable<TrackedEntity> get(String uid);
 
-    @GET("programs")
-    Call<JsonNode> getPrograms(@QueryMap Map<String, String> queryMap);
+    Observable<List<TrackedEntity>> list();
 
+    Observable<Boolean> save(TrackedEntity object);
+
+    Observable<Boolean> remove(TrackedEntity object);
 }

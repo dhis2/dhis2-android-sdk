@@ -54,8 +54,6 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
         trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance.getTrackedEntityInstanceUid());
         trackedEntityInstanceFlow.setTrackedEntity(trackedEntityInstance.getTrackedEntity());
         trackedEntityInstanceFlow.setOrgUnit(trackedEntityInstance.getOrgUnit());
-        trackedEntityInstanceFlow.setAttributes(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToDatabaseEntities(trackedEntityInstance.getAttributes()));
-        trackedEntityInstanceFlow.setRelationships(MapperModuleProvider.getInstance().getRelationshipMapper().mapToDatabaseEntities(trackedEntityInstance.getRelationships()));
         trackedEntityInstanceFlow.setCreated(trackedEntityInstance.getCreated());
         trackedEntityInstanceFlow.setLastUpdated(trackedEntityInstance.getLastUpdated());
         return trackedEntityInstanceFlow;
@@ -72,8 +70,6 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
         trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceFlow.getTrackedEntityInstanceUid());
         trackedEntityInstance.setTrackedEntity(trackedEntityInstanceFlow.getTrackedEntity());
         trackedEntityInstance.setOrgUnit(trackedEntityInstanceFlow.getOrgUnit());
-        trackedEntityInstance.setAttributes(MapperModuleProvider.getInstance().getTrackedEntityAttributeValueMapper().mapToModels(trackedEntityInstanceFlow.getAttributes()));
-        trackedEntityInstance.setRelationships(MapperModuleProvider.getInstance().getRelationshipMapper().mapToModels(trackedEntityInstanceFlow.getRelationships()));
         trackedEntityInstance.setCreated(trackedEntityInstanceFlow.getCreated());
         trackedEntityInstance.setLastUpdated(trackedEntityInstanceFlow.getLastUpdated());
         return trackedEntityInstance;

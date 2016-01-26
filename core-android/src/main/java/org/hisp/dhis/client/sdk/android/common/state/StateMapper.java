@@ -138,10 +138,6 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
             return Event.class;
         }
 
-        if (OrganisationUnit.class.getSimpleName().equals(type)) {
-            return OrganisationUnit.class;
-        }
-
         throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
@@ -189,10 +185,6 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
 
         if (Event.class.equals(objectClass)) {
             return Event$Flow.class;
-        }
-
-        if (OrganisationUnit.class.equals(objectClass)) {
-            return OrganisationUnit$Flow.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());

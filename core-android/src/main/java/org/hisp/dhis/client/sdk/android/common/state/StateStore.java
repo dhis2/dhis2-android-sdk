@@ -89,7 +89,6 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
     private final IMapper<Event, Event$Flow> eventMapper;
     private final IMapper<Enrollment, Enrollment$Flow> enrollmentMapper;
     private final IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper;
-    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
 
     public StateStore(IStateMapper mapper,
                       IMapper<Dashboard, Dashboard$Flow> dashboardMapper,
@@ -97,7 +96,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
                       IMapper<DashboardElement, DashboardElement$Flow> dashboardElementMapper,
                       IMapper<Event, Event$Flow> eventMapper,
                       IMapper<Enrollment, Enrollment$Flow> enrollmentMapper,
-                      IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
+                      IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> trackedEntityInstanceMapper) {
         super(mapper);
         this.dashboardMapper = dashboardMapper;
         this.dashboardItemMapper = dashboardItemMapper;
@@ -105,7 +104,6 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         this.eventMapper = eventMapper;
         this.enrollmentMapper = enrollmentMapper;
         this.trackedEntityInstanceMapper = trackedEntityInstanceMapper;
-        this.organisationUnitMapper = organisationUnitMapper;
     }
 
     @Override
@@ -240,7 +238,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         if (Interpretation.class.equals(clazz)) {
             List<Interpretation$Flow> interpretationFlows = (List<Interpretation$Flow>) queryModels(
                     clazz, Interpretation$Flow$Table.ID, withAction, actions);
-            return (List<T>) Interpretation$Flow.toModels(interpretationFlows);
+            return null;//(List<T>) Interpretation$Flow.toModels(interpretationFlows);
         }
 
         if (InterpretationElement.class.equals(clazz)) {
@@ -252,7 +250,7 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         if (InterpretationComment.class.equals(clazz)) {
             List<InterpretationComment$Flow> interpretationCommentFlows = (List<InterpretationComment$Flow>) queryModels(
                     clazz, InterpretationComment$Flow$Table.ID, withAction, actions);
-            return (List<T>) InterpretationComment$Flow.toModels(interpretationCommentFlows);
+            return null;//(List<T>) InterpretationComment$Flow.toModels(interpretationCommentFlows);
         }
 
         if (Event.class.equals(clazz)) {
@@ -268,11 +266,6 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         if (TrackedEntityInstance.class.equals(clazz)) {
             List<TrackedEntityInstance$Flow> trackedEntityInstanceFlows = (List<TrackedEntityInstance$Flow>) queryModels(clazz, TrackedEntityInstance$Flow$Table.ID, withAction, actions);
             return (List<T>) trackedEntityInstanceMapper.mapToModels(trackedEntityInstanceFlows);
-        }
-
-        if (OrganisationUnit.class.equals(clazz)) {
-            List<OrganisationUnit$Flow> organisationUnitFlows = (List<OrganisationUnit$Flow>) queryModels(clazz, OrganisationUnit$Flow$Table.ID, withAction, actions);
-            return (List<T>) organisationUnitMapper.mapToModels(organisationUnitFlows);
         }
 
         return null;

@@ -43,8 +43,8 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean insert(InterpretationComment object) {
-        InterpretationComment$Flow commentFlow =
-                InterpretationComment$Flow.fromModel(object);
+        InterpretationComment$Flow commentFlow = null;
+                //InterpretationComment$Flow.fromModel(object);
         commentFlow.insert();
 
         object.setId(commentFlow.getId());
@@ -53,14 +53,14 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean update(InterpretationComment object) {
-        InterpretationComment$Flow.fromModel(object).update();
+        //InterpretationComment$Flow.fromModel(object).update();
         return true;
     }
 
     @Override
     public boolean save(InterpretationComment object) {
-        InterpretationComment$Flow commentFlow =
-                InterpretationComment$Flow.fromModel(object);
+        InterpretationComment$Flow commentFlow = null;
+                //InterpretationComment$Flow.fromModel(object);
         commentFlow.save();
 
         object.setId(commentFlow.getId());
@@ -69,7 +69,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean delete(InterpretationComment object) {
-        InterpretationComment$Flow.fromModel(object).delete();
+        //InterpretationComment$Flow.fromModel(object).delete();
         return true;
     }
 
@@ -78,7 +78,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
         List<InterpretationComment$Flow> commentFlows = new Select()
                 .from(InterpretationComment$Flow.class)
                 .queryList();
-        return InterpretationComment$Flow.toModels(commentFlows);
+        return null;//InterpretationComment$Flow.toModels(commentFlows);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table.ID).is(id))
                 .querySingle();
-        return InterpretationComment$Flow.toModel(commentFlow);
+        return null;//InterpretationComment$Flow.toModel(commentFlow);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
                 .from(InterpretationComment$Flow.class)
                 .where(Condition.column(InterpretationComment$Flow$Table.UID).is(uid))
                 .querySingle();
-        return InterpretationComment$Flow.toModel(commentFlow);
+        return null;//InterpretationComment$Flow.toModel(commentFlow);
     }
 
     @Override

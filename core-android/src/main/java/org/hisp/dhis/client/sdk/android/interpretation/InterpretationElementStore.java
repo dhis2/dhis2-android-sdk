@@ -102,7 +102,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
     public List<InterpretationElement> list(Interpretation interpretation) {
-        Interpretation$Flow interpretationFlow = Interpretation$Flow.fromModel(interpretation);
+        Interpretation$Flow interpretationFlow = null;//Interpretation$Flow.fromModel(interpretation);
         List<InterpretationElement$Flow> elementFlow = new Select()
                 .from(InterpretationElement$Flow.class)
                 .where(Condition.column(InterpretationElement$Flow$Table

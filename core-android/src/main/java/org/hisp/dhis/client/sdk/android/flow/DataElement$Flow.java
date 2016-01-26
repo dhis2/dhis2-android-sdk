@@ -36,6 +36,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 @Table(databaseName = DbDhis.NAME)
@@ -44,7 +45,7 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
     final static String OPTION_SET_KEY = "optionset";
 
     @Column
-    String type;
+    ValueType valueType;
 
     @Column
     boolean zeroIsSignificant;
@@ -70,17 +71,17 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSet$Flow optionSet;
 
-    public String getType() {
-        return type;
+    public ValueType getValueType() {
+        return valueType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
     }
 
     public boolean isZeroIsSignificant() {
@@ -150,80 +151,6 @@ public final class DataElement$Flow extends BaseIdentifiableObject$Flow {
     public DataElement$Flow() {
         // empty constructor
     }
-
-    /*public static DataElement toModel(DataElement$Flow dataElementFlow) {
-        if (dataElementFlow == null) {
-            return null;
-        }
-
-        DataElement dataElement = new DataElement();
-        dataElement.setId(dataElementFlow.getId());
-        dataElement.setUId(dataElementFlow.getUId());
-        dataElement.setCreated(dataElementFlow.getCreated());
-        dataElement.setLastUpdated(dataElementFlow.getLastUpdated());
-        dataElement.setName(dataElementFlow.getName());
-        dataElement.setDisplayName(dataElementFlow.getDisplayName());
-        dataElement.setAccess(dataElementFlow.getAccess());
-        dataElement.setType(dataElementFlow.getType());
-        dataElement.setZeroIsSignificant(dataElementFlow.isZeroIsSignificant());
-        dataElement.setAggregationOperator(dataElementFlow.getAggregationOperator());
-        dataElement.setFormName(dataElementFlow.getFormName());
-        dataElement.setNumberType(dataElementFlow.getNumberType());
-        dataElement.setDomainType(dataElementFlow.getDomainType());
-        dataElement.setDimension(dataElementFlow.getDimension());
-        dataElement.setDisplayFormName(dataElementFlow.getDisplayFormName());
-        dataElement.setOptionSet(dataElementFlow.getOptionSet());
-        return dataElement;
-    }
-
-    public static DataElement$Flow fromModel(DataElement dataElement) {
-        if (dataElement == null) {
-            return null;
-        }
-
-        DataElement$Flow dataElementFlow = new DataElement$Flow();
-        dataElementFlow.setId(dataElement.getId());
-        dataElementFlow.setUId(dataElement.getUId());
-        dataElementFlow.setCreated(dataElement.getCreated());
-        dataElementFlow.setLastUpdated(dataElement.getLastUpdated());
-        dataElementFlow.setName(dataElement.getName());
-        dataElementFlow.setDisplayName(dataElement.getDisplayName());
-        dataElementFlow.setAccess(dataElement.getAccess());
-        dataElementFlow.setType(dataElement.getType());
-        dataElementFlow.setZeroIsSignificant(dataElement.isZeroIsSignificant());
-        dataElementFlow.setAggregationOperator(dataElement.getAggregationOperator());
-        dataElementFlow.setFormName(dataElement.getFormName());
-        dataElementFlow.setNumberType(dataElement.getNumberType());
-        dataElementFlow.setDomainType(dataElement.getDomainType());
-        dataElementFlow.setDimension(dataElement.getDimension());
-        dataElementFlow.setDisplayFormName(dataElement.getDisplayFormName());
-        dataElementFlow.setOptionSet(dataElement.getOptionSet());
-        return dataElementFlow;
-    }
-
-    public static List<DataElement> toModels(List<DataElement$Flow> dataElementFlows) {
-        List<DataElement> dataElements = new ArrayList<>();
-
-        if (dataElementFlows != null && !dataElementFlows.isEmpty()) {
-            for (DataElement$Flow dataElementFlow : dataElementFlows) {
-                dataElements.add(toModel(dataElementFlow));
-            }
-        }
-
-        return dataElements;
-    }
-
-    public static List<DataElement$Flow> fromModels(List<DataElement> dataElements) {
-        List<DataElement$Flow> dataElementFlows = new ArrayList<>();
-
-        if (dataElements != null && !dataElements.isEmpty()) {
-            for (DataElement dataElement : dataElements) {
-                dataElementFlows.add(fromModel(dataElement));
-            }
-        }
-
-        return dataElementFlows;
-    }*/
 
     @Override
     public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {

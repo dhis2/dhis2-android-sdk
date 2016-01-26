@@ -58,7 +58,6 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRuleFlow.setProgram(programRule.getProgram());
         programRuleFlow.setCondition(programRule.getCondition());
         programRuleFlow.setExternalAction(programRule.isExternalAction());
-        programRuleFlow.setProgramRuleActions(MapperModuleProvider.getInstance().getProgramRuleActionMapper().mapToDatabaseEntities(programRule.getProgramRuleActions()));
         return programRuleFlow;
     }
 
@@ -80,7 +79,6 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRule.setProgram(programRuleFlow.getProgram());
         programRule.setCondition(programRuleFlow.getCondition());
         programRule.setExternalAction(programRuleFlow.isExternalAction());
-        programRule.setProgramRuleActions(MapperModuleProvider.getInstance().getProgramRuleActionMapper().mapToModels(programRuleFlow.getProgramRuleActions()));
         return programRule;
     }
 

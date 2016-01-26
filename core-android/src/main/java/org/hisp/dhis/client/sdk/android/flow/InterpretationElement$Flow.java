@@ -57,7 +57,7 @@ public final class InterpretationElement$Flow extends BaseIdentifiableObject$Flo
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = "interpretation",
-                            columnType = long.class, foreignColumnName = "id")
+                            columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Interpretation$Flow interpretation;
@@ -96,8 +96,8 @@ public final class InterpretationElement$Flow extends BaseIdentifiableObject$Flo
         element.setDisplayName(elementFlow.getDisplayName());
         element.setAccess(elementFlow.getAccess());
         element.setType(elementFlow.getType());
-        element.setInterpretation(Interpretation$Flow
-                .toModel(elementFlow.getInterpretation()));
+        //element.setInterpretation(Interpretation$Flow
+        //        .toModel(elementFlow.getInterpretation()));
         return element;
     }
 
@@ -115,8 +115,8 @@ public final class InterpretationElement$Flow extends BaseIdentifiableObject$Flo
         elementFlow.setDisplayName(element.getDisplayName());
         elementFlow.setAccess(element.getAccess());
         elementFlow.setType(element.getType());
-        elementFlow.setInterpretation(Interpretation$Flow
-                .fromModel(element.getInterpretation()));
+        //elementFlow.setInterpretation(Interpretation$Flow
+        //        .fromModel(element.getInterpretation()));
         return elementFlow;
     }
 

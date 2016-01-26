@@ -28,12 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -51,6 +48,29 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
     }
 
     @Override
+    public boolean insert(OptionSet optionSet) {
+        OptionSet$Flow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+        if (databaseEntity != null) {
+            databaseEntity.insert();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            optionSet.setId(databaseEntity.getId());
+
+            List<Option> options = optionSet.getOptions();
+            if(options != null) {
+                for (Option option : options) {
+                    if (!mOptionStore.insert(option)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean save(OptionSet optionSet) {
         OptionSet$Flow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
         if (databaseEntity != null) {
@@ -60,9 +80,11 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
             optionSet.setId(databaseEntity.getId());
 
             List<Option> options = optionSet.getOptions();
-            for(Option option : options) {
-                if(!mOptionStore.save(option)) {
-                    return false;
+            if(options != null) {
+                for (Option option : options) {
+                    if (!mOptionStore.save(option)) {
+                        return false;
+                    }
                 }
             }
             return true;

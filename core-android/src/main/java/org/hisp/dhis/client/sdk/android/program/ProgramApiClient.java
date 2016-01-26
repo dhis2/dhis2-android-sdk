@@ -96,7 +96,10 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        List<Program> updatedPrograms = call(mProgramApiClientRetrofit.getPrograms(queryMap));
+        List<Program> updatedPrograms = unwrapList(call(mProgramApiClientRetrofit.getPrograms(queryMap)));
+        for(Program program : updatedPrograms) {
+            fixRelationships(program);
+        }
         return updatedPrograms;
     }
 
@@ -107,7 +110,7 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        List<Program> updatedPrograms = call(mProgramApiClientRetrofit.getPrograms(queryMap));
+        List<Program> updatedPrograms = unwrapList(call(mProgramApiClientRetrofit.getPrograms(queryMap)));
         return updatedPrograms;
     }
 
@@ -118,6 +121,7 @@ public class ProgramApiClient implements IProgramApiClient {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
         Program program = call(mProgramApiClientRetrofit.getProgram(uid, queryMap));
+        fixRelationships(program);
         return program;
     }
 
@@ -132,12 +136,12 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     public static List<Program> unwrapList(JsonNode jsonNode) {
-        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
+        TypeReference<List<Program>> typeRef = new TypeReference<List<Program>>() {};
         List<Program> programs;
         try {
-            if (jsonNode.has("events")) {
+            if (jsonNode.has("programs")) {
                 programs = ObjectMapperProvider.getInstance().
-                        readValue(jsonNode.get("events").traverse(), typeRef);
+                        readValue(jsonNode.get("programs").traverse(), typeRef);
             } else {
                 programs = new ArrayList<>();
             }
@@ -201,44 +205,52 @@ public class ProgramApiClient implements IProgramApiClient {
                 }
             }
         }
-        for(ProgramStage programStage : program.getProgramStages()) {
-            programStage.setProgram(program);
-            List<ProgramIndicator> fullProgramStageProgramIndicators = new ArrayList<>();
-            for(ProgramIndicator programIndicatorWithOnlyUid : programStage.getProgramIndicators()) {
-                ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
-                fullProgramIndicator.setProgramStage(programStage);
-                fullProgramStageProgramIndicators.add(fullProgramIndicator);
-            }
-            programStage.setProgramIndicators(fullProgramStageProgramIndicators);
+        if(program.getProgramStages() != null) {
+            for (ProgramStage programStage : program.getProgramStages()) {
+                programStage.setProgram(program);
+                if (programStage.getProgramIndicators() != null) {
+                    List<ProgramIndicator> fullProgramStageProgramIndicators = new ArrayList<>();
+                    for (ProgramIndicator programIndicatorWithOnlyUid : programStage.getProgramIndicators()) {
+                        ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                        fullProgramIndicator.setProgramStage(programStage);
+                        fullProgramStageProgramIndicators.add(fullProgramIndicator);
+                    }
+                    programStage.setProgramIndicators(fullProgramStageProgramIndicators);
+                }
 
-            Map<String, ProgramStageDataElement> programStageDataElementMap = modelUtils.toMap(programStage.getProgramStageDataElements());
-            for(ProgramStageDataElement programStageDataElement : programStageDataElementMap.values()) {
-                programStageDataElement.setProgramStage(programStage);
-                DataElement dataElement = programStageDataElement.getDataElement();
-                if(dataElement.getOptionSet() != null) {
-                    OptionSet optionSet = dataElement.getOptionSet();
-                    for(Option option : optionSet.getOptions()) {
-                        option.setOptionSet(optionSet);
+                Map<String, ProgramStageDataElement> programStageDataElementMap = modelUtils.toMap(programStage.getProgramStageDataElements());
+                for (ProgramStageDataElement programStageDataElement : programStageDataElementMap.values()) {
+                    programStageDataElement.setProgramStage(programStage);
+                    DataElement dataElement = programStageDataElement.getDataElement();
+                    if (dataElement.getOptionSet() != null) {
+                        OptionSet optionSet = dataElement.getOptionSet();
+                        for (Option option : optionSet.getOptions()) {
+                            option.setOptionSet(optionSet);
+                        }
                     }
                 }
-            }
-            for(ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
-                programStageSection.setProgramStage(programStage);
-                List<ProgramIndicator> fullProgramStageSectionProgramIndicators = new ArrayList<>();
-                for(ProgramIndicator programIndicatorWithOnlyUid : programStageSection.getProgramIndicators()) {
-                    ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
-                    fullProgramIndicator.setProgramStageSection(programStageSection);
-                    fullProgramStageSectionProgramIndicators.add(fullProgramIndicator);
-                }
-                programStageSection.setProgramIndicators(fullProgramStageProgramIndicators);
+                if(programStage.getProgramStageSections() != null) {
+                    for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
+                        programStageSection.setProgramStage(programStage);
+                        List<ProgramIndicator> fullProgramStageSectionProgramIndicators = new ArrayList<>();
+                        for (ProgramIndicator programIndicatorWithOnlyUid : programStageSection.getProgramIndicators()) {
+                            ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                            fullProgramIndicator.setProgramStageSection(programStageSection);
+                            fullProgramStageSectionProgramIndicators.add(fullProgramIndicator);
+                        }
+                        programStageSection.setProgramIndicators(fullProgramStageSectionProgramIndicators);
 
-                List<ProgramStageDataElement> fullProgramStageDataElementsForProgramStageSection = new ArrayList<>();
-                for(ProgramStageDataElement programStageDataElementWithOnlyUid : programStageSection.getProgramStageDataElements()) {
-                    ProgramStageDataElement fullProgramStageDataElement = programStageDataElementMap.get(programStageDataElementWithOnlyUid.getUId());
-                    fullProgramStageDataElement.setProgramStageSection(programStageSection);
-                    fullProgramStageDataElementsForProgramStageSection.add(fullProgramStageDataElement);
+                        if(programStageSection.getProgramStageDataElements() != null) {
+                            List<ProgramStageDataElement> fullProgramStageDataElementsForProgramStageSection = new ArrayList<>();
+                            for (ProgramStageDataElement programStageDataElementWithOnlyUid : programStageSection.getProgramStageDataElements()) {
+                                ProgramStageDataElement fullProgramStageDataElement = programStageDataElementMap.get(programStageDataElementWithOnlyUid.getUId());
+                                fullProgramStageDataElement.setProgramStageSection(programStageSection);
+                                fullProgramStageDataElementsForProgramStageSection.add(fullProgramStageDataElement);
+                            }
+                            programStageSection.setProgramStageDataElements(fullProgramStageDataElementsForProgramStageSection);
+                        }
+                    }
                 }
-                programStageSection.setProgramStageDataElements(fullProgramStageDataElementsForProgramStageSection);
             }
         }
     }

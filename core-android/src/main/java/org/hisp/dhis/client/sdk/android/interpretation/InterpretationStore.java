@@ -47,7 +47,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
     @Override
     public boolean insert(Interpretation object) {
         Interpretation$Flow interpretationFlow
-                = Interpretation$Flow.fromModel(object);
+                = null;//Interpretation$Flow.fromModel(object);
         interpretationFlow.insert();
 
         object.setId(interpretationFlow.getId());
@@ -56,14 +56,14 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
 
     @Override
     public boolean update(Interpretation object) {
-        Interpretation$Flow.fromModel(object).update();
+        //Interpretation$Flow.fromModel(object).update();
         return true;
     }
 
     @Override
     public boolean save(Interpretation object) {
         Interpretation$Flow interpretationFlow =
-                Interpretation$Flow.fromModel(object);
+                null;//Interpretation$Flow.fromModel(object);
         interpretationFlow.save();
 
         object.setId(interpretationFlow.getId());
@@ -72,7 +72,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
 
     @Override
     public boolean delete(Interpretation object) {
-        Interpretation$Flow.fromModel(object).delete();
+        //Interpretation$Flow.fromModel(object).delete();
         return true;
     }
 
@@ -81,7 +81,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
         List<Interpretation$Flow> interpretationFlows = new Select()
                 .from(Interpretation$Flow.class)
                 .queryList();
-        return Interpretation$Flow.toModels(interpretationFlows);
+        return null;//Interpretation$Flow.toModels(interpretationFlows);
     }
 
     @Override
@@ -90,7 +90,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
                 .from(Interpretation$Flow.class)
                 .where(Condition.column(Interpretation$Flow$Table.ID).is(id))
                 .querySingle();
-        return Interpretation$Flow.toModel(interpretationFlow);
+        return null;//Interpretation$Flow.toModel(interpretationFlow);
     }
 
     @Override
@@ -99,7 +99,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
                 .from(Interpretation$Flow.class)
                 .where(Condition.column(Interpretation$Flow$Table.UID).is(uid))
                 .querySingle();
-        return Interpretation$Flow.toModel(interpretationFlow);
+        return null;//Interpretation$Flow.toModel(interpretationFlow);
     }
 
     /* @Override

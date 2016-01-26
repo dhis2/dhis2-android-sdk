@@ -48,15 +48,9 @@ import java.util.List;
 
 public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$Flow> implements IEnrollmentStore {
 
-    private final IEventStore eventStore;
-    private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-
-    public EnrollmentStore(IEventStore eventStore ,IStateStore stateStore,
-                           ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore,
+    public EnrollmentStore(IStateStore stateStore,
                            IMapper<Enrollment, Enrollment$Flow> mapper) {
         super(mapper, stateStore);
-        this.eventStore = eventStore;
-        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
     }
 
     @Override
@@ -73,7 +67,7 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).queryList();
         return getMapper().mapToModels(enrollmentFlows);
     }
 
@@ -82,7 +76,7 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
         Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
                 .where(Condition.column(Enrollment$Flow$Table.
                         PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).
                         and(Condition.column(Enrollment$Flow$Table.STATUS).is(Enrollment.ACTIVE)).
                         querySingle();
         return getMapper().mapToModel(enrollmentFlow);
@@ -92,12 +86,16 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$F
     public List<Enrollment> query(TrackedEntityInstance trackedEntityInstance) {
         List<Enrollment$Flow> enrollmentFlows = new Select()
                 .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance)).queryList();
+                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).queryList();
         return getMapper().mapToModels(enrollmentFlows);
     }
 
     @Override
     public List<Enrollment> query(Program program, OrganisationUnit organisationUnit) {
-        return null;
+        List<Enrollment$Flow> enrollmentFlows = new Select()
+                .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
+                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
+                        ORGUNIT).is(organisationUnit.getUId())).queryList();
+        return getMapper().mapToModels(enrollmentFlows);
     }
 }

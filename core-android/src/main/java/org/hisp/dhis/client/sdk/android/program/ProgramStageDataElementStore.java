@@ -35,6 +35,8 @@ import org.hisp.dhis.client.sdk.android.common.base.AbsStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow$Table;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -45,7 +47,7 @@ import java.util.List;
 
 public final class ProgramStageDataElementStore extends AbsStore<ProgramStageDataElement, ProgramStageDataElement$Flow> implements IProgramStageDataElementStore {
 
-    public ProgramStageDataElementStore(IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> mapper) {
+    public ProgramStageDataElementStore(IMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> mapper, IDataElementStore dataElementStore) {
         super(mapper);
     }
 

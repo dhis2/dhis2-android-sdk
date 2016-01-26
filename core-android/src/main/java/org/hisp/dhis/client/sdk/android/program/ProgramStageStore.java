@@ -31,14 +31,10 @@ package org.hisp.dhis.client.sdk.android.program;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -65,6 +61,47 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
     }
 
     @Override
+    public boolean insert(ProgramStage programStage) {
+        ProgramStage$Flow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
+        if (databaseEntity != null) {
+            databaseEntity.insert();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            programStage.setId(databaseEntity.getId());
+
+            List<ProgramIndicator> programIndicators = programStage.getProgramIndicators();
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.insert(programIndicator)) {
+                        return false;
+                    }
+                }
+            }
+
+            List<ProgramStageDataElement> programStageDataElements = programStage.getProgramStageDataElements();
+            if(programStageDataElements != null) {
+                for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
+                    if (!mProgramStageDataElementStore.insert(programStageDataElement)) {
+                        return false;
+                    }
+                }
+            }
+
+            List<ProgramStageSection> programStageSections = programStage.getProgramStageSections();
+            if(programStageSections != null) {
+                for (ProgramStageSection programStageSection : programStageSections) {
+                    if (!mProgramStageSectionStore.insert(programStageSection)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean save(ProgramStage programStage) {
         ProgramStage$Flow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
         if (databaseEntity != null) {
@@ -74,23 +111,29 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
             programStage.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = programStage.getProgramIndicators();
-            for(ProgramIndicator programIndicator : programIndicators) {
-                if(!mProgramIndicatorStore.save(programIndicator)) {
-                    return false;
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.save(programIndicator)) {
+                        return false;
+                    }
                 }
             }
 
             List<ProgramStageDataElement> programStageDataElements = programStage.getProgramStageDataElements();
-            for(ProgramStageDataElement programStageDataElement : programStageDataElements) {
-                if(!mProgramStageDataElementStore.save(programStageDataElement)) {
-                    return false;
+            if(programStageDataElements != null) {
+                for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
+                    if (!mProgramStageDataElementStore.save(programStageDataElement)) {
+                        return false;
+                    }
                 }
             }
 
             List<ProgramStageSection> programStageSections = programStage.getProgramStageSections();
-            for(ProgramStageSection programStageSection : programStageSections) {
-                if(!mProgramStageSectionStore.save(programStageSection)) {
-                    return false;
+            if(programStageSections != null) {
+                for (ProgramStageSection programStageSection : programStageSections) {
+                    if (!mProgramStageSectionStore.save(programStageSection)) {
+                        return false;
+                    }
                 }
             }
             return true;

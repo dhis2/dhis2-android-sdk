@@ -64,7 +64,7 @@ public final class EventStore extends AbsDataStore<Event, Event$Flow> implements
         List<Event$Flow> eventFlows = new Select()
                 .from(Event$Flow.class)
                 .where(Condition.column(Event$Flow$Table
-                        .ENROLLMENT_ENROLLMENT).is(enrollment)).queryList();
+                        .ENROLLMENT_ENROLLMENT).is(enrollment.getUId())).queryList();
         return getMapper().mapToModels(eventFlows);
     }
 

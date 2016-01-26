@@ -69,7 +69,7 @@ public final class TrackedEntityAttributeValueStore extends
         TrackedEntityAttributeValue$Flow trackedEntityInstanceFlow = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).and(Condition
+                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance.getTrackedEntityInstanceUid())).and(Condition
                         .column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
                         .is(trackedEntityAttribute.getUId())).querySingle();
         return getMapper().mapToModel(trackedEntityInstanceFlow);
@@ -83,7 +83,7 @@ public final class TrackedEntityAttributeValueStore extends
         List<TrackedEntityAttributeValue$Flow> trackedEntityInstanceFlows = new Select()
                 .from(TrackedEntityAttributeValue$Flow.class)
                 .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance)).queryList();
+                        .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(trackedEntityInstance.getTrackedEntityInstanceUid())).queryList();
         return getMapper().mapToModels(trackedEntityInstanceFlows);
     }
 
@@ -103,9 +103,9 @@ public final class TrackedEntityAttributeValueStore extends
             TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new Select()
                     .from(TrackedEntityAttributeValue$Flow.class)
                     .where(Condition.column(TrackedEntityAttributeValue$Flow$Table
-                            .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(enrollment.getTrackedEntityInstance()))
+                            .TRACKEDENTITYINSTANCE_TRACKEDENTITYINSTANCE).is(enrollment.getTrackedEntityInstance().getTrackedEntityInstanceUid()))
                     .and(Condition.column(TrackedEntityAttributeValue$Flow$Table.TRACKEDENTITYATTRIBUTEUID)
-                            .is(programTrackedEntityAttribute.getTrackedEntityAttribute())).querySingle();
+                            .is(programTrackedEntityAttribute.getTrackedEntityAttribute().getUId())).querySingle();
             if (trackedEntityAttributeValueFlow != null) {
                 trackedEntityAttributeValueFlows.add(trackedEntityAttributeValueFlow);
             }

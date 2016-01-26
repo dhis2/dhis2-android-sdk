@@ -64,9 +64,11 @@ import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeValueScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityDataValueScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -109,6 +111,7 @@ public class D2 {
     private final ITrackedEntityAttributeScope mTrackedEntityAttributeScope;
     private final ITrackedEntityAttributeValueScope mTrackedEntityAttributeValueScope;
     private final ITrackedEntityDataValueScope mTrackedEntityDataValueScope;
+    private final ITrackedEntityScope mTrackedEntityScope;
 
 
     private D2(Context context) {
@@ -172,6 +175,8 @@ public class D2 {
         mTrackedEntityDataValueScope = new TrackedEntityDataValueScope(
                 servicesModule.getTrackedEntityDataValueService(),
                 controllersModule.getEventController());
+
+        mTrackedEntityScope = new TrackedEntityScope(servicesModule.getTrackedEntities());
 
     }
 
@@ -242,6 +247,10 @@ public class D2 {
 
     public static IOrganisationUnitScope organisationUnits() {
         return getInstance().mOrganisationUnitScope;
+    }
+
+    public static ITrackedEntityScope trackedEntities() {
+        return getInstance().mTrackedEntityScope;
     }
 
     public static IProgramScope programs() {

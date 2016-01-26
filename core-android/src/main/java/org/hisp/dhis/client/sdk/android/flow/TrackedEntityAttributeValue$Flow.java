@@ -53,7 +53,7 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel$Flow {
     @Unique(unique = true, uniqueGroups = {UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = String.class, foreignColumnName = "trackedEntityInstanceUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstance;
@@ -88,58 +88,4 @@ public final class TrackedEntityAttributeValue$Flow extends BaseModel$Flow {
     public TrackedEntityAttributeValue$Flow() {
         // empty constructor
     }
-
-    /*public static TrackedEntityAttributeValue toModel(TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow) {
-        if (trackedEntityAttributeValueFlow == null) {
-            return null;
-        }
-
-        TrackedEntityAttributeValue trackedEntityAttributeValue = new TrackedEntityAttributeValue();
-        trackedEntityAttributeValue.setId(trackedEntityAttributeValueFlow.getId());
-        trackedEntityAttributeValue.setTrackedEntityAttributeUId(trackedEntityAttributeValueFlow.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
-        trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
-        trackedEntityAttributeValue.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(trackedEntityAttributeValueFlow.getTrackedEntityInstance()));
-        trackedEntityAttributeValue.setValue(trackedEntityAttributeValueFlow.getValue());
-        return trackedEntityAttributeValue;
-    }
-
-    public static TrackedEntityAttributeValue$Flow fromModel(TrackedEntityAttributeValue trackedEntityAttributeValue) {
-        if (trackedEntityAttributeValue == null) {
-            return null;
-        }
-
-        TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
-        trackedEntityAttributeValueFlow.setId(trackedEntityAttributeValue.getId());
-        trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
-        trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
-        trackedEntityAttributeValueFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(trackedEntityAttributeValue.getTrackedEntityInstance()));
-        trackedEntityAttributeValueFlow.setValue(trackedEntityAttributeValue.getValue());
-        return trackedEntityAttributeValueFlow;
-    }
-
-    public static List<TrackedEntityAttributeValue> toModels(List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlows) {
-        List<TrackedEntityAttributeValue> trackedEntityAttributeValues = new ArrayList<>();
-
-        if (trackedEntityAttributeValueFlows != null && !trackedEntityAttributeValueFlows.isEmpty()) {
-            for (TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow : trackedEntityAttributeValueFlows) {
-                trackedEntityAttributeValues.add(toModel(trackedEntityAttributeValueFlow));
-            }
-        }
-
-        return trackedEntityAttributeValues;
-    }
-
-    public static List<TrackedEntityAttributeValue$Flow> fromModels(List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
-        List<TrackedEntityAttributeValue$Flow> trackedEntityAttributeValueFlows = new ArrayList<>();
-
-        if (trackedEntityAttributeValues != null && !trackedEntityAttributeValues.isEmpty()) {
-            for (TrackedEntityAttributeValue trackedEntityAttributeValue : trackedEntityAttributeValues) {
-                trackedEntityAttributeValueFlows.add(fromModel(trackedEntityAttributeValue));
-            }
-        }
-
-        return trackedEntityAttributeValueFlows;
-    }*/
 }

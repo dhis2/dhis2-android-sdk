@@ -55,9 +55,9 @@ public final class RelationshipStore extends AbsDataStore<Relationship, Relation
         }
         List<Relationship$Flow> relationshipFlow = new Select()
                 .from(Relationship$Flow.class).where(Condition.column(Relationship$Flow$Table
-                        .TRACKEDENTITYINSTANCEA_TRACKEDENTITYINSTANCEA).is(trackedEntityInstance
+                        .TRACKEDENTITYINSTANCEA_TRACKEDENTITYINSTANCEA).is(trackedEntityInstance.getTrackedEntityInstanceUid()
                 )).or(Condition.column(Relationship$Flow$Table
-                        .TRACKEDENTITYINSTANCEB_TRACKEDENTITYINSTANCEB).is(trackedEntityInstance
+                        .TRACKEDENTITYINSTANCEB_TRACKEDENTITYINSTANCEB).is(trackedEntityInstance.getTrackedEntityInstanceUid()
                 ))
                 .queryList();
         return getMapper().mapToModels(relationshipFlow);

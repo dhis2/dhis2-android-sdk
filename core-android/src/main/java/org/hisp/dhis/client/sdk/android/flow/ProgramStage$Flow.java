@@ -46,7 +46,7 @@ public final class ProgramStage$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
@@ -290,110 +290,4 @@ public final class ProgramStage$Flow extends BaseIdentifiableObject$Flow {
     public ProgramStage$Flow() {
         // empty constructor
     }
-
-    /*public static ProgramStage toModel(ProgramStage$Flow programStageFlow) {
-        if (programStageFlow == null) {
-            return null;
-        }
-
-        ProgramStage programStage = new ProgramStage();
-        programStage.setId(programStageFlow.getId());
-        programStage.setUId(programStageFlow.getUId());
-        programStage.setCreated(programStageFlow.getCreated());
-        programStage.setLastUpdated(programStageFlow.getLastUpdated());
-        programStage.setName(programStageFlow.getName());
-        programStage.setDisplayName(programStageFlow.getDisplayName());
-        programStage.setAccess(programStageFlow.getAccess());
-        programStage.setProgram(programStageFlow.getProgram());
-        programStage.setDataEntryType(programStageFlow.getDataEntryType());
-        programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
-        programStage.setReportDateDescription(programStageFlow.getReportDateDescription());
-        programStage.setDisplayGenerateEventBox(programStageFlow.isDisplayGenerateEventBox());
-        programStage.setDescription(programStageFlow.getDescription());
-        programStage.setExternalAccess(programStageFlow.isExternalAccess());
-        programStage.setOpenAfterEnrollment(programStageFlow.isOpenAfterEnrollment());
-        programStage.setCaptureCoordinates(programStageFlow.isCaptureCoordinates());
-        programStage.setDefaultTemplateMessage(programStageFlow.getDefaultTemplateMessage());
-        programStage.setRemindCompleted(programStageFlow.isRemindCompleted());
-        programStage.setValidCompleteOnly(programStageFlow.isValidCompleteOnly());
-        programStage.setSortOrder(programStageFlow.getSortOrder());
-        programStage.setGeneratedByEnrollmentDate(programStageFlow.isGeneratedByEnrollmentDate());
-        programStage.setPreGenerateUID(programStageFlow.isPreGenerateUID());
-        programStage.setAutoGenerateEvent(programStageFlow.isAutoGenerateEvent());
-        programStage.setAllowGenerateNextVisit(programStageFlow.isAllowGenerateNextVisit());
-        programStage.setRepeatable(programStageFlow.isRepeatable());
-        programStage.setMinDaysFromStart(programStageFlow.getMinDaysFromStart());
-        programStage.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .toModels(programStageFlow.getProgramStageDataElements()));
-        programStage.setProgramStageSections(ProgramStageSection$Flow
-                .toModels(programStageFlow.getProgramStageSections()));
-        programStage.setProgramIndicators(ProgramIndicator$Flow
-                .toModels(programStageFlow.getProgramIndicators()));
-        return programStage;
-    }
-
-    public static ProgramStage$Flow fromModel(ProgramStage programStage) {
-        if (programStage == null) {
-            return null;
-        }
-
-        ProgramStage$Flow programStageFlow = new ProgramStage$Flow();
-        programStageFlow.setId(programStage.getId());
-        programStageFlow.setUId(programStage.getUId());
-        programStageFlow.setCreated(programStage.getCreated());
-        programStageFlow.setLastUpdated(programStage.getLastUpdated());
-        programStageFlow.setName(programStage.getName());
-        programStageFlow.setDisplayName(programStage.getDisplayName());
-        programStageFlow.setAccess(programStage.getAccess());
-        programStageFlow.setProgram(programStage.getProgram());
-        programStageFlow.setDataEntryType(programStage.getDataEntryType());
-        programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
-        programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
-        programStageFlow.setDisplayGenerateEventBox(programStage.isDisplayGenerateEventBox());
-        programStageFlow.setDescription(programStage.getDescription());
-        programStageFlow.setExternalAccess(programStage.isExternalAccess());
-        programStageFlow.setOpenAfterEnrollment(programStage.isOpenAfterEnrollment());
-        programStageFlow.setCaptureCoordinates(programStage.isCaptureCoordinates());
-        programStageFlow.setDefaultTemplateMessage(programStage.getDefaultTemplateMessage());
-        programStageFlow.setRemindCompleted(programStage.isRemindCompleted());
-        programStageFlow.setValidCompleteOnly(programStage.isValidCompleteOnly());
-        programStageFlow.setSortOrder(programStage.getSortOrder());
-        programStageFlow.setGeneratedByEnrollmentDate(programStage.isGeneratedByEnrollmentDate());
-        programStageFlow.setPreGenerateUID(programStage.isPreGenerateUID());
-        programStageFlow.setAutoGenerateEvent(programStage.isAutoGenerateEvent());
-        programStageFlow.setAllowGenerateNextVisit(programStage.isAllowGenerateNextVisit());
-        programStageFlow.setRepeatable(programStage.isRepeatable());
-        programStageFlow.setMinDaysFromStart(programStage.getMinDaysFromStart());
-        programStageFlow.setProgramStageDataElements(ProgramStageDataElement$Flow
-                .fromModels(programStage.getProgramStageDataElements()));
-        programStageFlow.setProgramStageSections(ProgramStageSection$Flow
-                .fromModels(programStage.getProgramStageSections()));
-        programStageFlow.setProgramIndicators(ProgramIndicator$Flow
-                .fromModels(programStage.getProgramIndicators()));
-        return programStageFlow;
-    }
-
-    public static List<ProgramStage> toModels(List<ProgramStage$Flow> programStageFlows) {
-        List<ProgramStage> programStages = new ArrayList<>();
-
-        if (programStageFlows != null && !programStageFlows.isEmpty()) {
-            for (ProgramStage$Flow programStageFlow : programStageFlows) {
-                programStages.add(toModel(programStageFlow));
-            }
-        }
-
-        return programStages;
-    }
-
-    public static List<ProgramStage$Flow> fromModels(List<ProgramStage> programStages) {
-        List<ProgramStage$Flow> programStageFlows = new ArrayList<>();
-
-        if (programStages != null && !programStages.isEmpty()) {
-            for (ProgramStage programStage : programStages) {
-                programStageFlows.add(fromModel(programStage));
-            }
-        }
-
-        return programStageFlows;
-    }*/
 }

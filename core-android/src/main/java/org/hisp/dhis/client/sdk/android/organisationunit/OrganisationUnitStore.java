@@ -62,7 +62,7 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         List<DataSet> dataSets = new ArrayList<>();
         for (UnitToDataSetRelationShip$Flow relationShip : relationShipFlows) {
             DataSet$Flow dataSetFlow = relationShip.getDataSet();
-            dataSets.add(DataSet$Flow.toModel(dataSetFlow));
+            //dataSets.add(DataSet$Flow.toModel(dataSetFlow));
         }
 
         return dataSets;

@@ -46,7 +46,7 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     OrganisationUnit$Flow parent;

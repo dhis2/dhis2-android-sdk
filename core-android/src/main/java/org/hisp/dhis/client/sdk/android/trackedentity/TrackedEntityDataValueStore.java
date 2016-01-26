@@ -70,7 +70,7 @@ public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntit
         }
         return getMapper().mapToModel(new Select().from(TrackedEntityDataValue$Flow.
                 class).where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT).
-                is(event)).and(Condition.column(TrackedEntityDataValue$Flow$Table.
+                is(event.getUId())).and(Condition.column(TrackedEntityDataValue$Flow$Table.
                 DATAELEMENT).is(dataElement.getUId())).
                 querySingle());
     }

@@ -51,7 +51,7 @@ public interface IEventScope {
     /**
      * Sends all local event changes to server
      */
-    void send();
+    Observable<Void> send();
 
     /**
      * Loads a list of Events for the given Organisation Unit and Program, limited by limit.
@@ -61,7 +61,7 @@ public interface IEventScope {
      * @param program
      * @param limit
      */
-    void update(OrganisationUnit organisationUnit, Program program, int limit);
+    Observable<Void> update(OrganisationUnit organisationUnit, Program program, int limit);
 
     /**
      * Loads a list of Events for the given Organisation Unit and program that have been modified
@@ -70,5 +70,5 @@ public interface IEventScope {
      * @param organisationUnit
      * @param program
      */
-    void update(OrganisationUnit organisationUnit, Program program);
+    Observable<Void> update(OrganisationUnit organisationUnit, Program program);
 }

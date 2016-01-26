@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow$Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
@@ -47,7 +48,6 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
     public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> mapper) {
         super(mapper);
     }
-
 
     @Override
     public List<ProgramTrackedEntityAttribute> query(Program program) {

@@ -63,7 +63,6 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
         eventFlow.setOrganisationUnitId(event.getOrganisationUnitId());
         eventFlow.setEventDate(event.getEventDate());
         eventFlow.setDueDate(event.getDueDate());
-        eventFlow.setTrackedEntityDataValues(MapperModuleProvider.getInstance().getTrackedEntityDataValueMapper().mapToDatabaseEntities(event.getTrackedEntityDataValues()));
         eventFlow.setName(event.getName());
         eventFlow.setDisplayName(event.getDisplayName());
         eventFlow.setCreated(event.getCreated());
@@ -91,7 +90,6 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
         event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());
         event.setEventDate(eventFlow.getEventDate());
         event.setDueDate(eventFlow.getDueDate());
-        event.setTrackedEntityDataValues(MapperModuleProvider.getInstance().getTrackedEntityDataValueMapper().mapToModels(eventFlow.getTrackedEntityDataValues()));
         event.setName(eventFlow.getName());
         event.setDisplayName(eventFlow.getDisplayName());
         event.setCreated(eventFlow.getCreated());

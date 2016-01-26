@@ -55,7 +55,7 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> 
         dataElementFlow.setName(dataElement.getName());
         dataElementFlow.setDisplayName(dataElement.getDisplayName());
         dataElementFlow.setAccess(dataElement.getAccess());
-        dataElementFlow.setType(dataElement.getType());
+        dataElementFlow.setValueType(dataElement.getValueType());
         dataElementFlow.setZeroIsSignificant(dataElement.isZeroIsSignificant());
         dataElementFlow.setAggregationOperator(dataElement.getAggregationOperator());
         dataElementFlow.setFormName(dataElement.getFormName());
@@ -81,7 +81,7 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> 
         dataElement.setName(dataElementFlow.getName());
         dataElement.setDisplayName(dataElementFlow.getDisplayName());
         dataElement.setAccess(dataElementFlow.getAccess());
-        dataElement.setType(dataElementFlow.getType());
+        dataElement.setValueType(dataElementFlow.getValueType());
         dataElement.setZeroIsSignificant(dataElementFlow.isZeroIsSignificant());
         dataElement.setAggregationOperator(dataElementFlow.getAggregationOperator());
         dataElement.setFormName(dataElementFlow.getFormName());

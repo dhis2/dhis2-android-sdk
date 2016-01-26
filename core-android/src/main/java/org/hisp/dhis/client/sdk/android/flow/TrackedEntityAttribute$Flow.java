@@ -35,6 +35,7 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 
 @Table(databaseName = DbDhis.NAME)
 public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Flow {
@@ -44,7 +45,7 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSet$Flow optionSet;
@@ -68,7 +69,7 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
     boolean externalAccess;
 
     @Column
-    String valueType;
+    ValueType valueType;
 
     @Column
     boolean confidential;
@@ -141,11 +142,11 @@ public final class TrackedEntityAttribute$Flow extends BaseIdentifiableObject$Fl
         this.externalAccess = externalAccess;
     }
 
-    public String getValueType() {
+    public ValueType getValueType() {
         return valueType;
     }
 
-    public void setValueType(String valueType) {
+    public void setValueType(ValueType valueType) {
         this.valueType = valueType;
     }
 

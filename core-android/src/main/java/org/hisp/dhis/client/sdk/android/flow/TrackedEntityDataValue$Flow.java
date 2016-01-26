@@ -49,7 +49,7 @@ public final class TrackedEntityDataValue$Flow extends BaseModel$Flow {
     @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = EVENT_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = EVENT_KEY, columnType = String.class, foreignColumnName = "eventUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Event$Flow event;
@@ -110,58 +110,4 @@ public final class TrackedEntityDataValue$Flow extends BaseModel$Flow {
     public TrackedEntityDataValue$Flow() {
         // empty constructor
     }
-
-    /*public static TrackedEntityDataValue toModel(TrackedEntityDataValue$Flow trackedEntityDataValueFlow) {
-        if (trackedEntityDataValueFlow == null) {
-            return null;
-        }
-
-        TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-        trackedEntityDataValue.setId(trackedEntityDataValueFlow.getId());
-        trackedEntityDataValue.setEvent(Event$Flow.toModel(trackedEntityDataValueFlow.getEvent()));
-        trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
-        trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
-        trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());
-        trackedEntityDataValue.setValue(trackedEntityDataValueFlow.getValue());
-        return trackedEntityDataValue;
-    }
-
-    public static TrackedEntityDataValue$Flow fromModel(TrackedEntityDataValue trackedEntityDataValue) {
-        if (trackedEntityDataValue == null) {
-            return null;
-        }
-
-        TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
-        trackedEntityDataValueFlow.setId(trackedEntityDataValue.getId());
-        trackedEntityDataValueFlow.setEvent(Event$Flow.fromModel(trackedEntityDataValue.getEvent()));
-        trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
-        trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
-        trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
-        trackedEntityDataValueFlow.setValue(trackedEntityDataValue.getValue());
-        return trackedEntityDataValueFlow;
-    }
-
-    public static List<TrackedEntityDataValue> toModels(List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlows) {
-        List<TrackedEntityDataValue> trackedEntityAttributeValues = new ArrayList<>();
-
-        if (trackedEntityDataValueFlows != null && !trackedEntityDataValueFlows.isEmpty()) {
-            for (TrackedEntityDataValue$Flow trackedEntityDataValueFlow : trackedEntityDataValueFlows) {
-                trackedEntityAttributeValues.add(toModel(trackedEntityDataValueFlow));
-            }
-        }
-
-        return trackedEntityAttributeValues;
-    }
-
-    public static List<TrackedEntityDataValue$Flow> fromModels(List<TrackedEntityDataValue> trackedEntityDataValues) {
-        List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlows = new ArrayList<>();
-
-        if (trackedEntityDataValues != null && !trackedEntityDataValues.isEmpty()) {
-            for (TrackedEntityDataValue trackedEntityDataValue : trackedEntityDataValues) {
-                trackedEntityDataValueFlows.add(fromModel(trackedEntityDataValue));
-            }
-        }
-
-        return trackedEntityDataValueFlows;
-    }*/
 }

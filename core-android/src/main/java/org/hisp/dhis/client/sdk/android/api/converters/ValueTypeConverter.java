@@ -27,26 +27,23 @@
  *
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.android.api.converters;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 
-import java.util.List;
-import java.util.Map;
+@SuppressWarnings("unused")
+@com.raizlabs.android.dbflow.annotation.TypeConverter
+public final class ValueTypeConverter extends TypeConverter<String, ValueType> {
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
+    @Override
+    public String getDBValue(ValueType model) {
+        return model.toString();
+    }
 
-public interface ProgramApiClientRetrofit {
-
-    @GET("programs/{programUid}")
-    Call<Program> getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
-
-    @GET("programs")
-    Call<JsonNode> getPrograms(@QueryMap Map<String, String> queryMap);
-
+    @Override
+    public ValueType getModelValue(String data) {
+        return ValueType.valueOf(data);
+    }
 }

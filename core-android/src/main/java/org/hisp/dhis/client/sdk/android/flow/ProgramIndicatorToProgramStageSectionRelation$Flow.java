@@ -51,7 +51,7 @@ public final class ProgramIndicatorToProgramStageSectionRelation$Flow extends Ba
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_INDICATOR_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_INDICATOR_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramIndicator$Flow programIndicator;
@@ -59,7 +59,7 @@ public final class ProgramIndicatorToProgramStageSectionRelation$Flow extends Ba
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageSection$Flow programStageSection;

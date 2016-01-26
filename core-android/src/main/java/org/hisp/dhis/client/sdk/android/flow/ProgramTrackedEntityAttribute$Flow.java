@@ -50,7 +50,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseIdentifiableOb
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntityAttribute$Flow trackedEntityAttribute;
@@ -58,7 +58,7 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseIdentifiableOb
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
@@ -126,58 +126,4 @@ public final class ProgramTrackedEntityAttribute$Flow extends BaseIdentifiableOb
     public ProgramTrackedEntityAttribute$Flow() {
         // empty constructor
     }
-
-    /*public static ProgramTrackedEntityAttribute toModel(ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow) {
-        if (programTrackedEntityAttributeFlow == null) {
-            return null;
-        }
-
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute = new ProgramTrackedEntityAttribute();
-        programTrackedEntityAttribute.setTrackedEntityAttribute(programTrackedEntityAttributeFlow.getTrackedEntityAttribute());
-        programTrackedEntityAttribute.setProgram(programTrackedEntityAttributeFlow.getProgram());
-        programTrackedEntityAttribute.setSortOrder(programTrackedEntityAttributeFlow.getSortOrder());
-        programTrackedEntityAttribute.setAllowFutureDate(programTrackedEntityAttributeFlow.isAllowFutureDate());
-        programTrackedEntityAttribute.setDisplayInList(programTrackedEntityAttributeFlow.isDisplayInList());
-        programTrackedEntityAttribute.setMandatory(programTrackedEntityAttributeFlow.isMandatory());
-        return programTrackedEntityAttribute;
-    }
-
-    public static ProgramTrackedEntityAttribute$Flow fromModel(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
-        if (programTrackedEntityAttribute == null) {
-            return null;
-        }
-
-        ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = new ProgramTrackedEntityAttribute$Flow();
-        programTrackedEntityAttributeFlow.setTrackedEntityAttribute(programTrackedEntityAttribute.getTrackedEntityAttribute());
-        programTrackedEntityAttributeFlow.setProgram(programTrackedEntityAttribute.getProgram());
-        programTrackedEntityAttributeFlow.setSortOrder(programTrackedEntityAttribute.getSortOrder());
-        programTrackedEntityAttributeFlow.setAllowFutureDate(programTrackedEntityAttribute.isAllowFutureDate());
-        programTrackedEntityAttributeFlow.setDisplayInList(programTrackedEntityAttribute.isDisplayInList());
-        programTrackedEntityAttributeFlow.setMandatory(programTrackedEntityAttribute.isMandatory());
-        return programTrackedEntityAttributeFlow;
-    }
-
-    public static List<ProgramTrackedEntityAttribute> toModels(List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows) {
-        List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = new ArrayList<>();
-
-        if (programTrackedEntityAttributeFlows != null && !programTrackedEntityAttributeFlows.isEmpty()) {
-            for (ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow : programTrackedEntityAttributeFlows) {
-                programTrackedEntityAttributes.add(toModel(programTrackedEntityAttributeFlow));
-            }
-        }
-
-        return programTrackedEntityAttributes;
-    }
-
-    public static List<ProgramTrackedEntityAttribute$Flow> fromModels(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
-        List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new ArrayList<>();
-
-        if (programTrackedEntityAttributes != null && !programTrackedEntityAttributes.isEmpty()) {
-            for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
-                programTrackedEntityAttributeFlows.add(fromModel(programTrackedEntityAttribute));
-            }
-        }
-
-        return programTrackedEntityAttributeFlows;
-    }*/
 }

@@ -49,7 +49,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = "user", columnType = long.class, foreignColumnName = "id")
+                    @ForeignKeyReference(columnName = "user", columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     User$Flow user;
@@ -57,7 +57,7 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = "interpretation", columnType = long.class, foreignColumnName = "id")
+                    @ForeignKeyReference(columnName = "interpretation", columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Interpretation$Flow interpretation;
@@ -87,57 +87,5 @@ public final class InterpretationComment$Flow extends BaseIdentifiableObject$Flo
 
     public void setInterpretation(Interpretation$Flow interpretation) {
         this.interpretation = interpretation;
-    }
-
-    public static InterpretationComment$Flow fromModel(InterpretationComment comment) {
-        if (comment == null) {
-            return null;
-        }
-
-        InterpretationComment$Flow commentFlow = new InterpretationComment$Flow();
-        commentFlow.setId(comment.getId());
-        commentFlow.setUId(comment.getUId());
-        commentFlow.setCreated(comment.getCreated());
-        commentFlow.setLastUpdated(comment.getLastUpdated());
-        commentFlow.setName(comment.getName());
-        commentFlow.setDisplayName(comment.getDisplayName());
-        commentFlow.setAccess(comment.getAccess());
-        commentFlow.setText(comment.getText());
-        commentFlow.setInterpretation(Interpretation$Flow
-                .fromModel(comment.getInterpretation()));
-        // commentFlow.setUser(User$Flow.fromModel(comment.getUser()));
-        return commentFlow;
-    }
-
-    public static InterpretationComment toModel(InterpretationComment$Flow commentFlow) {
-        if (commentFlow == null) {
-            return null;
-        }
-
-        InterpretationComment comment = new InterpretationComment();
-        comment.setId(commentFlow.getId());
-        comment.setUId(commentFlow.getUId());
-        comment.setCreated(commentFlow.getCreated());
-        comment.setLastUpdated(commentFlow.getLastUpdated());
-        comment.setName(commentFlow.getName());
-        comment.setDisplayName(commentFlow.getDisplayName());
-        comment.setAccess(commentFlow.getAccess());
-        comment.setText(commentFlow.getText());
-        comment.setInterpretation(Interpretation$Flow
-                .toModel(commentFlow.getInterpretation()));
-        // comment.setUser(User$Flow.toModel(commentFlow.getUser()));
-        return comment;
-    }
-
-    public static List<InterpretationComment> toModels(List<InterpretationComment$Flow> commentFlows) {
-        List<InterpretationComment> comments = new ArrayList<>();
-
-        if (commentFlows != null && !commentFlows.isEmpty()) {
-            for (InterpretationComment$Flow commentFlow : commentFlows) {
-                comments.add(toModel(commentFlow));
-            }
-        }
-
-        return comments;
     }
 }

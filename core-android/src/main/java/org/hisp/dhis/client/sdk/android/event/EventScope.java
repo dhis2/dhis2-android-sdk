@@ -135,17 +135,53 @@ public class EventScope implements IEventScope {
     }
 
     @Override
-    public void send() {
-        mEventController.sync();
+    public Observable<Void> send() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mEventController.sync();
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public void update(OrganisationUnit organisationUnit, Program program, int limit) {
-        mEventController.sync(organisationUnit, program, limit);
+    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program program, final int limit) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mEventController.sync(organisationUnit, program, limit);
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public void update(OrganisationUnit organisationUnit, Program program) {
-        mEventController.sync(organisationUnit, program);
+    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program program) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mEventController.sync(organisationUnit, program);
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 }

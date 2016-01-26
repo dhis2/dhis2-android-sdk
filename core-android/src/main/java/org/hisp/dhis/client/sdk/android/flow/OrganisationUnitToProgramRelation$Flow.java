@@ -51,7 +51,7 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     OrganisationUnit$Flow organisationUnit;
@@ -59,7 +59,7 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;

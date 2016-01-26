@@ -56,7 +56,7 @@ public final class Relationship$Flow extends BaseModel$Flow {
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_A_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_A_KEY, columnType = String.class, foreignColumnName = "trackedEntityInstanceUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstanceA;
@@ -65,7 +65,7 @@ public final class Relationship$Flow extends BaseModel$Flow {
     @Unique(unique = true, uniqueGroups = {UNIQUE_RELATIONSHIP_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_B_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_B_KEY, columnType = String.class, foreignColumnName = "trackedEntityInstanceUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstanceB;
@@ -108,62 +108,4 @@ public final class Relationship$Flow extends BaseModel$Flow {
     public Relationship$Flow() {
         // empty constructor
     }
-
-    /*public static Relationship toModel(Relationship$Flow relationshipFlow) {
-        if (relationshipFlow == null) {
-            return null;
-        }
-
-        Relationship relationship = new Relationship();
-        relationship.setId(relationshipFlow.getId());
-        relationship.setRelationship(relationshipFlow.getRelationship());
-        relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
-        relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
-        relationship.setDisplayName(relationshipFlow.getDisplayName());
-        relationship.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceA()));
-        relationship.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.toModel(relationshipFlow.getTrackedEntityInstanceB()));
-        relationship.setDisplayName(relationshipFlow.getDisplayName());
-        return relationship;
-    }
-
-    public static Relationship$Flow fromModel(Relationship relationship) {
-        if (relationship == null) {
-            return null;
-        }
-
-        Relationship$Flow relationshipFlow = new Relationship$Flow();
-        relationshipFlow.setId(relationship.getId());
-        relationshipFlow.setRelationship(relationship.getRelationship());
-        relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
-        relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
-        relationshipFlow.setDisplayName(relationship.getDisplayName());
-        relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceA()));
-        relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstance$Flow.fromModel(relationship.getTrackedEntityInstanceB()));
-        relationshipFlow.setDisplayName(relationship.getDisplayName());
-        return relationshipFlow;
-    }
-
-    public static List<Relationship> toModels(List<Relationship$Flow> relationshipFlows) {
-        List<Relationship> relationships = new ArrayList<>();
-
-        if (relationshipFlows != null && !relationshipFlows.isEmpty()) {
-            for (Relationship$Flow relationshipFlow : relationshipFlows) {
-                relationships.add(toModel(relationshipFlow));
-            }
-        }
-
-        return relationships;
-    }
-
-    public static List<Relationship$Flow> fromModels(List<Relationship> relationships) {
-        List<Relationship$Flow> relationshipFlows = new ArrayList<>();
-
-        if (relationships != null && !relationships.isEmpty()) {
-            for (Relationship relationship: relationships) {
-                relationshipFlows.add(fromModel(relationship));
-            }
-        }
-
-        return relationshipFlows;
-    }*/
 }

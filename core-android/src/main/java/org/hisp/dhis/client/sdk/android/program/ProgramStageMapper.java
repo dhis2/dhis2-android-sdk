@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;

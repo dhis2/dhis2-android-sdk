@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttribute$Flow;
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> {
 

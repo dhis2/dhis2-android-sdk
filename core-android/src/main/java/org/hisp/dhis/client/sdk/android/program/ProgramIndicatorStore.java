@@ -55,7 +55,7 @@ public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<Prog
     public List<ProgramIndicator> query(Program program) {
         List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
                 .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
+                        column(ProgramIndicator$Flow$Table.PROGRAM_PROGRAM).is(program.getId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }
@@ -64,7 +64,7 @@ public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<Prog
     public List<ProgramIndicator> query(ProgramStage programStage) {
         List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
                 .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE).is(programStage.getUId()))
+                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE).is(programStage.getId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }
@@ -73,7 +73,7 @@ public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<Prog
     public List<ProgramIndicator> query(ProgramStageSection programStageSection) {
         List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
                 .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSection.getUId()))
+                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSection.getId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }

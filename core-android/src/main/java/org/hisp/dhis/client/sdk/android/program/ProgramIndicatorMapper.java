@@ -37,6 +37,8 @@ import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramIndicator$Flow> {
 

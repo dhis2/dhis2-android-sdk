@@ -47,7 +47,7 @@ public final class DashboardElement$Flow extends BaseIdentifiableObject$Flow {
     @NotNull
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = DASHBOARD_ITEM_KEY, columnType = long.class, foreignColumnName = "id")
+                    @ForeignKeyReference(columnName = DASHBOARD_ITEM_KEY, columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DashboardItem$Flow dashboardItem;

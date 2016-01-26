@@ -155,17 +155,53 @@ public class ProgramScope implements IProgramScope {
     }
 
     @Override
-    public void sync() {
-        mProgramController.sync();
+    public Observable<Void> sync() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mProgramController.sync();
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public void sync(Set<String> uids) {
-        mProgramController.sync(uids);
+    public Observable<Void> sync(final Set<String> uids) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mProgramController.sync(uids);
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
-    public void sync(String uid) {
-        mProgramController.sync();
+    public Observable<Void> sync(String uid) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mProgramController.sync();
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 }

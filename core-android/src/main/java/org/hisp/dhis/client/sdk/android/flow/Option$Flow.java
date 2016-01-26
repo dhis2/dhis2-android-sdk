@@ -47,7 +47,7 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     OptionSet$Flow optionSet;
@@ -82,66 +82,4 @@ public final class Option$Flow extends BaseIdentifiableObject$Flow {
     public Option$Flow() {
         // empty constructor
     }
-
-    /*public static Option toModel(Option$Flow optionFlow) {
-        if (optionFlow == null) {
-            return null;
-        }
-
-        Option option = new Option();
-        option.setId(optionFlow.getId());
-        option.setUId(optionFlow.getUId());
-        option.setCreated(optionFlow.getCreated());
-        option.setLastUpdated(optionFlow.getLastUpdated());
-        option.setName(optionFlow.getName());
-        option.setDisplayName(optionFlow.getDisplayName());
-        option.setAccess(optionFlow.getAccess());
-        option.setSortOrder(optionFlow.getSortOrder());
-        option.setOptionSet(optionFlow.getOptionSet());
-        option.setCode(optionFlow.getCode());
-        return option;
-    }
-
-    public static Option$Flow fromModel(Option option) {
-        if (option == null) {
-            return null;
-        }
-
-        Option$Flow optionFlow = new Option$Flow();
-        optionFlow.setId(option.getId());
-        optionFlow.setUId(option.getUId());
-        optionFlow.setCreated(option.getCreated());
-        optionFlow.setLastUpdated(option.getLastUpdated());
-        optionFlow.setName(option.getName());
-        optionFlow.setDisplayName(option.getDisplayName());
-        optionFlow.setAccess(option.getAccess());
-        optionFlow.setSortOrder(option.getSortOrder());
-        optionFlow.setOptionSet(option.getOptionSet());
-        optionFlow.setCode(option.getCode());
-        return optionFlow;
-    }
-
-    public static List<Option> toModels(List<Option$Flow> optionFlows) {
-        List<Option> options = new ArrayList<>();
-
-        if (optionFlows != null && !optionFlows.isEmpty()) {
-            for (Option$Flow optionFlow : optionFlows) {
-                options.add(toModel(optionFlow));
-            }
-        }
-
-        return options;
-    }
-
-    public static List<Option$Flow> fromModels(List<Option> options) {
-        List<Option$Flow> optionFlows = new ArrayList<>();
-
-        if (options != null && !options.isEmpty()) {
-            for (Option option : options) {
-                optionFlows.add(fromModel(option));
-            }
-        }
-
-        return optionFlows;
-    }*/
 }

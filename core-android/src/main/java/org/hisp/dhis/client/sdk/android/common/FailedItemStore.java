@@ -50,7 +50,7 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean insert(FailedItem object) {
-        FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
+        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
             List<Conflict$Flow> conflicts = new Select()
@@ -68,7 +68,7 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean update(FailedItem object) {
-        FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
+        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
             List<Conflict$Flow> conflicts = new Select()
@@ -87,7 +87,7 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean save(FailedItem object) {
-        FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
+        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
             List<Conflict$Flow> conflicts = new Select()
@@ -106,7 +106,7 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean delete(FailedItem object) {
-        FailedItem$Flow failedItemFlow = FailedItem$Flow.fromModel(object);
+        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
         ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
         if(importSummaryFlow != null) {
             List<Conflict$Flow> conflicts = new Select()
@@ -144,7 +144,7 @@ public final class FailedItemStore implements IFailedItemStore {
                 importSummaryFlow.setConflicts(conflicts);
             }
         }
-        return FailedItem$Flow.toModels(failedItemFlows);
+        return null;//FailedItem$Flow.toModels(failedItemFlows);
     }
 
     @Override
@@ -169,7 +169,7 @@ public final class FailedItemStore implements IFailedItemStore {
             }
         }
 
-        return FailedItem$Flow.toModels(failedItemFlows);
+        return null;//FailedItem$Flow.toModels(failedItemFlows);
     }
 
     @Override
@@ -188,6 +188,6 @@ public final class FailedItemStore implements IFailedItemStore {
                     .queryList();
             importSummaryFlow.setConflicts(conflicts);
         }
-        return FailedItem$Flow.toModel(failedItemFlow);
+        return null;//FailedItem$Flow.toModel(failedItemFlow);
     }
 }

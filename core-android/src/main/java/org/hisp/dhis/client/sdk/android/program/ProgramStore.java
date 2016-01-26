@@ -38,7 +38,10 @@ import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.android.flow.TrackedEntity$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
@@ -49,6 +52,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +82,48 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
     }
 
     @Override
+    public boolean insert(Program program) {
+        isNull(program, "object must not be null");
+
+        Program$Flow databaseEntity = getMapper().mapToDatabaseEntity(program);
+        if (databaseEntity != null) {
+            databaseEntity.insert();
+
+            /* setting id which DbFlows' BaseModel generated after insertion */
+            program.setId(databaseEntity.getId());
+
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program.getProgramTrackedEntityAttributes();
+            if(programTrackedEntityAttributes != null) {
+                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
+                    if (!mProgramTrackedEntityAttributeStore.insert(programTrackedEntityAttribute)) {
+                        return false;
+                    }
+                }
+            }
+
+            List<ProgramIndicator> programIndicators = program.getProgramIndicators();
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.insert(programIndicator)) {
+                        return false;
+                    }
+                }
+            }
+
+            List<ProgramStage> programStages = program.getProgramStages();
+            if(programStages != null) {
+                for (ProgramStage programStage : programStages) {
+                    if (!mProgramStageStore.insert(programStage)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean save(Program program) {
         isNull(program, "object must not be null");
 
@@ -88,23 +135,29 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             program.setId(databaseEntity.getId());
 
             List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program.getProgramTrackedEntityAttributes();
-            for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
-                if(!mProgramTrackedEntityAttributeStore.save(programTrackedEntityAttribute)) {
-                    return false;
+            if(programTrackedEntityAttributes != null) {
+                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
+                    if (!mProgramTrackedEntityAttributeStore.save(programTrackedEntityAttribute)) {
+                        return false;
+                    }
                 }
             }
 
             List<ProgramIndicator> programIndicators = program.getProgramIndicators();
-            for(ProgramIndicator programIndicator : programIndicators) {
-                if(!mProgramIndicatorStore.save(programIndicator)) {
-                    return false;
+            if(programIndicators != null) {
+                for (ProgramIndicator programIndicator : programIndicators) {
+                    if (!mProgramIndicatorStore.save(programIndicator)) {
+                        return false;
+                    }
                 }
             }
 
             List<ProgramStage> programStages = program.getProgramStages();
-            for(ProgramStage programStage : programStages) {
-                if(!mProgramStageStore.save(programStage)) {
-                    return false;
+            if(programStages != null) {
+                for (ProgramStage programStage : programStages) {
+                    if (!mProgramStageStore.save(programStage)) {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -127,7 +180,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
     }
 
     @Override
-    public List<Program> query(OrganisationUnit organisationUnit, Program.ProgramType... programTypes) {
+    public List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes) {
         return null;
     }
 

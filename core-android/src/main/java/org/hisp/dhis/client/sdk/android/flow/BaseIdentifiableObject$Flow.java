@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.Unique;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
@@ -43,6 +45,7 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow impleme
     public static final String COLUMN_UID = "uId";
 
     @Column(name = COLUMN_UID)
+    @Unique(onUniqueConflict = ConflictAction.REPLACE)
     String uId;
 
     @Column(name = "name")

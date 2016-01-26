@@ -55,7 +55,7 @@ public final class Enrollment$Flow extends BaseModel$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = long.class, foreignColumnName = "id"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = String.class, foreignColumnName = "trackedEntityInstanceUid"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     TrackedEntityInstance$Flow trackedEntityInstance;
@@ -217,80 +217,4 @@ public final class Enrollment$Flow extends BaseModel$Flow {
     public Enrollment$Flow() {
         // empty constructor
     }
-
-    /*public static Enrollment toModel(Enrollment$Flow enrollmentFlow) {
-        if (enrollmentFlow == null) {
-            return null;
-        }
-
-        Enrollment enrollment = new Enrollment();
-        enrollment.setId(enrollmentFlow.getId());
-        enrollment.setUId(enrollmentFlow.getEnrollmentUid());
-        enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
-        enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
-        enrollment.setTrackedEntityInstance(TrackedEntityInstance$Flow.toModel(enrollmentFlow.getTrackedEntityInstance()));
-        enrollment.setProgram(enrollmentFlow.getProgram());
-        enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
-        enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());
-        enrollment.setFollowup(enrollmentFlow.isFollowup());
-        enrollment.setStatus(enrollmentFlow.getStatus());
-        enrollment.setName(enrollmentFlow.getName());
-        enrollment.setDisplayName(enrollmentFlow.getDisplayName());
-        enrollment.setCreated(enrollmentFlow.getCreated());
-        enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
-        enrollment.setAccess(enrollmentFlow.getAccess());
-        enrollment.setEvents(Event$Flow.toModels(enrollmentFlow.getEvents()));
-        enrollment.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.toModels(enrollmentFlow.getTrackedEntityAttributeValues()));
-        return enrollment;
-    }
-
-    public static Enrollment$Flow fromModel(Enrollment enrollment) {
-        if (enrollment == null) {
-            return null;
-        }
-
-        Enrollment$Flow enrollmentFlow = new Enrollment$Flow();
-        enrollmentFlow.setId(enrollment.getId());
-        enrollmentFlow.setEnrollmentUid(enrollment.getUId());
-        enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
-        enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
-        enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstance$Flow.fromModel(enrollment.getTrackedEntityInstance()));
-        enrollmentFlow.setProgram(enrollment.getProgram());
-        enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
-        enrollmentFlow.setDateOfIncident(enrollment.getDateOfIncident());
-        enrollmentFlow.setFollowup(enrollment.isFollowup());
-        enrollmentFlow.setStatus(enrollment.getStatus());
-        enrollmentFlow.setName(enrollment.getName());
-        enrollmentFlow.setDisplayName(enrollment.getDisplayName());
-        enrollmentFlow.setCreated(enrollment.getCreated());
-        enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
-        enrollmentFlow.setAccess(enrollment.getAccess());
-        enrollmentFlow.setEvents(Event$Flow.fromModels(enrollment.getEvents()));
-        enrollmentFlow.setTrackedEntityAttributeValues(TrackedEntityAttributeValue$Flow.fromModels(enrollment.getTrackedEntityAttributeValues()));
-        return enrollmentFlow;
-    }
-
-    public static List<Enrollment> toModels(List<Enrollment$Flow> enrollmentFlows) {
-        List<Enrollment> enrollments = new ArrayList<>();
-
-        if (enrollmentFlows != null && !enrollmentFlows.isEmpty()) {
-            for (Enrollment$Flow enrollmentFlow : enrollmentFlows) {
-                enrollments.add(toModel(enrollmentFlow));
-            }
-        }
-
-        return enrollments;
-    }
-
-    public static List<Enrollment$Flow> fromModels(List<Enrollment> enrollments) {
-        List<Enrollment$Flow> enrollmentFlows = new ArrayList<>();
-
-        if (enrollments != null && !enrollments.isEmpty()) {
-            for (Enrollment enrollment : enrollments) {
-                enrollmentFlows.add(fromModel(enrollment));
-            }
-        }
-
-        return enrollmentFlows;
-    }*/
 }

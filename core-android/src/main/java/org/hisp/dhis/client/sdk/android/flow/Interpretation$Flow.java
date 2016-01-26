@@ -57,7 +57,7 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = "user", columnType = long.class, foreignColumnName = "id")
+                    @ForeignKeyReference(columnName = "user", columnType = String.class, foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     User$Flow user;
@@ -96,69 +96,5 @@ public final class Interpretation$Flow extends BaseIdentifiableObject$Flow {
 
     public void setUser(User$Flow user) {
         this.user = user;
-    }
-
-    public static Interpretation toModel(Interpretation$Flow interpretationFlow) {
-        if (interpretationFlow == null) {
-            return null;
-        }
-
-        Interpretation interpretation = new Interpretation();
-        interpretation.setId(interpretationFlow.getId());
-        interpretation.setUId(interpretationFlow.getUId());
-        interpretation.setCreated(interpretationFlow.getCreated());
-        interpretation.setLastUpdated(interpretationFlow.getLastUpdated());
-        interpretation.setName(interpretationFlow.getName());
-        interpretation.setDisplayName(interpretationFlow.getDisplayName());
-        interpretation.setAccess(interpretationFlow.getAccess());
-        interpretation.setText(interpretationFlow.getText());
-        interpretation.setType(interpretationFlow.getType());
-        // interpretation.setAction(interpretationFlow.getAction());
-        // interpretation.setUser(User$Flow.toModel(interpretationFlow.getUser()));
-        return interpretation;
-    }
-
-    public static Interpretation$Flow fromModel(Interpretation interpretation) {
-        if (interpretation == null) {
-            return null;
-        }
-
-        Interpretation$Flow interpretationFlow = new Interpretation$Flow();
-        interpretationFlow.setId(interpretation.getId());
-        interpretationFlow.setUId(interpretation.getUId());
-        interpretationFlow.setCreated(interpretation.getCreated());
-        interpretationFlow.setLastUpdated(interpretation.getLastUpdated());
-        interpretationFlow.setName(interpretation.getName());
-        interpretationFlow.setDisplayName(interpretation.getDisplayName());
-        interpretationFlow.setAccess(interpretation.getAccess());
-        interpretationFlow.setText(interpretation.getText());
-        interpretationFlow.setType(interpretation.getType());
-        // interpretationFlow.setAction(interpretation.getAction());
-        // interpretationFlow.setUser(User$Flow.fromModel(interpretation.getUser()));
-        return interpretationFlow;
-    }
-
-    public static List<Interpretation> toModels(List<Interpretation$Flow> interpretationFlows) {
-        List<Interpretation> interpretations = new ArrayList<>();
-
-        if (interpretationFlows != null && !interpretationFlows.isEmpty()) {
-            for (Interpretation$Flow interpretationFlow : interpretationFlows) {
-                interpretations.add(toModel(interpretationFlow));
-            }
-        }
-
-        return interpretations;
-    }
-
-    public static List<Interpretation$Flow> fromModels(List<Interpretation> interpretations) {
-        List<Interpretation$Flow> interpretationFlows = new ArrayList<>();
-
-        if (interpretations != null && !interpretations.isEmpty()) {
-            for (Interpretation interpretation : interpretations) {
-                interpretationFlows.add(fromModel(interpretation));
-            }
-        }
-
-        return interpretationFlows;
     }
 }

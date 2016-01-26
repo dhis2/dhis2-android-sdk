@@ -31,24 +31,9 @@ public class PickerFragment extends Fragment {
     public PickerFragment() {
     }
 
-    public static PickerFragment newInstance(List<Picker> pickerList) {
-        PickerFragment pickerFragment = new PickerFragment();
-
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(EXTRA_PICKER_LIST, (ArrayList) pickerList);
-
-        pickerFragment.setArguments(args);
-        return pickerFragment;
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-//        if(mPickerList.size() < 1) {
-////            throw new IllegalArgumentException("Picker fragment requires at least one picker");
-//        }
     }
 
     @Nullable
@@ -77,7 +62,6 @@ public class PickerFragment extends Fragment {
         List<Picker> pickers = new ArrayList<>();
 
         if(state == null) {
-            mRootPickerList = getArguments().getParcelableArrayList(EXTRA_PICKER_LIST);
 
             for(Picker parentPicker : mRootPickerList) {
                 parentPicker.setParentList(pickers);
@@ -122,5 +106,9 @@ public class PickerFragment extends Fragment {
         ChainablePickerState state = new ChainablePickerState(mRootPickerList);
         bundle.putParcelable(PICKER_KEY, state);
         super.onSaveInstanceState(bundle);
+    }
+
+    public void setRootPickerList(List<Picker> mRootPickerList) {
+        this.mRootPickerList = mRootPickerList;
     }
 }

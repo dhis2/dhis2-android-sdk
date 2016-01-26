@@ -45,12 +45,10 @@ public abstract class AbsSelectorFragment extends BaseFragment {
     public INavigationHandler mNavigationHandler;
     private FrameLayout mPickerFrameLayout;
     private FrameLayout mItemListFrameLayout;
-    private AbsSettingsFragment mSettingsFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -88,7 +86,6 @@ public abstract class AbsSelectorFragment extends BaseFragment {
 
         if (activity instanceof INavigationHandler) {
             mNavigationHandler = (INavigationHandler) activity;
-            mNavigationHandler.showBackButton(false);
         } else {
             throw new IllegalArgumentException("Activity must " +
                     "implement INavigationHandler interface");

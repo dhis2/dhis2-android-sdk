@@ -29,6 +29,11 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 import java.util.List;
 import java.util.Set;

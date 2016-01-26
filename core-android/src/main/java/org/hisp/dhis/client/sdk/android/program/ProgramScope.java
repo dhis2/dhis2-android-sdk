@@ -30,8 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 import java.util.List;
 import java.util.Set;
@@ -43,10 +53,20 @@ public class ProgramScope implements IProgramScope {
 
     private final IProgramService mProgramService;
     private final IProgramController mProgramController;
+    private final IProgramStageService mProgramStageService;
+    private final IProgramStageSectionService mProgramStageSectionService;
+    private final IProgramIndicatorService mProgramIndicatorService;
+    private final IProgramStageDataElementService mProgramStageDataElementService;
+    private final IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService;
 
-    public ProgramScope(IProgramService mProgramService, IProgramController mProgramController) {
+    public ProgramScope(IProgramService mProgramService, IProgramController mProgramController, IProgramStageService mProgramStageService, IProgramStageSectionService mProgramStageSectionService, IProgramIndicatorService mProgramIndicatorService, IProgramStageDataElementService mProgramStageDataElementService, IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService) {
         this.mProgramService = mProgramService;
         this.mProgramController = mProgramController;
+        this.mProgramStageService = mProgramStageService;
+        this.mProgramStageSectionService = mProgramStageSectionService;
+        this.mProgramIndicatorService = mProgramIndicatorService;
+        this.mProgramStageDataElementService = mProgramStageDataElementService;
+        this.mProgramTrackedEntityAttributeService = mProgramTrackedEntityAttributeService;
     }
 
     @Override

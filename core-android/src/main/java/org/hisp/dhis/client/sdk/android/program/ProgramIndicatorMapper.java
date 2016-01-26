@@ -62,6 +62,8 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicatorFlow.setValueType(programIndicator.getValueType());
         programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
         programIndicatorFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programIndicator.getProgram()));
+        programIndicatorFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programIndicator.getProgramStage()));
+        programIndicatorFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programIndicator.getProgramStageSection()));
         return programIndicatorFlow;
     }
 
@@ -87,6 +89,8 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicator.setValueType(programIndicatorFlow.getValueType());
         programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
         programIndicator.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programIndicatorFlow.getProgram()));
+        programIndicator.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programIndicatorFlow.getProgramStage()));
+        programIndicator.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModel(programIndicatorFlow.getProgramStageSection()));
         return programIndicator;
     }
 

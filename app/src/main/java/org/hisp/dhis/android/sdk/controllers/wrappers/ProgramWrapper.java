@@ -31,8 +31,8 @@ package org.hisp.dhis.android.sdk.controllers.wrappers;
 
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
-import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicatorToSectionRelationship;
@@ -157,9 +157,9 @@ public class ProgramWrapper {
 
     private static List<DbOperation> saveDataElementAttributes(DataElement dataElement, Map<String, Attribute> attributes){
         List<DbOperation> operations = new ArrayList<>();
-        List<AttributeValue> attributeValues = dataElement.getAttributeValues();
+        List<DataElementAttributeValue> attributeValues = dataElement.getAttributeValues();
         if (attributeValues!=null && !attributeValues.isEmpty()) {
-            for (AttributeValue attributeValue : attributeValues) {
+            for (DataElementAttributeValue attributeValue : attributeValues) {
                 attributeValue.setDataElement(dataElement.getUid());
                 //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
                 operations.add(DbOperation.save(attributeValue));

@@ -39,10 +39,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
+//import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
 
 public abstract class AbsSelectorFragment extends BaseFragment {
-    public INavigationHandler mNavigationHandler;
+    //    public INavigationHandler mNavigationHandler;
     private FrameLayout mPickerFrameLayout;
     private FrameLayout mItemListFrameLayout;
 
@@ -84,12 +84,12 @@ public abstract class AbsSelectorFragment extends BaseFragment {
 
         Activity activity = (Activity) context;
 
-        if (activity instanceof INavigationHandler) {
-            mNavigationHandler = (INavigationHandler) activity;
-        } else {
-            throw new IllegalArgumentException("Activity must " +
-                    "implement INavigationHandler interface");
-        }
+//        if (activity instanceof INavigationHandler) {
+//            mNavigationHandler = (INavigationHandler) activity;
+//        } else {
+//            throw new IllegalArgumentException("Activity must " +
+//                    "implement INavigationHandler interface");
+//        }
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class AbsSelectorFragment extends BaseFragment {
         super.onDetach();
         // we need to nullify reference
         // to parent activity in order not to leak it
-        mNavigationHandler = null;
+//        mNavigationHandler = null;
     }
 
     @Override

@@ -42,7 +42,6 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
     }
 
     @Override
@@ -137,7 +136,6 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
 
         if(activity instanceof INavigationHandler) {
             mNavigationHandler = (INavigationHandler) activity;
-            mNavigationHandler.showBackButton(true);
         } else {
             throw new IllegalArgumentException("Activity must " +
                     "implement INavigationHandler interface");
@@ -149,7 +147,6 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
         super.onDetach();
         // we need to nullify reference
         // to parent activity in order not to leak it
-        mNavigationHandler.showBackButton(false);
         mNavigationHandler = null;
     }
 

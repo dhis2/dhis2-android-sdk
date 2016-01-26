@@ -148,12 +148,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         }
 
         loginViewsContainer.setVisibility(View.VISIBLE);
-        progressBar.progressiveStop(new CircularProgressDrawable.OnEndListener() {
-            @Override
-            public void onEnd(CircularProgressDrawable circularProgressDrawable) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
+        progressBar.setVisibility(View.GONE);
     }
 
     private void onTextChanged() {

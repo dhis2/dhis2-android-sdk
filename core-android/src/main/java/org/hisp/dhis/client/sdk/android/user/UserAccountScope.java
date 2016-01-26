@@ -126,8 +126,20 @@ public class UserAccountScope implements IUserAccountScope {
 
     @Override
 
-    public void syncAssignedPrograms() {
-        mAssignedProgramsController.sync();
+    public Observable<Void> syncAssignedPrograms() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mAssignedProgramsController.sync();
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     public Observable<UserAccount> account() {

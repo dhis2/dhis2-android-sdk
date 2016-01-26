@@ -52,9 +52,9 @@ public interface IProgramScope {
 
     Observable<List<Program>> list();
 
-    void sync();
+    Observable<Void> sync();
 
-    void sync(Set<String> uids);
+    Observable<Void> sync(Set<String> uids);
 
-    void sync(String uid);
+    Observable<Void> sync(String uid);
 }

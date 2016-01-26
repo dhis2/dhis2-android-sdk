@@ -46,5 +46,5 @@ public interface IOrganisationUnitScope {
 
     Observable<List<OrganisationUnit>> list();
 
-    void sync();
+    Observable<Void> sync();
 }

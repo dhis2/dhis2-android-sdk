@@ -134,7 +134,19 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
     }
 
     @Override
-    public void sync() {
-        mOrganisationUnitController.sync();
+    public Observable<Void> sync() {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mOrganisationUnitController.sync();
+                    subscriber.onNext(null);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 }

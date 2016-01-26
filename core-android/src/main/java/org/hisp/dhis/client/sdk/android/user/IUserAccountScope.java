@@ -45,7 +45,7 @@ public interface IUserAccountScope {
 
     Observable<Boolean> signOut();
 
-    void syncAssignedPrograms();
+    Observable<Void> syncAssignedPrograms();
 
     Observable<UserAccount> account();
 }

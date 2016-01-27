@@ -38,8 +38,8 @@
     <declare-styleable name="CircleView">
         <attr name="stroke_color" format="color|reference" />
         <attr name="stroke_width" format="dimension|reference" />
-        <attr name="circle_radius" format="dimension"/>
-        <attr name="circle_gap" format="dimension"/>
-        <attr name="fill_color" format="color|reference"/>
+        <attr name="circle_radius" format="dimension" />
+        <attr name="circle_gap" format="dimension" />
+        <attr name="fill_color" format="color|reference" />
     </declare-styleable>
 </resources>

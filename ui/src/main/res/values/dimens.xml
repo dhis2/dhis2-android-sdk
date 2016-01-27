@@ -28,9 +28,7 @@
   -->
 
 <resources>
-    <dimen name="default_stroke_width">6dp</dimen>
-    <dimen name="default_circle_radius">0dp</dimen>
-    <dimen name="default_circle_gap">0dp</dimen>
+    <dimen name="progressbar_stroke_width">6dp</dimen>
 
     <dimen name="keyline_default">16dp</dimen>
 

@@ -33,7 +33,7 @@
     <dimen name="keyline_default">16dp</dimen>
 
     <dimen name="navigation_header_height">192dp</dimen>
-    <dimen name="navigation_avatar_radius">30dp</dimen>
+    <dimen name="navigation_avatar_radius">32dp</dimen>
 
     <dimen name="text_size_medium">14sp</dimen>
 

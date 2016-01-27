@@ -57,6 +57,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     private NavigationView navigationView;
 
     // Showing information about user in navigation drawer
+    private TextView usernameLetter;
     private TextView username;
     private TextView userInfo;
 
@@ -78,6 +79,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
         ViewGroup navigationHeader = (ViewGroup) getLayoutInflater()
                 .inflate(R.layout.navigation_header, navigationView, false);
+        usernameLetter = (TextView) navigationHeader.findViewById(R.id.textview_username_letter);
         username = (TextView) navigationHeader.findViewById(R.id.textview_username);
         userInfo = (TextView) navigationHeader.findViewById(R.id.textview_user_info);
 
@@ -158,6 +160,10 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     protected TextView getUserInfoTextView() {
         return userInfo;
+    }
+
+    protected TextView getUsernameLetterTextView() {
+        return usernameLetter;
     }
 
     @MenuRes

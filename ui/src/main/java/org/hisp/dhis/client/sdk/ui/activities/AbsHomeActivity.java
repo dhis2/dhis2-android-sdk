@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.MenuRes;
@@ -56,6 +57,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     private NavigationView navigationView;
 
     // Showing information about user in navigation drawer
+    private TextView usernameLetter;
     private TextView username;
     private TextView userInfo;
 
@@ -77,8 +79,9 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
         ViewGroup navigationHeader = (ViewGroup) getLayoutInflater()
                 .inflate(R.layout.navigation_header, navigationView, false);
-        username = (TextView) navigationHeader.findViewById(R.id.drawer_user_name);
-        userInfo = (TextView) navigationHeader.findViewById(R.id.drawer_user_info);
+        usernameLetter = (TextView) navigationHeader.findViewById(R.id.textview_username_letter);
+        username = (TextView) navigationHeader.findViewById(R.id.textview_username);
+        userInfo = (TextView) navigationHeader.findViewById(R.id.textview_user_info);
 
         navigationView.addHeaderView(navigationHeader);
     }
@@ -120,10 +123,15 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     @Override
     public void toggleNavigationDrawer() {
-        if (!drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-            drawerLayout.openDrawer(Gravity.LEFT);
+        int GRAVITY_PROPERTY = Gravity.LEFT;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            GRAVITY_PROPERTY = Gravity.START;
+        }
+
+        if (!drawerLayout.isDrawerOpen(GRAVITY_PROPERTY)) {
+            drawerLayout.openDrawer(GRAVITY_PROPERTY);
         } else {
-            drawerLayout.closeDrawer(Gravity.LEFT);
+            drawerLayout.closeDrawer(GRAVITY_PROPERTY);
         }
     }
 
@@ -152,6 +160,10 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     protected TextView getUserInfoTextView() {
         return userInfo;
+    }
+
+    protected TextView getUsernameLetterTextView() {
+        return usernameLetter;
     }
 
     @MenuRes

@@ -43,15 +43,16 @@
 
         <FrameLayout
             android:id="@+id/layout_dhis_logo"
-            android:layout_width="112dp"
-            android:layout_height="112dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_centerHorizontal="true">
 
             <org.hisp.dhis.client.sdk.ui.views.CircleView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:circle_radius="52dp"
                 app:stroke_color="@color/white"
-                app:stroke_width="@dimen/default_stroke_width" />
+                app:stroke_width="@dimen/progressbar_stroke_width" />
 
             <fr.castorflex.android.circularprogressbar.CircularProgressBar
                 android:id="@+id/progress_bar_circular"

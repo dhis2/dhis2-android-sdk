@@ -27,54 +27,56 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
-    android:background="@drawable/drawer_header_background"
-    android:gravity="bottom|left"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:layout_height="@dimen/navigation_header_height"
+    android:background="@color/color_primary_default"
+    android:padding="@dimen/keyline_default">
 
-    <ImageView
-        android:id="@+id/drawer_user_avatar"
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium"
+        app:font="@string/font_name_regular" />
+
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/textview_user_info"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_medium"
+        app:font="@string/font_name_medium" />
+
+    <FrameLayout
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="4dp"
-        android:adjustViewBounds="true"
-        android:background="@drawable/transparent_selector"
-        android:clickable="true"
-        android:contentDescription="@string/description"
-        android:src="@drawable/ic_anonymous_user" />
+        android:layout_above="@id/textview_username"
+        android:layout_marginBottom="@dimen/keyline_default">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginLeft="4dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        <org.hisp.dhis.client.sdk.ui.views.CircleView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:circle_radius="@dimen/navigation_avatar_radius"
+            app:fill_color="@color/white" />
 
         <org.hisp.dhis.client.sdk.ui.views.FontTextView
-            android:id="@+id/drawer_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
+            android:id="@+id/textview_username_letter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textAllCaps="true"
+            android:textColor="@color/color_accent_default"
+            android:textSize="32sp"
             app:font="@string/font_name_medium" />
 
-        <org.hisp.dhis.client.sdk.ui.views.FontTextView
-            android:id="@+id/drawer_user_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            app:font="@string/font_name_regular" />
+    </FrameLayout>
 
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

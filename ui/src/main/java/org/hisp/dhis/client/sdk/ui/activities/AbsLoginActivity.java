@@ -70,7 +70,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
         // Configuring progress bar (setting width of 6dp)
         float progressBarStrokeWidth = getResources()
-                .getDimensionPixelSize(R.dimen.default_stroke_width);
+                .getDimensionPixelSize(R.dimen.progressbar_stroke_width);
         progressBar = (CircularProgressBar) findViewById(R.id.progress_bar_circular);
         progressBar.setIndeterminateDrawable(new CircularProgressDrawable.Builder(this)
                 .color(ContextCompat.getColor(this, R.color.color_primary_default))

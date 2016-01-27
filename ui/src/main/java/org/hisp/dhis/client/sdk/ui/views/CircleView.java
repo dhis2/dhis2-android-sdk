@@ -33,15 +33,18 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.ColorInt;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.R;
 
+
 public class CircleView extends View {
-    private int mStrokeBackgroundColor;
-    private float mStrokeWidth;
+    private int strokeWidth;
+    private int circleRadius;
+    private int circleGap;
+    private int strokeColor;
+    private int fillColor;
 
     public CircleView(Context context) {
         this(context, null);
@@ -56,59 +59,92 @@ public class CircleView extends View {
 
         TypedArray ars = context.obtainStyledAttributes(attrs,
                 R.styleable.CircleView, defStyleAttr, 0);
-        mStrokeBackgroundColor = ars.getColor(R.styleable.CircleView_stroke_color,
-                ContextCompat.getColor(getContext(), R.color.white));
-        mStrokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width,
-                getResources().getDimensionPixelSize(R.dimen.default_stroke_width));
+        circleRadius = ars.getDimensionPixelSize(R.styleable.CircleView_circle_radius, -1);
+        strokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width, -1);
+        circleGap = ars.getDimensionPixelSize(R.styleable.CircleView_circle_gap, -1);
+
+        fillColor = ars.getColor(R.styleable.CircleView_fill_color, 0);
+        strokeColor = ars.getColor(R.styleable.CircleView_stroke_color, 0);
+
+        setMinimumHeight(circleRadius * 2 + strokeWidth * 2);
+        setMinimumWidth(circleRadius * 2 + strokeWidth * 2);
+        setSaveEnabled(true);
 
         ars.recycle();
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        int w = this.getWidth();
-        int h = this.getHeight();
-
-        float ox = w / 2.0f;
-        float oy = h / 2.0f;
-
-        canvas.drawCircle(ox, oy, getCircleRadius(), getStroke());
         super.onDraw(canvas);
+
+        int ox = getWidth() / 2;
+        int oy = getHeight() / 2;
+
+        if (strokeWidth > 0 && strokeColor != 0) {
+            canvas.drawCircle(ox, oy, circleRadius, getStroke());
+        }
+
+        if (circleRadius > 0 && fillColor != 0) {
+            canvas.drawCircle(ox, oy, circleRadius - circleGap, getFill());
+        }
     }
 
     private Paint getStroke() {
         // Made background stroke 2px less wide than progress drawable,
         // in order to avoid un-hidden background parts
-        float adjustedStrokeWidth = mStrokeWidth - 2 > 0 ? mStrokeWidth - 2 : mStrokeWidth;
+        float adjustedStrokeWidth = strokeWidth - 2 > 0 ? strokeWidth - 2 : strokeWidth;
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(adjustedStrokeWidth);
-        paint.setColor(mStrokeBackgroundColor);
+        paint.setColor(strokeColor);
         paint.setStyle(Paint.Style.STROKE);
         return paint;
     }
 
-    private float getCircleRadius() {
-        float w = this.getWidth();
-        float h = this.getHeight();
-
-        float radius = (w > h ? w / 2.0f : h / 2.0f) - (mStrokeWidth / 2.0f);
-        return radius <= 0 ? 1 : radius;
+    private Paint getFill() {
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(fillColor);
+        paint.setStyle(Paint.Style.FILL);
+        return paint;
     }
 
-    public int getStrokeBackgroundColor() {
-        return mStrokeBackgroundColor;
+    public int getCircleRadius() {
+        return circleRadius;
     }
 
-    public void setStrokeBackgroundColor(@ColorInt int mStrokeBackgroundColor) {
-        this.mStrokeBackgroundColor = mStrokeBackgroundColor;
+    public void setCircleRadius(int circleRadius) {
+        this.circleRadius = circleRadius;
     }
 
-    public float getStrokeWidth() {
-        return mStrokeWidth;
+    public int getStrokeColor() {
+        return strokeColor;
     }
 
-    public void setStrokeWidth(float mStrokeWidth) {
-        this.mStrokeWidth = mStrokeWidth;
+    public void setStrokeColor(@ColorInt int strokeColor) {
+        this.strokeColor = strokeColor;
+    }
+
+    public int getStrokeWidth() {
+        return strokeWidth;
+    }
+
+    public void setStrokeWidth(int strokeWidth) {
+        this.strokeWidth = strokeWidth;
+    }
+
+    public int getFillColor() {
+        return fillColor;
+    }
+
+    public void setFillColor(@ColorInt int fillColor) {
+        this.fillColor = fillColor;
+    }
+
+    public int getCircleGap() {
+        return circleGap;
+    }
+
+    public void setCircleGap(int circleGap) {
+        this.circleGap = circleGap;
     }
 }

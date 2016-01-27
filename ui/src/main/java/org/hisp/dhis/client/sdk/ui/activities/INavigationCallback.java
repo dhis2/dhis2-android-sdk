@@ -28,16 +28,6 @@
 
 package org.hisp.dhis.client.sdk.ui.activities;
 
-import android.support.v4.app.Fragment;
-
-
-public interface INavigationHandler {
-    void switchFragment(Fragment fragment, String tag, boolean addToBackStack);
-
-    void onBackPressed();
-
-    void addFragmentToLayout(int resId, Fragment fragment, String tag);
-
-    void showBackButton(Boolean enable);
-
+public interface INavigationCallback {
+    void toggleNavigationDrawer();
 }

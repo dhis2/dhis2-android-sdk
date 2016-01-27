@@ -88,7 +88,7 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
         SelectorListViewHolder holder;
         View view;
         if(convertView == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pickerlistviewitem, null);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picker_list_view_item, null);
             TextView textView = (TextView) view.findViewById(R.id.textView);
             holder = new SelectorListViewHolder(textView);
             view.setTag(holder);

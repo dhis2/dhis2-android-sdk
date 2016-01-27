@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
+//import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
 
 /**
@@ -28,7 +28,7 @@ import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
  */
 public abstract class AbsSettingsFragment extends Fragment  implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     public static final String TAG = AbsSettingsFragment.class.getSimpleName();
-    public INavigationHandler mNavigationHandler;
+//    public INavigationHandler mNavigationHandler;
 
     private Button logoutButton;
     private Button synchronizeButton;
@@ -134,12 +134,12 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
         super.onAttach(context);
         Activity activity = (Activity) context;
 
-        if(activity instanceof INavigationHandler) {
-            mNavigationHandler = (INavigationHandler) activity;
-        } else {
-            throw new IllegalArgumentException("Activity must " +
-                    "implement INavigationHandler interface");
-        }
+//        if(activity instanceof INavigationHandler) {
+//            mNavigationHandler = (INavigationHandler) activity;
+//        } else {
+//            throw new IllegalArgumentException("Activity must " +
+//                    "implement INavigationHandler interface");
+//        }
     }
 
     @Override
@@ -147,7 +147,7 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
         super.onDetach();
         // we need to nullify reference
         // to parent activity in order not to leak it
-        mNavigationHandler = null;
+//        mNavigationHandler = null;
     }
 
     protected abstract void  logout(Context context);

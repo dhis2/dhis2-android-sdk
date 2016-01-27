@@ -49,7 +49,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
 
     @Override
     public SelectorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.pickerview,
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.picker_view,
                 parent, false);
         SelectorViewHolder selectorViewHolder = new SelectorViewHolder(itemView);
         selectorViewHolders.add(selectorViewHolder);

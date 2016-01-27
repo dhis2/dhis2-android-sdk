@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,16 +45,15 @@ import java.util.List;
 public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
 
     private List<Picker> pickers;
-
-    public void setPickers(List<Picker> pickers) {
-        this.pickers = pickers;
-    }
+    private List<SelectorViewHolder> selectorViewHolders = new ArrayList<>();
 
     @Override
     public SelectorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.pickerview,
                 parent, false);
-        return new SelectorViewHolder(itemView);
+        SelectorViewHolder selectorViewHolder = new SelectorViewHolder(itemView);
+        selectorViewHolders.add(selectorViewHolder);
+        return selectorViewHolder;
     }
 
     @Override
@@ -76,10 +76,8 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
         } else {
             holder.autoCompleteTextView.setText("");
         }
-        Picker.AutoCompleteDismissListener onDismissListener = picker.getOnDismissListener();
-        onDismissListener.setAutoCompleteTextView(holder.autoCompleteTextView);
-        holder.autoCompleteTextView.setOnDismissListener(onDismissListener);
         holder.autoCompleteTextView.addTextChangedListener(picker);
+        holder.autoCompleteTextView.setOnFocusChangeListener(picker.getOnFocusChangeListener());
         holder.textWatcher = picker;
     }
 
@@ -99,5 +97,13 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
             picker.recycle();
         }
         pickers.clear();
+    }
+
+    public void setPickers(List<Picker> pickers) {
+        this.pickers = pickers;
+    }
+
+    public List<SelectorViewHolder> getSelectorViewHolders() {
+        return selectorViewHolders;
     }
 }

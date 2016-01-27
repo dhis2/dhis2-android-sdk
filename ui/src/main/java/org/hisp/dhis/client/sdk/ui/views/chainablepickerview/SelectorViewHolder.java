@@ -56,6 +56,7 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
                 ((AutoCompleteTextView) v).showDropDown();
             }
         });
+        autoCompleteTextView.setThreshold(1);
         clearButton = (ImageView) itemView.findViewById(R.id.clear_text_view);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +64,7 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
                 autoCompleteTextView.setText("");
                 if(picker != null) {
                     picker.setPickedItem(null);
+                    picker.hideNextSibling();
                 }
             }
         });
@@ -70,5 +72,9 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
         autoCompleteTextView.setAdapter(adapter);
         textWatcher = null;
         picker = null;
+    }
+
+    public AutoCompleteTextView getAutoCompleteTextView() {
+        return autoCompleteTextView;
     }
 }

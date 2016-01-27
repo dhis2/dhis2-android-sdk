@@ -1,18 +1,22 @@
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.ChainablePickerState;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.Picker;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.SelectorAdapter;
+import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.SelectorViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,5 +114,26 @@ public class PickerFragment extends Fragment {
 
     public void setRootPickerList(List<Picker> mRootPickerList) {
         this.mRootPickerList = mRootPickerList;
+    }
+
+    /**
+     * Used to clear focus of autocompletetextviews when touching outside them
+     * @param event
+     */
+    public void dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            for(SelectorViewHolder selectorViewHolder : mSelectorAdapter.getSelectorViewHolders()) {
+                if(selectorViewHolder != null && selectorViewHolder.getAutoCompleteTextView() != null) {
+                    AutoCompleteTextView autoCompleteTextView = selectorViewHolder.getAutoCompleteTextView();
+                    if(autoCompleteTextView.hasFocus()) {
+                        Rect outRect = new Rect();
+                        autoCompleteTextView.getGlobalVisibleRect(outRect);
+                        if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                            autoCompleteTextView.clearFocus();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

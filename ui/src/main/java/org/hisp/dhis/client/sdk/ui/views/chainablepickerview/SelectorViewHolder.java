@@ -44,7 +44,6 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
     AutoCompleteTextView autoCompleteTextView;
     ImageView clearButton;
     SelectorListAdapter adapter;
-    TextWatcher textWatcher;
     Picker picker;
 
     public SelectorViewHolder(View itemView) {
@@ -70,7 +69,6 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
         });
         adapter = new SelectorListAdapter();
         autoCompleteTextView.setAdapter(adapter);
-        textWatcher = null;
         picker = null;
     }
 

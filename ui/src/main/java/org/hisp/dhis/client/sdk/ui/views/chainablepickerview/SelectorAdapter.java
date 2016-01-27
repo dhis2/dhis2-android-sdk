@@ -65,20 +65,13 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
         holder.autoCompleteTextView.setOnItemClickListener(picker.getListener());
         holder.autoCompleteTextView.setHint(picker.getHint());
 
-        TextWatcher previousTextWatcher = holder.textWatcher;
-        if(previousTextWatcher != null) {
-            holder.autoCompleteTextView.removeTextChangedListener(previousTextWatcher);
-        }
-
         IPickable pickedItem = picker.getPickedItem();
         if(pickedItem != null) {
             holder.autoCompleteTextView.setText(pickedItem.toString());
         } else {
             holder.autoCompleteTextView.setText("");
         }
-        holder.autoCompleteTextView.addTextChangedListener(picker);
         holder.autoCompleteTextView.setOnFocusChangeListener(picker.getOnFocusChangeListener());
-        holder.textWatcher = picker;
     }
 
     @Override

@@ -43,12 +43,12 @@ import java.util.List;
  * Picker class for representing a chainable {@link AutoCompleteTextView} in {@link RecyclerView}.
  * Use this class with an {@link SelectorAdapter}
  */
-public class Picker implements Parcelable, TextWatcher {
+public class Picker implements Parcelable {
 
     private Picker nextLinkedSibling;
     private List<IPickable> pickableItems;
     private AdapterView.OnItemClickListener listener;
-    private AutoCompleteDismissListener onDismissListener;
+    private final AutoCompleteOnFocusChangeListener onFocusChangeListener;
     private List<Picker> parentList;
     private RecyclerView parentView;
     private IPickable pickedItem;
@@ -57,11 +57,11 @@ public class Picker implements Parcelable, TextWatcher {
     private boolean added;
     private IPickableItemClearListener pickedItemClearListener;
 
-    public Picker(final List<IPickable> pickableItems1, String hint, String mimeType) {
-        this.pickableItems = pickableItems1;
+    public Picker(final List<IPickable> pickableItems, String hint, String mimeType) {
+        this.pickableItems = pickableItems;
         this.hint = hint;
         this.mimeType = mimeType;
-        this.onDismissListener = new AutoCompleteDismissListener(this);
+        this.onFocusChangeListener = new AutoCompleteOnFocusChangeListener(this);
         this.listener = new AutoCompleteOnItemClickListener();
         this.added = false;
     }
@@ -73,7 +73,7 @@ public class Picker implements Parcelable, TextWatcher {
         in.readStringArray(data);
         hint = data[0];
         mimeType = data[1];
-        this.onDismissListener = new AutoCompleteDismissListener(this);
+        this.onFocusChangeListener = new AutoCompleteOnFocusChangeListener(this);
         this.listener = new AutoCompleteOnItemClickListener();
         boolean[] booleanValues = new boolean[1];
         in.readBooleanArray(booleanValues);
@@ -96,8 +96,8 @@ public class Picker implements Parcelable, TextWatcher {
         this.pickedItemClearListener = listener;
     }
 
-    public AutoCompleteDismissListener getOnDismissListener() {
-        return onDismissListener;
+    public AutoCompleteOnFocusChangeListener getOnFocusChangeListener() {
+        return onFocusChangeListener;
     }
 
     public void setParentList(List<Picker> parentList) {
@@ -181,6 +181,7 @@ public class Picker implements Parcelable, TextWatcher {
     public void hideNextSibling() {
         if(nextLinkedSibling != null && nextLinkedSibling.isAdded()) {
             nextLinkedSibling.hide();
+            parentView.getAdapter().notifyDataSetChanged();
         }
     }
 
@@ -214,24 +215,9 @@ public class Picker implements Parcelable, TextWatcher {
         dest.writeBooleanArray(booleanValues);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        if(s == null || s.length() <= 0) {
-            hideNextSibling();
-            parentView.getAdapter().notifyDataSetChanged();
-        }
-    }
-
+    /**
+     * Triggers the next chained {@link Picker} to be shown if it has been set.
+     */
     public class AutoCompleteOnItemClickListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -240,31 +226,33 @@ public class Picker implements Parcelable, TextWatcher {
         }
     }
 
-    public class AutoCompleteDismissListener implements AutoCompleteTextView.OnDismissListener {
-
+    /**
+     * Triggers to show drop down if the current view has focus.
+     * If the current view does not have focus, then the content of the {@link AutoCompleteTextView}
+     * will be matched with the available {@link IPickable}s and either cleared, or set to the
+     * previous selection.
+     */
+    public class AutoCompleteOnFocusChangeListener implements View.OnFocusChangeListener {
         private final Picker picker;
-        private AutoCompleteTextView autoCompleteTextView;
 
-        private AutoCompleteDismissListener(Picker picker) {
+        public AutoCompleteOnFocusChangeListener(Picker picker) {
             this.picker = picker;
         }
 
-        public AutoCompleteTextView getAutoCompleteTextView() {
-            return autoCompleteTextView;
-        }
-
-        public void setAutoCompleteTextView(AutoCompleteTextView autoCompleteTextView) {
-            this.autoCompleteTextView = autoCompleteTextView;
-        }
-
-        public Picker getPicker() {
-            return picker;
-        }
-
         @Override
-        public void onDismiss() {
-            if(autoCompleteTextView.getText().length() <= 0) {
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(!(v instanceof AutoCompleteTextView)) {
                 return;
+            }
+            AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) v;
+
+            if(hasFocus) {
+                autoCompleteTextView.showDropDown();
+                return;
+            } else {
+                if(autoCompleteTextView.getText().length() <= 0) {
+                    return;
+                }
             }
             for(IPickable pickable : picker.getPickableItems()) {
                 if(pickable.toString().equals(autoCompleteTextView.getText().toString())) {
@@ -276,6 +264,13 @@ public class Picker implements Parcelable, TextWatcher {
                 previousText = pickedItem.toString();
             }
             autoCompleteTextView.setText(previousText);
+            if(previousText.length() <= 0) {
+                picker.hideNextSibling();
+            }
+        }
+
+        public Picker getPicker() {
+            return picker;
         }
     }
 }

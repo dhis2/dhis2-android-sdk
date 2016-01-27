@@ -30,12 +30,12 @@ package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
 import android.os.Parcel;
 
-public class Pickable implements IPickable {
+public class DefaultPickable implements IPickable {
 
     String id;
     String label;
 
-    public Pickable(String label, String id) {
+    public DefaultPickable(String label, String id) {
         this.label = label;
         this.id = id;
     }
@@ -55,22 +55,22 @@ public class Pickable implements IPickable {
         dest.writeStringArray(new String[]{id, label});
     }
 
-    public Pickable(Parcel in) {
+    public DefaultPickable(Parcel in) {
         String[] data = new String[2];
         in.readStringArray(data);
         this.id = data[0];
         this.label = data[1];
     }
 
-    public static final Creator<Pickable> CREATOR = new Creator<Pickable>() {
+    public static final Creator<DefaultPickable> CREATOR = new Creator<DefaultPickable>() {
         @Override
-        public Pickable createFromParcel(Parcel in) {
-            return new Pickable(in);
+        public DefaultPickable createFromParcel(Parcel in) {
+            return new DefaultPickable(in);
         }
 
         @Override
-        public Pickable[] newArray(int size) {
-            return new Pickable[size];
+        public DefaultPickable[] newArray(int size) {
+            return new DefaultPickable[size];
         }
     };
 }

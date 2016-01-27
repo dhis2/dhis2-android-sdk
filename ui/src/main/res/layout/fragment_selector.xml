@@ -25,7 +25,6 @@
         </FrameLayout>
     </LinearLayout>
 
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
@@ -36,5 +35,13 @@
         app:layout_anchor="@id/pickerFragment"
         app:layout_anchorGravity="bottom|right|end"
         />
+
+    <fr.castorflex.android.circularprogressbar.CircularProgressBar
+        android:id="@+id/progress_bar_circular"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:indeterminate="true"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal|top" />
 
 </android.support.design.widget.CoordinatorLayout>

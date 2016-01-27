@@ -46,20 +46,36 @@ import java.util.List;
  */
 public class SelectorListAdapter extends BaseAdapter implements Filterable {
 
-    private List<IPickable> items;
+    private List<IPickable> allItems;
+    private List<IPickable> filteredItems;
 
     public void swapData(List<IPickable> items) {
-        this.items = items;
+        boolean notifyAdapter = items != allItems;
+        allItems = items;
+        filteredItems = allItems;
+
+        if (notifyAdapter) {
+            notifyDataSetChanged();
+        }
+    }
+
+    private void swapFilteredData(List<IPickable> items) {
+        boolean notifyAdapter = items != filteredItems;
+        filteredItems = items;
+
+        if (notifyAdapter) {
+            notifyDataSetChanged();
+        }
     }
 
     @Override
     public int getCount() {
-        return items.size();
+        return filteredItems.size();
     }
 
     @Override
     public IPickable getItem(int position) {
-        return items.get(position);
+        return filteredItems.get(position);
     }
 
     @Override
@@ -80,7 +96,7 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
             view = convertView;
             holder = (SelectorListViewHolder) convertView.getTag();
         }
-        holder.textView.setText(items.get(position).toString());
+        holder.textView.setText(filteredItems.get(position).toString());
         return view;
     }
 
@@ -94,23 +110,37 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
-            ArrayList<String> values = new ArrayList<>();
-            values.add("aaa");
-            values.add("bbb");
-            values.add("ccc");
-            filterResults.values = values;
+            ArrayList<IPickable> values = new ArrayList<>();
+            if (constraint != null && constraint.toString().length() > 0) {
+                String filter = constraint.toString().toLowerCase();
+                for (int i = 0; i < allItems.size(); i++) {
+                    IPickable item = allItems.get(i);
+                    String itemValue = item.toString().toLowerCase();
+                    if(itemValue.contains(filter)) {
+                        values.add(item);
+                    }
+                }
+            } else {
+                synchronized ( this ) {
+                    values.addAll(allItems);
+                }
+            }
             filterResults.count = values.size();
+            filterResults.values = values;
             return filterResults;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            //noinspection unchecked
-            if (results.count > 0) {
-                notifyDataSetChanged();
+            if(constraint == null || constraint.equals("")) {
+                swapFilteredData(allItems);
+            } else if(results.count == 0) {
+                swapFilteredData(new ArrayList<IPickable>());
             } else {
-                notifyDataSetInvalidated();
+                filteredItems = (ArrayList<IPickable>) results.values;
+                swapFilteredData(filteredItems);
             }
+            notifyDataSetChanged();
         }
     }
 

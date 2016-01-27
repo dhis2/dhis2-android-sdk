@@ -37,6 +37,7 @@ public final class ApiEndpointContainer {
     private ApiEndpointContainer() {}
 
     public static final String ORGANISATIONUNITS = "organisationUnits";
+    public static final String ATTRIBUTEVALUES = "attributeValues";
     public static final String PROGRAMS = "programs";
     public static final String OPTION_SETS = "optionSets";
     public static final String TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes";

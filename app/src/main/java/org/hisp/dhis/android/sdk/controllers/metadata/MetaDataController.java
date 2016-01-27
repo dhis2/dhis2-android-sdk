@@ -661,7 +661,26 @@ public final class MetaDataController extends ResourceController {
             e.printStackTrace();
             return; //todo: handle
         }
-        List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnits);
+            List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnits);
+            for(OrganisationUnit organisationUnit:organisationUnits){
+                final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+                QUERY_MAP_FULL.put("fields","attributeValues[*,attribute[name,displayName,created,lastUpdated,access,id,valueType,code]]");
+                List<OrganisationUnitAttributeValue> organisationUnitAttributeValues = null;
+                try {
+                    organisationUnitAttributeValues=AssignedProgramsWrapper.deserializeAttributeValues(dhisApi.getOrganistationUnitAttributeValues(organisationUnit.getId(), QUERY_MAP_FULL), organisationUnit);
+
+                    for(OrganisationUnitAttributeValue organisationUnitAttributeValue:organisationUnitAttributeValues)
+                    {
+                        organisationUnitAttributeValue.setOrganisationUnit(organisationUnit.getId());
+                    }
+                    operations.addAll(AssignedProgramsWrapper.saveOrganisationUnitAttributes(organisationUnit, organisationUnitAttributeValues));
+                    operations.add(DbOperation.save(organisationUnit));
+                } catch(ConversionException e) {
+                    e.printStackTrace();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()

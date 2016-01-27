@@ -33,7 +33,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.ColorInt;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -60,12 +59,12 @@ public class CircleView extends View {
 
         TypedArray ars = context.obtainStyledAttributes(attrs,
                 R.styleable.CircleView, defStyleAttr, 0);
-        strokeColor = ars.getColor(R.styleable.CircleView_stroke_color,
-                ContextCompat.getColor(getContext(), R.color.white));
-        fillColor = ars.getColor(R.styleable.CircleView_stroke_color, -1);
-        circleGap = ars.getDimensionPixelSize(R.styleable.CircleView_circle_gap, 6);
-        strokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width, 6);
-        circleRadius = ars.getDimensionPixelSize(R.styleable.CircleView_circle_radius, 48);
+        circleRadius = ars.getDimensionPixelSize(R.styleable.CircleView_circle_radius, -1);
+        strokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width, -1);
+        circleGap = ars.getDimensionPixelSize(R.styleable.CircleView_circle_gap, -1);
+
+        fillColor = ars.getColor(R.styleable.CircleView_fill_color, 0);
+        strokeColor = ars.getColor(R.styleable.CircleView_stroke_color, 0);
 
         setMinimumHeight(circleRadius * 2 + strokeWidth * 2);
         setMinimumWidth(circleRadius * 2 + strokeWidth * 2);
@@ -81,9 +80,11 @@ public class CircleView extends View {
         int ox = getWidth() / 2;
         int oy = getHeight() / 2;
 
-        canvas.drawCircle(ox, oy, circleRadius, getStroke());
+        if (strokeWidth > 0 && strokeColor != 0) {
+            canvas.drawCircle(ox, oy, circleRadius, getStroke());
+        }
 
-        if (fillColor > 0) {
+        if (circleRadius > 0 && fillColor != 0) {
             canvas.drawCircle(ox, oy, circleRadius - circleGap, getFill());
         }
     }

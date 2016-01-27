@@ -28,27 +28,27 @@
             android:gravity="center_vertical"
             android:layout_weight="0.86">
 
+            <!--android:textSize="@dimen/small_text_size"-->
             <org.hisp.dhis.client.sdk.ui.views.FontTextView
                 android:id="@+id/tvFirstItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:font="@string/font_name_regular"
-                android:textSize="@dimen/small_text_size"/>
+                app:font="@string/font_name_regular" />
 
+            <!--android:textSize="@dimen/small_text_size"-->
             <org.hisp.dhis.client.sdk.ui.views.FontTextView
                 android:id="@+id/tvSecondItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/small_text_size"
                 app:font="@string/font_name_regular"
                 />
 
+            android:textSize="@dimen/small_text_size"
             <org.hisp.dhis.client.sdk.ui.views.FontTextView
                 android:id="@+id/tvThirdItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:font="@string/font_name_regular"
-                android:textSize="@dimen/small_text_size"/>
+                app:font="@string/font_name_regular" />
         </LinearLayout>
 
         <LinearLayout

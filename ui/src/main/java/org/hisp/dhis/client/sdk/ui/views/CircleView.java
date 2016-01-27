@@ -40,8 +40,8 @@ import android.view.View;
 import org.hisp.dhis.client.sdk.ui.R;
 
 public class CircleView extends View {
-    private int mStrokeBackgroundColor;
-    private float mStrokeWidth;
+    private int strokeBackgroundColor;
+    private float strokeWidth;
 
     public CircleView(Context context) {
         this(context, null);
@@ -56,9 +56,9 @@ public class CircleView extends View {
 
         TypedArray ars = context.obtainStyledAttributes(attrs,
                 R.styleable.CircleView, defStyleAttr, 0);
-        mStrokeBackgroundColor = ars.getColor(R.styleable.CircleView_stroke_color,
+        strokeBackgroundColor = ars.getColor(R.styleable.CircleView_stroke_color,
                 ContextCompat.getColor(getContext(), R.color.white));
-        mStrokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width,
+        strokeWidth = ars.getDimensionPixelSize(R.styleable.CircleView_stroke_width,
                 getResources().getDimensionPixelSize(R.dimen.default_stroke_width));
 
         ars.recycle();
@@ -79,11 +79,11 @@ public class CircleView extends View {
     private Paint getStroke() {
         // Made background stroke 2px less wide than progress drawable,
         // in order to avoid un-hidden background parts
-        float adjustedStrokeWidth = mStrokeWidth - 2 > 0 ? mStrokeWidth - 2 : mStrokeWidth;
+        float adjustedStrokeWidth = strokeWidth - 2 > 0 ? strokeWidth - 2 : strokeWidth;
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStrokeWidth(adjustedStrokeWidth);
-        paint.setColor(mStrokeBackgroundColor);
+        paint.setColor(strokeBackgroundColor);
         paint.setStyle(Paint.Style.STROKE);
         return paint;
     }
@@ -92,23 +92,23 @@ public class CircleView extends View {
         float w = this.getWidth();
         float h = this.getHeight();
 
-        float radius = (w > h ? w / 2.0f : h / 2.0f) - (mStrokeWidth / 2.0f);
+        float radius = (w > h ? w / 2.0f : h / 2.0f) - (strokeWidth / 2.0f);
         return radius <= 0 ? 1 : radius;
     }
 
     public int getStrokeBackgroundColor() {
-        return mStrokeBackgroundColor;
+        return strokeBackgroundColor;
     }
 
     public void setStrokeBackgroundColor(@ColorInt int mStrokeBackgroundColor) {
-        this.mStrokeBackgroundColor = mStrokeBackgroundColor;
+        this.strokeBackgroundColor = mStrokeBackgroundColor;
     }
 
     public float getStrokeWidth() {
-        return mStrokeWidth;
+        return strokeWidth;
     }
 
     public void setStrokeWidth(float mStrokeWidth) {
-        this.mStrokeWidth = mStrokeWidth;
+        this.strokeWidth = mStrokeWidth;
     }
 }

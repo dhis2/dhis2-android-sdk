@@ -30,49 +30,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="192dp"
-    android:background="@drawable/drawer_header_background"
-    android:gravity="bottom|left"
+    android:layout_height="@dimen/navigation_header_height"
+    android:background="@color/color_primary_default"
+    android:gravity="bottom|start"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/keyline_default"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/drawer_user_avatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="4dp"
-        android:adjustViewBounds="true"
-        android:background="@drawable/transparent_selector"
-        android:clickable="true"
-        android:contentDescription="@string/description"
-        android:src="@drawable/ic_anonymous_user" />
+    <!--<ImageView-->
+    <!--android:id="@+id/drawer_user_avatar"-->
+    <!--android:layout_width="64dp"-->
+    <!--android:layout_height="64dp"-->
+    <!--android:layout_marginBottom="16dp"-->
+    <!--android:layout_marginLeft="4dp"-->
+    <!--android:adjustViewBounds="true"-->
+    <!--android:background="@drawable/transparent_selector"-->
+    <!--android:clickable="true"-->
+    <!--android:contentDescription="@string/description" />-->
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
+        android:layout_height="56dp"
         android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <org.hisp.dhis.client.sdk.ui.views.FontTextView
-            android:id="@+id/drawer_user_name"
+            android:id="@+id/textview_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_medium"
             app:font="@string/font_name_medium" />
 
         <org.hisp.dhis.client.sdk.ui.views.FontTextView
-            android:id="@+id/drawer_user_info"
+            android:id="@+id/textview_user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_size_medium"
             app:font="@string/font_name_regular" />
 
     </LinearLayout>

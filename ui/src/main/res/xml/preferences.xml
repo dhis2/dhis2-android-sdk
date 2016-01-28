@@ -27,16 +27,19 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <dimen name="progressbar_stroke_width">6dp</dimen>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <dimen name="keyline_default">16dp</dimen>
+    <PreferenceCategory android:title="@string/application_settings">
+        <ListPreference
+            android:dialogTitle="@string/synchronization_period"
+            android:entries="@array/synchronization_periods"
+            android:entryValues="@array/synchronization_periods"
+            android:key="synchronization_period_setting"
+            android:title="@string/synchronization_period" />
+    </PreferenceCategory>
 
-    <dimen name="navigation_header_height">192dp</dimen>
-    <dimen name="navigation_avatar_radius">32dp</dimen>
+    <PreferenceCategory android:title="@string/user_settings">
 
-    <dimen name="text_size_medium">14sp</dimen>
-    <dimen name="text_size_large">17sp</dimen>
+    </PreferenceCategory>
 
-    <integer name="activity_anim_duration">300</integer>
-</resources>
+</PreferenceScreen>

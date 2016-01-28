@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -38,6 +37,19 @@
     <string name="log_in">Log in</string>
     <string name="two">2</string>
 
+    <!-- Preference fragment -->
+    <string name="application_settings">Application</string>
+    <string name="synchronization_period">Synchronization period</string>
+    <string-array name="synchronization_periods">
+        <item>Disabled</item>
+        <item>1 Minute</item>
+        <item>15 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Day</item>
+    </string-array>
+    <string name="user_settings">User</string>
+
+
     <!-- AbsConfirmUserActivity -->
     <string name="activity_confirm_user">Confirm user</string>
     <string name="re_log_in">Re-Log in</string>
@@ -47,14 +59,6 @@
     <string name="update_frequency">Automatic synchronization frequency</string>
     <string name="synchronize_with_server">Synchronize with server</string>
     <string name="logout">Log out</string>
-
-    <string-array name="update_frequencies">
-        <item>1 Minute</item>
-        <item>15 Minutes</item>
-        <item>1 Hour</item>
-        <item>1 Day</item>
-        <item>Disabled</item>
-    </string-array>
 
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>

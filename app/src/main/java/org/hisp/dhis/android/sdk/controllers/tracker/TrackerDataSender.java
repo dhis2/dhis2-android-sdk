@@ -78,15 +78,16 @@ final class TrackerDataSender {
     private TrackerDataSender() {
     }
 
-    static void sendEventChanges(DhisApi dhisApi) throws APIException {
+    static Map<Long,ImportSummary> sendEventChanges(DhisApi dhisApi) throws APIException {
         List<Event> events = new Select().from(Event.class).where
                 (Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
-        sendEventChanges(dhisApi, events);
+        return sendEventChanges(dhisApi, events);
     }
 
-    static void sendEventChanges(DhisApi dhisApi, List<Event> events) throws APIException {
+    static Map<Long,ImportSummary> sendEventChanges(DhisApi dhisApi, List<Event> events) throws APIException {
+        Map<Long,ImportSummary> importSummaryResults=new HashMap<>();
         if (events == null || events.isEmpty()) {
-            return;
+            return importSummaryResults;
         }
 
         for (int i = 0; i < events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
@@ -100,31 +101,34 @@ final class TrackerDataSender {
         Log.d(CLASS_TAG, "got this many events to send:" + events.size());
 
         for (Event event : events) {
-            sendEventChanges(dhisApi, event);
+            importSummaryResults.put(event.getLocalId(), sendEventChanges(dhisApi, event));
         }
+        return importSummaryResults;
     }
 
-    static void sendEventChanges(DhisApi dhisApi, Event event) throws APIException {
+    static ImportSummary sendEventChanges(DhisApi dhisApi, Event event) throws APIException {
         if (event == null) {
-            return;
+            return null;
         }
 
         if (Utils.isLocal(event.getEnrollment()) && event.getEnrollment() != null/*if enrollments==null, then it is probably a single event without reg*/) {
-            return;
+            return null;
         }
 
-        if (event.getCreated() == null) {
-            postEvent(event, dhisApi);
+        if(event.getCreated() == null) {
+            return postEvent(event, dhisApi);
         } else {
-            putEvent(event, dhisApi);
+            return putEvent(event, dhisApi);
         }
     }
 
-    private static void postEvent(Event event, DhisApi dhisApi) throws APIException {
+    private static ImportSummary postEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
+            ImportSummary importSummary=null;
             Response response = dhisApi.postEvent(event);
-            if (response.getStatus() == 200) {
-                ImportSummary importSummary = getImportSummary(response);
+
+            if(response.getStatus() == 200) {
+                importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
@@ -138,16 +142,20 @@ final class TrackerDataSender {
                     UpdateEventTimestamp(event, dhisApi);
                 }
             }
+            return importSummary;
         } catch (APIException apiException) {
             NetworkUtils.handleEventSendException(apiException, event);
+            return null;
         }
     }
 
-    private static void putEvent(Event event, DhisApi dhisApi) throws APIException {
+    private static ImportSummary putEvent(Event event, DhisApi dhisApi) throws APIException {
         try {
+            ImportSummary importSummary=null;
             Response response = dhisApi.putEvent(event.getEvent(), event);
-            if (response.getStatus() == 200) {
-                ImportSummary importSummary = getImportSummary(response);
+
+            if(response.getStatus() == 200) {
+                importSummary = getImportSummary(response);
                 handleImportSummary(importSummary, FailedItem.EVENT, event.getLocalId());
                 if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.OK.equals(importSummary.getStatus())) {
@@ -158,8 +166,10 @@ final class TrackerDataSender {
                     UpdateEventTimestamp(event, dhisApi);
                 }
             }
+            return importSummary;
         } catch (APIException apiException) {
             NetworkUtils.handleEventSendException(apiException, event);
+            return null;
         }
     }
 

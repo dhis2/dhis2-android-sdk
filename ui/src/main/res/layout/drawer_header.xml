@@ -23,7 +23,7 @@
         android:background="@drawable/transparent_selector"
         android:clickable="true"
         android:contentDescription="@string/description"
-        android:src="@drawable/ic_anonymous_user"/>
+        android:src="@drawable/ic_account_circle"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

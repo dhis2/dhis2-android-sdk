@@ -157,6 +157,9 @@ public class Picker implements Parcelable {
 
     public void setPickableItems(List<IPickable> pickableItems) {
         this.pickableItems = pickableItems;
+        if(parentView != null) {
+            parentView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     public void showNext() {

@@ -21,4 +21,5 @@ public class Version6AddCodeDataelement extends AlterTableMigration<DataElement>
     public void onPreMigrate() {
         addColumn(String.class, "code");
     }
+
 }

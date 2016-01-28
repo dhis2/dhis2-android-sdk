@@ -143,7 +143,7 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_login_selector"
+                    android:background="@drawable/button_selector"
                     android:text="@string/log_in"
                     android:textAllCaps="true"
                     android:textColor="@color/white"

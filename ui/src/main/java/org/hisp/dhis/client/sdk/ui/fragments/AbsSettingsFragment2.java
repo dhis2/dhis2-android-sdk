@@ -26,43 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.client.sdk.ui.fragments;
 
-def cfg = rootProject.ext.configuration
-def libs = rootProject.ext.libraries
+import android.os.Bundle;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
-android {
-    compileSdkVersion cfg.compileSdkVersion
-    buildToolsVersion cfg.buildToolsVersion
+import org.hisp.dhis.client.sdk.ui.R;
 
-    defaultConfig {
-        // applicationId cfg.package
-        minSdkVersion cfg.minSdkVersion
-        targetSdkVersion cfg.targetSdkVersion
-        versionCode cfg.versionCode
-        versionName cfg.versionName
+public class AbsSettingsFragment2 extends PreferenceFragmentCompat {
+    private static final String TAG = AbsSettingsFragment2.class.getSimpleName();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        addPreferencesFromResource(R.xml.preferences);
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+    @Override
+    public void onCreatePreferences(Bundle bundle, String string) {
+
     }
-}
-
-dependencies {
-
-    // Google
-    compile "com.android.support:support-annotations:${libs.supportVersion}"
-    compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
-    compile "com.android.support:preference-v7:${libs.supportVersion}"
-    compile "com.android.support:appcompat-v7:${libs.supportVersion}"
-    compile "com.android.support:cardview-v7:${libs.supportVersion}"
-    compile "com.android.support:percent:${libs.supportVersion}"
-    compile "com.android.support:design:23.1.1"
-
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"
-
-    // Test
-    testCompile "junit:junit:${libs.junitVersion}"
 }

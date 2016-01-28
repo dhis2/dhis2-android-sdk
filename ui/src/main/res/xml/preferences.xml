@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2016, University of Oslo
   ~
@@ -27,10 +27,19 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <solid android:color="@color/white"/>
-    <corners android:radius="1dp"/>
+    <PreferenceCategory android:title="@string/application_settings">
+        <ListPreference
+            android:dialogTitle="@string/synchronization_period"
+            android:entries="@array/synchronization_periods"
+            android:entryValues="@array/synchronization_periods"
+            android:key="synchronization_period_setting"
+            android:title="@string/synchronization_period" />
+    </PreferenceCategory>
 
-</shape> 
+    <PreferenceCategory android:title="@string/user_settings">
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

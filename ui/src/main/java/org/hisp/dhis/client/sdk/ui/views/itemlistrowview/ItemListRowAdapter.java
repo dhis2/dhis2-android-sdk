@@ -65,13 +65,13 @@ public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             }
             if(itemListRow.getStatus().equals(EItemListRowStatus.ERROR.toString())) {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_event_error);
+                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_report);
             }
             else if(itemListRow.getStatus().equals(EItemListRowStatus.OFFLINE.toString())) {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_offline);
+                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_save);
             }
             else {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_from_server);
+                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_check);
             }
 
             ((ItemListRowViewHolder) holder).itemContainer.setOnClickListener(itemListRow.getOnRowClickListener());

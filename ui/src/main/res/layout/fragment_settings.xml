@@ -48,13 +48,13 @@
             android:text="@string/update_frequency"
             app:font="@string/font_name_regular" />
 
+        <!--android:background="@drawable/spinner_background_holo_light"-->
         <Spinner
             android:id="@+id/settings_update_frequency_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/update_frequency_label"
             android:layout_marginTop="6dp"
-            android:background="@drawable/spinner_background_holo_light"
             android:entries="@array/update_frequencies" />
 
         <LinearLayout

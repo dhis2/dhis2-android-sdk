@@ -126,14 +126,14 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     public void toggleNavigationDrawer() {
         int GRAVITY_PROPERTY = Gravity.LEFT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            if (!drawerLayout.isDrawerOpen(Gravity.START)) {
-                drawerLayout.openDrawer(GRAVITY_PROPERTY);
-            } else {
-                drawerLayout.closeDrawer(GRAVITY_PROPERTY);
-            }
             GRAVITY_PROPERTY = Gravity.START;
         }
 
+        if (!drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.openDrawer(GRAVITY_PROPERTY);
+        } else {
+            drawerLayout.closeDrawer(GRAVITY_PROPERTY);
+        }
     }
 
     protected void attachFragment(Fragment fragment) {

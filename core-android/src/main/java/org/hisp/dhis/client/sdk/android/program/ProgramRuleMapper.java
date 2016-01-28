@@ -54,8 +54,8 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRuleFlow.setName(programRule.getName());
         programRuleFlow.setDisplayName(programRule.getDisplayName());
         programRuleFlow.setAccess(programRule.getAccess());
-        programRuleFlow.setProgramStage(programRule.getProgramStage());
-        programRuleFlow.setProgram(programRule.getProgram());
+        programRuleFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programRule.getProgramStage()));
+        programRuleFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programRule.getProgram()));
         programRuleFlow.setCondition(programRule.getCondition());
         programRuleFlow.setExternalAction(programRule.isExternalAction());
         return programRuleFlow;
@@ -75,8 +75,8 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRule.setName(programRuleFlow.getName());
         programRule.setDisplayName(programRuleFlow.getDisplayName());
         programRule.setAccess(programRuleFlow.getAccess());
-        programRule.setProgramStage(programRuleFlow.getProgramStage());
-        programRule.setProgram(programRuleFlow.getProgram());
+        programRule.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programRuleFlow.getProgramStage()));
+        programRule.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programRuleFlow.getProgram()));
         programRule.setCondition(programRuleFlow.getCondition());
         programRule.setExternalAction(programRuleFlow.isExternalAction());
         return programRule;

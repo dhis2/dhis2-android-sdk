@@ -72,6 +72,11 @@ dependencies {
     compile "com.raizlabs.android:DBFlow-Core:${libs.dbFlowVersion}"
     compile "com.raizlabs.android:DBFlow:${libs.dbFlowVersion}"
 
+    // Apache
+    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
+        exclude module: 'commons-logging'
+    }
+
     // Test
     testCompile "junit:junit:${libs.junitVersion}"
 }

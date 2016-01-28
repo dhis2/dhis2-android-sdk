@@ -36,12 +36,14 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 import java.util.Set;
@@ -144,6 +146,23 @@ public class ProgramScope implements IProgramScope {
             public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
                     List<Program> programs = mProgramService.list();
+                    subscriber.onNext(programs);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Program>> list(final OrganisationUnit organisationUnit, final ProgramType ... programTypes) {
+        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+            @Override
+            public void call(Subscriber<? super List<Program>> subscriber) {
+                try {
+                    List<Program> programs = mProgramService.list(organisationUnit, programTypes);
                     subscriber.onNext(programs);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

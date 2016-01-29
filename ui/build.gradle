@@ -54,6 +54,7 @@ dependencies {
     // Google
     compile "com.android.support:support-annotations:${libs.supportVersion}"
     compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
+    compile "com.android.support:preference-v7:${libs.supportVersion}"
     compile "com.android.support:preference-v14:${libs.supportVersion}"
     compile "com.android.support:appcompat-v7:${libs.supportVersion}"
     compile "com.android.support:cardview-v7:${libs.supportVersion}"

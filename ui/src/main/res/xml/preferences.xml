@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -28,21 +27,29 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <PreferenceCategory android:title="@string/application_settings">
+        <SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="@string/background_synchronization_key"
+            android:summary="@string/background_synchronization_description"
+            android:title="@string/background_synchronization_name" />
         <ListPreference
-            android:dialogTitle="@string/synchronization_period"
-            android:entries="@array/synchronization_periods"
-            android:entryValues="@array/synchronization_periods"
+            android:dependency="@string/background_synchronization_key"
+            android:dialogTitle="@string/synchronization_period_name"
+            android:entries="@array/synchronization_period_options"
+            android:entryValues="@array/synchronization_period_options"
             android:key="synchronization_period_setting"
             android:summary="@string/synchronization_period_description"
-            android:title="@string/synchronization_period" />
+            android:title="@string/synchronization_period_name" />
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="@string/crash_reports_key"
+            android:summary="@string/crash_reports_description"
+            android:title="@string/crash_reports_name" />
     </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/user_settings">
         <Preference
-            android:summary="Managing current login session"
-            android:title="Account" />
+            android:summary="@string/account_description"
+            android:title="@string/account_name" />
     </PreferenceCategory>
-
 </PreferenceScreen>

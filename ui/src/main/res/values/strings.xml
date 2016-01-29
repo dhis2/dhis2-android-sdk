@@ -39,7 +39,9 @@
 
     <!-- Preference fragment -->
     <string name="application_settings">Application</string>
+
     <string name="synchronization_period">Synchronization period</string>
+    <string name="synchronization_period_description">Frequency of background syncing</string>
     <string-array name="synchronization_periods">
         <item>Disabled</item>
         <item>1 Minute</item>

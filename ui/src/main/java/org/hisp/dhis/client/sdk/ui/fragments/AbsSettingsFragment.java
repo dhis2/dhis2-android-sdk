@@ -1,6 +1,5 @@
 package org.hisp.dhis.client.sdk.ui.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,20 +15,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hisp.dhis.client.sdk.ui.R;
-//import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
+
+//import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
 
 /**
  * This is the view, using MVP.
  * Supposed to only show the information.
  * Calls methods in ISettingsPresenter to execute the selected actions.
- *
+ * <p>
  * Created by Vladislav Georgiev Alfredov on 1/15/16.
  */
-public abstract class AbsSettingsFragment extends Fragment  implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    public static final String TAG = AbsSettingsFragment.class.getSimpleName();
-//    public INavigationHandler mNavigationHandler;
-
+public abstract class AbsSettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private Button logoutButton;
     private Button synchronizeButton;
     private TextView syncTextView;
@@ -38,11 +35,6 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
     private ProgressBar mProgessBar;
     private String progressMessage;
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,8 +61,9 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.settings_logout_button) {
-
-            UiUtils.showConfirmDialog(getActivity().getSupportFragmentManager(), getString(R.string.logout_title), getString(R.string.logout_message),
+            UiUtils.showConfirmDialog(getActivity()
+                            .getSupportFragmentManager(),
+                    getString(R.string.logout_title), getString(R.string.logout_message),
                     getString(R.string.logout_option), getString(R.string.cancel_option),
                     new DialogInterface.OnClickListener() {
                         @Override
@@ -94,9 +87,9 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)  {
-        if(view != null) {
-           setUpdateFrequency(view.getContext(), position);
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (view != null) {
+            setUpdateFrequency(view.getContext(), position);
         }
     }
 
@@ -119,38 +112,7 @@ public abstract class AbsSettingsFragment extends Fragment  implements View.OnCl
         }*/
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Activity activity = (Activity) context;
-
-//        if(activity instanceof INavigationHandler) {
-//            mNavigationHandler = (INavigationHandler) activity;
-//        } else {
-//            throw new IllegalArgumentException("Activity must " +
-//                    "implement INavigationHandler interface");
-//        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        // we need to nullify reference
-        // to parent activity in order not to leak it
-//        mNavigationHandler = null;
-    }
-
-    protected abstract void  logout(Context context);
+    protected abstract void logout(Context context);
 
     protected abstract void synchronize(Context context);
 

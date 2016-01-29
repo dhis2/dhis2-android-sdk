@@ -35,11 +35,14 @@
             android:entries="@array/synchronization_periods"
             android:entryValues="@array/synchronization_periods"
             android:key="synchronization_period_setting"
+            android:summary="@string/synchronization_period_description"
             android:title="@string/synchronization_period" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/user_settings">
-
+        <Preference
+            android:summary="Managing current login session"
+            android:title="Account" />
     </PreferenceCategory>
 
 </PreferenceScreen>

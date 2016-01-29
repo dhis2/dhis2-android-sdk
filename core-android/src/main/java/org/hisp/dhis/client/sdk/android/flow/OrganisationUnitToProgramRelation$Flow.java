@@ -29,26 +29,33 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
 import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 
-@Table(databaseName = DbDhis.NAME)
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = OrganisationUnitToProgramRelation$Flow.UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP, uniqueConflict = ConflictAction.REPLACE)})
+
 public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
 
     private final static String ORGANISATION_UNIT_KEY = "organisationUnit";
     private final static String PROGRAM_KEY = "program";
 
+    static final int UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP = 123123123;
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
+    @Unique(unique = true, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP}, onUniqueConflict = ConflictAction.REPLACE)
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY, columnType = String.class, foreignColumnName = "uId"),
@@ -57,6 +64,7 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     OrganisationUnit$Flow organisationUnit;
 
     @Column
+    @Unique(unique = true, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP}, onUniqueConflict = ConflictAction.REPLACE)
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),

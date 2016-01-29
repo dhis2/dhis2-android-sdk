@@ -95,7 +95,7 @@ public class ProgramWrapper {
                     for (ProgramStageDataElement programStageDataElement : programStage.
                             getProgramStageDataElements()) {
                         operations.add(DbOperation.save(programStageDataElement));
-                        operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElement(), attributes));
+                        operations.addAll(saveDataElementAttributes(programStageDataElement.getDataElementObj(), attributes));
                     }
                     for (ProgramIndicator programIndicator : programStage.getProgramIndicators()) {
                         operations.add(DbOperation.save(programIndicator));

@@ -55,7 +55,7 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     long id;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP}, onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP})
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY, columnType = String.class, foreignColumnName = "uId"),
@@ -64,7 +64,7 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     OrganisationUnit$Flow organisationUnit;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP}, onUniqueConflict = ConflictAction.REPLACE)
+    @Unique(unique = false, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP})
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),

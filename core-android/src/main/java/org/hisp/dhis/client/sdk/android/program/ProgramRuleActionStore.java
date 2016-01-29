@@ -52,7 +52,7 @@ public final class ProgramRuleActionStore extends AbsIdentifiableObjectStore<Pro
     public List<ProgramRuleAction> query(ProgramRule programRule) {
         List<ProgramRuleAction$Flow> programRuleActionFlows = new Select()
                 .from(ProgramRuleAction$Flow.class).where(Condition
-                        .column(ProgramRuleAction$Flow$Table.PROGRAMRULE).is(programRule.getUId()))
+                        .column(ProgramRuleAction$Flow$Table.PROGRAMRULE_PROGRAMRULE).is(programRule.getUId()))
                 .queryList();
         return getMapper().mapToModels(programRuleActionFlows);
     }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
@@ -52,10 +53,11 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
         programRuleVariableFlow.setName(programRuleVariable.getName());
         programRuleVariableFlow.setDisplayName(programRuleVariable.getDisplayName());
         programRuleVariableFlow.setAccess(programRuleVariable.getAccess());
-        programRuleVariableFlow.setDataElement(programRuleVariable.getDataElement());
+        programRuleVariableFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programRuleVariable.getDataElement()));
+        programRuleVariableFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programRuleVariable.getTrackedEntityAttribute()));
         programRuleVariableFlow.setSourceType(programRuleVariable.getSourceType());
-        programRuleVariableFlow.setExternalAccess(programRuleVariable.isExternalAccess());
-        programRuleVariableFlow.setProgram(programRuleVariable.getProgram());
+        programRuleVariableFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programRuleVariable.getProgram()));
+        programRuleVariableFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programRuleVariable.getProgramStage()));
         return programRuleVariableFlow;
     }
 
@@ -73,10 +75,11 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
         programRuleVariable.setName(programRuleVariableFlow.getName());
         programRuleVariable.setDisplayName(programRuleVariableFlow.getDisplayName());
         programRuleVariable.setAccess(programRuleVariableFlow.getAccess());
-        programRuleVariable.setDataElement(programRuleVariableFlow.getDataElement());
+        programRuleVariable.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programRuleVariableFlow.getDataElement()));
+        programRuleVariable.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programRuleVariableFlow.getTrackedEntityAttribute()));
         programRuleVariable.setSourceType(programRuleVariableFlow.getSourceType());
-        programRuleVariable.setExternalAccess(programRuleVariableFlow.isExternalAccess());
-        programRuleVariable.setProgram(programRuleVariableFlow.getProgram());
+        programRuleVariable.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programRuleVariableFlow.getProgram()));
+        programRuleVariable.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programRuleVariableFlow.getProgramStage()));
         return programRuleVariable;
     }
 

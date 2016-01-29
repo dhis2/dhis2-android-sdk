@@ -210,10 +210,11 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             relationFlowMap.put(relationFlow.getOrganisationUnit().getUId(), relationFlow);
         }
         for (OrganisationUnit organisationUnit : organisationUnits) {
-            if (!relationFlowMap.containsValue(organisationUnit.getUId())) {
+            if (!relationFlowMap.containsKey(organisationUnit.getUId())) {
                 OrganisationUnitToProgramRelation$Flow newRelationFlow = new OrganisationUnitToProgramRelation$Flow();
                 newRelationFlow.setOrganisationUnit(mOrganisationUnitMapper.mapToDatabaseEntity(organisationUnit));
                 newRelationFlow.setProgram(getMapper().mapToDatabaseEntity(program));
+
                 operations.add(DbFlowOperation.insert(newRelationFlow));
             }
         }

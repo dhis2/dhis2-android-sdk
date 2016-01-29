@@ -44,6 +44,7 @@ ext {
             rxAndroidVersion   : "1.0.1",
             dbFlowVersion      : "2.2.1",
             progressBarVersion : "1.2.0",
+            jexlVersion        : "2.1.1",
     ]
 }
 

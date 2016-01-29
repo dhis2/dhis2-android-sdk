@@ -61,7 +61,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     public List<ProgramRule> query(Program program) {
         List<ProgramRule$Flow> programRuleFlows = new Select()
                 .from(ProgramRule$Flow.class).where(Condition
-                        .column(ProgramRule$Flow$Table.PROGRAM).is(program.getUId()))
+                        .column(ProgramRule$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
                 .queryList();
         for (ProgramRule$Flow programRuleFlow : programRuleFlows) {
             setProgramRuleActions(programRuleFlow);

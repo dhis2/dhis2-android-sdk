@@ -29,66 +29,162 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramRuleAction$Flow extends BaseIdentifiableObject$Flow {
 
-    @Column
-    String programRule;
+    private static final String PROGRAM_RULE_KEY = "programrule";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";
+    private static final String DATA_ELEMENT_KEY = "dataelement";
+    private static final String PROGRAM_INDICATOR_KEY = "programindicator";
+    private static final String PROGRAM_STAGE_KEY = "programstage";
+    private static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
 
     @Column
-    String dataElement;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_RULE_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramRule$Flow programRule;
 
     @Column
-    String programStageSection;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    TrackedEntityAttribute$Flow trackedEntityAttribute;
 
     @Column
-    String programRuleActionType;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    DataElement$Flow dataElement;
 
     @Column
-    boolean externalAccess;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_INDICATOR_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramIndicator$Flow programIndicator;
 
-    public String getProgramRule() {
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramStage$Flow programStage;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramStageSection$Flow programStageSection;
+
+    @Column
+    ProgramRuleActionType programRuleActionType;
+
+    @Column
+    String content;
+
+    @Column
+    String location;
+
+    @Column
+    String data;
+
+    public ProgramRule$Flow getProgramRule() {
         return programRule;
     }
 
-    public void setProgramRule(String programRule) {
+    public void setProgramRule(ProgramRule$Flow programRule) {
         this.programRule = programRule;
     }
 
-    public String getDataElement() {
+    public TrackedEntityAttribute$Flow getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(TrackedEntityAttribute$Flow trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public DataElement$Flow getDataElement() {
         return dataElement;
     }
 
-    public void setDataElement(String dataElement) {
+    public void setDataElement(DataElement$Flow dataElement) {
         this.dataElement = dataElement;
     }
 
-    public String getProgramStageSection() {
+    public ProgramIndicator$Flow getProgramIndicator() {
+        return programIndicator;
+    }
+
+    public void setProgramIndicator(ProgramIndicator$Flow programIndicator) {
+        this.programIndicator = programIndicator;
+    }
+
+    public ProgramStage$Flow getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage$Flow programStage) {
+        this.programStage = programStage;
+    }
+
+    public ProgramStageSection$Flow getProgramStageSection() {
         return programStageSection;
     }
 
-    public void setProgramStageSection(String programStageSection) {
+    public void setProgramStageSection(ProgramStageSection$Flow programStageSection) {
         this.programStageSection = programStageSection;
     }
 
-    public String getProgramRuleActionType() {
+    public ProgramRuleActionType getProgramRuleActionType() {
         return programRuleActionType;
     }
 
-    public void setProgramRuleActionType(String programRuleActionType) {
+    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
         this.programRuleActionType = programRuleActionType;
     }
 
-    public boolean isExternalAccess() {
-        return externalAccess;
+    public String getContent() {
+        return content;
     }
 
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public ProgramRuleAction$Flow() {

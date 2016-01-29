@@ -29,6 +29,9 @@
 package org.hisp.dhis.client.sdk.android.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
@@ -38,34 +41,69 @@ import java.util.List;
 @Table(databaseName = DbDhis.NAME)
 public final class ProgramRule$Flow extends BaseIdentifiableObject$Flow {
 
-    @Column
-    String programStage;
+    private static final String PROGRAM_STAGE_KEY = "programstage";
+    private static final String PROGRAM_KEY = "program";
 
     @Column
-    String program;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramStage$Flow programStage;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    Program$Flow program;
 
     @Column
     String condition;
+
+    @Column
+    String description;
+
+    @Column
+    Integer priority;
 
     @Column
     boolean externalAction;
 
     List<ProgramRuleAction$Flow> programRuleActions;
 
-    public String getProgramStage() {
+    public ProgramStage$Flow getProgramStage() {
         return programStage;
     }
 
-    public void setProgramStage(String programStage) {
+    public void setProgramStage(ProgramStage$Flow programStage) {
         this.programStage = programStage;
     }
 
-    public String getProgram() {
+    public Program$Flow getProgram() {
         return program;
     }
 
-    public void setProgram(String program) {
+    public void setProgram(Program$Flow program) {
         this.program = program;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public String getCondition() {

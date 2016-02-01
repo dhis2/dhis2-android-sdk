@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.ui.activities;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.MenuRes;
@@ -38,7 +37,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,15 +122,10 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     @Override
     public void toggleNavigationDrawer() {
-        int GRAVITY_PROPERTY = Gravity.LEFT;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            GRAVITY_PROPERTY = Gravity.START;
-        }
-
-        if (!drawerLayout.isDrawerOpen(Gravity.START)) {
-            drawerLayout.openDrawer(GRAVITY_PROPERTY);
+        if (drawerLayout.isDrawerOpen(navigationView)) {
+            drawerLayout.closeDrawer(navigationView);
         } else {
-            drawerLayout.closeDrawer(GRAVITY_PROPERTY);
+            drawerLayout.openDrawer(navigationView);
         }
     }
 

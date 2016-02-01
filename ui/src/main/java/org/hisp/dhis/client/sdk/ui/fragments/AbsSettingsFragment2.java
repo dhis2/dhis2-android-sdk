@@ -34,17 +34,15 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import org.hisp.dhis.client.sdk.ui.R;
 
 public class AbsSettingsFragment2 extends PreferenceFragmentCompat {
-    private static final String TAG = AbsSettingsFragment2.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addPreferencesFromResource(R.xml.preferences);
     }
 
     @Override
     public void onCreatePreferences(Bundle bundle, String string) {
-
+        // stub implementation
     }
 }

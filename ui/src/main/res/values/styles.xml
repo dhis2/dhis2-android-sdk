@@ -29,22 +29,18 @@
 
 <resources>
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- PreferenceFragment theme -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+
+        <!-- Colour palette -->
         <item name="colorPrimary">@color/color_primary_default</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent_default</item>
-        <item name="preferenceTheme">@style/AppTheme.Base.Preference</item>
-    </style>
 
-    <style name="AppTheme.Base.Preference" parent="@style/PreferenceThemeOverlay">
-        <item name="android:textSize">@dimen/text_size_large</item>
-        <item name="android:listSeparatorTextViewStyle">@style/AppTheme.Base.ListSeparatorTextView</item>
-    </style>
 
-    <style name="AppTheme.Base.ListSeparatorTextView">
-        <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/color_primary_dark</item>
-        <item name="android:paddingTop">@dimen/keyline_default</item>
-        <item name="android:layout_marginBottom">@dimen/keyline_default</item>
+        <!-- Text colour palette -->
+        <!--<item name="android:textColorPrimary">@color/color_text_primary</item>-->
+        <!--<item name="android:textColorPrimaryInverse">@color/color_text_primary_inverse</item>-->
+        <!--<item name="android:textColorSecondary">@color/color_text_secondary</item>-->
     </style>
 </resources>

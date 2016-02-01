@@ -27,9 +27,6 @@
   -->
 
 <resources>
-    <string name="app_name">ui</string>
-    <string name="description">Description</string>
-
     <!-- AbsLoginActivity strings -->
     <string name="server_url">Server URL</string>
     <string name="username">Username</string>
@@ -37,17 +34,33 @@
     <string name="log_in">Log in</string>
     <string name="two">2</string>
 
-    <!-- Preference fragment -->
+    <!-- Preferences fragment -->
     <string name="application_settings">Application</string>
-    <string name="synchronization_period">Synchronization period</string>
-    <string-array name="synchronization_periods">
-        <item>Disabled</item>
+    <string name="user_settings">User</string>
+
+    <string name="crash_reports_key">crashReports</string>
+    <string name="crash_reports_name">Crash reports</string>
+    <string name="crash_reports_description">
+        Send crash information to DHIS2 developers
+    </string>
+
+    <string name="background_synchronization_key">backgroundSynchronization</string>
+    <string name="background_synchronization_name">Background synchronization</string>
+    <string name="background_synchronization_description">
+        Allows to sync application data in background
+    </string>
+
+    <string name="synchronization_period_name">Synchronization period</string>
+    <string name="synchronization_period_description">Frequency of background syncing</string>
+    <string-array name="synchronization_period_options">
         <item>1 Minute</item>
         <item>15 Minutes</item>
         <item>1 Hour</item>
         <item>1 Day</item>
     </string-array>
-    <string name="user_settings">User</string>
+
+    <string name="account_name">Account</string>
+    <string name="account_description">Managing current login session</string>
 
 
     <!-- AbsConfirmUserActivity -->

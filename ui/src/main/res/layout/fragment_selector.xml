@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_add"
+        android:src="@drawable/ic_arrow_forward"
         app:layout_anchor="@id/pickerFragment"
         app:layout_anchorGravity="bottom|right|end"
         />

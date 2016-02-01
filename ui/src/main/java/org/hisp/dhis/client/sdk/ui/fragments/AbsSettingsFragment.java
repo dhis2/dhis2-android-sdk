@@ -1,122 +1,86 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.ui.fragments;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.utils.UiUtils;
+import org.hisp.dhis.client.sdk.ui.models.SettingPreferences;
 
-//import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
-
-/**
- * This is the view, using MVP.
- * Supposed to only show the information.
- * Calls methods in ISettingsPresenter to execute the selected actions.
- * <p>
- * Created by Vladislav Georgiev Alfredov on 1/15/16.
- */
-public abstract class AbsSettingsFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-    private Button logoutButton;
-    private Button synchronizeButton;
-    private TextView syncTextView;
-
-    private Spinner updateFrequencySpinner;
-    private ProgressBar mProgessBar;
-    private String progressMessage;
-
+public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
+        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener{
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    public void onCreatePreferences(Bundle bundle, String string) {
+        addPreferencesFromResource(R.xml.preferences);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        updateFrequencySpinner = (Spinner) view.findViewById(R.id.settings_update_frequency_spinner);
-
-        updateFrequencySpinner.setSelection(getUpdateFrequency(getActivity()));
-
-        updateFrequencySpinner.setOnItemSelectedListener(this);
-
-        synchronizeButton = (Button) view.findViewById(R.id.settings_sync_button);
-        logoutButton = (Button) view.findViewById(R.id.settings_logout_button);
-        mProgessBar = (ProgressBar) view.findViewById(R.id.settings_progessbar);
-        syncTextView = (TextView) view.findViewById(R.id.settings_sync_textview);
-        mProgessBar.setVisibility(View.GONE);
-        logoutButton.setOnClickListener(this);
-        synchronizeButton.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.settings_logout_button) {
-            UiUtils.showConfirmDialog(getActivity()
-                            .getSupportFragmentManager(),
-                    getString(R.string.logout_title), getString(R.string.logout_message),
-                    getString(R.string.logout_option), getString(R.string.cancel_option),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            logout(getContext());
-                            getActivity().finish();
-                        }
-                    });
-        } else if (view.getId() == R.id.settings_sync_button) {
-            if (isAdded()) {
-                final Context context = getActivity().getBaseContext();
-                Toast.makeText(context, getString(R.string.syncing), Toast.LENGTH_SHORT).show();
-                //Extend and synchronize...
-                synchronize(context);
-
-                synchronizeButton.setEnabled(false);
-                mProgessBar.setVisibility(View.VISIBLE);
-                synchronizeButton.setText("Synchronizing...");
+    public boolean onPreferenceClick(Preference preference) {
+        switch (preference.getKey()) {
+            case SettingPreferences.BACKGROUND_SYNCHRONIZATION: {
+                return onBackgroundSynchronizationClick();
+            }
+            case SettingPreferences.SYNCHRONIZATION_PERIOD: {
+                return onSynchronizationPeriodClick();
+            }
+            case SettingPreferences.CRASH_REPORTS: {
+                return onCrashReportsClick();
             }
         }
+        return false;
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (view != null) {
-            setUpdateFrequency(view.getContext(), position);
+    public boolean onPreferenceChange(Preference preference, Object object) {
+        switch (preference.getKey()) {
+            case SettingPreferences.BACKGROUND_SYNCHRONIZATION: {
+                return onBackgroundSynchronizationChanged((boolean) object);
+            }
+            case SettingPreferences.SYNCHRONIZATION_PERIOD: {
+                return onSynchronizationPeriodChanged((String) object);
+            }
+            case SettingPreferences.CRASH_REPORTS: {
+                return onCrashReportsChanged((boolean) object);
+            }
         }
+        return false;
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // stub implementation
-    }
+    public abstract boolean onBackgroundSynchronizationClick();
+    public abstract boolean onBackgroundSynchronizationChanged(boolean isEnabled);
 
-    public void setSynchronizingUi(boolean enable) {
-        /*if(!enable){
-            synchronizeButton.setEnabled(false);
-            mProgessBar.setVisibility(View.VISIBLE);
-            synchronizeButton.setText("Synchronizing...");
-            syncTextView.setText(getProgressMessage());
-        } else {
-            synchronizeButton.setEnabled(true);
-            mProgessBar.setVisibility(View.GONE);
-            syncTextView.setText(/*DhisController.getLastSynchronizationSummary()*//*"");
-            synchronizeButton.setText(R.string.synchronize_with_server);
-        }*/
-    }
+    public abstract boolean onSynchronizationPeriodClick();
+    public abstract boolean onSynchronizationPeriodChanged(String newPeriod);
 
-    protected abstract void logout(Context context);
-
-    protected abstract void synchronize(Context context);
-
-    protected abstract void setUpdateFrequency(Context context, int frequency);
-
-    protected abstract int getUpdateFrequency(Context context);
+    public abstract boolean onCrashReportsClick();
+    public abstract boolean onCrashReportsChanged(boolean isEnabled);
 }

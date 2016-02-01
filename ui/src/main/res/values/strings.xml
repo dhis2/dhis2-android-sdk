@@ -38,26 +38,34 @@
     <string name="application_settings">Application</string>
     <string name="user_settings">User</string>
 
-    <string name="crash_reports_key">crashReports</string>
-    <string name="crash_reports_name">Crash reports</string>
-    <string name="crash_reports_description">
-        Send crash information to DHIS2 developers
-    </string>
-
     <string name="background_synchronization_key">backgroundSynchronization</string>
     <string name="background_synchronization_name">Background synchronization</string>
     <string name="background_synchronization_description">
         Allows to sync application data in background
     </string>
 
+    <string name="synchronization_period_key">synchronizationPeriod</string>
     <string name="synchronization_period_name">Synchronization period</string>
     <string name="synchronization_period_description">Frequency of background syncing</string>
-    <string-array name="synchronization_period_options">
-        <item>1 Minute</item>
-        <item>15 Minutes</item>
-        <item>1 Hour</item>
-        <item>1 Day</item>
+    <string name="synchronization_period_option_value_default">hoursTwentyFour</string>
+    <string-array name="synchronization_period_option_keys">
+        <item>1 minute</item>
+        <item>15 minutes</item>
+        <item>1 hour</item>
+        <item>1 day</item>
     </string-array>
+    <string-array name="synchronization_period_option_values">
+        <item>minutesOne</item>
+        <item>minutesFifteen</item>
+        <item>hoursOne</item>
+        <item>@string/synchronization_period_option_value_default</item>
+    </string-array>
+
+    <string name="crash_reports_key">crashReports</string>
+    <string name="crash_reports_name">Crash reports</string>
+    <string name="crash_reports_description">
+        Send crash information to DHIS2 developers
+    </string>
 
     <string name="account_name">Account</string>
     <string name="account_description">Managing current login session</string>
@@ -67,11 +75,6 @@
     <string name="activity_confirm_user">Confirm user</string>
     <string name="re_log_in">Re-Log in</string>
     <string name="clear_and_logout">Clear and log out</string>
-
-    <!-- AbsSettingsFragment -->
-    <string name="update_frequency">Automatic synchronization frequency</string>
-    <string name="synchronize_with_server">Synchronize with server</string>
-    <string name="logout">Log out</string>
 
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>

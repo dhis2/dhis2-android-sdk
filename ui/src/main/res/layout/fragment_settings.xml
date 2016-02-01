@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/update_frequency_label"
             android:layout_marginTop="6dp"
-            android:entries="@array/synchronization_period_options" />
+            android:entries="@array/synchronization_period_option_keys" />
 
         <LinearLayout
             android:id="@+id/settings_sync_wrap_layout"

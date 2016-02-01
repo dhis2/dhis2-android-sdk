@@ -28,16 +28,37 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.R;
 
-public class AbsSettingsFragment2 extends PreferenceFragmentCompat {
+public class AbsProfileFragment extends Fragment {
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
 
     @Override
-    public void onCreatePreferences(Bundle bundle, String string) {
-        addPreferencesFromResource(R.xml.preferences);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Drawable buttonDrawable = DrawableCompat.wrap(ContextCompat
+                .getDrawable(getActivity(), R.drawable.ic_menu));
+        DrawableCompat.setTint(buttonDrawable, ContextCompat
+                .getColor(getContext(), R.color.white));
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(buttonDrawable);
+        toolbar.setTitle(R.string.settings);
+//        toolbar.setNavigationOnClickListener(this);
     }
 }

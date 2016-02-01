@@ -114,6 +114,15 @@ public final class DhisController {
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
     }
 
+    static void loadMetaData(Context context) throws APIException, IllegalStateException {
+        LoadingController.loadMetaData(context, getInstance().getDhisApi());
+
+    }
+
+    static void loadDataValues(Context context) throws APIException, IllegalStateException {
+        LoadingController.loadDataValues(context, getInstance().getDhisApi());
+    }
+
     static void sendData() throws APIException, IllegalStateException {
         TrackerController.sendLocalData(getInstance().getDhisApi());
     }

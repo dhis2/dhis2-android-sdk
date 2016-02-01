@@ -8,9 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.hisp.dhis.client.sdk.ui.rows.Row;
+
+import java.util.List;
+
 public abstract class AbsDataEntryFragment extends Fragment {
     protected RecyclerView recyclerView;
-
+    protected List<Row> dataEntryRows;
 
     public AbsDataEntryFragment() {
 

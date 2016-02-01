@@ -101,4 +101,26 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="enter_date">Enter date</string>
+    <string name="enter_text">Enter text</string>
+    <string name="enter_long_text">Enter long text</string>
+    <string name="enter_number">Enter number</string>
+    <string name="enter_integer">Enter integer</string>
+    <string name="enter_negative_integer">Enter negative integer</string>
+    <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
+    <string name="enter_positive_integer">Enter positive integer</string>
+    <string name="enter_coordinates">Enter coordinates</string>
+    <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
+    <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
+    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>
+    <string name="report_date">Report date</string>
+    <string name="choose_organisation_unit">Choose organisation unit</string>
+    <string name="choose_program">Choose program</string>
+    <string name="duedate">Due date</string>
+    <string name="eventname">Event name</string>
+    <string name="startdate">Start date</string>
+    <string name="enddate">End date</string>
+    <string name="mandatory_indicator">*</string>
+
 </resources>

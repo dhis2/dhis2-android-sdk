@@ -76,11 +76,6 @@
     <string name="re_log_in">Re-Log in</string>
     <string name="clear_and_logout">Clear and log out</string>
 
-    <!-- AbsSettingsFragment -->
-    <string name="update_frequency">Automatic synchronization frequency</string>
-    <string name="synchronize_with_server">Synchronize with server</string>
-    <string name="logout">Log out</string>
-
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>
 

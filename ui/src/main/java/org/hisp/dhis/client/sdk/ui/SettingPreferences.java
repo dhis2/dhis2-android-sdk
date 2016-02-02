@@ -1,4 +1,4 @@
-package org.hisp.dhis.client.sdk.ui.models;
+package org.hisp.dhis.client.sdk.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;

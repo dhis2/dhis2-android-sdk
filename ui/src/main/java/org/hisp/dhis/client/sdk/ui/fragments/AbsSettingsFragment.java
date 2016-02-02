@@ -33,7 +33,7 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.SettingPreferences;
+import org.hisp.dhis.client.sdk.ui.SettingPreferences;
 
 public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
         implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener{

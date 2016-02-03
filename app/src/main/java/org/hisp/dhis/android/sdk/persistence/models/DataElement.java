@@ -201,16 +201,16 @@ public class DataElement extends BaseNameableObject {
         return attributeValues;
     }
 
-    public AttributeValue getAttributeValue(String attributeId){
+    public DataElementAttributeValue getAttributeValue(String attributeId){
         if (getAttributeValues() == null) return null;
-        for (AttributeValue attributeValue: getAttributeValues()){
+        for (DataElementAttributeValue attributeValue: getAttributeValues()){
             if (attributeValue.getAttribute().equals(attributeId))
                 return attributeValue;
         }
         return null;
     }
 
-    public AttributeValue getAttributeValue(long id){
+    public DataElementAttributeValue getAttributeValue(long id){
         return MetaDataController.getDataElementAttributeValue(id);
     }
 }

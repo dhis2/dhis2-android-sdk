@@ -666,7 +666,7 @@ public final class MetaDataController extends ResourceController {
                 QUERY_MAP_FULL.put("fields","attributeValues[*,attribute[name,displayName,created,lastUpdated,access,id,valueType,code]]");
                 List<OrganisationUnitAttributeValue> organisationUnitAttributeValues = null;
                 try {
-                    organisationUnitAttributeValues=AssignedProgramsWrapper.deserializeAttributeValues(dhisApi.getOrganistationUnit(organisationUnit.getId(), QUERY_MAP_FULL), organisationUnit);
+                    organisationUnitAttributeValues=AssignedProgramsWrapper.deserializeAttributeValues(dhisApi.getOrganisationUnit(organisationUnit.getId(), QUERY_MAP_FULL), organisationUnit);
 
                     for(OrganisationUnitAttributeValue organisationUnitAttributeValue:organisationUnitAttributeValues)
                     {

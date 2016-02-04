@@ -36,11 +36,7 @@ import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 public interface IRowView {
-    Type getRowType();
+    ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, DataEntity.Type type);
 
-    DataEntity getDataEntity();
-
-    ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent);
-
-    void onBindViewHolder(ViewHolder holder);
+    void onBindViewHolder(ViewHolder holder, DataEntity dataEntity);
 }

@@ -28,55 +28,77 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
-    private final Context context;
-    private List<IRowView> rowViews;
+    private final List<DataEntity> dataEntities;
+    private final List<IRowView> rowViews;
 
-    public RowViewAdapter(Context context, List<IRowView> rowViews) {
-        this.context = context;
-        this.rowViews = rowViews;
+    public RowViewAdapter() {
+        dataEntities = new ArrayList<>();
+        rowViews = new ArrayList<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Type type = Type.values()[viewType];
-        if (RowViewTypeMatcher.matchToRowView(type).equals(EditTextRowView.class)) {
-            return null;
+        return rowViews.get(viewType).onCreateViewHolder(LayoutInflater.from(parent.getContext()),
+                parent, Type.values()[viewType]);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        rowViews.get(holder.getItemViewType()).onBindViewHolder(holder, getItem(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataEntities.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return getItem(position) != null ? getItem(position).getType().ordinal() : -1;
+    }
+
+    private DataEntity getItem(int position) {
+        return dataEntities.size() > position ? dataEntities.get(position) : null;
+    }
+
+    private IRowView onCreateRowView(int viewType) {
+        DataEntity.Type type = Type.values()[viewType];
+
+        if (EditTextRowView.class.equals(RowViewTypeMatcher.matchToRowView(type))) {
+            return new EditTextRowView();
         }
 
         return null;
     }
 
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        rowViews.get(position).onBindViewHolder(holder);
-    }
+    public void update(List<DataEntity> dataEntities) {
+        this.dataEntities.clear();
+        this.rowViews.clear();
 
-    @Override
-    public int getItemCount() {
-        return rowViews.size();
-    }
+        if (dataEntities != null) {
+            this.dataEntities.addAll(dataEntities);
 
-    @Override
-    public int getItemViewType(int position) {
-        return rowViews.get(position).getRowType().ordinal();
-    }
-
-    public void update(List<IRowView> rowViews) {
-        boolean notifyAdapter = this.rowViews != rowViews;
-        this.rowViews = rowViews;
-
-        if (notifyAdapter) {
-            notifyDataSetChanged();
+            for (DataEntity dataEntity : this.dataEntities) {
+                int type = dataEntity.getType().ordinal();
+                if (rowViews.size() <= type || rowViews.get(type) == null) {
+                    rowViews.add(type, onCreateRowView(type));
+                }
+            }
         }
+
+        notifyDataSetChanged();
     }
+
 }

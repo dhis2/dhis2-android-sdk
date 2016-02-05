@@ -31,16 +31,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/keyline_default"
-    android:paddingLeft="@dimen/keyline_default"
-    android:paddingRight="@dimen/keyline_default">
+    android:padding="@dimen/keyline_default">
+
+    <!--android:paddingBottom="@dimen/keyline_default"-->
 
     <org.hisp.dhis.client.sdk.ui.views.FontTextView
         android:id="@+id/textview_row_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:padding="3dp"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
         android:textSize="@dimen/text_size_large"
         app:font="@string/font_name_condensed" />
 
@@ -48,8 +49,7 @@
         android:id="@+id/edittext_row_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:errorEnabled="true">
+        android:orientation="horizontal">
 
         <org.hisp.dhis.client.sdk.ui.views.FontEditText
             android:id="@+id/edittext_row_edittext"

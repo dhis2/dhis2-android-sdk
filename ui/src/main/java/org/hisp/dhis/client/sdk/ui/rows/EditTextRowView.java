@@ -37,6 +37,7 @@ public final class EditTextRowView implements IRowView {
     public void onBindViewHolder(ViewHolder holder, DataEntity entity) {
         ((EditTextRowViewHolder) holder).textViewLabel.setText(entity.getLabel());
         // ((EditTextRowViewHolder) holder).textInputLayout.setHint("Enter text");
+        // ((EditTextRowViewHolder) holder).textInputLayout.setError("Value is possibly wrong");
         ((EditTextRowViewHolder) holder).editText.setText(entity.getValue());
     }
 
@@ -60,6 +61,8 @@ public final class EditTextRowView implements IRowView {
             if (!configureViews(type)) {
                 throw new IllegalArgumentException("unsupported view type");
             }
+
+            editText.setOnFocusChangeListener(new OnFocusChangeListener(textInputLayout));
         }
 
         private boolean configureViews(DataEntity.Type entityType) {
@@ -108,6 +111,26 @@ public final class EditTextRowView implements IRowView {
             }
 
             return true;
+        }
+    }
+
+    private static class OnFocusChangeListener implements View.OnFocusChangeListener {
+        private final TextInputLayout textInputLayout;
+        private final CharSequence hint;
+
+        public OnFocusChangeListener(TextInputLayout inputLayout) {
+            this.textInputLayout = inputLayout;
+            this.hint = textInputLayout.getHint();
+        }
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            System.out.println("HINT: " + hint + " focus: " + hasFocus);
+            if (hasFocus) {
+                textInputLayout.setHint(hint);
+            } else {
+                textInputLayout.setHint(null);
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -10,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.codetroopers.betterpickers.datepicker.DatePickerBuilder;
-import com.codetroopers.betterpickers.datepicker.DatePickerDialogFragment;
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
@@ -19,8 +19,8 @@ import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class DatePickerRowView implements IRowView, DatePickerDialogFragment.DatePickerDialogHandler {
-
+public class DatePickerRowView implements IRowView {
+    private static final String TAG = DatePickerRowView.class.getSimpleName();
     private String dateFormat = "yyyy-MM-dd";
     private SimpleDateFormat simpleDateFormat;
     private FragmentManager fragmentManager;
@@ -49,21 +49,23 @@ public class DatePickerRowView implements IRowView, DatePickerDialogFragment.Dat
                 ((DatePickerRowViewHolder) holder).displayValueTextView.setText(currentDate);
             }
         });
+
         ((DatePickerRowViewHolder) holder).datePickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerBuilder datePickerBuilder = new DatePickerBuilder().setFragmentManager(fragmentManager)
-                        .setStyleResId(R.style.BetterPickersDialogFragment)
-                        .setYearOptional(true);
+                CalendarDatePickerDialogFragment calendarDatePicker = new CalendarDatePickerDialogFragment()
+                        .setThemeCustom(R.style.MyCustomBetterPickerTheme)
+                        .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+                                ((DatePickerRowViewHolder) holder).displayValueTextView.setText(year + "-" + (monthOfYear + 1) + "-" + (dayOfMonth));
+                            }
+                        });
 
-                datePickerBuilder.show();
+                calendarDatePicker.show(fragmentManager, TAG);
+
             }
         });
-    }
-
-    @Override
-    public void onDialogDateSet(int reference, int year, int monthOfYear, int dayOfMonth) {
-        
     }
 
     private static class DatePickerRowViewHolder extends RecyclerView.ViewHolder {
@@ -106,7 +108,6 @@ public class DatePickerRowView implements IRowView, DatePickerDialogFragment.Dat
 
             return true;
         }
-
     }
 
 }

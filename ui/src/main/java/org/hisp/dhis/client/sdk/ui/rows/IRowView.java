@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 public interface IRowView {
-    ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent, DataEntity.Type type);
+    ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type);
 
     void onBindViewHolder(ViewHolder holder, DataEntity dataEntity);
 }

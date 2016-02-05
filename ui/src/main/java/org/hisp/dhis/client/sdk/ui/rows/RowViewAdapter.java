@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -37,20 +38,28 @@ import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
     private final List<DataEntity> dataEntities;
     private final List<IRowView> rowViews;
+    private final FragmentManager fragmentManager;
 
-    public RowViewAdapter() {
+    public RowViewAdapter(FragmentManager fragmentManager) {
         dataEntities = new ArrayList<>();
+        //rowViews = Arrays.asList(new IRowView[Type.values().length]);
         rowViews = new ArrayList<>();
+        rowViews.add(Type.TEXT.ordinal(), new EditTextRowView());
+        rowViews.add(Type.DATE.ordinal(), new DatePickerRowView());
+
+
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return rowViews.get(viewType).onCreateViewHolder(LayoutInflater.from(parent.getContext()),
+        return rowViews.get(viewType).onCreateViewHolder(fragmentManager,LayoutInflater.from(parent.getContext()),
                 parent, Type.values()[viewType]);
     }
 
@@ -79,23 +88,25 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         if (EditTextRowView.class.equals(RowViewTypeMatcher.matchToRowView(type))) {
             return new EditTextRowView();
         }
+        else if(DatePickerRowView.class.equals(RowViewTypeMatcher.matchToRowView(type))) {
+            return new DatePickerRowView();
+        }
 
         return null;
     }
 
     public void update(List<DataEntity> dataEntities) {
         this.dataEntities.clear();
-        this.rowViews.clear();
 
         if (dataEntities != null) {
             this.dataEntities.addAll(dataEntities);
 
-            for (DataEntity dataEntity : this.dataEntities) {
-                int type = dataEntity.getType().ordinal();
-                if (rowViews.size() <= type || rowViews.get(type) == null) {
-                    rowViews.add(type, onCreateRowView(type));
-                }
-            }
+//            for (DataEntity dataEntity : this.dataEntities) {
+//                int type = dataEntity.getType().ordinal();
+//                if (this.rowViews.size() <= type || this.rowViews.get(type) == null) {
+//                    this.rowViews.add(type, onCreateRowView(type));
+//                }
+//            }
         }
 
         notifyDataSetChanged();

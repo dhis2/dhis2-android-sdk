@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.InputFilter;
@@ -23,7 +24,7 @@ public final class EditTextRowView implements IRowView {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent,
+    public ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent,
                                          DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(EditTextRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");

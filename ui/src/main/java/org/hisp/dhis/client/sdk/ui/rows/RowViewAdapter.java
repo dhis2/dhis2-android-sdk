@@ -111,5 +111,4 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
         notifyDataSetChanged();
     }
-
 }

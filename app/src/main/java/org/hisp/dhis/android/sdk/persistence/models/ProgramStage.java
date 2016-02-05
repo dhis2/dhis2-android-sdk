@@ -96,6 +96,10 @@ public class ProgramStage extends BaseMetaDataObject {
     @Column(name = "sortOrder")
     int sortOrder;
 
+    @JsonProperty("hideDueDate")
+    @Column(name = "hideDueDate")
+    boolean hideDueDate;
+
     @JsonProperty("generatedByEnrollmentDate")
     @Column(name = "generatedByEnrollmentDate")
     boolean generatedByEnrollmentDate;
@@ -324,5 +328,13 @@ public class ProgramStage extends BaseMetaDataObject {
 
     public void setMinDaysFromStart(int minDaysFromStart) {
         this.minDaysFromStart = minDaysFromStart;
+    }
+
+    public boolean isHideDueDate() {
+        return hideDueDate;
+    }
+
+    public void setHideDueDate(boolean hideDueDate) {
+        this.hideDueDate = hideDueDate;
     }
 }

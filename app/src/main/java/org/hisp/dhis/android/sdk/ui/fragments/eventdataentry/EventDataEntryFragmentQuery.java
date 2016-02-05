@@ -125,7 +125,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
             List<Row> rows = new ArrayList<>();
             addStatusRow(context, form, rows);
             if(form.getEnrollment() != null) {
-                addDueDateRow(context, form, rows);
+                if(! (form.getStage().isHideDueDate()) ) {
+                    addDueDateRow(context, form, rows);
+                }
             }
             addEventDateRow(context, form, rows);
             addCoordinateRow(form, rows);

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
@@ -29,38 +30,32 @@ public final class EditTextRowView implements IRowView {
         }
 
         return new EditTextRowViewHolder(inflater.inflate(
-                R.layout.row_edit_text, parent, false), type);
+                R.layout.recyclerview_row_edittext, parent, false), type);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, DataEntity entity) {
-        ((EditTextRowViewHolder) holder).textInputLayout.setHint(entity.getLabel());
-        ((EditTextRowViewHolder) holder).editText.setHint(entity.getValue());
+        ((EditTextRowViewHolder) holder).textViewLabel.setText(entity.getLabel());
+        // ((EditTextRowViewHolder) holder).textInputLayout.setHint("Enter text");
+        ((EditTextRowViewHolder) holder).editText.setText(entity.getValue());
     }
-//
-//    @Override
-//    public Type getRowType() {
-//        return dataEntity.getType();
-//    }
-//
-//    @Override
-//    public DataEntity getDataEntity() {
-//        return dataEntity;
-//    }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
         private static final int LONG_TEXT_LINE_COUNT = 3;
 
+        public final TextView textViewLabel;
         public final TextInputLayout textInputLayout;
         public final EditText editText;
 
         public EditTextRowViewHolder(View itemView, DataEntity.Type type) {
             super(itemView);
 
+            textViewLabel = (TextView) itemView
+                    .findViewById(R.id.textview_row_label);
             textInputLayout = (TextInputLayout) itemView
-                    .findViewById(R.id.edit_text_row_text_input_layout);
+                    .findViewById(R.id.edittext_row_textinputlayout);
             editText = (EditText) itemView
-                    .findViewById(R.id.edit_text_row_edit_text);
+                    .findViewById(R.id.edittext_row_edittext);
 
             if (!configureViews(type)) {
                 throw new IllegalArgumentException("unsupported view type");

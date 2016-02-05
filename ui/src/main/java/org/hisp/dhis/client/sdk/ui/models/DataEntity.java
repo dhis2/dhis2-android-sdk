@@ -47,8 +47,8 @@ public class DataEntity {
 
     private DataEntity(String label, String value, Type type) {
         isNull(label, "label must not be null");
-        isNull(value, "value must not be null");
         isNull(type, "type must not be null");
+        //isNull(value, "value must not be null");
 
         this.label = label;
         this.value = value;
@@ -63,15 +63,18 @@ public class DataEntity {
         return new DataEntity(label, value, type);
     }
 
-    public @NonNull CharSequence getLabel() {
+    @NonNull
+    public CharSequence getLabel() {
         return label;
     }
 
-    public @NonNull CharSequence getValue() {
+    @NonNull
+    public CharSequence getValue() {
         return value;
     }
 
-    public @NonNull Type getType() {
+    @NonNull
+    public Type getType() {
         return type;
     }
 

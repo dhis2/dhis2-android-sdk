@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -27,23 +26,39 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/keyline_default"
+    android:paddingLeft="@dimen/keyline_default"
+    android:paddingRight="@dimen/keyline_default">
 
-    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- PreferenceFragment theme -->
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    <org.hisp.dhis.client.sdk.ui.views.FontTextView
+        android:id="@+id/textview_row_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:padding="3dp"
+        android:textSize="@dimen/text_size_large"
+        app:font="@string/font_name_condensed" />
 
-        <!-- Colour palette -->
-        <item name="colorPrimary">@color/color_primary_default</item>
-        <item name="colorPrimaryDark">@color/color_primary_dark</item>
-        <item name="colorAccent">@color/color_accent_default</item>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edittext_row_textinputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:errorEnabled="true">
 
-        <item name="android:windowBackground">@color/white</item>
+        <org.hisp.dhis.client.sdk.ui.views.FontEditText
+            android:id="@+id/edittext_row_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/text_size_large"
+            app:font="@string/font_name_regular" />
 
+    </android.support.design.widget.TextInputLayout>
 
-        <!-- Text colour palette -->
-        <!--<item name="android:textColorPrimary">@color/color_text_primary</item>-->
-        <!--<item name="android:textColorPrimaryInverse">@color/color_text_primary_inverse</item>-->
-        <!--<item name="android:textColorSecondary">@color/color_text_secondary</item>-->
-    </style>
-</resources>
+</LinearLayout>

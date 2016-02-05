@@ -38,6 +38,7 @@ class RowViewTypeMatcher {
 
     public static Class<?> matchToRowView(DataEntity.Type type) {
         switch (type) {
+            case DATE: return DatePickerRowView.class;
             case TEXT:
             case LONG_TEXT:
             case NUMBER:

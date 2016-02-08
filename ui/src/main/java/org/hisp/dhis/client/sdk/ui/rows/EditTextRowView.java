@@ -5,6 +5,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -26,8 +28,8 @@ public final class EditTextRowView implements IRowView {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent,
-                                         DataEntity.Type type) {
+    public ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater,
+                                         ViewGroup parent, DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(EditTextRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -46,6 +48,7 @@ public final class EditTextRowView implements IRowView {
         CharSequence hint = !isEmpty(entity.getValue()) ? null :
                 editTextRowViewHolder.focusChangeListener.getHint();
         editTextRowViewHolder.textInputLayout.setHint(hint);
+        editTextRowViewHolder.onValueChangedListener.setDataEntity(entity);
     }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
@@ -54,7 +57,9 @@ public final class EditTextRowView implements IRowView {
         public final TextView textViewLabel;
         public final TextInputLayout textInputLayout;
         public final EditText editText;
+
         public final OnFocusChangeListener focusChangeListener;
+        public final OnValueChangedListener onValueChangedListener;
 
         public EditTextRowViewHolder(View itemView, DataEntity.Type type) {
             super(itemView);
@@ -71,7 +76,10 @@ public final class EditTextRowView implements IRowView {
             }
 
             focusChangeListener = new OnFocusChangeListener(textInputLayout, editText);
+            onValueChangedListener = new OnValueChangedListener();
+
             editText.setOnFocusChangeListener(focusChangeListener);
+            editText.addTextChangedListener(onValueChangedListener);
         }
 
         private boolean configureViews(DataEntity.Type entityType) {
@@ -123,6 +131,21 @@ public final class EditTextRowView implements IRowView {
         }
     }
 
+    private static class OnValueChangedListener extends AbsTextWatcher {
+        private DataEntity dataEntity;
+
+        public void setDataEntity(DataEntity dataEntity) {
+            this.dataEntity = dataEntity;
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if (dataEntity != null) {
+                dataEntity.updateValue(editable.toString());
+            }
+        }
+    }
+
     private static class OnFocusChangeListener implements View.OnFocusChangeListener {
         private final TextInputLayout textInputLayout;
         private final EditText editText;
@@ -161,58 +184,11 @@ public final class EditTextRowView implements IRowView {
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
             // perform validation
-//            if (entity.validateValue(source)) {
-//                return "";
-//            }
+            // if (entity.validateValue(source)) {
+            //     return "";
+            // }
 
             return source;
         }
     }
-//
-//    protected static class NegInpFilter implements InputFilter {
-//
-//        @Override
-//        public CharSequence filter(CharSequence str, int start, int end,
-//                                   Spanned spn, int spnStart, int spnEnd) {
-//
-//            if ((str.length() > 0) && (spnStart == 0) && (str.charAt(0) != '-')) {
-//                return EMPTY_FIELD;
-//            }
-//
-//            return str;
-//        }
-//    }
-//
-//    protected static class PosOrZeroFilter implements InputFilter {
-//
-//        @Override
-//        public CharSequence filter(CharSequence str, int start, int end,
-//                                   Spanned spn, int spStart, int spEnd) {
-//
-//            if ((str.length() > 0) && (spn.length() > 0) && (spn.charAt(0) == '0')) {
-//                return EMPTY_FIELD;
-//            }
-//
-//            if ((spn.length() > 0) && (spStart == 0)
-//                    && (str.length() > 0) && (str.charAt(0) == '0')) {
-//                return EMPTY_FIELD;
-//            }
-//
-//            return str;
-//        }
-//    }
-//
-//    protected static class PosFilter implements InputFilter {
-//
-//        @Override
-//        public CharSequence filter(CharSequence str, int start, int end,
-//                                   Spanned spn, int spnStart, int spnEnd) {
-//
-//            if ((str.length() > 0) && (spnStart == 0) && (str.charAt(0) == '0')) {
-//                return EMPTY_FIELD;
-//            }
-//
-//            return str;
-//        }
-//    }
 }

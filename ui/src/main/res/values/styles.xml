@@ -39,6 +39,7 @@
         <item name="colorAccent">@color/color_accent_default</item>
 
         <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorPrimary">@color/color_text_primary</item>
 
         <!-- Text colour palette -->
         <!--<item name="android:textColorPrimary">@color/color_text_primary</item>-->
@@ -46,7 +47,7 @@
         <!--<item name="android:textColorSecondary">@color/color_text_secondary</item>-->
     </style>
 
-    <style parent="BetterPickersRadialTimePickerDialog.Light" name="MyCustomBetterPickerTheme">
+    <style name="MyCustomBetterPickerTheme" parent="BetterPickersDialogFragment.Light">
         <item name="bpTextColor">@color/color_text_primary</item>
     </style>
 </resources>

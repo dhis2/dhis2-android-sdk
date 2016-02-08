@@ -30,12 +30,18 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 public class DataEntity {
     private final CharSequence label;
     private final Type type;
-    private String value;
+    private CharSequence value;
+
+    private OnValueChangeListener<CharSequence> onValueChangeListener;
+    private List<IValueValidator<CharSequence>> dataEntityValueValidators;
 
 //    for simplicity, let's ignore these properties from beginning
 
@@ -48,11 +54,12 @@ public class DataEntity {
     private DataEntity(String label, String value, Type type) {
         isNull(label, "label must not be null");
         isNull(type, "type must not be null");
-        //isNull(value, "value must not be null");
 
         this.label = label;
         this.value = value;
         this.type = type;
+
+        this.dataEntityValueValidators = new ArrayList<>();
     }
 
     public static DataEntity create(@NonNull String label, @NonNull Type type) {
@@ -78,7 +85,15 @@ public class DataEntity {
         return type;
     }
 
+    public void setOnValueChangedListener(OnValueChangeListener<CharSequence> onValueChangedListener) {
+        this.onValueChangeListener = onValueChangedListener;
+    }
+
     public boolean updateValue(@NonNull CharSequence value) {
+        if (validateValue(value)) {
+            this.value = value;
+            return true;
+        }
         return false;
     }
 
@@ -87,8 +102,13 @@ public class DataEntity {
     }
 
     public boolean validateValue(CharSequence newValue) {
-        // depending on type, perform corresponding validation
-        return false;
+        for (IValueValidator<CharSequence> valueValidator : dataEntityValueValidators) {
+            if (!valueValidator.validate(newValue)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public enum Type {

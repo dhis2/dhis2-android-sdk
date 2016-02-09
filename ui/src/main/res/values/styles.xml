@@ -28,7 +28,6 @@
   -->
 
 <resources>
-
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- PreferenceFragment theme -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>

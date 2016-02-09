@@ -27,6 +27,12 @@
   -->
 
 <resources>
+
+    <string name="app_data_capture">Data capture</string>
+    <string name="app_event_capture">Event capture</string>
+    <string name="app_tracker_capture">Tracker capture</string>
+    <string name="app_dashboard">Dashboard</string>
+
     <!-- AbsLoginActivity strings -->
     <string name="server_url">Server URL</string>
     <string name="username">Username</string>

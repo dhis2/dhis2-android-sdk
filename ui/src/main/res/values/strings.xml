@@ -123,4 +123,8 @@
     <string name="enddate">End date</string>
     <string name="mandatory_indicator">*</string>
 
+    <!-- Button labels: -->
+    <string name="todays_date">Today\'s date</string>
+    <string name="pick_date">Pick date</string>
+
 </resources>

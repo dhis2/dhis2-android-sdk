@@ -33,7 +33,7 @@ public class DatePickerRowView implements IRowView {
     private static final String TAG = DatePickerRowView.class.getSimpleName();
     private static final String EMPTY_FIELD = "";
     private static FragmentManager fragmentManager;
-    
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(DatePickerRowView.class)) {
@@ -42,7 +42,7 @@ public class DatePickerRowView implements IRowView {
         this.fragmentManager = fragmentManager;
 
         return new DatePickerRowViewHolder(inflater.inflate(
-                R.layout.row_date_picker, parent, false), type);
+                R.layout.recyclerview_row_datepicker, parent, false), type);
     }
 
     @Override

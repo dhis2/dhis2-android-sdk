@@ -31,7 +31,6 @@ import static android.text.TextUtils.isEmpty;
 
 public class DatePickerRowView implements IRowView {
     private static final String TAG = DatePickerRowView.class.getSimpleName();
-    private static final String EMPTY_FIELD = "";
     private static FragmentManager fragmentManager;
 
     @Override
@@ -148,6 +147,7 @@ public class DatePickerRowView implements IRowView {
         private static class OnClearListener implements View.OnClickListener {
             private final EditText editText;
             private DataEntity dataEntity;
+            private static final String EMPTY_FIELD = "";
 
             public OnClearListener(EditText editText) {
                 this.editText = editText;

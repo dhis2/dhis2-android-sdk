@@ -36,7 +36,7 @@ public class CheckBoxRowView implements IRowView {
         checkBoxRowViewHolder.checkBox.setOnCheckedChangeListener(checkBoxRowViewHolder.onCheckBoxListner);
 
         if(isEmpty(dataEntity.getValue())) {
-            checkBoxRowViewHolder.checkBox.setChecked(true);
+            checkBoxRowViewHolder.checkBox.setChecked(false);
         }
     }
 

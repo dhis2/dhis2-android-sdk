@@ -40,7 +40,7 @@
     <string name="drawer_item_data_capture">Data capture</string>
     <string name="drawer_item_event_capture">Event capture</string>
     <string name="drawer_item_tracker_capture">Tracker capture</string>
-    <string name="drawer_item_synchronized">Synchronized: 12-14-2015</string>
+    <string name="drawer_item_synchronized">Synchronized: %s</string>
 
     <!-- AbsLoginActivity strings -->
     <string name="server_url">Server URL</string>

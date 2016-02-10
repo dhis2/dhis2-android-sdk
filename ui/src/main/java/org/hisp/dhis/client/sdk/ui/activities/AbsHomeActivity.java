@@ -231,7 +231,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     }
 
     protected MenuItem addMenuItem(int menuItemId, Drawable icon, CharSequence title) {
-        MenuItem menuItem = getNavigationView().getMenu().add(
+        MenuItem menuItem = navigationView.getMenu().add(
                 R.id.drawer_group_main, menuItemId, DEFAULT_ORDER_IN_CATEGORY, title);
         menuItem.setIcon(icon);
         return menuItem;
@@ -260,6 +260,13 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     @NonNull
     protected TextView getUsernameLetterTextView() {
         return usernameLetter;
+    }
+
+    protected void setSynchronizedMessage(@NonNull CharSequence message) {
+        String formattedMessage = String.format(getString(
+                R.string.drawer_item_synchronized), message);
+        navigationView.getMenu().findItem(R.id.drawer_item_synchronized)
+                .setTitle(formattedMessage);
     }
 
     @NonNull

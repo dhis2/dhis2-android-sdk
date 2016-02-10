@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.ui.activities;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.MenuRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
@@ -167,9 +166,6 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     protected TextView getUsernameLetterTextView() {
         return usernameLetter;
     }
-
-    @MenuRes
-    protected abstract int getNavigationMenu();
 
     protected abstract boolean onItemSelected(MenuItem item);
 }

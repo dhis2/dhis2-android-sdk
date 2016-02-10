@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (c) 2016, University of Oslo
   ~
@@ -26,18 +25,13 @@
   ~ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/drawer_section_status"
-        android:title="@string/drawer_section_status">
-        <menu>
-            <group android:checkableBehavior="none">
-                <item
-                    android:id="@+id/drawer_synchronization"
-                    android:enabled="false"
-                    android:icon="@drawable/ic_synchronized"
-                    android:title="@string/drawer_item_synchronized" />
-            </group>
-        </menu>
-    </item>
-</menu>
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="24dp"
+        android:height="24dp"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M3,18h18v-2H3v2zm0,-5h18v-2H3v2zm0,-7v2h18V6H3z"/>
+</vector>

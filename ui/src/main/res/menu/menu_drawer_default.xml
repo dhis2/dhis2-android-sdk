@@ -28,23 +28,53 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group
-        android:id="@+id/drawer_section_main"
+        android:id="@+id/drawer_group_main"
         android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_item_profile"
             android:icon="@drawable/ic_profile"
+            android:orderInCategory="110"
             android:title="@string/drawer_item_profile" />
+        <item
+            android:id="@+id/drawer_item_apps"
+            android:orderInCategory="200"
+            android:title="@string/drawer_item_apps">
+            <menu>
+                <group
+                    android:id="@+id/drawer_group_apps"
+                    android:checkableBehavior="none">
+                    <item
+                        android:id="@+id/drawer_item_dashboard"
+                        android:icon="@drawable/ic_dashboard"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_dashboard" />
+                    <item
+                        android:id="@+id/drawer_item_data_capture"
+                        android:icon="@drawable/ic_data_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_data_capture" />
+                    <item
+                        android:id="@+id/drawer_item_event_capture"
+                        android:icon="@drawable/ic_event_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_event_capture" />
+                    <item
+                        android:id="@+id/drawer_item_tracker_capture"
+                        android:icon="@drawable/ic_tracker_capture"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_tracker_capture" />
+                </group>
+            </menu>
+        </item>
     </group>
     <item
-        android:id="@+id/drawer_section_apps"
-        android:title="@string/drawer_section_apps">
-        <menu />
-    </item>
-    <item
-        android:id="@+id/drawer_section_other"
-        android:title="@string/drawer_section_other">
+        android:id="@+id/drawer_item_other"
+        android:orderInCategory="300"
+        android:title="@string/drawer_item_other">
         <menu>
-            <group android:checkableBehavior="single">
+            <group
+                android:id="@+id/drawer_group_other"
+                android:checkableBehavior="single">
                 <item
                     android:id="@+id/drawer_item_settings"
                     android:icon="@drawable/ic_settings"
@@ -61,10 +91,13 @@
         </menu>
     </item>
     <item
-        android:id="@+id/drawer_section_status"
-        android:title="@string/drawer_section_status">
+        android:id="@+id/drawer_item_status"
+        android:orderInCategory="400"
+        android:title="@string/drawer_item_status">
         <menu>
-            <group android:checkableBehavior="none">
+            <group
+                android:id="@+id/drawer_group_status"
+                android:checkableBehavior="none">
                 <item
                     android:id="@+id/drawer_item_synchronized"
                     android:enabled="false"

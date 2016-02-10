@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+
+import static android.text.TextUtils.isEmpty;
 
 public class CheckBoxRowView implements IRowView {
 
@@ -31,6 +34,10 @@ public class CheckBoxRowView implements IRowView {
         checkBoxRowViewHolder.textViewLabel.setText(dataEntity.getLabel());
         checkBoxRowViewHolder.onCheckBoxListner.setDataEntity(dataEntity);
         checkBoxRowViewHolder.checkBox.setOnCheckedChangeListener(checkBoxRowViewHolder.onCheckBoxListner);
+
+        if(isEmpty(dataEntity.getValue())) {
+            checkBoxRowViewHolder.checkBox.setChecked(true);
+        }
     }
 
 

@@ -28,11 +28,12 @@ public class AutoCompleteRowView implements IRowView {
     private ArrayList<String> options;
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
+    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
+                                                      LayoutInflater inflater, ViewGroup parent,
+                                                      DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(AutoCompleteRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
-
 
         return new AutoCompleteRowViewHolder(inflater.inflate(
                 R.layout.recyclerview_row_autocomplete, parent, false), type, fragmentManager);
@@ -64,11 +65,13 @@ public class AutoCompleteRowView implements IRowView {
         public final OnFocusChangeListener onFocusChangeListener;
         public final OnEditTextClickedListener onEditTextClickedListener;
 
-        public AutoCompleteRowViewHolder(View itemView, DataEntity.Type type, FragmentManager fragmentManager) {
+        public AutoCompleteRowViewHolder(View itemView, DataEntity.Type type,
+                                         FragmentManager fragmentManager) {
             super(itemView);
 
             textViewLabel = (TextView) itemView.findViewById(R.id.autocomplete_row_label);
-            textInputLayout = (TextInputLayout) itemView.findViewById(R.id.autocomplete_row_text_input_layout);
+            textInputLayout = (TextInputLayout) itemView.findViewById(
+                    R.id.autocomplete_row_text_input_layout);
             optionText = (EditText) itemView.findViewById(R.id.autocomplete_row_option_text);
             clearButton = (ImageButton) itemView.findViewById(R.id.clear_autocomplete_row_view);
 
@@ -160,9 +163,11 @@ public class AutoCompleteRowView implements IRowView {
             this.fragmentManager = fragmentManager;
             this.editText = editText;
         }
+
         @Override
         public void onClick(View v) {
-            OptionDialogFragment.newInstance(v.getContext(), editText, options).show(fragmentManager, "tag");
+            OptionDialogFragment.newInstance(v.getContext(), editText, options)
+                    .show(fragmentManager, "tag");
         }
 
         public void setOptions(ArrayList<String> options) {
@@ -180,7 +185,6 @@ public class AutoCompleteRowView implements IRowView {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-
             return super.onCreateDialog(savedInstanceState);
         }
 
@@ -195,17 +199,14 @@ public class AutoCompleteRowView implements IRowView {
 
         }
 
-
-
-        public static OptionDialogFragment newInstance(Context context, EditText editText, ArrayList<String> options) {
+        public static OptionDialogFragment newInstance(Context context, EditText editText,
+                                                       ArrayList<String> options) {
             OptionDialogFragment optionDialogFragment = new OptionDialogFragment();
             Bundle args = new Bundle();
             args.putStringArrayList(ARGS_OPTIONS, options);
             optionDialogFragment.setArguments(args);
             return optionDialogFragment;
         }
-
-
     }
 
     public class OptionDialogAdapter extends RecyclerView.Adapter {
@@ -217,13 +218,13 @@ public class AutoCompleteRowView implements IRowView {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_autocomplete_dialog_row, parent, false));
+            return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.recyclerview_autocomplete_dialog_row, parent, false));
         }
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             OptionDialogViewHolder optionDialogViewHolder = (OptionDialogViewHolder) holder;
-
         }
 
         @Override
@@ -237,7 +238,8 @@ public class AutoCompleteRowView implements IRowView {
 
         public OptionDialogViewHolder(View itemView) {
             super(itemView);
-            optionValueTextView = (TextView) itemView.findViewById(R.id.autocomplete_dialog_row_label);
+            optionValueTextView = (TextView) itemView.findViewById(
+                    R.id.autocomplete_dialog_row_label);
         }
     }
 }

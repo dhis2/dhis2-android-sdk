@@ -28,12 +28,18 @@
 
 package org.hisp.dhis.client.sdk.ui.activities;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.MenuRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
 import android.support.v7.app.AppCompatActivity;
@@ -43,12 +49,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 
 public abstract class AbsHomeActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener, DrawerListener, INavigationCallback {
+
+    private static final String APPS_DASHBOARD_PACKAGE = "org.hisp.dhis.android.dashboard";
+    private static final String APPS_DATA_CAPTURE_PACKAGE = "org.dhis2.mobile";
+    private static final String APPS_EVENT_CAPTURE_PACKAGE = "org.hisp.dhis.android.eventcapture";
+    private static final String APPS_TRACKER_CAPTURE_PACKAGE = "org.hisp.dhis.android.trackercapture";
+
+    private static final int DEFAULT_ORDER_IN_CATEGORY = 100;
 
     // Drawer layout
     private DrawerLayout drawerLayout;
@@ -73,7 +89,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.inflateMenu(getNavigationMenu());
+        navigationView.inflateMenu(R.menu.menu_drawer_default);
 
         ViewGroup navigationHeader = (ViewGroup) getLayoutInflater()
                 .inflate(R.layout.navigation_header, navigationView, false);
@@ -82,12 +98,46 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         userInfo = (TextView) navigationHeader.findViewById(R.id.textview_user_info);
 
         navigationView.addHeaderView(navigationHeader);
+
+        /* configuring visibility of apps in navigation view */
+        navigationView.getMenu().findItem(R.id.drawer_item_dashboard).setVisible(
+                isAppInstalled(APPS_DASHBOARD_PACKAGE));
+        navigationView.getMenu().findItem(R.id.drawer_item_data_capture).setVisible(
+                isAppInstalled(APPS_DATA_CAPTURE_PACKAGE));
+        navigationView.getMenu().findItem(R.id.drawer_item_event_capture).setVisible(
+                isAppInstalled(APPS_EVENT_CAPTURE_PACKAGE));
+        navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture).setVisible(
+                isAppInstalled(APPS_TRACKER_CAPTURE_PACKAGE));
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        boolean isSelected = onItemSelected(menuItem);
+        boolean isSelected = false;
+        int menuItemId = menuItem.getItemId();
 
+        if (menuItemId == R.id.drawer_item_dashboard) {
+            isSelected = openApp(APPS_DASHBOARD_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_data_capture) {
+            isSelected = openApp(APPS_DATA_CAPTURE_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_event_capture) {
+            isSelected = openApp(APPS_EVENT_CAPTURE_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_tracker_capture) {
+            isSelected = openApp(APPS_TRACKER_CAPTURE_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_profile) {
+            attachFragmentDelayed(getProfileFragment());
+            isSelected = true;
+        } else if (menuItemId == R.id.drawer_item_settings) {
+            attachFragmentDelayed(getSettingsFragment());
+            isSelected = true;
+        } else if (menuItemId == R.id.drawer_item_help) {
+            attachFragment(getHelpFragment());
+            isSelected = true;
+        } else if (menuItemId == R.id.drawer_item_about) {
+            attachFragment(getAboutFragment());
+            isSelected = true;
+        }
+
+        isSelected = onItemSelected(menuItem) || isSelected;
         if (isSelected) {
             drawerLayout.closeDrawers();
             navigationView.setCheckedItem(menuItem.getItemId());
@@ -148,28 +198,94 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         };
     }
 
+    private boolean isAppInstalled(String packageName) {
+        String currentApp = getApplicationContext().getPackageName();
+        if (currentApp.equals(packageName)) {
+            return false;
+        }
+
+        PackageManager packageManager = getBaseContext().getPackageManager();
+        try {
+            // using side effect of calling getPackageInfo() method
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private boolean openApp(String packageName) {
+        Intent intent = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage(packageName);
+        if (intent != null) {
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            getBaseContext().startActivity(intent);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected MenuItem addMenuItem(int menuItemId, @DrawableRes int icon, @StringRes int title) {
+        return addMenuItem(menuItemId, ContextCompat.getDrawable(this, icon), getString(title));
+    }
+
+    protected MenuItem addMenuItem(int menuItemId, Drawable icon, CharSequence title) {
+        MenuItem menuItem = navigationView.getMenu().add(
+                R.id.drawer_group_main, menuItemId, DEFAULT_ORDER_IN_CATEGORY, title);
+        menuItem.setIcon(icon);
+        return menuItem;
+    }
+
+    @NonNull
     protected NavigationView getNavigationView() {
         return navigationView;
     }
 
+    @NonNull
     protected DrawerLayout getDrawerLayout() {
         return drawerLayout;
     }
 
+    @NonNull
     protected TextView getUsernameTextView() {
         return username;
     }
 
+    @NonNull
     protected TextView getUserInfoTextView() {
         return userInfo;
     }
 
+    @NonNull
     protected TextView getUsernameLetterTextView() {
         return usernameLetter;
     }
 
-    @MenuRes
-    protected abstract int getNavigationMenu();
+    protected void setSynchronizedMessage(@NonNull CharSequence message) {
+        String formattedMessage = String.format(getString(
+                R.string.drawer_item_synchronized), message);
+        navigationView.getMenu().findItem(R.id.drawer_item_synchronized)
+                .setTitle(formattedMessage);
+    }
 
-    protected abstract boolean onItemSelected(MenuItem item);
+    @NonNull
+    protected Fragment getHelpFragment() {
+        return WrapperFragment.newInstance(HelpFragment.class,
+                getString(R.string.drawer_item_help));
+    }
+
+    @NonNull
+    protected Fragment getAboutFragment() {
+        return WrapperFragment.newInstance(AboutFragment.class,
+                getString(R.string.drawer_item_about));
+    }
+
+    @NonNull
+    protected abstract Fragment getProfileFragment();
+
+    @NonNull
+    protected abstract Fragment getSettingsFragment();
+
+    protected abstract boolean onItemSelected(@NonNull MenuItem item);
 }

@@ -53,6 +53,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         rowViews.add(Type.TEXT.ordinal(), new EditTextRowView());
         rowViews.add(Type.DATE.ordinal(), new DatePickerRowView());
         rowViews.add(Type.TRUE_ONLY.ordinal(), new CheckBoxRowView());
+        rowViews.add(Type.AUTO_COMPLETE.ordinal(), new AutoCompleteRowView());
 
         this.fragmentManager = fragmentManager;
     }

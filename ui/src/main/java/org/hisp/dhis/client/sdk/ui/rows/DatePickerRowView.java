@@ -31,17 +31,15 @@ import static android.text.TextUtils.isEmpty;
 
 public class DatePickerRowView implements IRowView {
     private static final String TAG = DatePickerRowView.class.getSimpleName();
-    private static FragmentManager fragmentManager;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(DatePickerRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
-        this.fragmentManager = fragmentManager;
 
         return new DatePickerRowViewHolder(inflater.inflate(
-                R.layout.recyclerview_row_datepicker, parent, false), type);
+                R.layout.recyclerview_row_datepicker, parent, false), type, fragmentManager);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class DatePickerRowView implements IRowView {
         public final OnTodaysDateClickListener onTodaysDateClickListener;
         public final OnClearListener onClearListener;
 
-        public DatePickerRowViewHolder(View itemView, DataEntity.Type type) {
+        public DatePickerRowViewHolder(View itemView, DataEntity.Type type, FragmentManager fragmentManager) {
             super(itemView);
             textInputLayout = (TextInputLayout) itemView.findViewById(R.id.date_picker_row_text_input_layout);
             textViewLabel = (TextView) itemView.findViewById(R.id.date_picker_row_label);
@@ -97,7 +95,7 @@ public class DatePickerRowView implements IRowView {
             onValueChangedListener = new OnValueChangedListener();
             onFocusChangeListener = new OnFocusChangeListener(textInputLayout, displayValueEditText);
             onDateSetListener = new DateSetListener(displayValueEditText);
-            onEditTextClickListener = new OnEditTextClickListener(onDateSetListener);
+            onEditTextClickListener = new OnEditTextClickListener(fragmentManager, onDateSetListener);
             onTodaysDateClickListener = new OnTodaysDateClickListener(onDateSetListener);
             onClearListener = new OnClearListener(displayValueEditText);
 
@@ -193,9 +191,10 @@ public class DatePickerRowView implements IRowView {
 
         private static class OnEditTextClickListener implements View.OnClickListener {
             private final DateSetListener listener;
+            private final FragmentManager fragmentManager;
 
-
-            public OnEditTextClickListener(DateSetListener listener) {
+            public OnEditTextClickListener(FragmentManager fragmentManager, DateSetListener listener) {
+                this.fragmentManager = fragmentManager;
                 this.listener = listener;
             }
 

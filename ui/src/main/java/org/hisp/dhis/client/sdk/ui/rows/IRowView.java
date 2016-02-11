@@ -34,7 +34,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 public interface IRowView {
     ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type);

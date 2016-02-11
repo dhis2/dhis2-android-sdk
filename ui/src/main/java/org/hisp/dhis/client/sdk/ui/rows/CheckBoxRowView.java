@@ -43,9 +43,9 @@ public class CheckBoxRowView implements IRowView {
 
 
     private static class CheckBoxRowViewHolder extends RecyclerView.ViewHolder {
-        CheckBox checkBox;
-        TextView textViewLabel;
-        OnCheckBoxListener onCheckBoxListner;
+        public final CheckBox checkBox;
+        public final TextView textViewLabel;
+        public final OnCheckBoxListener onCheckBoxListner;
 
         public CheckBoxRowViewHolder(View itemView, DataEntity.Type type) {
             super(itemView);

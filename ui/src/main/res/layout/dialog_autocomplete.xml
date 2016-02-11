@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="196dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/dialog_autocomplete_textinputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <org.hisp.dhis.client.sdk.ui.views.FontEditText
+            android:id="@+id/filter_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:drawablePadding="4dp"
+            app:font="@string/font_name_condensed"/>
+        <!--android:drawableLeft="@drawable/ic_search"-->
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <ProgressBar
+        android:id="@+id/dialog_autocomplete_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dialog_autocomplete_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="256dp" />
+
+</LinearLayout>

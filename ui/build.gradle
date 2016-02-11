@@ -63,8 +63,6 @@ dependencies {
 
     // Other
     compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"
-    compile 'com.code-troopers.betterpickers:library:2.5.0'
-
 
     // Test
     testCompile "junit:junit:${libs.junitVersion}"

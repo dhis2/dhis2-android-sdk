@@ -24,7 +24,7 @@ import static android.text.TextUtils.isEmpty;
 public final class EditTextRowView implements IRowView {
 
     public EditTextRowView() {
-        // empty constructor
+        // explicit empty constructor
     }
 
     @Override
@@ -40,15 +40,7 @@ public final class EditTextRowView implements IRowView {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, DataEntity entity) {
-        EditTextRowViewHolder editTextRowViewHolder = (EditTextRowViewHolder) holder;
-
-        editTextRowViewHolder.textViewLabel.setText(entity.getLabel());
-        editTextRowViewHolder.editText.setText(entity.getValue());
-
-        CharSequence hint = !isEmpty(entity.getValue()) ? null :
-                editTextRowViewHolder.focusChangeListener.getHint();
-        editTextRowViewHolder.textInputLayout.setHint(hint);
-        editTextRowViewHolder.onValueChangedListener.setDataEntity(entity);
+        ((EditTextRowViewHolder) holder).update(entity);
     }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
@@ -80,6 +72,15 @@ public final class EditTextRowView implements IRowView {
 
             editText.setOnFocusChangeListener(focusChangeListener);
             editText.addTextChangedListener(onValueChangedListener);
+        }
+
+        public void update(DataEntity entity) {
+            onValueChangedListener.setDataEntity(entity);
+            textViewLabel.setText(entity.getLabel());
+            editText.setText(entity.getValue());
+
+            CharSequence hint = !isEmpty(entity.getValue()) ? null : focusChangeListener.getHint();
+            textInputLayout.setHint(hint);
         }
 
         private boolean configureViews(DataEntity.Type entityType) {

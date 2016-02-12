@@ -44,6 +44,10 @@ import static android.text.TextUtils.isEmpty;
 
 public class CheckBoxRowView implements IRowView {
 
+    public CheckBoxRowView() {
+        // explicit empty constructor
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater, ViewGroup parent,

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2016, University of Oslo
   ~
   ~ All rights reserved.
@@ -33,17 +34,7 @@
     android:orientation="vertical"
     android:padding="@dimen/keyline_default">
 
-    <!--android:paddingBottom="@dimen/keyline_default"-->
-
-    <org.hisp.dhis.client.sdk.ui.views.FontTextView
-        android:id="@+id/textview_row_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:textSize="@dimen/text_size_large"
-        app:font="@string/font_name_condensed" />
+    <include layout="@layout/recyclerview_row_label" />
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/edittext_row_textinputlayout"
@@ -55,7 +46,6 @@
             android:id="@+id/edittext_row_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
             android:textSize="@dimen/text_size_large"
             app:font="@string/font_name_regular" />
 

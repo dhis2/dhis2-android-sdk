@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -292,7 +291,7 @@ public class AutoCompleteRowView implements IRowView {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_autocomplete_dialog_row, parent, false), dialog, onOptionSelectedListener);
+                    .inflate(R.layout.recyclerview_row_autocomplete_dialog, parent, false), dialog, onOptionSelectedListener);
         }
 
         @Override
@@ -353,7 +352,7 @@ public class AutoCompleteRowView implements IRowView {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
 
-            optionDialogAdapter.setOptions((ArrayList<String>)results.values);
+            optionDialogAdapter.setOptions((ArrayList<String>) results.values);
             optionDialogAdapter.notifyDataSetChanged();
         }
     }

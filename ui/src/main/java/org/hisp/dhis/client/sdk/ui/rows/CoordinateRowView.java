@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 
 public class CoordinateRowView implements IRowView {
-    
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {

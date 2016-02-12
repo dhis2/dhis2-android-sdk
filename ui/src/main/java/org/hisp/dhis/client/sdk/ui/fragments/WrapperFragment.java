@@ -81,7 +81,7 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
                 .getDrawable(getActivity(), R.drawable.ic_menu));
 
         DrawableCompat.setTint(buttonDrawable, ContextCompat
-                .getColor(getContext(), R.color.white));
+                .getColor(getContext(), android.R.color.white));
 
         toolbar.setNavigationIcon(buttonDrawable);
         toolbar.setNavigationOnClickListener(this);

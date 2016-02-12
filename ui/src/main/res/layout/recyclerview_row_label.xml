@@ -27,21 +27,13 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>-->
-    <!-- Theme colours -->
-    <color name="color_primary_dark">#FF1976D2</color>
-    <color name="color_primary_default">#FF2196F3</color>
-    <color name="color_primary_light">#FFBBDEFB</color>
-
-    <color name="color_accent_dark">#FFF57C00</color>
-    <color name="color_accent_default">#FFFF9800</color>
-    <color name="color_accent_light">#FFFFE0B2</color>
-
-    <color name="color_divider">#FFB6B6B6</color>
-
-    <color name="color_text_primary">#FF212121</color>
-    <color name="color_text_primary_inverse">#FFFFFFFF</color>
-    <color name="color_text_secondary">#FF727272</color>
-
-    <color name="default_button_background_pressed_light">#ff00ddff</color>
-</resources>
+<org.hisp.dhis.client.sdk.ui.views.FontTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/textview_row_label"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:textSize="@dimen/text_size_large"
+    app:font="@string/font_name_condensed" />

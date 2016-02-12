@@ -5,4 +5,8 @@
     android:id="@+id/autocomplete_dialog_row_label"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
     app:font="@string/font_name_condensed"/>

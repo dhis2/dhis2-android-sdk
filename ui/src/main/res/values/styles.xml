@@ -28,6 +28,7 @@
   -->
 
 <resources>
+
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- PreferenceFragment theme -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
@@ -36,15 +37,9 @@
         <item name="colorPrimary">@color/color_primary_default</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>
         <item name="colorAccent">@color/color_accent_default</item>
-        <item name="android:windowFullscreen">false</item>
 
-        <!--<item name="android:windowBackground">@color/white</item>-->
-        <!--<item name="android:textColorPrimary">@color/color_text_primary</item>-->
-
-        <!-- Text colour palette -->
-        <!--<item name="android:textColorPrimary">@color/color_text_primary</item>-->
-        <!--<item name="android:textColorPrimaryInverse">@color/color_text_primary_inverse</item>-->
-        <!--<item name="android:textColorSecondary">@color/color_text_secondary</item>-->
+        <!-- General properties -->
+        <item name="android:windowBackground">@color/white</item>
     </style>
-
+    
 </resources>

@@ -33,7 +33,7 @@
     android:id="@+id/textview_row_label"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="3dp"
-    android:paddingRight="3dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
     android:textSize="@dimen/text_size_large"
     app:font="@string/font_name_condensed" />

@@ -219,7 +219,7 @@ public class AutoCompleteRowView implements IRowView {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_autocomplete_dialog_row, parent, false));
+                    .inflate(R.layout.recyclerview_row_autocomplete_dialog, parent, false));
         }
 
         @Override

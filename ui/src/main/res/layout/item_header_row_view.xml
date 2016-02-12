@@ -14,7 +14,7 @@
             android:id="@+id/tracked_entity_title"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:gravity="center"
             android:layout_weight="0.86"
             />

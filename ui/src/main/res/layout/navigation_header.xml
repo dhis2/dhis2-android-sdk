@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:singleLine="true"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_medium"
         app:font="@string/font_name_regular" />
 
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/textview_user_info"
         android:singleLine="true"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="@dimen/text_size_medium"
         app:font="@string/font_name_medium" />
 
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:circle_radius="@dimen/navigation_avatar_radius"
-            app:fill_color="@color/white" />
+            app:fill_color="@android:color/white" />
 
         <org.hisp.dhis.client.sdk.ui.views.FontTextView
             android:id="@+id/textview_username_letter"
@@ -76,7 +76,6 @@
             android:textColor="@color/color_accent_default"
             android:textSize="32sp"
             app:font="@string/font_name_medium" />
-
     </FrameLayout>
 
 </RelativeLayout>

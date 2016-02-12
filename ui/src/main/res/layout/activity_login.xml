@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:circle_radius="52dp"
-                app:stroke_color="@color/white"
+                app:stroke_color="@android:color/white"
                 app:stroke_width="@dimen/progressbar_stroke_width" />
 
             <fr.castorflex.android.circularprogressbar.CircularProgressBar
@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/two"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="74sp"
                 app:font="@string/font_name_regular" />
 
@@ -77,7 +77,7 @@
             android:layout_height="384dp"
             android:layout_below="@id/layout_dhis_logo"
             android:layout_centerHorizontal="true"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@android:color/white"
             app:cardCornerRadius="4dp"
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true">
@@ -146,7 +146,7 @@
                     android:background="@drawable/button_selector"
                     android:text="@string/log_in"
                     android:textAllCaps="true"
-                    android:textColor="@color/white"
+                    android:textColor="@android:color/white"
                     android:textSize="17sp"
                     app:font="@string/font_name_bold" />
 

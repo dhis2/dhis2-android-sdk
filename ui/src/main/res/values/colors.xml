@@ -44,7 +44,4 @@
     <color name="color_text_secondary">#FF727272</color>
 
     <color name="default_button_background_pressed_light">#ff00ddff</color>
-
-    <!-- Other colours -->
-    <color name="white">#FFFFFFFF</color>
 </resources>

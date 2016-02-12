@@ -38,9 +38,12 @@ class RowViewTypeMatcher {
 
     public static Class<?> matchToRowView(DataEntity.Type type) {
         switch (type) {
-            case DATE: return DatePickerRowView.class;
-            case TRUE_ONLY: return CheckBoxRowView.class;
-            case AUTO_COMPLETE: return AutoCompleteRowView.class;
+            case DATE:
+                return DatePickerRowView.class;
+            case TRUE_ONLY:
+                return CheckBoxRowView.class;
+            case AUTO_COMPLETE:
+                return AutoCompleteRowView.class;
             case TEXT:
             case LONG_TEXT:
             case NUMBER:

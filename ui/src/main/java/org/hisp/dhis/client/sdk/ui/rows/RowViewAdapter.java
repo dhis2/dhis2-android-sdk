@@ -38,7 +38,6 @@ import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
@@ -46,22 +45,22 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     private final List<IRowView> rowViews;
     private final FragmentManager fragmentManager;
 
-    public RowViewAdapter(FragmentManager fragmentManager) {
+    public RowViewAdapter(FragmentManager childFragmentManager) {
         dataEntities = new ArrayList<>();
-        //rowViews = Arrays.asList(new IRowView[Type.values().length]);
         rowViews = new ArrayList<>();
+
         rowViews.add(Type.TEXT.ordinal(), new EditTextRowView());
         rowViews.add(Type.DATE.ordinal(), new DatePickerRowView());
         rowViews.add(Type.TRUE_ONLY.ordinal(), new CheckBoxRowView());
         rowViews.add(Type.AUTO_COMPLETE.ordinal(), new AutoCompleteRowView());
 
-        this.fragmentManager = fragmentManager;
+        fragmentManager = childFragmentManager;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return rowViews.get(viewType).onCreateViewHolder(fragmentManager,LayoutInflater.from(parent.getContext()),
-                parent, Type.values()[viewType]);
+        return rowViews.get(viewType).onCreateViewHolder(fragmentManager,
+                LayoutInflater.from(parent.getContext()), parent, Type.values()[viewType]);
     }
 
     @Override
@@ -83,31 +82,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         return dataEntities.size() > position ? dataEntities.get(position) : null;
     }
 
-    private IRowView onCreateRowView(int viewType) {
-        DataEntity.Type type = Type.values()[viewType];
-
-        if (EditTextRowView.class.equals(RowViewTypeMatcher.matchToRowView(type))) {
-            return new EditTextRowView();
-        }
-        else if(DatePickerRowView.class.equals(RowViewTypeMatcher.matchToRowView(type))) {
-            return new DatePickerRowView();
-        }
-
-        return null;
-    }
-
-    public void update(List<DataEntity> dataEntities) {
+    public void swap(List<DataEntity> dataEntities) {
         this.dataEntities.clear();
 
         if (dataEntities != null) {
             this.dataEntities.addAll(dataEntities);
-
-//            for (DataEntity dataEntity : this.dataEntities) {
-//                int type = dataEntity.getType().ordinal();
-//                if (this.rowViews.size() <= type || this.rowViews.get(type) == null) {
-//                    this.rowViews.add(type, onCreateRowView(type));
-//                }
-//            }
         }
 
         notifyDataSetChanged();

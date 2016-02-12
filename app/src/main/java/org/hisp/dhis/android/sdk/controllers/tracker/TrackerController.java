@@ -79,12 +79,19 @@ public final class TrackerController extends ResourceController {
     private TrackerController() {}
 
     /**
-     * Changes the max number of events to retreive from the server
+     * Changes the max number of events to retreive from the server (by orgunit/program)
      * @param max
      */
     public static void setMaxEvents(int max){
         TrackerDataLoader.setMaxEvents(max);
     }
+
+    /**
+     * Returns the max number of events to retreive from the server (by orgunit/program)
+     */
+    public static int getMaxEvents(){
+        return TrackerDataLoader.getMaxEvents();
+    }    
 
     /**
      * Returns false if some data value flags that have been enabled have not been downloaded.

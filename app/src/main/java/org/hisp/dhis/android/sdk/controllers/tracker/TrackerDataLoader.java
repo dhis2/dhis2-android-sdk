@@ -86,12 +86,19 @@ final class TrackerDataLoader extends ResourceController {
     private TrackerDataLoader() {}
 
     /**
-     * Changes the max number of events to retreive from the server
+     * Changes the max number of events to retreive from the server (by orgunit/program)
      * @param max
      */
     public static void setMaxEvents(int max){
         maxEvents=max;
     }
+
+    /**
+     * Returns the max number of events to retreive from the server (by orgunit/program)
+     */
+    public static int getMaxEvents(){
+        return maxEvents;
+    }    
 
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.

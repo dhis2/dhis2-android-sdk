@@ -81,11 +81,11 @@ public class DatePickerRowView implements IRowView {
         public DatePickerRowViewHolder(View itemView, DataEntity.Type type, FragmentManager fragmentManager) {
             super(itemView);
             textInputLayout = (TextInputLayout) itemView.findViewById(R.id.date_picker_row_text_input_layout);
-            textViewLabel = (TextView) itemView.findViewById(R.id.date_picker_row_label);
+            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
             displayValueEditText = (EditText) itemView.findViewById(R.id.date_picker_row_date_picker_text);
             datePickerButtonNow = (Button) itemView.findViewById(R.id.date_picker_row_date_picker_button_now);
             datePickerButton = (Button) itemView.findViewById(R.id.date_picker_row_date_picker_button);
-            clearButton = (ImageButton) itemView.findViewById(R.id.clear_date_picker_view);
+            clearButton = (ImageButton) itemView.findViewById(R.id.button_clear);
 
 
             if (!configureViews(type)) {
@@ -183,6 +183,7 @@ public class DatePickerRowView implements IRowView {
                     }
                 }
             }
+
             public CharSequence getHint() {
                 return hint;
             }
@@ -234,7 +235,7 @@ public class DatePickerRowView implements IRowView {
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-                if(!allowDatesInFuture) {
+                if (!allowDatesInFuture) {
                     datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 }
                 return datePickerDialog;
@@ -251,7 +252,6 @@ public class DatePickerRowView implements IRowView {
             }
 
 
-
             @Override
             public void onDateSet(DatePicker view, int year,
                                   int monthOfYear, int dayOfMonth) {
@@ -264,6 +264,7 @@ public class DatePickerRowView implements IRowView {
                 dataEntity.updateValue(newValue);
 
             }
+
             public void setAllowDatesInFuture(boolean allowDatesInFuture) {
                 this.allowDatesInFuture = allowDatesInFuture;
             }

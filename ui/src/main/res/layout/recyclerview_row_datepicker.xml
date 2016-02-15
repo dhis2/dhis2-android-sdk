@@ -39,40 +39,48 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/keyline_default">
 
         <include layout="@layout/recyclerview_row_label" />
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/date_picker_row_text_input_layout"
+            android:id="@+id/row_date_picker_text_input_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
             <org.hisp.dhis.client.sdk.ui.views.FontEditText
-                android:id="@+id/date_picker_row_date_picker_text"
+                android:id="@+id/row_date_picker_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:focusable="false"
                 android:includeFontPadding="false"
+                android:singleLine="true"
                 android:textSize="@dimen/text_size_large"
                 app:font="@string/font_name_regular" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <org.hisp.dhis.client.sdk.ui.views.FontButton
-                    android:id="@+id/date_picker_row_date_picker_button_now"
+                <org.hisp.dhis.client.sdk.ui.views.RaisedButton
+                    android:id="@+id/row_date_picker_button_today"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/today_date"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size_medium"
                     app:font="@string/font_name_condensed" />
 
-                <org.hisp.dhis.client.sdk.ui.views.FontButton
-                    android:id="@+id/date_picker_row_date_picker_button"
+                <org.hisp.dhis.client.sdk.ui.views.RaisedButton
+                    android:id="@+id/row_date_picker_button_pick"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/pick_date"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/text_size_medium"
                     app:font="@string/font_name_condensed" />
 
             </LinearLayout>
@@ -81,49 +89,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="64dp"
-        android:layout_height="match_parent"
-        android:minHeight="64dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/color_divider" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:weightSum="1">
-
-            <ImageButton
-                android:id="@+id/button_today"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:adjustViewBounds="true"
-                android:background="@drawable/button_background_light"
-                android:contentDescription="@string/stub_description"
-                android:src="@drawable/ic_today" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/color_divider" />
-
-            <ImageButton
-                android:id="@+id/button_clear"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:adjustViewBounds="true"
-                android:background="@drawable/button_background_light"
-                android:contentDescription="@string/stub_description"
-                android:src="@drawable/ic_cancel" />
-
-        </LinearLayout>
-    </LinearLayout>
+    <include layout="@layout/recyclerview_row_button_cancel" />
 
 </LinearLayout>

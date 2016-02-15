@@ -141,7 +141,7 @@
     <string name="find_option">Find option</string>
 
     <!-- Button labels: -->
-    <string name="todays_date">Today\'s date</string>
+    <string name="today_date">Today\'s date</string>
     <string name="pick_date">Pick date</string>
 
 </resources>

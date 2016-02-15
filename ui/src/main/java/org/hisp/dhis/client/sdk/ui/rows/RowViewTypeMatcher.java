@@ -44,6 +44,8 @@ class RowViewTypeMatcher {
                 return CheckBoxRowView.class;
             case AUTO_COMPLETE:
                 return AutoCompleteRowView.class;
+            case COORDINATES:
+                return CoordinateRowView.class;
             case TEXT:
             case LONG_TEXT:
             case NUMBER:

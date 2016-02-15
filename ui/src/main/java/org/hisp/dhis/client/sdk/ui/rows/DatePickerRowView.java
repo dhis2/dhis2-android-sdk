@@ -14,7 +14,6 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -50,17 +49,18 @@ public class DatePickerRowView implements IRowView {
 
         CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
                 datePickerRowViewHolder.onFocusChangeListener.getHint();
+
         datePickerRowViewHolder.textInputLayout.setHint(hint);
         datePickerRowViewHolder.onValueChangedListener.setDataEntity(dataEntity);
         datePickerRowViewHolder.onDateSetListener.setDataEntity(dataEntity);
         datePickerRowViewHolder.onClearListener.setDataEntity(dataEntity);
+
         datePickerRowViewHolder.textViewLabel.setText(dataEntity.getLabel());
         datePickerRowViewHolder.displayValueEditText.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
-        datePickerRowViewHolder.clearButton.setOnClickListener(datePickerRowViewHolder.onClearListener);
-        // datePickerRowViewHolder.datePickerButtonNow.setText(context.getString(R.string.todays_date));
-        datePickerRowViewHolder.datePickerButtonNow.setOnClickListener(datePickerRowViewHolder.onTodaysDateClickListener);
+        datePickerRowViewHolder.displayValueEditText.setText(dataEntity.getValue());
 
-        // datePickerRowViewHolder.datePickerButton.setText(context.getString(R.string.pick_date));
+        datePickerRowViewHolder.clearButton.setOnClickListener(datePickerRowViewHolder.onClearListener);
+        datePickerRowViewHolder.datePickerButtonNow.setOnClickListener(datePickerRowViewHolder.onTodaysDateClickListener);
         datePickerRowViewHolder.datePickerButton.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
     }
 

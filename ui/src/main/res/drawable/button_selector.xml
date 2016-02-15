@@ -31,7 +31,7 @@
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
             <corners android:radius="1dp" />
-            <solid android:color="@color/color_accent_default" />
+            <solid android:color="@color/color_accent_light" />
         </shape>
     </item>
 
@@ -45,7 +45,7 @@
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
             <corners android:radius="1dp" />
-            <solid android:color="@color/color_accent_default" />
+            <solid android:color="@color/color_accent_dark" />
         </shape>
     </item>
 </selector>

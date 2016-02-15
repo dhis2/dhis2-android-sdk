@@ -126,6 +126,8 @@
     <string name="enter_positive_integer_or_zero">Enter positive integer or zero</string>
     <string name="enter_positive_integer">Enter positive integer</string>
     <string name="enter_coordinates">Enter coordinates</string>
+    <string name="enter_latitude">Enter latitude</string>
+    <string name="enter_longitude">Enter longitude</string>
     <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
     <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
     <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>

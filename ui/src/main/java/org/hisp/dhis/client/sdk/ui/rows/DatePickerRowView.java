@@ -49,16 +49,19 @@ public class DatePickerRowView implements IRowView {
 
         CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
                 datePickerRowViewHolder.onFocusChangeListener.getHint();
+
         datePickerRowViewHolder.textInputLayout.setHint(hint);
         datePickerRowViewHolder.onValueChangedListener.setDataEntity(dataEntity);
         datePickerRowViewHolder.onDateSetListener.setDataEntity(dataEntity);
         datePickerRowViewHolder.onClearListener.setDataEntity(dataEntity);
+
         datePickerRowViewHolder.textViewLabel.setText(dataEntity.getLabel());
         datePickerRowViewHolder.displayValueEditText.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
+        datePickerRowViewHolder.displayValueEditText.setText(dataEntity.getValue());
+
         datePickerRowViewHolder.clearButton.setOnClickListener(datePickerRowViewHolder.onClearListener);
         datePickerRowViewHolder.datePickerButtonNow.setText(context.getString(R.string.todays_date));
         datePickerRowViewHolder.datePickerButtonNow.setOnClickListener(datePickerRowViewHolder.onTodaysDateClickListener);
-
         datePickerRowViewHolder.datePickerButton.setText(context.getString(R.string.pick_date));
         datePickerRowViewHolder.datePickerButton.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
     }

@@ -38,6 +38,7 @@ class RowViewTypeMatcher {
 
     public static Class<?> matchToRowView(DataEntity.Type type) {
         switch (type) {
+            case BOOLEAN: return RadioButtonRowView.class;
             case COORDINATES: return CoordinateRowView.class;
             case DATE: return DatePickerRowView.class;
             case TRUE_ONLY: return CheckBoxRowView.class;

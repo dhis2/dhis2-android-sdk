@@ -121,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/button_background_light"
-            android:contentDescription="@string/cancel_option"
+            android:contentDescription="@string/enter_coordinates"
             android:src="@drawable/ic_my_location"/>
     </LinearLayout>
 

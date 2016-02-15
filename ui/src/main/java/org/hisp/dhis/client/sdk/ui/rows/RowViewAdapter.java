@@ -55,6 +55,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         rowViews.add(Type.TRUE_ONLY.ordinal(), new CheckBoxRowView());
         rowViews.add(Type.AUTO_COMPLETE.ordinal(), new AutoCompleteRowView());
         rowViews.add(Type.COORDINATES.ordinal(), new CoordinateRowView());
+        rowViews.add(Type.BOOLEAN.ordinal(), new RadioButtonRowView());
 
         this.fragmentManager = fragmentManager;
     }

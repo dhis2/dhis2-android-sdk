@@ -2,7 +2,6 @@ package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -26,6 +25,7 @@ import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -33,7 +33,9 @@ public class DatePickerRowView implements IRowView {
     private static final String TAG = DatePickerRowView.class.getSimpleName();
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
+    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
+                                                      LayoutInflater inflater, ViewGroup parent,
+                                                      DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(DatePickerRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -43,67 +45,74 @@ public class DatePickerRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final DataEntity dataEntity) {
-        final DatePickerRowViewHolder datePickerRowViewHolder = (DatePickerRowViewHolder) holder;
-        Context context = datePickerRowViewHolder.textInputLayout.getContext();
-
-        CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
-                datePickerRowViewHolder.onFocusChangeListener.getHint();
-
-        datePickerRowViewHolder.textInputLayout.setHint(hint);
-        datePickerRowViewHolder.onValueChangedListener.setDataEntity(dataEntity);
-        datePickerRowViewHolder.onDateSetListener.setDataEntity(dataEntity);
-        datePickerRowViewHolder.onClearListener.setDataEntity(dataEntity);
-
-        datePickerRowViewHolder.textViewLabel.setText(dataEntity.getLabel());
-        datePickerRowViewHolder.displayValueEditText.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
-        datePickerRowViewHolder.displayValueEditText.setText(dataEntity.getValue());
-
-        datePickerRowViewHolder.clearButton.setOnClickListener(datePickerRowViewHolder.onClearListener);
-        datePickerRowViewHolder.datePickerButtonNow.setOnClickListener(datePickerRowViewHolder.onTodaysDateClickListener);
-        datePickerRowViewHolder.datePickerButton.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
+        ((DatePickerRowViewHolder) holder).update(dataEntity);
     }
 
     private static class DatePickerRowViewHolder extends RecyclerView.ViewHolder {
         public final TextInputLayout textInputLayout;
         public final EditText displayValueEditText;
         public final TextView textViewLabel;
+
         public final RaisedButton datePickerButtonNow;
         public final RaisedButton datePickerButton;
         public final ImageButton clearButton;
 
         public final OnValueChangedListener onValueChangedListener;
         public final OnFocusChangeListener onFocusChangeListener;
-        public final DateSetListener onDateSetListener;
-        public final OnEditTextClickListener onEditTextClickListener;
-        public final OnTodaysDateClickListener onTodaysDateClickListener;
-        public final OnClearListener onClearListener;
+        public final OnDateSetListener onDateSetListener;
 
-        public DatePickerRowViewHolder(View itemView, DataEntity.Type type, FragmentManager fragmentManager) {
+        public final OnButtonClickListener onButtonClickListener;
+
+        public DatePickerRowViewHolder(View itemView, DataEntity.Type type,
+                                       FragmentManager fragmentManager) {
             super(itemView);
-            textInputLayout = (TextInputLayout) itemView.findViewById(R.id.row_date_picker_text_input_layout);
-            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
-            displayValueEditText = (EditText) itemView.findViewById(R.id.row_date_picker_edit_text);
-            datePickerButtonNow = (RaisedButton) itemView.findViewById(R.id.row_date_picker_button_today);
-            datePickerButton = (RaisedButton) itemView.findViewById(R.id.row_date_picker_button_pick);
+
+            // Buttons
+            datePickerButtonNow = (RaisedButton) itemView
+                    .findViewById(R.id.row_date_picker_button_today);
+            datePickerButton = (RaisedButton) itemView
+                    .findViewById(R.id.row_date_picker_button_pick);
             clearButton = (ImageButton) itemView.findViewById(R.id.button_clear);
 
+
+            // TextViews
+            textInputLayout = (TextInputLayout) itemView
+                    .findViewById(R.id.row_date_picker_text_input_layout);
+            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
+            displayValueEditText = (EditText) itemView
+                    .findViewById(R.id.row_date_picker_edit_text);
 
             if (!configureViews(type)) {
                 throw new IllegalArgumentException("unsupported DatePickerRow type");
             }
 
             onValueChangedListener = new OnValueChangedListener();
-            onFocusChangeListener = new OnFocusChangeListener(textInputLayout, displayValueEditText);
-            onDateSetListener = new DateSetListener(displayValueEditText);
-            onEditTextClickListener = new OnEditTextClickListener(fragmentManager, onDateSetListener);
-            onTodaysDateClickListener = new OnTodaysDateClickListener(onDateSetListener);
-            onClearListener = new OnClearListener(displayValueEditText);
+            onDateSetListener = new OnDateSetListener(displayValueEditText);
+            onFocusChangeListener = new OnFocusChangeListener(textInputLayout,
+                    displayValueEditText);
+            onButtonClickListener = new OnButtonClickListener(displayValueEditText,
+                    onDateSetListener, fragmentManager);
 
-
-            displayValueEditText.setOnFocusChangeListener(onFocusChangeListener);
             displayValueEditText.addTextChangedListener(onValueChangedListener);
+            displayValueEditText.setOnFocusChangeListener(onFocusChangeListener);
 
+            clearButton.setOnClickListener(onButtonClickListener);
+            datePickerButton.setOnClickListener(onButtonClickListener);
+            datePickerButtonNow.setOnClickListener(onButtonClickListener);
+            displayValueEditText.setOnClickListener(onButtonClickListener);
+        }
+
+        public void update(DataEntity dataEntity) {
+            CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
+                    onFocusChangeListener.getHint();
+
+            onValueChangedListener.setDataEntity(dataEntity);
+            //onDateSetListener.setDataEntity(dataEntity);
+
+            textInputLayout.setHint(hint);
+            textViewLabel.setText(dataEntity.getLabel());
+            displayValueEditText.setText(dataEntity.getValue());
         }
 
         private boolean configureViews(DataEntity.Type entityType) {
@@ -122,7 +131,8 @@ public class DatePickerRowView implements IRowView {
         }
 
         private boolean configure(DataEntity.Type type) {
-            textInputLayout.setHint(displayValueEditText.getContext().getString(R.string.enter_date));
+            textInputLayout.setHint(displayValueEditText.getContext()
+                    .getString(R.string.enter_date));
             displayValueEditText.setInputType(InputType.TYPE_CLASS_DATETIME);
 
             return true;
@@ -143,23 +153,34 @@ public class DatePickerRowView implements IRowView {
             }
         }
 
-        private static class OnClearListener implements View.OnClickListener {
-            private final EditText editText;
-            private DataEntity dataEntity;
+        private static class OnButtonClickListener implements View.OnClickListener {
             private static final String EMPTY_FIELD = "";
 
-            public OnClearListener(EditText editText) {
-                this.editText = editText;
-            }
+            private final EditText editText;
+            private final OnDateSetListener onDateSetListener;
+            private final FragmentManager fragmentManager;
+            private final Calendar calendar;
 
-            public void setDataEntity(DataEntity dataEntity) {
-                this.dataEntity = dataEntity;
+            public OnButtonClickListener(EditText editText, OnDateSetListener onDateSetListener,
+                                         FragmentManager fragmentManager) {
+                this.editText = editText;
+                this.onDateSetListener = onDateSetListener;
+                this.fragmentManager = fragmentManager;
+                this.calendar = Calendar.getInstance();
             }
 
             @Override
             public void onClick(View view) {
-                editText.setText(EMPTY_FIELD);
-                dataEntity.updateValue(EMPTY_FIELD);
+                if (view.getId() == R.id.row_date_picker_edit_text ||
+                        view.getId() == R.id.row_date_picker_button_pick) {
+                    DatePickerDialogFragment.newInstance(false,
+                            onDateSetListener).show(fragmentManager, TAG);
+                } else if (view.getId() == R.id.button_clear) {
+                    editText.setText(EMPTY_FIELD);
+                } else if (view.getId() == R.id.row_date_picker_button_today) {
+                    onDateSetListener.onDateSet(null, calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                }
             }
         }
 
@@ -188,89 +209,67 @@ public class DatePickerRowView implements IRowView {
             public CharSequence getHint() {
                 return hint;
             }
-
         }
 
-        private static class OnEditTextClickListener implements View.OnClickListener {
-            private final DateSetListener listener;
-            private final FragmentManager fragmentManager;
-
-            public OnEditTextClickListener(FragmentManager fragmentManager, DateSetListener listener) {
-                this.fragmentManager = fragmentManager;
-                this.listener = listener;
-            }
-
-            @Override
-            public void onClick(View view) {
-                listener.show(fragmentManager, TAG);
-            }
-        }
-
-        private static class OnTodaysDateClickListener implements View.OnClickListener {
-            private final DateSetListener listener;
-            private final Calendar calendar;
-
-            public OnTodaysDateClickListener(DateSetListener listener) {
-                this.listener = listener;
-                calendar = Calendar.getInstance();
-            }
-
-            @Override
-            public void onClick(View view) {
-                listener.onDateSet(null, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            }
-        }
-
-
-        private static class DateSetListener extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        private static class OnDateSetListener implements DatePickerDialog.OnDateSetListener {
             private static final String DATE_FORMAT = "yyyy-MM-dd";
-            private SimpleDateFormat simpleDateFormat;
-            private DataEntity dataEntity;
             private final EditText editText;
-            private final Calendar calendar;
-            private boolean allowDatesInFuture;
 
-
-            @NonNull
-            @Override
-            public Dialog onCreateDialog(Bundle savedInstanceState) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-
-                if (!allowDatesInFuture) {
-                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                }
-                return datePickerDialog;
-            }
-
-            public DateSetListener(EditText editText) {
+            public OnDateSetListener(EditText editText) {
                 this.editText = editText;
-                this.calendar = Calendar.getInstance();
-
             }
-
-            public void setDataEntity(DataEntity dataEntity) {
-                this.dataEntity = dataEntity;
-            }
-
 
             @Override
             public void onDateSet(DatePicker view, int year,
                                   int monthOfYear, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, monthOfYear);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
                 String newValue = simpleDateFormat.format(calendar.getTime());
                 editText.setText(newValue);
-                dataEntity.updateValue(newValue);
+            }
+        }
 
+        public static class DatePickerDialogFragment extends DialogFragment {
+            private static final String ARG_ALLOW_DATES_IN_FUTURE = "arg:allowDatesInFuture";
+            private DatePickerDialog.OnDateSetListener onDateSetListener;
+
+            public static DialogFragment newInstance(boolean allowDatesInFuture,
+                                                     DatePickerDialog.OnDateSetListener onDateSetListener) {
+                Bundle arguments = new Bundle();
+                arguments.putBoolean(ARG_ALLOW_DATES_IN_FUTURE, allowDatesInFuture);
+
+                DatePickerDialogFragment fragment = new DatePickerDialogFragment();
+                fragment.setArguments(arguments);
+                fragment.setOnDateSetListener(onDateSetListener);
+
+                return fragment;
             }
 
-            public void setAllowDatesInFuture(boolean allowDatesInFuture) {
-                this.allowDatesInFuture = allowDatesInFuture;
+            private void setOnDateSetListener(DatePickerDialog.OnDateSetListener dateSetListener) {
+                this.onDateSetListener = dateSetListener;
             }
 
+            private boolean isAllowDatesInFuture() {
+                return getArguments().getBoolean(ARG_ALLOW_DATES_IN_FUTURE, false);
+            }
+
+            @NonNull
+            @Override
+            public Dialog onCreateDialog(Bundle savedInstanceState) {
+                Calendar cal = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        getContext(), onDateSetListener, cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+
+                if (!isAllowDatesInFuture()) {
+                    datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                }
+                return datePickerDialog;
+            }
         }
     }
-
 }

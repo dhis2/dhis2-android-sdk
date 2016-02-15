@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.R;
@@ -31,7 +32,7 @@ public class RadioButtonRowView implements IRowView {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         RadioButtonRowViewHolder radioButtonRowViewHolder = (RadioButtonRowViewHolder) holder;
         radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(dataEntity);
-
+        radioButtonRowViewHolder.labelTextView.setText(dataEntity.getLabel());
         if(TRUE.equals(dataEntity.getValue())) {
             radioButtonRowViewHolder.firstRadioButton.setChecked(true);
         }
@@ -45,6 +46,7 @@ public class RadioButtonRowView implements IRowView {
     }
 
     private static class RadioButtonRowViewHolder extends RecyclerView.ViewHolder {
+        public final TextView labelTextView;
         public final RadioGroup radioGroup;
         public final RadioButton firstRadioButton;
         public final RadioButton secondRadioButton;
@@ -52,6 +54,8 @@ public class RadioButtonRowView implements IRowView {
 
         public RadioButtonRowViewHolder(View itemView) {
             super(itemView);
+            labelTextView = (TextView) itemView
+                    .findViewById(R.id.textview_row_label);
             radioGroup = (RadioGroup) itemView
                     .findViewById(R.id.radiogroup_radiobutton_row);
             firstRadioButton = (RadioButton) itemView

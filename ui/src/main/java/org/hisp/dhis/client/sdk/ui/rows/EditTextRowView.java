@@ -99,15 +99,12 @@ public final class EditTextRowView implements IRowView {
                     return configure(entityType, R.string.enter_integer,
                             InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_NEGATIVE:
-                    //editText.setFilters(new InputFilter[]{new EditTextRowView.NegInpFilter()});
                     return configure(entityType, R.string.enter_negative_integer,
                             InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_ZERO_OR_POSITIVE:
-                    // editText.setFilters(new InputFilter[]{new EditTextRowView.PosOrZeroFilter()});
                     return configure(entityType, R.string.enter_positive_integer_or_zero,
                             InputType.TYPE_CLASS_NUMBER, true);
                 case INTEGER_POSITIVE:
-                    // editText.setFilters(new InputFilter[]{new EditTextRowView.PosFilter()});
                     return configure(entityType, R.string.enter_positive_integer,
                             InputType.TYPE_CLASS_NUMBER, true);
                 default:

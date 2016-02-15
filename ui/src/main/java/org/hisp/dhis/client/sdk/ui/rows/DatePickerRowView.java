@@ -14,7 +14,6 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.views.RaisedButton;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import java.text.SimpleDateFormat;
@@ -60,9 +60,7 @@ public class DatePickerRowView implements IRowView {
         datePickerRowViewHolder.displayValueEditText.setText(dataEntity.getValue());
 
         datePickerRowViewHolder.clearButton.setOnClickListener(datePickerRowViewHolder.onClearListener);
-        datePickerRowViewHolder.datePickerButtonNow.setText(context.getString(R.string.todays_date));
         datePickerRowViewHolder.datePickerButtonNow.setOnClickListener(datePickerRowViewHolder.onTodaysDateClickListener);
-        datePickerRowViewHolder.datePickerButton.setText(context.getString(R.string.pick_date));
         datePickerRowViewHolder.datePickerButton.setOnClickListener(datePickerRowViewHolder.onEditTextClickListener);
     }
 
@@ -70,8 +68,8 @@ public class DatePickerRowView implements IRowView {
         public final TextInputLayout textInputLayout;
         public final EditText displayValueEditText;
         public final TextView textViewLabel;
-        public final Button datePickerButtonNow;
-        public final Button datePickerButton;
+        public final RaisedButton datePickerButtonNow;
+        public final RaisedButton datePickerButton;
         public final ImageButton clearButton;
 
         public final OnValueChangedListener onValueChangedListener;
@@ -83,12 +81,12 @@ public class DatePickerRowView implements IRowView {
 
         public DatePickerRowViewHolder(View itemView, DataEntity.Type type, FragmentManager fragmentManager) {
             super(itemView);
-            textInputLayout = (TextInputLayout) itemView.findViewById(R.id.date_picker_row_text_input_layout);
-            textViewLabel = (TextView) itemView.findViewById(R.id.date_picker_row_label);
-            displayValueEditText = (EditText) itemView.findViewById(R.id.date_picker_row_date_picker_text);
-            datePickerButtonNow = (Button) itemView.findViewById(R.id.date_picker_row_date_picker_button_now);
-            datePickerButton = (Button) itemView.findViewById(R.id.date_picker_row_date_picker_button);
-            clearButton = (ImageButton) itemView.findViewById(R.id.clear_date_picker_view);
+            textInputLayout = (TextInputLayout) itemView.findViewById(R.id.row_date_picker_text_input_layout);
+            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
+            displayValueEditText = (EditText) itemView.findViewById(R.id.row_date_picker_edit_text);
+            datePickerButtonNow = (RaisedButton) itemView.findViewById(R.id.row_date_picker_button_today);
+            datePickerButton = (RaisedButton) itemView.findViewById(R.id.row_date_picker_button_pick);
+            clearButton = (ImageButton) itemView.findViewById(R.id.button_clear);
 
 
             if (!configureViews(type)) {
@@ -186,6 +184,7 @@ public class DatePickerRowView implements IRowView {
                     }
                 }
             }
+
             public CharSequence getHint() {
                 return hint;
             }
@@ -237,7 +236,7 @@ public class DatePickerRowView implements IRowView {
             public Dialog onCreateDialog(Bundle savedInstanceState) {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
-                if(!allowDatesInFuture) {
+                if (!allowDatesInFuture) {
                     datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 }
                 return datePickerDialog;
@@ -254,7 +253,6 @@ public class DatePickerRowView implements IRowView {
             }
 
 
-
             @Override
             public void onDateSet(DatePicker view, int year,
                                   int monthOfYear, int dayOfMonth) {
@@ -267,6 +265,7 @@ public class DatePickerRowView implements IRowView {
                 dataEntity.updateValue(newValue);
 
             }
+
             public void setAllowDatesInFuture(boolean allowDatesInFuture) {
                 this.allowDatesInFuture = allowDatesInFuture;
             }

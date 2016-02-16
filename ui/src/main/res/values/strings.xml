@@ -50,6 +50,7 @@
     <string name="two">2</string>
 
     <!-- Preferences fragment -->
+    <string name="sys_sync_disabled_warning">"Enable auto-sync data from system settings."</string>
     <string name="application_settings">Application</string>
     <string name="user_settings">User</string>
 

@@ -145,5 +145,7 @@
     <!-- Button labels: -->
     <string name="today_date">Today\'s date</string>
     <string name="pick_date">Pick date</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

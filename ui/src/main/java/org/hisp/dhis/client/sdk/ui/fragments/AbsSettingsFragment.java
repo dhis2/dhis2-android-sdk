@@ -36,11 +36,31 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.SettingPreferences;
 
 public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
-        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener{
+        implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
+    private Preference backgroundSynchronization;
+    private Preference synchronizationPeriod;
+    private Preference crashReports;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String string) {
         addPreferencesFromResource(R.xml.preferences);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        backgroundSynchronization = findPreference(SettingPreferences.BACKGROUND_SYNCHRONIZATION);
+        backgroundSynchronization.setOnPreferenceChangeListener(this);
+        backgroundSynchronization.setOnPreferenceClickListener(this);
+
+        synchronizationPeriod = findPreference(SettingPreferences.SYNCHRONIZATION_PERIOD);
+        synchronizationPeriod.setOnPreferenceChangeListener(this);
+        synchronizationPeriod.setOnPreferenceClickListener(this);
+
+        crashReports = findPreference(SettingPreferences.CRASH_REPORTS);
+        crashReports.setOnPreferenceChangeListener(this);
+        crashReports.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -75,12 +95,27 @@ public abstract class AbsSettingsFragment extends PreferenceFragmentCompat
         return false;
     }
 
+    protected Preference getCrashReports() {
+        return crashReports;
+    }
+
+    protected Preference getSynchronizationPeriod() {
+        return synchronizationPeriod;
+    }
+
+    protected Preference getBackgroundSynchronization() {
+        return backgroundSynchronization;
+    }
+
     public abstract boolean onBackgroundSynchronizationClick();
+
     public abstract boolean onBackgroundSynchronizationChanged(boolean isEnabled);
 
     public abstract boolean onSynchronizationPeriodClick();
+
     public abstract boolean onSynchronizationPeriodChanged(String newPeriod);
 
     public abstract boolean onCrashReportsClick();
+
     public abstract boolean onCrashReportsChanged(boolean isEnabled);
 }

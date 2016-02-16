@@ -75,6 +75,7 @@ import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.IControllersModule;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
+import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
@@ -259,5 +260,9 @@ public class D2 {
 
     public static IUserAccountScope me() {
         return getInstance().mUserAccountScope;
+    }
+
+    public static UserCredentials configuration() {
+        return getInstance().mUserPreferences.get();
     }
 }

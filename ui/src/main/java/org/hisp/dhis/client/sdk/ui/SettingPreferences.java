@@ -18,7 +18,7 @@ public final class SettingPreferences {
 
     private SettingPreferences(Context context) {
         isNull(context, "context must not be null");
-        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static void init(Context context) {

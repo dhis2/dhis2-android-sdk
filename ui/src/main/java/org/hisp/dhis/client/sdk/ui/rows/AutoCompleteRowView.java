@@ -79,7 +79,7 @@ public class AutoCompleteRowView implements IRowView {
                     R.id.autocomplete_row_text_input_layout);
 
             optionText = (EditText) itemView.findViewById(R.id.autocomplete_row_option_text);
-            clearButton = (ImageButton) itemView.findViewById(R.id.clear_autocomplete_row_view);
+            clearButton = (ImageButton) itemView.findViewById(R.id.button_clear);
 
             textInputLayout.setHint(itemView.getContext().getString(R.string.find_option));
 

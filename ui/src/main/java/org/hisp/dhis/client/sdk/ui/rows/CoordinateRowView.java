@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
@@ -54,10 +55,13 @@ public class CoordinateRowView implements IRowView {
         public final OnCaptureCoordinatesListener onCaptureCoordinatesListener;
         public final OnFocusChangeListener onFocusChangeListener;
         public final OnValueChangedListener onValueChangedListener;
+        public final TextView textViewLabel;
 
         public CoordinateRowViewHolder(View itemView, DataEntity.Type type,
                                        OnCoordinatesCaptured onCoordinatesCaptured) {
             super(itemView);
+
+            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
 
             latitudeTextInputLayout = (TextInputLayout) itemView
                     .findViewById(R.id.coordinate_row_latitude_textinputlayout);
@@ -91,6 +95,7 @@ public class CoordinateRowView implements IRowView {
         }
 
         public void update(DataEntity entity) {
+            textViewLabel.setText(R.string.enter_coordinates);
             onValueChangedListener.setDataEntity(entity);
             latitudeEditText.setText(entity.getValue());
             longitudeEditText.setText(entity.getValue());

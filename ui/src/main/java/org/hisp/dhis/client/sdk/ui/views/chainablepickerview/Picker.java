@@ -48,7 +48,8 @@ public class Picker implements Parcelable {
     private Picker nextLinkedSibling;
     private List<IPickable> pickableItems;
     private AdapterView.OnItemClickListener listener;
-    private final AutoCompleteOnFocusChangeListener onFocusChangeListener;
+    private View.OnClickListener onClickListener;
+    private View.OnFocusChangeListener onFocusChangeListener;
     private List<Picker> parentList;
     private RecyclerView parentView;
     private IPickable pickedItem;
@@ -63,6 +64,7 @@ public class Picker implements Parcelable {
         this.mimeType = mimeType;
         this.onFocusChangeListener = new AutoCompleteOnFocusChangeListener(this);
         this.listener = new AutoCompleteOnItemClickListener();
+        this.onClickListener = new OnPickerClickedListener();
         this.added = false;
     }
 
@@ -74,6 +76,7 @@ public class Picker implements Parcelable {
         hint = data[0];
         mimeType = data[1];
         this.onFocusChangeListener = new AutoCompleteOnFocusChangeListener(this);
+        this.onClickListener = new OnPickerClickedListener();
         this.listener = new AutoCompleteOnItemClickListener();
         boolean[] booleanValues = new boolean[1];
         in.readBooleanArray(booleanValues);
@@ -96,7 +99,7 @@ public class Picker implements Parcelable {
         this.pickedItemClearListener = listener;
     }
 
-    public AutoCompleteOnFocusChangeListener getOnFocusChangeListener() {
+    public View.OnFocusChangeListener getOnFocusChangeListener() {
         return onFocusChangeListener;
     }
 
@@ -121,6 +124,10 @@ public class Picker implements Parcelable {
             }
         };
         this.listener = mergedListener;
+    }
+
+    public void setOnFocusChangeListener(final View.OnFocusChangeListener onFocusChangeListener) {
+        this.onFocusChangeListener = onFocusChangeListener;
     }
 
     public boolean isAdded() {
@@ -149,6 +156,7 @@ public class Picker implements Parcelable {
         if(pickedItem == null && pickedItemClearListener != null) {
             pickedItemClearListener.clearedCallback();
         }
+        parentView.getAdapter().notifyDataSetChanged();
     }
 
     public List<IPickable> getPickableItems() {
@@ -160,6 +168,14 @@ public class Picker implements Parcelable {
         if(parentView != null) {
             parentView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    public View.OnClickListener getOnClickListener() {
+        return onClickListener;
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     public void showNext() {
@@ -218,6 +234,14 @@ public class Picker implements Parcelable {
         dest.writeBooleanArray(booleanValues);
     }
 
+
+    public class OnPickerClickedListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
     /**
      * Triggers the next chained {@link Picker} to be shown if it has been set.
      */

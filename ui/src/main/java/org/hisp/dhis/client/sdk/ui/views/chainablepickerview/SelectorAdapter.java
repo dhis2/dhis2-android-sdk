@@ -71,6 +71,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
         } else {
             holder.autoCompleteTextView.setText("");
         }
+        holder.autoCompleteTextView.setOnClickListener(picker.getOnClickListener());
         holder.autoCompleteTextView.setOnFocusChangeListener(picker.getOnFocusChangeListener());
     }
 

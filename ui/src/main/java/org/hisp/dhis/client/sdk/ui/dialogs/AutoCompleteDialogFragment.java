@@ -151,6 +151,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
             OptionDialogViewHolder optionDialogViewHolder = (OptionDialogViewHolder) holder;
             optionDialogViewHolder.optionValueTextView.setText(options.get(position).toString());
+            optionDialogViewHolder.optionValueTextView.setTag(options.get(position));
         }
 
         @Override
@@ -237,7 +238,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
         @Override
         public void onClick(View v) {
-            onOptionItemSelectedListener.onOptionSelected(new DefaultPickable(textView.getText().toString(), ""));
+            onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
             parentDialog.dismiss();
         }
     }

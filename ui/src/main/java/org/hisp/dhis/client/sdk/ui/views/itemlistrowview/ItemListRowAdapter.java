@@ -27,6 +27,7 @@ public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(holder instanceof ItemListRowViewHolder) {
+            ItemListRowViewHolder itemListRowViewHolder = (ItemListRowViewHolder) holder;
             ItemListRow itemListRow= itemListRows.get(position);
 
             List<Pair<String, Integer>> valuesPosition = itemListRow.getValuesPosition();
@@ -34,30 +35,30 @@ public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             for (int i =0;i<valuesPosition.size();i++) {
                 switch (valuesPosition.get(i).second) {
                     case 1: {
-                        if(((ItemListRowViewHolder) holder).firstItem.getText().equals("")) {
-                            ((ItemListRowViewHolder) holder).firstItem.setText(valuesPosition.get(i).first + " ");
+                        if(itemListRowViewHolder.firstItem.getText().equals("")) {
+                            itemListRowViewHolder.firstItem.setText(valuesPosition.get(i).first + " ");
                         }
                         else {
-                            ((ItemListRowViewHolder) holder).firstItem.append(valuesPosition.get(i).first);
+                            itemListRowViewHolder.firstItem.append(valuesPosition.get(i).first);
                         }
                         break;
                     }
                     case 2: {
-                        if(((ItemListRowViewHolder) holder).secondItem.getText().equals("")) {
-                            ((ItemListRowViewHolder) holder).secondItem.setText(valuesPosition.get(i).first + " ");
+                        if(itemListRowViewHolder.secondItem.getText().equals("")) {
+                            itemListRowViewHolder.secondItem.setText(valuesPosition.get(i).first + " ");
                         }
                         else {
-                            ((ItemListRowViewHolder) holder).secondItem.append(valuesPosition.get(i).first);
+                            itemListRowViewHolder.secondItem.append(valuesPosition.get(i).first);
 
                         }
                         break;
                     }
                     case 3: {
-                        if(((ItemListRowViewHolder) holder).thirdItem.getText().equals("")) {
-                            ((ItemListRowViewHolder) holder).thirdItem.setText(valuesPosition.get(i).first + " ");
+                        if(itemListRowViewHolder.thirdItem.getText().equals("")) {
+                            itemListRowViewHolder.thirdItem.setText(valuesPosition.get(i).first + " ");
                         }
                         else {
-                            ((ItemListRowViewHolder) holder).thirdItem.append(valuesPosition.get(i).first);
+                            itemListRowViewHolder.thirdItem.append(valuesPosition.get(i).first);
                         }
                         break;
                     }
@@ -65,19 +66,19 @@ public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             }
             if(itemListRow.getStatus().equals(EItemListRowStatus.ERROR.toString())) {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_report);
+                itemListRowViewHolder.statusItem.setImageResource(R.drawable.ic_report);
             }
             else if(itemListRow.getStatus().equals(EItemListRowStatus.OFFLINE.toString())) {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_save);
+                itemListRowViewHolder.statusItem.setImageResource(R.drawable.ic_save);
             }
             else {
-                ((ItemListRowViewHolder) holder).statusItem.setImageResource(R.drawable.ic_check);
+                itemListRowViewHolder.statusItem.setImageResource(R.drawable.ic_check);
             }
 
-            ((ItemListRowViewHolder) holder).itemContainer.setOnClickListener(itemListRow.getOnRowClickListener());
-            ((ItemListRowViewHolder) holder).itemContainer.setOnLongClickListener(itemListRow.getOnLongClickListener());
+            itemListRowViewHolder.itemContainer.setOnClickListener(itemListRow.getOnRowClickListener());
+            itemListRowViewHolder.itemContainer.setOnLongClickListener(itemListRow.getOnLongClickListener());
 
-            ((ItemListRowViewHolder) holder).statusContainer.setOnClickListener(itemListRow.getOnStatusClickListener());
+            itemListRowViewHolder.statusContainer.setOnClickListener(itemListRow.getOnStatusClickListener());
         }
     }
 

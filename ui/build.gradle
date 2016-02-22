@@ -65,5 +65,5 @@ dependencies {
     compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"
 
     // Test
-    testCompile "junit:junit:${libs.junitVersion}"
+    testCompile "junit:junit:${libs.jUnitVersion}"
 }

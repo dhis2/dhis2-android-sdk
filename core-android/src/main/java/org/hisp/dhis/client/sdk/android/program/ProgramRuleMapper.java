@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleAction$Flow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> {
 

@@ -50,8 +50,7 @@ android {
 }
 
 dependencies {
-    // Local
-    compile fileTree(include: "*.jar", dir: "libs")
+    compile project(":core")
 
     // Google
     compile "com.android.support:support-annotations:${libs.supportVersion}"
@@ -78,5 +77,5 @@ dependencies {
     }
 
     // Test
-    testCompile "junit:junit:${libs.junitVersion}"
+    testCompile "junit:junit:${libs.jUnitVersion}"
 }

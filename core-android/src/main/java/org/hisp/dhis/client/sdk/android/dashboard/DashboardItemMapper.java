@@ -28,14 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Dashboard$Flow;
-import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 public class DashboardItemMapper extends AbsMapper<DashboardItem, DashboardItem$Flow> {

@@ -37,14 +37,25 @@ ext {
     ]
 
     libraries = [
+            // android libs
             supportVersion     : "23.1.1",
-            junitVersion       : "4.12",
-            okhttpVersion      : "2.7.0",
-            retrofitVersion    : "2.0.0-beta2",
             rxAndroidVersion   : "1.0.1",
             dbFlowVersion      : "2.2.1",
             progressBarVersion : "1.2.0",
+
+            // java libs
+            okhttpVersion      : "2.7.0",
+            retrofitVersion    : "2.0.0-beta2",
+            jacksonVersion     : "2.6.4",
+            jodaTimeVersion    : "2.9.1",
             jexlVersion        : "2.1.1",
+            commonsLang3Version: "3.3.2",
+            commonsMath3Version: "3.6",
+
+            // testing libs
+            jUnitVersion       : "4.12",
+            mockitoVersion     : "1.10.19",
+            powerMockVersion   : "1.6.3",
     ]
 }
 
@@ -62,9 +73,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        flatDir {
-            dirs 'libs'
-        }
     }
 }
 

@@ -28,16 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
-import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, ProgramStageSection$Flow> {

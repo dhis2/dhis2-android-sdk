@@ -43,8 +43,9 @@ dependencies {
         exclude module: 'commons-logging'
     }
 
-    testCompile 'junit:junit:4.11'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.3'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.3'
+    // Test compile dependencies.
+    testCompile "junit:junit:${libs.jUnitVersion}"
+    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+    testCompile "org.powermock:powermock-api-mockito:${libs.powerMockVersion}"
+    testCompile "org.powermock:powermock-module-junit4:${libs.powerMockVersion}"
 }

@@ -36,7 +36,6 @@ import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -59,10 +58,10 @@ import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 
 public class ProgramApiClient implements IProgramApiClient {
 
-    private final ProgramApiClientRetrofit mProgramApiClientRetrofit;
+    private final IProgramApiClientRetrofit mIProgramApiClientRetrofit;
 
-    public ProgramApiClient(ProgramApiClientRetrofit programApiClientRetrofit) {
-        this.mProgramApiClientRetrofit = programApiClientRetrofit;
+    public ProgramApiClient(IProgramApiClientRetrofit IProgramApiClientRetrofit) {
+        this.mIProgramApiClientRetrofit = IProgramApiClientRetrofit;
     }
 
     @Override
@@ -96,7 +95,7 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        List<Program> updatedPrograms = unwrapList(call(mProgramApiClientRetrofit.getPrograms(queryMap)));
+        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms(queryMap)));
         for(Program program : updatedPrograms) {
             fixRelationships(program);
         }
@@ -110,7 +109,7 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        List<Program> updatedPrograms = unwrapList(call(mProgramApiClientRetrofit.getPrograms(queryMap)));
+        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms(queryMap)));
         return updatedPrograms;
     }
 
@@ -120,7 +119,7 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        Program program = call(mProgramApiClientRetrofit.getProgram(uid, queryMap));
+        Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
         fixRelationships(program);
         return program;
     }
@@ -131,7 +130,7 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        Program program = call(mProgramApiClientRetrofit.getProgram(uid, queryMap));
+        Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
         return program;
     }
 

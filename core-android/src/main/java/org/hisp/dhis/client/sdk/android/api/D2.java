@@ -129,7 +129,8 @@ public class D2 {
 
         mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
                 mUserPreferences, preferencesModule.getConfigurationPreferences(),
-                controllersModule.getAssignedProgramsController(),persistenceModule.getUserAccountStore());
+                controllersModule.getAssignedProgramsController(),
+                persistenceModule.getUserAccountStore());
 
         mProgramScope = new ProgramScope(servicesModule.getProgramService(),
                 controllersModule.getProgramController(),
@@ -139,13 +140,17 @@ public class D2 {
                 servicesModule.getProgramStageDataElementService(),
                 servicesModule.getProgramTrackedEntityAttributeService());
 
-        mProgramTrackedEntityAttributeScope = new ProgramTrackedEntityAttributeScope(servicesModule.getProgramTrackedEntityAttributeService());
+        mProgramTrackedEntityAttributeScope = new ProgramTrackedEntityAttributeScope(
+                servicesModule.getProgramTrackedEntityAttributeService());
 
-        mProgramIndicatorScope = new ProgramIndicatorScope(servicesModule.getProgramIndicatorService());
+        mProgramIndicatorScope = new ProgramIndicatorScope(servicesModule
+                .getProgramIndicatorService());
 
-        mOrganisationUnitScope = new OrganisationUnitScope(servicesModule.getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
+        mOrganisationUnitScope = new OrganisationUnitScope(servicesModule
+                .getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
 
-        mEventScope = new EventScope(servicesModule.getEventService(), controllersModule.getEventController());
+        mEventScope = new EventScope(servicesModule.getEventService(), controllersModule
+                .getEventController());
 
         mConstantScope = new ConstantScope(servicesModule.getConstantService());
 
@@ -159,19 +164,23 @@ public class D2 {
 
         mProgramStageScope = new ProgramStageScope(servicesModule.getProgramStageService());
 
-        mProgramStageDataElementScope = new ProgramStageDataElementScope(servicesModule.getProgramStageDataElementService());
+        mProgramStageDataElementScope = new ProgramStageDataElementScope(servicesModule
+                .getProgramStageDataElementService());
 
-        mProgramStageSectionScope = new ProgramStageSectionScope(servicesModule.getProgramStageSectionService());
+        mProgramStageSectionScope = new ProgramStageSectionScope(servicesModule
+                .getProgramStageSectionService());
 
         mRelationshipScope = new RelationshipScope(servicesModule.getRelationshipService());
 
-        mRelationshipTypeScope = new RelationshipTypeScope(servicesModule.getRelationshipTypeService());
+        mRelationshipTypeScope = new RelationshipTypeScope(servicesModule
+                .getRelationshipTypeService());
 
         mTrackedEntityAttributeScope = new TrackedEntityAttributeScope(
                 servicesModule.getTrackedEntityAttributeService(),
                 controllersModule.getTrackedEntityAttributeController());
 
-        mTrackedEntityAttributeValueScope = new TrackedEntityAttributeValueScope(servicesModule.getTrackedEntityAttributeValueService());
+        mTrackedEntityAttributeValueScope = new TrackedEntityAttributeValueScope(servicesModule
+                .getTrackedEntityAttributeValueService());
 
         mTrackedEntityDataValueScope = new TrackedEntityDataValueScope(
                 servicesModule.getTrackedEntityDataValueService(),

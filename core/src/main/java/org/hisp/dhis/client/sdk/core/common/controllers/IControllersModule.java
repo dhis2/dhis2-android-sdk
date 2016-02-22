@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,32 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.controllers;
+
+import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
+import org.hisp.dhis.client.sdk.core.event.IEventController;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
+import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+
+public interface IControllersModule {
+    IUserAccountController getUserAccountController();
+
+    IEventController getEventController();
+
+    IEnrollmentController getEnrollmentController();
+
+    IDataController<TrackedEntityAttribute> getTrackedEntityAttributeController();
+
+    IAssignedProgramsController getAssignedProgramsController();
+
+    IProgramController getProgramController();
+
+    IOrganisationUnitController getOrganisationUnitController();
+
+    IDataController<TrackedEntity> getTrackedEntityController();
+}

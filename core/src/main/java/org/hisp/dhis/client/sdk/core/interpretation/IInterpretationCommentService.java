@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,16 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.interpretation;
+
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
+import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
+import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
+import org.hisp.dhis.client.sdk.models.user.User;
+
+public interface IInterpretationCommentService extends IService, IRemove<InterpretationComment>, ISave<InterpretationComment> {
+    InterpretationComment create(Interpretation interpretation, User user, String text);
+}

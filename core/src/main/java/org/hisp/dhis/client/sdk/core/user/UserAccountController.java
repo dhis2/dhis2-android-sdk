@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,27 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.user;
+
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+
+public final class UserAccountController implements IUserAccountController {
+    private final IUserApiClient userApiClient;
+    private final IUserAccountStore userAccountStore;
+
+    public UserAccountController(IUserApiClient userApiClient, IUserAccountStore userAccountStore) {
+        this.userApiClient = userApiClient;
+        this.userAccountStore = userAccountStore;
+    }
+
+    @Override
+    public UserAccount updateAccount() throws ApiException {
+        UserAccount userAccount = userApiClient.getUserAccount();
+
+        // update userAccount in database
+        userAccountStore.save(userAccount);
+        return userAccount;
+    }
+}

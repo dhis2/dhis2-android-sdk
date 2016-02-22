@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,59 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.network;
+
+/**
+ * Represents an HTTP header name/value pair.
+ */
+public final class Header {
+    private final String name;
+    private final String value;
+
+    public Header(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Header header = (Header) o;
+
+        if (name != null ? !name.equals(header.name) : header.name != null) {
+            return false;
+        }
+        if (value != null ? !value.equals(header.value) : header.value != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return (name != null ? name : "") + ": " + (value != null ? value : "");
+    }
+}

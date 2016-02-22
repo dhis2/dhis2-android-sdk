@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,33 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.trackedentity;
+
+import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.relationship.Relationship;
+import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
+
+public interface ITrackedEntityInstanceService extends IService, ISave<TrackedEntityInstance>,
+        IRemove<TrackedEntityInstance>, IGet<TrackedEntityInstance>, IList<TrackedEntityInstance> {
+    TrackedEntityInstance get(String uid);
+    TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit);
+
+    /**
+     * Creates and adds a relationship for the given parameters.
+     * @param trackedEntityInstanceA
+     * @param trackedEntityInstanceB
+     * @param relationshipType
+     */
+    boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA, TrackedEntityInstance trackedEntityInstanceB, RelationshipType relationshipType);
+
+    /**
+     * Removes a given relationship, both locally and on the server
+     * @param relationship
+     * @return
+     */
+    boolean removeRelationship(Relationship relationship);
+}

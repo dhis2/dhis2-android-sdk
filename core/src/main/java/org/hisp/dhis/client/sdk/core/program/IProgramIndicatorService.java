@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,21 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.program;
+
+import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+
+import java.util.List;
+
+public interface IProgramIndicatorService extends IService, ISave<ProgramIndicator>, IRemove<ProgramIndicator>,
+        IGet<ProgramIndicator>, IGetUid<ProgramIndicator>, IList<ProgramIndicator>{
+
+    List<ProgramIndicator> list(Program program);
+    List<ProgramIndicator> list(ProgramStage programStage);
+    List<ProgramIndicator> list(ProgramStageSection programStageSection);
+}

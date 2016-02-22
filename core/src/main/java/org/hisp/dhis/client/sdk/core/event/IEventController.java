@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,25 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.event;
+
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
+
+import java.util.List;
+
+public interface IEventController {
+    void sync() throws ApiException;
+    void sync(OrganisationUnit organisationUnit, Program program, int limit, DateTime serverDateTime) throws ApiException;
+    void sync(OrganisationUnit organisationUnit, Program program, int limit) throws ApiException;
+    void sync(OrganisationUnit organisationUnit, Program program) throws ApiException;
+    void sync(Enrollment enrollment) throws ApiException;
+    void sync(String uid);
+    void getEventsDataFromServer(Enrollment enrollment) throws ApiException;
+    void sendEventChanges(List<Event> events) throws ApiException;
+}

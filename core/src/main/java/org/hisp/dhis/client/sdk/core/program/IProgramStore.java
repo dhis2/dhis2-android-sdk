@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,39 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.program;
+
+import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramType;
+
+import java.util.List;
+import java.util.Set;
+
+public interface IProgramStore extends IIdentifiableObjectStore<Program> {
+
+    /**
+     * Returns a list of Programs that are assigned to a given Organisation Unit
+     * @param organisationUnit
+     * @return
+     */
+    List<Program> query(OrganisationUnit organisationUnit);
+
+    /**
+     * Returns a list of Programs that are assigned to a given Organisation Unit with one of the
+     * given program type(s)
+     * @param organisationUnit
+     * @param programTypes
+     * @return
+     */
+    List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes);
+
+    /**
+     * Creates an assignment link between the given program and the given list of organisation Units
+     * @param program
+     * @param organisationUnits
+     */
+    void assign(Program program, Set<OrganisationUnit> organisationUnits);
+}

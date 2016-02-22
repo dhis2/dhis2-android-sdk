@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,25 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.enrollment;
+
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
+import org.joda.time.DateTime;
+
+import java.util.List;
+
+public interface IEnrollmentApiClient {
+    List<Enrollment> getBasicEnrollments(String trackedEntityInstanceUid, DateTime lastUpdated);
+
+    List<Enrollment> getFullEnrollments(String trackedEntityInstanceUid, DateTime lastUpdated);
+
+    Enrollment getFullEnrollment(String uid, DateTime lastUpdated);
+
+    Enrollment getBasicEnrollment(String uid, DateTime lastUpdated);
+
+    ImportSummary postEnrollment(Enrollment enrollment);
+
+    ImportSummary putEnrollment(Enrollment enrollment);
+}

@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,25 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.trackedentity;
+
+import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
+
+import java.util.List;
+
+public interface ITrackedEntityAttributeValueService extends IService, ISave<TrackedEntityAttributeValue>, IRemove<TrackedEntityAttributeValue>,
+        IGet<TrackedEntityAttributeValue>, IList<TrackedEntityAttributeValue> {
+
+    TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance,
+                                      TrackedEntityAttribute trackedEntityAttribute);
+
+    List<TrackedEntityAttributeValue> list(TrackedEntityInstance trackedEntityInstance);
+
+    List<TrackedEntityAttributeValue> list(Enrollment enrollment);
+
+}

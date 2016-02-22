@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,49 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.network;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ApiResponse {
+    public static final String RESPONSE_TYPE_IMPORT_SUMMARIES = "ImportSummaries";
+    public static final String RESPONSE_TYPE_IMPORT_SUMMARY = "ImportSummary";
+
+    @JsonProperty("imported")
+    private int imported;
+
+    @JsonProperty("ignored")
+    private int ignored;
+
+    @JsonProperty("response")
+    private Map<String, Object> response;
+
+    public Map<String, Object> getResponse() {
+        return response;
+    }
+
+    public void setResponse(Map<String, Object> response) {
+        this.response = response;
+    }
+
+    public int getImported() {
+        return imported;
+    }
+
+    public void setImported(int imported) {
+        this.imported = imported;
+    }
+
+    public int getIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(int ignored) {
+        this.ignored = ignored;
+    }
+}

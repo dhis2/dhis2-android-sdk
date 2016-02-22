@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,37 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.dashboard;
+
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+
+import java.util.List;
+
+public class DashboardContentService implements IDashboardContentService {
+    private final IDashboardItemContentStore mDashboardItemContentStore;
+
+    public DashboardContentService(IDashboardItemContentStore mDashboardItemContentStore) {
+        this.mDashboardItemContentStore = mDashboardItemContentStore;
+    }
+
+    @Override
+    public DashboardContent get(long id) {
+        return mDashboardItemContentStore.queryById(id);
+    }
+
+    @Override
+    public DashboardContent get(String uid) {
+        return mDashboardItemContentStore.queryByUid(uid);
+    }
+
+    @Override
+    public List<DashboardContent> list() {
+        return mDashboardItemContentStore.queryAll();
+    }
+
+    @Override
+    public List<DashboardContent> list(List<String> types) {
+        return mDashboardItemContentStore.queryByTypes(types);
+    }
+}

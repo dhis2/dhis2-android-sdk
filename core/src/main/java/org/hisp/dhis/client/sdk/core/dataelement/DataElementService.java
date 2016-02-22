@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,47 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.dataelement;
+
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+
+import java.util.List;
+
+public class DataElementService implements IDataElementService {
+
+    private final IDataElementStore dataElementStore;
+
+    public DataElementService(IDataElementStore dataElementStore) {
+        this.dataElementStore = dataElementStore;
+    }
+    @Override
+    public DataElement get(long id) {
+        return dataElementStore.queryById(id);
+    }
+
+    @Override
+    public DataElement get(String uid) {
+        return dataElementStore.queryByUid(uid);
+    }
+
+    @Override
+    public List<DataElement> list() {
+        return dataElementStore.queryAll();
+    }
+
+    @Override
+    public boolean remove(DataElement object) {
+        Preconditions.isNull(object, "Object must not be null");
+        return dataElementStore.delete(object);
+    }
+
+    @Override
+    public boolean save(DataElement object) {
+        Preconditions.isNull(object, "Object must not be null");
+        return dataElementStore.save(object);
+    }
+}

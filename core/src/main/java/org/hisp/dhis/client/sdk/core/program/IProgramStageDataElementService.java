@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,23 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.program;
+
+import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+
+import java.util.List;
+
+public interface IProgramStageDataElementService extends IService, ISave<ProgramStageDataElement>, IRemove<ProgramStageDataElement>,
+        IGet<ProgramStageDataElement>, IList<ProgramStageDataElement> {
+
+    List<ProgramStageDataElement> list(ProgramStage programStage);
+
+    List<ProgramStageDataElement> list(ProgramStageSection programStageSection);
+
+    ProgramStageDataElement list(ProgramStage programStage, DataElement dataElement);
+}

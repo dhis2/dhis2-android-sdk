@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,47 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.constant;
+
+import org.hisp.dhis.client.sdk.models.constant.Constant;
+import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+
+import java.util.List;
+
+
+public class ConstantService implements IConstantService {
+    private final IConstantStore constantStore;
+
+    public ConstantService(IConstantStore constantStore) {
+        this.constantStore = constantStore;
+    }
+
+    @Override
+    public Constant get(long id) {
+        return constantStore.queryById(id);
+    }
+
+    @Override
+    public Constant get(String uid) {
+        return constantStore.queryByUid(uid);
+    }
+
+    @Override
+    public List<Constant> list() {
+        return constantStore.queryAll();
+    }
+
+    @Override
+    public boolean remove(Constant object) {
+        Preconditions.isNull(object, "Object must not be null");
+        return constantStore.delete(object);
+    }
+
+    @Override
+    public boolean save(Constant object) {
+        Preconditions.isNull(object, "Object must not be null");
+        return constantStore.save(object);
+    }
+
+}

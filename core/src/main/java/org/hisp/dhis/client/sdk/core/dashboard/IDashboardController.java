@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,23 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.dashboard;
+
+import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
+import org.joda.time.DateTime;
+
+import java.util.List;
+
+public interface IDashboardController extends IDataController<Dashboard> {
+
+    void update();
+
+    void send();
+
+    List<IDbOperation> updateDashboards(DateTime lastUpdated);
+
+    List<IDbOperation> updateDashboardItems(DateTime lastUpdated);
+}

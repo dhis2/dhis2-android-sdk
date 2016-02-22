@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,37 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.preferences;
+
+public enum ResourceType {
+    /* Dashboard app resources */
+    DASHBOARDS_CONTENT,
+    INTERPRETATIONS,
+    DASHBOARDS,
+
+    RELATIONSHIP_TYPES,
+    ORGANISATION_UNITS,
+    DATA_ELEMENTS,
+    OPTION_SETS,
+    CONSTANTS,
+    USERS,
+
+    /* Event and Tracker capture resources */
+    PROGRAM_RULE_VARIABLES,
+    PROGRAM_RULE_ACTIONS,
+    PROGRAM_RULES,
+
+    // ASSIGNED_PROGRAMS,
+    PROGRAMS,
+    PROGRAMS_WITHOUT_REGISTRATION,
+    PROGRAM,
+
+    TRACKED_ENTITY_ATTRIBUTES,
+    TRACKED_ENTITIES,
+    TRACKED_ENTITY_INSTANCE,
+    ENROLLMENTS,
+    ENROLLMENT,
+    EVENTS,
+    EVENT,
+}

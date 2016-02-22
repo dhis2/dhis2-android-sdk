@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,25 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.dashboard;
+
+
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
+
+import java.util.List;
+
+public interface IDashboardElementService extends IService, IRemove<DashboardElement>, IList<DashboardElement> {
+
+    DashboardElement create(DashboardItem dashboardItem, DashboardContent dashboardContent);
+
+    /**
+     * {@inheritDoc}
+     */
+    List<DashboardElement> list(DashboardItem dashboardItem);
+}

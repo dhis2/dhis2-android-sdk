@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,66 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.network;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Encapsulates all of the information necessary to make an HTTP request.
+ */
+public final class Request {
+    private final HttpMethod mMethod;
+    private final String mUrl;
+    private final List<Header> mHeaders;
+    private final byte[] mBody;
+
+    public Request(HttpMethod method, String url, List<Header> headers, byte[] body) {
+        if (method == null) {
+            throw new IllegalArgumentException("Method must not be null.");
+        }
+        if (url == null) {
+            throw new IllegalArgumentException("URL must not be null.");
+        }
+        mMethod = method;
+        mUrl = url;
+
+        if (headers == null) {
+            mHeaders = Collections.emptyList();
+        } else {
+            mHeaders = Collections.unmodifiableList(new ArrayList<Header>(headers));
+        }
+
+        mBody = body;
+    }
+
+    /**
+     * HTTP method verb.
+     */
+    public HttpMethod getMethod() {
+        return mMethod;
+    }
+
+    /**
+     * Target URL.
+     */
+    public String getUrl() {
+        return mUrl;
+    }
+
+    /**
+     * Returns an unmodifiable list of headers, never {@code null}.
+     */
+    public List<Header> getHeaders() {
+        return mHeaders;
+    }
+
+    /**
+     * Returns the request body or {@code null}.
+     */
+    public byte[] getBody() {
+        return mBody;
+    }
+}

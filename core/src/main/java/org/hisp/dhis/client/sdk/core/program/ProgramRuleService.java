@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,45 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.program;
+
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+
+import java.util.List;
+
+public final class ProgramRuleService implements IProgramRuleService {
+
+    private final IProgramRuleStore programRuleStore;
+
+    public ProgramRuleService(IProgramRuleStore programRuleStore) {
+        this.programRuleStore = programRuleStore;
+    }
+
+    @Override
+    public List<ProgramRule> list(ProgramStage programStage) {
+        return programRuleStore.query(programStage);
+    }
+
+    @Override
+    public List<ProgramRule> list(Program program) {
+        return programRuleStore.query(program);
+    }
+
+    @Override
+    public ProgramRule get(long id) {
+        return programRuleStore.queryById(id);
+    }
+
+    @Override
+    public ProgramRule get(String uid) {
+        return programRuleStore.queryByUid(uid);
+    }
+
+    @Override
+    public List<ProgramRule> list() {
+        return programRuleStore.queryAll();
+    }
+}

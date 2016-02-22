@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,22 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.services;
+
+import org.hisp.dhis.client.sdk.models.common.base.IModel;
+
+public interface IRemove<T extends IModel> {
+
+    /**
+     * Removes a single instance of the specified element from this collection.
+     * More formally, removes an model object such that (o == null ? e == null : o.equals(e)),
+     * if this collection contains one or more such elements. Returns true if this collection
+     * contained the specified element (or equivalently, if this collection
+     * changed as a result of the call).
+     *
+     * @param object o - element to be removed from this collection, if present
+     * @return true if an element was removed as a result of this call
+     */
+    boolean remove(T object);
+}

@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,35 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.common.network;
+
+import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
+import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentApiClient;
+import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
+import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
+
+public interface INetworkModule {
+    IUserApiClient getUserApiClient();
+
+    IDashboardApiClient getDashboardApiClient();
+
+    ISystemInfoApiClient getSystemInfoApiClient();
+
+    IEventApiClient getEventApiClient();
+
+    IEnrollmentApiClient getEnrollmentApiClient();
+
+    ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient();
+
+    IProgramApiClient getProgramApiClient();
+
+    IOrganisationUnitApiClient getOrganisationUnitApiClient();
+
+    ITrackedEntityApiClient getTrackedEntityApiClient();
+}

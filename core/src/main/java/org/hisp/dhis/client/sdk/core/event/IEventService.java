@@ -1,6 +1,5 @@
-include ':core'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,24 @@ include ':core'
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-rootProject.name = 'dhis2-android-sdk'
 
-include "models"
-include "core"
-include "core-android"
-include "ui"
+package org.hisp.dhis.client.sdk.core.event;
+
+import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
+import org.joda.time.DateTime;
+
+import java.util.List;
+
+public interface IEventService extends IService, IAdd<Event>, ISave<Event>,
+        IUpdate<Event>, IRemove<Event>, IGet<Event>, IList<Event> {
+    Event get(String uid);
+    Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment, OrganisationUnit organisationUnit, Program program, ProgramStage programStage, String status);
+    Event create(OrganisationUnit organisationUnit, String status, Program program, ProgramStage programStage);
+    List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate);
+}

@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.dataelement;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.DataElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
-import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> {
 

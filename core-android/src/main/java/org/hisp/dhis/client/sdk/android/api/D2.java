@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.common;
+package org.hisp.dhis.client.sdk.android.api;
 
 import android.content.Context;
 

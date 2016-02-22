@@ -28,19 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.D2;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValue$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
 

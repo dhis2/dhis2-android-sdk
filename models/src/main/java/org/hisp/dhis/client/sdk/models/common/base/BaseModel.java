@@ -35,6 +35,10 @@ public class BaseModel implements IModel {
     @JsonIgnore
     private long id;
 
+    public BaseModel() {
+        // explicit empty public constructor
+    }
+
     @Override
     public long getId() {
         return id;

@@ -31,26 +31,17 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.optionset.Option;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.client.sdk.models.program.*;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class ProgramController extends AbsController<Program> implements IProgramController {
 
@@ -63,7 +54,9 @@ public class ProgramController extends AbsController<Program> implements IProgra
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IModelUtils modelUtils;
 
-    public ProgramController(IProgramApiClient programApiClient, ITransactionManager transactionManager, ILastUpdatedPreferences lastUpdatedPreferences, IProgramStore programStore, ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+    public ProgramController(IProgramApiClient programApiClient, ITransactionManager
+            transactionManager, ILastUpdatedPreferences lastUpdatedPreferences, IProgramStore
+            programStore, ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
         this.programApiClient = programApiClient;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -80,12 +73,13 @@ public class ProgramController extends AbsController<Program> implements IProgra
         List<Program> allProgramsOnServer = programApiClient.getPrograms(Fields.BASIC, null);
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
         List<Program> persistedPrograms = programStore.queryAll();
-        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms, persistedPrograms, programStore, modelUtils));
+        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
+                persistedPrograms, programStore, modelUtils));
         lastUpdatedPreferences.save(resource, serverTime);
     }
 
     private void getProgramsDataFromServer(Set<String> programUidsToLoad) throws ApiException {
-        for(String uid : programUidsToLoad) {
+        for (String uid : programUidsToLoad) {
             getProgramDataFromServer(uid);
         }
     }
@@ -99,7 +93,8 @@ public class ProgramController extends AbsController<Program> implements IProgra
         List<Program> updatedPrograms = new ArrayList<>();
         updatedPrograms.add(updatedProgram);
         List<Program> persistedPrograms = programStore.queryAll();
-        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms, persistedPrograms, programStore, modelUtils));
+        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
+                persistedPrograms, programStore, modelUtils));
         lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime, uid);
     }
 

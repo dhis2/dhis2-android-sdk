@@ -52,7 +52,8 @@ public class UserAccountScope implements IUserAccountScope {
 
     public UserAccountScope(IUserAccountController userAccountController,
                             IUserPreferences userPreferences,
-                            IConfigurationPreferences configurationPreferences, IAssignedProgramsController mAssignedProgramsController,
+                            IConfigurationPreferences configurationPreferences,
+                            IAssignedProgramsController mAssignedProgramsController,
                             IUserAccountStore userAccountStore) {
         mUserAccountController = userAccountController;
         mUserPreferences = userPreferences;
@@ -62,7 +63,8 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
-    public Observable<UserAccount> signIn(final Configuration configuration, final String username, final String password) {
+    public Observable<UserAccount> signIn(final Configuration configuration, final String username,
+                                          final String password) {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
 
             @Override
@@ -125,7 +127,6 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
-
     public Observable<Void> syncAssignedPrograms() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
@@ -142,6 +143,7 @@ public class UserAccountScope implements IUserAccountScope {
         });
     }
 
+    @Override
     public Observable<UserAccount> account() {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
             @Override

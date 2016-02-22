@@ -36,8 +36,8 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 public class DataEntity {
-    private final CharSequence label;
     private final Type type;
+    private final CharSequence label;
     private CharSequence value;
 
     private OnValueChangeListener<CharSequence> onValueChangeListener;

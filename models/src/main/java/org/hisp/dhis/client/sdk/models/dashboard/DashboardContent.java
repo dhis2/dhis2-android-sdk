@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,58 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    configuration = [
-            buildToolsVersion: "23.0.2",
-            minSdkVersion    : 15,
-            compileSdkVersion: 23,
-            targetSdkVersion : 23,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+package org.hisp.dhis.client.sdk.models.dashboard;
 
-    libraries = [
-            // android libs
-            supportVersion     : "23.1.1",
-            rxAndroidVersion   : "1.0.1",
-            dbFlowVersion      : "2.2.1",
-            progressBarVersion : "1.2.0",
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-            // java libs
-            okhttpVersion      : "2.7.0",
-            retrofitVersion    : "2.0.0-beta2",
-            jacksonVersion     : "2.6.4",
-            jodaTimeVersion    : "2.9.1",
-            jexlVersion        : "2.1.1",
-            commonsLang3Version: "3.3.2",
-            commonsMath3Version: "3.6",
+import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
-            // testing libs
-            jUnitVersion       : "4.12",
-            mockitoVersion     : "1.10.19",
-    ]
-}
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class DashboardContent extends BaseIdentifiableObject {
+    public static final String TYPE_CHART = "chart";
+    public static final String TYPE_EVENT_CHART = "eventChart";
+    public static final String TYPE_MAP = "map";
+    public static final String TYPE_REPORT_TABLE = "reportTable";
 
-buildscript {
-    repositories {
-        jcenter()
+    /* have to implement user fragment for this */
+    public static final String TYPE_USERS = "users";
+
+    /* we can use data entry fragment for this: have to implement read-only mode */
+    public static final String TYPE_REPORTS = "reports";
+
+    /* not supported on server side */
+    public static final String TYPE_EVENT_REPORT = "eventReport";
+
+    /* resource can be anything (like pdf or binary file. Will look into this later */
+    public static final String TYPE_RESOURCES = "resources";
+
+    /* won't be supported until implementation of messaging application */
+    public static final String TYPE_MESSAGES = "messages";
+
+    @JsonIgnore
+    String type;
+
+    public DashboardContent() {
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    public String getType() {
+        return type;
     }
-}
 
-allprojects {
-    repositories {
-        jcenter()
-        flatDir {
-            dirs 'libs'
-        }
+    public void setType(String type) {
+        this.type = type;
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

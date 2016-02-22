@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,58 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    configuration = [
-            buildToolsVersion: "23.0.2",
-            minSdkVersion    : 15,
-            compileSdkVersion: 23,
-            targetSdkVersion : 23,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+package org.hisp.dhis.client.sdk.models.common.base;
 
-    libraries = [
-            // android libs
-            supportVersion     : "23.1.1",
-            rxAndroidVersion   : "1.0.1",
-            dbFlowVersion      : "2.2.1",
-            progressBarVersion : "1.2.0",
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-            // java libs
-            okhttpVersion      : "2.7.0",
-            retrofitVersion    : "2.0.0-beta2",
-            jacksonVersion     : "2.6.4",
-            jodaTimeVersion    : "2.9.1",
-            jexlVersion        : "2.1.1",
-            commonsLang3Version: "3.3.2",
-            commonsMath3Version: "3.6",
+public class BaseModel implements IModel {
 
-            // testing libs
-            jUnitVersion       : "4.12",
-            mockitoVersion     : "1.10.19",
-    ]
-}
+    @JsonIgnore
+    private long id;
 
-buildscript {
-    repositories {
-        jcenter()
+    @Override
+    public long getId() {
+        return id;
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        flatDir {
-            dirs 'libs'
-        }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

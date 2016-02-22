@@ -26,44 +26,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.hisp.dhis.client.sdk.models.common.faileditem;
 
-def cfg = rootProject.ext.configuration
-def libs = rootProject.ext.libraries
+import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
 
-android {
-    compileSdkVersion cfg.compileSdkVersion
-    buildToolsVersion cfg.buildToolsVersion
+/**
+ * Class for holding information on items that have failed to upload to the server.
+ **/
+public class FailedItem extends BaseModel {
 
-    defaultConfig {
-        // applicationId cfg.package
-        minSdkVersion cfg.minSdkVersion
-        targetSdkVersion cfg.targetSdkVersion
-        versionCode cfg.versionCode
-        versionName cfg.versionName
+    private ImportSummary importSummary;
+
+    private long itemId;
+
+    private FailedItemType itemFailedItemType;
+
+    // 401, 500 .. etc
+    private int httpStatusCode;
+
+    // the web api sometimes crashes with status 500,
+    // so for example the stack trace could be here.
+    private String errorMessage;
+
+    public ImportSummary getImportSummary() {
+        return importSummary;
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+    public void setImportSummary(ImportSummary importSummary) {
+        this.importSummary = importSummary;
     }
-}
 
-dependencies {
+    public long getItemId() {
+        return itemId;
+    }
 
-    // Google
-    compile "com.android.support:support-annotations:${libs.supportVersion}"
-    compile "com.android.support:recyclerview-v7:${libs.supportVersion}"
-    compile "com.android.support:preference-v7:${libs.supportVersion}"
-    compile "com.android.support:preference-v14:${libs.supportVersion}"
-    compile "com.android.support:appcompat-v7:${libs.supportVersion}"
-    compile "com.android.support:cardview-v7:${libs.supportVersion}"
-    compile "com.android.support:percent:${libs.supportVersion}"
-    compile "com.android.support:design:${libs.supportVersion}"
+    public void setItemId(long itemId) {
+        this.itemId = itemId;
+    }
 
-    // Other
-    compile "com.github.castorflex.smoothprogressbar:library-circular:${libs.progressBarVersion}"
+    public FailedItemType getItemFailedItemType() {
+        return itemFailedItemType;
+    }
 
-    // Test
-    testCompile "junit:junit:${libs.jUnitVersion}"
+    public void setItemFailedItemType(FailedItemType itemFailedItemType) {
+        this.itemFailedItemType = itemFailedItemType;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(int httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }

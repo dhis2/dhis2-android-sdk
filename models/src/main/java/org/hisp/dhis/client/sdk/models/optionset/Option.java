@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -26,58 +26,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    configuration = [
-            buildToolsVersion: "23.0.2",
-            minSdkVersion    : 15,
-            compileSdkVersion: 23,
-            targetSdkVersion : 23,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+package org.hisp.dhis.client.sdk.models.optionset;
 
-    libraries = [
-            // android libs
-            supportVersion     : "23.1.1",
-            rxAndroidVersion   : "1.0.1",
-            dbFlowVersion      : "2.2.1",
-            progressBarVersion : "1.2.0",
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-            // java libs
-            okhttpVersion      : "2.7.0",
-            retrofitVersion    : "2.0.0-beta2",
-            jacksonVersion     : "2.6.4",
-            jodaTimeVersion    : "2.9.1",
-            jexlVersion        : "2.1.1",
-            commonsLang3Version: "3.3.2",
-            commonsMath3Version: "3.6",
+import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
-            // testing libs
-            jUnitVersion       : "4.12",
-            mockitoVersion     : "1.10.19",
-    ]
-}
+@JsonIgnoreProperties(ignoreUnknown = true)
+public final class Option extends BaseIdentifiableObject {
 
-buildscript {
-    repositories {
-        jcenter()
+    private int sortOrder;
+
+    @JsonIgnore
+    private OptionSet optionSet;
+
+    @JsonProperty("code")
+    private String code;
+
+    public OptionSet getOptionSet() {
+        return optionSet;
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    public void setOptionSet(OptionSet optionSet) {
+        this.optionSet = optionSet;
     }
-}
 
-allprojects {
-    repositories {
-        jcenter()
-        flatDir {
-            dirs 'libs'
-        }
+    public int getSortOrder() {
+        return sortOrder;
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }

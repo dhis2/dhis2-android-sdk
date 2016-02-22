@@ -25,60 +25,24 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+apply plugin: 'java'
 
-apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
-def cfg = rootProject.ext.configuration
 def libs = rootProject.ext.libraries
 
-android {
-    compileSdkVersion cfg.compileSdkVersion
-    buildToolsVersion cfg.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion cfg.minSdkVersion
-        targetSdkVersion cfg.targetSdkVersion
-        versionCode cfg.versionCode
-        versionName cfg.versionName
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-}
-
 dependencies {
-    // Local
-    compile fileTree(include: "*.jar", dir: "libs")
+    // Fasterxml libraries.
+    compile "com.fasterxml.jackson.core:jackson-annotations:${libs.jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-core:${libs.jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${libs.jacksonVersion}"
+    compile "com.fasterxml.jackson.datatype:jackson-datatype-joda:${libs.jacksonVersion}"
 
-    compile project(":models")
+    // Joda libraries.
+    compile "joda-time:joda-time:${libs.jodaTimeVersion}"
 
-    // Google
-    compile "com.android.support:support-annotations:${libs.supportVersion}"
-
-    // Square
-    compile "com.squareup.okhttp:okhttp:${libs.okhttpVersion}"
-    compile "com.squareup.okhttp:logging-interceptor:${libs.okhttpVersion}"
-    compile "com.squareup.retrofit:retrofit:${libs.retrofitVersion}"
-    compile("com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}") {
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
-    }
-
-    // ReactiveX
-    compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
-
-    // Raizlabs.
-    apt "com.raizlabs.android:DBFlow-Compiler:${libs.dbFlowVersion}"
-    compile "com.raizlabs.android:DBFlow-Core:${libs.dbFlowVersion}"
-    compile "com.raizlabs.android:DBFlow:${libs.dbFlowVersion}"
-
-    // Apache
-    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
-        exclude module: 'commons-logging'
-    }
-
-    // Test
+    // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
+    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
 }

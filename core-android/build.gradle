@@ -47,6 +47,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -59,9 +63,7 @@ dependencies {
     compile "com.squareup.okhttp:okhttp:${libs.okhttpVersion}"
     compile "com.squareup.okhttp:logging-interceptor:${libs.okhttpVersion}"
     compile "com.squareup.retrofit:retrofit:${libs.retrofitVersion}"
-    compile("com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}") {
-        exclude group: "com.fasterxml.jackson.core", module: "jackson-databind"
-    }
+    compile("com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}")
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
@@ -70,11 +72,6 @@ dependencies {
     apt "com.raizlabs.android:DBFlow-Compiler:${libs.dbFlowVersion}"
     compile "com.raizlabs.android:DBFlow-Core:${libs.dbFlowVersion}"
     compile "com.raizlabs.android:DBFlow:${libs.dbFlowVersion}"
-
-    // Apache
-    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
-        exclude module: 'commons-logging'
-    }
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"

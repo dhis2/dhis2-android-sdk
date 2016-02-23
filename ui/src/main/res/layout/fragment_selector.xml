@@ -41,7 +41,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:indeterminate="true"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal|top" />
+        android:layout_gravity="center_horizontal" />
 
 </android.support.design.widget.CoordinatorLayout>

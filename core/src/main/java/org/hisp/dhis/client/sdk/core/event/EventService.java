@@ -123,6 +123,11 @@ public class EventService implements IEventService {
     }
 
     @Override
+    public List<Event> list(Program program, OrganisationUnit organisationUnit) {
+        return eventStore.query(organisationUnit, program);
+    }
+
+    @Override
     public boolean add(Event object) {
         Preconditions.isNull(object, "event argument must not be null");
 

@@ -45,4 +45,5 @@ public interface IEventService extends IService, IAdd<Event>, ISave<Event>,
     Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment, OrganisationUnit organisationUnit, Program program, ProgramStage programStage, String status);
     Event create(OrganisationUnit organisationUnit, String status, Program program, ProgramStage programStage);
     List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate);
+    List<Event> list(Program program, OrganisationUnit organisationUnit);
 }

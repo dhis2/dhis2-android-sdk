@@ -48,6 +48,8 @@ public interface IEventScope {
 
     Observable<List<Event>> list();
 
+    Observable<List<Event>> list(OrganisationUnit organisationUnit, Program program);
+
     /**
      * Sends all local event changes to server
      */

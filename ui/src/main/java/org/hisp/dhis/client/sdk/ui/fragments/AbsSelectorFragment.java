@@ -63,8 +63,8 @@ public abstract class AbsSelectorFragment extends BaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mPickerFrameLayout = (FrameLayout) view.findViewById(R.id.pickerFragment);
-        mItemListFrameLayout = (FrameLayout) view.findViewById(R.id.itemFragment);
+        //mPickerFrameLayout = (FrameLayout) view.findViewById(R.id.pickerFragment);
+        //mItemListFrameLayout = (FrameLayout) view.findViewById(R.id.item_fragment);
     }
 
     @Override
@@ -100,8 +100,4 @@ public abstract class AbsSelectorFragment extends BaseFragment {
 //        mNavigationHandler = null;
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_selector;
-    }
 }

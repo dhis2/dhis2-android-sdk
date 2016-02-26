@@ -163,4 +163,20 @@ public class UserAccountScope implements IUserAccountScope {
             }
         });
     }
+
+    @Override
+    public Observable<Void> save(final UserAccount userAccount) {
+        return Observable.create(new Observable.OnSubscribe<Void>() {
+            @Override
+            public void call(Subscriber<? super Void> subscriber) {
+                try {
+                    mUserAccountStore.save(userAccount);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
 }

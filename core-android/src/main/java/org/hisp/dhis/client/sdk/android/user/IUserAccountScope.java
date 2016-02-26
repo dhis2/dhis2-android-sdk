@@ -45,4 +45,7 @@ public interface IUserAccountScope {
     Observable<Void> syncAssignedPrograms();
 
     Observable<UserAccount> account();
-}
+
+    Observable<Void> save(UserAccount userAccount);
+
+    }

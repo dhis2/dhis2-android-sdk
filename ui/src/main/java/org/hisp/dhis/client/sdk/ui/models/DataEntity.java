@@ -62,12 +62,29 @@ public class DataEntity {
         this.dataEntityValueValidators = new ArrayList<>();
     }
 
+    private DataEntity(String label, String value, Type type,
+                       OnValueChangeListener<CharSequence> onValueChangeListener) {
+        isNull(label, "label must not be null");
+        isNull(type, "type must not be null");
+
+        this.label = label;
+        this.value = value;
+        this.type = type;
+        this.onValueChangeListener = onValueChangeListener;
+        this.dataEntityValueValidators = new ArrayList<>();
+    }
+
     public static DataEntity create(@NonNull String label, @NonNull Type type) {
         return new DataEntity(label, "", type);
     }
 
     public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type) {
         return new DataEntity(label, value, type);
+    }
+
+    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type,
+                                    OnValueChangeListener<CharSequence> onValueChangeListener) {
+        return new DataEntity(label, value, type, onValueChangeListener);
     }
 
     @NonNull
@@ -90,8 +107,9 @@ public class DataEntity {
     }
 
     public boolean updateValue(@NonNull CharSequence value) {
-        if (validateValue(value)) {
+        if (validateValue(value) && (!value.equals(this.value))) {
             this.value = value;
+            this.onValueChangeListener.onValueChanged(value);
             return true;
         }
         return false;

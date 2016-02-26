@@ -43,6 +43,7 @@ import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.utils.api.CodeGenerator;
 import org.hisp.dhis.android.sdk.utils.support.DateUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,33 @@ public class Enrollment extends BaseSerializableModel {
                 Event event = new Event(organisationUnit, status,
                         program.id, programStage,
                         trackedEntityInstance, enrollment, dateOfEnrollment);
+                events.add(event);
+            }
+        }
+        if (!events.isEmpty()) {
+            setEvents(events);
+        }
+    }
+
+    public Enrollment(String organisationUnit, String trackedEntityInstance, Program program, String enrollmentDate, String incidentDate) {
+        orgUnit = organisationUnit;
+        status = Enrollment.ACTIVE;
+        enrollment = CodeGenerator.generateCode();
+        followup = false;
+        fromServer = false;
+        this.program = program.getUid();
+        this.trackedEntityInstance = trackedEntityInstance;
+        this.dateOfEnrollment = enrollmentDate;
+        this.dateOfIncident = incidentDate;
+        List<Event> events = new ArrayList<>();
+        for (ProgramStage programStage : program.getProgramStages()) {
+            if (programStage.getAutoGenerateEvent()) {
+                String status = Event.STATUS_FUTURE_VISIT;
+                DateTime dueDate = new DateTime(enrollmentDate);
+                dueDate = dueDate.plusDays(programStage.getMinDaysFromStart());
+                Event event = new Event(organisationUnit, status,
+                        program.id, programStage,
+                        trackedEntityInstance, enrollment, dueDate.toString());
                 events.add(event);
             }
         }

@@ -65,47 +65,77 @@ public class QueryTrackedEntityInstancesResultDialogFragmentQuery implements Que
         this.orgUnit = orgUnit;
     }
 
-    @Override
-    public QueryTrackedEntityInstancesResultDialogFragmentForm query(Context context)
-    {
-        QueryTrackedEntityInstancesResultDialogFragmentForm form = new QueryTrackedEntityInstancesResultDialogFragmentForm();
-        form.setOrganisationUnit(orgUnit);
-        form.setProgram(programId);
+//    @Override
+//    public QueryTrackedEntityInstancesResultDialogFragmentForm query(Context context)
+//    {
+//        QueryTrackedEntityInstancesResultDialogFragmentForm form = new QueryTrackedEntityInstancesResultDialogFragmentForm();
+//        form.setOrganisationUnit(orgUnit);
+//        form.setProgram(programId);
+//
+//        Log.d(TAG, orgUnit + programId);
+//
+//        Program program = MetaDataController.getProgram(programId);
+//        if(program == null || orgUnit == null) {
+//            return form;
+//        }
+//        List<ProgramTrackedEntityAttribute> programAttrs = program.getProgramTrackedEntityAttributes();
+//        List<TrackedEntityAttributeValue> values = new ArrayList<>();
+//        List<TrackedEntityAttribute> listAttributes = new ArrayList<>();
+//        for(ProgramTrackedEntityAttribute ptea: programAttrs) {
+//                listAttributes.add(ptea.getTrackedEntityAttribute());
+//
+//        }
+//        Log.d(TAG, "rows1: " + listAttributes.size());
+//        if(listAttributes == null)
+//            return form;
+//
+//        List<DataEntryRow> dataEntryRows = new ArrayList<>();
+//        for(int i=0;i<listAttributes.size();i++)
+//        {
+//            TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
+//            value.setTrackedEntityAttributeId(listAttributes.get(i).getUid());
+//            values.add(value);
+//
+//            DataEntryRow row = createDataEntryView(listAttributes.get(i), value);
+//            dataEntryRows.add(row);
+//        }
+//        Log.d(TAG, "rows: " + dataEntryRows.size());
+//        form.setTrackedEntityAttributeValues(values);
+//        form.setDataEntryRows(dataEntryRows);
+//        return form;
+//    }
+@Override
+public QueryTrackedEntityInstancesResultDialogFragmentForm query(Context context)
+{
+    QueryTrackedEntityInstancesResultDialogFragmentForm form = new QueryTrackedEntityInstancesResultDialogFragmentForm();
+    form.setOrganisationUnit(orgUnit);
+    form.setProgram(programId);
 
-        Log.d(TAG, orgUnit + programId);
+    Log.d(TAG, orgUnit + programId);
 
-        Program program = MetaDataController.getProgram(programId);
-        if(program == null || orgUnit == null) {
-            return form;
-        }
-        List<ProgramTrackedEntityAttribute> programAttrs = program.getProgramTrackedEntityAttributes();
-        List<TrackedEntityAttributeValue> values = new ArrayList<>();
-        List<TrackedEntityAttribute> listAttributes = new ArrayList<>();
-        for(ProgramTrackedEntityAttribute ptea: programAttrs) {
-                listAttributes.add(ptea.getTrackedEntityAttribute());
-
-        }
-        Log.d(TAG, "rows1: " + listAttributes.size());
-        if(listAttributes == null)
-            return form;
-
-        List<DataEntryRow> dataEntryRows = new ArrayList<>();
-        for(int i=0;i<listAttributes.size();i++)
-        {
-            TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
-            value.setTrackedEntityAttributeId(listAttributes.get(i).getUid());
-            values.add(value);
-
-            DataEntryRow row = createDataEntryView(listAttributes.get(i), value);
-            dataEntryRows.add(row);
-        }
-        Log.d(TAG, "rows: " + dataEntryRows.size());
-        form.setTrackedEntityAttributeValues(values);
-        form.setDataEntryRows(dataEntryRows);
+    Program program = MetaDataController.getProgram(programId);
+    if(program == null || orgUnit == null) {
         return form;
     }
+    List<ProgramTrackedEntityAttribute> programAttrs = program.getProgramTrackedEntityAttributes();
+    List<TrackedEntityAttributeValue> values = new ArrayList<>();
+    List<DataEntryRow> dataEntryRows = new ArrayList<>();
+    for(ProgramTrackedEntityAttribute ptea: programAttrs) {
+        TrackedEntityAttribute trackedEntityAttribute = ptea.getTrackedEntityAttribute();
+        TrackedEntityAttributeValue value = new TrackedEntityAttributeValue();
+        value.setTrackedEntityAttributeId(trackedEntityAttribute.getUid());
+        values.add(value);
 
-    public DataEntryRow createDataEntryView(TrackedEntityAttribute trackedEntityAttribute, TrackedEntityAttributeValue dataValue) {
+        DataEntryRow row = createDataEntryView(ptea, trackedEntityAttribute, value);
+        dataEntryRows.add(row);
+    }
+    form.setTrackedEntityAttributeValues(values);
+    form.setDataEntryRows(dataEntryRows);
+    return form;
+}
+
+    public DataEntryRow createDataEntryView(ProgramTrackedEntityAttribute programTrackedEntityAttribute,
+                                            TrackedEntityAttribute trackedEntityAttribute, TrackedEntityAttributeValue dataValue) {
         DataEntryRow row;
         String trackedEntityAttributeName = trackedEntityAttribute.getName();
         if (trackedEntityAttribute.getOptionSet() != null) {
@@ -134,7 +164,7 @@ public class QueryTrackedEntityInstancesResultDialogFragmentQuery implements Que
         } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_TRUE_ONLY)) {
             row = new CheckBoxRow(trackedEntityAttributeName, dataValue);
         } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_DATE)) {
-            row = new DatePickerRow(trackedEntityAttributeName, dataValue);
+            row = new DatePickerRow(trackedEntityAttributeName, dataValue, programTrackedEntityAttribute.getAllowFutureDate());
         } else if (trackedEntityAttribute.getValueType().equalsIgnoreCase(DataElement.VALUE_TYPE_STRING)) {
             row = new EditTextRow(trackedEntityAttributeName, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else {

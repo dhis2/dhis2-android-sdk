@@ -175,7 +175,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                 form.getDataElementNames().put(stageDataElement.getDataelement(),
                         dataElement.getDisplayName());
                 form.getDataValues().put(dataValue.getDataElement(), dataValue);
-                rows.add(createDataEntryRow(dataElement, dataValue));
+                rows.add(createDataEntryRow(stageDataElement, dataElement, dataValue));
             }
         }
     }
@@ -226,7 +226,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         return event;
     }
 
-    private static Row createDataEntryRow(DataElement dataElement, DataValue dataValue) {
+    private static Row createDataEntryRow(ProgramStageDataElement programStageDataElement, DataElement dataElement, DataValue dataValue) {
         Row row;
 
         String dataElementName;
@@ -262,7 +262,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_TRUE_ONLY)) {
             row = new CheckBoxRow(dataElementName, dataValue);
         } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_DATE)) {
-            row = new DatePickerRow(dataElementName, dataValue);
+            row = new DatePickerRow(dataElementName, dataValue, programStageDataElement.getAllowFutureDate());
         } else if (dataElement.getType().equalsIgnoreCase(DataElement.VALUE_TYPE_STRING)) {
             row = new EditTextRow(dataElementName, dataValue, DataEntryRowTypes.LONG_TEXT);
         } else {

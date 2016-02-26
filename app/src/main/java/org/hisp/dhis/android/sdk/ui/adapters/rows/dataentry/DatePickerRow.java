@@ -36,26 +36,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.android.sdk.R;
-import org.hisp.dhis.android.sdk.persistence.models.DataValue;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
-import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
+import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 public class DatePickerRow extends Row {
     private static final String EMPTY_FIELD = "";
+    private final boolean mAllowDatesInFuture;
 
-
-    public DatePickerRow(String label, BaseValue value) {
+    public DatePickerRow(String label, BaseValue value, boolean allowDatesInFuture) {
         mLabel = label;
         mValue = value;
+        mAllowDatesInFuture = allowDatesInFuture;
 
         checkNeedsForDescriptionButton();
     }
@@ -73,7 +72,7 @@ public class DatePickerRow extends Row {
             View root = inflater.inflate(
                     R.layout.listview_row_datepicker, container, false);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
-            holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton);
+            holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton, mAllowDatesInFuture);
 
             root.setTag(holder);
             view = root;
@@ -113,14 +112,14 @@ public class DatePickerRow extends Row {
         final OnEditTextClickListener invokerListener;
         final ClearButtonListener clearButtonListener;
 
-        public DatePickerRowHolder(View root, Context context, View detailedInfoButton) {
+        public DatePickerRowHolder(View root, Context context, View detailedInfoButton, boolean allowFutureDates) {
             textLabel = (TextView) root.findViewById(R.id.text_label);
             pickerInvoker = (TextView) root.findViewById(R.id.date_picker_text_view);
             clearButton = (ImageButton) root.findViewById(R.id.clear_text_view);
             this.detailedInfoButton = detailedInfoButton;
 
             dateSetListener = new DateSetListener(pickerInvoker);
-            invokerListener = new OnEditTextClickListener(context, dateSetListener);
+            invokerListener = new OnEditTextClickListener(context, dateSetListener, allowFutureDates);
             clearButtonListener = new ClearButtonListener(pickerInvoker);
 
             clearButton.setOnClickListener(clearButtonListener);
@@ -139,11 +138,13 @@ public class DatePickerRow extends Row {
     private static class OnEditTextClickListener implements OnClickListener {
         private final Context context;
         private final DateSetListener listener;
+        private final boolean allowDatesInFuture;
 
         public OnEditTextClickListener(Context context,
-                                       DateSetListener listener) {
+                                       DateSetListener listener, boolean allowDatesInFuture) {
             this.context = context;
             this.listener = listener;
+            this.allowDatesInFuture = allowDatesInFuture;
         }
 
         @Override
@@ -151,7 +152,9 @@ public class DatePickerRow extends Row {
             LocalDate currentDate = new LocalDate();
             DatePickerDialog picker = new DatePickerDialog(context, listener,
                     currentDate.getYear(), currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth());
-            picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
+            if(!allowDatesInFuture) {
+                picker.getDatePicker().setMaxDate(DateTime.now().getMillis());
+            }
             picker.show();
         }
     }

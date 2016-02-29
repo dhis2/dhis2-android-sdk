@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.program.IAssignedProgramApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
@@ -49,8 +48,8 @@ import java.util.Map;
 import java.util.Set;
 
 public final class AssignedProgramsController implements IAssignedProgramsController {
-    private final IProgramController programController;
     private final IOrganisationUnitController organisationUnitController;
+    private final IProgramController programController;
     private final ITransactionManager transactionManager;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IProgramStore programStore;
@@ -66,8 +65,10 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
                                       IOrganisationUnitStore organisationUnitStore,
                                       IProgramStore programStore,
                                       ITransactionManager transactionManager,
-                                      IUserApiClient userApiClient, ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+                                      IUserApiClient userApiClient,
+                                      ILastUpdatedPreferences lastUpdatedPreferences,
+                                      ISystemInfoApiClient systemInfoApiClient,
+                                      IModelUtils modelUtils) {
         this.transactionManager = transactionManager;
         this.userApiClient = userApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -87,9 +88,11 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
 
     private void getAssignedProgramsDataFromServer() throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        List<OrganisationUnit> organisationUnitsWithAssignedPrograms = userApiClient.getOrganisationUnitsWithAssignedPrograms();
+        List<OrganisationUnit> organisationUnitsWithAssignedPrograms = null;
+//                = userApiClient.getUserAccount();
 
-        Set<String> organisationUnitsToLoad = modelUtils.toUidSet(organisationUnitsWithAssignedPrograms);
+        Set<String> organisationUnitsToLoad = modelUtils
+                .toUidSet(organisationUnitsWithAssignedPrograms);
         Set<String> programsToLoad = new HashSet<>();
         for (OrganisationUnit organisationUnit : organisationUnitsWithAssignedPrograms) {
             programsToLoad.addAll(modelUtils.toUidSet(organisationUnit.getPrograms()));
@@ -99,14 +102,16 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
         organisationUnitController.sync(organisationUnitsToLoad);
         programController.sync(programsToLoad);
 
-        Map<Program, Set<OrganisationUnit>> programToUnits = reverseRelationship(organisationUnitsWithAssignedPrograms);
+        Map<Program, Set<OrganisationUnit>> programToUnits = reverseRelationship
+                (organisationUnitsWithAssignedPrograms);
         for (Program program : programToUnits.keySet()) {
             Set<OrganisationUnit> units = programToUnits.get(program);
             programStore.assign(program, units);
         }
     }
 
-    private Map<Program, Set<OrganisationUnit>> reverseRelationship(List<OrganisationUnit> organisationUnitsWithAssignedPrograms) {
+    private Map<Program, Set<OrganisationUnit>> reverseRelationship(
+            List<OrganisationUnit> organisationUnitsWithAssignedPrograms) {
         Map<Program, Set<OrganisationUnit>> programToOrganisationUnitsMap = new HashMap<>();
         for (OrganisationUnit unit : organisationUnitsWithAssignedPrograms) {
             List<Program> assignedUnitPrograms = unit.getPrograms();

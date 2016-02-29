@@ -63,16 +63,19 @@ public class UserAccountApiClient implements IUserApiClient {
     }
 
     // TODO move to programs controller (sync() method).
-    @Override
+    // @Override
     public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
-        JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
-        return unwrap(meNode);
+        // JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
+        // return unwrap(meNode);
+        return null;
     }
 
     private static List<OrganisationUnit> unwrap(JsonNode meNode) {
         List<OrganisationUnit> organisationUnits;
-        if(meNode.has("organisationUnits")) {
-            TypeReference<List<OrganisationUnit>> typeRef = new TypeReference<List<OrganisationUnit>>() {};
+        if (meNode.has("organisationUnits")) {
+            TypeReference<List<OrganisationUnit>> typeRef = new
+                    TypeReference<List<OrganisationUnit>>() {
+            };
             try {
                 organisationUnits = ObjectMapperProvider.getInstance().
                         readValue(meNode.get("organisationUnits").traverse(), typeRef);

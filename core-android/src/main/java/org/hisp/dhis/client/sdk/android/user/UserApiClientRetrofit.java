@@ -29,12 +29,8 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
@@ -49,7 +45,7 @@ public interface UserApiClientRetrofit {
 
     @GET("me/")
     Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-
-    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
-    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
+//
+//    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
+//    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
 }

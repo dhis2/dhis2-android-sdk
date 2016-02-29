@@ -28,18 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-
-import java.util.List;
 
 public interface IUserApiClient {
     UserAccount getUserAccount();
-
-    /**
-     * Returns a list of Organisation Units which contain lists of assigned programs. Organisation Units without
-     * programs are ignored.
-     * @return
-     */
-    List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms();
 }

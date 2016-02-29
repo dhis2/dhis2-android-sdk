@@ -42,27 +42,55 @@ public class ProgramController2 implements IProgramController {
     /* Api clients */
     private final IProgramApiClient programApiClient;
 
+    /* Local storage */
+    private final IProgramStore programStore;
+
     /* Utilities */
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramController2(IProgramApiClient programApiClient,
+                              IProgramStore programStore,
                               ILastUpdatedPreferences lastUpdatedPreferences) {
         this.programApiClient = programApiClient;
+        this.programStore = programStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
+    /* TODO implement this method first, then reuse similar logic in sync(uids) method */
+    /* TODO consider taking into account programs which are directly assigned to user */
     @Override
     public void sync() throws ApiException {
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
 
-        List<Program> programs = programApiClient.getPrograms(Fields.BASIC, lastUpdated);
-        for (Program program : programs) {
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
+        List<Program> persistedPrograms = programStore.queryAll();
+
+        for (Program program : allExistingPrograms) {
             System.out.println("Program: " + program.getDisplayName());
         }
     }
 
     @Override
     public void sync(Collection<String> uids) throws ApiException {
+
         System.out.println("Program UIDS: " + uids);
     }
+
+    /*
+         * First we need to check what was removed on the server while we were offline:
+            - Download list of basic items (uid, displayName)
+            - Compare to what we have locally
+            - Create delete operations for programs
+         * After this, check what was updated among existing items, fetch those updates,
+           merge them with existing elements in database
+         * Now, when we have updated existing entries in database, we can work
+           on downloading given uids:
+            - First, check if any of requested UIDS are already there in database.
+            - if some of them already there, remove UID from list of programs to download
+            - All remaining uids should be downloaded, direct properties should be saved to
+            program table.
+            - After that we need to build relationships with related resources by using link tables
+              TODO decide how to work with link tables through Store abstraction.
+     */
 }

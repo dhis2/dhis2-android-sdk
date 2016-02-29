@@ -73,7 +73,7 @@ public class ControllersModule implements IControllersModule {
 
 
         programController = new ProgramController2(networkModule.getProgramApiClient(),
-                preferencesModule.getLastUpdatedPreferences());
+                programStore, preferencesModule.getLastUpdatedPreferences());
         assignedProgramsController = new AssignedProgramsController2(
                 networkModule.getUserApiClient(), programController, modelUtils);
 

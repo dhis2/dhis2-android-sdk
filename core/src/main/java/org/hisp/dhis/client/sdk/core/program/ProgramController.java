@@ -39,9 +39,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class ProgramController extends AbsController<Program> implements IProgramController {
 
@@ -56,7 +55,8 @@ public class ProgramController extends AbsController<Program> implements IProgra
 
     public ProgramController(IProgramApiClient programApiClient, ITransactionManager
             transactionManager, ILastUpdatedPreferences lastUpdatedPreferences, IProgramStore
-            programStore, ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+                                     programStore, ISystemInfoApiClient systemInfoApiClient,
+                             IModelUtils modelUtils) {
         this.programApiClient = programApiClient;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -78,24 +78,25 @@ public class ProgramController extends AbsController<Program> implements IProgra
         lastUpdatedPreferences.save(resource, serverTime);
     }
 
-    private void getProgramsDataFromServer(Set<String> programUidsToLoad) throws ApiException {
+    private void getProgramsDataFromServer(Collection<String> programUidsToLoad) throws
+            ApiException {
         for (String uid : programUidsToLoad) {
             getProgramDataFromServer(uid);
         }
     }
 
     private void getProgramDataFromServer(String uid) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM, uid);
-
-        List<Program> allProgramsOnServer = programApiClient.getPrograms(Fields.BASIC, null);
-        Program updatedProgram = programApiClient.getProgram(uid, Fields.ALL, lastUpdated);
-        List<Program> updatedPrograms = new ArrayList<>();
-        updatedPrograms.add(updatedProgram);
-        List<Program> persistedPrograms = programStore.queryAll();
-        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
-                persistedPrograms, programStore, modelUtils));
-        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime, uid);
+//        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+//        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM, uid);
+//
+//        List<Program> allProgramsOnServer = programApiClient.getPrograms(Fields.BASIC, null);
+//        Program updatedProgram = programApiClient.getProgram(uid, Fields.ALL, lastUpdated);
+//        List<Program> updatedPrograms = new ArrayList<>();
+//        updatedPrograms.add(updatedProgram);
+//        List<Program> persistedPrograms = programStore.queryAll();
+//        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
+//                persistedPrograms, programStore, modelUtils));
+//        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime, uid);
     }
 
     @Override
@@ -104,11 +105,11 @@ public class ProgramController extends AbsController<Program> implements IProgra
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(Collection<String> uids) throws ApiException {
         getProgramsDataFromServer(uids);
     }
 
-    @Override
+    // @Override
     public void sync(String uid) throws ApiException {
         getProgramDataFromServer(uid);
     }

@@ -40,10 +40,9 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 
-import static android.text.TextUtils.isEmpty;
-
 public class CheckBoxRowView implements IRowView {
-
+    private static final String TRUE = "true";
+    private static final String EMPTY_FIELD = "";
     public CheckBoxRowView() {
         // explicit empty constructor
     }
@@ -62,7 +61,8 @@ public class CheckBoxRowView implements IRowView {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
-        ((CheckBoxRowViewHolder) holder).update(dataEntity);
+        CheckBoxRowViewHolder viewHolder = (CheckBoxRowViewHolder) holder;
+        viewHolder.update(dataEntity);
     }
 
 
@@ -88,8 +88,11 @@ public class CheckBoxRowView implements IRowView {
             textViewLabel.setText(dataEntity.getLabel());
             onCheckBoxListener.setDataEntity(dataEntity);
 
-            if (isEmpty(dataEntity.getValue())) {
+            if (EMPTY_FIELD.equals(dataEntity.getValue())) {
                 checkBox.setChecked(false);
+            }
+            else if(TRUE.equals(dataEntity.getValue())) {
+                checkBox.setChecked(true);
             }
         }
     }
@@ -108,8 +111,6 @@ public class CheckBoxRowView implements IRowView {
     }
 
     private static class OnCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
-        private static final String TRUE = "true";
-        private static final String EMPTY_FIELD = "";
 
         private DataEntity dataEntity;
 

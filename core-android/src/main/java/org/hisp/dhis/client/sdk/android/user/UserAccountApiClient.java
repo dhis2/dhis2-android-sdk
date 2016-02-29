@@ -28,18 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.user;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-
-import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
@@ -53,39 +45,38 @@ public class UserAccountApiClient implements IUserApiClient {
 
     @Override
     public UserAccount getUserAccount() {
-        final Map<String, String> QUERY_PARAMS = new HashMap<>();
+        Map<String, String> QUERY_PARAMS = new HashMap<>();
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "organisationUnits[id]");
+                "organisationUnits[id],userCredentials[userRoles[dataSets[id],programs[id]]]");
 
         return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
     }
-
-    // TODO move to programs controller (sync() method).
-    // @Override
-    public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
-        // JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
-        // return unwrap(meNode);
-        return null;
-    }
-
-    private static List<OrganisationUnit> unwrap(JsonNode meNode) {
-        List<OrganisationUnit> organisationUnits;
-        if (meNode.has("organisationUnits")) {
-            TypeReference<List<OrganisationUnit>> typeRef = new
-                    TypeReference<List<OrganisationUnit>>() {
-            };
-            try {
-                organisationUnits = ObjectMapperProvider.getInstance().
-                        readValue(meNode.get("organisationUnits").traverse(), typeRef);
-            } catch (IOException e) {
-                e.printStackTrace();
-                organisationUnits = new ArrayList<>();
-            }
-        } else {
-            organisationUnits = new ArrayList<>();
-        }
-        return organisationUnits;
-    }
+//
+//    // @Override
+//    public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
+//        // JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
+//        // return unwrap(meNode);
+//        return null;
+//    }
+//
+//    private static List<OrganisationUnit> unwrap(JsonNode meNode) {
+//        List<OrganisationUnit> organisationUnits;
+//        if (meNode.has("organisationUnits")) {
+//            TypeReference<List<OrganisationUnit>> typeRef = new
+//                    TypeReference<List<OrganisationUnit>>() {
+//            };
+//            try {
+//                organisationUnits = ObjectMapperProvider.getInstance().
+//                        readValue(meNode.get("organisationUnits").traverse(), typeRef);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                organisationUnits = new ArrayList<>();
+//            }
+//        } else {
+//            organisationUnits = new ArrayList<>();
+//        }
+//        return organisationUnits;
+//    }
 }

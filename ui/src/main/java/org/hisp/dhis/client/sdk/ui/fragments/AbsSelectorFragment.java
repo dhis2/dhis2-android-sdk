@@ -37,11 +37,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-
-import org.hisp.dhis.client.sdk.ui.R;
 //import org.hisp.dhis.client.sdk.ui.activities.INavigationHandler;
 
-public abstract class AbsSelectorFragment extends BaseFragment {
+public abstract class AbsSelectorFragment extends BaseFragment2 {
     //    public INavigationHandler mNavigationHandler;
     private FrameLayout mPickerFrameLayout;
     private FrameLayout mItemListFrameLayout;

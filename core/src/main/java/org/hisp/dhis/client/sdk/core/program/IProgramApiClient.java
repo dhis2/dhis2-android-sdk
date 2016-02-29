@@ -55,12 +55,12 @@ package org.hisp.dhis.client.sdk.core.program;/*
  */
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 public interface IProgramApiClient {
-    List<Program> getPrograms(Fields fields, DateTime lastUpdated);
-    Program getProgram(String uid, Fields fields, DateTime lastUpdated);
+    List<Program> getPrograms(Fields fields, DateTime lastUpdated) throws ApiException;
 }

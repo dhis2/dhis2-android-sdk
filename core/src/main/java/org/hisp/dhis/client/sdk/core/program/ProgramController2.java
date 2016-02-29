@@ -28,14 +28,41 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
 
 import java.util.Collection;
+import java.util.List;
 
-public interface IProgramController extends IController<Program> {
-    void sync() throws ApiException;
+public class ProgramController2 implements IProgramController {
+    /* Api clients */
+    private final IProgramApiClient programApiClient;
 
-    void sync(Collection<String> uids) throws ApiException;
+    /* Utilities */
+    private final ILastUpdatedPreferences lastUpdatedPreferences;
+
+    public ProgramController2(IProgramApiClient programApiClient,
+                              ILastUpdatedPreferences lastUpdatedPreferences) {
+        this.programApiClient = programApiClient;
+        this.lastUpdatedPreferences = lastUpdatedPreferences;
+    }
+
+    @Override
+    public void sync() throws ApiException {
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
+
+        List<Program> programs = programApiClient.getPrograms(Fields.BASIC, lastUpdated);
+        for (Program program : programs) {
+            System.out.println("Program: " + program.getDisplayName());
+        }
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+        System.out.println("Program UIDS: " + uids);
+    }
 }

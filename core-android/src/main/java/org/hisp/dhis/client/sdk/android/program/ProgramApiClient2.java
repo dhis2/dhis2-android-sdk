@@ -26,16 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.program;
+package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
 
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public interface IProgramController extends IController<Program> {
-    void sync() throws ApiException;
+import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
+import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.unwrap;
 
-    void sync(Collection<String> uids) throws ApiException;
+public class ProgramApiClient2 implements IProgramApiClient {
+    /* Retrofit implementation of the client */
+    private final IProgramApiClientRetrofit programApiClientRetrofit;
+
+    public ProgramApiClient2(IProgramApiClientRetrofit programApiClientRetrofit) {
+        this.programApiClientRetrofit = programApiClientRetrofit;
+    }
+
+    @Override
+    public List<Program> getPrograms(Fields fields, DateTime lastUpdated) throws ApiException {
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("paging", "false");
+
+        /* filter programs by lastUpdated field */
+        if (lastUpdated != null) {
+            queryMap.put("lastUpdated", lastUpdated.toString());
+        }
+
+        switch (fields) {
+            case BASIC: {
+                queryMap.put("fields", "id,displayName");
+                break;
+            }
+            case ALL: {
+                queryMap.put("fields", "id,displayName");
+                break;
+            }
+        }
+
+        return unwrap(call(programApiClientRetrofit.getPrograms(queryMap)), "programs");
+    }
 }

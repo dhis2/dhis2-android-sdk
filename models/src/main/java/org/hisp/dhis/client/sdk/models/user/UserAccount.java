@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
@@ -110,8 +111,14 @@ public class UserAccount implements IdentifiableObject {
     @JsonProperty("phoneNumber")
     String phoneNumber;
 
+
+    /* This properties should not be directly
+    accessible through model accessors */
     @JsonProperty("userCredentials")
     UserCredentials userCredentials;
+
+    @JsonProperty("organisationUnits")
+    List<OrganisationUnit> organisationUnits;
 
     public UserAccount() {
         action = Action.SYNCED;
@@ -187,6 +194,7 @@ public class UserAccount implements IdentifiableObject {
         this.access = access;
     }
 
+    /* Exposing getPrograms() instead of making UserCredentials model public */
     public List<Program> getPrograms() {
         Map<String, Program> programMap = new HashMap<>();
         if (userCredentials != null && userCredentials.getUserRoles() != null) {
@@ -202,6 +210,10 @@ public class UserAccount implements IdentifiableObject {
         }
 
         return new ArrayList<>(programMap.values());
+    }
+
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
     }
 
     public Action getAction() {

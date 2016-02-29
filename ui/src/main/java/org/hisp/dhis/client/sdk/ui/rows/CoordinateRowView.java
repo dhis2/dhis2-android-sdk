@@ -102,6 +102,7 @@ public class CoordinateRowView implements IRowView {
 
             CharSequence hint = !isEmpty(entity.getValue()) ? null : onFocusChangeListener.getHint();
             latitudeTextInputLayout.setHint(hint);
+            longitudeTextInputLayout.setHint(hint);
         }
     }
     private static class OnValueChangedListener extends AbsTextWatcher {

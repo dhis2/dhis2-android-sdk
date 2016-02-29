@@ -40,7 +40,7 @@ public class DataEntity {
     private final CharSequence label;
     private CharSequence value;
 
-    private OnValueChangeListener<CharSequence> onValueChangeListener;
+    private OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener;
     private List<IValueValidator<CharSequence>> dataEntityValueValidators;
 
 //    for simplicity, let's ignore these properties from beginning
@@ -62,12 +62,29 @@ public class DataEntity {
         this.dataEntityValueValidators = new ArrayList<>();
     }
 
+    private DataEntity(String label, String value, Type type,
+                       OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener) {
+        isNull(label, "label must not be null");
+        isNull(type, "type must not be null");
+
+        this.label = label;
+        this.value = value;
+        this.type = type;
+        this.onValueChangeListener = onValueChangeListener;
+        this.dataEntityValueValidators = new ArrayList<>();
+    }
+
     public static DataEntity create(@NonNull String label, @NonNull Type type) {
         return new DataEntity(label, "", type);
     }
 
     public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type) {
         return new DataEntity(label, value, type);
+    }
+
+    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type,
+                                    OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener) {
+        return new DataEntity(label, value, type, onValueChangeListener);
     }
 
     @NonNull
@@ -85,13 +102,14 @@ public class DataEntity {
         return type;
     }
 
-    public void setOnValueChangedListener(OnValueChangeListener<CharSequence> onValueChangedListener) {
+    public void setOnValueChangedListener(OnValueChangeListener<CharSequence, CharSequence> onValueChangedListener) {
         this.onValueChangeListener = onValueChangedListener;
     }
 
     public boolean updateValue(@NonNull CharSequence value) {
-        if (validateValue(value)) {
+        if (validateValue(value) && (!value.equals(this.value))) {
             this.value = value;
+            this.onValueChangeListener.onValueChanged(this.label, value);
             return true;
         }
         return false;

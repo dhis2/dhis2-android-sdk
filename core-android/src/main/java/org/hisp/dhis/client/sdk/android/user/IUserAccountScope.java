@@ -45,4 +45,6 @@ public interface IUserAccountScope {
     Observable<UserAccount> account();
 
     Observable<Void> programs();
+
+    Observable<Void> save(UserAccount userAccount);
 }

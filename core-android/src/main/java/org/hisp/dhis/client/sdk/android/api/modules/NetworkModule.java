@@ -197,7 +197,7 @@ public class NetworkModule implements INetworkModule {
                     .addPathSegment("api")
                     .build();
             HttpUrl modifiedUrl = HttpUrl.parse(url.toString() + "/");
-            System.out.println("ApiBaseUrl.url: " + modifiedUrl);
+            //System.out.println("ApiBaseUrl.url: " + modifiedUrl);
             return modifiedUrl;
         }
     }
@@ -224,7 +224,7 @@ public class NetworkModule implements INetworkModule {
             Request request = chain.request().newBuilder()
                     .addHeader("Authorization", base64Credentials)
                     .build();
-            System.out.println("Request: " + request.urlString());
+            //System.out.println("Request: " + request.urlString());
 
             Response response = chain.proceed(request);
             if (!response.isSuccessful() && response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {

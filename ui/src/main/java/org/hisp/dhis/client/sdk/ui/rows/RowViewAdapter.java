@@ -55,7 +55,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         rowViews.add(Type.AUTO_COMPLETE.ordinal(), new AutoCompleteRowView());
         rowViews.add(Type.COORDINATES.ordinal(), new CoordinateRowView());
         rowViews.add(Type.BOOLEAN.ordinal(), new RadioButtonRowView());
-
+        rowViews.add(Type.INTEGER.ordinal(), new EditTextRowView());
+        rowViews.add(Type.NUMBER.ordinal(), new EditTextRowView());
+        rowViews.add(Type.LONG_TEXT.ordinal(), new EditTextRowView());
+        
         fragmentManager = childFragmentManager;
     }
 

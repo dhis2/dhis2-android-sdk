@@ -63,6 +63,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         editText = (EditText) appCompatDialog.findViewById(R.id.dialog_autocomplete_edittext);
 
         progressBar = (ProgressBar) appCompatDialog.findViewById(R.id.dialog_autocomplete_progress_bar);
+        progressBar.setVisibility(View.GONE);
         recyclerView = (RecyclerView) appCompatDialog.findViewById(R.id.dialog_autocomplete_recyclerview);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

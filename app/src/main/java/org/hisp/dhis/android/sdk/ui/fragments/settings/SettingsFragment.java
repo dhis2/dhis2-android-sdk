@@ -49,6 +49,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.controllers.PeriodicSynchronizerController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
@@ -118,7 +119,7 @@ public class SettingsFragment extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            if (DhisController.hasUnSynchronizedDatavalues) {
+                            if (TrackerController.hasUnSynchronizedDataValues()) {
                                 //show error dialog
                                 UiUtils.showErrorDialog(getActivity(), getString(R.string.error_message),
                                         getString(R.string.unsynchronized_data_values),

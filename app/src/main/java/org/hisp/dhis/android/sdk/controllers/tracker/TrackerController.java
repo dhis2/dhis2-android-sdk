@@ -54,6 +54,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -369,6 +370,33 @@ public final class TrackerController extends ResourceController {
         }
     }
 
+    public static boolean hasUnSynchronizedDataValues() {
+        boolean hasUnsynchronizedEnrollments = false;
+        boolean hasUnsynchronizedEvents = false;
+        boolean hasUnsynchronizedTEIs = false;
+        List<Enrollment> unSynchronizedEnrollments = new Select().from(Enrollment.class).where
+                (Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
+        List<Event> unSynchronizedEvents = new Select().from(Event.class).where
+                (Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
+        List<TrackedEntityInstance> unsynchronizedTEIs = new Select().from(TrackedEntityInstance.class).where
+                (Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
+
+        if(unSynchronizedEnrollments != null && unSynchronizedEnrollments.size() > 0) {
+            hasUnsynchronizedEnrollments = true;
+        }
+        if(unSynchronizedEvents != null && unSynchronizedEvents.size() > 0) {
+            hasUnsynchronizedEvents = true;
+        }
+        if(unsynchronizedTEIs != null && unsynchronizedTEIs.size() > 0) {
+            hasUnsynchronizedTEIs = true;
+        }
+
+        if(hasUnsynchronizedEnrollments || hasUnsynchronizedEvents || hasUnsynchronizedTEIs) {
+            return true;
+        }
+        else return false;
+    }
+
     /**
      * Loads user generated data from the server. Which data is loaded is determined by enabling
      * or disabling flags in DHIS 2.
@@ -427,4 +455,6 @@ public final class TrackerController extends ResourceController {
     public static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) throws APIException {
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, sendEnrollments);
     }
+
+
 }

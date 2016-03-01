@@ -34,7 +34,10 @@ import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +45,9 @@ import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.unwrap;
 
 public class ProgramApiClient2 implements IProgramApiClient {
+    /* amount of programs which we should get by each request */
+    private static final int PROGRAMS_PER_REQUEST = 64;
+
     /* Retrofit implementation of the client */
     private final IProgramApiClientRetrofit programApiClientRetrofit;
 
@@ -50,7 +56,8 @@ public class ProgramApiClient2 implements IProgramApiClient {
     }
 
     @Override
-    public List<Program> getPrograms(Fields fields, DateTime lastUpdated) throws ApiException {
+    public List<Program> getPrograms(Fields fields, DateTime lastUpdated,
+                                     String... ids) throws ApiException {
         Map<String, String> queryMap = new HashMap<>();
         queryMap.put("paging", "false");
 
@@ -70,6 +77,79 @@ public class ProgramApiClient2 implements IProgramApiClient {
             }
         }
 
-        return unwrap(call(programApiClientRetrofit.getPrograms(queryMap)), "programs");
+        List<Program> allPrograms = new ArrayList<>();
+        if (ids != null && ids.length > 0) {
+
+            List<String> filters = buildIdFilter(ids);
+            for (String filter : filters) {
+                // we need to avoid mutating existing map
+                Map<String, String> queryMapWithIds = new HashMap<>(queryMap);
+                queryMapWithIds.put("filter", "id:in:" + filter);
+
+                // downloading subset of programs
+                allPrograms.addAll(unwrap(call(programApiClientRetrofit
+                        .getPrograms(queryMapWithIds)), "programs"));
+            }
+        } else {
+            allPrograms.addAll(unwrap(call(programApiClientRetrofit
+                    .getPrograms(queryMap)), "programs"));
+        }
+
+        return allPrograms;
+    }
+
+    private static List<String> buildIdFilter(String[] ids) {
+        List<String> idFilters = new ArrayList<>();
+
+        if (ids != null && ids.length > 0) {
+            List<List<String>> splittedIds = sliceList(Arrays.asList(ids), PROGRAMS_PER_REQUEST);
+
+            for (List<String> listOfIds : splittedIds) {
+                StringBuilder builder = new StringBuilder();
+                idFilters.add(builder.append("[")
+                        .append(join(listOfIds))
+                        .append("]")
+                        .toString());
+            }
+        }
+
+        return idFilters;
+    }
+
+    private static List<List<String>> sliceList(List<String> stringList, int subListSize) {
+        List<List<String>> listOfSubLists = new ArrayList<>();
+
+        int leftBoundary = 0;
+        int rightBoundary = subListSize < stringList.size() ? subListSize : stringList.size();
+
+        do {
+            listOfSubLists.add(stringList.subList(leftBoundary, rightBoundary));
+
+            leftBoundary = rightBoundary;
+            rightBoundary = rightBoundary + subListSize < stringList.size() ?
+                    rightBoundary + subListSize : stringList.size();
+        } while (leftBoundary != rightBoundary);
+
+        return listOfSubLists;
+    }
+
+    private static String join(List<String> strings) {
+        if (strings == null) {
+            return "";
+        }
+
+        StringBuilder buffer = new StringBuilder();
+        Iterator<? extends String> iterator = strings.iterator();
+
+        if (iterator.hasNext()) {
+            buffer.append(iterator.next());
+
+            while (iterator.hasNext()) {
+                buffer.append(",").append(iterator.next());
+            }
+        }
+
+
+        return buffer.toString();
     }
 }

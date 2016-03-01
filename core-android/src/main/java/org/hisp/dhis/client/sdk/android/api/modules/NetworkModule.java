@@ -46,8 +46,8 @@ import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -94,7 +94,8 @@ public class NetworkModule implements INetworkModule {
     private final IOrganisationUnitApiClient mOrganisationUnitApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
-        AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
+        AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule
+                .getUserPreferences(),
                 preferencesModule.getConfigurationPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -110,12 +111,9 @@ public class NetworkModule implements INetworkModule {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.disable(
-                MapperFeature.AUTO_DETECT_CREATORS,
-                MapperFeature.AUTO_DETECT_FIELDS,
-                MapperFeature.AUTO_DETECT_GETTERS,
-                MapperFeature.AUTO_DETECT_IS_GETTERS,
-                MapperFeature.AUTO_DETECT_SETTERS
-        );
+                MapperFeature.AUTO_DETECT_CREATORS, MapperFeature.AUTO_DETECT_FIELDS,
+                MapperFeature.AUTO_DETECT_GETTERS, MapperFeature.AUTO_DETECT_IS_GETTERS,
+                MapperFeature.AUTO_DETECT_SETTERS);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
@@ -123,17 +121,24 @@ public class NetworkModule implements INetworkModule {
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
-        mDashboardApiClient = new DashboardApiClient(retrofit.create(DashboardApiClientRetrofit.class));
-        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(SystemInfoApiClientRetrofit.class));
+        mProgramApiClient = new ProgramApiClient2(retrofit.create(IProgramApiClientRetrofit.class));
+
+
+        mDashboardApiClient = new DashboardApiClient(retrofit.create(
+                DashboardApiClientRetrofit.class));
+        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(
+                SystemInfoApiClientRetrofit.class));
         mUserApiClient = new UserAccountApiClient(retrofit.create(UserApiClientRetrofit.class));
         mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
 
         mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.
 
-        mProgramApiClient = new ProgramApiClient(retrofit.create(IProgramApiClientRetrofit.class));
-        mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(OrganisationUnitApiClientRetrofit.class), new ModelUtils());
 
-        mTrackedEntityAttributeApiClient = null; // TODO: implement TrackedEntityAttributeApiClient class.
+        mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
+                OrganisationUnitApiClientRetrofit.class), new ModelUtils());
+
+        mTrackedEntityAttributeApiClient = null; // TODO: implement
+        // TrackedEntityAttributeApiClient class.
         mTrackedEntityApiClient = null;
     }
 
@@ -227,7 +232,8 @@ public class NetworkModule implements INetworkModule {
             //System.out.println("Request: " + request.urlString());
 
             Response response = chain.proceed(request);
-            if (!response.isSuccessful() && response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            if (!response.isSuccessful() && response.code() == HttpURLConnection
+                    .HTTP_UNAUTHORIZED) {
                 if (mUserPreferences.isUserConfirmed()) {
                     // invalidate existing user
                     mUserPreferences.invalidateUser();

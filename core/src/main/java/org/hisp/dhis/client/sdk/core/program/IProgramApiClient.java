@@ -62,5 +62,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 public interface IProgramApiClient {
-    List<Program> getPrograms(Fields fields, DateTime lastUpdated) throws ApiException;
+    List<Program> getPrograms(Fields fields, DateTime lastUpdated,
+                              String... ids) throws ApiException;
 }

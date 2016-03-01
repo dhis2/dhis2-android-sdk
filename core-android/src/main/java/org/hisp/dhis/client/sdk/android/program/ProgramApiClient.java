@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -62,7 +63,7 @@ public class ProgramApiClient implements IProgramApiClient {
         this.mIProgramApiClientRetrofit = IProgramApiClientRetrofit;
     }
 
-    @Override
+    // @Override
     public List<Program> getPrograms(Fields fields, DateTime dateTime) {
         switch (fields) {
             case ALL:
@@ -286,5 +287,10 @@ public class ProgramApiClient implements IProgramApiClient {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Program> getPrograms(Fields fields, DateTime lastUpdated, String... ids) throws ApiException {
+        return null;
     }
 }

@@ -73,8 +73,12 @@ public class ProgramController2 implements IProgramController {
 
     @Override
     public void sync(Collection<String> uids) throws ApiException {
-
-        System.out.println("Program UIDS: " + uids);
+        String[] ids = new String[uids.size()];
+        List<Program> allExistingPrograms = programApiClient.getPrograms(
+                Fields.BASIC, null, uids.toArray(ids));
+        for (Program program : allExistingPrograms) {
+            System.out.println("Program displayName: " + program.getDisplayName());
+        }
     }
 
     /*

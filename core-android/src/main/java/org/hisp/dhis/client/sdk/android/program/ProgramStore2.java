@@ -26,51 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.program;
+package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.base.IMapper;
+import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$Flow>
+        implements IProgramStore {
 
-public final class ProgramService implements IProgramService {
-
-    private final IProgramStore programStore;
-
-    public ProgramService(IProgramStore programStore) {
-        this.programStore = programStore;
+    public ProgramStore2(IMapper<Program, Program$Flow> mapper) {
+        super(mapper);
     }
 
-    @Override
-    public Program get(long id) {
-        return programStore.queryById(id);
-    }
+//    @Override
+//    public List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes) {
+//        return null;
+//    }
 
-    @Override
-    public Program get(String uid) {
-        return programStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<Program> list() {
-        return programStore.queryAll();
-    }
-
-    @Override
-    public List<Program> list(OrganisationUnit organisationUnit, ProgramType... programTypes) {
-        // return programStore.query(organisationUnit, programTypes);
-        return new ArrayList<>();
-    }
-
-    @Override
-    public boolean remove(Program object) {
-        return programStore.delete(object);
-    }
-
-    @Override
-    public boolean save(Program object) {
-        return programStore.save(object);
-    }
+//    @Override
+//    public void assign(Program program, Set<OrganisationUnit> organisationUnits) {
+//
+//    }
 }

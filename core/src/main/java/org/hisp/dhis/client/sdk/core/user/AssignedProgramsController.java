@@ -106,7 +106,7 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
                 (organisationUnitsWithAssignedPrograms);
         for (Program program : programToUnits.keySet()) {
             Set<OrganisationUnit> units = programToUnits.get(program);
-            programStore.assign(program, units);
+            // programStore.assign(program, units);
         }
     }
 

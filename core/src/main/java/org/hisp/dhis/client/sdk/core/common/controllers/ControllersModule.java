@@ -72,10 +72,13 @@ public class ControllersModule implements IControllersModule {
         isNull(modelUtils, "modelUtils must not be null");
 
 
-        programController = new ProgramController2(networkModule.getProgramApiClient(),
-                persistenceModule.getProgramStore(), preferencesModule.getLastUpdatedPreferences());
+        programController = new ProgramController2(
+                networkModule.getProgramApiClient(), persistenceModule.getProgramStore(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(), modelUtils);
         assignedProgramsController = new AssignedProgramsController2(
-                networkModule.getUserApiClient(), programController, modelUtils);
+                networkModule.getUserApiClient(),
+                programController, modelUtils);
 
         /////////////////////////////////////////////////////////////////////////////////////
         // LEGACY IMPLEMENTATION

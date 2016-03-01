@@ -30,13 +30,18 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class ProgramController2 implements IProgramController {
     /* Api clients */
@@ -46,14 +51,19 @@ public class ProgramController2 implements IProgramController {
     private final IProgramStore programStore;
 
     /* Utilities */
+    private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final IModelUtils modelUtils;
 
-    public ProgramController2(IProgramApiClient programApiClient,
-                              IProgramStore programStore,
-                              ILastUpdatedPreferences lastUpdatedPreferences) {
+    public ProgramController2(IProgramApiClient programApiClient, IProgramStore programStore,
+                              ITransactionManager transactionManager,
+                              ILastUpdatedPreferences lastUpdatedPreferences,
+                              IModelUtils modelUtils) {
         this.programApiClient = programApiClient;
         this.programStore = programStore;
+        this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
+        this.modelUtils = modelUtils;
     }
 
     /* TODO implement this method first, then reuse similar logic in sync(uids) method */
@@ -73,12 +83,41 @@ public class ProgramController2 implements IProgramController {
 
     @Override
     public void sync(Collection<String> uids) throws ApiException {
-        String[] ids = new String[uids.size()];
-        List<Program> allExistingPrograms = programApiClient.getPrograms(
-                Fields.BASIC, null, uids.toArray(ids));
-        for (Program program : allExistingPrograms) {
-            System.out.println("Program displayName: " + program.getDisplayName());
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
+
+        List<Program> persistedPrograms = programStore.queryAll();
+
+        for (Program program : persistedPrograms) {
+            System.out.println("Stored program: " + program.getDisplayName());
         }
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<Program> allExistingPrograms = programApiClient
+                .getPrograms(Fields.BASIC, null);
+
+        // here we want to get list of ids of programs which are
+        // stored locally and list of programs which we want to get
+        Set<String> persistedProgramIds = modelUtils.toUidSet(persistedPrograms);
+        persistedProgramIds.addAll(uids);
+
+        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated,
+                persistedProgramIds.toArray(new String[persistedProgramIds.size()]));
+
+        for (Program program : updatedPrograms) {
+            System.out.println("Program downloaded displayName: " + program.getDisplayName());
+        }
+
+        // sync new programs we got from server to database
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
+                updatedPrograms, persistedPrograms, programStore, modelUtils);
+        transactionManager.transact(dbOperations);
+
+        // determine which relationships programs have to; and which type of relationships
+        // (one to one, one to many, many to one and etc)
+        // TODO implement first for OrganisationUnits
+        // TODO
     }
 
     /*

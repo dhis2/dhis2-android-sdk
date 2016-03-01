@@ -59,6 +59,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeStore;
@@ -172,6 +173,14 @@ public class PersistenceModule implements IPersistenceModule {
         modelUtils = new ModelUtils();
         transactionManager = new TransactionManager(modelUtils);
 
+//        programStore = new ProgramStore(
+//                MapperModuleProvider.getInstance().getProgramMapper(),
+//                transactionManager, MapperModuleProvider.getInstance().getOrganisationUnitMapper(), programTrackedEntityAttributeStore,
+//                programStageStore, programIndicatorStore);
+
+        programStore = new ProgramStore2(MapperModuleProvider
+                .getInstance().getProgramMapper());
+
         userAccountStore = new UserAccountStore(MapperModuleProvider.getInstance()
                 .getUserAccountMapper());
 
@@ -221,10 +230,6 @@ public class PersistenceModule implements IPersistenceModule {
                 .getInstance().getProgramRuleActionMapper());
         programRuleVariableStore = new ProgramRuleVariableStore(MapperModuleProvider
                 .getInstance().getProgramRuleVariableMapper());
-        programStore = new ProgramStore(MapperModuleProvider.getInstance().getProgramMapper(),
-                transactionManager, MapperModuleProvider.getInstance()
-                .getOrganisationUnitMapper(), programTrackedEntityAttributeStore,
-                programStageStore, programIndicatorStore);
         relationshipTypeStore = new RelationshipTypeStore(MapperModuleProvider.getInstance()
                 .getRelationshipTypeMapper());
         dataSetStore = new DataSetStore(MapperModuleProvider.getInstance().getDataSetMapper(),

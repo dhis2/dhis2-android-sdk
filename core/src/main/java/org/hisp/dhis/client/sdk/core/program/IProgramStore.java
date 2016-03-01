@@ -40,24 +40,24 @@ public interface IProgramStore extends IIdentifiableObjectStore<Program> {
 
     /**
      * Returns a list of Programs that are assigned to a given Organisation Unit
-     * @param organisationUnit
-     * @return
+     * @param organisationUnit organisation unit which programs we want to retrieve
+     * @return list of assigned programs
      */
-    List<Program> query(OrganisationUnit organisationUnit);
+//    List<Program> query(OrganisationUnit organisationUnit);
 
     /**
      * Returns a list of Programs that are assigned to a given Organisation Unit with one of the
      * given program type(s)
-     * @param organisationUnit
-     * @param programTypes
-     * @return
+     * @param organisationUnit organisation unit which programs we want to retrieve
+     * @param programTypes program types we are interested in
+     * @return list of assigned programs
      */
-    List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes);
+    // List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes);
 
     /**
      * Creates an assignment link between the given program and the given list of organisation Units
-     * @param program
-     * @param organisationUnits
+     * @param program program with which we want to construct relationships
+     * @param organisationUnits organisation units to which program must be assigned
      */
-    void assign(Program program, Set<OrganisationUnit> organisationUnits);
+    // void assign(Program program, Set<OrganisationUnit> organisationUnits);
 }

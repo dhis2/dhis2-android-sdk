@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
@@ -142,6 +141,7 @@ public class AutoCompleteRowView implements IRowView {
     private static class OnOptionSelectedListener implements OnTextViewClick.OnOptionItemSelectedListener {
         private final TextView valueTextView;
         private DataEntity dataEntity;
+
         public OnOptionSelectedListener(TextView valueTextView) {
             this.valueTextView = valueTextView;
         }
@@ -210,7 +210,6 @@ public class AutoCompleteRowView implements IRowView {
         private static final String ARGS_OPTIONS = "extra:Options";
         private TextInputLayout textInputLayout;
         private EditText editText;
-        private ProgressBar progressBar;
         private RecyclerView recyclerView;
         private OnOptionSelectedListener onOptionSelectedListener;
 
@@ -233,7 +232,6 @@ public class AutoCompleteRowView implements IRowView {
             textInputLayout = (TextInputLayout) appCompatDialog.findViewById(R.id.dialog_autocomplete_textinputlayout);
             editText = (EditText) appCompatDialog.findViewById(R.id.dialog_autocomplete_edittext);
 
-            progressBar = (ProgressBar) appCompatDialog.findViewById(R.id.dialog_autocomplete_progress_bar);
             recyclerView = (RecyclerView) appCompatDialog.findViewById(R.id.dialog_autocomplete_recyclerview);
 
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -332,13 +330,12 @@ public class AutoCompleteRowView implements IRowView {
             filteredOptions.clear();
             final FilterResults filterResults = new FilterResults();
 
-            if(constraint.length() == 0) {
+            if (constraint.length() == 0) {
                 filteredOptions.addAll(options);
-            }
-            else {
+            } else {
                 final String filterString = constraint.toString().toLowerCase().trim();
-                for(String option : options) {
-                    if(option.toLowerCase().trim().contains(filterString)) {
+                for (String option : options) {
+                    if (option.toLowerCase().trim().contains(filterString)) {
                         filteredOptions.add(option);
                     }
                 }

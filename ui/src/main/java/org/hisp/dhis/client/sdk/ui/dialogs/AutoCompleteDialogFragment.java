@@ -15,12 +15,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
-import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.DefaultPickable;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.IPickable;
 
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     private TextInputLayout textInputLayout;
     private EditText editText;
-    private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private OnOptionSelectedListener onOptionSelectedListener;
     private OptionDialogAdapter optionDialogAdapter;
@@ -62,8 +59,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         textInputLayout = (TextInputLayout) appCompatDialog.findViewById(R.id.dialog_autocomplete_textinputlayout);
         editText = (EditText) appCompatDialog.findViewById(R.id.dialog_autocomplete_edittext);
 
-        progressBar = (ProgressBar) appCompatDialog.findViewById(R.id.dialog_autocomplete_progress_bar);
-        progressBar.setVisibility(View.GONE);
         recyclerView = (RecyclerView) appCompatDialog.findViewById(R.id.dialog_autocomplete_recyclerview);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -127,6 +122,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.optionDialogAdapter = optionDialogAdapter;
         }
     }
+
     public static class OptionDialogAdapter extends RecyclerView.Adapter implements Filterable {
         private ArrayList<IPickable> options;
         private OnOptionSelectedListener onOptionSelectedListener;
@@ -187,13 +183,12 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             filteredOptions.clear();
             final FilterResults filterResults = new FilterResults();
 
-            if(constraint.length() == 0) {
+            if (constraint.length() == 0) {
                 filteredOptions.addAll(options);
-            }
-            else {
+            } else {
                 final String filterString = constraint.toString().toLowerCase().trim();
-                for(IPickable option : options) {
-                    if(option.toString().toLowerCase().trim().contains(filterString)) {
+                for (IPickable option : options) {
+                    if (option.toString().toLowerCase().trim().contains(filterString)) {
                         filteredOptions.add(option);
                     }
                 }
@@ -226,6 +221,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
         }
     }
+
     public static class OnTextViewClick implements View.OnClickListener {
         private final TextView textView;
         private final OnOptionSelectedListener onOptionItemSelectedListener;

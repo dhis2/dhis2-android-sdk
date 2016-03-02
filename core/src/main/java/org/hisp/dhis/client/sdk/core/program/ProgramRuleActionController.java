@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -50,20 +51,18 @@ public final class ProgramRuleActionController implements IDataController<Progra
     private final ISystemInfoApiClient systemInfoApiClient;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final IIdentifiableObjectStore<ProgramRuleAction> mProgramRuleActionStore;
-    private final IModelUtils modelUtils;
 
     public ProgramRuleActionController(IProgramRuleActionApiClient programRuleActionApiClient,
                                        ITransactionManager transactionManager,
                                        ISystemInfoApiClient systemInfoApiClient,
                                        ILastUpdatedPreferences lastUpdatedPreferences,
-                                       IIdentifiableObjectStore<ProgramRuleAction> mProgramRuleActionStore,
-                                       IModelUtils modelUtils) {
+                                       IIdentifiableObjectStore<ProgramRuleAction>
+                                               mProgramRuleActionStore) {
         this.programRuleActionApiClient = programRuleActionApiClient;
         this.transactionManager = transactionManager;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.mProgramRuleActionStore = mProgramRuleActionStore;
-        this.modelUtils = modelUtils;
     }
 
     private void getProgramRuleVariablesDataFromServer() throws ApiException {
@@ -73,17 +72,19 @@ public final class ProgramRuleActionController implements IDataController<Progra
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<ProgramRuleAction> allProgramRuleActions = programRuleActionApiClient.getBasicProgramRuleActions(null);
+        List<ProgramRuleAction> allProgramRuleActions = programRuleActionApiClient
+                .getBasicProgramRuleActions(null);
 
         //fetch all updated items
-        List<ProgramRuleAction> updatedProgramRuleActions = programRuleActionApiClient.getFullProgramRuleActions(lastUpdated);
+        List<ProgramRuleAction> updatedProgramRuleActions = programRuleActionApiClient
+                .getFullProgramRuleActions(lastUpdated);
         //merging updated items with persisted items, and removing ones not present in server.
-        List<ProgramRuleAction> existingPersistedAndUpdatedProgramRuleActions =
-                modelUtils.merge(allProgramRuleActions, updatedProgramRuleActions, mProgramRuleActionStore.
-                        queryAll());
+        List<ProgramRuleAction> existingPersistedAndUpdatedProgramRuleActions = ModelUtils.merge(
+                allProgramRuleActions, updatedProgramRuleActions,
+                mProgramRuleActionStore.queryAll());
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(mProgramRuleActionStore,
+        operations.addAll(DbUtils.createOperations(mProgramRuleActionStore,
                 existingPersistedAndUpdatedProgramRuleActions, mProgramRuleActionStore.queryAll()));
 
         transactionManager.transact(operations);

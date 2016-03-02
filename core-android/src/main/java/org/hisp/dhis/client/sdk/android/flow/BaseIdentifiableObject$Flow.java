@@ -36,8 +36,8 @@ import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 
-public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow implements
-        IdentifiableObject {
+public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow
+        implements IdentifiableObject {
     public static final String COLUMN_UID = "uId";
 
     @Column(name = COLUMN_UID)

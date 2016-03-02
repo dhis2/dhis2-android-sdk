@@ -29,15 +29,16 @@
 package org.hisp.dhis.client.sdk.core.constant;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -46,23 +47,21 @@ import java.util.Queue;
 
 public final class ConstantController implements IDataController<Constant> {
     private final IConstantApiClient constantApiClient;
-    private final ITransactionManager transactionManager;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final IIdentifiableObjectStore<Constant> constantStore;
-    private final IModelUtils modelUtils;
+    private final ITransactionManager transactionManager;
 
     public ConstantController(IConstantApiClient constantApiClient,
-                              ITransactionManager transactionManager,
                               ISystemInfoApiClient systemInfoApiClient,
                               ILastUpdatedPreferences lastUpdatedPreferences,
-                              IIdentifiableObjectStore<Constant> constantStore, IModelUtils modelUtils) {
+                              IIdentifiableObjectStore<Constant> constantStore,
+                              ITransactionManager transactionManager) {
         this.constantApiClient = constantApiClient;
-        this.transactionManager = transactionManager;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.constantStore = constantStore;
-        this.modelUtils = modelUtils;
+        this.transactionManager = transactionManager;
     }
 
     private void getConstantsDataFromServer() throws ApiException {
@@ -79,10 +78,10 @@ public final class ConstantController implements IDataController<Constant> {
 
         //merging updated items with persisted items, and removing ones not present in server.
         List<Constant> existingPersistedAndUpdatedConstants =
-                modelUtils.merge(allConstants, updatedConstants, constantStore.queryAll());
+                ModelUtils.merge(allConstants, updatedConstants, constantStore.queryAll());
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(constantStore,
+        operations.addAll(DbUtils.createOperations(constantStore,
                 existingPersistedAndUpdatedConstants, constantStore.queryAll()));
 
         transactionManager.transact(operations);

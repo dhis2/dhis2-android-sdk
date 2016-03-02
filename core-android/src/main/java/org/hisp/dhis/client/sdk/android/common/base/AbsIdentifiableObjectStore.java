@@ -63,6 +63,7 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
                 .from(getMapper().getDatabaseEntityTypeClass())
                 .where(Condition.column(BaseIdentifiableObject$Flow.COLUMN_UID).is(uid))
                 .queryList();
+
         if (databaseEntities != null && !databaseEntities.isEmpty()) {
             return getMapper().mapToModel(databaseEntities.get(0));
         } else {

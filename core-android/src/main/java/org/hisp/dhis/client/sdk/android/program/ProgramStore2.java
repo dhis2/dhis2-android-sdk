@@ -28,26 +28,103 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
+import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$Flow>
         implements IProgramStore {
+
+    /* Relationship type between programs and organisation units */
+    private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
+
+
 
     public ProgramStore2(IMapper<Program, Program$Flow> mapper) {
         super(mapper);
     }
 
-//    @Override
-//    public List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes) {
-//        return null;
-//    }
+    @Override
+    public boolean insert(Program object) {
+        boolean isSuccess = super.insert(object);
+        boolean areModelsLinked = false;
 
-//    @Override
-//    public void assign(Program program, Set<OrganisationUnit> organisationUnits) {
-//
-//    }
+        if (isSuccess) {
+            // sync organisation unit links
+
+            List<IDbOperation<ModelLink$Flow>> dbOperations =
+                    updateLinksToOrganisationUnits(object);
+        }
+
+        return isSuccess && areModelsLinked;
+    }
+
+    @Override
+    public boolean update(Program object) {
+        boolean isSuccess = super.update(object);
+        boolean areModelsLinked = false;
+
+        if (isSuccess) {
+            // sync organisation unit links
+
+            updateLinksToOrganisationUnits(object);
+        }
+
+        return isSuccess && areModelsLinked;
+    }
+
+    @Override
+    public boolean save(Program object) {
+        boolean isSuccess = super.save(object);
+        boolean areModelsLinked = false;
+
+        if (isSuccess) {
+            // sync organisation unit links
+
+            updateLinksToOrganisationUnits(object);
+        }
+
+        return isSuccess && areModelsLinked;
+    }
+
+    private List<IDbOperation<ModelLink$Flow>> updateLinksToOrganisationUnits(Program program) {
+        // organisation unit to program relation ships
+        // create generic link table with UID to UID mapping?
+        // then it will be impossible to perform joins on tables.
+
+        List<ModelLink$Flow> links = new ArrayList<>();
+        if (program.getOrganisationUnits() != null) {
+            for (OrganisationUnit orgUnit : program.getOrganisationUnits()) {
+                ModelLink$Flow linkModel = new ModelLink$Flow();
+                linkModel.setKeyOne(orgUnit.getUId());
+                linkModel.setKeyTwo(program.getUId());
+                linkModel.setLinkMimeType(PROGRAM_TO_ORGANISATION_UNITS);
+                links.add(linkModel);
+            }
+        }
+
+        List<ModelLink$Flow> persistedLinks = new Select()
+                .from(ModelLink$Flow.class)
+                .where(Condition.column(ModelLink$Flow$Table
+                        .LINKMIMETYPE).is(PROGRAM_TO_ORGANISATION_UNITS))
+                .queryList();
+
+        return ModelLink$Flow.createOperations(persistedLinks, links);
+    }
+
+    // * as soon as any write type of action happens, which should consider syncing relationships.
+    // * but it also means that we have to fetch related elements on each read operation
+    //   (Potentially can result in performance problem)
 }

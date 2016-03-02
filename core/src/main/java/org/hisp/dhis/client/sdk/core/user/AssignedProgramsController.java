@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.HashMap;
@@ -57,7 +57,6 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
 
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IModelUtils modelUtils;
 
 
     public AssignedProgramsController(IProgramController programController,
@@ -67,8 +66,7 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
                                       ITransactionManager transactionManager,
                                       IUserApiClient userApiClient,
                                       ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient,
-                                      IModelUtils modelUtils) {
+                                      ISystemInfoApiClient systemInfoApiClient) {
         this.transactionManager = transactionManager;
         this.userApiClient = userApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -78,7 +76,6 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
         this.programStore = programStore;
 
         this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
     }
 
     @Override
@@ -91,11 +88,11 @@ public final class AssignedProgramsController implements IAssignedProgramsContro
         List<OrganisationUnit> organisationUnitsWithAssignedPrograms = null;
 //                = userApiClient.getUserAccount();
 
-        Set<String> organisationUnitsToLoad = modelUtils
+        Set<String> organisationUnitsToLoad = ModelUtils
                 .toUidSet(organisationUnitsWithAssignedPrograms);
         Set<String> programsToLoad = new HashSet<>();
         for (OrganisationUnit organisationUnit : organisationUnitsWithAssignedPrograms) {
-            programsToLoad.addAll(modelUtils.toUidSet(organisationUnit.getPrograms()));
+            programsToLoad.addAll(ModelUtils.toUidSet(organisationUnit.getPrograms()));
         }
 
         // Load the programs and organisation units from server with full data

@@ -36,13 +36,15 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+// TODO find another way to inject dependencies: injecting them through constructor becomes too
+// verbose.
 public class ProgramController2 implements IProgramController {
     /* Api clients */
     private final IProgramApiClient programApiClient;
@@ -53,17 +55,14 @@ public class ProgramController2 implements IProgramController {
     /* Utilities */
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IModelUtils modelUtils;
 
     public ProgramController2(IProgramApiClient programApiClient, IProgramStore programStore,
                               ITransactionManager transactionManager,
-                              ILastUpdatedPreferences lastUpdatedPreferences,
-                              IModelUtils modelUtils) {
+                              ILastUpdatedPreferences lastUpdatedPreferences) {
         this.programApiClient = programApiClient;
         this.programStore = programStore;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.modelUtils = modelUtils;
     }
 
     /* TODO implement this method first, then reuse similar logic in sync(uids) method */
@@ -98,7 +97,7 @@ public class ProgramController2 implements IProgramController {
 
         // here we want to get list of ids of programs which are
         // stored locally and list of programs which we want to get
-        Set<String> persistedProgramIds = modelUtils.toUidSet(persistedPrograms);
+        Set<String> persistedProgramIds = ModelUtils.toUidSet(persistedPrograms);
         persistedProgramIds.addAll(uids);
 
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated,
@@ -108,10 +107,9 @@ public class ProgramController2 implements IProgramController {
             System.out.println("Program downloaded displayName: " + program.getDisplayName());
         }
 
-        // sync new programs we got from server to database
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-                updatedPrograms, persistedPrograms, programStore, modelUtils);
+                updatedPrograms, persistedPrograms, programStore);
         transactionManager.transact(dbOperations);
 
         // determine which relationships programs have to other models;
@@ -119,7 +117,7 @@ public class ProgramController2 implements IProgramController {
 
         // TODO build relationships with OrganisationUnits (possible through corresponding store)
         // TODO implement ForeignKey support for tracked entity (save only uid in table)
-        // TODO find another way to inject dependencies: injecting them through constructor becomes too verbose.
+
     }
 
     /*

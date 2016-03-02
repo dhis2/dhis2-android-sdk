@@ -36,7 +36,6 @@ import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
@@ -54,11 +53,10 @@ import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
 
     private final OrganisationUnitApiClientRetrofit mOrganisationUnitApiClientRetrofit;
-    private final IModelUtils mModelUtils;
 
-    public OrganisationUnitApiClient(OrganisationUnitApiClientRetrofit mOrganisationUnitApiClientRetrofit, IModelUtils mModelUtils) {
+    public OrganisationUnitApiClient(OrganisationUnitApiClientRetrofit
+                                             mOrganisationUnitApiClientRetrofit) {
         this.mOrganisationUnitApiClientRetrofit = mOrganisationUnitApiClientRetrofit;
-        this.mModelUtils = mModelUtils;
     }
 
     @Override
@@ -76,12 +74,14 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit.getOrganisationUnits(queryMap));
-        return unwrap(organisationUnitsNode, mModelUtils);
+        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit
+                .getOrganisationUnits(queryMap));
+        return unwrap(organisationUnitsNode);
     }
 
     @Override
-    public List<OrganisationUnit> getOrganisationUnits(Fields fields, Set<String> set, DateTime dateTime) {
+    public List<OrganisationUnit> getOrganisationUnits(Fields fields, Set<String> set, DateTime
+            dateTime) {
         Map<String, String> queryMap = new HashMap<>();
         switch (fields) {
             case ALL:
@@ -96,8 +96,9 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit.getOrganisationUnits(queryMap));
-        return unwrap(organisationUnitsNode, mModelUtils);
+        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit
+                .getOrganisationUnits(queryMap));
+        return unwrap(organisationUnitsNode);
     }
 
     @Override
@@ -115,7 +116,8 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        OrganisationUnit updatedOrganisationUnit = call(mOrganisationUnitApiClientRetrofit.getOrganisationUnit(uid, queryMap));
+        OrganisationUnit updatedOrganisationUnit = call(mOrganisationUnitApiClientRetrofit
+                .getOrganisationUnit(uid, queryMap));
         return updatedOrganisationUnit;
     }
 
@@ -124,10 +126,12 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
                 "externalAccess,featureType,openingDate,dimensionItem,parent[id]";
     }
 
-    private static List<OrganisationUnit> unwrap(JsonNode meNode, IModelUtils modelUtils) {
+    private static List<OrganisationUnit> unwrap(JsonNode meNode) {
         List<OrganisationUnit> organisationUnits;
-        if(meNode.has("organisationUnits")) {
-            TypeReference<List<OrganisationUnit>> typeRef = new TypeReference<List<OrganisationUnit>>() {};
+        if (meNode.has("organisationUnits")) {
+            TypeReference<List<OrganisationUnit>> typeRef = new
+                    TypeReference<List<OrganisationUnit>>() {
+            };
             try {
                 organisationUnits = ObjectMapperProvider.getInstance().
                         readValue(meNode.get("organisationUnits").traverse(), typeRef);
@@ -136,10 +140,11 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
                 organisationUnits = new ArrayList<>();
             }
             Collections.sort(organisationUnits, new OrganisationUnitCompareByLevelComparator());
-            Map<String, OrganisationUnit> organisationUnitMap = modelUtils.toMap(organisationUnits);
-            for(OrganisationUnit organisationUnit : organisationUnits) {
-                if(organisationUnit.getParent() != null) {
-                    organisationUnit.setParent(organisationUnitMap.get(organisationUnit.getParent().getUId()));
+            Map<String, OrganisationUnit> organisationUnitMap = ModelUtils.toMap(organisationUnits);
+            for (OrganisationUnit organisationUnit : organisationUnits) {
+                if (organisationUnit.getParent() != null) {
+                    organisationUnit.setParent(organisationUnitMap.get(organisationUnit.getParent
+                            ().getUId()));
                 }
             }
         } else {
@@ -151,10 +156,10 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
     private static String getUidFilter(Set<String> uids) {
         String filter = "id:in:[";
         Iterator<String> uidIterator = uids.iterator();
-        while(uidIterator.hasNext()) {
+        while (uidIterator.hasNext()) {
             String uid = uidIterator.next();
             filter += uid;
-            if(uidIterator.hasNext()) {
+            if (uidIterator.hasNext()) {
                 filter += ',';
             }
         }

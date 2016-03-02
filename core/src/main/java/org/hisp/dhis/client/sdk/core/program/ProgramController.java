@@ -36,7 +36,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
@@ -51,18 +50,15 @@ public class ProgramController extends AbsController<Program> implements IProgra
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final IProgramStore programStore;
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IModelUtils modelUtils;
 
     public ProgramController(IProgramApiClient programApiClient, ITransactionManager
             transactionManager, ILastUpdatedPreferences lastUpdatedPreferences, IProgramStore
-                                     programStore, ISystemInfoApiClient systemInfoApiClient,
-                             IModelUtils modelUtils) {
+                                     programStore, ISystemInfoApiClient systemInfoApiClient) {
         this.programApiClient = programApiClient;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.programStore = programStore;
         this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
     }
 
     private void getProgramsDataFromServer() throws ApiException {
@@ -74,7 +70,7 @@ public class ProgramController extends AbsController<Program> implements IProgra
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
         List<Program> persistedPrograms = programStore.queryAll();
         transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
-                persistedPrograms, programStore, modelUtils));
+                persistedPrograms, programStore));
         lastUpdatedPreferences.save(resource, serverTime);
     }
 

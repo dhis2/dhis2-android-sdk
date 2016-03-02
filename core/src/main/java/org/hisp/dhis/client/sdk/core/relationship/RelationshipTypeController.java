@@ -30,14 +30,15 @@ package org.hisp.dhis.client.sdk.core.relationship;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -50,19 +51,18 @@ public final class RelationshipTypeController implements IDataController<Relatio
     private final IRelationshipTypeApiClient relationshipTypeApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
-    private final IModelUtils modelUtils;
 
     public RelationshipTypeController(IRelationshipTypeApiClient relationshipApiClient,
                                       ITransactionManager transactionManager,
-                                      IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore,
+                                      IIdentifiableObjectStore<RelationshipType>
+                                              mRelationshipTypeStore,
                                       ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+                                      ISystemInfoApiClient systemInfoApiClient) {
         this.relationshipTypeApiClient = relationshipApiClient;
         this.transactionManager = transactionManager;
         this.mRelationshipTypeStore = mRelationshipTypeStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
     }
 
     private void getRelationshipTypesDataFromServer() throws ApiException {
@@ -72,19 +72,21 @@ public final class RelationshipTypeController implements IDataController<Relatio
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
-        List<RelationshipType> allRelationshipTypes = relationshipTypeApiClient.getBasicRelationshipTypes(null);
+        List<RelationshipType> allRelationshipTypes =
+                relationshipTypeApiClient.getBasicRelationshipTypes(null);
 
 
         //fetch all updated relationshiptypes
-        List<RelationshipType> updatedRelationshipTypes = relationshipTypeApiClient.getFullRelationshipTypes(lastUpdated);
+        List<RelationshipType> updatedRelationshipTypes =
+                relationshipTypeApiClient.getFullRelationshipTypes(lastUpdated);
 
         //merging updated items with persisted items, and removing ones not present in server.
         List<RelationshipType> existingPersistedAndUpdatedRelationshipTypes =
-                modelUtils.merge(allRelationshipTypes, updatedRelationshipTypes, mRelationshipTypeStore.
-                        queryAll());
+                ModelUtils.merge(allRelationshipTypes, updatedRelationshipTypes,
+                        mRelationshipTypeStore.queryAll());
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(mRelationshipTypeStore,
+        operations.addAll(DbUtils.createOperations(mRelationshipTypeStore,
                 existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll()));
 
         transactionManager.transact(operations);

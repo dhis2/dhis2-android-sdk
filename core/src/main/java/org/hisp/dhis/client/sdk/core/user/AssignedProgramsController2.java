@@ -32,7 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -47,15 +47,10 @@ public class AssignedProgramsController2 implements IAssignedProgramsController 
     /* Program controller */
     private final IProgramController programController;
 
-    /* Utility dependencies */
-    private final IModelUtils modelUtils;
-
     public AssignedProgramsController2(IUserApiClient userApiClient,
-                                       IProgramController programController,
-                                       IModelUtils modelUtils) {
+                                       IProgramController programController) {
         this.userApiClient = userApiClient;
         this.programController = programController;
-        this.modelUtils = modelUtils;
     }
 
     @Override
@@ -66,7 +61,7 @@ public class AssignedProgramsController2 implements IAssignedProgramsController 
         List<Program> assignedPrograms = userAccount.getPrograms();
 
         /* convert them to set of ids */
-        Set<String> ids = modelUtils.toUidSet(assignedPrograms);
+        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
 
         /* get them through program controller */
         programController.sync(ids);

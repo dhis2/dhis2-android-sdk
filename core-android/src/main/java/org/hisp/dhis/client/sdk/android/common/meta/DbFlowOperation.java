@@ -78,19 +78,19 @@ public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<
         }
     }
 
-    public static DbFlowOperation insert(BaseModel model) {
+    public static <Type extends BaseModel> DbFlowOperation<Type> insert(Type model) {
         return new DbFlowOperation<>(DbAction.INSERT, model);
     }
 
-    public static DbFlowOperation update(BaseModel model) {
+    public static <Type extends BaseModel> DbFlowOperation<Type> update(Type model) {
         return new DbFlowOperation<>(DbAction.UPDATE, model);
     }
 
-    public static DbFlowOperation save(BaseModel model) {
+    public static <Type extends BaseModel> DbFlowOperation<Type> save(Type model) {
         return new DbFlowOperation<>(DbAction.SAVE, model);
     }
 
-    public static DbFlowOperation delete(BaseModel model) {
+    public static <Type extends BaseModel> DbFlowOperation<Type> delete(Type model) {
         return new DbFlowOperation<>(DbAction.DELETE, model);
     }
 }

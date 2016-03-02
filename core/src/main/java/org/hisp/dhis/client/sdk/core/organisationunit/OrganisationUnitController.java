@@ -31,44 +31,46 @@ package org.hisp.dhis.client.sdk.core.organisationunit;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
-public final class OrganisationUnitController extends AbsController<OrganisationUnit> implements IOrganisationUnitController {
+public final class OrganisationUnitController extends AbsController<OrganisationUnit> implements
+        IOrganisationUnitController {
     private final IOrganisationUnitStore organisationUnitStore;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IOrganisationUnitApiClient organisationUnitApiClient;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ITransactionManager transactionManager;
-    private final IModelUtils modelUtils;
 
-    public OrganisationUnitController(IOrganisationUnitStore organisationUnitStore, ISystemInfoApiClient systemInfoApiClient,
+    public OrganisationUnitController(IOrganisationUnitStore organisationUnitStore,
+                                      ISystemInfoApiClient systemInfoApiClient,
                                       IOrganisationUnitApiClient organisationUnitApiClient,
-                                      ILastUpdatedPreferences lastUpdatedPreferences, ITransactionManager transactionManager, IModelUtils modelUtils) {
+                                      ILastUpdatedPreferences lastUpdatedPreferences,
+                                      ITransactionManager transactionManager) {
         this.organisationUnitStore = organisationUnitStore;
         this.systemInfoApiClient = systemInfoApiClient;
         this.organisationUnitApiClient = organisationUnitApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.transactionManager = transactionManager;
-        this.modelUtils = modelUtils;
     }
 
     private void getOrganisationUnitsFromServer() {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
-        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.ALL, lastUpdated);
-        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
+        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.ALL, lastUpdated);
+        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.BASIC, null);
         List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
-        transactionManager.transact(getMergeOperations(existingOrganisationUnits, updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore, modelUtils));
+        transactionManager.transact(getMergeOperations(existingOrganisationUnits,
+                updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore));
         lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
     }
 
@@ -80,10 +82,13 @@ public final class OrganisationUnitController extends AbsController<Organisation
     @Override
     public void sync(Set<String> uidsOfOrganisationUnitsToLoad) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.ALL, uidsOfOrganisationUnitsToLoad, null);
-        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
+        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.ALL, uidsOfOrganisationUnitsToLoad, null);
+        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.BASIC, null);
         List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
-        transactionManager.transact(getMergeOperations(existingOrganisationUnits, updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore, modelUtils));
+        transactionManager.transact(getMergeOperations(existingOrganisationUnits,
+                updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore));
         lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
     }
 }

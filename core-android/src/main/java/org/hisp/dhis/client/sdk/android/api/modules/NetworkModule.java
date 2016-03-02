@@ -65,7 +65,6 @@ import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -135,7 +134,7 @@ public class NetworkModule implements INetworkModule {
 
 
         mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
-                OrganisationUnitApiClientRetrofit.class), new ModelUtils());
+                OrganisationUnitApiClientRetrofit.class));
 
         mTrackedEntityAttributeApiClient = null; // TODO: implement
         // TrackedEntityAttributeApiClient class.

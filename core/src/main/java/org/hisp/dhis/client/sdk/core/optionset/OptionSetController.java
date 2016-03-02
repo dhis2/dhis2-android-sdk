@@ -30,16 +30,17 @@ package org.hisp.dhis.client.sdk.core.optionset;
 
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.models.optionset.Option;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -53,21 +54,18 @@ public final class OptionSetController implements IDataController<OptionSet> {
 
     private final IOptionStore mOptionStore;
     private final IIdentifiableObjectStore<OptionSet> mOptionSetStore;
-    private final IModelUtils modelUtils;
-
 
     public OptionSetController(IOptionSetApiClient optionSetApiClient, IOptionStore mOptionStore,
                                IIdentifiableObjectStore<OptionSet> mOptionSetStore,
                                ISystemInfoApiClient systemInfoApiClient,
                                ILastUpdatedPreferences lastUpdatedPreferences,
-                               ITransactionManager transactionManager, IModelUtils modelUtils) {
+                               ITransactionManager transactionManager) {
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.optionSetApiClient = optionSetApiClient;
         this.mOptionStore = mOptionStore;
         this.mOptionSetStore = mOptionSetStore;
         this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
     }
 
     private void getOptionSetDataFromServer() throws ApiException {
@@ -78,11 +76,12 @@ public final class OptionSetController implements IDataController<OptionSet> {
         List<OptionSet> updatedOptionSets = optionSetApiClient.getFullOptionSets(lastUpdated);
         linkOptionsWithOptionSets(updatedOptionSets);
         List<OptionSet> existingPersistedAndUpdatedOptionSets =
-                modelUtils.merge(allOptionSets, updatedOptionSets, mOptionSetStore.queryAll());
+                ModelUtils.merge(allOptionSets, updatedOptionSets, mOptionSetStore.queryAll());
 
         List<IDbOperation> operations = new ArrayList<>();
         List<OptionSet> persistedOptionSets = mOptionSetStore.queryAll();
-        if (existingPersistedAndUpdatedOptionSets != null && !existingPersistedAndUpdatedOptionSets.isEmpty()) {
+        if (existingPersistedAndUpdatedOptionSets != null &&
+                !existingPersistedAndUpdatedOptionSets.isEmpty()) {
             for (OptionSet optionSet : existingPersistedAndUpdatedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
@@ -94,10 +93,12 @@ public final class OptionSetController implements IDataController<OptionSet> {
                 } else {
                     persistedOptions = new ArrayList<>();
                 }
-                operations.addAll(transactionManager.createOperations(mOptionStore, persistedOptions, optionSet.getOptions()));
+                operations.addAll(DbUtils.createOperations(mOptionStore,
+                        persistedOptions, optionSet.getOptions()));
             }
         }
-        operations.addAll(transactionManager.createOperations(mOptionSetStore, persistedOptionSets, existingPersistedAndUpdatedOptionSets));
+        operations.addAll(DbUtils.createOperations(mOptionSetStore,
+                persistedOptionSets, existingPersistedAndUpdatedOptionSets));
 
 //        DbUtils.applyBatch(operations);
         transactionManager.transact(operations);
@@ -113,7 +114,8 @@ public final class OptionSetController implements IDataController<OptionSet> {
                 }
                 int sortOrder = 0;
                 for (Option option : optionSet.getOptions()) {
-                    option.setUId(optionSet.getUId() + option.getCode());//options don't have uid, but uid is used in createOperations
+                    option.setUId(optionSet.getUId() + option.getCode());//options don't have
+                    // uid, but uid is used in createOperations
                     option.setLastUpdated(new DateTime());//same with these dates
                     option.setCreated(new DateTime());
                     option.setOptionSet(optionSet);

@@ -202,11 +202,10 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     private void fixRelationships(Program program) {
-        ModelUtils modelUtils = new ModelUtils();
-        Map<String, ProgramIndicator> programIndicatorMap = modelUtils.toMap(program
-                .getProgramIndicators());
-        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap = modelUtils
-                .toMap(program.getProgramTrackedEntityAttributes());
+        Map<String, ProgramIndicator> programIndicatorMap =
+                ModelUtils.toMap(program.getProgramIndicators());
+        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap =
+                ModelUtils.toMap(program.getProgramTrackedEntityAttributes());
         for (ProgramIndicator programIndicator : programIndicatorMap.values()) {
             programIndicator.setProgram(program);
         }
@@ -237,8 +236,8 @@ public class ProgramApiClient implements IProgramApiClient {
                     programStage.setProgramIndicators(fullProgramStageProgramIndicators);
                 }
 
-                Map<String, ProgramStageDataElement> programStageDataElementMap = modelUtils
-                        .toMap(programStage.getProgramStageDataElements());
+                Map<String, ProgramStageDataElement> programStageDataElementMap =
+                        ModelUtils.toMap(programStage.getProgramStageDataElements());
                 for (ProgramStageDataElement programStageDataElement : programStageDataElementMap
                         .values()) {
                     programStageDataElement.setProgramStage(programStage);

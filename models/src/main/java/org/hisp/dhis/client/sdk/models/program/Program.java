@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
@@ -86,6 +87,9 @@ public final class Program extends BaseIdentifiableObject {
 
     @JsonProperty("selectIncidentDatesInFuture")
     private boolean selectIncidentDatesInFuture;
+
+    @JsonProperty("organisationUnits")
+    private List<OrganisationUnit> organisationUnits;
 
     @JsonProperty("programIndicators")
     private List<ProgramIndicator> programIndicators;
@@ -240,6 +244,14 @@ public final class Program extends BaseIdentifiableObject {
 
     public void setProgramStages(List<ProgramStage> programStages) {
         this.programStages = programStages;
+    }
+
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
+    }
+
+    public void setOrganisationUnits(List<OrganisationUnit> organisationUnits) {
+        this.organisationUnits = organisationUnits;
     }
 
     public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {

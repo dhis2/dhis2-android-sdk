@@ -82,8 +82,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import rx.Observable;
 
@@ -116,14 +114,12 @@ public class D2 {
 
 
     private D2(Context context) {
-        IModelUtils modelUtils = new ModelUtils();
-
         IPersistenceModule persistenceModule = new PersistenceModule(context);
         IPreferencesModule preferencesModule = new PreferencesModule(context);
         INetworkModule networkModule = new NetworkModule(preferencesModule);
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
         IControllersModule controllersModule = new ControllersModule(networkModule,
-                persistenceModule, preferencesModule, modelUtils);
+                persistenceModule, preferencesModule);
 
         mUserPreferences = preferencesModule.getUserPreferences();
 

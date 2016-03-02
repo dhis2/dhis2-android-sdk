@@ -38,13 +38,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ModelUtils implements IModelUtils {
-    public ModelUtils() {
+public class ModelUtils {
+    private ModelUtils() {
         // private constructor
     }
 
-    @Override
-    public <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
+    public static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
         Map<String, T> map = new HashMap<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -56,8 +55,7 @@ public class ModelUtils implements IModelUtils {
         return map;
     }
 
-    @Override
-    public <T extends IdentifiableObject> List<String> toUidList(List<T> objects) {
+    public static <T extends IdentifiableObject> List<String> toUidList(List<T> objects) {
         List<String> ids = new ArrayList<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -67,8 +65,7 @@ public class ModelUtils implements IModelUtils {
         return ids;
     }
 
-    @Override
-    public <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
+    public static <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
         Set<String> uIds = new HashSet<>();
 
         if (items != null && !items.isEmpty()) {
@@ -85,9 +82,9 @@ public class ModelUtils implements IModelUtils {
      * the passed existingItems List. Items that are not present in existingItems will not be
      * included.
      */
-    @Override
-    public <T extends IdentifiableObject> List<T> merge(List<T> existingItems, List<T> updatedItems,
-                                                        List<T> persistedItems) {
+    public static <T extends IdentifiableObject> List<T> merge(List<T> existingItems,
+                                                               List<T> updatedItems,
+                                                               List<T> persistedItems) {
         Map<String, T> updatedItemsMap = toMap(updatedItems);
         Map<String, T> persistedItemsMap = toMap(persistedItems);
         Map<String, T> existingItemsMap = new HashMap<>();

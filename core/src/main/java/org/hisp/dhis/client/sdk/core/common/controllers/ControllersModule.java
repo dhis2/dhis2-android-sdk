@@ -48,7 +48,6 @@ import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
@@ -65,20 +64,18 @@ public class ControllersModule implements IControllersModule {
     private final IOrganisationUnitController organisationUnitController;
 
     public ControllersModule(INetworkModule networkModule, IPersistenceModule persistenceModule,
-                             IPreferencesModule preferencesModule, IModelUtils modelUtils) {
+                             IPreferencesModule preferencesModule) {
         isNull(networkModule, "networkModule must not be null");
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
-        isNull(modelUtils, "modelUtils must not be null");
-
 
         programController = new ProgramController2(
                 networkModule.getProgramApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
-                preferencesModule.getLastUpdatedPreferences(), modelUtils);
+                preferencesModule.getLastUpdatedPreferences());
         assignedProgramsController = new AssignedProgramsController2(
                 networkModule.getUserApiClient(),
-                programController, modelUtils);
+                programController);
 
         /////////////////////////////////////////////////////////////////////////////////////
         // LEGACY IMPLEMENTATION
@@ -97,7 +94,7 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTrackedEntityDataValueStore(),
                 persistenceModule.getOrganisationUnitStore(),
                 persistenceModule.getProgramStore(),
-                persistenceModule.getFailedItemStore(), modelUtils);
+                persistenceModule.getFailedItemStore());
 
         dashboardController = null;
 
@@ -110,8 +107,7 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getEnrollmentStore(),
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore(),
-                persistenceModule.getFailedItemStore(),
-                modelUtils
+                persistenceModule.getFailedItemStore()
         );
 
         trackedEntityAttributeController = new TrackedEntityAttributeController(
@@ -119,23 +115,21 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTrackedEntityAttributeStore(),
-                networkModule.getSystemInfoApiClient(),
-                modelUtils
+                networkModule.getSystemInfoApiClient()
         );
 
         trackedEntityController = new TrackedEntityController(networkModule
                 .getTrackedEntityApiClient(),
                 persistenceModule.getTransactionManager(), preferencesModule
                 .getLastUpdatedPreferences(),
-                persistenceModule.getTrackedEntityStore(), networkModule.getSystemInfoApiClient()
-                , modelUtils);
+                persistenceModule.getTrackedEntityStore(), networkModule.getSystemInfoApiClient());
 
         organisationUnitController = new OrganisationUnitController(
                 persistenceModule.getOrganisationUnitStore(),
                 networkModule.getSystemInfoApiClient(),
                 networkModule.getOrganisationUnitApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager(), modelUtils);
+                persistenceModule.getTransactionManager());
 
 //        programController = new ProgramController(networkModule.getProgramApiClient(),
 //                persistenceModule.getTransactionManager(), preferencesModule

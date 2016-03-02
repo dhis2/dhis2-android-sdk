@@ -48,16 +48,14 @@ import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
 
 public final class DhisController {
-    private static final String CLASS_TAG = "Dhis2";
-
     public final static String LAST_UPDATED_METADATA = "lastupdated_metadata";
     public final static String LAST_UPDATED_DATAVALUES = "lastupdated_datavalues";
-
     /* flags used to determine what data to be loaded from the server */
     //public static final String LOAD_TRACKER = "load_tracker";
     //public static final String LOAD_EVENTCAPTURE = "load_eventcapture";
     public final static String QUEUED = "queued";
     public final static String PREFS_NAME = "DHIS2";
+    private static final String CLASS_TAG = "Dhis2";
     private final static String USERNAME = "username";
     private final static String PASSWORD = "password";
     private final static String SERVER = "server";
@@ -76,22 +74,14 @@ public final class DhisController {
 
     private boolean blocking = false;
 
-    public static DhisController getInstance() {
-        return Dhis2Application.dhisController;
-    }
-
     public DhisController(Context context) {
         objectMapper = getObjectMapper();
         LastUpdatedManager.init(context);
         DateTimeManager.init(context);
     }
 
-    public void init() {
-        readSession();
-    }
-
-    public DhisApi getDhisApi() {
-        return dhisApi;
+    public static DhisController getInstance() {
+        return Dhis2Application.dhisController;
     }
 
     /**
@@ -134,7 +124,7 @@ public final class DhisController {
         return user;
     }
 
-    static void logOutUser(Context context) throws APIException {
+    public static void logOutUser(Context context) throws APIException {
         (new UserController(getInstance().dhisApi)).logOut();
 
         // fetch meta data from disk
@@ -169,6 +159,14 @@ public final class DhisController {
 
         // fetch meta data from disk
         readSession();
+    }
+
+    public void init() {
+        readSession();
+    }
+
+    public DhisApi getDhisApi() {
+        return dhisApi;
     }
 
     public Session getSession() {

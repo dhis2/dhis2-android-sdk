@@ -33,15 +33,11 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Unique;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow implements IdentifiableObject {
+public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow implements
+        IdentifiableObject {
     public static final String COLUMN_UID = "uId";
 
     @Column(name = COLUMN_UID)
@@ -121,39 +117,5 @@ public abstract class BaseIdentifiableObject$Flow extends BaseModel$Flow impleme
     @Override
     public final void setAccess(Access access) {
         this.access = access;
-    }
-
-    public static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
-        Map<String, T> map = new HashMap<>();
-        if (objects != null && objects.size() > 0) {
-            for (T object : objects) {
-                if (object.getUId() != null) {
-                    map.put(object.getUId(), object);
-                }
-            }
-        }
-        return map;
-    }
-
-    /*@SuppressWarnings("unchecked")
-    public static <T extends BaseIdentifiableObject> T toModel(BaseIdentifiableObject$Flow flow) {
-        if (flow == null) {
-            return null;
-        }
-
-        BaseIdentifiableObject object = new BaseIdentifiableObject();
-        object.setId(flow.getId());
-        object.setUId(flow.getUId());
-        object.setCreated(flow.getCreated());
-        object.setLastUpdated(flow.getLastUpdated());
-        object.setName(flow.getName());
-        object.setDisplayName(flow.getDisplayName());
-        object.setAccess(flow.getAccess());
-        return (T) object;
-    }*/
-
-    @Override
-    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
-
     }
 }

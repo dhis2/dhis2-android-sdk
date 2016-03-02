@@ -114,10 +114,12 @@ public class ProgramController2 implements IProgramController {
                 updatedPrograms, persistedPrograms, programStore, modelUtils);
         transactionManager.transact(dbOperations);
 
-        // determine which relationships programs have to; and which type of relationships
-        // (one to one, one to many, many to one and etc)
-        // TODO implement first for OrganisationUnits
-        // TODO
+        // determine which relationships programs have to other models;
+        // and which type of relationships (one to one, one to many, many to one and etc)
+
+        // TODO build relationships with OrganisationUnits (possible through corresponding store)
+        // TODO implement ForeignKey support for tracked entity (save only uid in table)
+        // TODO find another way to inject dependencies: injecting them through constructor becomes too verbose.
     }
 
     /*

@@ -30,11 +30,9 @@ package org.hisp.dhis.client.sdk.models.common.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.joda.time.DateTime;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import org.hisp.dhis.client.sdk.models.common.Access;
+import org.joda.time.DateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
@@ -115,52 +113,5 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
     @Override
     public void setAccess(Access access) {
         this.access = access;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject that, MergeStrategy strategy) {
-        isNull(that, "BaseIdentifiableObject should not be null");
-        isNull(strategy, "MergeStrategy should not be null");
-
-        if (!this.getClass().isInstance(that)) {
-            return;
-        }
-
-        switch (strategy) {
-            case REPLACE: {
-                replace(that);
-                break;
-            }
-            case REPLACE_IF_UPDATED: {
-                merge(that);
-                break;
-            }
-        }
-    }
-
-    private void replace(IdentifiableObject that) {
-        this.setId(that.getId());
-        this.setUId(that.getUId());
-        this.setName(that.getName());
-        this.setDisplayName(that.getDisplayName());
-        this.setCreated(that.getCreated());
-        this.setLastUpdated(that.getLastUpdated());
-        this.setAccess(that.getAccess());
-    }
-
-    private void merge(IdentifiableObject that) {
-        if (this.getLastUpdated() == null || that.getLastUpdated() == null) {
-            return;
-        }
-
-        if (that.getLastUpdated().isAfter(this.getLastUpdated())) {
-            this.setId(that.getId());
-            this.setUId(that.getUId());
-            this.setName(that.getName());
-            this.setDisplayName(that.getDisplayName());
-            this.setCreated(that.getCreated());
-            this.setLastUpdated(that.getLastUpdated());
-            this.setAccess(that.getAccess());
-        }
     }
 }

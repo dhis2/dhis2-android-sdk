@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.client.sdk.models.utils;
 
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ModelUtils implements IModelUtils {
     public ModelUtils() {
@@ -110,23 +115,5 @@ public class ModelUtils implements IModelUtils {
         }
 
         return new ArrayList<>(existingItemsMap.values());
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<T> mergeWith(Collection<T> one, Collection<T> two,
-                                                            MergeStrategy strategy) {
-        Map<String, T> collectionOneMap = toMap(one);
-        Map<String, T> collectionTwoMap = toMap(two);
-
-        for (String uid : collectionOneMap.keySet()) {
-            T itemOne = collectionOneMap.get(uid);
-            T itemTwo = collectionTwoMap.get(uid);
-
-            if (itemTwo != null) {
-                itemOne.mergeWith(itemTwo, strategy);
-            }
-        }
-
-        return new ArrayList<>(collectionOneMap.values());
     }
 }

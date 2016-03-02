@@ -32,10 +32,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
@@ -99,7 +98,7 @@ public final class Enrollment implements Serializable, IdentifiableObject {
     private List<Event> events;
 
     public Enrollment() {
-
+        // explicit empty constructor
     }
 
     @Override
@@ -187,6 +186,7 @@ public final class Enrollment implements Serializable, IdentifiableObject {
     public void setUId(String uId) {
         this.enrollmentUid = uId;
     }
+
     @Override
     public String getName() {
         return name;
@@ -241,7 +241,8 @@ public final class Enrollment implements Serializable, IdentifiableObject {
         return trackedEntityAttributeValues;
     }
 
-    public void setTrackedEntityAttributeValues(List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
+    public void setTrackedEntityAttributeValues(
+            List<TrackedEntityAttributeValue> trackedEntityAttributeValues) {
         this.trackedEntityAttributeValues = trackedEntityAttributeValues;
     }
 
@@ -251,10 +252,5 @@ public final class Enrollment implements Serializable, IdentifiableObject {
 
     public void setEvents(List<Event> events) {
         this.events = events;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject that, MergeStrategy strategy) {
-
     }
 }

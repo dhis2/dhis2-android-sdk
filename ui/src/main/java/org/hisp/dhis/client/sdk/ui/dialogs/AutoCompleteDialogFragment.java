@@ -220,11 +220,15 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             optionValueTextView.setOnClickListener(onTextViewClick);
 
         }
+
+        public void setOnOptionSelectedListener(OnOptionSelectedListener listener) {
+            onTextViewClick.setOnOptionItemSelectedListener(listener);
+        }
     }
 
     public static class OnTextViewClick implements View.OnClickListener {
         private final TextView textView;
-        private final OnOptionSelectedListener onOptionItemSelectedListener;
+        private OnOptionSelectedListener onOptionItemSelectedListener;
         private final Dialog parentDialog;
 
         public OnTextViewClick(Dialog parentDialog, TextView textView, OnOptionSelectedListener onOptionItemSelectedListener) {
@@ -233,9 +237,15 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.onOptionItemSelectedListener = onOptionItemSelectedListener;
         }
 
+        public void setOnOptionItemSelectedListener(OnOptionSelectedListener listener) {
+            this.onOptionItemSelectedListener = listener;
+        }
+
         @Override
         public void onClick(View v) {
-            onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
+            if (onOptionItemSelectedListener != null) {
+                onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
+            }
             parentDialog.dismiss();
         }
     }

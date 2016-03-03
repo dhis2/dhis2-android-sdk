@@ -49,7 +49,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-
     @Override
     public void setupDialog(Dialog dialog, int style) {
         AppCompatDialog appCompatDialog = (AppCompatDialog) dialog;
@@ -77,7 +76,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     }
 
-
     public static AutoCompleteDialogFragment newInstance(String title, List<IPickable> options, OnOptionSelectedListener onOptionSelectedListener) {
         AutoCompleteDialogFragment autoCompleteDialogFragment = new AutoCompleteDialogFragment();
         Bundle args = new Bundle();
@@ -90,8 +88,10 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     public void setOnOptionSelectedListener(OnOptionSelectedListener onOptionSelectedListener) {
         this.onOptionSelectedListener = onOptionSelectedListener;
+        if (optionDialogAdapter != null) {
+            optionDialogAdapter.setOnOptionSelectedListener(onOptionSelectedListener);
+        }
     }
-
 
     public void show(FragmentManager fragmentManager) {
         show(fragmentManager, TAG);
@@ -127,6 +127,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         private ArrayList<IPickable> options;
         private OnOptionSelectedListener onOptionSelectedListener;
         private Dialog dialog;
+        private OptionDialogViewHolder mOptionDialogViewHolder;
 
         public OptionDialogAdapter(Dialog dialog, ArrayList<IPickable> options, OnOptionSelectedListener onOptionSelectedListener) {
             this.dialog = dialog;
@@ -140,8 +141,9 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
+            mOptionDialogViewHolder = new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recyclerview_row_autocomplete_dialog, parent, false), dialog, onOptionSelectedListener);
+            return mOptionDialogViewHolder;
         }
 
         @Override
@@ -164,6 +166,14 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         public void setOptions(ArrayList<IPickable> filteredOptions) {
             this.options = filteredOptions;
         }
+
+        public void setOnOptionSelectedListener(OnOptionSelectedListener listener) {
+            this.onOptionSelectedListener = listener;
+            if (mOptionDialogViewHolder != null) {
+                mOptionDialogViewHolder.setOnOptionSelectedListener(listener);
+            }
+
+        }
     }
 
     private static class AutoCompleteRowFilter extends Filter {
@@ -176,7 +186,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.options = new ArrayList<>(options);
             this.filteredOptions = new ArrayList<>();
         }
-
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {

@@ -59,11 +59,14 @@ public class ProgramApiClient2 implements IProgramApiClient {
     public List<Program> getPrograms(Fields fields, DateTime lastUpdated,
                                      String... ids) throws ApiException {
         Map<String, String> queryMap = new HashMap<>();
+        List<String> filters = new ArrayList<>();
+
+        /* disable paging */
         queryMap.put("paging", "false");
 
         /* filter programs by lastUpdated field */
         if (lastUpdated != null) {
-            queryMap.put("lastUpdated", lastUpdated.toString());
+            filters.add("lastUpdated:gt:" + lastUpdated.toString());
         }
 
         switch (fields) {
@@ -72,28 +75,27 @@ public class ProgramApiClient2 implements IProgramApiClient {
                 break;
             }
             case ALL: {
-                queryMap.put("fields", "id,name,displayName,created,lastUpdated,access," +
-                        "organisationUnits[id]");
+                queryMap.put("fields", "id,name,displayName,created,lastUpdated," +
+                        "access,organisationUnits[id]");
                 break;
             }
         }
 
         List<Program> allPrograms = new ArrayList<>();
         if (ids != null && ids.length > 0) {
-
-            List<String> filters = buildIdFilter(ids);
-            for (String filter : filters) {
-                // we need to avoid mutating existing map
-                Map<String, String> queryMapWithIds = new HashMap<>(queryMap);
-                queryMapWithIds.put("filter", "id:in:" + filter);
+            // splitting up request into chunks
+            List<String> idFilters = buildIdFilter(ids);
+            for (String idFilter : idFilters) {
+                List<String> combinedFilters = new ArrayList<>(filters);
+                combinedFilters.add(idFilter);
 
                 // downloading subset of programs
                 allPrograms.addAll(unwrap(call(programApiClientRetrofit
-                        .getPrograms(queryMapWithIds)), "programs"));
+                        .getPrograms(queryMap, combinedFilters)), "programs"));
             }
         } else {
             allPrograms.addAll(unwrap(call(programApiClientRetrofit
-                    .getPrograms(queryMap)), "programs"));
+                    .getPrograms(queryMap, filters)), "programs"));
         }
 
         return allPrograms;
@@ -107,7 +109,7 @@ public class ProgramApiClient2 implements IProgramApiClient {
 
             for (List<String> listOfIds : splittedIds) {
                 StringBuilder builder = new StringBuilder();
-                idFilters.add(builder.append("[")
+                idFilters.add(builder.append("id:in:[")
                         .append(join(listOfIds))
                         .append("]")
                         .toString());

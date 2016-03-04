@@ -70,6 +70,7 @@ public class ControllersModule implements IControllersModule {
         isNull(preferencesModule, "preferencesModule must not be null");
 
         programController = new ProgramController2(
+                networkModule.getSystemInfoApiClient(),
                 networkModule.getProgramApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());

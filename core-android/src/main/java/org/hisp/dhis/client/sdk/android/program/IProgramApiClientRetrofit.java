@@ -35,10 +35,12 @@ import java.util.Map;
 
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
 public interface IProgramApiClientRetrofit {
 
     @GET("programs")
-    Call<Map<String, List<Program>>> getPrograms(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<Program>>> getPrograms(@QueryMap Map<String, String> queryMap,
+                                                 @Query("filter") List<String> filters);
 }

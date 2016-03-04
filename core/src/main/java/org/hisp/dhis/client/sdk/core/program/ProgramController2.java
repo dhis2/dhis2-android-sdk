@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -48,6 +48,7 @@ import java.util.Set;
 // verbose.
 public class ProgramController2 implements IProgramController {
     /* Api clients */
+    private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
 
     /* Local storage */
@@ -57,17 +58,17 @@ public class ProgramController2 implements IProgramController {
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public ProgramController2(IProgramApiClient programApiClient, IProgramStore programStore,
+    public ProgramController2(ISystemInfoApiClient systemInfoApiClient,
+                              IProgramApiClient programApiClient, IProgramStore programStore,
                               ITransactionManager transactionManager,
                               ILastUpdatedPreferences lastUpdatedPreferences) {
+        this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;
         this.programStore = programStore;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
-    /* TODO implement this method first, then reuse similar logic in sync(uids) method */
-    /* TODO consider taking into account programs which are directly assigned to user */
     @Override
     public void sync() throws ApiException {
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
@@ -83,17 +84,10 @@ public class ProgramController2 implements IProgramController {
 
     @Override
     public void sync(Collection<String> uids) throws ApiException {
+        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
 
         List<Program> persistedPrograms = programStore.queryAll();
-
-        for (Program program : persistedPrograms) {
-            System.out.println("Stored program: " + program.getDisplayName());
-
-            for (OrganisationUnit organisationUnit : program.getOrganisationUnits()) {
-                System.out.println("     - OrganisationUnit: " + organisationUnit.getUId());
-            }
-        }
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -107,40 +101,11 @@ public class ProgramController2 implements IProgramController {
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated,
                 persistedProgramIds.toArray(new String[persistedProgramIds.size()]));
 
-        for (Program program : updatedPrograms) {
-            System.out.println("Program downloaded displayName: " + program.getDisplayName());
-//
-//            for (OrganisationUnit organisationUnit : program.getOrganisationUnits()) {
-//                System.out.println("     Download unit: " + organisationUnit.getUId());
-//            }
-        }
-
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
                 updatedPrograms, persistedPrograms, programStore);
         transactionManager.transact(dbOperations);
 
-        // determine which relationships programs have to other models;
-        // and which type of relationships (one to one, one to many, many to one and etc)
-
-        // TODO build relationships with OrganisationUnits (possible through corresponding store)
-        // TODO implement ForeignKey support for tracked entity (save only uid in table)
+        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
     }
-
-    /*
-         * First we need to check what was removed on the server while we were offline:
-            - Download list of basic items (uid, displayName)
-            - Compare to what we have locally
-            - Create delete operations for programs
-         * After this, check what was updated among existing items, fetch those updates,
-           merge them with existing elements in database
-         * Now, when we have updated existing entries in database, we can work
-           on downloading given uids:
-            - First, check if any of requested UIDS are already there in database.
-            - if some of them already there, remove UID from list of programs to download
-            - All remaining uids should be downloaded, direct properties should be saved to
-            program table.
-            - After that we need to build relationships with related resources by using link tables
-              TODO decide how to work with link tables through Store abstraction.
-     */
 }

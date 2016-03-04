@@ -44,9 +44,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-// TODO find another way to inject dependencies: injecting them through constructor becomes too
-// verbose.
 public class ProgramController2 implements IProgramController {
+
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
@@ -71,15 +70,24 @@ public class ProgramController2 implements IProgramController {
 
     @Override
     public void sync() throws ApiException {
+        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
 
-        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
-        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
         List<Program> persistedPrograms = programStore.queryAll();
 
-        for (Program program : allExistingPrograms) {
-            System.out.println("Program: " + program.getDisplayName());
-        }
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+
+        // Retrieving only updated programs
+        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
+                updatedPrograms, persistedPrograms, programStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
     }
 
     @Override

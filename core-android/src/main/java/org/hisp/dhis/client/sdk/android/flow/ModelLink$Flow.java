@@ -123,7 +123,7 @@ public class ModelLink$Flow extends BaseModel$Flow {
         }
     }
 
-    public static List<IDbOperation<ModelLink$Flow>> createOperations(
+    public static List<IDbOperation> createOperations(
             List<ModelLink$Flow> persistedLinks, List<ModelLink$Flow> updatedLinks) {
 
         // avoiding null checks in order to make code less verbose
@@ -137,7 +137,7 @@ public class ModelLink$Flow extends BaseModel$Flow {
             linkKeySet.add(linkModel.getKeyOne() + linkModel.getKeyTwo());
         }
 
-        List<IDbOperation<ModelLink$Flow>> dbOperations = new ArrayList<>();
+        List<IDbOperation> dbOperations = new ArrayList<>();
         for (ModelLink$Flow linkModel : updatedLinks) {
             String key = linkModel.getKeyOne() + linkModel.getKeyTwo();
             if (!linkKeySet.contains(key)) {

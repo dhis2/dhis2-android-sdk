@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -88,12 +89,15 @@ public class ProgramController2 implements IProgramController {
 
         for (Program program : persistedPrograms) {
             System.out.println("Stored program: " + program.getDisplayName());
+
+            for (OrganisationUnit organisationUnit : program.getOrganisationUnits()) {
+                System.out.println("     - OrganisationUnit: " + organisationUnit.getUId());
+            }
         }
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<Program> allExistingPrograms = programApiClient
-                .getPrograms(Fields.BASIC, null);
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
 
         // here we want to get list of ids of programs which are
         // stored locally and list of programs which we want to get
@@ -105,6 +109,10 @@ public class ProgramController2 implements IProgramController {
 
         for (Program program : updatedPrograms) {
             System.out.println("Program downloaded displayName: " + program.getDisplayName());
+//
+//            for (OrganisationUnit organisationUnit : program.getOrganisationUnits()) {
+//                System.out.println("     Download unit: " + organisationUnit.getUId());
+//            }
         }
 
         // we will have to perform something similar to what happens in AbsController
@@ -117,7 +125,6 @@ public class ProgramController2 implements IProgramController {
 
         // TODO build relationships with OrganisationUnits (possible through corresponding store)
         // TODO implement ForeignKey support for tracked entity (save only uid in table)
-
     }
 
     /*

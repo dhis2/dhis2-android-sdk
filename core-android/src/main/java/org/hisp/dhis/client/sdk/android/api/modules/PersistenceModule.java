@@ -175,7 +175,7 @@ public class PersistenceModule implements IPersistenceModule {
 //                programStageStore, programIndicatorStore);
 
         programStore = new ProgramStore2(MapperModuleProvider
-                .getInstance().getProgramMapper());
+                .getInstance().getProgramMapper(), transactionManager);
 
         userAccountStore = new UserAccountStore(MapperModuleProvider.getInstance()
                 .getUserAccountMapper());

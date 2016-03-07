@@ -39,10 +39,14 @@ class RowViewTypeMatcher {
     public static Class<?> matchToRowView(DataEntity.Type type) {
         switch (type) {
             case BOOLEAN:
+            case GENDER:
                 return RadioButtonRowView.class;
             case COORDINATES:
                 return CoordinateRowView.class;
             case DATE:
+            case ENROLLMENT_DATE:
+            case INCIDENT_DATE:
+            case EVENT_DATE:
                 return DatePickerRowView.class;
             case TRUE_ONLY:
                 return CheckBoxRowView.class;
@@ -55,6 +59,8 @@ class RowViewTypeMatcher {
             case INTEGER_NEGATIVE:
             case INTEGER_ZERO_OR_POSITIVE:
             case INTEGER_POSITIVE:
+            case FILE:
+            case INDICATOR:
                 return EditTextRowView.class;
             default:
                 throw new IllegalArgumentException("Unsupported row type");

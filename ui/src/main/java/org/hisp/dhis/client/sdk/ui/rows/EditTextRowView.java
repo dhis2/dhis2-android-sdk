@@ -107,6 +107,9 @@ public final class EditTextRowView implements IRowView {
                 case INTEGER_POSITIVE:
                     return configure(entityType, R.string.enter_positive_integer,
                             InputType.TYPE_CLASS_NUMBER, true);
+                case FILE:
+                    return configure(entityType, R.string.enter_text,
+                            InputType.TYPE_CLASS_TEXT, true);
                 default:
                     return false;
             }

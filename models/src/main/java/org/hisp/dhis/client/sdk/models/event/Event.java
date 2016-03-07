@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.hisp.dhis.client.sdk.models.common.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
@@ -109,6 +110,36 @@ public final class Event implements Serializable, IdentifiableObject {
 
     public Event() {
 
+    }
+
+    public static Event create() {
+        Event event = new Event();
+        event.eventUid = CodeGenerator.generateCode();
+        return event;
+    }
+
+    public static Event create(String organisationUnitId, String programId, String programStageId, String eventStatus) {
+        Event event = new Event();
+        event.setUId(CodeGenerator.generateCode());
+        event.setOrganisationUnitId(organisationUnitId);
+        event.setProgramId(programId);
+        event.setProgramStageId(programStageId);
+        event.setStatus(eventStatus);
+        return event;
+    }
+
+    public static Event create(String organisationUnitUId, String programUId, String enrollmentUId,
+                               String trackedEntityInstanceUId, String programStageUId,
+                               String eventStatus) {
+        Event event = new Event();
+        event.setUId(CodeGenerator.generateCode());
+        event.setOrganisationUnitId(organisationUnitUId);
+        event.setEnrollmentUid(enrollmentUId);
+        event.setTrackedEntityInstanceUid(trackedEntityInstanceUId);
+        event.setProgramId(programUId);
+        event.setProgramStageId(programStageUId);
+        event.setStatus(eventStatus);
+        return event;
     }
 
     @JsonProperty("coordinate")

@@ -58,7 +58,16 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         rowViews.add(Type.INTEGER.ordinal(), new EditTextRowView());
         rowViews.add(Type.NUMBER.ordinal(), new EditTextRowView());
         rowViews.add(Type.LONG_TEXT.ordinal(), new EditTextRowView());
-        
+        rowViews.add(Type.INTEGER_NEGATIVE.ordinal(), new EditTextRowView());
+        rowViews.add(Type.INTEGER_ZERO_OR_POSITIVE.ordinal(), new EditTextRowView());
+        rowViews.add(Type.INTEGER_POSITIVE.ordinal(), new EditTextRowView());
+        rowViews.add(Type.GENDER.ordinal(), new RadioButtonRowView());
+        rowViews.add(Type.INDICATOR.ordinal(), new EditTextRowView());
+        rowViews.add(Type.EVENT_DATE.ordinal(), new DatePickerRowView());
+        rowViews.add(Type.ENROLLMENT_DATE.ordinal(), new DatePickerRowView());
+        rowViews.add(Type.FILE.ordinal(), new EditTextRowView());
+        rowViews.add(Type.INCIDENT_DATE.ordinal(), new DatePickerRowView());
+
         fragmentManager = childFragmentManager;
     }
 

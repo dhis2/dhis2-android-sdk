@@ -58,9 +58,6 @@ public final class Enrollment implements Serializable, IdentifiableObject {
     @JsonProperty("orgUnit")
     private String orgUnit;
 
-    @JsonIgnore
-    private TrackedEntityInstance trackedEntityInstance;
-
     @JsonProperty("program")
     private String program;
 
@@ -90,6 +87,9 @@ public final class Enrollment implements Serializable, IdentifiableObject {
 
     @JsonProperty("access")
     private Access access;
+
+    @JsonIgnore
+    private TrackedEntityInstance trackedEntityInstance;
 
     @JsonProperty("attributes")
     private List<TrackedEntityAttributeValue> trackedEntityAttributeValues;

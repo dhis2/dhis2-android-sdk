@@ -56,20 +56,20 @@ public class TrackedEntityInstance implements Serializable, IModel {
     @JsonProperty("orgUnit")
     private String orgUnit;
 
-    @JsonProperty("attributes")
-    private List<TrackedEntityAttributeValue> attributes;
-
-    @JsonProperty("relationships")
-    private List<Relationship> relationships;
-
     @JsonProperty("created")
     private DateTime created;
 
     @JsonProperty("lastUpdated")
     private DateTime lastUpdated;
 
-    public TrackedEntityInstance() {
+    @JsonProperty("attributes")
+    private List<TrackedEntityAttributeValue> attributes;
 
+    @JsonProperty("relationships")
+    private List<Relationship> relationships;
+
+    public TrackedEntityInstance() {
+        // explicit empty constructor
     }
 
     public long getId() {

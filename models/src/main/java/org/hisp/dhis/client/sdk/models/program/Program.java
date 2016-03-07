@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -100,6 +101,7 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("programTrackedEntityAttributes")
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
+    @JsonIgnore
     private boolean isAssignedToUser;
 
     public List<ProgramIndicator> getProgramIndicators() {
@@ -265,5 +267,9 @@ public final class Program extends BaseIdentifiableObject {
 
     public boolean isAssignedToUser() {
         return isAssignedToUser;
+    }
+
+    public void setIsAssignedToUser(boolean isAssignedToUser) {
+        this.isAssignedToUser = isAssignedToUser;
     }
 }

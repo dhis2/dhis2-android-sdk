@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow;
 import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.android.flow.Program$Flow$Table;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
@@ -53,7 +54,6 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
 
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
-
     private final ITransactionManager transactionManager;
 
     public ProgramStore2(IMapper<Program, Program$Flow> mapper,
@@ -61,6 +61,27 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
         super(mapper);
 
         this.transactionManager = transactionManager;
+    }
+
+    @Override
+    public List<Program> query(boolean assignedToCurrentUser) {
+        List<Program$Flow> programFlows = new Select()
+                .from(Program$Flow.class)
+                .where(Condition.column(Program$Flow$Table
+                        .ISASSIGNEDTOUSER).is(assignedToCurrentUser))
+                .queryList();
+
+        if (programFlows != null && !programFlows.isEmpty()) {
+            return getMapper().mapToModels(programFlows);
+        }
+
+        return new ArrayList<>();
+    }
+
+    /* query list of programs for given organisation units */
+    @Override
+    public List<Program> query(OrganisationUnit... organisationUnits) {
+        return null;
     }
 
     @Override
@@ -221,8 +242,4 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
                 .and(Condition.column(ModelLink$Flow$Table.MODELKEYONE).is(program.getUId()))
                 .query();
     }
-
-    // * as soon as any write type of action happens, which should consider syncing relationships.
-    // * but it also means that we have to fetch related elements on each read operation
-    //   (Potentially can result in performance problem)
 }

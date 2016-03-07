@@ -30,13 +30,10 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class ProgramService implements IProgramService {
-
     private final IProgramStore programStore;
 
     public ProgramService(IProgramStore programStore) {
@@ -59,9 +56,13 @@ public final class ProgramService implements IProgramService {
     }
 
     @Override
-    public List<Program> list(OrganisationUnit organisationUnit, ProgramType... programTypes) {
-        // return programStore.query(organisationUnit, programTypes);
-        return new ArrayList<>();
+    public List<Program> list(boolean assignedToCurrentUser) {
+        return programStore.query(assignedToCurrentUser);
+    }
+
+    @Override
+    public List<Program> list(OrganisationUnit... organisationUnits) {
+        return programStore.query(organisationUnits);
     }
 
     @Override

@@ -168,6 +168,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
                     }
                 }
             }
+
             return true;
         }
         return false;
@@ -233,5 +234,15 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
         }
 
         mTransactionManager.transact(operations);
+    }
+
+    @Override
+    public List<Program> query(boolean assignedToCurrentUser) {
+        return null;
+    }
+
+    @Override
+    public List<Program> query(OrganisationUnit... organisationUnits) {
+        return null;
     }
 }

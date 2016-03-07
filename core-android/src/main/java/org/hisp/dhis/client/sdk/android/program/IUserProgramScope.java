@@ -26,44 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.user;
+package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.List;
-import java.util.Set;
 
-/**
- * This class is inteded to build relationships between organisation units and programs.
- */
-public class AssignedProgramsController2 implements IAssignedProgramsController {
-    /* Api clients */
-    private final IUserApiClient userApiClient;
+import rx.Observable;
 
-    /* Program controller */
-    private final IProgramController programController;
+public interface IUserProgramScope {
+    Observable<List<Program>> sync();
 
-    public AssignedProgramsController2(IUserApiClient userApiClient,
-                                       IProgramController programController) {
-        this.userApiClient = userApiClient;
-        this.programController = programController;
-    }
-
-    @Override
-    public void sync() throws ApiException {
-        UserAccount userAccount = userApiClient.getUserAccount();
-
-        /* get list of assigned programs */
-        List<Program> assignedPrograms = userAccount.getPrograms();
-
-        /* convert them to set of ids */
-        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
-
-        /* get them through program controller */
-        programController.sync(ids);
-    }
+    Observable<List<Program>> list();
 }

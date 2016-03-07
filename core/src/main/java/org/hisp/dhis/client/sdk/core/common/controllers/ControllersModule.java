@@ -53,14 +53,15 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class ControllersModule implements IControllersModule {
 
+    private final IProgramController programController;
+    private final IAssignedProgramsController assignedProgramsController;
+
     private final IUserAccountController userAccountController;
     private final IDashboardController dashboardController;
     private final IEventController eventController;
     private final IEnrollmentController enrollmentController;
     private final IDataController<TrackedEntityAttribute> trackedEntityAttributeController;
     private final IDataController<TrackedEntity> trackedEntityController;
-    private final IProgramController programController;
-    private final IAssignedProgramsController assignedProgramsController;
     private final IOrganisationUnitController organisationUnitController;
 
     public ControllersModule(INetworkModule networkModule, IPersistenceModule persistenceModule,
@@ -70,13 +71,13 @@ public class ControllersModule implements IControllersModule {
         isNull(preferencesModule, "preferencesModule must not be null");
 
         programController = new ProgramController2(
-                networkModule.getSystemInfoApiClient(),
-                networkModule.getProgramApiClient(), userApiClient, persistenceModule.getProgramStore(),
+                networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
+                networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
+
         assignedProgramsController = new AssignedProgramsController2(
-                networkModule.getUserApiClient(),
-                programController);
+                networkModule.getUserApiClient(), programController);
 
         /////////////////////////////////////////////////////////////////////////////////////
         // LEGACY IMPLEMENTATION

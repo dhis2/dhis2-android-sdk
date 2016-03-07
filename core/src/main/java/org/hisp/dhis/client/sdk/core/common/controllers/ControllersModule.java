@@ -71,7 +71,7 @@ public class ControllersModule implements IControllersModule {
 
         programController = new ProgramController2(
                 networkModule.getSystemInfoApiClient(),
-                networkModule.getProgramApiClient(), persistenceModule.getProgramStore(),
+                networkModule.getProgramApiClient(), userApiClient, persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
         assignedProgramsController = new AssignedProgramsController2(

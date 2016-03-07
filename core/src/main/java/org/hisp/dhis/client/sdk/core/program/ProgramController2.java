@@ -36,12 +36,14 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ProgramController2 implements IProgramController {
@@ -49,6 +51,7 @@ public class ProgramController2 implements IProgramController {
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
+    private final IUserApiClient userApiClient;
 
     /* Local storage */
     private final IProgramStore programStore;
@@ -58,11 +61,12 @@ public class ProgramController2 implements IProgramController {
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramController2(ISystemInfoApiClient systemInfoApiClient,
-                              IProgramApiClient programApiClient, IProgramStore programStore,
-                              ITransactionManager transactionManager,
+                              IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                              IProgramStore programStore, ITransactionManager transactionManager,
                               ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;
+        this.userApiClient = userApiClient;
         this.programStore = programStore;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -81,6 +85,15 @@ public class ProgramController2 implements IProgramController {
 
         // Retrieving only updated programs
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
+
+        // we need to mark assigned programs as "assigned" before storing them
+        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
+                .getUserAccount().getPrograms());
+
+        for (Program updatedProgram : updatedPrograms) {
+            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
+            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        }
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
@@ -108,6 +121,15 @@ public class ProgramController2 implements IProgramController {
 
         List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated,
                 persistedProgramIds.toArray(new String[persistedProgramIds.size()]));
+
+        // we need to mark assigned programs as "assigned" before storing them
+        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
+                .getUserAccount().getPrograms());
+
+        for (Program updatedProgram : updatedPrograms) {
+            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
+            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        }
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,

@@ -33,8 +33,10 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
-public interface IUserOrganisationUnitScope {
-    List<OrganisationUnit> sync() throws ApiException;
+import rx.Observable;
 
-    List<OrganisationUnit> list();
+public interface IUserOrganisationUnitScope {
+    Observable<List<OrganisationUnit>> sync() throws ApiException;
+
+    Observable<List<OrganisationUnit>> list();
 }

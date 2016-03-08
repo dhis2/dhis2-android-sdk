@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-public interface IOrganisationUnitService extends IService, ISave<OrganisationUnit>, IRemove<OrganisationUnit>,
-        IGet<OrganisationUnit>, IGetUid<OrganisationUnit>, IList<OrganisationUnit> {
+public interface IOrganisationUnitService extends IService, IGet<OrganisationUnit>,
+        IGetUid<OrganisationUnit>, IList<OrganisationUnit> {
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 
+import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
@@ -54,17 +55,20 @@ public class UserAccountScope implements IUserAccountScope {
 
     // scopes
     private final IUserProgramScope userProgramScope;
+    private final IUserOrganisationUnitScope organisationUnitScope;
 
     public UserAccountScope(IConfigurationPreferences configurationPreferences,
                             IUserPreferences userPreferences,
                             IUserAccountService userAccountService,
                             IUserAccountController userAccountController,
-                            IUserProgramScope userProgramScope) {
+                            IUserProgramScope userProgramScope,
+                            IUserOrganisationUnitScope organisationUnitScope) {
         this.configurationPreferences = configurationPreferences;
         this.userPreferences = userPreferences;
         this.userAccountService = userAccountService;
         this.userAccountController = userAccountController;
         this.userProgramScope = userProgramScope;
+        this.organisationUnitScope = organisationUnitScope;
     }
 
     @Override
@@ -134,6 +138,7 @@ public class UserAccountScope implements IUserAccountScope {
     @Override
     public Observable<UserAccount> account() {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
+
             @Override
             public void call(Subscriber<? super UserAccount> subscriber) {
                 try {
@@ -150,6 +155,7 @@ public class UserAccountScope implements IUserAccountScope {
     @Override
     public Observable<Boolean> save(final UserAccount userAccount) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
+
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
@@ -166,5 +172,10 @@ public class UserAccountScope implements IUserAccountScope {
     @Override
     public IUserProgramScope programs() {
         return userProgramScope;
+    }
+
+    @Override
+    public IUserOrganisationUnitScope organisationUnits() {
+        return organisationUnitScope;
     }
 }

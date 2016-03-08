@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.program;
+package org.hisp.dhis.client.sdk.core.organisationunit;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
@@ -46,102 +46,82 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProgramController2 implements IProgramController {
+public class OrganisationUnitController2 implements IOrganisationUnitController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IProgramApiClient programApiClient;
+    private final IOrganisationUnitApiClient organisationUnitApiClient;
     private final IUserApiClient userApiClient;
 
     /* Local storage */
-    private final IProgramStore programStore;
+    private final IOrganisationUnitStore organisationUnitStore;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public ProgramController2(ISystemInfoApiClient systemInfoApiClient,
-                              IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                              IProgramStore programStore, ITransactionManager transactionManager,
-                              ILastUpdatedPreferences lastUpdatedPreferences) {
+    public OrganisationUnitController2(ISystemInfoApiClient systemInfoApiClient,
+                                       IOrganisationUnitApiClient organisationUnitApiClient,
+                                       IUserApiClient userApiClient,
+                                       IOrganisationUnitStore organisationUnitStore,
+                                       ITransactionManager transactionManager,
+                                       ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
-        this.programApiClient = programApiClient;
+        this.organisationUnitApiClient = organisationUnitApiClient;
         this.userApiClient = userApiClient;
-        this.programStore = programStore;
+        this.organisationUnitStore = organisationUnitStore;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
     public void sync() throws ApiException {
-//        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-//        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
-//
-//        List<Program> persistedPrograms = programStore.queryAll();
-//
-//        // we have to download all ids from server in order to
-//        // find out what was removed on the server side
-//        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
-//
-//        // Retrieving only updated programs
-//        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
-//
-//        // we need to mark assigned programs as "assigned" before storing them
-//        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
-//                .getUserAccount().getPrograms());
-//
-//        for (Program updatedProgram : updatedPrograms) {
-//            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
-//            updatedProgram.setIsAssignedToUser(assignedProgram != null);
-//        }
-//
-//        // we will have to perform something similar to what happens in AbsController
-//        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-//                updatedPrograms, persistedPrograms, programStore);
-//        transactionManager.transact(dbOperations);
-//
-//        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
         sync(null);
     }
 
     @Override
     public void sync(Collection<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
 
-        List<Program> persistedPrograms = programStore.queryAll();
+        List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+        List<OrganisationUnit> allExistingOrganisationUnits =
+                organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
 
         String[] uidArray = null;
         if (uids != null) {
             // here we want to get list of ids of programs which are
-            // stored locally and list of programs which we want to download
-            Set<String> persistedProgramIds = ModelUtils.toUidSet(persistedPrograms);
-            persistedProgramIds.addAll(uids);
+            // stored locally and list of organisation units which we want to download
+            Set<String> persistedOrganisationUnitIds = ModelUtils
+                    .toUidSet(persistedOrganisationUnits);
+            persistedOrganisationUnitIds.addAll(uids);
 
-            uidArray = persistedProgramIds.toArray(new String[persistedProgramIds.size()]);
+            uidArray = persistedOrganisationUnitIds.toArray(
+                    new String[persistedOrganisationUnitIds.size()]);
         }
 
-        List<Program> updatedPrograms = programApiClient.getPrograms(
-                Fields.ALL, lastUpdated, uidArray);
+        // Retrieving only updated organisation units
+        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.ALL, lastUpdated, uidArray);
 
-        // we need to mark assigned programs as "assigned" before storing them
-        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
-                .getUserAccount().getPrograms());
+        // we need to mark assigned organisation units as "assigned" before storing them
+        Map<String, OrganisationUnit> assignedOrganisationUnits = ModelUtils
+                .toMap(userApiClient.getUserAccount().getOrganisationUnits());
 
-        for (Program updatedProgram : updatedPrograms) {
-            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
-            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        for (OrganisationUnit updatedOrganisationUnit : updatedOrganisationUnits) {
+            OrganisationUnit assignedOrganisationUnit = assignedOrganisationUnits
+                    .get(updatedOrganisationUnit.getUId());
+            updatedOrganisationUnit.setIsAssignedToUser(assignedOrganisationUnit != null);
         }
 
         // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-                updatedPrograms, persistedPrograms, programStore);
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingOrganisationUnits,
+                updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
+        lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
     }
 }

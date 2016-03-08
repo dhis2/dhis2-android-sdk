@@ -32,10 +32,10 @@ import org.hisp.dhis.client.sdk.core.common.controllers.IController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface IOrganisationUnitController extends IController<OrganisationUnit> {
     void sync() throws ApiException;
 
-    void sync(Set<String> uids) throws ApiException;
+    void sync(Collection<String> uids) throws ApiException;
 }

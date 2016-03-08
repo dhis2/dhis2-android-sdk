@@ -44,7 +44,9 @@ import org.hisp.dhis.client.sdk.android.event.IEventScope;
 import org.hisp.dhis.client.sdk.android.optionset.IOptionSetScope;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramIndicatorScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
@@ -96,6 +98,7 @@ public class D2 {
     private final IUserPreferences userPreferences;
     private final IProgramScope programScope;
     private final IUserProgramScope userProgramScope;
+    private final IUserOrganisationUnitScope userOrganisationUnitScope;
     private final IUserAccountScope userAccountScope;
 
     private final IOrganisationUnitScope mOrganisationUnitScope;
@@ -133,10 +136,15 @@ public class D2 {
         userProgramScope = new UserProgramScope(servicesModule.getProgramService(),
                 controllersModule.getAssignedProgramsController());
 
+        userOrganisationUnitScope = new UserOrganisationUnitScope(
+                servicesModule.getOrganisationUnitService(),
+                controllersModule.getAssignedOrganisationUnitsController());
+
         userAccountScope = new UserAccountScope(
                 preferencesModule.getConfigurationPreferences(),
                 preferencesModule.getUserPreferences(), servicesModule.getUserAccountService(),
-                controllersModule.getUserAccountController(), userProgramScope);
+                controllersModule.getUserAccountController(),
+                userProgramScope, userOrganisationUnitScope);
 
         ///////////////////////////
         // Legacy

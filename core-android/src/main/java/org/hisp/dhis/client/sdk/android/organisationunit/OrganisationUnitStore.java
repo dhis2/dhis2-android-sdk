@@ -28,20 +28,14 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataSet$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow$Table;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<OrganisationUnit,
@@ -51,20 +45,30 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         super(mapper);
     }
 
+//    @Override
+//    public List<DataSet> query(OrganisationUnit organisationUnit) {
+//        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
+//                .from(UnitToDataSetRelationShip$Flow.class)
+//                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
+//                        .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+//                .queryList();
+//
+//        List<DataSet> dataSets = new ArrayList<>();
+//        for (UnitToDataSetRelationShip$Flow relationShip : relationShipFlows) {
+//            DataSet$Flow dataSetFlow = relationShip.getDataSet();
+//            //dataSets.add(DataSet$Flow.toModel(dataSetFlow));
+//        }
+//
+//        return dataSets;
+//    }
+
     @Override
-    public List<DataSet> query(OrganisationUnit organisationUnit) {
-        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
-                .from(UnitToDataSetRelationShip$Flow.class)
-                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
-                        .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
-                .queryList();
+    public List<DataSet> queryDataSets(OrganisationUnit... organisationUnits) {
+        return null;
+    }
 
-        List<DataSet> dataSets = new ArrayList<>();
-        for (UnitToDataSetRelationShip$Flow relationShip : relationShipFlows) {
-            DataSet$Flow dataSetFlow = relationShip.getDataSet();
-            //dataSets.add(DataSet$Flow.toModel(dataSetFlow));
-        }
-
-        return dataSets;
+    @Override
+    public List<Program> queryPrograms(OrganisationUnit... organisationUnits) {
+        return null;
     }
 }

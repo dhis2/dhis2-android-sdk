@@ -35,7 +35,8 @@ import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType extends IModel & Model> implements IMapper<ModelType, DatabaseEntityType> {
+public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType
+        extends IModel & Model> implements IMapper<ModelType, DatabaseEntityType> {
 
     @Override
     public List<DatabaseEntityType> mapToDatabaseEntities(List<ModelType> models) {

@@ -37,12 +37,14 @@ import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController2;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController2;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
+import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController2;
+import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
@@ -56,13 +58,16 @@ public class ControllersModule implements IControllersModule {
     private final IProgramController programController;
     private final IAssignedProgramsController assignedProgramsController;
 
+    private final IOrganisationUnitController organisationUnitController;
+    private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
+
     private final IUserAccountController userAccountController;
     private final IDashboardController dashboardController;
     private final IEventController eventController;
     private final IEnrollmentController enrollmentController;
     private final IDataController<TrackedEntityAttribute> trackedEntityAttributeController;
     private final IDataController<TrackedEntity> trackedEntityController;
-    private final IOrganisationUnitController organisationUnitController;
+
 
     public ControllersModule(INetworkModule networkModule, IPersistenceModule persistenceModule,
                              IPreferencesModule preferencesModule) {
@@ -78,6 +83,17 @@ public class ControllersModule implements IControllersModule {
 
         assignedProgramsController = new AssignedProgramsController2(
                 networkModule.getUserApiClient(), programController);
+
+        organisationUnitController = new OrganisationUnitController2(
+                networkModule.getSystemInfoApiClient(),
+                networkModule.getOrganisationUnitApiClient(),
+                networkModule.getUserApiClient(),
+                persistenceModule.getOrganisationUnitStore(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
+                networkModule.getUserApiClient(), organisationUnitController);
 
         /////////////////////////////////////////////////////////////////////////////////////
         // LEGACY IMPLEMENTATION
@@ -125,13 +141,13 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(), preferencesModule
                 .getLastUpdatedPreferences(),
                 persistenceModule.getTrackedEntityStore(), networkModule.getSystemInfoApiClient());
-
-        organisationUnitController = new OrganisationUnitController(
-                persistenceModule.getOrganisationUnitStore(),
-                networkModule.getSystemInfoApiClient(),
-                networkModule.getOrganisationUnitApiClient(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager());
+//
+//        organisationUnitController = new OrganisationUnitController(
+//                persistenceModule.getOrganisationUnitStore(),
+//                networkModule.getSystemInfoApiClient(),
+//                networkModule.getOrganisationUnitApiClient(),
+//                preferencesModule.getLastUpdatedPreferences(),
+//                persistenceModule.getTransactionManager());
 
 //        programController = new ProgramController(networkModule.getProgramApiClient(),
 //                persistenceModule.getTransactionManager(), preferencesModule
@@ -146,6 +162,28 @@ public class ControllersModule implements IControllersModule {
 //                networkModule.getUserApiClient(), preferencesModule.getLastUpdatedPreferences(),
 //                networkModule.getSystemInfoApiClient(), modelUtils);
     }
+
+    @Override
+    public IProgramController getProgramController() {
+        return programController;
+    }
+
+    @Override
+    public IAssignedProgramsController getAssignedProgramsController() {
+        return assignedProgramsController;
+    }
+
+    @Override
+    public IOrganisationUnitController getOrganisationUnitController() {
+        return organisationUnitController;
+    }
+
+    @Override
+    public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
+        return assignedOrganisationUnitsController;
+    }
+
+
 
     @Override
     public IUserAccountController getUserAccountController() {
@@ -165,21 +203,6 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IDataController<TrackedEntityAttribute> getTrackedEntityAttributeController() {
         return trackedEntityAttributeController;
-    }
-
-    @Override
-    public IAssignedProgramsController getAssignedProgramsController() {
-        return assignedProgramsController;
-    }
-
-    @Override
-    public IProgramController getProgramController() {
-        return programController;
-    }
-
-    @Override
-    public IOrganisationUnitController getOrganisationUnitController() {
-        return organisationUnitController;
     }
 
     @Override

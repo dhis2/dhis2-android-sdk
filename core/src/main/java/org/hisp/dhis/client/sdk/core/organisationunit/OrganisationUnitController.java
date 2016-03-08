@@ -38,11 +38,12 @@ import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public final class OrganisationUnitController extends AbsController<OrganisationUnit> implements
-        IOrganisationUnitController {
+public final class OrganisationUnitController extends AbsController<OrganisationUnit>
+        implements IOrganisationUnitController {
     private final IOrganisationUnitStore organisationUnitStore;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IOrganisationUnitApiClient organisationUnitApiClient;
@@ -80,6 +81,11 @@ public final class OrganisationUnitController extends AbsController<Organisation
     }
 
     @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
+    }
+
+//    @Override
     public void sync(Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
 

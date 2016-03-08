@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 
+import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
@@ -51,6 +52,8 @@ public interface IUserAccountScope {
     Observable<Boolean> save(UserAccount userAccount);
 
 
-    // Program related scope
+    // Other resources
     IUserProgramScope programs();
+
+    IUserOrganisationUnitScope organisationUnits();
 }

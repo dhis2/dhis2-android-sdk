@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
+import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
@@ -38,41 +38,25 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 
-public class OrganisationUnitScope implements IOrganisationUnitScope {
-    private final IOrganisationUnitService mOrganisationUnitService;
-    private final IOrganisationUnitController mOrganisationUnitController;
+public class UserOrganisationUnitScope implements IUserOrganisationUnitScope {
+    private final IOrganisationUnitService organisationUnitService;
+    private final IAssignedOrganisationUnitsController unitsController;
 
-    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService,
-                                 IOrganisationUnitController mOrganisationUnitController) {
-        this.mOrganisationUnitService = mOrganisationUnitService;
-        this.mOrganisationUnitController = mOrganisationUnitController;
+    public UserOrganisationUnitScope(IOrganisationUnitService organisationUnitService,
+                                     IAssignedOrganisationUnitsController unitsController) {
+        this.organisationUnitService = organisationUnitService;
+        this.unitsController = unitsController;
     }
 
     @Override
-    public Observable<OrganisationUnit> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<OrganisationUnit>() {
-            @Override
-            public void call(Subscriber<? super OrganisationUnit> subscriber) {
-                try {
-                    OrganisationUnit organisationUnit = mOrganisationUnitService.get(id);
-                    subscriber.onNext(organisationUnit);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    public Observable<List<OrganisationUnit>> sync() throws ApiException {
+        return Observable.create(new Observable.OnSubscribe<List<OrganisationUnit>>() {
 
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<OrganisationUnit> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<OrganisationUnit>() {
             @Override
-            public void call(Subscriber<? super OrganisationUnit> subscriber) {
+            public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
-                    OrganisationUnit organisationUnit = mOrganisationUnitService.get(uid);
-                    subscriber.onNext(organisationUnit);
+                    unitsController.sync();
+                    subscriber.onNext(organisationUnitService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -85,11 +69,11 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
     @Override
     public Observable<List<OrganisationUnit>> list() {
         return Observable.create(new Observable.OnSubscribe<List<OrganisationUnit>>() {
+
             @Override
             public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
-                    List<OrganisationUnit> organisationUnits = mOrganisationUnitService.list();
-                    subscriber.onNext(organisationUnits);
+                    subscriber.onNext(organisationUnitService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -97,27 +81,5 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
                 subscriber.onCompleted();
             }
         });
-    }
-
-    @Override
-    public Observable<List<OrganisationUnit>> sync() {
-        return Observable.create(new Observable.OnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
-                try {
-                    mOrganisationUnitController.sync();
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<OrganisationUnit>> sync(String... uids) {
-        return null;
     }
 }

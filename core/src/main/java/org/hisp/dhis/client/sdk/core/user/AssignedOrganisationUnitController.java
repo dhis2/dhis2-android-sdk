@@ -26,12 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.organisationunit;
+package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-public interface IAssignedOrganisationUnitsController extends IController<OrganisationUnit> {
-    void sync() throws ApiException;
+import java.util.List;
+import java.util.Set;
+
+public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
+
+    // Api Clients
+    private final IUserApiClient userApiClient;
+
+    // Controllers
+    private final IOrganisationUnitController organisationUnitController;
+
+    public AssignedOrganisationUnitController(
+            IUserApiClient userApiClient, IOrganisationUnitController organisationUnitController) {
+        this.userApiClient = userApiClient;
+        this.organisationUnitController = organisationUnitController;
+    }
+
+    @Override
+    public void sync() throws ApiException {
+        UserAccount userAccount = userApiClient.getUserAccount();
+
+        /* get list of assigned organisation units */
+        List<OrganisationUnit> assignedOrganisationUnits = userAccount.getOrganisationUnits();
+
+        /* convert them to set of ids */
+        Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
+
+        /* get them through program controller */
+        organisationUnitController.sync(ids);
+    }
 }

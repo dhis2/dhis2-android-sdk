@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
+import java.util.Comparator;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -105,5 +106,25 @@ public final class OrganisationUnit extends BaseIdentifiableObject {
 
     public void setIsAssignedToUser(boolean isAssignedToUser) {
         this.isAssignedToUser = isAssignedToUser;
+    }
+
+    public static class LevelComparator implements Comparator<OrganisationUnit> {
+
+        public LevelComparator() {
+            // explicit empty constructor
+        }
+
+        @Override
+        public int compare(OrganisationUnit lhs, OrganisationUnit rhs) {
+            if (lhs.getLevel() == rhs.getLevel()) {
+                return 0;
+            }
+
+            if (lhs.getLevel() > rhs.getLevel()) {
+                return 1;
+            }
+
+            return -1;
+        }
     }
 }

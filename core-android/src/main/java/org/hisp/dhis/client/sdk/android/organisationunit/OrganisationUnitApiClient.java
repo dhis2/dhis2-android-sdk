@@ -143,7 +143,8 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
                 e.printStackTrace();
                 organisationUnits = new ArrayList<>();
             }
-            Collections.sort(organisationUnits, new OrganisationUnitCompareByLevelComparator());
+
+            Collections.sort(organisationUnits, new OrganisationUnit.LevelComparator());
             Map<String, OrganisationUnit> organisationUnitMap = ModelUtils.toMap(organisationUnits);
             for (OrganisationUnit organisationUnit : organisationUnits) {
                 if (organisationUnit.getParent() != null) {

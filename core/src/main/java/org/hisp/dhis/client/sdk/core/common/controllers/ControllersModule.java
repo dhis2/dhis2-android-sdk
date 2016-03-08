@@ -136,31 +136,12 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getSystemInfoApiClient()
         );
 
-        trackedEntityController = new TrackedEntityController(networkModule
-                .getTrackedEntityApiClient(),
-                persistenceModule.getTransactionManager(), preferencesModule
-                .getLastUpdatedPreferences(),
-                persistenceModule.getTrackedEntityStore(), networkModule.getSystemInfoApiClient());
-//
-//        organisationUnitController = new OrganisationUnitController(
-//                persistenceModule.getOrganisationUnitStore(),
-//                networkModule.getSystemInfoApiClient(),
-//                networkModule.getOrganisationUnitApiClient(),
-//                preferencesModule.getLastUpdatedPreferences(),
-//                persistenceModule.getTransactionManager());
-
-//        programController = new ProgramController(networkModule.getProgramApiClient(),
-//                persistenceModule.getTransactionManager(), preferencesModule
-//                .getLastUpdatedPreferences(),
-//                persistenceModule.getProgramStore(), networkModule.getSystemInfoApiClient(),
-//                modelUtils);
-
-
-//        assignedProgramsController = new AssignedProgramsController(programController,
-//                organisationUnitController, persistenceModule.getOrganisationUnitStore(),
-//                persistenceModule.getProgramStore(), persistenceModule.getTransactionManager(),
-//                networkModule.getUserApiClient(), preferencesModule.getLastUpdatedPreferences(),
-//                networkModule.getSystemInfoApiClient(), modelUtils);
+        trackedEntityController = new TrackedEntityController(
+                networkModule.getTrackedEntityApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTrackedEntityStore(),
+                networkModule.getSystemInfoApiClient());
     }
 
     @Override
@@ -182,8 +163,6 @@ public class ControllersModule implements IControllersModule {
     public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
         return assignedOrganisationUnitsController;
     }
-
-
 
     @Override
     public IUserAccountController getUserAccountController() {

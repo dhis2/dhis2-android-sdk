@@ -36,7 +36,9 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import java.util.List;
 
 public interface IOrganisationUnitStore extends IIdentifiableObjectStore<OrganisationUnit> {
-    List<DataSet> queryDataSets(OrganisationUnit... organisationUnits);
+    List<OrganisationUnit> query(boolean assignedToCurrentUser);
 
-    List<Program> queryPrograms(OrganisationUnit... organisationUnits);
+    List<OrganisationUnit> query(Program... programs);
+
+    List<OrganisationUnit> query(DataSet... dataSets);
 }

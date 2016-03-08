@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
+import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
@@ -52,5 +54,20 @@ public class OrganisationUnitService implements IOrganisationUnitService {
     @Override
     public List<OrganisationUnit> list() {
         return organisationUnitStore.queryAll();
+    }
+
+    @Override
+    public List<OrganisationUnit> list(boolean assignedToCurrentUser) {
+        return organisationUnitStore.query(assignedToCurrentUser);
+    }
+
+    @Override
+    public List<OrganisationUnit> list(Program... programs) {
+        return organisationUnitStore.query(programs);
+    }
+
+    @Override
+    public List<OrganisationUnit> list(DataSet... dataSets) {
+        return organisationUnitStore.query(dataSets);
     }
 }

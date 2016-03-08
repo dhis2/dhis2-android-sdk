@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class OrganisationUnitController2 implements IOrganisationUnitController {
+public class OrganisationUnitController implements IOrganisationUnitController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
@@ -60,12 +60,12 @@ public class OrganisationUnitController2 implements IOrganisationUnitController 
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public OrganisationUnitController2(ISystemInfoApiClient systemInfoApiClient,
-                                       IOrganisationUnitApiClient organisationUnitApiClient,
-                                       IUserApiClient userApiClient,
-                                       IOrganisationUnitStore organisationUnitStore,
-                                       ITransactionManager transactionManager,
-                                       ILastUpdatedPreferences lastUpdatedPreferences) {
+    public OrganisationUnitController(ISystemInfoApiClient systemInfoApiClient,
+                                      IOrganisationUnitApiClient organisationUnitApiClient,
+                                      IUserApiClient userApiClient,
+                                      IOrganisationUnitStore organisationUnitStore,
+                                      ITransactionManager transactionManager,
+                                      ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.organisationUnitApiClient = organisationUnitApiClient;
         this.userApiClient = userApiClient;

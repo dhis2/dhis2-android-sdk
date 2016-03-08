@@ -39,8 +39,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
-public interface IProgramService extends IService, ISave<Program>, IRemove<Program>,
-        IGet<Program>, IGetUid<Program>, IList<Program> {
+public interface IProgramService extends IService, IGet<Program>, IGetUid<Program>,
+        IList<Program> {
 
     List<Program> list(boolean assignedToCurrentUser);
 

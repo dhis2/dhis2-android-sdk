@@ -45,6 +45,21 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         super(mapper);
     }
 
+    @Override
+    public List<OrganisationUnit> query(boolean assignedToCurrentUser) {
+        return null;
+    }
+
+    @Override
+    public List<OrganisationUnit> query(Program... programs) {
+        return null;
+    }
+
+    @Override
+    public List<OrganisationUnit> query(DataSet... dataSets) {
+        return null;
+    }
+
 //    @Override
 //    public List<DataSet> query(OrganisationUnit organisationUnit) {
 //        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
@@ -61,14 +76,4 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
 //
 //        return dataSets;
 //    }
-
-    @Override
-    public List<DataSet> queryDataSets(OrganisationUnit... organisationUnits) {
-        return null;
-    }
-
-    @Override
-    public List<Program> queryPrograms(OrganisationUnit... organisationUnits) {
-        return null;
-    }
 }

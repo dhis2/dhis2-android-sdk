@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController2;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController2;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
@@ -84,7 +84,7 @@ public class ControllersModule implements IControllersModule {
         assignedProgramsController = new AssignedProgramsController2(
                 networkModule.getUserApiClient(), programController);
 
-        organisationUnitController = new OrganisationUnitController2(
+        organisationUnitController = new OrganisationUnitController(
                 networkModule.getSystemInfoApiClient(),
                 networkModule.getOrganisationUnitApiClient(),
                 networkModule.getUserApiClient(),

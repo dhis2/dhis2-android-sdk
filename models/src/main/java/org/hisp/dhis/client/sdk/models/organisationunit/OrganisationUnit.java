@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.organisationunit;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -54,6 +55,9 @@ public final class OrganisationUnit extends BaseIdentifiableObject {
 
     @JsonProperty("dataSets")
     private List<DataSet> dataSets;
+
+    @JsonIgnore
+    private boolean isAssignedToUser;
 
     public int getLevel() {
         return level;
@@ -93,5 +97,13 @@ public final class OrganisationUnit extends BaseIdentifiableObject {
 
     public void setDataSets(List<DataSet> dataSets) {
         this.dataSets = dataSets;
+    }
+
+    public boolean isAssignedToUser() {
+        return isAssignedToUser;
+    }
+
+    public void setIsAssignedToUser(boolean isAssignedToUser) {
+        this.isAssignedToUser = isAssignedToUser;
     }
 }

@@ -42,7 +42,7 @@ import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.QueryMap;
 
-public interface OrganisationUnitApiClientRetrofit {
+public interface IOrganisationUnitApiClientRetrofit {
 
     @GET("organisationUnits/{organisationUnitUid}")
     Call<OrganisationUnit> getOrganisationUnit(@Path("organisationUnitUid") String organisationUnitUid, @QueryMap Map<String, String> queryMap);

@@ -26,17 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.android.organisationunit;
 
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
-import rx.Observable;
+public interface IUserOrganisationUnitScope {
+    List<OrganisationUnit> sync() throws ApiException;
 
-public interface IUserProgramScope {
-    Observable<List<Program>> sync() throws ApiException;
-
-    Observable<List<Program>> list();
+    List<OrganisationUnit> list();
 }

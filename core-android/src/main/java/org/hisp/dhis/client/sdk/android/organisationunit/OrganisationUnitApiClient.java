@@ -52,9 +52,9 @@ import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
 
-    private final OrganisationUnitApiClientRetrofit mOrganisationUnitApiClientRetrofit;
+    private final IOrganisationUnitApiClientRetrofit mOrganisationUnitApiClientRetrofit;
 
-    public OrganisationUnitApiClient(OrganisationUnitApiClientRetrofit
+    public OrganisationUnitApiClient(IOrganisationUnitApiClientRetrofit
                                              mOrganisationUnitApiClientRetrofit) {
         this.mOrganisationUnitApiClientRetrofit = mOrganisationUnitApiClientRetrofit;
     }

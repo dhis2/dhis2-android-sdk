@@ -45,7 +45,7 @@ import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
@@ -134,7 +134,7 @@ public class NetworkModule implements INetworkModule {
 
 
         mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
-                OrganisationUnitApiClientRetrofit.class));
+                IOrganisationUnitApiClientRetrofit.class));
 
         mTrackedEntityAttributeApiClient = null; // TODO: implement
         // TrackedEntityAttributeApiClient class.

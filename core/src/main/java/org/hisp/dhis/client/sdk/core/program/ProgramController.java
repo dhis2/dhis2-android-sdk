@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProgramController2 implements IProgramController {
+public class ProgramController implements IProgramController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
@@ -60,10 +60,10 @@ public class ProgramController2 implements IProgramController {
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public ProgramController2(ISystemInfoApiClient systemInfoApiClient,
-                              IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                              IProgramStore programStore, ITransactionManager transactionManager,
-                              ILastUpdatedPreferences lastUpdatedPreferences) {
+    public ProgramController(ISystemInfoApiClient systemInfoApiClient,
+                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                             IProgramStore programStore, ITransactionManager transactionManager,
+                             ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;
         this.userApiClient = userApiClient;

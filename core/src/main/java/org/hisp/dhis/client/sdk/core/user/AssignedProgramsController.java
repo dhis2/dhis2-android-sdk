@@ -40,15 +40,15 @@ import java.util.Set;
 /**
  * This class is inteded to build relationships between organisation units and programs.
  */
-public class AssignedProgramsController2 implements IAssignedProgramsController {
+public class AssignedProgramsController implements IAssignedProgramsController {
     /* Api clients */
     private final IUserApiClient userApiClient;
 
     /* Program controller */
     private final IProgramController programController;
 
-    public AssignedProgramsController2(IUserApiClient userApiClient,
-                                       IProgramController programController) {
+    public AssignedProgramsController(IUserApiClient userApiClient,
+                                      IProgramController programController) {
         this.userApiClient = userApiClient;
         this.programController = programController;
     }

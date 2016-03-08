@@ -39,11 +39,11 @@ import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
-import org.hisp.dhis.client.sdk.core.program.ProgramController2;
+import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController2;
+import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
@@ -75,13 +75,13 @@ public class ControllersModule implements IControllersModule {
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
 
-        programController = new ProgramController2(
+        programController = new ProgramController(
                 networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
                 networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        assignedProgramsController = new AssignedProgramsController2(
+        assignedProgramsController = new AssignedProgramsController(
                 networkModule.getUserApiClient(), programController);
 
         organisationUnitController = new OrganisationUnitController(

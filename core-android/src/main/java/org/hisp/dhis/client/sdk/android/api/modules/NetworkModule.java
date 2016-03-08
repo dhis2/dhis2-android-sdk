@@ -49,7 +49,7 @@ import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiCli
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
-import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
@@ -127,7 +127,7 @@ public class NetworkModule implements INetworkModule {
                 DashboardApiClientRetrofit.class));
         mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
-        mUserApiClient = new UserAccountApiClient(retrofit.create(UserApiClientRetrofit.class));
+        mUserApiClient = new UserAccountApiClient(retrofit.create(IUserApiClientRetrofit.class));
         mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
 
         mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.

@@ -46,10 +46,18 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY, columnType = String.class, foreignColumnName = "uId"),
+                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_PARENT_KEY,
+                            columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     OrganisationUnit$Flow parent;
+
+    @Column
+    boolean isAssignedToUser;
+
+    public OrganisationUnit$Flow() {
+        // empty constructor
+    }
 
     public int getLevel() {
         return level;
@@ -67,7 +75,11 @@ public final class OrganisationUnit$Flow extends BaseIdentifiableObject$Flow {
         this.parent = parent;
     }
 
-    public OrganisationUnit$Flow() {
-        // empty constructor
+    public boolean isAssignedToUser() {
+        return isAssignedToUser;
+    }
+
+    public void setIsAssignedToUser(boolean isAssignedToUser) {
+        this.isAssignedToUser = isAssignedToUser;
     }
 }

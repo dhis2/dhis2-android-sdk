@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -48,18 +49,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
-
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
+    private final IOrganisationUnitApiClientRetrofit organisationUnitApiClientRetrofit;
 
-    private final IOrganisationUnitApiClientRetrofit mOrganisationUnitApiClientRetrofit;
-
-    public OrganisationUnitApiClient(IOrganisationUnitApiClientRetrofit
-                                             mOrganisationUnitApiClientRetrofit) {
-        this.mOrganisationUnitApiClientRetrofit = mOrganisationUnitApiClientRetrofit;
+    public OrganisationUnitApiClient(
+            IOrganisationUnitApiClientRetrofit organisationUnitApiClientRetrofit) {
+        this.organisationUnitApiClientRetrofit = organisationUnitApiClientRetrofit;
     }
 
     @Override
+    public List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime lastUpdated,
+                                                       String... uids) throws ApiException {
+        return null;
+    }
+
+    // @Override
     public List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime dateTime) {
         Map<String, String> queryMap = new HashMap<>();
         switch (fields) {
@@ -74,12 +78,12 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit
-                .getOrganisationUnits(queryMap));
-        return unwrap(organisationUnitsNode);
+//        JsonNode organisationUnitsNode = call(organisationUnitApiClientRetrofit
+//                .getOrganisationUnits(queryMap));
+        return unwrap(null);
     }
 
-    @Override
+    // @Override
     public List<OrganisationUnit> getOrganisationUnits(Fields fields, Set<String> set, DateTime
             dateTime) {
         Map<String, String> queryMap = new HashMap<>();
@@ -96,12 +100,12 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode organisationUnitsNode = call(mOrganisationUnitApiClientRetrofit
-                .getOrganisationUnits(queryMap));
-        return unwrap(organisationUnitsNode);
+//        JsonNode organisationUnitsNode = call(organisationUnitApiClientRetrofit
+//                .getOrganisationUnits(queryMap));
+        return unwrap(null);
     }
 
-    @Override
+    // @Override
     public OrganisationUnit getOrganisationUnit(String uid, Fields fields, DateTime dateTime) {
         Map<String, String> queryMap = new HashMap<>();
         switch (fields) {
@@ -116,9 +120,9 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        OrganisationUnit updatedOrganisationUnit = call(mOrganisationUnitApiClientRetrofit
-                .getOrganisationUnit(uid, queryMap));
-        return updatedOrganisationUnit;
+//        OrganisationUnit updatedOrganisationUnit = call(organisationUnitApiClientRetrofit
+//                .getOrganisationUnit(uid, queryMap));
+        return null;
     }
 
     private static String getFieldsFilter() {
@@ -131,7 +135,7 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
         if (meNode.has("organisationUnits")) {
             TypeReference<List<OrganisationUnit>> typeRef = new
                     TypeReference<List<OrganisationUnit>>() {
-            };
+                    };
             try {
                 organisationUnits = ObjectMapperProvider.getInstance().
                         readValue(meNode.get("organisationUnits").traverse(), typeRef);

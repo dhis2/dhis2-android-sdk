@@ -26,16 +26,58 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.organisationunit;
+package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import org.hisp.dhis.client.sdk.android.api.utils.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
 
-public interface IOrganisationUnitApiClient {
-    List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime lastUpdated,
-                                                String... uids) throws ApiException;
+import retrofit.Call;
+
+import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.getCollection;
+
+public class OrganisationUnitApiClient2 implements IOrganisationUnitApiClient {
+    private final IOrganisationUnitApiClientRetrofit unitApiClientRetrofit;
+
+    public OrganisationUnitApiClient2(IOrganisationUnitApiClientRetrofit unitApiClientRetrofit) {
+        this.unitApiClientRetrofit = unitApiClientRetrofit;
+    }
+
+    @Override
+    public List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime lastUpdated,
+                                                       String... uids) throws ApiException {
+
+        ApiResource<OrganisationUnit> apiResource = new ApiResource<OrganisationUnit>() {
+
+            @Override
+            public String getResourceName() {
+                return "organisationUnits";
+            }
+
+            @Override
+            public String getBasicProperties() {
+                return "id,displayName";
+            }
+
+            @Override
+            public String getAllProperties() {
+                return "id,name,displayName,created,lastUpdated,access," +
+                        "programs[id],dataSets[id]";
+            }
+
+            @Override
+            public Call<Map<String, List<OrganisationUnit>>> getEntities(
+                    Map<String, String> queryMap, List<String> filters) throws ApiException {
+                return unitApiClientRetrofit.getOrganisationUnits(queryMap, filters);
+            }
+        };
+
+        return getCollection(apiResource, fields, lastUpdated, uids);
+    }
 }

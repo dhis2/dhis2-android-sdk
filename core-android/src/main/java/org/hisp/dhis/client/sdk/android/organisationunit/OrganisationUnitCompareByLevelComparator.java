@@ -34,11 +34,16 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import java.util.Comparator;
 
 public class OrganisationUnitCompareByLevelComparator implements Comparator<OrganisationUnit> {
+
+    public OrganisationUnitCompareByLevelComparator() {
+        // explicit empty constructor
+    }
+
     @Override
     public int compare(OrganisationUnit lhs, OrganisationUnit rhs) {
-        if(lhs.getLevel() == rhs.getLevel()) {
+        if (lhs.getLevel() == rhs.getLevel()) {
             return 0;
-        } else if(lhs.getLevel() > rhs.getLevel()) {
+        } else if (lhs.getLevel() > rhs.getLevel()) {
             return 1;
         } else {
             return -1;

@@ -37,9 +37,9 @@ import java.util.Map;
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 
 public class UserAccountApiClient implements IUserApiClient {
-    private final UserApiClientRetrofit mApiClient;
+    private final IUserApiClientRetrofit mApiClient;
 
-    public UserAccountApiClient(UserApiClientRetrofit mApiClient) {
+    public UserAccountApiClient(IUserApiClientRetrofit mApiClient) {
         this.mApiClient = mApiClient;
     }
 
@@ -53,30 +53,4 @@ public class UserAccountApiClient implements IUserApiClient {
 
         return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
     }
-//
-//    // @Override
-//    public List<OrganisationUnit> getOrganisationUnitsWithAssignedPrograms() {
-//        // JsonNode meNode = call(mApiClient.getOrganisationUnitsWithAssignedPrograms());
-//        // return unwrap(meNode);
-//        return null;
-//    }
-//
-//    private static List<OrganisationUnit> unwrap(JsonNode meNode) {
-//        List<OrganisationUnit> organisationUnits;
-//        if (meNode.has("organisationUnits")) {
-//            TypeReference<List<OrganisationUnit>> typeRef = new
-//                    TypeReference<List<OrganisationUnit>>() {
-//            };
-//            try {
-//                organisationUnits = ObjectMapperProvider.getInstance().
-//                        readValue(meNode.get("organisationUnits").traverse(), typeRef);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                organisationUnits = new ArrayList<>();
-//            }
-//        } else {
-//            organisationUnits = new ArrayList<>();
-//        }
-//        return organisationUnits;
-//    }
 }

@@ -80,13 +80,15 @@ public final class OrganisationUnitController extends AbsController<Organisation
     }
 
     @Override
-    public void sync(Set<String> uidsOfOrganisationUnitsToLoad) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+
         List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
-                .getOrganisationUnits(Fields.ALL, uidsOfOrganisationUnitsToLoad, null);
+                .getOrganisationUnits(Fields.ALL, null, uids.toArray(new String[uids.size()]));
         List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient
-                .getOrganisationUnits(Fields.BASIC, null);
+                .getOrganisationUnits(Fields.BASIC, null, uids.toArray(new String[uids.size()]));
         List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
+
         transactionManager.transact(getMergeOperations(existingOrganisationUnits,
                 updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore));
         lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);

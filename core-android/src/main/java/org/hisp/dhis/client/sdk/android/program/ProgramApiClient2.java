@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
@@ -37,7 +38,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +45,7 @@ import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.unwrap;
 
 public class ProgramApiClient2 implements IProgramApiClient {
+
     /* amount of programs which we should get by each request */
     private static final int PROGRAMS_PER_REQUEST = 64;
 
@@ -101,58 +102,22 @@ public class ProgramApiClient2 implements IProgramApiClient {
         return allPrograms;
     }
 
-    private static List<String> buildIdFilter(String[] ids) {
+    public static List<String> buildIdFilter(String[] ids) {
         List<String> idFilters = new ArrayList<>();
 
         if (ids != null && ids.length > 0) {
-            List<List<String>> splittedIds = sliceList(Arrays.asList(ids), PROGRAMS_PER_REQUEST);
+            List<List<String>> splittedIds = CollectionUtils.slice(
+                    Arrays.asList(ids), PROGRAMS_PER_REQUEST);
 
             for (List<String> listOfIds : splittedIds) {
                 StringBuilder builder = new StringBuilder();
                 idFilters.add(builder.append("id:in:[")
-                        .append(join(listOfIds))
+                        .append(CollectionUtils.join(listOfIds, ","))
                         .append("]")
                         .toString());
             }
         }
 
         return idFilters;
-    }
-
-    private static List<List<String>> sliceList(List<String> stringList, int subListSize) {
-        List<List<String>> listOfSubLists = new ArrayList<>();
-
-        int leftBoundary = 0;
-        int rightBoundary = subListSize < stringList.size() ? subListSize : stringList.size();
-
-        do {
-            listOfSubLists.add(stringList.subList(leftBoundary, rightBoundary));
-
-            leftBoundary = rightBoundary;
-            rightBoundary = rightBoundary + subListSize < stringList.size() ?
-                    rightBoundary + subListSize : stringList.size();
-        } while (leftBoundary != rightBoundary);
-
-        return listOfSubLists;
-    }
-
-    private static String join(List<String> strings) {
-        if (strings == null) {
-            return "";
-        }
-
-        StringBuilder buffer = new StringBuilder();
-        Iterator<? extends String> iterator = strings.iterator();
-
-        if (iterator.hasNext()) {
-            buffer.append(iterator.next());
-
-            while (iterator.hasNext()) {
-                buffer.append(",").append(iterator.next());
-            }
-        }
-
-
-        return buffer.toString();
     }
 }

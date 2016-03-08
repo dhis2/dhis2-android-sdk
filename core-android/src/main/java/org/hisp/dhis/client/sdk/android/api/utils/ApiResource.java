@@ -26,26 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.user;
+package org.hisp.dhis.client.sdk.android.api.utils;
 
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.QueryMap;
 
-public interface UserApiClientRetrofit {
+public interface ApiResource<Type> {
+    String getResourceName();
 
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting user information
-    /////////////////////////////////////////////////////////////////////////
+    String getBasicProperties();
 
-    @GET("me/")
-    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-//
-//    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
-//    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
+    String getAllProperties();
+
+    Call<Map<String, List<Type>>> getEntities(
+            Map<String, String> queryMap, List<String> filters) throws ApiException;
 }

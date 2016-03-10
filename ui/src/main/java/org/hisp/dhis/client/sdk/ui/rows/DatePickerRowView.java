@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.RaisedButton;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
@@ -45,8 +46,10 @@ public class DatePickerRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
-        ((DatePickerRowViewHolder) holder).update(dataEntity);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+        DatePickerRowViewHolder datePickerRowViewHolder = (DatePickerRowViewHolder) holder;
+        DataEntity entity = (DataEntity) dataEntity;
+        datePickerRowViewHolder.update(entity);
     }
 
     private static class DatePickerRowViewHolder extends RecyclerView.ViewHolder {

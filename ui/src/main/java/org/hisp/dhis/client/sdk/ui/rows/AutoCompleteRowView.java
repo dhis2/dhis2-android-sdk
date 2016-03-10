@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.DefaultPickable;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.IPickable;
@@ -35,14 +36,14 @@ public class AutoCompleteRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
         AutoCompleteRowViewHolder autoCompleteRowViewHolder = (AutoCompleteRowViewHolder) holder;
-
-        autoCompleteRowViewHolder.textViewLabel.setText(dataEntity.getLabel());
-        autoCompleteRowViewHolder.optionText.setText(dataEntity.getValue());
-        autoCompleteRowViewHolder.onClearListener.setDataEntity(dataEntity);
+        DataEntity entity = (DataEntity) dataEntity;
+        autoCompleteRowViewHolder.textViewLabel.setText(entity.getLabel());
+        autoCompleteRowViewHolder.optionText.setText(entity.getValue());
+        autoCompleteRowViewHolder.onClearListener.setDataEntity(entity);
         autoCompleteRowViewHolder.onEditTextClickedListener.setOptions(options);
-        autoCompleteRowViewHolder.onOptionSelectedListener.setDataEntity(dataEntity);
+        autoCompleteRowViewHolder.onOptionSelectedListener.setDataEntity(entity);
 
         autoCompleteRowViewHolder.setOnOptionSelectedListener();
     }

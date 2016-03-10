@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityCoordinate;
+import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -34,9 +36,10 @@ public class CoordinateRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
         CoordinateRowViewHolder coordinateRowViewHolder = (CoordinateRowViewHolder) holder;
-        coordinateRowViewHolder.update(dataEntity);
+        DataEntityCoordinate coordinateDataEntity = (DataEntityCoordinate) dataEntity;
+        coordinateRowViewHolder.update(coordinateDataEntity);
 
     }
 
@@ -94,28 +97,28 @@ public class CoordinateRowView implements IRowView {
 
         }
 
-        public void update(DataEntity entity) {
+        public void update(DataEntityCoordinate entity) {
             textViewLabel.setText(R.string.enter_coordinates);
             onValueChangedListener.setDataEntity(entity);
-            latitudeEditText.setText(entity.getValue());
-            longitudeEditText.setText(entity.getValue());
+            latitudeEditText.setText(entity.getValue().get("latitude").toString());
+            longitudeEditText.setText(entity.getValue().get("longitude").toString());
 
-            CharSequence hint = !isEmpty(entity.getValue()) ? null : onFocusChangeListener.getHint();
+            CharSequence hint = entity.getValue() == null ? null : onFocusChangeListener.getHint();
             latitudeTextInputLayout.setHint(hint);
             longitudeTextInputLayout.setHint(hint);
         }
     }
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntity dataEntity;
+        private DataEntityCoordinate dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityCoordinate dataEntity) {
             this.dataEntity = dataEntity;
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
             if (dataEntity != null) {
-                dataEntity.updateValue(editable.toString());
+//                dataEntity.updateValue(editable.toString());
             }
         }
     }

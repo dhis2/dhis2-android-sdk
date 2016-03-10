@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 
 
 public class RadioButtonRowView implements IRowView {
@@ -29,10 +30,11 @@ public class RadioButtonRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
         RadioButtonRowViewHolder radioButtonRowViewHolder = (RadioButtonRowViewHolder) holder;
-        radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(dataEntity);
-        radioButtonRowViewHolder.labelTextView.setText(dataEntity.getLabel());
+        DataEntity entity = (DataEntity) dataEntity;
+        radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(entity);
+        radioButtonRowViewHolder.labelTextView.setText(entity.getLabel());
         if(TRUE.equals(dataEntity.getValue())) {
             radioButtonRowViewHolder.firstRadioButton.setChecked(true);
         }

@@ -34,10 +34,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 
 public interface IRowView {
     ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater,
                                   ViewGroup parent, DataEntity.Type type);
 
-    void onBindViewHolder(ViewHolder holder, DataEntity dataEntity);
+    void onBindViewHolder(ViewHolder holder, IDataEntity dataEntity);
 }

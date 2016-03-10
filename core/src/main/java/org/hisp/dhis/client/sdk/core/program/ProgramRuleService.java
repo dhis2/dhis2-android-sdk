@@ -66,4 +66,14 @@ public final class ProgramRuleService implements IProgramRuleService {
     public List<ProgramRule> list() {
         return programRuleStore.queryAll();
     }
+
+    @Override
+    public boolean save(ProgramRule programRule) {
+        return programRuleStore.save(programRule);
+    }
+
+    @Override
+    public boolean remove(ProgramRule object) {
+        return programRuleStore.delete(object);
+    }
 }

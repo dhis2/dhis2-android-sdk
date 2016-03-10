@@ -85,4 +85,6 @@ public interface IServicesModule {
 
     ITrackedEntityService getTrackedEntities();
 
+    IProgramRuleService getProgramRuleService();
+
 }

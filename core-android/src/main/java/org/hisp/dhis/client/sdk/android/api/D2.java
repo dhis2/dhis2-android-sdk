@@ -46,12 +46,14 @@ import org.hisp.dhis.client.sdk.android.optionset.OptionSetScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramIndicatorScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramRuleScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramTrackedEntityAttributeScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
@@ -103,6 +105,7 @@ public class D2 {
     private final IEnrollmentScope mEnrollmentScope;
     private final IOptionSetScope mOptionSetScope;
     private final IProgramStageScope mProgramStageScope;
+    private final IProgramRuleScope mProgramRuleScope;
     private final IProgramIndicatorScope mProgramIndicatorScope;
     private final IProgramTrackedEntityAttributeScope mProgramTrackedEntityAttributeScope;
     private final IProgramStageDataElementScope mProgramStageDataElementScope;
@@ -163,6 +166,8 @@ public class D2 {
         mOptionSetScope = new OptionSetScope(servicesModule.getOptionSetService());
 
         mProgramStageScope = new ProgramStageScope(servicesModule.getProgramStageService());
+
+        mProgramRuleScope = new ProgramRuleScope(servicesModule.getProgramRuleService());
 
         mProgramStageDataElementScope = new ProgramStageDataElementScope(servicesModule
                 .getProgramStageDataElementService());
@@ -273,5 +278,29 @@ public class D2 {
 
     public static UserCredentials configuration() {
         return getInstance().mUserPreferences.get();
+    }
+
+    public static ITrackedEntityDataValueScope trackedEntityDataValues() {
+        return getInstance().mTrackedEntityDataValueScope;
+    }
+
+    public static IRelationshipScope relationships() {
+        return getInstance().mRelationshipScope;
+    }
+
+    public static IRelationshipTypeScope relationshipTypes() {
+        return getInstance().mRelationshipTypeScope;
+    }
+
+    public static ITrackedEntityAttributeScope trackedEntityAttributes() {
+        return getInstance().mTrackedEntityAttributeScope;
+    }
+
+    public static ITrackedEntityAttributeValueScope trackedEntityAttributeValues() {
+        return getInstance().mTrackedEntityAttributeValueScope;
+    }
+
+    public static IProgramRuleScope programRules() {
+        return getInstance().mProgramRuleScope;
     }
 }

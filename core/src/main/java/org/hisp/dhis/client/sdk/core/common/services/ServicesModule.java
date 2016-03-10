@@ -64,6 +64,7 @@ public final class ServicesModule implements IServicesModule {
     private final IEnrollmentService enrollmentService;
     private final IOptionSetService optionSetService;
     private final IProgramStageService programStageService;
+    private final IProgramRuleService programRuleService;
     private final IProgramIndicatorService programIndicatorService;
     private final IProgramTrackedEntityAttributeService programTrackedEntityAttributeService;
     private final ITrackedEntityService trackedEntityService;
@@ -117,6 +118,9 @@ public final class ServicesModule implements IServicesModule {
 
         programStageService = new ProgramStageService(
                 persistenceModule.getProgramStageStore());
+
+        programRuleService = new ProgramRuleService(
+                persistenceModule.getProgramRuleStore());
 
         programStageDataElementService = new ProgramStageDataElementService(
                 persistenceModule.getProgramStageDataElementStore()
@@ -257,5 +261,10 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public ITrackedEntityService getTrackedEntities() {
         return trackedEntityService;
+    }
+
+    @Override
+    public IProgramRuleService getProgramRuleService() {
+        return programRuleService;
     }
 }

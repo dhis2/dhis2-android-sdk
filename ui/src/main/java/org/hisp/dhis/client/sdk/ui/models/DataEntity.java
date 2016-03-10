@@ -29,18 +29,19 @@
 package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
-public class DataEntity {
+public class DataEntity implements IDataEntity<CharSequence> {
     private final Type type;
     private final CharSequence label;
     private CharSequence value;
 
-    private OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener;
+    private OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener;
     private List<IValueValidator<CharSequence>> dataEntityValueValidators;
 
 //    for simplicity, let's ignore these properties from beginning
@@ -63,7 +64,7 @@ public class DataEntity {
     }
 
     private DataEntity(String label, String value, Type type,
-                       OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener) {
+                       OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener) {
         isNull(label, "label must not be null");
         isNull(type, "type must not be null");
 
@@ -83,7 +84,7 @@ public class DataEntity {
     }
 
     public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type,
-                                    OnValueChangeListener<CharSequence, CharSequence> onValueChangeListener) {
+                                    OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener) {
         return new DataEntity(label, value, type, onValueChangeListener);
     }
 
@@ -92,33 +93,49 @@ public class DataEntity {
         return label;
     }
 
+    @Override
+    public OnValueChangeListener<CharSequence> getOnValueChangedListener() {
+        return null;
+    }
+
+    @Override
+    public List<IValueValidator<CharSequence>> getDataEntityValueValidators() {
+        return dataEntityValueValidators;
+    }
+
+    @Override
     @NonNull
     public CharSequence getValue() {
         return value;
     }
 
+    @Override
     @NonNull
     public Type getType() {
         return type;
     }
 
-    public void setOnValueChangedListener(OnValueChangeListener<CharSequence, CharSequence> onValueChangedListener) {
+    public void setOnValueChangedListener(OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangedListener) {
         this.onValueChangeListener = onValueChangedListener;
     }
 
+    @Override
     public boolean updateValue(@NonNull CharSequence value) {
         if (validateValue(value) && (!value.equals(this.value))) {
             this.value = value;
-            this.onValueChangeListener.onValueChanged(this.label, value);
+            this.onValueChangeListener.onValueChanged(new Pair<>(this.label,value));
+
             return true;
         }
         return false;
     }
 
+    @Override
     public boolean clearValue() {
         return false;
     }
 
+    @Override
     public boolean validateValue(CharSequence newValue) {
         for (IValueValidator<CharSequence> valueValidator : dataEntityValueValidators) {
             if (!valueValidator.validate(newValue)) {

@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
@@ -38,7 +40,8 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public interface IProgramRuleService extends IService, IGet<ProgramRule>, IGetUid<ProgramRule>, IList<ProgramRule> {
+public interface IProgramRuleService extends IService, IGet<ProgramRule>, IGetUid<ProgramRule>,
+        IList<ProgramRule>, ISave<ProgramRule>, IRemove<ProgramRule> {
     List<ProgramRule> list(ProgramStage programStage);
     List<ProgramRule> list(Program program);
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
@@ -78,6 +79,23 @@ public class UserProgramScope implements IUserProgramScope {
             public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
                     subscriber.onNext(programService.list(true));
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Program>> list(final OrganisationUnit... organisationUnits) {
+        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+
+            @Override
+            public void call(Subscriber<? super List<Program>> subscriber) {
+                try {
+                    subscriber.onNext(programService.list(organisationUnits));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

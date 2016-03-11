@@ -29,13 +29,11 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow$Table;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -44,8 +42,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -54,13 +51,20 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
 
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
+
     private final ITransactionManager transactionManager;
+
 
     public ProgramStore2(IMapper<Program, Program$Flow> mapper,
                          ITransactionManager transactionManager) {
         super(mapper);
 
         this.transactionManager = transactionManager;
+    }
+
+    @Override
+    public List<Program> queryAll() {
+        return queryProgramRelationships(super.queryAll());
     }
 
     @Override
@@ -71,54 +75,29 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
                         .ISASSIGNEDTOUSER).is(assignedToCurrentUser))
                 .queryList();
 
-        if (programFlows != null && !programFlows.isEmpty()) {
-            return getMapper().mapToModels(programFlows);
-        }
-
-        return new ArrayList<>();
+        List<Program> programs = getMapper().mapToModels(programFlows);
+        return queryProgramRelationships(programs);
     }
 
-    /* query list of programs for given organisation units */
     @Override
     public List<Program> query(OrganisationUnit... organisationUnits) {
-        return null;
+        List<Program$Flow> programFlows = ModelLink$Flow.queryRelatedModels(Program$Flow.class,
+                PROGRAM_TO_ORGANISATION_UNITS, Arrays.asList(organisationUnits));
+
+        System.out.println("*** PROGRAM_FLOWS *** " + programFlows);
+        List<Program> programs = getMapper().mapToModels(programFlows);
+        System.out.println("*** PROGRAMS *** " + programs);
+        return queryProgramRelationships(programs);
     }
 
     @Override
     public Program queryById(long id) {
-        Program program = super.queryById(id);
-
-        if (program != null) {
-            List<OrganisationUnit> organisationUnits = queryRelatedOrganisationUnits(program);
-            program.setOrganisationUnits(organisationUnits);
-        }
-
-        return program;
+        return queryProgramRelationships(super.queryById(id));
     }
 
     @Override
     public Program queryByUid(String uid) {
-        Program program = super.queryByUid(uid);
-
-        if (program != null) {
-            List<OrganisationUnit> organisationUnits = queryRelatedOrganisationUnits(program);
-            program.setOrganisationUnits(organisationUnits);
-        }
-
-        return program;
-    }
-
-    @Override
-    public List<Program> queryAll() {
-        List<Program> programs = super.queryAll();
-
-        // resolving relationships with organisation units
-        Map<String, List<OrganisationUnit>> programsToUnits = queryRelatedOrganisationUnits();
-        for (Program program : programs) {
-            program.setOrganisationUnits(programsToUnits.get(program.getUId()));
-        }
-
-        return programs;
+        return queryProgramRelationships(super.queryByUid(uid));
     }
 
     @Override
@@ -126,7 +105,7 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
         boolean isSuccess = super.insert(object);
 
         if (isSuccess) {
-            updateProgramRelationShips(object);
+            updateProgramRelationships(object);
         }
 
         return isSuccess;
@@ -137,7 +116,7 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
         boolean isSuccess = super.update(object);
 
         if (isSuccess) {
-            updateProgramRelationShips(object);
+            updateProgramRelationships(object);
         }
 
         return isSuccess;
@@ -148,7 +127,7 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
         boolean isSuccess = super.delete(object);
 
         if (isSuccess) {
-            deleteRelatedOrganisationUnits(object);
+            ModelLink$Flow.deleteRelatedModels(object, PROGRAM_TO_ORGANISATION_UNITS);
         }
 
         return isSuccess;
@@ -159,87 +138,40 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, Program$F
         boolean isSuccess = super.save(object);
 
         if (isSuccess) {
-            updateProgramRelationShips(object);
+            updateProgramRelationships(object);
         }
 
         return isSuccess;
     }
 
-    private void updateProgramRelationShips(Program program) {
-        List<IDbOperation> dbOperations = updateLinksToOrganisationUnits(program);
+    private void updateProgramRelationships(Program program) {
+        List<IDbOperation> dbOperations = ModelLink$Flow.updateLinksToModel(program,
+                program.getOrganisationUnits(), PROGRAM_TO_ORGANISATION_UNITS);
         transactionManager.transact(dbOperations);
     }
 
-    private List<IDbOperation> updateLinksToOrganisationUnits(Program program) {
-        // organisation unit to program relation ships
-        // create generic link table with UID to UID mapping?
-        // then it will be impossible to perform joins on tables.
+    private List<Program> queryProgramRelationships(List<Program> programs) {
 
-        List<ModelLink$Flow> links = new ArrayList<>();
-        if (program.getOrganisationUnits() != null) {
-            for (OrganisationUnit orgUnit : program.getOrganisationUnits()) {
-                ModelLink$Flow linkModel = new ModelLink$Flow();
-                linkModel.setKeyOne(program.getUId());
-                linkModel.setKeyTwo(orgUnit.getUId());
-                linkModel.setLinkMimeType(PROGRAM_TO_ORGANISATION_UNITS);
-                links.add(linkModel);
+        // resolving relationships with organisation units
+        if (programs != null) {
+            Map<String, List<OrganisationUnit>> programsToUnits = ModelLink$Flow
+                    .queryLinksForModel(OrganisationUnit.class, PROGRAM_TO_ORGANISATION_UNITS);
+            for (Program program : programs) {
+                program.setOrganisationUnits(programsToUnits.get(program.getUId()));
             }
         }
 
-        List<ModelLink$Flow> persistedLinks = new Select()
-                .from(ModelLink$Flow.class)
-                .where(Condition.column(ModelLink$Flow$Table
-                        .LINKMIMETYPE).is(PROGRAM_TO_ORGANISATION_UNITS))
-                .queryList();
-
-        return ModelLink$Flow.createOperations(persistedLinks, links);
+        return programs;
     }
 
-    private List<OrganisationUnit> queryRelatedOrganisationUnits(Program program) {
-        List<ModelLink$Flow> persistedLinks = new Select()
-                .from(ModelLink$Flow.class)
-                .where(Condition.column(ModelLink$Flow$Table
-                        .LINKMIMETYPE).is(PROGRAM_TO_ORGANISATION_UNITS))
-                .and(Condition.column(ModelLink$Flow$Table.MODELKEYONE).is(program.getUId()))
-                .queryList();
+    private Program queryProgramRelationships(Program program) {
 
-        List<OrganisationUnit> organisationUnits = new ArrayList<>();
-        for (ModelLink$Flow linkModel : persistedLinks) {
-            OrganisationUnit organisationUnit = new OrganisationUnit();
-            organisationUnit.setUId(linkModel.getKeyTwo());
-            organisationUnits.add(organisationUnit);
+        if (program != null) {
+            List<OrganisationUnit> organisationUnits = ModelLink$Flow.queryLinksForModel(
+                    OrganisationUnit.class, PROGRAM_TO_ORGANISATION_UNITS, program.getUId());
+            program.setOrganisationUnits(organisationUnits);
         }
 
-        return organisationUnits;
-    }
-
-    private Map<String, List<OrganisationUnit>> queryRelatedOrganisationUnits() {
-        List<ModelLink$Flow> persistedLinks = new Select()
-                .from(ModelLink$Flow.class)
-                .where(Condition.column(ModelLink$Flow$Table
-                        .LINKMIMETYPE).is(PROGRAM_TO_ORGANISATION_UNITS))
-                .queryList();
-
-        Map<String, List<OrganisationUnit>> programsToUnits = new HashMap<>();
-        for (ModelLink$Flow linkModel : persistedLinks) {
-            OrganisationUnit organisationUnit = new OrganisationUnit();
-            organisationUnit.setUId(linkModel.getKeyTwo());
-
-            if (programsToUnits.get(linkModel.getKeyOne()) == null) {
-                programsToUnits.put(linkModel.getKeyOne(), new ArrayList<OrganisationUnit>());
-            }
-
-            programsToUnits.get(linkModel.getKeyOne()).add(organisationUnit);
-        }
-
-        return programsToUnits;
-    }
-
-    private void deleteRelatedOrganisationUnits(Program program) {
-        new Delete().from(ModelLink$Flow.class)
-                .where(Condition.column(ModelLink$Flow$Table
-                        .LINKMIMETYPE).is(PROGRAM_TO_ORGANISATION_UNITS))
-                .and(Condition.column(ModelLink$Flow$Table.MODELKEYONE).is(program.getUId()))
-                .query();
+        return program;
     }
 }

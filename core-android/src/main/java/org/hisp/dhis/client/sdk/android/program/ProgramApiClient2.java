@@ -77,7 +77,7 @@ public class ProgramApiClient2 implements IProgramApiClient {
             }
             case ALL: {
                 queryMap.put("fields", "id,name,displayName,created,lastUpdated," +
-                        "access,organisationUnits[id]");
+                        "access,programType,organisationUnits[id]");
                 break;
             }
         }

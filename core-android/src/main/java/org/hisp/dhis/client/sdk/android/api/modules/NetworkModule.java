@@ -44,12 +44,12 @@ import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClient;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
-import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
@@ -82,15 +82,21 @@ public class NetworkModule implements INetworkModule {
     private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000;      // 20s
     private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
 
+    private final IOrganisationUnitApiClient organisationUnitApiClient;
+    private final ISystemInfoApiClient systemInfoApiClient;
+    private final IProgramApiClient programApiClient;
+    private final IUserApiClient userApiClient;
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Legacy code
+    /////////////////////////////////////////////////////////////////////////////////////////////
+
     private final IDashboardApiClient mDashboardApiClient;
-    private final ISystemInfoApiClient mSystemInfoApiClient;
-    private final IUserApiClient mUserApiClient;
     private final IEventApiClient mEventApiClient;
     private final IEnrollmentApiClient mEnrollmentApiClient;
     private final ITrackedEntityAttributeApiClient mTrackedEntityAttributeApiClient;
     private final ITrackedEntityApiClient mTrackedEntityApiClient;
-    private final IProgramApiClient mProgramApiClient;
-    private final IOrganisationUnitApiClient mOrganisationUnitApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule
@@ -120,21 +126,22 @@ public class NetworkModule implements INetworkModule {
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
-        mProgramApiClient = new ProgramApiClient2(retrofit.create(IProgramApiClientRetrofit.class));
+        programApiClient = new ProgramApiClient2(retrofit.create(IProgramApiClientRetrofit.class));
 
 
         mDashboardApiClient = new DashboardApiClient(retrofit.create(
                 DashboardApiClientRetrofit.class));
-        mSystemInfoApiClient = new SystemInfoApiClient(retrofit.create(
+        systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
-        mUserApiClient = new UserAccountApiClient(retrofit.create(IUserApiClientRetrofit.class));
+        userApiClient = new UserAccountApiClient(retrofit.create(
+                IUserApiClientRetrofit.class));
+        organisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
+                IOrganisationUnitApiClientRetrofit.class));
+
+        // LEGACY
         mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
 
         mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.
-
-
-        mOrganisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
-                IOrganisationUnitApiClientRetrofit.class));
 
         mTrackedEntityAttributeApiClient = null; // TODO: implement
         // TrackedEntityAttributeApiClient class.
@@ -148,7 +155,7 @@ public class NetworkModule implements INetworkModule {
 
     @Override
     public ISystemInfoApiClient getSystemInfoApiClient() {
-        return mSystemInfoApiClient;
+        return systemInfoApiClient;
     }
 
     @Override
@@ -168,12 +175,12 @@ public class NetworkModule implements INetworkModule {
 
     @Override
     public IProgramApiClient getProgramApiClient() {
-        return mProgramApiClient;
+        return programApiClient;
     }
 
     @Override
     public IOrganisationUnitApiClient getOrganisationUnitApiClient() {
-        return mOrganisationUnitApiClient;
+        return organisationUnitApiClient;
     }
 
     @Override
@@ -183,7 +190,7 @@ public class NetworkModule implements INetworkModule {
 
     @Override
     public IUserApiClient getUserApiClient() {
-        return mUserApiClient;
+        return userApiClient;
     }
 
     private static class ApiBaseUrl implements BaseUrl {

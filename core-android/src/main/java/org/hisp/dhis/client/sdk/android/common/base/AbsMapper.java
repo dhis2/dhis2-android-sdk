@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.common.base;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
@@ -39,7 +42,8 @@ public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType
         extends IModel & Model> implements IMapper<ModelType, DatabaseEntityType> {
 
     @Override
-    public List<DatabaseEntityType> mapToDatabaseEntities(List<ModelType> models) {
+    @NonNull
+    public List<DatabaseEntityType> mapToDatabaseEntities(@Nullable List<ModelType> models) {
         List<DatabaseEntityType> modelObjects = new ArrayList<>();
         if (models != null && !models.isEmpty()) {
             for (ModelType model : models) {
@@ -50,7 +54,8 @@ public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType
     }
 
     @Override
-    public List<ModelType> mapToModels(List<DatabaseEntityType> dataBaseEntities) {
+    @NonNull
+    public List<ModelType> mapToModels(@Nullable List<DatabaseEntityType> dataBaseEntities) {
         List<ModelType> modelObjects = new ArrayList<>();
         if (dataBaseEntities != null && !dataBaseEntities.isEmpty()) {
             for (DatabaseEntityType dataBaseEntity : dataBaseEntities) {

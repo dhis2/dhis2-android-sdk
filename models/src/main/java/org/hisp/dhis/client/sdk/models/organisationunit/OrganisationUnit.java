@@ -60,6 +60,10 @@ public final class OrganisationUnit extends BaseIdentifiableObject {
     @JsonIgnore
     private boolean isAssignedToUser;
 
+    public OrganisationUnit() {
+        // explicit empty constructor
+    }
+
     public int getLevel() {
         return level;
     }

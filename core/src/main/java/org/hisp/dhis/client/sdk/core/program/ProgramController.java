@@ -74,33 +74,6 @@ public class ProgramController implements IProgramController {
 
     @Override
     public void sync() throws ApiException {
-//        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-//        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
-//
-//        List<Program> persistedPrograms = programStore.queryAll();
-//
-//        // we have to download all ids from server in order to
-//        // find out what was removed on the server side
-//        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
-//
-//        // Retrieving only updated programs
-//        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
-//
-//        // we need to mark assigned programs as "assigned" before storing them
-//        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
-//                .getUserAccount().getPrograms());
-//
-//        for (Program updatedProgram : updatedPrograms) {
-//            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
-//            updatedProgram.setIsAssignedToUser(assignedProgram != null);
-//        }
-//
-//        // we will have to perform something similar to what happens in AbsController
-//        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-//                updatedPrograms, persistedPrograms, programStore);
-//        transactionManager.transact(dbOperations);
-//
-//        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
         sync(null);
     }
 

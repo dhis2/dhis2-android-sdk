@@ -202,7 +202,7 @@ public class PersistenceModule implements IPersistenceModule {
         dataElementStore = new DataElementStore(MapperModuleProvider.getInstance()
                 .getDataElementMapper(), optionSetStore);
         organisationUnitStore = new OrganisationUnitStore(MapperModuleProvider.getInstance()
-                .getOrganisationUnitMapper());
+                .getOrganisationUnitMapper(), transactionManager);
         trackedEntityStore = new TrackedEntityStore(MapperModuleProvider.getInstance()
                 .getTrackedEntityMapper());
         trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModuleProvider

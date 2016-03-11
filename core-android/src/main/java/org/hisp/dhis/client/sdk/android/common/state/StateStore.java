@@ -271,8 +271,8 @@ public class StateStore extends AbsStore<State, State$Flow> implements IStateSto
         return null;
     }
 
-    private List<? extends Model> queryModels(Class<? extends IModel> clazz, String columnName, boolean withAction, @NotNull Action... actions
-                                              ) {
+    private List<? extends Model> queryModels(Class<? extends IModel> clazz, String columnName,
+                                              boolean withAction, @NotNull Action... actions) {
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
         From<? extends Model> from = new Select()

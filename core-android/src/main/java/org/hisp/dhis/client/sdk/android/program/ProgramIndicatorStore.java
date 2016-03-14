@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorFlow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
@@ -44,36 +43,36 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import java.util.List;
 
 public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<ProgramIndicator,
-        ProgramIndicator$Flow> implements IProgramIndicatorStore {
+        ProgramIndicatorFlow> implements IProgramIndicatorStore {
 
 
-    public ProgramIndicatorStore(IMapper<ProgramIndicator, ProgramIndicator$Flow> mapper) {
+    public ProgramIndicatorStore(IMapper<ProgramIndicator, ProgramIndicatorFlow> mapper) {
         super(mapper);
     }
 
     @Override
     public List<ProgramIndicator> query(Program program) {
-        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
-                .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAM_PROGRAM).is(program.getId()))
+        List<ProgramIndicatorFlow> programIndicatorFlows = new Select()
+                .from(ProgramIndicatorFlow.class).where(
+                        ProgramIndicatorFlow_Table.program.is(program.getUId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }
 
     @Override
     public List<ProgramIndicator> query(ProgramStage programStage) {
-        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
-                .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE).is(programStage.getId()))
+        List<ProgramIndicatorFlow> programIndicatorFlows = new Select()
+                .from(ProgramIndicatorFlow.class).where(ProgramIndicatorFlow_Table
+                        .programstage.is(programStage.getUId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }
 
     @Override
     public List<ProgramIndicator> query(ProgramStageSection programStageSection) {
-        List<ProgramIndicator$Flow> programIndicatorFlows = new Select()
-                .from(ProgramIndicator$Flow.class).where(Condition.
-                        column(ProgramIndicator$Flow$Table.PROGRAMSTAGESECTION_PROGRAMSTAGESECTION).is(programStageSection.getId()))
+        List<ProgramIndicatorFlow> programIndicatorFlows = new Select()
+                .from(ProgramIndicatorFlow.class).where(ProgramIndicatorFlow_Table
+                        .programstagesection.is(programStageSection.getUId()))
                 .queryList();
         return getMapper().mapToModels(programIndicatorFlows);
     }

@@ -30,22 +30,19 @@ package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValue$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValueFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAttributeValue,
-        TrackedEntityAttributeValue$Flow> {
+        TrackedEntityAttributeValueFlow> {
 
     @Override
-    public TrackedEntityAttributeValue$Flow mapToDatabaseEntity(TrackedEntityAttributeValue trackedEntityAttributeValue) {
+    public TrackedEntityAttributeValueFlow mapToDatabaseEntity(TrackedEntityAttributeValue trackedEntityAttributeValue) {
         if (trackedEntityAttributeValue == null) {
             return null;
         }
 
-        TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValue$Flow();
+        TrackedEntityAttributeValueFlow trackedEntityAttributeValueFlow = new TrackedEntityAttributeValueFlow();
         trackedEntityAttributeValueFlow.setId(trackedEntityAttributeValue.getId());
         trackedEntityAttributeValueFlow.setTrackedEntityAttributeUId(trackedEntityAttributeValue.getTrackedEntityAttributeUId());
         trackedEntityAttributeValueFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(trackedEntityAttributeValue.getTrackedEntityInstance()));
@@ -54,7 +51,7 @@ public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAt
     }
 
     @Override
-    public TrackedEntityAttributeValue mapToModel(TrackedEntityAttributeValue$Flow trackedEntityAttributeValueFlow) {
+    public TrackedEntityAttributeValue mapToModel(TrackedEntityAttributeValueFlow trackedEntityAttributeValueFlow) {
         if (trackedEntityAttributeValueFlow == null) {
             return null;
         }
@@ -73,7 +70,7 @@ public class TrackedEntityAttributeValueMapper extends AbsMapper<TrackedEntityAt
     }
 
     @Override
-    public Class<TrackedEntityAttributeValue$Flow> getDatabaseEntityTypeClass() {
-        return TrackedEntityAttributeValue$Flow.class;
+    public Class<TrackedEntityAttributeValueFlow> getDatabaseEntityTypeClass() {
+        return TrackedEntityAttributeValueFlow.class;
     }
 }

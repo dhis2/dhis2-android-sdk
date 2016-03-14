@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.interpretation;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
@@ -46,8 +45,8 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
 
     @Override
     public boolean insert(Interpretation object) {
-        Interpretation$Flow interpretationFlow
-                = null;//Interpretation$Flow.fromModel(object);
+        InterpretationFlow interpretationFlow
+                = null;//Interpretation_Flow.fromModel(object);
         interpretationFlow.insert();
 
         object.setId(interpretationFlow.getId());
@@ -56,14 +55,14 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
 
     @Override
     public boolean update(Interpretation object) {
-        //Interpretation$Flow.fromModel(object).update();
+        //Interpretation_Flow.fromModel(object).update();
         return true;
     }
 
     @Override
     public boolean save(Interpretation object) {
-        Interpretation$Flow interpretationFlow =
-                null;//Interpretation$Flow.fromModel(object);
+        InterpretationFlow interpretationFlow =
+                null;//Interpretation_Flow.fromModel(object);
         interpretationFlow.save();
 
         object.setId(interpretationFlow.getId());
@@ -72,43 +71,43 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
 
     @Override
     public boolean delete(Interpretation object) {
-        //Interpretation$Flow.fromModel(object).delete();
+        //Interpretation_Flow.fromModel(object).delete();
         return true;
     }
 
     @Override
     public List<Interpretation> queryAll() {
-        List<Interpretation$Flow> interpretationFlows = new Select()
-                .from(Interpretation$Flow.class)
+        List<InterpretationFlow> interpretationFlows = new Select()
+                .from(InterpretationFlow.class)
                 .queryList();
-        return null;//Interpretation$Flow.toModels(interpretationFlows);
+        return null;//Interpretation_Flow.toModels(interpretationFlows);
     }
 
     @Override
     public Interpretation queryById(long id) {
-        Interpretation$Flow interpretationFlow = new Select()
-                .from(Interpretation$Flow.class)
-                .where(Condition.column(Interpretation$Flow$Table.ID).is(id))
+        InterpretationFlow interpretationFlow = new Select()
+                .from(InterpretationFlow.class)
+                .where(InterpretationFlow_Table.id.is(id))
                 .querySingle();
-        return null;//Interpretation$Flow.toModel(interpretationFlow);
+        return null;//Interpretation_Flow.toModel(interpretationFlow);
     }
 
     @Override
     public Interpretation queryByUid(String uid) {
-        Interpretation$Flow interpretationFlow = new Select()
-                .from(Interpretation$Flow.class)
-                .where(Condition.column(Interpretation$Flow$Table.UID).is(uid))
+        InterpretationFlow interpretationFlow = new Select()
+                .from(InterpretationFlow.class)
+                .where(InterpretationFlow_Table.uId.is(uid))
                 .querySingle();
-        return null;//Interpretation$Flow.toModel(interpretationFlow);
+        return null;//Interpretation_Flow.toModel(interpretationFlow);
     }
 
     /* @Override
     public List<Interpretation> filter(Action action) {
-        List<Interpretation$Flow> interpretationFlows = new Select()
-                .from(Interpretation$Flow.class)
-                .where(Condition.column(Interpretation$Flow$Table
+        List<Interpretation_Flow> interpretationFlows = new Select()
+                .from(Interpretation_Flow.class)
+                .where(Condition.column(Interpretation_Flow_Table
                         .ACTION).isNot(action.toString()))
                 .queryList();
-        return Interpretation$Flow.toModels(interpretationFlows);
+        return Interpretation_Flow.toModels(interpretationFlows);
     } */
 }

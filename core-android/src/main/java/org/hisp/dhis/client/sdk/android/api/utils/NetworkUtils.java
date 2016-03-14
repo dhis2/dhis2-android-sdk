@@ -31,8 +31,7 @@ package org.hisp.dhis.client.sdk.android.api.utils;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.retrofit.ResponseMapper;
-import org.hisp.dhis.client.sdk.android.utils.CollectionUtils;
+import org.hisp.dhis.client.sdk.android.api.retrofit.ResponseMapper;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Header;
@@ -48,8 +47,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.Response;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class NetworkUtils {
 
@@ -76,7 +75,7 @@ public class NetworkUtils {
 
     /**
      * List of errors which this method should handle:
-     * <p>
+     * <p/>
      * 400 Bad Request
      * 401 Unauthorized (user password has changed)
      * 403 Forbidden (access denied)
@@ -241,8 +240,8 @@ public class NetworkUtils {
             throw apiException;
         }
 
-        if (!response.isSuccess()) {
-            throw ApiException.httpError(response.raw().request().urlString(),
+        if (!(response.code() >= 200 && response.code() < 300)) {
+            throw ApiException.httpError(response.raw().request().url().toString(),
                     ResponseMapper.fromOkResponse(response.raw()));
         }
 

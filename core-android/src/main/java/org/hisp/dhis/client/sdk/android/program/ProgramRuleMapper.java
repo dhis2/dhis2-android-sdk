@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
-public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> {
+public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
 
     @Override
-    public ProgramRule$Flow mapToDatabaseEntity(ProgramRule programRule) {
+    public ProgramRuleFlow mapToDatabaseEntity(ProgramRule programRule) {
         if (programRule == null) {
             return null;
         }
 
-        ProgramRule$Flow programRuleFlow = new ProgramRule$Flow();
+        ProgramRuleFlow programRuleFlow = new ProgramRuleFlow();
         programRuleFlow.setId(programRule.getId());
         programRuleFlow.setUId(programRule.getUId());
         programRuleFlow.setCreated(programRule.getCreated());
@@ -57,7 +57,7 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
     }
 
     @Override
-    public ProgramRule mapToModel(ProgramRule$Flow programRuleFlow) {
+    public ProgramRule mapToModel(ProgramRuleFlow programRuleFlow) {
         if (programRuleFlow == null) {
             return null;
         }
@@ -83,7 +83,7 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
     }
 
     @Override
-    public Class<ProgramRule$Flow> getDatabaseEntityTypeClass() {
-        return ProgramRule$Flow.class;
+    public Class<ProgramRuleFlow> getDatabaseEntityTypeClass() {
+        return ProgramRuleFlow.class;
     }
 }

@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.client.sdk.core.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.joda.time.DateTime;
 

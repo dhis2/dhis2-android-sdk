@@ -28,8 +28,21 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public class UserController implements IController<UserAccount> {
+import java.util.Collection;
+
+public class UserController implements IIdentifiableController<UserAccount> {
+
+    @Override
+    public void sync() throws ApiException {
+
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
+    }
 }

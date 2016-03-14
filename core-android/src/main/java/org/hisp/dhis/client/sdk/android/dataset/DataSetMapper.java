@@ -29,23 +29,19 @@
 
 package org.hisp.dhis.client.sdk.android.dataset;
 
-import org.hisp.dhis.client.sdk.android.api.modules.MapperModule;
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataSet$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.android.flow.DataSetFlow;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
-import org.hisp.dhis.client.sdk.models.program.Program;
 
-public class DataSetMapper extends AbsMapper<DataSet, DataSet$Flow> {
+public class DataSetMapper extends AbsMapper<DataSet, DataSetFlow> {
 
     @Override
-    public DataSet$Flow mapToDatabaseEntity(DataSet dataSet) {
+    public DataSetFlow mapToDatabaseEntity(DataSet dataSet) {
         if (dataSet == null) {
             return null;
         }
 
-        DataSet$Flow dataSetFlow = new DataSet$Flow();
+        DataSetFlow dataSetFlow = new DataSetFlow();
         dataSetFlow.setId(dataSet.getId());
         dataSetFlow.setUId(dataSet.getUId());
         dataSetFlow.setCreated(dataSet.getCreated());
@@ -62,7 +58,7 @@ public class DataSetMapper extends AbsMapper<DataSet, DataSet$Flow> {
     }
 
     @Override
-    public DataSet mapToModel(DataSet$Flow dataSetFlow) {
+    public DataSet mapToModel(DataSetFlow dataSetFlow) {
         if (dataSetFlow == null) {
             return null;
         }
@@ -89,7 +85,7 @@ public class DataSetMapper extends AbsMapper<DataSet, DataSet$Flow> {
     }
 
     @Override
-    public Class<DataSet$Flow> getDatabaseEntityTypeClass() {
-        return DataSet$Flow.class;
+    public Class<DataSetFlow> getDatabaseEntityTypeClass() {
+        return DataSetFlow.class;
     }
 }

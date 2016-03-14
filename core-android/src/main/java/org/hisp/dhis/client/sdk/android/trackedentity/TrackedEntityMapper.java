@@ -29,22 +29,22 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntity$Flow;
+import org.hisp.dhis.client.sdk.android.flow.TrackedEntityFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
-public class TrackedEntityMapper extends AbsMapper<TrackedEntity, TrackedEntity$Flow> {
+public class TrackedEntityMapper extends AbsMapper<TrackedEntity, TrackedEntityFlow> {
 
     public TrackedEntityMapper() {
         // empty constructor
     }
 
     @Override
-    public TrackedEntity$Flow mapToDatabaseEntity(TrackedEntity trackedEntity) {
+    public TrackedEntityFlow mapToDatabaseEntity(TrackedEntity trackedEntity) {
         if (trackedEntity == null) {
             return null;
         }
 
-        TrackedEntity$Flow trackedEntityFlow = new TrackedEntity$Flow();
+        TrackedEntityFlow trackedEntityFlow = new TrackedEntityFlow();
         trackedEntityFlow.setId(trackedEntity.getId());
         trackedEntityFlow.setUId(trackedEntity.getUId());
         trackedEntityFlow.setCreated(trackedEntity.getCreated());
@@ -56,7 +56,7 @@ public class TrackedEntityMapper extends AbsMapper<TrackedEntity, TrackedEntity$
     }
 
     @Override
-    public TrackedEntity mapToModel(TrackedEntity$Flow trackedEntityFlow) {
+    public TrackedEntity mapToModel(TrackedEntityFlow trackedEntityFlow) {
         if (trackedEntityFlow == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public class TrackedEntityMapper extends AbsMapper<TrackedEntity, TrackedEntity$
     }
 
     @Override
-    public Class<TrackedEntity$Flow> getDatabaseEntityTypeClass() {
-        return TrackedEntity$Flow.class;
+    public Class<TrackedEntityFlow> getDatabaseEntityTypeClass() {
+        return TrackedEntityFlow.class;
     }
 }

@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.enrollment;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
+import org.hisp.dhis.client.sdk.android.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 
-public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
+public class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {
 
     @Override
-    public Enrollment$Flow mapToDatabaseEntity(Enrollment enrollment) {
+    public EnrollmentFlow mapToDatabaseEntity(Enrollment enrollment) {
         if (enrollment == null) {
             return null;
         }
 
-        Enrollment$Flow enrollmentFlow = new Enrollment$Flow();
+        EnrollmentFlow enrollmentFlow = new EnrollmentFlow();
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getUId());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
@@ -60,7 +60,7 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
     }
 
     @Override
-    public Enrollment mapToModel(Enrollment$Flow enrollmentFlow) {
+    public Enrollment mapToModel(EnrollmentFlow enrollmentFlow) {
         if (enrollmentFlow == null) {
             return null;
         }
@@ -89,7 +89,7 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, Enrollment$Flow> {
     }
 
     @Override
-    public Class<Enrollment$Flow> getDatabaseEntityTypeClass() {
-        return Enrollment$Flow.class;
+    public Class<EnrollmentFlow> getDatabaseEntityTypeClass() {
+        return EnrollmentFlow.class;
     }
 }

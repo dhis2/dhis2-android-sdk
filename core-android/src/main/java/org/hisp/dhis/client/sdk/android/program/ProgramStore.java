@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
 import org.hisp.dhis.client.sdk.android.common.meta.DbFlowOperation;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitFlow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelationFlow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelationFlow_Table;
+import org.hisp.dhis.client.sdk.android.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
@@ -60,18 +59,18 @@ import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Program$Flow>
+public final class ProgramStore extends AbsIdentifiableObjectStore<Program, ProgramFlow>
         implements IProgramStore {
 
     private final ITransactionManager mTransactionManager;
-    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> mOrganisationUnitMapper;
+    private final IMapper<OrganisationUnit, OrganisationUnitFlow> mOrganisationUnitMapper;
     private final IProgramTrackedEntityAttributeStore mProgramTrackedEntityAttributeStore;
     private final IProgramStageStore mProgramStageStore;
     private final IProgramIndicatorStore mProgramIndicatorStore;
 
-    public ProgramStore(IMapper<Program, Program$Flow> mapper,
+    public ProgramStore(IMapper<Program, ProgramFlow> mapper,
                         ITransactionManager transactionManager,
-                        IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper,
+                        IMapper<OrganisationUnit, OrganisationUnitFlow> organisationUnitMapper,
                         IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
                         IProgramStageStore programStageStore,
                         IProgramIndicatorStore programIndicatorStore) {
@@ -88,7 +87,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
     public boolean insert(Program program) {
         isNull(program, "object must not be null");
 
-        Program$Flow databaseEntity = getMapper().mapToDatabaseEntity(program);
+        ProgramFlow databaseEntity = getMapper().mapToDatabaseEntity(program);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -133,7 +132,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
     public boolean save(Program program) {
         isNull(program, "object must not be null");
 
-        Program$Flow databaseEntity = getMapper().mapToDatabaseEntity(program);
+        ProgramFlow databaseEntity = getMapper().mapToDatabaseEntity(program);
         if (databaseEntity != null) {
             databaseEntity.save();
 
@@ -176,13 +175,13 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
 
 //    @Override
 //    public List<Program> query(OrganisationUnit organisationUnit) {
-//        List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
-//                new Select().from(OrganisationUnitToProgramRelation$Flow.class).
-//                        where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
+//        List<OrganisationUnitToProgramRelation_Flow> organisationUnitToProgramRelations =
+//                new Select().from(OrganisationUnitToProgramRelation_Flow.class).
+//                        where(Condition.column(OrganisationUnitToProgramRelation_Flow_Table
 //                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
 //                        .queryList();
 //        List<Program> programs = new ArrayList<>();
-//        for (OrganisationUnitToProgramRelation$Flow relationFlows :
+//        for (OrganisationUnitToProgramRelation_Flow relationFlows :
 //                organisationUnitToProgramRelations) {
 //            programs.add(getMapper().mapToModel(relationFlows.getProgram()));
 //        }
@@ -191,15 +190,15 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
 
     // @Override
     public List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes) {
-        List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
-                new Select().from(OrganisationUnitToProgramRelation$Flow.class)
-                        .where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+        List<OrganisationUnitToProgramRelationFlow> organisationUnitToProgramRelations =
+                new Select().from(OrganisationUnitToProgramRelationFlow.class)
+                        .where((OrganisationUnitToProgramRelationFlow_Table
+                                .organisationUnit).is(organisationUnit.getUId()))
                         .queryList();
 
         List<Program> programs = new ArrayList<>();
         List<ProgramType> programTypesSet = Arrays.asList(programTypes);
-        for (OrganisationUnitToProgramRelation$Flow relationFlow :
+        for (OrganisationUnitToProgramRelationFlow relationFlow :
                 organisationUnitToProgramRelations) {
             if (programTypesSet.contains(relationFlow.getProgram().getProgramType())) {
                 programs.add(getMapper().mapToModel(relationFlow.getProgram()));
@@ -212,20 +211,20 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Prog
     // @Override
     public void assign(Program program, Set<OrganisationUnit> organisationUnits) {
         List<IDbOperation> operations = new ArrayList<>();
-        List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select()
-                .from(OrganisationUnitToProgramRelation$Flow.class)
-                .where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                        .PROGRAM_PROGRAM).is(program.getUId())).queryList();
+        List<OrganisationUnitToProgramRelationFlow> relationFlows = new Select()
+                .from(OrganisationUnitToProgramRelationFlow.class)
+                .where(OrganisationUnitToProgramRelationFlow_Table
+                        .program.is(program.getUId())).queryList();
 
-        Map<String, OrganisationUnitToProgramRelation$Flow> relationFlowMap = new HashMap<>();
-        for (OrganisationUnitToProgramRelation$Flow relationFlow : relationFlows) {
+        Map<String, OrganisationUnitToProgramRelationFlow> relationFlowMap = new HashMap<>();
+        for (OrganisationUnitToProgramRelationFlow relationFlow : relationFlows) {
             relationFlowMap.put(relationFlow.getOrganisationUnit().getUId(), relationFlow);
         }
 
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (!relationFlowMap.containsKey(organisationUnit.getUId())) {
-                OrganisationUnitToProgramRelation$Flow newRelationFlow =
-                        new OrganisationUnitToProgramRelation$Flow();
+                OrganisationUnitToProgramRelationFlow newRelationFlow =
+                        new OrganisationUnitToProgramRelationFlow();
                 newRelationFlow.setOrganisationUnit(mOrganisationUnitMapper
                         .mapToDatabaseEntity(organisationUnit));
                 newRelationFlow.setProgram(getMapper().mapToDatabaseEntity(program));

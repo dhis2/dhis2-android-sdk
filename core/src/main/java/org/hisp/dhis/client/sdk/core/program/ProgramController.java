@@ -61,8 +61,10 @@ public class ProgramController implements IProgramController {
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramController(ISystemInfoApiClient systemInfoApiClient,
-                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, ITransactionManager transactionManager,
+                             IProgramApiClient programApiClient, IUserApiClient
+                                     userApiClient,
+                             IProgramStore programStore, ITransactionManager
+                                     transactionManager,
                              ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;

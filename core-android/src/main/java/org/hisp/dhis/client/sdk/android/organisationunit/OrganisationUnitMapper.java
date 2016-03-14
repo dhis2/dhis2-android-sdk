@@ -29,23 +29,23 @@
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 
-public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, OrganisationUnit$Flow> {
+public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, OrganisationUnitFlow> {
 
     public OrganisationUnitMapper() {
         // empty constructor
     }
 
     @Override
-    public OrganisationUnit$Flow mapToDatabaseEntity(OrganisationUnit organisationUnit) {
+    public OrganisationUnitFlow mapToDatabaseEntity(OrganisationUnit organisationUnit) {
         if (organisationUnit == null) {
             return null;
         }
 
-        OrganisationUnit$Flow organisationUnitFlow = new OrganisationUnit$Flow();
+        OrganisationUnitFlow organisationUnitFlow = new OrganisationUnitFlow();
         organisationUnitFlow.setId(organisationUnit.getId());
         organisationUnitFlow.setUId(organisationUnit.getUId());
         organisationUnitFlow.setCreated(organisationUnit.getCreated());
@@ -60,7 +60,7 @@ public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, Organisa
     }
 
     @Override
-    public OrganisationUnit mapToModel(OrganisationUnit$Flow organisationUnitFlow) {
+    public OrganisationUnit mapToModel(OrganisationUnitFlow organisationUnitFlow) {
         if (organisationUnitFlow == null) {
             return null;
         }
@@ -85,7 +85,7 @@ public class OrganisationUnitMapper extends AbsMapper<OrganisationUnit, Organisa
     }
 
     @Override
-    public Class<OrganisationUnit$Flow> getDatabaseEntityTypeClass() {
-        return OrganisationUnit$Flow.class;
+    public Class<OrganisationUnitFlow> getDatabaseEntityTypeClass() {
+        return OrganisationUnitFlow.class;
     }
 }

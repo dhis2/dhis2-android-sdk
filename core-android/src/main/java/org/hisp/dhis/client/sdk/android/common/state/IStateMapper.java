@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.android.common.state;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.State$Flow;
+import org.hisp.dhis.client.sdk.android.flow.StateFlow;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 
-public interface IStateMapper extends IMapper<State, State$Flow> {
+public interface IStateMapper extends IMapper<State, StateFlow> {
     Class<? extends IModel> getRelatedModelClass(String type);
 
     String getRelatedModelClass(Class<? extends IModel> clazz);

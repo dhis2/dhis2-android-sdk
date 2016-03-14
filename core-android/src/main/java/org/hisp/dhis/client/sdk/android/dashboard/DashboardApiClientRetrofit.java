@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-import com.squareup.okhttp.Response;
-
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
@@ -37,16 +35,17 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.GET;
-import retrofit.http.Headers;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface DashboardApiClientRetrofit {
 
@@ -70,10 +69,12 @@ public interface DashboardApiClientRetrofit {
     Call<Response> putDashboard(@Path("uid") String uid, @Body Dashboard dashboard);
 
     @GET("/dashboardItems?paging=false")
-    Call<Map<String, List<DashboardItem>>> getDashboardItems(@QueryMap Map<String, String> queryMap);
+    Call<Map<String, List<DashboardItem>>> getDashboardItems(@QueryMap Map<String, String>
+                                                                     queryMap);
 
     @GET("/dashboardItems/{uid}")
-    Call<DashboardItem> getDashboardItem(@Path("uid") String uId, @QueryMap Map<String, String> queryMap);
+    Call<DashboardItem> getDashboardItem(@Path("uid") String uId, @QueryMap Map<String, String>
+            queryMap);
 
     @POST("/dashboards/{dashboardUId}/items/content")
     Call<Response> postDashboardItem(@Path("dashboardUId") String dashboardUId,
@@ -99,20 +100,23 @@ public interface DashboardApiClientRetrofit {
     Call<Map<String, List<DashboardContent>>> getCharts(@QueryMap Map<String, String> queryParams);
 
     @GET("/eventCharts?paging=false")
-    Call<Map<String, List<DashboardContent>>> getEventCharts(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<DashboardContent>>> getEventCharts(@QueryMap Map<String, String>
+                                                                     queryParams);
 
     @GET("/maps?paging=false")
     Call<Map<String, List<DashboardContent>>> getMaps(@QueryMap Map<String, String> queryParams);
 
     @GET("/reportTables?paging=false")
-    Call<Map<String, List<DashboardContent>>> getReportTables(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<DashboardContent>>> getReportTables(@QueryMap Map<String, String>
+                                                                      queryParams);
 
     @Headers("Accept: application/text")
     @GET("/reportTables/{id}/data.html")
     Call<Response> getReportTableData(@Path("id") String id);
 
     @GET("/eventReports?paging=false")
-    Call<Map<String, List<DashboardContent>>> getEventReports(@QueryMap Map<String, String> queryParams);
+    Call<Map<String, List<DashboardContent>>> getEventReports(@QueryMap Map<String, String>
+                                                                      queryParams);
 
     @GET("/users?paging=false")
     Call<Map<String, List<DashboardContent>>> getUsers(@QueryMap Map<String, String> queryParams);

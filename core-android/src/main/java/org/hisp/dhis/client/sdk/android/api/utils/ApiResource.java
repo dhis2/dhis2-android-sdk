@@ -33,7 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
+import retrofit2.Call;
 
 public interface ApiResource<Type> {
     String getResourceName();

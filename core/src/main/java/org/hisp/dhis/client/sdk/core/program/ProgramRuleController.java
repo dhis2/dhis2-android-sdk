@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -42,11 +42,12 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public final class ProgramRuleController implements IDataController<ProgramRule> {
+public final class ProgramRuleController implements IIdentifiableController<ProgramRule> {
     private final ITransactionManager transactionManager;
     private final IIdentifiableObjectStore<ProgramRule> mProgramRuleStore;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
@@ -93,5 +94,10 @@ public final class ProgramRuleController implements IDataController<ProgramRule>
     @Override
     public void sync() throws ApiException {
         getProgramRulesDataFromServer();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

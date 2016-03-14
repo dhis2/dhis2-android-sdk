@@ -30,15 +30,15 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 
-import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
-import org.hisp.dhis.client.sdk.android.flow.User$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Dashboard$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardContent$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UserAccount$Flow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationElementFlow;
+import org.hisp.dhis.client.sdk.android.flow.UserAccountFlow;
+import org.hisp.dhis.client.sdk.android.flow.UserFlow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationCommentFlow;
 import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 
 public class ModelsStore implements IModelsStore {
@@ -50,15 +50,15 @@ public class ModelsStore implements IModelsStore {
     @Override
     public void deleteAllTables() {
         Delete.tables(
-                Dashboard$Flow.class,
-                DashboardItem$Flow.class,
-                DashboardElement$Flow.class,
-                DashboardContent$Flow.class,
-                Interpretation$Flow.class,
-                InterpretationComment$Flow.class,
-                InterpretationElement$Flow.class,
-                UserAccount$Flow.class,
-                User$Flow.class
+                DashboardFlow.class,
+                DashboardItemFlow.class,
+                DashboardElementFlow.class,
+                DashboardContentFlow.class,
+                InterpretationFlow.class,
+                InterpretationCommentFlow.class,
+                InterpretationElementFlow.class,
+                UserAccountFlow.class,
+                UserFlow.class
         );
     }
 }

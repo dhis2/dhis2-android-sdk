@@ -28,31 +28,29 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Option$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.OptionFlow;
+import org.hisp.dhis.client.sdk.android.flow.OptionFlow_Table;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
-public final class OptionStore extends AbsIdentifiableObjectStore<Option, Option$Flow> implements IOptionStore {
+public final class OptionStore extends AbsIdentifiableObjectStore<Option, OptionFlow> implements IOptionStore {
 
-    public OptionStore(IMapper<Option, Option$Flow> mapper) {
+    public OptionStore(IMapper<Option, OptionFlow> mapper) {
         super(mapper);
     }
 
     @Override
     public List<Option> query(OptionSet optionSet) {
-        List<Option$Flow> optionFlows = new Select()
-                .from(Option$Flow.class)
-                .where(Condition.column(Option$Flow$Table
-                        .OPTIONSET_OPTIONSET).is(optionSet.getUId()))
+        List<OptionFlow> optionFlows = new Select()
+                .from(OptionFlow.class)
+                .where(OptionFlow_Table.optionset.is(optionSet.getUId()))
                 .queryList();
         return getMapper().mapToModels(optionFlows);
     }

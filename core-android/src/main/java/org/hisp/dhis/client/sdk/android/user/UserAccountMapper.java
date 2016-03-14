@@ -29,26 +29,26 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.UserAccount$Flow;
+import org.hisp.dhis.client.sdk.android.flow.UserAccountFlow;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 
 public class UserAccountMapper extends AbsMapper<UserAccount,
-        UserAccount$Flow> {
+        UserAccountFlow> {
 
     public UserAccountMapper() {
         // empty constructor
     }
 
     @Override
-    public UserAccount$Flow mapToDatabaseEntity(UserAccount userAccount) {
+    public UserAccountFlow mapToDatabaseEntity(UserAccount userAccount) {
         if (userAccount == null) {
             return null;
         }
 
         // flowAccount.setId(userAccount.getId());
 
-        UserAccount$Flow flowAccount = new UserAccount$Flow();
+        UserAccountFlow flowAccount = new UserAccountFlow();
         flowAccount.setUId(userAccount.getUId());
         flowAccount.setCreated(userAccount.getCreated());
         flowAccount.setLastUpdated(userAccount.getLastUpdated());
@@ -73,7 +73,7 @@ public class UserAccountMapper extends AbsMapper<UserAccount,
     }
 
     @Override
-    public UserAccount mapToModel(UserAccount$Flow flowAccount) {
+    public UserAccount mapToModel(UserAccountFlow flowAccount) {
         if (flowAccount == null) {
             return null;
         }
@@ -109,7 +109,7 @@ public class UserAccountMapper extends AbsMapper<UserAccount,
     }
 
     @Override
-    public Class<UserAccount$Flow> getDatabaseEntityTypeClass() {
-        return UserAccount$Flow.class;
+    public Class<UserAccountFlow> getDatabaseEntityTypeClass() {
+        return UserAccountFlow.class;
     }
 }

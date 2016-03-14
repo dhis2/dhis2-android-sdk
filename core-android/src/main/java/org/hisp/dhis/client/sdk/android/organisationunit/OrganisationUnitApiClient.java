@@ -38,7 +38,7 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
+import retrofit2.Call;
 
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.getCollection;
 

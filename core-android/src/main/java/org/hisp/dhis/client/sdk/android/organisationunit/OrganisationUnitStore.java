@@ -30,14 +30,13 @@ package org.hisp.dhis.client.sdk.android.organisationunit;
 
 import android.support.annotation.Nullable;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.ModelLinkFlow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitFlow;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
@@ -50,13 +49,13 @@ import java.util.List;
 import java.util.Map;
 
 public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<OrganisationUnit,
-        OrganisationUnit$Flow> implements IOrganisationUnitStore {
+        OrganisationUnitFlow> implements IOrganisationUnitStore {
 
     private static final String UNITS_TO_PROGRAMS = "organisationUnitsToPrograms";
 
     private final ITransactionManager transactionManager;
 
-    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnit$Flow> mapper,
+    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnitFlow> mapper,
                                  ITransactionManager transactionManager) {
         super(mapper);
 
@@ -70,10 +69,9 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
 
     @Override
     public List<OrganisationUnit> query(boolean assignedToCurrentUser) {
-        List<OrganisationUnit$Flow> organisationUnitFlows = new Select()
-                .from(OrganisationUnit$Flow.class)
-                .where(Condition.column(OrganisationUnit$Flow$Table
-                        .ISASSIGNEDTOUSER).is(assignedToCurrentUser))
+        List<OrganisationUnitFlow> organisationUnitFlows = new Select()
+                .from(OrganisationUnitFlow.class)
+                .where(OrganisationUnitFlow_Table.isAssignedToUser.is(assignedToCurrentUser))
                 .queryList();
 
         List<OrganisationUnit> orgUnits = getMapper().mapToModels(organisationUnitFlows);
@@ -82,8 +80,8 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
 
     @Override
     public List<OrganisationUnit> query(Program... programs) {
-        List<OrganisationUnit$Flow> orgUnitFlows = ModelLink$Flow.queryRelatedModels(
-                OrganisationUnit$Flow.class, UNITS_TO_PROGRAMS, Arrays.asList(programs));
+        List<OrganisationUnitFlow> orgUnitFlows = ModelLinkFlow.queryRelatedModels(
+                OrganisationUnitFlow.class, UNITS_TO_PROGRAMS, Arrays.asList(programs));
 
         List<OrganisationUnit> organisationUnits = getMapper().mapToModels(orgUnitFlows);
         return queryUnitRelationships(organisationUnits);
@@ -142,14 +140,14 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         boolean isSuccess = super.delete(object);
 
         if (isSuccess) {
-            ModelLink$Flow.deleteRelatedModels(object, UNITS_TO_PROGRAMS);
+            ModelLinkFlow.deleteRelatedModels(object, UNITS_TO_PROGRAMS);
         }
 
         return isSuccess;
     }
 
     private void updateOrganisationUnitRelationships(OrganisationUnit organisationUnit) {
-        List<IDbOperation> dbOperations = ModelLink$Flow.updateLinksToModel(organisationUnit,
+        List<IDbOperation> dbOperations = ModelLinkFlow.updateLinksToModel(organisationUnit,
                 organisationUnit.getPrograms(), UNITS_TO_PROGRAMS);
         transactionManager.transact(dbOperations);
     }
@@ -158,7 +156,7 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
     private List<OrganisationUnit> queryUnitRelationships(@Nullable List<OrganisationUnit> units) {
 
         if (units != null) {
-            Map<String, List<Program>> organisationUnitsToPrograms = ModelLink$Flow
+            Map<String, List<Program>> organisationUnitsToPrograms = ModelLinkFlow
                     .queryLinksForModel(Program.class, UNITS_TO_PROGRAMS);
 
             for (OrganisationUnit organisationUnit : units) {
@@ -174,7 +172,7 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
     private OrganisationUnit queryUnitRelationships(@Nullable OrganisationUnit organisationUnit) {
 
         if (organisationUnit != null) {
-            List<Program> programs = ModelLink$Flow.queryLinksForModel(
+            List<Program> programs = ModelLinkFlow.queryLinksForModel(
                     Program.class, UNITS_TO_PROGRAMS, organisationUnit.getUId());
             organisationUnit.setPrograms(programs);
         }

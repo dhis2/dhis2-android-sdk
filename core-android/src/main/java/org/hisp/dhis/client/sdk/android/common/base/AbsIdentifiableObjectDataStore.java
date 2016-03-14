@@ -28,20 +28,24 @@
 
 package org.hisp.dhis.client.sdk.android.common.base;
 
+import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.NameAlias;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.client.sdk.android.flow.BaseIdentifiableObject$Flow;
-import org.hisp.dhis.client.sdk.android.flow.BaseModel$Flow;
+import org.hisp.dhis.client.sdk.android.flow.BaseIdentifiableObjectFlow;
+import org.hisp.dhis.client.sdk.android.flow.BaseModelFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 public abstract class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
-        DatabaseEntityType extends Model & IModel> extends AbsDataStore<ModelType, DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
+        DatabaseEntityType extends Model & IModel> extends AbsDataStore<ModelType,
+        DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
-    public AbsIdentifiableObjectDataStore(IMapper<ModelType, DatabaseEntityType> mapper, IStateStore stateStore) {
+    public AbsIdentifiableObjectDataStore(IMapper<ModelType, DatabaseEntityType> mapper,
+                                          IStateStore stateStore) {
         super(mapper, stateStore);
     }
 
@@ -49,7 +53,8 @@ public abstract class AbsIdentifiableObjectDataStore<ModelType extends Identifia
     public ModelType queryById(long id) {
         DatabaseEntityType databaseEntity = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(BaseModel$Flow.COLUMN_ID)
+                .where(Condition.column(new NameAlias(BaseModelFlow
+                        .COLUMN_ID)).is(id))
                 .querySingle();
         return getMapper().mapToModel(databaseEntity);
     }
@@ -58,8 +63,8 @@ public abstract class AbsIdentifiableObjectDataStore<ModelType extends Identifia
     public ModelType queryByUid(String uid) {
         DatabaseEntityType databaseEntity = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(BaseIdentifiableObject$Flow.COLUMN_UID)
-                .querySingle();
+                .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
+                        .COLUMN_UID)).is(uid)).querySingle();
         return getMapper().mapToModel(databaseEntity);
     }
 }

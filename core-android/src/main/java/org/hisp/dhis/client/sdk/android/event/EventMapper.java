@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.event;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
+import org.hisp.dhis.client.sdk.android.flow.EventFlow;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
-public class EventMapper extends AbsMapper<Event, Event$Flow> {
+public class EventMapper extends AbsMapper<Event, EventFlow> {
 
     @Override
-    public Event$Flow mapToDatabaseEntity(Event event) {
+    public EventFlow mapToDatabaseEntity(Event event) {
         if (event == null) {
             return null;
         }
 
-        Event$Flow eventFlow = new Event$Flow();
+        EventFlow eventFlow = new EventFlow();
         eventFlow.setId(event.getId());
         eventFlow.setEventUid(event.getUId());
         eventFlow.setStatus(event.getStatus());
@@ -63,7 +63,7 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
     }
 
     @Override
-    public Event mapToModel(Event$Flow eventFlow) {
+    public Event mapToModel(EventFlow eventFlow) {
         if (eventFlow == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class EventMapper extends AbsMapper<Event, Event$Flow> {
     }
 
     @Override
-    public Class<Event$Flow> getDatabaseEntityTypeClass() {
-        return Event$Flow.class;
+    public Class<EventFlow> getDatabaseEntityTypeClass() {
+        return EventFlow.class;
     }
 }

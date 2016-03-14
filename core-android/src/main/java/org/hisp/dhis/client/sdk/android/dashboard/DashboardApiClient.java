@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.retrofit.IDhisApi;
+import org.hisp.dhis.client.sdk.android.api.retrofit.IDhisApi;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;

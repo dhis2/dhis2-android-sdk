@@ -29,22 +29,22 @@
 package org.hisp.dhis.client.sdk.android.constant;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Constant$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ConstantFlow;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
-public class ConstantMapper extends AbsMapper<Constant, Constant$Flow> {
+public class ConstantMapper extends AbsMapper<Constant, ConstantFlow> {
 
     public ConstantMapper() {
         // empty constructor
     }
 
     @Override
-    public Constant$Flow mapToDatabaseEntity(Constant constant) {
+    public ConstantFlow mapToDatabaseEntity(Constant constant) {
         if (constant == null) {
             return null;
         }
 
-        Constant$Flow constantFlow = new Constant$Flow();
+        ConstantFlow constantFlow = new ConstantFlow();
         constantFlow.setId(constant.getId());
         constantFlow.setUId(constant.getUId());
         constantFlow.setCreated(constant.getCreated());
@@ -57,7 +57,7 @@ public class ConstantMapper extends AbsMapper<Constant, Constant$Flow> {
     }
 
     @Override
-    public Constant mapToModel(Constant$Flow constantFlow) {
+    public Constant mapToModel(ConstantFlow constantFlow) {
         if (constantFlow == null) {
             return null;
         }
@@ -80,7 +80,7 @@ public class ConstantMapper extends AbsMapper<Constant, Constant$Flow> {
     }
 
     @Override
-    public Class<Constant$Flow> getDatabaseEntityTypeClass() {
-        return Constant$Flow.class;
+    public Class<ConstantFlow> getDatabaseEntityTypeClass() {
+        return ConstantFlow.class;
     }
 }

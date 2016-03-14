@@ -30,22 +30,22 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
-public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariable$Flow> {
+public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariableFlow> {
 
     public ProgramRuleVariableMapper() {
         // empty constructor
     }
 
     @Override
-    public ProgramRuleVariable$Flow mapToDatabaseEntity(ProgramRuleVariable programRuleVariable) {
+    public ProgramRuleVariableFlow mapToDatabaseEntity(ProgramRuleVariable programRuleVariable) {
         if (programRuleVariable == null) {
             return null;
         }
 
-        ProgramRuleVariable$Flow programRuleVariableFlow = new ProgramRuleVariable$Flow();
+        ProgramRuleVariableFlow programRuleVariableFlow = new ProgramRuleVariableFlow();
         programRuleVariableFlow.setId(programRuleVariable.getId());
         programRuleVariableFlow.setUId(programRuleVariable.getUId());
         programRuleVariableFlow.setCreated(programRuleVariable.getCreated());
@@ -62,7 +62,7 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
     }
 
     @Override
-    public ProgramRuleVariable mapToModel(ProgramRuleVariable$Flow programRuleVariableFlow) {
+    public ProgramRuleVariable mapToModel(ProgramRuleVariableFlow programRuleVariableFlow) {
         if (programRuleVariableFlow == null) {
             return null;
         }
@@ -89,7 +89,7 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
     }
 
     @Override
-    public Class<ProgramRuleVariable$Flow> getDatabaseEntityTypeClass() {
-        return ProgramRuleVariable$Flow.class;
+    public Class<ProgramRuleVariableFlow> getDatabaseEntityTypeClass() {
+        return ProgramRuleVariableFlow.class;
     }
 }

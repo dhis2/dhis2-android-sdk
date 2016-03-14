@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
-public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flow> {
+public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow> {
 
     @Override
-    public ProgramStage$Flow mapToDatabaseEntity(ProgramStage programStage) {
+    public ProgramStageFlow mapToDatabaseEntity(ProgramStage programStage) {
         if (programStage == null) {
             return null;
         }
 
-        ProgramStage$Flow programStageFlow = new ProgramStage$Flow();
+        ProgramStageFlow programStageFlow = new ProgramStageFlow();
         programStageFlow.setId(programStage.getId());
         programStageFlow.setUId(programStage.getUId());
         programStageFlow.setCreated(programStage.getCreated());
@@ -72,7 +72,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
     }
 
     @Override
-    public ProgramStage mapToModel(ProgramStage$Flow programStageFlow) {
+    public ProgramStage mapToModel(ProgramStageFlow programStageFlow) {
         if (programStageFlow == null) {
             return null;
         }
@@ -113,7 +113,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
     }
 
     @Override
-    public Class<ProgramStage$Flow> getDatabaseEntityTypeClass() {
-        return ProgramStage$Flow.class;
+    public Class<ProgramStageFlow> getDatabaseEntityTypeClass() {
+        return ProgramStageFlow.class;
     }
 }

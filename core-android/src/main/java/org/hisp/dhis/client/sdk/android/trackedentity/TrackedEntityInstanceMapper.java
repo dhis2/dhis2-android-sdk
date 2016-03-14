@@ -29,19 +29,19 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance,
-        TrackedEntityInstance$Flow> {
+        TrackedEntityInstanceFlow> {
 
     @Override
-    public TrackedEntityInstance$Flow mapToDatabaseEntity(TrackedEntityInstance trackedEntityInstance) {
+    public TrackedEntityInstanceFlow mapToDatabaseEntity(TrackedEntityInstance trackedEntityInstance) {
         if (trackedEntityInstance == null) {
             return null;
         }
 
-        TrackedEntityInstance$Flow trackedEntityInstanceFlow = new TrackedEntityInstance$Flow();
+        TrackedEntityInstanceFlow trackedEntityInstanceFlow = new TrackedEntityInstanceFlow();
         trackedEntityInstanceFlow.setId(trackedEntityInstance.getId());
         trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance.getTrackedEntityInstanceUid());
         trackedEntityInstanceFlow.setTrackedEntity(trackedEntityInstance.getTrackedEntity());
@@ -52,7 +52,7 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
     }
 
     @Override
-    public TrackedEntityInstance mapToModel(TrackedEntityInstance$Flow trackedEntityInstanceFlow) {
+    public TrackedEntityInstance mapToModel(TrackedEntityInstanceFlow trackedEntityInstanceFlow) {
         if (trackedEntityInstanceFlow == null) {
             return null;
         }
@@ -73,7 +73,7 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
     }
 
     @Override
-    public Class<TrackedEntityInstance$Flow> getDatabaseEntityTypeClass() {
-        return TrackedEntityInstance$Flow.class;
+    public Class<TrackedEntityInstanceFlow> getDatabaseEntityTypeClass() {
+        return TrackedEntityInstanceFlow.class;
     }
 }

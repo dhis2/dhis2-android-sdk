@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.common.base;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.NameAlias;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.client.sdk.android.flow.BaseIdentifiableObject$Flow;
-import org.hisp.dhis.client.sdk.android.flow.BaseModel$Flow;
+import org.hisp.dhis.client.sdk.android.flow.BaseIdentifiableObjectFlow;
+import org.hisp.dhis.client.sdk.android.flow.BaseModelFlow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
@@ -52,7 +53,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     public ModelType queryById(long id) {
         DatabaseEntityType databaseEntity = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(BaseModel$Flow.COLUMN_ID).is(id))
+                .where(Condition.column(new NameAlias(BaseModelFlow
+                        .COLUMN_ID)).is(id))
                 .querySingle();
         return getMapper().mapToModel(databaseEntity);
     }
@@ -61,7 +63,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     public ModelType queryByUid(String uid) {
         List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
-                .where(Condition.column(BaseIdentifiableObject$Flow.COLUMN_UID).is(uid))
+                .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
+                        .COLUMN_UID)).is(uid))
                 .queryList();
 
         if (databaseEntities != null && !databaseEntities.isEmpty()) {

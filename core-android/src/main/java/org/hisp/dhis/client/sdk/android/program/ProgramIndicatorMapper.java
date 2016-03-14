@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 
-public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramIndicator$Flow> {
+public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramIndicatorFlow> {
 
     @Override
-    public ProgramIndicator$Flow mapToDatabaseEntity(ProgramIndicator programIndicator) {
+    public ProgramIndicatorFlow mapToDatabaseEntity(ProgramIndicator programIndicator) {
         if (programIndicator == null) {
             return null;
         }
 
-        ProgramIndicator$Flow programIndicatorFlow = new ProgramIndicator$Flow();
+        ProgramIndicatorFlow programIndicatorFlow = new ProgramIndicatorFlow();
         programIndicatorFlow.setId(programIndicator.getId());
         programIndicatorFlow.setUId(programIndicator.getUId());
         programIndicatorFlow.setCreated(programIndicator.getCreated());
@@ -63,7 +63,7 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
     }
 
     @Override
-    public ProgramIndicator mapToModel(ProgramIndicator$Flow programIndicatorFlow) {
+    public ProgramIndicator mapToModel(ProgramIndicatorFlow programIndicatorFlow) {
         if (programIndicatorFlow == null) {
             return null;
         }
@@ -95,7 +95,7 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
     }
 
     @Override
-    public Class<ProgramIndicator$Flow> getDatabaseEntityTypeClass() {
-        return ProgramIndicator$Flow.class;
+    public Class<ProgramIndicatorFlow> getDatabaseEntityTypeClass() {
+        return ProgramIndicatorFlow.class;
     }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -41,11 +41,12 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public final class TrackedEntityController implements IDataController<TrackedEntity> {
+public final class TrackedEntityController implements IIdentifiableController<TrackedEntity> {
     private final ITrackedEntityApiClient trackedEntityApiClient;
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
@@ -96,5 +97,10 @@ public final class TrackedEntityController implements IDataController<TrackedEnt
     @Override
     public void sync() throws ApiException {
         getTrackedEntityAttributesFromServer();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

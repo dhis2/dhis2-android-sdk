@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleAction$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramRuleFlow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramRuleFlow_Table;
+import org.hisp.dhis.client.sdk.android.flow.ProgramRuleActionFlow;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -45,13 +44,16 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRule, ProgramRule$Flow> implements IProgramRuleStore {
+public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRule,
+        ProgramRuleFlow> implements IProgramRuleStore {
 
     private final IProgramRuleActionStore programRuleActionStore;
-    private final IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper;
+    private final IMapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
 
-    public ProgramRuleStore(IMapper<ProgramRule, ProgramRule$Flow> mapper,
-                            IProgramRuleActionStore programRuleActionStore, IMapper<ProgramRuleAction, ProgramRuleAction$Flow> programRuleActionMapper) {
+    public ProgramRuleStore(IMapper<ProgramRule, ProgramRuleFlow> mapper,
+                            IProgramRuleActionStore programRuleActionStore,
+                            IMapper<ProgramRuleAction, ProgramRuleActionFlow>
+                                    programRuleActionMapper) {
         super(mapper);
         this.programRuleActionStore = programRuleActionStore;
         this.programRuleActionMapper = programRuleActionMapper;
@@ -59,11 +61,11 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
 
     @Override
     public List<ProgramRule> query(Program program) {
-        List<ProgramRule$Flow> programRuleFlows = new Select()
-                .from(ProgramRule$Flow.class).where(Condition
-                        .column(ProgramRule$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
+        List<ProgramRuleFlow> programRuleFlows = new Select()
+                .from(ProgramRuleFlow.class).where(ProgramRuleFlow_Table
+                        .program.is(program.getUId()))
                 .queryList();
-        for (ProgramRule$Flow programRuleFlow : programRuleFlows) {
+        for (ProgramRuleFlow programRuleFlow : programRuleFlows) {
             setProgramRuleActions(programRuleFlow);
         }
         return getMapper().mapToModels(programRuleFlows);
@@ -74,11 +76,12 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
         return null;
     }
 
-    private void setProgramRuleActions(ProgramRule$Flow programRuleFlow) {
+    private void setProgramRuleActions(ProgramRuleFlow programRuleFlow) {
         if (programRuleFlow == null) {
             return;
         }
-        programRuleFlow.setProgramRuleActions(programRuleActionMapper.mapToDatabaseEntities(programRuleActionStore.
-                query(getMapper().mapToModel(programRuleFlow))));
+        programRuleFlow.setProgramRuleActions(programRuleActionMapper
+                .mapToDatabaseEntities(programRuleActionStore
+                        .query(getMapper().mapToModel(programRuleFlow))));
     }
 }

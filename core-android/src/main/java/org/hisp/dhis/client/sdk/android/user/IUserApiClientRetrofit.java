@@ -33,9 +33,9 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import java.util.Map;
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.QueryMap;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.QueryMap;
 
 public interface IUserApiClientRetrofit {
 

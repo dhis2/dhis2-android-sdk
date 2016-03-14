@@ -31,19 +31,9 @@ package org.hisp.dhis.client.sdk.android.api.modules;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClient;
-import org.hisp.dhis.client.sdk.android.dashboard.DashboardApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.event.EventApiClient;
-import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
@@ -56,26 +46,28 @@ import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentApiClient;
-import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.util.concurrent.TimeUnit;
 
-import retrofit.BaseUrl;
-import retrofit.JacksonConverterFactory;
-import retrofit.Retrofit;
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static android.text.TextUtils.isEmpty;
-import static com.squareup.okhttp.Credentials.basic;
+import static okhttp3.Credentials.basic;
+
+// import retrofit2.BaseUrl;
+// import retrofit2.JacksonConverterFactory;
 
 public class NetworkModule implements INetworkModule {
     private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s
@@ -87,20 +79,9 @@ public class NetworkModule implements INetworkModule {
     private final IProgramApiClient programApiClient;
     private final IUserApiClient userApiClient;
 
-
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    // Legacy code
-    /////////////////////////////////////////////////////////////////////////////////////////////
-
-    private final IDashboardApiClient mDashboardApiClient;
-    private final IEventApiClient mEventApiClient;
-    private final IEnrollmentApiClient mEnrollmentApiClient;
-    private final ITrackedEntityAttributeApiClient mTrackedEntityAttributeApiClient;
-    private final ITrackedEntityApiClient mTrackedEntityApiClient;
-
     public NetworkModule(IPreferencesModule preferencesModule) {
-        AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule
-                .getUserPreferences(),
+        AuthInterceptor authInterceptor = new AuthInterceptor(
+                preferencesModule.getUserPreferences(),
                 preferencesModule.getConfigurationPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -108,9 +89,10 @@ public class NetworkModule implements INetworkModule {
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.interceptors().add(authInterceptor);
         okHttpClient.interceptors().add(loggingInterceptor);
-        okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-        okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+
+//        okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+//        okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
+//        okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
 
         /* constructing jackson's object mapper */
         ObjectMapper mapper = new ObjectMapper();
@@ -121,7 +103,7 @@ public class NetworkModule implements INetworkModule {
                 MapperFeature.AUTO_DETECT_SETTERS);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
+//                .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
                 .client(okHttpClient)
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
@@ -129,8 +111,6 @@ public class NetworkModule implements INetworkModule {
         programApiClient = new ProgramApiClient2(retrofit.create(IProgramApiClientRetrofit.class));
 
 
-        mDashboardApiClient = new DashboardApiClient(retrofit.create(
-                DashboardApiClientRetrofit.class));
         systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClient(retrofit.create(
@@ -139,38 +119,17 @@ public class NetworkModule implements INetworkModule {
                 IOrganisationUnitApiClientRetrofit.class));
 
         // LEGACY
-        mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
-
-        mEnrollmentApiClient = null; //TODO: implement EnrollmentApiClient class.
-
-        mTrackedEntityAttributeApiClient = null; // TODO: implement
-        // TrackedEntityAttributeApiClient class.
-        mTrackedEntityApiClient = null;
-    }
-
-    @Override
-    public IDashboardApiClient getDashboardApiClient() {
-        return mDashboardApiClient;
+//        mDashboardApiClient = new DashboardApiClient(retrofit.create(
+//                DashboardApiClientRetrofit.class));
+//        mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
+//        mEnrollmentApiClient = null;
+//        mTrackedEntityAttributeApiClient = null;
+//        mTrackedEntityApiClient = null;
     }
 
     @Override
     public ISystemInfoApiClient getSystemInfoApiClient() {
         return systemInfoApiClient;
-    }
-
-    @Override
-    public IEventApiClient getEventApiClient() {
-        return mEventApiClient;
-    }
-
-    @Override
-    public IEnrollmentApiClient getEnrollmentApiClient() {
-        return null;
-    }
-
-    @Override
-    public ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient() {
-        return mTrackedEntityAttributeApiClient;
     }
 
     @Override
@@ -184,23 +143,17 @@ public class NetworkModule implements INetworkModule {
     }
 
     @Override
-    public ITrackedEntityApiClient getTrackedEntityApiClient() {
-        return mTrackedEntityApiClient;
-    }
-
-    @Override
     public IUserApiClient getUserApiClient() {
         return userApiClient;
     }
 
-    private static class ApiBaseUrl implements BaseUrl {
+    private static class ApiBaseUrl {
         private final IConfigurationPreferences mConfigurationPreferences;
 
         public ApiBaseUrl(IConfigurationPreferences configurationPreferences) {
             mConfigurationPreferences = configurationPreferences;
         }
 
-        @Override
         public HttpUrl url() {
             Configuration configuration = mConfigurationPreferences.get();
             HttpUrl url = HttpUrl.parse(configuration.getServerUrl())
@@ -235,11 +188,13 @@ public class NetworkModule implements INetworkModule {
             Request request = chain.request().newBuilder()
                     .addHeader("Authorization", base64Credentials)
                     .build();
+
             //System.out.println("Request: " + request.urlString());
 
             Response response = chain.proceed(request);
-            if (!response.isSuccessful() && response.code() == HttpURLConnection
-                    .HTTP_UNAUTHORIZED) {
+            if (!response.isSuccessful() &&
+                    response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+
                 if (mUserPreferences.isUserConfirmed()) {
                     // invalidate existing user
                     mUserPreferences.invalidateUser();

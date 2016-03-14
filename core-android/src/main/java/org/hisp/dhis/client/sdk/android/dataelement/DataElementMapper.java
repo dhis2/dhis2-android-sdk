@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.dataelement;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataElement$Flow;
+import org.hisp.dhis.client.sdk.android.flow.DataElementFlow;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> {
+public class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {
 
     @Override
-    public DataElement$Flow mapToDatabaseEntity(DataElement dataElement) {
+    public DataElementFlow mapToDatabaseEntity(DataElement dataElement) {
         if (dataElement == null) {
             return null;
         }
 
-        DataElement$Flow dataElementFlow = new DataElement$Flow();
+        DataElementFlow dataElementFlow = new DataElementFlow();
         dataElementFlow.setId(dataElement.getId());
         dataElementFlow.setUId(dataElement.getUId());
         dataElementFlow.setCreated(dataElement.getCreated());
@@ -62,7 +62,7 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> 
     }
 
     @Override
-    public DataElement mapToModel(DataElement$Flow dataElementFlow) {
+    public DataElement mapToModel(DataElementFlow dataElementFlow) {
         if (dataElementFlow == null) {
             return null;
         }
@@ -93,7 +93,7 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElement$Flow> 
     }
 
     @Override
-    public Class<DataElement$Flow> getDatabaseEntityTypeClass() {
-        return DataElement$Flow.class;
+    public Class<DataElementFlow> getDatabaseEntityTypeClass() {
+        return DataElementFlow.class;
     }
 }

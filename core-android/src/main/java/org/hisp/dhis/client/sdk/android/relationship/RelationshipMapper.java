@@ -30,21 +30,18 @@ package org.hisp.dhis.client.sdk.android.relationship;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Relationship$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.client.sdk.android.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-public class RelationshipMapper extends AbsMapper<Relationship, Relationship$Flow> {
+public class RelationshipMapper extends AbsMapper<Relationship, RelationshipFlow> {
 
     @Override
-    public Relationship$Flow mapToDatabaseEntity(Relationship relationship) {
+    public RelationshipFlow mapToDatabaseEntity(Relationship relationship) {
         if (relationship == null) {
             return null;
         }
 
-        Relationship$Flow relationshipFlow = new Relationship$Flow();
+        RelationshipFlow relationshipFlow = new RelationshipFlow();
         relationshipFlow.setId(relationship.getId());
         relationshipFlow.setRelationship(relationship.getRelationship());
         relationshipFlow.setTrackedEntityInstanceA(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(relationship.getTrackedEntityInstanceA()));
@@ -54,7 +51,7 @@ public class RelationshipMapper extends AbsMapper<Relationship, Relationship$Flo
     }
 
     @Override
-    public Relationship mapToModel(Relationship$Flow relationshipFlow) {
+    public Relationship mapToModel(RelationshipFlow relationshipFlow) {
         if (relationshipFlow == null) {
             return null;
         }
@@ -74,7 +71,7 @@ public class RelationshipMapper extends AbsMapper<Relationship, Relationship$Flo
     }
 
     @Override
-    public Class<Relationship$Flow> getDatabaseEntityTypeClass() {
-        return Relationship$Flow.class;
+    public Class<RelationshipFlow> getDatabaseEntityTypeClass() {
+        return RelationshipFlow.class;
     }
 }

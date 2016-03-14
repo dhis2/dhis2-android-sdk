@@ -28,24 +28,22 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttribute$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramTrackedEntityAttributeFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> implements IProgramTrackedEntityAttributeStore {
+public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> implements IProgramTrackedEntityAttributeStore {
 
-    public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttribute$Flow> mapper) {
+    public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> mapper) {
         super(mapper);
     }
 
@@ -54,8 +52,10 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
         if (program == null) {
             return null;
         }
-        List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributeFlows = new Select()
-                .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition.column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
+        List<ProgramTrackedEntityAttributeFlow> programTrackedEntityAttributeFlows = new Select()
+                .from(ProgramTrackedEntityAttributeFlow.class)
+                .where(ProgramTrackedEntityAttributeFlow_Table
+                        .program.is(program.getUId()))
                 .queryList();
         return getMapper().mapToModels(programTrackedEntityAttributeFlows);
     }
@@ -65,12 +65,13 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
         if (program == null || trackedEntityAttribute == null) {
             return null;
         }
-        ProgramTrackedEntityAttribute$Flow programTrackedEntityAttributeFlow = new Select()
-                .from(ProgramTrackedEntityAttribute$Flow.class).where(Condition
-                        .column(ProgramTrackedEntityAttribute$Flow$Table.PROGRAM_PROGRAM)
-                        .is(program.getUId())).and(Condition
-                        .column(ProgramTrackedEntityAttribute$Flow$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
-                        .is(trackedEntityAttribute.getUId())).querySingle();
+        ProgramTrackedEntityAttributeFlow programTrackedEntityAttributeFlow = new Select()
+                .from(ProgramTrackedEntityAttributeFlow.class)
+                .where(ProgramTrackedEntityAttributeFlow_Table
+                        .program.is(program.getUId()))
+                .and(ProgramTrackedEntityAttributeFlow_Table
+                        .trackedEntityAttribute.is(trackedEntityAttribute.getUId()))
+                .querySingle();
         return getMapper().mapToModel(programTrackedEntityAttributeFlow);
     }
 }

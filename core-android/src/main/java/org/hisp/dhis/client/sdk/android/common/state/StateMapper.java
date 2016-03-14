@@ -31,17 +31,16 @@ package org.hisp.dhis.client.sdk.android.common.state;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Dashboard$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.State$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.flow.EnrollmentFlow;
+import org.hisp.dhis.client.sdk.android.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationElementFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationFlow;
+import org.hisp.dhis.client.sdk.android.flow.InterpretationCommentFlow;
+import org.hisp.dhis.client.sdk.android.flow.StateFlow;
+import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
@@ -52,21 +51,20 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class StateMapper extends AbsMapper<State, State$Flow> implements IStateMapper {
+public class StateMapper extends AbsMapper<State, StateFlow> implements IStateMapper {
 
     @Override
-    public State$Flow mapToDatabaseEntity(State state) {
+    public StateFlow mapToDatabaseEntity(State state) {
         if (state == null) {
             return null;
         }
 
-        State$Flow stateFlow = new State$Flow();
+        StateFlow stateFlow = new StateFlow();
         stateFlow.setItemId(state.getItemId());
         stateFlow.setItemType(getRelatedModelClass(state.getItemType()));
         stateFlow.setAction(state.getAction());
@@ -75,7 +73,7 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
     }
 
     @Override
-    public State mapToModel(State$Flow stateFlow) {
+    public State mapToModel(StateFlow stateFlow) {
         if (stateFlow == null) {
             return null;
         }
@@ -94,8 +92,8 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
     }
 
     @Override
-    public Class<State$Flow> getDatabaseEntityTypeClass() {
-        return State$Flow.class;
+    public Class<StateFlow> getDatabaseEntityTypeClass() {
+        return StateFlow.class;
     }
 
     @Override
@@ -152,39 +150,39 @@ public class StateMapper extends AbsMapper<State, State$Flow> implements IStateM
         isNull(objectClass, "Class object must not be null");
 
         if (Dashboard.class.equals(objectClass)) {
-            return Dashboard$Flow.class;
+            return DashboardFlow.class;
         }
 
         if (DashboardItem.class.equals(objectClass)) {
-            return DashboardItem$Flow.class;
+            return DashboardItemFlow.class;
         }
 
         if (DashboardElement.class.equals(objectClass)) {
-            return DashboardElement$Flow.class;
+            return DashboardElementFlow.class;
         }
 
         if (Interpretation.class.equals(objectClass)) {
-            return Interpretation$Flow.class;
+            return InterpretationFlow.class;
         }
 
         if (InterpretationElement.class.equals(objectClass)) {
-            return InterpretationElement$Flow.class;
+            return InterpretationElementFlow.class;
         }
 
         if (InterpretationComment.class.equals(objectClass)) {
-            return InterpretationComment$Flow.class;
+            return InterpretationCommentFlow.class;
         }
 
         if (TrackedEntityInstance.class.equals(objectClass)) {
-            return TrackedEntityInstance$Flow.class;
+            return TrackedEntityInstanceFlow.class;
         }
 
         if (Enrollment.class.equals(objectClass)) {
-            return Enrollment$Flow.class;
+            return EnrollmentFlow.class;
         }
 
         if (Event.class.equals(objectClass)) {
-            return Event$Flow.class;
+            return EventFlow.class;
         }
 
         throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());

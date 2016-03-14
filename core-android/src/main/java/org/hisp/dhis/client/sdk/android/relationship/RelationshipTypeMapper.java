@@ -29,22 +29,22 @@
 package org.hisp.dhis.client.sdk.android.relationship;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.RelationshipType$Flow;
+import org.hisp.dhis.client.sdk.android.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
-public class RelationshipTypeMapper extends AbsMapper<RelationshipType, RelationshipType$Flow> {
+public class RelationshipTypeMapper extends AbsMapper<RelationshipType, RelationshipTypeFlow> {
 
     public RelationshipTypeMapper() {
         // empty constructor
     }
 
     @Override
-    public RelationshipType$Flow mapToDatabaseEntity(RelationshipType relationshipType) {
+    public RelationshipTypeFlow mapToDatabaseEntity(RelationshipType relationshipType) {
         if (relationshipType == null) {
             return null;
         }
 
-        RelationshipType$Flow relationshipTypeFlow = new RelationshipType$Flow();
+        RelationshipTypeFlow relationshipTypeFlow = new RelationshipTypeFlow();
         relationshipTypeFlow.setId(relationshipType.getId());
         relationshipTypeFlow.setUId(relationshipType.getUId());
         relationshipTypeFlow.setCreated(relationshipType.getCreated());
@@ -58,7 +58,7 @@ public class RelationshipTypeMapper extends AbsMapper<RelationshipType, Relation
     }
 
     @Override
-    public RelationshipType mapToModel(RelationshipType$Flow relationshipTypeFlow) {
+    public RelationshipType mapToModel(RelationshipTypeFlow relationshipTypeFlow) {
         if (relationshipTypeFlow == null) {
             return null;
         }
@@ -82,7 +82,7 @@ public class RelationshipTypeMapper extends AbsMapper<RelationshipType, Relation
     }
 
     @Override
-    public Class<RelationshipType$Flow> getDatabaseEntityTypeClass() {
-        return RelationshipType$Flow.class;
+    public Class<RelationshipTypeFlow> getDatabaseEntityTypeClass() {
+        return RelationshipTypeFlow.class;
     }
 }

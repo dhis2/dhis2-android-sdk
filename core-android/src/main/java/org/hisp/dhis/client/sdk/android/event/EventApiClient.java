@@ -44,16 +44,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Response;
+import retrofit2.Response;
 
 import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
 
 public class EventApiClient implements IEventApiClient {
 
-    private final EventApiClientRetrofit mEventApiClientRetrofit;
+    private final EventApiClientRetrofit eventApiClientRetrofit;
 
-    public EventApiClient(EventApiClientRetrofit mEventApiClientRetrofit) {
-        this.mEventApiClientRetrofit = mEventApiClientRetrofit;
+    public EventApiClient(EventApiClientRetrofit eventApiClientRetrofit) {
+        this.eventApiClientRetrofit = eventApiClientRetrofit;
     }
 
     @Override
@@ -63,10 +63,12 @@ public class EventApiClient implements IEventApiClient {
         queryMap.put("program", s1);
         queryMap.put("pageSize", Integer.toString(i));
         queryMap.put("page", "0");
+
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -78,7 +80,7 @@ public class EventApiClient implements IEventApiClient {
         queryMap.put("program", s1);
         queryMap.put("pageSize", Integer.toString(i));
         queryMap.put("page", "0");
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -92,7 +94,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -106,7 +108,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -120,7 +122,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -131,7 +133,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        Event event = call(mEventApiClientRetrofit.getEvent(s, queryMap));
+        Event event = call(eventApiClientRetrofit.getEvent(s, queryMap));
         return event;
     }
 
@@ -141,19 +143,19 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        Event event = call(mEventApiClientRetrofit.getEvent(s, queryMap));
+        Event event = call(eventApiClientRetrofit.getEvent(s, queryMap));
         return event;
     }
 
     @Override
     public ImportSummary postEvent(Event event) throws ApiException {
-        Response response = call(mEventApiClientRetrofit.postEvent(event));
+        Response response = call(eventApiClientRetrofit.postEvent(event));
         return unwrapImportSummary(response);
     }
 
     @Override
     public ImportSummary putEvent(Event event) {
-        Response response = call(mEventApiClientRetrofit.putEvent(event.getUId(), event));
+        Response response = call(eventApiClientRetrofit.putEvent(event.getUId(), event));
         return unwrapImportSummary(response);
     }
 

@@ -30,16 +30,14 @@ package org.hisp.dhis.client.sdk.android.dataelement;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataElement$Flow;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.flow.DataElementFlow;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
-public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElement$Flow> implements IDataElementStore {
+public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow> implements IDataElementStore {
 
-    public DataElementStore(IMapper<DataElement, DataElement$Flow> mapper, IOptionSetStore mOptionSetStore) {
+    public DataElementStore(IMapper<DataElement, DataElementFlow> mapper, IOptionSetStore mOptionSetStore) {
         super(mapper);
     }
 }

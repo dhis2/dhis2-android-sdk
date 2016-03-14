@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
@@ -38,17 +40,16 @@ import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class InterpretationController implements IDataController<Interpretation> {
+public final class InterpretationController implements IIdentifiableController<Interpretation> {
     private final IInterpretationService mInterpretationService;
     private final IUserAccountService mUserAccountService;
 
@@ -116,17 +117,20 @@ public final class InterpretationController implements IDataController<Interpret
             switch (interpretation.getType()) {
                 /* case Interpretation.TYPE_CHART: {
                     response = mDhisApi.postChartInterpretation(
-                            interpretation.getChart().getUId(), new TypedString(interpretation.getText()));
+                            interpretation.getChart().getUId(), new TypedString(interpretation
+                            .getText()));
                     break;
                 }
                 case Interpretation.TYPE_MAP: {
                     response = mDhisApi.postMapInterpretation(
-                            interpretation.getMap().getUId(), new TypedString(interpretation.getText()));
+                            interpretation.getMap().getUId(), new TypedString(interpretation
+                            .getText()));
                     break;
                 }
                 case Interpretation.TYPE_REPORT_TABLE: {
                     response = mDhisApi.postReportTableInterpretation(
-                            interpretation.getReportTable().getUId(), new TypedString(interpretation.getText()));
+                            interpretation.getReportTable().getUId(), new TypedString
+                            (interpretation.getText()));
                     break;
                 }
                 default:
@@ -145,7 +149,8 @@ public final class InterpretationController implements IDataController<Interpret
             updateInterpretationTimeStamp(interpretation);
 
         } catch (ApiException apiException) {
-            // ApiExceptionHandler.handleApiException(apiException, interpretation, mInterpretationStore);
+            // ApiExceptionHandler.handleApiException(apiException, interpretation,
+            // mInterpretationStore);
         }
     }
 
@@ -359,7 +364,8 @@ public final class InterpretationController implements IDataController<Interpret
         /* operations.addAll(createOperations(
                 mInterpretationStore.filter(Action.TO_POST), interpretations)); */
         /* operations.addAll(DbUtils.createOperations(
-                mInterpretationCommentStore, mInterpretationCommentStore.queryByInterpretation(Action.TO_POST), comments)); */
+                mInterpretationCommentStore, mInterpretationCommentStore.queryByInterpretation
+                (Action.TO_POST), comments)); */
 
         /* DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -457,7 +463,8 @@ public final class InterpretationController implements IDataController<Interpret
                 // mInterpretationService.setInterpretationElements(interpretation, elements);
 
                 List<InterpretationComment> comments = null;
-                // mInterpretationCommentStore.queryByInterpretation(interpretation, Action.TO_POST);
+                // mInterpretationCommentStore.queryByInterpretation(interpretation, Action
+                // .TO_POST);
                 interpretation.setComments(comments);
             }
         }
@@ -466,7 +473,8 @@ public final class InterpretationController implements IDataController<Interpret
         return null;
     }
 
-    private List<InterpretationComment> updateInterpretationComments(List<Interpretation> interpretations) {
+    private List<InterpretationComment> updateInterpretationComments(List<Interpretation>
+                                                                             interpretations) {
         List<InterpretationComment> interpretationComments = new ArrayList<>();
 
         if (interpretations != null && !interpretations.isEmpty()) {
@@ -560,5 +568,10 @@ public final class InterpretationController implements IDataController<Interpret
     public void sync() throws ApiException {
         getInterpretationDataFromServer();
         sendLocalChanges();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

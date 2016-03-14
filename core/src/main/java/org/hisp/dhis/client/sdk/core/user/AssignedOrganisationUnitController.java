@@ -46,7 +46,8 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
     private final IOrganisationUnitController organisationUnitController;
 
     public AssignedOrganisationUnitController(
-            IUserApiClient userApiClient, IOrganisationUnitController organisationUnitController) {
+            IUserApiClient userApiClient, IOrganisationUnitController
+            organisationUnitController) {
         this.userApiClient = userApiClient;
         this.organisationUnitController = organisationUnitController;
     }

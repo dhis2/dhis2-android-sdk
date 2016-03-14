@@ -159,16 +159,18 @@ public class D2 {
         mOrganisationUnitScope = new OrganisationUnitScope(servicesModule
                 .getOrganisationUnitService(), controllersModule.getOrganisationUnitController());
 
-        mEventScope = new EventScope(servicesModule.getEventService(), controllersModule
-                .getEventController());
+        mEventScope = new EventScope(servicesModule.getEventService(), null
+//                controllersModule.getEventController()
+        );
 
         mConstantScope = new ConstantScope(servicesModule.getConstantService());
 
         mDataElementScope = new DataElementScope(servicesModule.getDataElementService());
 
         mEnrollmentScope = new EnrollmentScope(
-                servicesModule.getEnrollmentService(),
-                controllersModule.getEnrollmentController());
+                servicesModule.getEnrollmentService(), null
+//                controllersModule.getEnrollmentController()
+        );
 
         mOptionSetScope = new OptionSetScope(servicesModule.getOptionSetService());
 
@@ -186,15 +188,17 @@ public class D2 {
                 .getRelationshipTypeService());
 
         mTrackedEntityAttributeScope = new TrackedEntityAttributeScope(
-                servicesModule.getTrackedEntityAttributeService(),
-                controllersModule.getTrackedEntityAttributeController());
+                servicesModule.getTrackedEntityAttributeService(), null
+//                controllersModule.getTrackedEntityAttributeController()
+        );
 
         mTrackedEntityAttributeValueScope = new TrackedEntityAttributeValueScope(servicesModule
                 .getTrackedEntityAttributeValueService());
 
         mTrackedEntityDataValueScope = new TrackedEntityDataValueScope(
-                servicesModule.getTrackedEntityDataValueService(),
-                controllersModule.getEventController());
+                servicesModule.getTrackedEntityDataValueService(), null
+//                controllersModule.getEventController()
+        );
 
         mTrackedEntityScope = new TrackedEntityScope(servicesModule.getTrackedEntities());
 

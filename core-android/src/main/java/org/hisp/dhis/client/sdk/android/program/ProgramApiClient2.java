@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.utils.CollectionUtils;
+import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;

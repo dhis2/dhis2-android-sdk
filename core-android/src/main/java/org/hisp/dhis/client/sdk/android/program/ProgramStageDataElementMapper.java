@@ -30,20 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement, ProgramStageDataElement$Flow> {
+public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement, ProgramStageDataElementFlow> {
 
     @Override
-    public ProgramStageDataElement$Flow mapToDatabaseEntity(ProgramStageDataElement programStageDataElement) {
+    public ProgramStageDataElementFlow mapToDatabaseEntity(ProgramStageDataElement programStageDataElement) {
         if (programStageDataElement == null) {
             return null;
         }
 
-        ProgramStageDataElement$Flow programStageDataElementFlow = new ProgramStageDataElement$Flow();
+        ProgramStageDataElementFlow programStageDataElementFlow = new ProgramStageDataElementFlow();
         programStageDataElementFlow.setId(programStageDataElement.getId());
         programStageDataElementFlow.setUId(programStageDataElement.getUId());
         programStageDataElementFlow.setCreated(programStageDataElement.getCreated());
@@ -63,7 +61,7 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
     }
 
     @Override
-    public ProgramStageDataElement mapToModel(ProgramStageDataElement$Flow programStageDataElementFlow) {
+    public ProgramStageDataElement mapToModel(ProgramStageDataElementFlow programStageDataElementFlow) {
         if (programStageDataElementFlow == null) {
             return null;
         }
@@ -93,7 +91,7 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
     }
 
     @Override
-    public Class<ProgramStageDataElement$Flow> getDatabaseEntityTypeClass() {
-        return ProgramStageDataElement$Flow.class;
+    public Class<ProgramStageDataElementFlow> getDatabaseEntityTypeClass() {
+        return ProgramStageDataElementFlow.class;
     }
 }

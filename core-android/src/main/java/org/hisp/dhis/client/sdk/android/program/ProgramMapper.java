@@ -30,18 +30,18 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
+public class ProgramMapper extends AbsMapper<Program, ProgramFlow> {
 
     @Override
-    public Program$Flow mapToDatabaseEntity(Program program) {
+    public ProgramFlow mapToDatabaseEntity(Program program) {
         if (program == null) {
             return null;
         }
 
-        Program$Flow programFlow = new Program$Flow();
+        ProgramFlow programFlow = new ProgramFlow();
         programFlow.setId(program.getId());
         programFlow.setUId(program.getUId());
         programFlow.setCreated(program.getCreated());
@@ -71,7 +71,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
     }
 
     @Override
-    public Program mapToModel(Program$Flow programFlow) {
+    public Program mapToModel(ProgramFlow programFlow) {
         if (programFlow == null) {
             return null;
         }
@@ -111,7 +111,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
     }
 
     @Override
-    public Class<Program$Flow> getDatabaseEntityTypeClass() {
-        return Program$Flow.class;
+    public Class<ProgramFlow> getDatabaseEntityTypeClass() {
+        return ProgramFlow.class;
     }
 }

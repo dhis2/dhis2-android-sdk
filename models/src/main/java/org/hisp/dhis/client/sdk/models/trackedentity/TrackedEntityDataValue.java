@@ -62,6 +62,17 @@ public final class TrackedEntityDataValue implements Serializable, IModel {
 
     }
 
+    public static TrackedEntityDataValue create(Event event, String dataElement, String value, String storedBy, boolean providedElsewhere) {
+        TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
+        trackedEntityDataValue.setEvent(event);
+        trackedEntityDataValue.setDataElement(dataElement);
+        trackedEntityDataValue.setValue(value);
+        trackedEntityDataValue.setStoredBy(storedBy);
+        trackedEntityDataValue.setProvidedElsewhere(providedElsewhere);
+
+        return trackedEntityDataValue;
+    }
+
     public long getId() {
         return id;
     }

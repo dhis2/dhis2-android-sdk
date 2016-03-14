@@ -70,7 +70,7 @@ public final class RepoManager {
                 .setConverter(provideJacksonConverter())
                 .setClient(provideOkClient(credentials))
                 .setErrorHandler(new RetrofitErrorHandler())
-                .setLogLevel(RestAdapter.LogLevel.BASIC)
+                .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
         return restAdapter.create(DhisApi.class);
     }
@@ -132,7 +132,8 @@ public final class RepoManager {
 
         @Override
         public Throwable handleError(RetrofitError cause) {
-            Log.d("RepoManager", "there was an error.." + cause.getKind().name());
+            cause.printStackTrace();
+            Log.d("RepoManager", "there was an error.." + cause.getKind().name() );
             try {
                 String body = new StringConverter().fromBody(cause.getResponse().getBody(), String.class);
                 Log.e("RepoManager", body);

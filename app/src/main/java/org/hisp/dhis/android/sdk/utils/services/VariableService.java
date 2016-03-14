@@ -335,6 +335,10 @@ public class VariableService {
         String value = null;
         String defaultValue = "";
         List<String> allValues = new ArrayList<>();
+        if(programRuleVariable.getSourceType() == null) {
+            return;
+        }
+
         switch (programRuleVariable.getSourceType()) {
             case CONSTANT:
             case CALCULATED_VALUE:

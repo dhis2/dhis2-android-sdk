@@ -382,7 +382,16 @@ public class ProgramIndicatorService {
                     if (dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
                         value = NULL_REPLACEMENT;
                     } else {
-                        value = dataValue.getValue();
+                        if(dataValue.getValue().endsWith(".")) {
+                            value = (dataValue.getValue() + "0");
+                        }
+                        else if(!(dataValue.getValue().contains("."))) {
+                            value = dataValue.getValue() + ".0";
+                        }
+                        else {
+                            value = dataValue.getValue();
+
+                        }
 
                         valueCount++;
                         zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;

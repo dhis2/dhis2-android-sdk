@@ -37,17 +37,16 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
-import java.util.List;
-
 @Table(databaseName = DbDhis.NAME)
 public final class Program$Flow extends BaseIdentifiableObject$Flow {
 
-    static final String TRACKED_ENTITY_KEY = "trackedentity";
+    private static final String TRACKED_ENTITY_KEY = "trackedEntity";
 
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY, columnType = String.class, foreignColumnName = "uId"),
+                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY,
+                            columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntity$Flow trackedEntity;
@@ -68,7 +67,7 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
     boolean onlyEnrollOnce;
 
     @Column
-    boolean extenalAccess;
+    boolean externalAccess;
 
     @Column
     boolean displayIncidentDate;
@@ -97,9 +96,12 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
     @Column
     boolean selectIncidentDatesInFuture;
 
-    private List<ProgramStage$Flow> programStages;
+    @Column
+    boolean isAssignedToUser;
 
-    private List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes;
+    public Program$Flow() {
+        // empty constructor
+    }
 
     public TrackedEntity$Flow getTrackedEntity() {
         return trackedEntity;
@@ -149,12 +151,12 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.onlyEnrollOnce = onlyEnrollOnce;
     }
 
-    public boolean isExtenalAccess() {
-        return extenalAccess;
+    public boolean isExternalAccess() {
+        return externalAccess;
     }
 
-    public void setExtenalAccess(boolean extenalAccess) {
-        this.extenalAccess = extenalAccess;
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
     }
 
     public boolean isDisplayIncidentDate() {
@@ -229,23 +231,11 @@ public final class Program$Flow extends BaseIdentifiableObject$Flow {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
     }
 
-    public List<ProgramStage$Flow> getProgramStages() {
-        return programStages;
+    public boolean isAssignedToUser() {
+        return isAssignedToUser;
     }
 
-    public void setProgramStages(List<ProgramStage$Flow> programStages) {
-        this.programStages = programStages;
-    }
-
-    public List<ProgramTrackedEntityAttribute$Flow> getProgramTrackedEntityAttributes() {
-        return programTrackedEntityAttributes;
-    }
-
-    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute$Flow> programTrackedEntityAttributes) {
-        this.programTrackedEntityAttributes = programTrackedEntityAttributes;
-    }
-
-    public Program$Flow() {
-        // empty constructor
+    public void setIsAssignedToUser(boolean isAssignedToUser) {
+        this.isAssignedToUser = isAssignedToUser;
     }
 }

@@ -41,15 +41,14 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
 
-@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {
-        @UniqueGroup(groupNumber = OrganisationUnitToProgramRelation$Flow.UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP, uniqueConflict = ConflictAction.REPLACE)})
-
+@Table(databaseName = DbDhis.NAME, uniqueColumnGroups = {@UniqueGroup(
+        groupNumber = OrganisationUnitToProgramRelation$Flow.UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP,
+        uniqueConflict = ConflictAction.REPLACE)})
 public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
+    final static String ORGANISATION_UNIT_KEY = "organisationUnit";
+    final static String PROGRAM_KEY = "program";
+    final static int UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP = 56745632;
 
-    private final static String ORGANISATION_UNIT_KEY = "organisationUnit";
-    private final static String PROGRAM_KEY = "program";
-
-    static final int UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP = 123123123;
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
@@ -58,7 +57,8 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     @Unique(unique = false, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY, columnType = String.class, foreignColumnName = "uId"),
+                    @ForeignKeyReference(columnName = ORGANISATION_UNIT_KEY,
+                            columnType = String.class, foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     OrganisationUnit$Flow organisationUnit;
@@ -67,22 +67,23 @@ public final class OrganisationUnitToProgramRelation$Flow extends BaseModel {
     @Unique(unique = false, uniqueGroups = {UNIQUE_ORGANISATION_UNIT_PROGRAM_GROUP})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class, foreignColumnName = "uId"),
+                    @ForeignKeyReference(columnName = PROGRAM_KEY, columnType = String.class,
+                            foreignColumnName = "uId"),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Program$Flow program;
 
     public OrganisationUnitToProgramRelation$Flow() {
-        //empty constructor
+        // empty constructor
     }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+//
+//    public long getId() {
+//        return id;
+//    }
+//
+//    public void setId(long id) {
+//        this.id = id;
+//    }
 
     public OrganisationUnit$Flow getOrganisationUnit() {
         return organisationUnit;

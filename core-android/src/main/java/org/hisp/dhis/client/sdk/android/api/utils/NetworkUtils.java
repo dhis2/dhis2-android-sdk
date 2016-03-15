@@ -32,14 +32,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.client.sdk.android.retrofit.ResponseMapper;
+import org.hisp.dhis.client.sdk.android.utils.CollectionUtils;
+import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Header;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,16 +52,9 @@ import retrofit.Call;
 import retrofit.Response;
 
 public class NetworkUtils {
+
     private NetworkUtils() {
         // no instances
-    }
-
-    public static <T> List<T> unwrapResponse(Map<String, List<T>> response, String key) {
-        if (response != null && response.containsKey(key) && response.get(key) != null) {
-            return response.get(key);
-        } else {
-            return new ArrayList<>();
-        }
     }
 
     public static Header findLocationHeader(List<Header> headers) {
@@ -78,7 +76,7 @@ public class NetworkUtils {
 
     /**
      * List of errors which this method should handle:
-     * <p/>
+     * <p>
      * 400 Bad Request
      * 401 Unauthorized (user password has changed)
      * 403 Forbidden (access denied)
@@ -93,13 +91,17 @@ public class NetworkUtils {
      * 503 Service unavailable (can be temporary issue)
      * 504 Gateway Timeout (we need to retry request later)
      */
-    public static <T extends IdentifiableObject> void handleApiException(ApiException apiException,
-                                                                         T model, IIdentifiableObjectStore<T> store) throws ApiException {
+    // TODO EW!
+    public static <T extends IdentifiableObject> void handleApiException(
+            ApiException apiException, T model, IIdentifiableObjectStore<T> store) throws
+            ApiException {
+
         switch (apiException.getKind()) {
             case HTTP: {
                 switch (apiException.getResponse().getStatus()) {
                     case HttpURLConnection.HTTP_BAD_REQUEST: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
+                        // TODO Implement mechanism for handling HTTP errors (allow user to
+                        // resolve it).
                         break;
                     }
                     case HttpURLConnection.HTTP_UNAUTHORIZED: {
@@ -108,7 +110,8 @@ public class NetworkUtils {
                         throw apiException;
                     }
                     case HttpURLConnection.HTTP_FORBIDDEN: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
+                        // TODO Implement mechanism for handling HTTP errors (allow user to
+                        // resolve it).
                         // User does not has access to given resource anymore.
                         // We need to handle this in a special way
                         break;
@@ -123,16 +126,19 @@ public class NetworkUtils {
                         break;
                     }
                     case HttpURLConnection.HTTP_CONFLICT: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
+                        // TODO Implement mechanism for handling HTTP errors (allow user to
+                        // resolve it).
                         // Trying to access wrong resource.
                         break;
                     }
                     case HttpURLConnection.HTTP_INTERNAL_ERROR: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
+                        // TODO Implement mechanism for handling HTTP errors (allow user to
+                        // resolve it).
                         break;
                     }
                     case HttpURLConnection.HTTP_NOT_IMPLEMENTED: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
+                        // TODO Implement mechanism for handling HTTP errors (allow user to
+                        // resolve it).
                         break;
                     }
                 }
@@ -153,6 +159,71 @@ public class NetworkUtils {
                 throw apiException;
             }
         }
+    }
+
+    @NonNull
+    public static <T> List<T> getCollection(@NonNull ApiResource<T> apiResource,
+                                            @NonNull Fields fields, @Nullable DateTime lastUpdated,
+                                            @Nullable String... uids) {
+
+        Map<String, String> queryMap = new HashMap<>();
+        List<String> filters = new ArrayList<>();
+
+        /* disable paging */
+        queryMap.put("paging", "false");
+
+        /* filter programs by lastUpdated field */
+        if (lastUpdated != null) {
+            filters.add("lastUpdated:gt:" + lastUpdated.toString());
+        }
+
+        switch (fields) {
+            case BASIC: {
+                queryMap.put("fields", apiResource.getBasicProperties());
+                break;
+            }
+            case ALL: {
+                queryMap.put("fields", apiResource.getAllProperties());
+                break;
+            }
+        }
+
+        List<T> allPrograms = new ArrayList<>();
+        if (uids != null && uids.length > 0) {
+
+            // splitting up request into chunks
+            List<String> idFilters = buildIdFilter(uids);
+            for (String idFilter : idFilters) {
+                List<String> combinedFilters = new ArrayList<>(filters);
+                combinedFilters.add(idFilter);
+
+                // downloading subset of programs
+                allPrograms.addAll(unwrap(call(apiResource
+                        .getEntities(queryMap, combinedFilters)), apiResource.getResourceName()));
+            }
+        } else {
+            allPrograms.addAll(unwrap(call(apiResource
+                    .getEntities(queryMap, filters)), apiResource.getResourceName()));
+        }
+
+        return allPrograms;
+    }
+
+    private static List<String> buildIdFilter(String[] ids) {
+        List<String> idFilters = new ArrayList<>();
+
+        if (ids != null && ids.length > 0) {
+            List<List<String>> splittedIds = CollectionUtils.slice(Arrays.asList(ids), 64);
+            for (List<String> listOfIds : splittedIds) {
+                StringBuilder builder = new StringBuilder();
+                idFilters.add(builder.append("id:in:[")
+                        .append(CollectionUtils.join(listOfIds, ","))
+                        .append("]")
+                        .toString());
+            }
+        }
+
+        return idFilters;
     }
 
     @Nullable

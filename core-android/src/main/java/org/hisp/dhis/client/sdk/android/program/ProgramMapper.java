@@ -49,13 +49,14 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setName(program.getName());
         programFlow.setDisplayName(program.getDisplayName());
         programFlow.setAccess(program.getAccess());
-        programFlow.setTrackedEntity(MapperModuleProvider.getInstance().getTrackedEntityMapper().mapToDatabaseEntity(program.getTrackedEntity()));
+        programFlow.setTrackedEntity(MapperModuleProvider.getInstance()
+                .getTrackedEntityMapper().mapToDatabaseEntity(program.getTrackedEntity()));
         programFlow.setProgramType(program.getProgramType());
         programFlow.setVersion(program.getVersion());
         programFlow.setEnrollmentDateLabel(program.getEnrollmentDateLabel());
         programFlow.setDescription(program.getDescription());
         programFlow.setOnlyEnrollOnce(program.isOnlyEnrollOnce());
-        programFlow.setExtenalAccess(program.isExternalAccess());
+        programFlow.setExternalAccess(program.isExternalAccess());
         programFlow.setDisplayIncidentDate(program.isDisplayIncidentDate());
         programFlow.setIncidentDateLabel(program.getIncidentDateLabel());
         programFlow.setRegistration(program.isRegistration());
@@ -65,6 +66,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
         programFlow.setRelationshipFromA(program.isRelationshipFromA());
         programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
+        programFlow.setIsAssignedToUser(program.isAssignedToUser());
         return programFlow;
     }
 
@@ -82,13 +84,14 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setName(programFlow.getName());
         program.setDisplayName(programFlow.getDisplayName());
         program.setAccess(programFlow.getAccess());
-        program.setTrackedEntity(MapperModuleProvider.getInstance().getTrackedEntityMapper().mapToModel(programFlow.getTrackedEntity()));
+        program.setTrackedEntity(MapperModuleProvider.getInstance()
+                .getTrackedEntityMapper().mapToModel(programFlow.getTrackedEntity()));
         program.setProgramType(programFlow.getProgramType());
         program.setVersion(programFlow.getVersion());
         program.setEnrollmentDateLabel(programFlow.getEnrollmentDateLabel());
         program.setDescription(programFlow.getDescription());
         program.setOnlyEnrollOnce(programFlow.isOnlyEnrollOnce());
-        program.setExternalAccess(programFlow.isExtenalAccess());
+        program.setExternalAccess(programFlow.isExternalAccess());
         program.setDisplayIncidentDate(programFlow.isDisplayIncidentDate());
         program.setIncidentDateLabel(programFlow.getIncidentDateLabel());
         program.setRegistration(programFlow.isRegistration());
@@ -98,6 +101,7 @@ public class ProgramMapper extends AbsMapper<Program, Program$Flow> {
         program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
         program.setRelationshipFromA(programFlow.isRelationshipFromA());
         program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
+        program.setIsAssignedToUser(programFlow.isAssignedToUser());
         return program;
     }
 

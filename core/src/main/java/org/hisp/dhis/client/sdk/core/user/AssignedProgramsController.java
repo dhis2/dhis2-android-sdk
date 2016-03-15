@@ -29,106 +29,41 @@
 package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
-import org.joda.time.DateTime;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public final class AssignedProgramsController implements IAssignedProgramsController {
-    private final IOrganisationUnitController organisationUnitController;
-    private final IProgramController programController;
-    private final ITransactionManager transactionManager;
-    private final IOrganisationUnitStore organisationUnitStore;
-    private final IProgramStore programStore;
+/**
+ * This class is inteded to build relationships between organisation units and programs.
+ */
+public class AssignedProgramsController implements IAssignedProgramsController {
+    /* Api clients */
     private final IUserApiClient userApiClient;
 
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IModelUtils modelUtils;
+    /* Program controller */
+    private final IProgramController programController;
 
-
-    public AssignedProgramsController(IProgramController programController,
-                                      IOrganisationUnitController organisationUnitController,
-                                      IOrganisationUnitStore organisationUnitStore,
-                                      IProgramStore programStore,
-                                      ITransactionManager transactionManager,
-                                      IUserApiClient userApiClient,
-                                      ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient,
-                                      IModelUtils modelUtils) {
-        this.transactionManager = transactionManager;
+    public AssignedProgramsController(IUserApiClient userApiClient,
+                                      IProgramController programController) {
         this.userApiClient = userApiClient;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.programController = programController;
-        this.organisationUnitController = organisationUnitController;
-        this.organisationUnitStore = organisationUnitStore;
-        this.programStore = programStore;
-
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
     }
 
     @Override
     public void sync() throws ApiException {
-        getAssignedProgramsDataFromServer();
-    }
+        UserAccount userAccount = userApiClient.getUserAccount();
 
-    private void getAssignedProgramsDataFromServer() throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        List<OrganisationUnit> organisationUnitsWithAssignedPrograms = null;
-//                = userApiClient.getUserAccount();
+        /* get list of assigned programs */
+        List<Program> assignedPrograms = userAccount.getPrograms();
 
-        Set<String> organisationUnitsToLoad = modelUtils
-                .toUidSet(organisationUnitsWithAssignedPrograms);
-        Set<String> programsToLoad = new HashSet<>();
-        for (OrganisationUnit organisationUnit : organisationUnitsWithAssignedPrograms) {
-            programsToLoad.addAll(modelUtils.toUidSet(organisationUnit.getPrograms()));
-        }
+        /* convert them to set of ids */
+        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
 
-        // Load the programs and organisation units from server with full data
-        organisationUnitController.sync(organisationUnitsToLoad);
-        programController.sync(programsToLoad);
-
-        Map<Program, Set<OrganisationUnit>> programToUnits = reverseRelationship
-                (organisationUnitsWithAssignedPrograms);
-        for (Program program : programToUnits.keySet()) {
-            Set<OrganisationUnit> units = programToUnits.get(program);
-            programStore.assign(program, units);
-        }
-    }
-
-    private Map<Program, Set<OrganisationUnit>> reverseRelationship(
-            List<OrganisationUnit> organisationUnitsWithAssignedPrograms) {
-        Map<Program, Set<OrganisationUnit>> programToOrganisationUnitsMap = new HashMap<>();
-        for (OrganisationUnit unit : organisationUnitsWithAssignedPrograms) {
-            List<Program> assignedUnitPrograms = unit.getPrograms();
-
-            if (assignedUnitPrograms == null) {
-                continue;
-            }
-
-            for (Program program : assignedUnitPrograms) {
-                if (!programToOrganisationUnitsMap.containsKey(program)) {
-                    programToOrganisationUnitsMap.put(program, new HashSet<OrganisationUnit>());
-                }
-
-                programToOrganisationUnitsMap.get(program).add(unit);
-            }
-        }
-
-        return programToOrganisationUnitsMap;
+        /* get them through program controller */
+        programController.sync(ids);
     }
 }

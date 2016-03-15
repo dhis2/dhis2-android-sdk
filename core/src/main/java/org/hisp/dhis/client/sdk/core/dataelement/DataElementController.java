@@ -29,15 +29,16 @@
 package org.hisp.dhis.client.sdk.core.dataelement;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -48,19 +49,17 @@ public final class DataElementController implements IDataController<DataElement>
     private final IIdentifiableObjectStore<DataElement> mDataElementStore;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ITransactionManager transactionManager;
-    private final IModelUtils modelUtils;
 
     public DataElementController(IDataElementApiClient dataElementApiClient,
                                  ISystemInfoApiClient systemInfoApiClient,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
                                  IIdentifiableObjectStore<DataElement> mDataElementStore,
-                                 ITransactionManager transactionManager, IModelUtils modelUtils) {
+                                 ITransactionManager transactionManager) {
         this.dataElementApiClient = dataElementApiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.mDataElementStore = mDataElementStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.transactionManager = transactionManager;
-        this.modelUtils = modelUtils;
     }
 
     private void getProgramRulesDataFromServer() throws ApiException {
@@ -73,13 +72,14 @@ public final class DataElementController implements IDataController<DataElement>
         List<DataElement> allDataElements = dataElementApiClient.getBasicDataElements(null);
 
         //fetch all updated items
-        List<DataElement> updatedDataElements = dataElementApiClient.getFullDataElements(lastUpdated);
+        List<DataElement> updatedDataElements = dataElementApiClient
+                .getFullDataElements(lastUpdated);
 
         //merging updated items with persisted items, and removing ones not present in server.
-        List<DataElement> existingPersistedAndUpdatedDataElements =
-                modelUtils.merge(allDataElements, updatedDataElements, mDataElementStore.queryAll());
+        List<DataElement> existingPersistedAndUpdatedDataElements = ModelUtils.merge(
+                allDataElements, updatedDataElements, mDataElementStore.queryAll());
 
-        List<IDbOperation> dbOperations = transactionManager.createOperations(mDataElementStore,
+        List<IDbOperation> dbOperations = DbUtils.createOperations(mDataElementStore,
                 mDataElementStore.queryAll(), existingPersistedAndUpdatedDataElements);
         transactionManager.transact(dbOperations);
         lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, serverTime);

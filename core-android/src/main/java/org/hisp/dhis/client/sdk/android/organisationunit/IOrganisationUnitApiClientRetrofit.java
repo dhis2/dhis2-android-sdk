@@ -26,26 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.user;
+package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-
+import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
-public interface UserApiClientRetrofit {
+public interface IOrganisationUnitApiClientRetrofit {
 
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting user information
-    /////////////////////////////////////////////////////////////////////////
-
-    @GET("me/")
-    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-//
-//    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
-//    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
+    @GET("organisationUnits")
+    Call<Map<String, List<OrganisationUnit>>> getOrganisationUnits(
+            @QueryMap Map<String, String> queryMap, @Query("filter") List<String> filters);
 }

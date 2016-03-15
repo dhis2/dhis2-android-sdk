@@ -31,33 +31,11 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
-import java.util.Set;
 
 public interface IProgramStore extends IIdentifiableObjectStore<Program> {
+    List<Program> query(boolean assignedToCurrentUser);
 
-    /**
-     * Returns a list of Programs that are assigned to a given Organisation Unit
-     * @param organisationUnit
-     * @return
-     */
-    List<Program> query(OrganisationUnit organisationUnit);
-
-    /**
-     * Returns a list of Programs that are assigned to a given Organisation Unit with one of the
-     * given program type(s)
-     * @param organisationUnit
-     * @param programTypes
-     * @return
-     */
-    List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes);
-
-    /**
-     * Creates an assignment link between the given program and the given list of organisation Units
-     * @param program
-     * @param organisationUnits
-     */
-    void assign(Program program, Set<OrganisationUnit> organisationUnits);
+    List<Program> query(OrganisationUnit... organisationUnits);
 }

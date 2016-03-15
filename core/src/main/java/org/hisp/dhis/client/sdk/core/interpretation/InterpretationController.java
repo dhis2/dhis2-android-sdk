@@ -40,7 +40,7 @@ import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
@@ -57,21 +57,19 @@ public final class InterpretationController implements IDataController<Interpret
     private final IInterpretationCommentStore mInterpretationCommentStore;
 
     private final IUserStore mUserStore;
-    private final IModelUtils modelUtils;
 
     public InterpretationController(IInterpretationService interpretationsService,
                                     IUserAccountService userAccountService,
                                     IIdentifiableObjectStore<Interpretation> mInterpretationStore,
                                     IInterpretationElementStore mInterpretationElementStore,
                                     IInterpretationCommentStore mInterpretationCommentStore,
-                                    IUserStore mUserStore, IModelUtils modelUtils) {
+                                    IUserStore mUserStore) {
         this.mInterpretationService = interpretationsService;
         this.mUserAccountService = userAccountService;
         this.mInterpretationStore = mInterpretationStore;
         this.mInterpretationElementStore = mInterpretationElementStore;
         this.mInterpretationCommentStore = mInterpretationCommentStore;
         this.mUserStore = mUserStore;
-        this.modelUtils = modelUtils;
     }
 
     private void sendLocalChanges() throws ApiException {
@@ -522,8 +520,8 @@ public final class InterpretationController implements IDataController<Interpret
                                                List<Interpretation> newModels) {
         List<DbOperation> ops = new ArrayList<>();
 
-        Map<String, Interpretation> newModelsMap = modelUtils.toMap(newModels);
-        Map<String, Interpretation> oldModelsMap = modelUtils.toMap(oldModels);
+        Map<String, Interpretation> newModelsMap = ModelUtils.toMap(newModels);
+        Map<String, Interpretation> oldModelsMap = ModelUtils.toMap(oldModels);
 
         for (String oldModelKey : oldModelsMap.keySet()) {
             Interpretation newModel = newModelsMap.get(oldModelKey);

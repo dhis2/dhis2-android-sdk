@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -37,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -50,19 +51,17 @@ public final class TrackedEntityController implements IDataController<TrackedEnt
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
-    private final IModelUtils modelUtils;
 
     public TrackedEntityController(ITrackedEntityApiClient trackedEntityApiClient,
                                    ITransactionManager transactionManager,
                                    ILastUpdatedPreferences lastUpdatedPreferences,
                                    IIdentifiableObjectStore<TrackedEntity> trackedEntityStore,
-                                   ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+                                   ISystemInfoApiClient systemInfoApiClient) {
         this.trackedEntityApiClient = trackedEntityApiClient;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.systemInfoApiClient = systemInfoApiClient;
         this.trackedEntityStore = trackedEntityStore;
-        this.modelUtils = modelUtils;
     }
 
 
@@ -83,11 +82,11 @@ public final class TrackedEntityController implements IDataController<TrackedEnt
 
         //merging updated items with persisted items, and removing ones not present in server.
         List<TrackedEntity> existingPersistedAndUpdatedTrackedEntities =
-                modelUtils.merge(allTrackedEntities, updatedTrackedEntities,
+                ModelUtils.merge(allTrackedEntities, updatedTrackedEntities,
                         trackedEntityStore.queryAll());
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(trackedEntityStore,
+        operations.addAll(DbUtils.createOperations(trackedEntityStore,
                 existingPersistedAndUpdatedTrackedEntities, trackedEntityStore.queryAll()));
 
         transactionManager.transact(operations);

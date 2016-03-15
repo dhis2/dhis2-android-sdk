@@ -26,24 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.utils;
+package org.hisp.dhis.client.sdk.android.api.utils;
 
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public interface IModelUtils {
-    <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects);
+import retrofit.Call;
 
-    <T extends IdentifiableObject> List<String> toUidList(List<T> objects);
+public interface ApiResource<Type> {
+    String getResourceName();
 
-    <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items);
+    String getBasicProperties();
 
-    <T extends IdentifiableObject> List<T> merge(List<T> existingItems, List<T> updatedItems, List<T> persistedItems);
+    String getAllProperties();
 
-    <T extends IdentifiableObject> List<T> mergeWith(Collection<T> one, Collection<T> two, MergeStrategy strategy);
+    Call<Map<String, List<Type>>> getEntities(
+            Map<String, String> queryMap, List<String> filters) throws ApiException;
 }

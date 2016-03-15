@@ -30,12 +30,10 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 
 public final class ProgramService implements IProgramService {
-
     private final IProgramStore programStore;
 
     public ProgramService(IProgramStore programStore) {
@@ -58,17 +56,12 @@ public final class ProgramService implements IProgramService {
     }
 
     @Override
-    public List<Program> list(OrganisationUnit organisationUnit, ProgramType... programTypes) {
-        return programStore.query(organisationUnit, programTypes);
+    public List<Program> list(boolean assignedToCurrentUser) {
+        return programStore.query(assignedToCurrentUser);
     }
 
     @Override
-    public boolean remove(Program object) {
-        return programStore.delete(object);
-    }
-
-    @Override
-    public boolean save(Program object) {
-        return programStore.save(object);
+    public List<Program> list(OrganisationUnit... organisationUnits) {
+        return programStore.query(organisationUnits);
     }
 }

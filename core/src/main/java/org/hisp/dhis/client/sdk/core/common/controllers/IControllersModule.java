@@ -32,12 +32,21 @@ import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public interface IControllersModule {
+    IProgramController getProgramController();
+
+    IAssignedProgramsController getAssignedProgramsController();
+
+    IOrganisationUnitController getOrganisationUnitController();
+
+    IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
+
     IUserAccountController getUserAccountController();
 
     IEventController getEventController();
@@ -45,12 +54,6 @@ public interface IControllersModule {
     IEnrollmentController getEnrollmentController();
 
     IDataController<TrackedEntityAttribute> getTrackedEntityAttributeController();
-
-    IAssignedProgramsController getAssignedProgramsController();
-
-    IProgramController getProgramController();
-
-    IOrganisationUnitController getOrganisationUnitController();
 
     IDataController<TrackedEntity> getTrackedEntityController();
 }

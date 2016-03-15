@@ -30,12 +30,6 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 import java.util.List;
 import java.util.Set;
@@ -44,21 +38,15 @@ import rx.Observable;
 
 public interface IProgramScope {
 
-    Observable<Boolean> save(Program program);
-
-    Observable<Boolean> remove(Program program);
-
     Observable<Program> get(long id);
 
     Observable<Program> get(String uid);
 
     Observable<List<Program>> list();
 
-    Observable<List<Program>> list(OrganisationUnit organisationUnit, ProgramType ... programTypes);
+    Observable<List<Program>> list(OrganisationUnit... organisationUnits);
 
     Observable<Void> sync();
 
     Observable<Void> sync(Set<String> uids);
-
-    Observable<Void> sync(String uid);
 }

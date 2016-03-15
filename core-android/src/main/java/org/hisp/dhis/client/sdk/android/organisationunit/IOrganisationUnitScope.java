@@ -36,9 +36,10 @@ import rx.Observable;
 
 public interface IOrganisationUnitScope {
 
-    Observable<Boolean> save(OrganisationUnit organisationUnit);
 
-    Observable<Boolean> remove(OrganisationUnit organisationUnit);
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // Service methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
     Observable<OrganisationUnit> get(long id);
 
@@ -46,5 +47,12 @@ public interface IOrganisationUnitScope {
 
     Observable<List<OrganisationUnit>> list();
 
-    Observable<Void> sync();
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // Controller methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    Observable<List<OrganisationUnit>> sync();
+
+    Observable<List<OrganisationUnit>> sync(String... uids);
 }

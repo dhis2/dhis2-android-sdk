@@ -39,47 +39,13 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class OrganisationUnitScope implements IOrganisationUnitScope {
-
     private final IOrganisationUnitService mOrganisationUnitService;
     private final IOrganisationUnitController mOrganisationUnitController;
 
-    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService, IOrganisationUnitController mOrganisationUnitController) {
+    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService,
+                                 IOrganisationUnitController mOrganisationUnitController) {
         this.mOrganisationUnitService = mOrganisationUnitService;
         this.mOrganisationUnitController = mOrganisationUnitController;
-    }
-
-    @Override
-    public Observable<Boolean> save(final OrganisationUnit organisationUnit) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mOrganisationUnitService.save(organisationUnit);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final OrganisationUnit organisationUnit) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mOrganisationUnitService.remove(organisationUnit);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
     }
 
     @Override
@@ -134,10 +100,10 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
     }
 
     @Override
-    public Observable<Void> sync() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+    public Observable<List<OrganisationUnit>> sync() {
+        return Observable.create(new Observable.OnSubscribe<List<OrganisationUnit>>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
                     mOrganisationUnitController.sync();
                     subscriber.onNext(null);
@@ -148,5 +114,10 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
                 subscriber.onCompleted();
             }
         });
+    }
+
+    @Override
+    public Observable<List<OrganisationUnit>> sync(String... uids) {
+        return null;
     }
 }

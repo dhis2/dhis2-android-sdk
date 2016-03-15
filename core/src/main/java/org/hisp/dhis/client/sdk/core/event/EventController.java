@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -48,10 +49,16 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public final class EventController implements IEventController {
     private final IEventApiClient eventApiClient;
@@ -64,9 +71,15 @@ public final class EventController implements IEventController {
     private final IOrganisationUnitStore organisationUnitStore;
     private final IProgramStore programStore;
     private final IFailedItemStore failedItemStore;
-    private final IModelUtils modelUtils;
 
-    public EventController(IEventApiClient eventApiClient, ISystemInfoApiClient systemInfoApiClient, ILastUpdatedPreferences lastUpdatedPreferences, ITransactionManager transactionManager, IStateStore stateStore, IEventStore eventStore, ITrackedEntityDataValueStore trackedEntityDataValueStore, IOrganisationUnitStore organisationUnitStore, IProgramStore programStore, IFailedItemStore failedItemStore, IModelUtils modelUtils) {
+    public EventController(IEventApiClient eventApiClient,
+                           ISystemInfoApiClient systemInfoApiClient,
+                           ILastUpdatedPreferences lastUpdatedPreferences,
+                           ITransactionManager transactionManager,
+                           IStateStore stateStore, IEventStore eventStore,
+                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
+                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
+                           IFailedItemStore failedItemStore) {
         this.eventApiClient = eventApiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -77,7 +90,6 @@ public final class EventController implements IEventController {
         this.organisationUnitStore = organisationUnitStore;
         this.programStore = programStore;
         this.failedItemStore = failedItemStore;
-        this.modelUtils = modelUtils;
     }
 
     /**
@@ -90,18 +102,21 @@ public final class EventController implements IEventController {
      * @param lastUpdated
      * @throws ApiException
      */
-    private void getEventsDataFromServer(String organisationUnitUid, String programUid, int limit, DateTime lastUpdated) throws ApiException {
+    private void getEventsDataFromServer(String organisationUnitUid, String programUid, int
+            limit, DateTime lastUpdated) throws ApiException {
         ResourceType resourceType = ResourceType.EVENTS;
         String extraIdentifier = organisationUnitUid + programUid;
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        List<Event> updatedEvents = eventApiClient.getFullEvents(programUid, organisationUnitUid, limit, lastUpdated);
+        List<Event> updatedEvents = eventApiClient.getFullEvents(programUid, organisationUnitUid,
+                limit, lastUpdated);
         saveResourceDataFromServer(resourceType, extraIdentifier, updatedEvents,
                 eventStore.query(organisationUnitStore.queryByUid(organisationUnitUid),
                         programStore.queryByUid(programUid)), serverDateTime);
     }
 
     /**
-     * This method loads the last events limited by the limit argument for a program and org unit and stores on device.
+     * This method loads the last events limited by the limit argument for a program and org unit
+     * and stores on device.
      * Events that are not included in the result of this query are deleted from the device
      * (old events previously saved) unless they are modified locally.
      *
@@ -109,7 +124,8 @@ public final class EventController implements IEventController {
      * @param programUid
      * @throws ApiException
      */
-    private void getEventsDataFromServer(String organisationUnitUid, String programUid, int limit) throws ApiException {
+    private void getEventsDataFromServer(String organisationUnitUid, String programUid, int
+            limit) throws ApiException {
         ResourceType resourceType = ResourceType.EVENTS;
         String extraIdentifier = organisationUnitUid + programUid;
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
@@ -121,7 +137,8 @@ public final class EventController implements IEventController {
     }
 
     /**
-     * This method loads the last events limited by the limit argument for a program and org unit and stores on device.
+     * This method loads the last events limited by the limit argument for a program and org unit
+     * and stores on device.
      * Events that are not included in the result of this query are deleted from the device
      * (old events previously saved) unless they are modified locally.
      *
@@ -129,12 +146,14 @@ public final class EventController implements IEventController {
      * @param programUid
      * @throws ApiException
      */
-    private void getEventsDataFromServer(String organisationUnitUid, String programUid) throws ApiException {
+    private void getEventsDataFromServer(String organisationUnitUid, String programUid) throws
+            ApiException {
         ResourceType resourceType = ResourceType.EVENTS;
         String extraIdentifier = organisationUnitUid + programUid;
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, extraIdentifier);
-        List<Event> updatedEvents = eventApiClient.getFullEvents(programUid, organisationUnitUid, lastUpdated);
+        List<Event> updatedEvents = eventApiClient.getFullEvents(programUid, organisationUnitUid,
+                lastUpdated);
         saveResourceDataFromServer(resourceType, extraIdentifier, updatedEvents,
                 eventStore.query(organisationUnitStore.queryByUid(organisationUnitUid),
                         programStore.queryByUid(programUid)), serverDateTime);
@@ -156,9 +175,14 @@ public final class EventController implements IEventController {
         if (program == null || program.getUId() == null) {
             return;
         }
-        List<Event> existingEvents = eventApiClient.getBasicEvents(program.getUId(), enrollment.getStatus(), enrollment.getTrackedEntityInstance().getTrackedEntityInstanceUid(), null);
-        List<Event> updatedEvents = eventApiClient.getFullEvents(program.getUId(), enrollment.getStatus(), enrollment.getTrackedEntityInstance().getTrackedEntityInstanceUid(), lastUpdated);
-        List<Event> existingPersistedAndUpdatedEvents = modelUtils.merge(existingEvents, updatedEvents, eventStore.query(enrollment));
+        List<Event> existingEvents = eventApiClient.getBasicEvents(program.getUId(),
+                enrollment.getStatus(), enrollment.getTrackedEntityInstance()
+                        .getTrackedEntityInstanceUid(), null);
+        List<Event> updatedEvents = eventApiClient.getFullEvents(program.getUId(),
+                enrollment.getStatus(), enrollment.getTrackedEntityInstance()
+                        .getTrackedEntityInstanceUid(), lastUpdated);
+        List<Event> existingPersistedAndUpdatedEvents = ModelUtils.merge(existingEvents,
+                updatedEvents, eventStore.query(enrollment));
         for (Event event : updatedEvents) {
             event.setEnrollment(enrollment);
         }
@@ -168,7 +192,8 @@ public final class EventController implements IEventController {
     }
 
     /**
-     * Fetches data for a single event by uid from server and saves it (or updates if already existing)
+     * Fetches data for a single event by uid from server and saves it (or updates if already
+     * existing)
      *
      * @param uid
      * @throws ApiException
@@ -176,9 +201,11 @@ public final class EventController implements IEventController {
     private void getEventDataFromServer(String uid) throws ApiException {
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
-        Event updatedEvent = eventApiClient.getFullEvent(uid, null);//mDhisApi.getEvent(uid, getAllFieldsQueryMap(null));
+        Event updatedEvent = eventApiClient.getFullEvent(uid, null);//mDhisApi.getEvent(uid,
+        // getAllFieldsQueryMap(null));
         //todo: delete the event if it has been deleted on server.
-        //todo: be sure to check if the event has ever been on the server, or if it is still pending first time registration sync
+        //todo: be sure to check if the event has ever been on the server, or if it is still
+        // pending first time registration sync
 
         Event persistedEvent = eventStore.queryByUid(uid);
         if (persistedEvent != null) {
@@ -208,7 +235,7 @@ public final class EventController implements IEventController {
                                             List<Event> persistedItems,
                                             DateTime serverDateTime) {
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(eventStore, persistedItems, updatedItems));
+        operations.addAll(DbUtils.createOperations(eventStore, persistedItems, updatedItems));
         transactionManager.transact(operations);
         operations.clear();
 
@@ -296,7 +323,8 @@ public final class EventController implements IEventController {
         return ops;
     }
 
-    private static Map<String, TrackedEntityDataValue> toMap(Collection<TrackedEntityDataValue> objects) {
+    private static Map<String, TrackedEntityDataValue> toMap(Collection<TrackedEntityDataValue>
+                                                                     objects) {
         Map<String, TrackedEntityDataValue> map = new HashMap<>();
         if (objects != null && objects.size() > 0) {
             for (TrackedEntityDataValue object : objects) {
@@ -331,14 +359,16 @@ public final class EventController implements IEventController {
         Map<Long, Action> actionMap = stateStore
                 .queryActionsForModel(Event.class);
 
-        for (int i = 0; i < events.size(); i++) {/* removing events with local enrollment reference. In this case, the enrollment needs to be synced first*/
+        for (int i = 0; i < events.size(); i++) {/* removing events with local enrollment
+        reference. In this case, the enrollment needs to be synced first*/
             Event event = events.get(i);
             Action enrollmentAction = null;
             Enrollment enrollment = event.getEnrollment();
             if (enrollment != null) {
                 enrollmentAction = stateStore.queryActionForModel(enrollment);
             }
-            //we avoid trying to send events whose enrollments that have not yet been posted to server
+            //we avoid trying to send events whose enrollments that have not yet been posted to
+            // server
             if (Action.TO_POST.equals(enrollmentAction)) {
                 events.remove(i);
                 i--;
@@ -378,19 +408,20 @@ public final class EventController implements IEventController {
         event.setUId(null);
         try {
             ImportSummary importSummary = eventApiClient.postEvent(event);
-//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType.EVENT, event.getId());
-                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                        ImportSummary.Status.OK.equals(importSummary.getStatus())) {
-                    stateStore.saveActionForModel(event, Action.SYNCED);
-                    List<IDbOperation> operations = new ArrayList<>();
-                    for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
-                        stateStore.saveActionForModel(dataValue, Action.SYNCED);
-                        operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
-                    }
-                    operations.add(DbOperation.with(eventStore).save(event));
-                    transactionManager.transact(operations);
-                    updateEventTimestamp(event);
-                    eventStore.save(event);
+//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType.EVENT,
+// event.getId());
+            if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                    ImportSummary.Status.OK.equals(importSummary.getStatus())) {
+                stateStore.saveActionForModel(event, Action.SYNCED);
+                List<IDbOperation> operations = new ArrayList<>();
+                for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
+                    stateStore.saveActionForModel(dataValue, Action.SYNCED);
+                    operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
+                }
+                operations.add(DbOperation.with(eventStore).save(event));
+                transactionManager.transact(operations);
+                updateEventTimestamp(event);
+                eventStore.save(event);
 //                    clearFailedItem(FailedItemType.EVENT, failedItemStore, event.getId());
             }
         } catch (ApiException apiException) {
@@ -401,22 +432,23 @@ public final class EventController implements IEventController {
     private void putEvent(Event event) throws ApiException {
         try {
             ImportSummary importSummary = eventApiClient.putEvent(event);
-//                handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType.EVENT, event.getId());
-                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
-                        ImportSummary.Status.OK.equals(importSummary.getStatus())) {
+//                handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType
+// .EVENT, event.getId());
+            if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                    ImportSummary.Status.OK.equals(importSummary.getStatus())) {
 
-                    stateStore.saveActionForModel(event, Action.SYNCED);
-                    List<IDbOperation> operations = new ArrayList<>();
-                    for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
-                        stateStore.saveActionForModel(dataValue, Action.SYNCED);
-                        operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
-                    }
-                    operations.add(DbOperation.with(eventStore).save(event));
-                    transactionManager.transact(operations);
-//                    clearFailedItem(FailedItemType.EVENT, failedItemStore, event.getId());
-                    updateEventTimestamp(event);
-                    eventStore.save(event);
+                stateStore.saveActionForModel(event, Action.SYNCED);
+                List<IDbOperation> operations = new ArrayList<>();
+                for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
+                    stateStore.saveActionForModel(dataValue, Action.SYNCED);
+                    operations.add(DbOperation.with(trackedEntityDataValueStore).save(dataValue));
                 }
+                operations.add(DbOperation.with(eventStore).save(event));
+                transactionManager.transact(operations);
+//                    clearFailedItem(FailedItemType.EVENT, failedItemStore, event.getId());
+                updateEventTimestamp(event);
+                eventStore.save(event);
+            }
 
         } catch (ApiException apiException) {
 //            handleEventSendException(apiException, failedItemStore, event);
@@ -442,12 +474,14 @@ public final class EventController implements IEventController {
     }
 
     @Override
-    public void sync(OrganisationUnit organisationUnit, Program program, int count, DateTime serverDateTime) throws ApiException {
+    public void sync(OrganisationUnit organisationUnit, Program program, int count, DateTime
+            serverDateTime) throws ApiException {
         getEventsDataFromServer(organisationUnit.getUId(), program.getUId(), count, serverDateTime);
     }
 
     @Override
-    public void sync(OrganisationUnit organisationUnit, Program program, int limit) throws ApiException {
+    public void sync(OrganisationUnit organisationUnit, Program program, int limit) throws
+            ApiException {
         getEventsDataFromServer(organisationUnit.getUId(), program.getUId(), limit);
     }
 

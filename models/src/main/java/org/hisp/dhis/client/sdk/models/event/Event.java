@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
@@ -89,9 +88,6 @@ public final class Event implements Serializable, IdentifiableObject {
     @JsonProperty("dueDate")
     private DateTime dueDate;
 
-    @JsonProperty("dataValues")
-    private List<TrackedEntityDataValue> trackedEntityDataValues;
-
     @JsonProperty("name")
     private String name;
 
@@ -106,6 +102,9 @@ public final class Event implements Serializable, IdentifiableObject {
 
     @JsonProperty("access")
     private Access access;
+
+    @JsonProperty("dataValues")
+    private List<TrackedEntityDataValue> trackedEntityDataValues;
 
     public Event() {
 
@@ -168,14 +167,6 @@ public final class Event implements Serializable, IdentifiableObject {
         this.trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
     }
 
-    public TrackedEntityInstance getTrackedEntityInstance() {
-        return trackedEntityInstance;
-    }
-
-    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
-    }
-
     @JsonProperty("enrollment")
     public String getEnrollmentUid() {
         return enrollment.getUId();
@@ -185,6 +176,24 @@ public final class Event implements Serializable, IdentifiableObject {
     public void setEnrollmentUid(String enrollmentUid) {
         this.enrollment = new Enrollment();
         this.enrollment.setUId(enrollmentUid);
+    }
+
+    @Override
+    public String getUId() {
+        return eventUid;
+    }
+
+    @Override
+    public void setUId(String uId) {
+        this.eventUid = uId;
+    }
+
+    public TrackedEntityInstance getTrackedEntityInstance() {
+        return trackedEntityInstance;
+    }
+
+    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
+        this.trackedEntityInstance = trackedEntityInstance;
     }
 
     public Enrollment getEnrollment() {
@@ -243,16 +252,6 @@ public final class Event implements Serializable, IdentifiableObject {
         this.trackedEntityDataValues = trackedEntityDataValues;
     }
 
-    @Override
-    public String getUId() {
-        return eventUid;
-    }
-
-    @Override
-    public void setUId(String uId) {
-        this.eventUid = uId;
-    }
-
     public String getName() {
         return name;
     }
@@ -291,10 +290,5 @@ public final class Event implements Serializable, IdentifiableObject {
 
     public void setAccess(Access access) {
         this.access = access;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject that, MergeStrategy strategy) {
-
     }
 }

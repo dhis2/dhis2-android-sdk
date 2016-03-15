@@ -29,88 +29,92 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.controllers.AbsController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-public class ProgramController extends AbsController<Program> implements IProgramController {
+public class ProgramController implements IProgramController {
 
-    // API clients
+    /* Api clients */
+    private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
+    private final IUserApiClient userApiClient;
 
+    /* Local storage */
+    private final IProgramStore programStore;
+
+    /* Utilities */
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IProgramStore programStore;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IModelUtils modelUtils;
 
-    public ProgramController(IProgramApiClient programApiClient, ITransactionManager
-            transactionManager, ILastUpdatedPreferences lastUpdatedPreferences, IProgramStore
-            programStore, ISystemInfoApiClient systemInfoApiClient, IModelUtils modelUtils) {
+    public ProgramController(ISystemInfoApiClient systemInfoApiClient,
+                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                             IProgramStore programStore, ITransactionManager transactionManager,
+                             ILastUpdatedPreferences lastUpdatedPreferences) {
+        this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;
+        this.userApiClient = userApiClient;
+        this.programStore = programStore;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.programStore = programStore;
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.modelUtils = modelUtils;
-    }
-
-    private void getProgramsDataFromServer() throws ApiException {
-        ResourceType resource = ResourceType.PROGRAMS;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
-
-        List<Program> allProgramsOnServer = programApiClient.getPrograms(Fields.BASIC, null);
-        List<Program> updatedPrograms = programApiClient.getPrograms(Fields.ALL, lastUpdated);
-        List<Program> persistedPrograms = programStore.queryAll();
-        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
-                persistedPrograms, programStore, modelUtils));
-        lastUpdatedPreferences.save(resource, serverTime);
-    }
-
-    private void getProgramsDataFromServer(Set<String> programUidsToLoad) throws ApiException {
-        for (String uid : programUidsToLoad) {
-            getProgramDataFromServer(uid);
-        }
-    }
-
-    private void getProgramDataFromServer(String uid) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM, uid);
-
-        List<Program> allProgramsOnServer = programApiClient.getPrograms(Fields.BASIC, null);
-        Program updatedProgram = programApiClient.getProgram(uid, Fields.ALL, lastUpdated);
-        List<Program> updatedPrograms = new ArrayList<>();
-        updatedPrograms.add(updatedProgram);
-        List<Program> persistedPrograms = programStore.queryAll();
-        transactionManager.transact(getMergeOperations(allProgramsOnServer, updatedPrograms,
-                persistedPrograms, programStore, modelUtils));
-        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime, uid);
     }
 
     @Override
     public void sync() throws ApiException {
-        getProgramsDataFromServer();
+        sync(null);
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
-        getProgramsDataFromServer(uids);
-    }
+    public void sync(Collection<String> uids) throws ApiException {
+        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
 
-    @Override
-    public void sync(String uid) throws ApiException {
-        getProgramDataFromServer(uid);
+        List<Program> persistedPrograms = programStore.queryAll();
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+
+        String[] uidArray = null;
+        if (uids != null) {
+            // here we want to get list of ids of programs which are
+            // stored locally and list of programs which we want to download
+            Set<String> persistedProgramIds = ModelUtils.toUidSet(persistedPrograms);
+            persistedProgramIds.addAll(uids);
+
+            uidArray = persistedProgramIds.toArray(new String[persistedProgramIds.size()]);
+        }
+
+        List<Program> updatedPrograms = programApiClient.getPrograms(
+                Fields.ALL, lastUpdated, uidArray);
+
+        // we need to mark assigned programs as "assigned" before storing them
+        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
+                .getUserAccount().getPrograms());
+
+        for (Program updatedProgram : updatedPrograms) {
+            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
+            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        }
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
+                updatedPrograms, persistedPrograms, programStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
     }
 }
-

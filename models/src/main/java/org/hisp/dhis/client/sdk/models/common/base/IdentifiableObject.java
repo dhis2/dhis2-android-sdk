@@ -30,12 +30,11 @@ package org.hisp.dhis.client.sdk.models.common.base;
 
 
 import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.IMerge;
 import org.joda.time.DateTime;
 
 import java.util.Comparator;
 
-public interface IdentifiableObject extends IModel, IMerge<IdentifiableObject> {
+public interface IdentifiableObject extends IModel {
     Comparator<IdentifiableObject> DISPLAY_NAME_COMPARATOR = new NameComparator();
     Comparator<IdentifiableObject> CREATED_COMPARATOR = new CreatedComparator();
 

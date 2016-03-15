@@ -32,8 +32,6 @@ import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
@@ -53,7 +51,18 @@ public class UserAccountService implements IUserAccountService {
         if (userAccounts != null && !userAccounts.isEmpty()) {
             return userAccounts.get(0);
         }
+
         return null;
+    }
+
+    @Override
+    public boolean save(UserAccount object) {
+        return userAccountStore.save(object);
+    }
+
+    @Override
+    public boolean update(UserAccount object) {
+        return userAccountStore.update(object);
     }
 
     @Override
@@ -71,18 +80,8 @@ public class UserAccountService implements IUserAccountService {
     }
 
     @Override
-    public void logOut() {
+    public void signOut() {
         // removing all existing data
         modelsStore.deleteAllTables();
-    }
-
-    @Override
-    public List<Program> listAssignedPrograms(OrganisationUnit organisationUnit) {
-        return null;
-    }
-
-    @Override
-    public List<OrganisationUnit> listAssignedOrganisationUnits() {
-        return null;
     }
 }

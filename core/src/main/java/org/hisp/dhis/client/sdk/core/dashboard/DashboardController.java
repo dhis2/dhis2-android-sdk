@@ -31,7 +31,9 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
@@ -42,11 +44,16 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.client.sdk.core.common.network.Response;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public final class DashboardController implements IDataController<Dashboard> {
     private final IDashboardStore dashboardStore;
@@ -65,8 +72,6 @@ public final class DashboardController implements IDataController<Dashboard> {
     /* database transaction manager */
     private final ITransactionManager transactionManager;
 
-    private final IModelUtils modelUtils;
-
     public DashboardController(IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
@@ -75,7 +80,7 @@ public final class DashboardController implements IDataController<Dashboard> {
                                IDashboardApiClient dashboardApiClient,
                                ISystemInfoApiClient systemInfoApiClient,
                                ILastUpdatedPreferences lastUpdatedPreferences,
-                               ITransactionManager transactionManager, IModelUtils modelUtils) {
+                               ITransactionManager transactionManager) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
@@ -85,7 +90,6 @@ public final class DashboardController implements IDataController<Dashboard> {
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.transactionManager = transactionManager;
-        this.modelUtils = modelUtils;
     }
 
     @Override
@@ -109,10 +113,12 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         Queue<IDbOperation> operations = new LinkedList<>();
 
-        operations.addAll(transactionManager.createOperations(dashboardStore,
-                stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE), dashboards));
-        operations.addAll(transactionManager.createOperations(dashboardItemStore,
-                stateStore.queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE), dashboardItems));
+        operations.addAll(DbUtils.createOperations(dashboardStore,
+                stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboards));
+        operations.addAll(DbUtils.createOperations(dashboardItemStore,
+                stateStore.queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action
+                        .TO_UPDATE, Action.TO_DELETE), dashboardItems));
         operations.addAll(createOperations(dashboardItems));
 
         transactionManager.transact(operations);
@@ -146,10 +152,11 @@ public final class DashboardController implements IDataController<Dashboard> {
             dashboard.setDashboardItems(items);
         }
 
-        return modelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
+        return ModelUtils.merge(actualDashboards, updatedDashboards, persistedDashboards);
     }
 
-    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime lastUpdated) {
+    private List<DashboardItem> updateDashboardItems(List<Dashboard> dashboards, DateTime
+            lastUpdated) {
         // List of actual dashboard items.
         List<DashboardItem> actualItems = new ArrayList<>();
         for (Dashboard dashboard : dashboards) {
@@ -159,7 +166,7 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List of persisted dashboard items
         Map<String, DashboardItem> persistedDashboardItems =
-                modelUtils.toMap(stateStore.queryModelsWithActions(DashboardItem.class,
+                ModelUtils.toMap(stateStore.queryModelsWithActions(DashboardItem.class,
                         Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE));
 
         // List of updated dashboard items. We need this only to get
@@ -167,7 +174,7 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<DashboardItem> updatedItems = dashboardApiClient.getBaseDashboardItems(lastUpdated);
 
         // Map of items where keys are UUIDs.
-        Map<String, DashboardItem> updatedItemsMap = modelUtils.toMap(updatedItems);
+        Map<String, DashboardItem> updatedItemsMap = ModelUtils.toMap(updatedItems);
 
         // merging updated items with actual
         for (DashboardItem actualItem : actualItems) {
@@ -218,8 +225,8 @@ public final class DashboardController implements IDataController<Dashboard> {
                 refreshedElementList = new ArrayList<>();
             }
 
-            List<String> persistedElementIds = modelUtils.toUidList(persistedElementList);
-            List<String> refreshedElementIds = modelUtils.toUidList(refreshedElementList);
+            List<String> persistedElementIds = ModelUtils.toUidList(persistedElementList);
+            List<String> refreshedElementIds = ModelUtils.toUidList(refreshedElementList);
 
             List<String> itemIdsToInsert = subtract(refreshedElementIds, persistedElementIds);
             List<String> itemIdsToDelete = subtract(persistedElementIds, refreshedElementIds);
@@ -269,7 +276,8 @@ public final class DashboardController implements IDataController<Dashboard> {
     // TODO move this method out
     private Map<Long, List<DashboardItem>> getDashboardItemMap() {
         List<DashboardItem> dashboardItemsList = stateStore
-                .queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
+                .queryModelsWithActions(DashboardItem.class, Action.SYNCED, Action.TO_UPDATE,
+                        Action.TO_DELETE);
         Map<Long, List<DashboardItem>> dashboardItemMap = new HashMap<>();
 
         for (DashboardItem dashboardItem : dashboardItemsList) {
@@ -328,7 +336,8 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         // List<Dashboard> dashboards = dashboardStore.filter(Action.SYNCED);
         List<Dashboard> dashboards = stateStore
-                .queryModelsWithActions(Dashboard.class, Action.TO_POST, Action.TO_UPDATE, Action.TO_DELETE);
+                .queryModelsWithActions(Dashboard.class, Action.TO_POST, Action.TO_UPDATE, Action
+                        .TO_DELETE);
         Map<Long, Action> actionMap = stateStore
                 .queryActionsForModel(Dashboard.class);
         if (dashboards == null || dashboards.isEmpty()) {
@@ -413,7 +422,8 @@ public final class DashboardController implements IDataController<Dashboard> {
         /* List<DashboardItem> dashboardItems =
                 dashboardItemStore.filter(Action.SYNCED); */
         List<DashboardItem> dashboardItems =
-                stateStore.queryModelsWithActions(DashboardItem.class, Action.TO_POST, Action.TO_UPDATE, Action.TO_DELETE);
+                stateStore.queryModelsWithActions(DashboardItem.class, Action.TO_POST, Action
+                        .TO_UPDATE, Action.TO_DELETE);
         Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardItem.class);
 
         if (dashboardItems == null || dashboardItems.isEmpty()) {
@@ -464,7 +474,8 @@ public final class DashboardController implements IDataController<Dashboard> {
 
             try {
                 DashboardElement element = elements.get(0);
-                // Response response = dashboardApiClient.postDashboardItem(dashboard.getUId(), dashboardItem.getType(), element.getUId(), "");
+                // Response response = dashboardApiClient.postDashboardItem(dashboard.getUId(),
+                // dashboardItem.getType(), element.getUId(), "");
 
                 // instead, post element
                 Response response = dashboardApiClient.postDashboardItem(dashboardItem);
@@ -528,7 +539,8 @@ public final class DashboardController implements IDataController<Dashboard> {
                 .orderBy(true, DashboardElement$Table.ID)
                 .queryList(); */
         List<DashboardElement> elements = stateStore
-                .queryModelsWithActions(DashboardElement.class, Action.TO_POST, Action.TO_UPDATE, Action.TO_DELETE);
+                .queryModelsWithActions(DashboardElement.class, Action.TO_POST, Action.TO_UPDATE,
+                        Action.TO_DELETE);
         Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardElement.class);
 
         if (elements == null || elements.isEmpty()) {
@@ -627,7 +639,8 @@ public final class DashboardController implements IDataController<Dashboard> {
 
     private void updateDashboardTimeStamp(Dashboard dashboard) {
         try {
-            Dashboard updatedDashboard = dashboardApiClient.getBaseDashboardByUid(dashboard.getUId());
+            Dashboard updatedDashboard = dashboardApiClient.getBaseDashboardByUid(dashboard
+                    .getUId());
 
             // merging updated timestamp to local dashboard model
             dashboard.setCreated(updatedDashboard.getCreated());
@@ -704,10 +717,11 @@ public final class DashboardController implements IDataController<Dashboard> {
         List<DashboardContent> persistedItems =
                 dashboardItemContentStore.queryByTypes(Arrays.asList(type));
 
-        return modelUtils.merge(actualItems, updatedItems, persistedItems);
+        return ModelUtils.merge(actualItems, updatedItems, persistedItems);
     }
 
-    private List<DashboardContent> getApiResourceByType(String type, Map<String, String> queryParams) {
+    private List<DashboardContent> getApiResourceByType(String type,
+                                                        Map<String, String> queryParams) {
         switch (type) {
             case DashboardContent.TYPE_CHART:
                 return dashboardApiClient.getBaseCharts();

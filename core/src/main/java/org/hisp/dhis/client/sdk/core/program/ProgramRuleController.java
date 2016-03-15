@@ -29,16 +29,17 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.program.IProgramRuleApiClient;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -51,19 +52,17 @@ public final class ProgramRuleController implements IDataController<ProgramRule>
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramRuleApiClient programRuleApiClient;
-    private final IModelUtils modelUtils;
 
     public ProgramRuleController(ITransactionManager transactionManager,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
                                  IIdentifiableObjectStore<ProgramRule> mProgramRuleStore,
                                  ISystemInfoApiClient systemInfoApiClient,
-                                 IProgramRuleApiClient programRuleApiClient, IModelUtils modelUtils) {
+                                 IProgramRuleApiClient programRuleApiClient) {
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.mProgramRuleStore = mProgramRuleStore;
         this.systemInfoApiClient = systemInfoApiClient;
         this.programRuleApiClient = programRuleApiClient;
-        this.modelUtils = modelUtils;
     }
 
     private void getProgramRulesDataFromServer() throws ApiException {
@@ -76,14 +75,16 @@ public final class ProgramRuleController implements IDataController<ProgramRule>
         List<ProgramRule> allProgramRules = programRuleApiClient.getBasicProgramRules(null);
 
         // fetch all updated items
-        List<ProgramRule> updatedProgramRules = programRuleApiClient.getFullProgramRules(lastUpdated);
+        List<ProgramRule> updatedProgramRules = programRuleApiClient.getFullProgramRules
+                (lastUpdated);
 
         // merging updated items with persisted items, and removing ones not present in server.
-        List<ProgramRule> existingPersistedAndUpdatedProgramRules =
-                modelUtils.merge(allProgramRules, updatedProgramRules, mProgramRuleStore.queryAll());
+        List<ProgramRule> existingPersistedAndUpdatedProgramRules = ModelUtils.merge(
+                allProgramRules, updatedProgramRules, mProgramRuleStore.queryAll());
 
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(mProgramRuleStore, existingPersistedAndUpdatedProgramRules, mProgramRuleStore.queryAll()));
+        operations.addAll(DbUtils.createOperations(mProgramRuleStore,
+                existingPersistedAndUpdatedProgramRules, mProgramRuleStore.queryAll()));
 
         transactionManager.transact(operations);
         lastUpdatedPreferences.save(resource, serverTime);

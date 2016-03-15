@@ -34,7 +34,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
 import java.util.List;
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramStage extends BaseIdentifiableObject {

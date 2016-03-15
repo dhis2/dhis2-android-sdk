@@ -28,43 +28,157 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import android.support.annotation.Nullable;
+
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataSet$Flow;
+import org.hisp.dhis.client.sdk.android.flow.ModelLink$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow$Table;
+import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow$Table;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<OrganisationUnit,
         OrganisationUnit$Flow> implements IOrganisationUnitStore {
 
-    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnit$Flow> mapper) {
+    private static final String UNITS_TO_PROGRAMS = "organisationUnitsToPrograms";
+
+    private final ITransactionManager transactionManager;
+
+    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnit$Flow> mapper,
+                                 ITransactionManager transactionManager) {
         super(mapper);
+
+        this.transactionManager = transactionManager;
     }
 
     @Override
-    public List<DataSet> query(OrganisationUnit organisationUnit) {
-        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
-                .from(UnitToDataSetRelationShip$Flow.class)
-                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
-                        .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+    public List<OrganisationUnit> queryAll() {
+        return queryUnitRelationships(super.queryAll());
+    }
+
+    @Override
+    public List<OrganisationUnit> query(boolean assignedToCurrentUser) {
+        List<OrganisationUnit$Flow> organisationUnitFlows = new Select()
+                .from(OrganisationUnit$Flow.class)
+                .where(Condition.column(OrganisationUnit$Flow$Table
+                        .ISASSIGNEDTOUSER).is(assignedToCurrentUser))
                 .queryList();
 
-        List<DataSet> dataSets = new ArrayList<>();
-        for (UnitToDataSetRelationShip$Flow relationShip : relationShipFlows) {
-            DataSet$Flow dataSetFlow = relationShip.getDataSet();
-            //dataSets.add(DataSet$Flow.toModel(dataSetFlow));
+        List<OrganisationUnit> orgUnits = getMapper().mapToModels(organisationUnitFlows);
+        return queryUnitRelationships(orgUnits);
+    }
+
+    @Override
+    public List<OrganisationUnit> query(Program... programs) {
+        List<OrganisationUnit$Flow> orgUnitFlows = ModelLink$Flow.queryRelatedModels(
+                OrganisationUnit$Flow.class, UNITS_TO_PROGRAMS, Arrays.asList(programs));
+
+        List<OrganisationUnit> organisationUnits = getMapper().mapToModels(orgUnitFlows);
+        return queryUnitRelationships(organisationUnits);
+    }
+
+    @Override
+    public List<OrganisationUnit> query(DataSet... dataSets) {
+        throw new RuntimeException("Unimplemented method");
+    }
+
+    @Override
+    public OrganisationUnit queryById(long id) {
+        return queryUnitRelationships(super.queryById(id));
+    }
+
+    @Override
+    public OrganisationUnit queryByUid(String uid) {
+        return queryUnitRelationships(super.queryByUid(uid));
+    }
+
+    @Override
+    public boolean insert(OrganisationUnit object) {
+        boolean isSuccess = super.insert(object);
+
+        if (isSuccess) {
+            updateOrganisationUnitRelationships(object);
         }
 
-        return dataSets;
+        return isSuccess;
+    }
+
+    @Override
+    public boolean update(OrganisationUnit object) {
+        boolean isSuccess = super.update(object);
+
+        if (isSuccess) {
+            updateOrganisationUnitRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean save(OrganisationUnit object) {
+        boolean isSuccess = super.save(object);
+
+        if (isSuccess) {
+            updateOrganisationUnitRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean delete(OrganisationUnit object) {
+        boolean isSuccess = super.delete(object);
+
+        if (isSuccess) {
+            ModelLink$Flow.deleteRelatedModels(object, UNITS_TO_PROGRAMS);
+        }
+
+        return isSuccess;
+    }
+
+    private void updateOrganisationUnitRelationships(OrganisationUnit organisationUnit) {
+        List<IDbOperation> dbOperations = ModelLink$Flow.updateLinksToModel(organisationUnit,
+                organisationUnit.getPrograms(), UNITS_TO_PROGRAMS);
+        transactionManager.transact(dbOperations);
+    }
+
+    @Nullable
+    private List<OrganisationUnit> queryUnitRelationships(@Nullable List<OrganisationUnit> units) {
+
+        if (units != null) {
+            Map<String, List<Program>> organisationUnitsToPrograms = ModelLink$Flow
+                    .queryLinksForModel(Program.class, UNITS_TO_PROGRAMS);
+
+            for (OrganisationUnit organisationUnit : units) {
+                organisationUnit.setPrograms(organisationUnitsToPrograms
+                        .get(organisationUnit.getUId()));
+            }
+        }
+
+        return units;
+    }
+
+    @Nullable
+    private OrganisationUnit queryUnitRelationships(@Nullable OrganisationUnit organisationUnit) {
+
+        if (organisationUnit != null) {
+            List<Program> programs = ModelLink$Flow.queryLinksForModel(
+                    Program.class, UNITS_TO_PROGRAMS, organisationUnit.getUId());
+            organisationUnit.setPrograms(programs);
+        }
+
+        return organisationUnit;
     }
 }

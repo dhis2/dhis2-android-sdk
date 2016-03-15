@@ -58,7 +58,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeStore;
@@ -108,14 +108,11 @@ import org.hisp.dhis.client.sdk.core.user.IUserStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 public class PersistenceModule implements IPersistenceModule {
 
     // Utility classes.
     private final ITransactionManager transactionManager;
-    private final IModelUtils modelUtils;
 
     // UserAccount related dependencies.
     private final IUserAccountStore userAccountStore;
@@ -169,8 +166,16 @@ public class PersistenceModule implements IPersistenceModule {
     public PersistenceModule(Context context) {
         FlowManager.init(context);
 
-        modelUtils = new ModelUtils();
-        transactionManager = new TransactionManager(modelUtils);
+        transactionManager = new TransactionManager();
+
+//        programStore = new ProgramStore(
+//                MapperModuleProvider.getInstance().getProgramMapper(),
+//                transactionManager, MapperModuleProvider.getInstance()
+// .getOrganisationUnitMapper(), programTrackedEntityAttributeStore,
+//                programStageStore, programIndicatorStore);
+
+        programStore = new ProgramStore2(MapperModuleProvider
+                .getInstance().getProgramMapper(), transactionManager);
 
         userAccountStore = new UserAccountStore(MapperModuleProvider.getInstance()
                 .getUserAccountMapper());
@@ -197,7 +202,7 @@ public class PersistenceModule implements IPersistenceModule {
         dataElementStore = new DataElementStore(MapperModuleProvider.getInstance()
                 .getDataElementMapper(), optionSetStore);
         organisationUnitStore = new OrganisationUnitStore(MapperModuleProvider.getInstance()
-                .getOrganisationUnitMapper());
+                .getOrganisationUnitMapper(), transactionManager);
         trackedEntityStore = new TrackedEntityStore(MapperModuleProvider.getInstance()
                 .getTrackedEntityMapper());
         trackedEntityAttributeStore = new TrackedEntityAttributeStore(MapperModuleProvider
@@ -221,10 +226,6 @@ public class PersistenceModule implements IPersistenceModule {
                 .getInstance().getProgramRuleActionMapper());
         programRuleVariableStore = new ProgramRuleVariableStore(MapperModuleProvider
                 .getInstance().getProgramRuleVariableMapper());
-        programStore = new ProgramStore(MapperModuleProvider.getInstance().getProgramMapper(),
-                transactionManager, MapperModuleProvider.getInstance()
-                .getOrganisationUnitMapper(), programTrackedEntityAttributeStore,
-                programStageStore, programIndicatorStore);
         relationshipTypeStore = new RelationshipTypeStore(MapperModuleProvider.getInstance()
                 .getRelationshipTypeMapper());
         dataSetStore = new DataSetStore(MapperModuleProvider.getInstance().getDataSetMapper(),

@@ -33,10 +33,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserAccount implements IdentifiableObject {
@@ -103,6 +109,15 @@ public class UserAccount implements IdentifiableObject {
 
     @JsonProperty("phoneNumber")
     String phoneNumber;
+
+
+    /* This properties should not be directly
+    accessible through model accessors */
+    @JsonProperty("userCredentials")
+    UserCredentials userCredentials;
+
+    @JsonProperty("organisationUnits")
+    List<OrganisationUnit> organisationUnits;
 
     public UserAccount() {
         action = Action.SYNCED;
@@ -176,6 +191,28 @@ public class UserAccount implements IdentifiableObject {
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    /* Exposing getPrograms() instead of making UserCredentials model public */
+    public List<Program> getPrograms() {
+        Map<String, Program> programMap = new HashMap<>();
+        if (userCredentials != null && userCredentials.getUserRoles() != null) {
+
+            /* go through all UserRoles and extract assigned programs */
+            for (UserRole userRole : userCredentials.getUserRoles()) {
+                if (userRole.getPrograms() != null) {
+                    for (Program program : userRole.getPrograms()) {
+                        programMap.put(program.getUId(), program);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>(programMap.values());
+    }
+
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
     }
 
     public Action getAction() {
@@ -280,10 +317,5 @@ public class UserAccount implements IdentifiableObject {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject that, MergeStrategy strategy) {
-
     }
 }

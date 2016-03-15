@@ -44,7 +44,9 @@ import org.hisp.dhis.client.sdk.android.event.IEventScope;
 import org.hisp.dhis.client.sdk.android.optionset.IOptionSetScope;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramIndicatorScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramRuleScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
@@ -52,6 +54,7 @@ import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramTrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
@@ -59,6 +62,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.relationship.IRelationshipScope;
 import org.hisp.dhis.client.sdk.android.relationship.IRelationshipTypeScope;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipScope;
@@ -84,8 +88,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import rx.Observable;
 
@@ -95,9 +97,12 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 public class D2 {
     private static D2 mD2;
 
-    private final IUserPreferences mUserPreferences;
-    private final IUserAccountScope mUserAccountScope;
-    private final IProgramScope mProgramScope;
+    private final IUserPreferences userPreferences;
+    private final IProgramScope programScope;
+    private final IUserProgramScope userProgramScope;
+    private final IUserOrganisationUnitScope userOrganisationUnitScope;
+    private final IUserAccountScope userAccountScope;
+
     private final IOrganisationUnitScope mOrganisationUnitScope;
     private final IEventScope mEventScope;
     private final IConstantScope mConstantScope;
@@ -119,29 +124,34 @@ public class D2 {
 
 
     private D2(Context context) {
-        IModelUtils modelUtils = new ModelUtils();
-
         IPersistenceModule persistenceModule = new PersistenceModule(context);
         IPreferencesModule preferencesModule = new PreferencesModule(context);
         INetworkModule networkModule = new NetworkModule(preferencesModule);
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
-        IControllersModule controllersModule = new ControllersModule(networkModule,
-                persistenceModule, preferencesModule, modelUtils);
+        IControllersModule controllersModule = new ControllersModule(
+                networkModule, persistenceModule, preferencesModule);
 
-        mUserPreferences = preferencesModule.getUserPreferences();
+        userPreferences = preferencesModule.getUserPreferences();
 
-        mUserAccountScope = new UserAccountScope(controllersModule.getUserAccountController(),
-                mUserPreferences, preferencesModule.getConfigurationPreferences(),
-                controllersModule.getAssignedProgramsController(),
-                persistenceModule.getUserAccountStore());
+        programScope = new ProgramScope(servicesModule.getProgramService(),
+                controllersModule.getProgramController());
 
-        mProgramScope = new ProgramScope(servicesModule.getProgramService(),
-                controllersModule.getProgramController(),
-                servicesModule.getProgramStageService(),
-                servicesModule.getProgramStageSectionService(),
-                servicesModule.getProgramIndicatorService(),
-                servicesModule.getProgramStageDataElementService(),
-                servicesModule.getProgramTrackedEntityAttributeService());
+        userProgramScope = new UserProgramScope(servicesModule.getProgramService(),
+                controllersModule.getAssignedProgramsController());
+
+        userOrganisationUnitScope = new UserOrganisationUnitScope(
+                servicesModule.getOrganisationUnitService(),
+                controllersModule.getAssignedOrganisationUnitsController());
+
+        userAccountScope = new UserAccountScope(
+                preferencesModule.getConfigurationPreferences(),
+                preferencesModule.getUserPreferences(), servicesModule.getUserAccountService(),
+                controllersModule.getUserAccountController(),
+                userProgramScope, userOrganisationUnitScope);
+
+        ///////////////////////////
+        // Legacy
+        ///////////////////////////
 
         mProgramTrackedEntityAttributeScope = new ProgramTrackedEntityAttributeScope(
                 servicesModule.getProgramTrackedEntityAttributeService());
@@ -209,15 +219,15 @@ public class D2 {
 
     public static Observable<UserAccount> signIn(Configuration configuration, String username,
                                                  String password) {
-        return getInstance().mUserAccountScope.signIn(configuration, username, password);
+        return getInstance().userAccountScope.signIn(configuration, username, password);
     }
 
     public static Observable<Boolean> isSignedIn() {
-        return getInstance().mUserAccountScope.isSignedIn();
+        return getInstance().userAccountScope.isSignedIn();
     }
 
     public static Observable<Boolean> signOut() {
-        return getInstance().mUserAccountScope.signOut();
+        return getInstance().userAccountScope.signOut();
     }
 
     public static IEventScope events() {
@@ -269,15 +279,15 @@ public class D2 {
     }
 
     public static IProgramScope programs() {
-        return getInstance().mProgramScope;
+        return getInstance().programScope;
     }
 
     public static IUserAccountScope me() {
-        return getInstance().mUserAccountScope;
+        return getInstance().userAccountScope;
     }
 
     public static UserCredentials configuration() {
-        return getInstance().mUserPreferences.get();
+        return getInstance().userPreferences.get();
     }
 
     public static ITrackedEntityDataValueScope trackedEntityDataValues() {

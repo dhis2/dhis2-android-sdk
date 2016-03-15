@@ -28,31 +28,17 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
 public class OrganisationUnitService implements IOrganisationUnitService {
-
     private final IOrganisationUnitStore organisationUnitStore;
 
     public OrganisationUnitService(IOrganisationUnitStore organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;
-    }
-
-    @Override
-    public boolean save(OrganisationUnit object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return organisationUnitStore.save(object);
-    }
-
-    @Override
-    public boolean remove(OrganisationUnit object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return organisationUnitStore.delete(object);
     }
 
     @Override
@@ -68,5 +54,20 @@ public class OrganisationUnitService implements IOrganisationUnitService {
     @Override
     public List<OrganisationUnit> list() {
         return organisationUnitStore.queryAll();
+    }
+
+    @Override
+    public List<OrganisationUnit> list(boolean assignedToCurrentUser) {
+        return organisationUnitStore.query(assignedToCurrentUser);
+    }
+
+    @Override
+    public List<OrganisationUnit> list(Program... programs) {
+        return organisationUnitStore.query(programs);
+    }
+
+    @Override
+    public List<OrganisationUnit> list(DataSet... dataSets) {
+        return organisationUnitStore.query(dataSets);
     }
 }

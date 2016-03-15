@@ -29,22 +29,18 @@
 package org.hisp.dhis.client.sdk.android.api.modules;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
-import org.hisp.dhis.client.sdk.core.common.persistence.AbsTransactionManager;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class TransactionManager extends AbsTransactionManager {
+public class TransactionManager implements ITransactionManager {
 
-    public TransactionManager(IModelUtils modelUtils) {
-        super(modelUtils);
+    public TransactionManager() {
+        // empty constructor
     }
 
     @Override
@@ -55,19 +51,14 @@ public class TransactionManager extends AbsTransactionManager {
             return;
         }
 
-        com.raizlabs.android.dbflow.runtime.TransactionManager.transact(DbDhis.NAME, new Runnable() {
-            @Override
-            public void run() {
-                for (IDbOperation operation : operations) {
-                    operation.execute();
-                }
-            }
-        });
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<IDbOperation> createOperations(
-            IIdentifiableObjectStore<T> iIdentifiableObjectStore, List<T> list, List<T> list1) {
-        return null;
+        com.raizlabs.android.dbflow.runtime.TransactionManager
+                .transact(DbDhis.NAME, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (IDbOperation operation : operations) {
+                            operation.execute();
+                        }
+                    }
+                });
     }
 }

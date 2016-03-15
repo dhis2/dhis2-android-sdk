@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import android.util.ArraySet;
-
 import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -40,10 +38,7 @@ import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow;
 import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitToProgramRelation$Flow$Table;
 import org.hisp.dhis.client.sdk.android.flow.Program$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntity$Flow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
@@ -55,7 +50,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,8 +60,9 @@ import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
-        Program$Flow> implements IProgramStore {
+public final class ProgramStore extends AbsIdentifiableObjectStore<Program, Program$Flow>
+        implements IProgramStore {
+
     private final ITransactionManager mTransactionManager;
     private final IMapper<OrganisationUnit, OrganisationUnit$Flow> mOrganisationUnitMapper;
     private final IProgramTrackedEntityAttributeStore mProgramTrackedEntityAttributeStore;
@@ -75,8 +70,13 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
     private final IProgramIndicatorStore mProgramIndicatorStore;
 
     public ProgramStore(IMapper<Program, Program$Flow> mapper,
-                        ITransactionManager transactionManager, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper, IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore, IProgramStageStore programStageStore, IProgramIndicatorStore programIndicatorStore) {
+                        ITransactionManager transactionManager,
+                        IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper,
+                        IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore,
+                        IProgramStageStore programStageStore,
+                        IProgramIndicatorStore programIndicatorStore) {
         super(mapper);
+
         this.mTransactionManager = transactionManager;
         this.mOrganisationUnitMapper = organisationUnitMapper;
         this.mProgramTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
@@ -95,17 +95,20 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             /* setting id which DbFlows' BaseModel generated after insertion */
             program.setId(databaseEntity.getId());
 
-            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program.getProgramTrackedEntityAttributes();
-            if(programTrackedEntityAttributes != null) {
-                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
-                    if (!mProgramTrackedEntityAttributeStore.insert(programTrackedEntityAttribute)) {
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program
+                    .getProgramTrackedEntityAttributes();
+            if (programTrackedEntityAttributes != null) {
+                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute :
+                        programTrackedEntityAttributes) {
+                    if (!mProgramTrackedEntityAttributeStore.insert
+                            (programTrackedEntityAttribute)) {
                         return false;
                     }
                 }
             }
 
             List<ProgramIndicator> programIndicators = program.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.insert(programIndicator)) {
                         return false;
@@ -114,7 +117,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             }
 
             List<ProgramStage> programStages = program.getProgramStages();
-            if(programStages != null) {
+            if (programStages != null) {
                 for (ProgramStage programStage : programStages) {
                     if (!mProgramStageStore.insert(programStage)) {
                         return false;
@@ -137,9 +140,11 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             /* setting id which DbFlows' BaseModel generated after insertion */
             program.setId(databaseEntity.getId());
 
-            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program.getProgramTrackedEntityAttributes();
-            if(programTrackedEntityAttributes != null) {
-                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributes) {
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = program
+                    .getProgramTrackedEntityAttributes();
+            if (programTrackedEntityAttributes != null) {
+                for (ProgramTrackedEntityAttribute programTrackedEntityAttribute :
+                        programTrackedEntityAttributes) {
                     if (!mProgramTrackedEntityAttributeStore.save(programTrackedEntityAttribute)) {
                         return false;
                     }
@@ -147,7 +152,7 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             }
 
             List<ProgramIndicator> programIndicators = program.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.save(programIndicator)) {
                         return false;
@@ -156,68 +161,88 @@ public final class ProgramStore extends AbsIdentifiableObjectStore<Program,
             }
 
             List<ProgramStage> programStages = program.getProgramStages();
-            if(programStages != null) {
+            if (programStages != null) {
                 for (ProgramStage programStage : programStages) {
                     if (!mProgramStageStore.save(programStage)) {
                         return false;
                     }
                 }
             }
+
             return true;
         }
         return false;
     }
 
-    @Override
-    public List<Program> query(OrganisationUnit organisationUnit) {
-        List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
-                new Select().from(OrganisationUnitToProgramRelation$Flow.class).
-                        where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
-                        .queryList();
-        List<Program> programs = new ArrayList<>();
-        for (OrganisationUnitToProgramRelation$Flow relationFlows : organisationUnitToProgramRelations) {
-            programs.add(getMapper().mapToModel(relationFlows.getProgram()));
-        }
-        return programs;
-    }
+//    @Override
+//    public List<Program> query(OrganisationUnit organisationUnit) {
+//        List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
+//                new Select().from(OrganisationUnitToProgramRelation$Flow.class).
+//                        where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
+//                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+//                        .queryList();
+//        List<Program> programs = new ArrayList<>();
+//        for (OrganisationUnitToProgramRelation$Flow relationFlows :
+//                organisationUnitToProgramRelations) {
+//            programs.add(getMapper().mapToModel(relationFlows.getProgram()));
+//        }
+//        return programs;
+//    }
 
-    @Override
+    // @Override
     public List<Program> query(OrganisationUnit organisationUnit, ProgramType... programTypes) {
         List<OrganisationUnitToProgramRelation$Flow> organisationUnitToProgramRelations =
-                new Select().from(OrganisationUnitToProgramRelation$Flow.class).
-                        where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
-                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId())).queryList();
+                new Select().from(OrganisationUnitToProgramRelation$Flow.class)
+                        .where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
+                                .ORGANISATIONUNIT_ORGANISATIONUNIT).is(organisationUnit.getUId()))
+                        .queryList();
+
         List<Program> programs = new ArrayList<>();
         List<ProgramType> programTypesSet = Arrays.asList(programTypes);
-        for (OrganisationUnitToProgramRelation$Flow relationFlow : organisationUnitToProgramRelations) {
-            if(programTypesSet.contains(relationFlow.getProgram().getProgramType())) {
+        for (OrganisationUnitToProgramRelation$Flow relationFlow :
+                organisationUnitToProgramRelations) {
+            if (programTypesSet.contains(relationFlow.getProgram().getProgramType())) {
                 programs.add(getMapper().mapToModel(relationFlow.getProgram()));
             }
         }
+
         return programs;
     }
 
-    @Override
+    // @Override
     public void assign(Program program, Set<OrganisationUnit> organisationUnits) {
         List<IDbOperation> operations = new ArrayList<>();
-        List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select().from(OrganisationUnitToProgramRelation$Flow.class).
-                where(Condition.column
-                        (OrganisationUnitToProgramRelation$Flow$Table.PROGRAM_PROGRAM).
-                        is(program.getUId())).queryList();
+        List<OrganisationUnitToProgramRelation$Flow> relationFlows = new Select()
+                .from(OrganisationUnitToProgramRelation$Flow.class)
+                .where(Condition.column(OrganisationUnitToProgramRelation$Flow$Table
+                        .PROGRAM_PROGRAM).is(program.getUId())).queryList();
+
         Map<String, OrganisationUnitToProgramRelation$Flow> relationFlowMap = new HashMap<>();
         for (OrganisationUnitToProgramRelation$Flow relationFlow : relationFlows) {
             relationFlowMap.put(relationFlow.getOrganisationUnit().getUId(), relationFlow);
         }
+
         for (OrganisationUnit organisationUnit : organisationUnits) {
             if (!relationFlowMap.containsKey(organisationUnit.getUId())) {
-                OrganisationUnitToProgramRelation$Flow newRelationFlow = new OrganisationUnitToProgramRelation$Flow();
-                newRelationFlow.setOrganisationUnit(mOrganisationUnitMapper.mapToDatabaseEntity(organisationUnit));
+                OrganisationUnitToProgramRelation$Flow newRelationFlow =
+                        new OrganisationUnitToProgramRelation$Flow();
+                newRelationFlow.setOrganisationUnit(mOrganisationUnitMapper
+                        .mapToDatabaseEntity(organisationUnit));
                 newRelationFlow.setProgram(getMapper().mapToDatabaseEntity(program));
-
                 operations.add(DbFlowOperation.insert(newRelationFlow));
             }
         }
+
         mTransactionManager.transact(operations);
+    }
+
+    @Override
+    public List<Program> query(boolean assignedToCurrentUser) {
+        return null;
+    }
+
+    @Override
+    public List<Program> query(OrganisationUnit... organisationUnits) {
+        return null;
     }
 }

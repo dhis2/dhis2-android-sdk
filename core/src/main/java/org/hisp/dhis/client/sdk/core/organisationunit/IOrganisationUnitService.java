@@ -28,9 +28,22 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
+import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-public interface IOrganisationUnitService extends IService, ISave<OrganisationUnit>, IRemove<OrganisationUnit>,
-        IGet<OrganisationUnit>, IGetUid<OrganisationUnit>, IList<OrganisationUnit> {
+import java.util.List;
+
+public interface IOrganisationUnitService extends IService, IGet<OrganisationUnit>,
+        IGetUid<OrganisationUnit>, IList<OrganisationUnit> {
+
+    List<OrganisationUnit> list(boolean assignedToCurrentUser);
+
+    List<OrganisationUnit> list(Program... programs);
+
+    List<OrganisationUnit> list(DataSet... dataSets);
 }

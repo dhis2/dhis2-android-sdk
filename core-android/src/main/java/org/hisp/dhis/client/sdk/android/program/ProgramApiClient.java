@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -54,8 +55,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
-
 public class ProgramApiClient implements IProgramApiClient {
 
     private final IProgramApiClientRetrofit mIProgramApiClientRetrofit;
@@ -64,7 +63,7 @@ public class ProgramApiClient implements IProgramApiClient {
         this.mIProgramApiClientRetrofit = IProgramApiClientRetrofit;
     }
 
-    @Override
+    // @Override
     public List<Program> getPrograms(Fields fields, DateTime dateTime) {
         switch (fields) {
             case ALL:
@@ -76,7 +75,7 @@ public class ProgramApiClient implements IProgramApiClient {
         }
     }
 
-    @Override
+    // @Override
     public Program getProgram(String s, Fields fields, DateTime dateTime) {
         switch (fields) {
             case ALL:
@@ -89,28 +88,33 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     private List<Program> getFullPrograms(DateTime lastUpdated) {
-        Map<String, String> queryMap = new HashMap<>();
-        queryMap.put("fields", getFieldsFilter());
-        queryMap.put("paging", "false");
-        if (lastUpdated != null) {
-            queryMap.put("lastUpdated", lastUpdated.toString());
-        }
-        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms(queryMap)));
-        for(Program program : updatedPrograms) {
-            fixRelationships(program);
-        }
-        return updatedPrograms;
+//        Map<String, String> queryMap = new HashMap<>();
+//        queryMap.put("fields", getFieldsFilter());
+//        queryMap.put("paging", "false");
+//        if (lastUpdated != null) {
+//            queryMap.put("lastUpdated", lastUpdated.toString());
+//        }
+//        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms
+//                (queryMap)));
+//        for (Program program : updatedPrograms) {
+//            fixRelationships(program);
+//        }
+//        return updatedPrograms;
+
+        return null;
     }
 
     private List<Program> getBasicPrograms(DateTime lastUpdated) {
-        Map<String, String> queryMap = new HashMap<>();
-        queryMap.put("fields", "id");
-        queryMap.put("paging", "false");
-        if (lastUpdated != null) {
-            queryMap.put("lastUpdated", lastUpdated.toString());
-        }
-        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms(queryMap)));
-        return updatedPrograms;
+//        Map<String, String> queryMap = new HashMap<>();
+//        queryMap.put("fields", "id");
+//        queryMap.put("paging", "false");
+//        if (lastUpdated != null) {
+//            queryMap.put("lastUpdated", lastUpdated.toString());
+//        }
+//        List<Program> updatedPrograms = unwrapList(call(mIProgramApiClientRetrofit.getPrograms
+//                (queryMap)));
+//        return updatedPrograms;
+        return null;
     }
 
     public Program getFullProgram(String uid, DateTime lastUpdated) {
@@ -119,9 +123,10 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
-        fixRelationships(program);
-        return program;
+//        Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
+//        fixRelationships(program);
+//        return program;
+        return null;
     }
 
     public Program getBasicProgram(String uid, DateTime lastUpdated) {
@@ -130,12 +135,14 @@ public class ProgramApiClient implements IProgramApiClient {
         if (lastUpdated != null) {
             queryMap.put("lastUpdated", lastUpdated.toString());
         }
-        Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
-        return program;
+        // Program program = call(mIProgramApiClientRetrofit.getProgram(uid, queryMap));
+        // return program;
+        return null;
     }
 
     public static List<Program> unwrapList(JsonNode jsonNode) {
-        TypeReference<List<Program>> typeRef = new TypeReference<List<Program>>() {};
+        TypeReference<List<Program>> typeRef = new TypeReference<List<Program>>() {
+        };
         List<Program> programs;
         try {
             if (jsonNode.has("programs")) {
@@ -156,13 +163,19 @@ public class ProgramApiClient implements IProgramApiClient {
                 "id,created,name,shortName,ignoreOverdueEvents,skipOffline,dataEntryMethod," +
                 "enrollmentDateLabel,onlyEnrollOnce,version,selectIncidentDatesInFuture," +
                 "incidentDateLabel,selectEnrollmentDatesInFuture,displayName,displayShortName," +
-                "externalAccess,displayFrontPageList,programType,relationshipFromA,relationshipText" +
-                "displayIncidentDate,trackedEntity[created,lastUpdated,name,id,displayDescription," +
+                "externalAccess,displayFrontPageList,programType,relationshipFromA," +
+                "relationshipText" +
+                "displayIncidentDate,trackedEntity[created,lastUpdated,name,id," +
+                "displayDescription," +
                 "externalAccess],programIndicators[lastUpdated,id,created,name,shortName," +
-                "aggregationType,dimensionType,displayName,displayInForm,publicAccess,description," +
-                "displayShortName,externalAccess,displayDescription,expression,decimals,program[id]]," +
-                "programTrackedEntityAttributes[lastUpdated,id,created,name,shortName,displayName," +
-                "mandatory,displayShortName,externalAccess,valueType,allowFutureDate,dimensionItem," +
+                "aggregationType,dimensionType,displayName,displayInForm,publicAccess," +
+                "description," +
+                "displayShortName,externalAccess,displayDescription,expression,decimals," +
+                "program[id]]," +
+                "programTrackedEntityAttributes[lastUpdated,id,created,name,shortName," +
+                "displayName," +
+                "mandatory,displayShortName,externalAccess,valueType,allowFutureDate," +
+                "dimensionItem," +
                 "displayInList,program[id],trackedEntityAttribute[lastUpdated,id,created,name," +
                 "shortName,dimensionType,programScope,displayInListNoProgram,displayName," +
                 "description,displayShortName,externalAccess,sortOrderInListNoProgram," +
@@ -179,7 +192,8 @@ public class ProgramApiClient implements IProgramApiClient {
                 "displayInReports,externalAccess,compulsory,allowProvidedElsewhere,sortOrder," +
                 "allowFutureDates,programStage[id],dataElement[code,lastUpdated,id,created,name," +
                 "shortName,aggregationType,dimensionType,domainType,displayName,publicAccess," +
-                "displayShortName,externalAccess,valueType,formName,dimensionItem,displayFormName," +
+                "displayShortName,externalAccess,valueType,formName,dimensionItem," +
+                "displayFormName," +
                 "zeroIsSignificant,url,optionSetValue,optionSet[created,lastUpdated,name,id," +
                 "displayName,version,externalAccess,valueType,options[code,created,lastUpdated," +
                 "name,id,displayName,externalAccess]]]],programStageSections[created,lastUpdated," +
@@ -188,37 +202,44 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     private void fixRelationships(Program program) {
-        ModelUtils modelUtils = new ModelUtils();
-        Map<String, ProgramIndicator> programIndicatorMap = modelUtils.toMap(program.getProgramIndicators());
-        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap = modelUtils.toMap(program.getProgramTrackedEntityAttributes());
-        for(ProgramIndicator programIndicator : programIndicatorMap.values()) {
+        Map<String, ProgramIndicator> programIndicatorMap =
+                ModelUtils.toMap(program.getProgramIndicators());
+        Map<String, ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap =
+                ModelUtils.toMap(program.getProgramTrackedEntityAttributes());
+        for (ProgramIndicator programIndicator : programIndicatorMap.values()) {
             programIndicator.setProgram(program);
         }
-        for(ProgramTrackedEntityAttribute programTrackedEntityAttribute : programTrackedEntityAttributeMap.values()) {
+        for (ProgramTrackedEntityAttribute programTrackedEntityAttribute :
+                programTrackedEntityAttributeMap.values()) {
             programTrackedEntityAttribute.setProgram(program);
-            TrackedEntityAttribute trackedEntityAttribute = programTrackedEntityAttribute.getTrackedEntityAttribute();
-            if(trackedEntityAttribute.getOptionSet() != null) {
+            TrackedEntityAttribute trackedEntityAttribute = programTrackedEntityAttribute
+                    .getTrackedEntityAttribute();
+            if (trackedEntityAttribute.getOptionSet() != null) {
                 OptionSet optionSet = trackedEntityAttribute.getOptionSet();
-                for(Option option : optionSet.getOptions()) {
+                for (Option option : optionSet.getOptions()) {
                     option.setOptionSet(optionSet);
                 }
             }
         }
-        if(program.getProgramStages() != null) {
+        if (program.getProgramStages() != null) {
             for (ProgramStage programStage : program.getProgramStages()) {
                 programStage.setProgram(program);
                 if (programStage.getProgramIndicators() != null) {
                     List<ProgramIndicator> fullProgramStageProgramIndicators = new ArrayList<>();
-                    for (ProgramIndicator programIndicatorWithOnlyUid : programStage.getProgramIndicators()) {
-                        ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                    for (ProgramIndicator programIndicatorWithOnlyUid : programStage
+                            .getProgramIndicators()) {
+                        ProgramIndicator fullProgramIndicator = programIndicatorMap.get
+                                (programIndicatorWithOnlyUid.getUId());
                         fullProgramIndicator.setProgramStage(programStage);
                         fullProgramStageProgramIndicators.add(fullProgramIndicator);
                     }
                     programStage.setProgramIndicators(fullProgramStageProgramIndicators);
                 }
 
-                Map<String, ProgramStageDataElement> programStageDataElementMap = modelUtils.toMap(programStage.getProgramStageDataElements());
-                for (ProgramStageDataElement programStageDataElement : programStageDataElementMap.values()) {
+                Map<String, ProgramStageDataElement> programStageDataElementMap =
+                        ModelUtils.toMap(programStage.getProgramStageDataElements());
+                for (ProgramStageDataElement programStageDataElement : programStageDataElementMap
+                        .values()) {
                     programStageDataElement.setProgramStage(programStage);
                     DataElement dataElement = programStageDataElement.getDataElement();
                     if (dataElement.getOptionSet() != null) {
@@ -228,29 +249,47 @@ public class ProgramApiClient implements IProgramApiClient {
                         }
                     }
                 }
-                if(programStage.getProgramStageSections() != null) {
-                    for (ProgramStageSection programStageSection : programStage.getProgramStageSections()) {
+                if (programStage.getProgramStageSections() != null) {
+                    for (ProgramStageSection programStageSection : programStage
+                            .getProgramStageSections()) {
                         programStageSection.setProgramStage(programStage);
-                        List<ProgramIndicator> fullProgramStageSectionProgramIndicators = new ArrayList<>();
-                        for (ProgramIndicator programIndicatorWithOnlyUid : programStageSection.getProgramIndicators()) {
-                            ProgramIndicator fullProgramIndicator = programIndicatorMap.get(programIndicatorWithOnlyUid.getUId());
+                        List<ProgramIndicator> fullProgramStageSectionProgramIndicators = new
+                                ArrayList<>();
+                        for (ProgramIndicator programIndicatorWithOnlyUid : programStageSection
+                                .getProgramIndicators()) {
+                            ProgramIndicator fullProgramIndicator = programIndicatorMap.get
+                                    (programIndicatorWithOnlyUid.getUId());
                             fullProgramIndicator.setProgramStageSection(programStageSection);
                             fullProgramStageSectionProgramIndicators.add(fullProgramIndicator);
                         }
-                        programStageSection.setProgramIndicators(fullProgramStageSectionProgramIndicators);
+                        programStageSection.setProgramIndicators
+                                (fullProgramStageSectionProgramIndicators);
 
-                        if(programStageSection.getProgramStageDataElements() != null) {
-                            List<ProgramStageDataElement> fullProgramStageDataElementsForProgramStageSection = new ArrayList<>();
-                            for (ProgramStageDataElement programStageDataElementWithOnlyUid : programStageSection.getProgramStageDataElements()) {
-                                ProgramStageDataElement fullProgramStageDataElement = programStageDataElementMap.get(programStageDataElementWithOnlyUid.getUId());
-                                fullProgramStageDataElement.setProgramStageSection(programStageSection);
-                                fullProgramStageDataElementsForProgramStageSection.add(fullProgramStageDataElement);
+                        if (programStageSection.getProgramStageDataElements() != null) {
+                            List<ProgramStageDataElement>
+                                    fullProgramStageDataElementsForProgramStageSection = new
+                                    ArrayList<>();
+                            for (ProgramStageDataElement programStageDataElementWithOnlyUid :
+                                    programStageSection.getProgramStageDataElements()) {
+                                ProgramStageDataElement fullProgramStageDataElement =
+                                        programStageDataElementMap.get
+                                                (programStageDataElementWithOnlyUid.getUId());
+                                fullProgramStageDataElement.setProgramStageSection
+                                        (programStageSection);
+                                fullProgramStageDataElementsForProgramStageSection.add
+                                        (fullProgramStageDataElement);
                             }
-                            programStageSection.setProgramStageDataElements(fullProgramStageDataElementsForProgramStageSection);
+                            programStageSection.setProgramStageDataElements
+                                    (fullProgramStageDataElementsForProgramStageSection);
                         }
                     }
                 }
             }
         }
+    }
+
+    @Override
+    public List<Program> getPrograms(Fields fields, DateTime lastUpdated, String... ids) throws ApiException {
+        return null;
     }
 }

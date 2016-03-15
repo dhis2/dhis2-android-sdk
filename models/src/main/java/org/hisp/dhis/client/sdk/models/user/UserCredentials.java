@@ -26,10 +26,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.models.user;
 
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public interface IMerge<T extends IdentifiableObject> {
-    void mergeWith(T that, MergeStrategy strategy);
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+class UserCredentials {
+
+    @JsonProperty("userRoles")
+    List<UserRole> userRoles;
+
+    public UserCredentials() {
+        // explicit empty constructor
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public List<UserRole> getUserRoles() {
+        return userRoles;
+    }
 }

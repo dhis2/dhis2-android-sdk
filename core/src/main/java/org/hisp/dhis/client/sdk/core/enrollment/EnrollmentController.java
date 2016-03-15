@@ -29,26 +29,31 @@
 package org.hisp.dhis.client.sdk.core.enrollment;
 
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public final class EnrollmentController implements IEnrollmentController {
     private final IEnrollmentApiClient enrollmentApiClient;
@@ -62,11 +67,14 @@ public final class EnrollmentController implements IEnrollmentController {
     private final IEventStore eventStore;
     private final IStateStore stateStore;
     private final IFailedItemStore failedItemStore;
-    private final IModelUtils modelUtils;
 
-    public EnrollmentController(IEnrollmentApiClient apiClient, ISystemInfoApiClient systemInfoApiClient, ILastUpdatedPreferences preferences,
-                                ITransactionManager transactionManager, IEventController eventController, IEnrollmentStore enrollmentStore,
-                                IEventStore eventStore, IStateStore stateStore, IFailedItemStore failedItemStore, IModelUtils modelUtils) {
+    public EnrollmentController(IEnrollmentApiClient apiClient,
+                                ISystemInfoApiClient systemInfoApiClient,
+                                ILastUpdatedPreferences preferences,
+                                ITransactionManager transactionManager,
+                                IEventController eventController, IEnrollmentStore enrollmentStore,
+                                IEventStore eventStore, IStateStore stateStore,
+                                IFailedItemStore failedItemStore) {
         this.enrollmentApiClient = apiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = preferences;
@@ -76,10 +84,11 @@ public final class EnrollmentController implements IEnrollmentController {
         this.eventStore = eventStore;
         this.stateStore = stateStore;
         this.failedItemStore = failedItemStore;
-        this.modelUtils = modelUtils;
     }
 
-    private List<Enrollment> getEnrollmentsDataFromServer(TrackedEntityInstance trackedEntityInstance) throws ApiException {
+    private List<Enrollment> getEnrollmentsDataFromServer(TrackedEntityInstance
+                                                                  trackedEntityInstance) throws
+            ApiException {
         if (trackedEntityInstance == null) {
             return new ArrayList<>();
         }
@@ -88,7 +97,8 @@ public final class EnrollmentController implements IEnrollmentController {
                 .get(ResourceType.ENROLLMENTS, trackedEntityInstance.getTrackedEntityInstanceUid());
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
-        List<Enrollment> existingUpdatedAndPersistedEnrollments = updateEnrollments(trackedEntityInstance, lastUpdated);
+        List<Enrollment> existingUpdatedAndPersistedEnrollments = updateEnrollments
+                (trackedEntityInstance, lastUpdated);
 
         for (Enrollment enrollment : existingUpdatedAndPersistedEnrollments) {
             enrollment.setTrackedEntityInstance(trackedEntityInstance);
@@ -106,23 +116,27 @@ public final class EnrollmentController implements IEnrollmentController {
 
         saveResourceDataFromServer(ResourceType.ENROLLMENTS,
                 trackedEntityInstance.getTrackedEntityInstanceUid(), enrollmentStore,
-                existingUpdatedAndPersistedEnrollments, enrollmentStore.query(trackedEntityInstance), serverDateTime);
+                existingUpdatedAndPersistedEnrollments, enrollmentStore.query
+                        (trackedEntityInstance), serverDateTime);
 
 
         return existingUpdatedAndPersistedEnrollments;
     }
 
-    private Enrollment getEnrollmentDataFromServer(String uid, boolean getEvents) throws ApiException {
+    private Enrollment getEnrollmentDataFromServer(String uid, boolean getEvents) throws
+            ApiException {
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ENROLLMENT, uid);
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
         Enrollment updatedEnrollment = enrollmentApiClient.getFullEnrollment(uid, lastUpdated);
         //todo: if the updatedEnrollment is deleted on the server, delete it also locally
-        //todo: be sure to check if the enrollment has ever been on the server, or if it is still pending first time registration sync
+        //todo: be sure to check if the enrollment has ever been on the server, or if it is still
+        // pending first time registration sync
 
         Enrollment persistedEnrollment = enrollmentStore.queryByUid(uid);
         if (updatedEnrollment.getUId() == null) {
-            //either the uid provided was invalid, or the enrollment has not been updated since lastUpdated
+            //either the uid provided was invalid, or the enrollment has not been updated since
+            // lastUpdated
             return persistedEnrollment;
         }
         if (persistedEnrollment != null) {
@@ -140,45 +154,52 @@ public final class EnrollmentController implements IEnrollmentController {
         return updatedEnrollment;
     }
 
-    public List<Enrollment> updateEnrollments(TrackedEntityInstance trackedEntityInstance, DateTime lastUpdated) {
+    public List<Enrollment> updateEnrollments(TrackedEntityInstance trackedEntityInstance,
+                                              DateTime lastUpdated) {
 
         List<Enrollment> allExistingEnrollments = enrollmentApiClient
                 .getBasicEnrollments(trackedEntityInstance.getTrackedEntityInstanceUid(), null);
 
         // retrieve all enrollments, with all fields based on lastUpdated parameter
         List<Enrollment> updatedEnrollments = enrollmentApiClient
-                .getFullEnrollments(trackedEntityInstance.getTrackedEntityInstanceUid(), lastUpdated);
+                .getFullEnrollments(trackedEntityInstance.getTrackedEntityInstanceUid(),
+                        lastUpdated);
 
 
         // query enrollment store for all enrollments for the tracked entity instance
-        List<Enrollment> enrollmentsForTrackedEntityInstance = enrollmentStore.query(trackedEntityInstance);
+        List<Enrollment> enrollmentsForTrackedEntityInstance = enrollmentStore.query
+                (trackedEntityInstance);
 
         // get action map for all enrollments in state store
         Map<Long, Action> actionMap = stateStore.queryActionsForModel(Enrollment.class);
 
-        // create a new list that filters out the enrollments that has Action.TO_POST (meaning it is saved locally), from enrollment store
+        // create a new list that filters out the enrollments that has Action.TO_POST (meaning it
+        // is saved locally), from enrollment store
         List<Enrollment> filteredEnrollments = new ArrayList<>();
 
-        for(Enrollment enrollment : enrollmentsForTrackedEntityInstance) {
-            if(!(Action.TO_POST.equals(actionMap.get(enrollment.getId())))) {
+        for (Enrollment enrollment : enrollmentsForTrackedEntityInstance) {
+            if (!(Action.TO_POST.equals(actionMap.get(enrollment.getId())))) {
                 filteredEnrollments.add(enrollment);
             }
         }
 
         // List<Enrollment> existingUpdatedAndPersistedEnrollments =
-        //        modelUtils.merge(allExistingEnrollments, updatedEnrollments, enrollmentStore.query(trackedEntityInstance));
+        //        modelUtils.merge(allExistingEnrollments, updatedEnrollments, enrollmentStore
+        // .query(trackedEntityInstance));
 
         List<Enrollment> existingUpdatedAndPersistedEnrollments =
-                modelUtils.merge(allExistingEnrollments, updatedEnrollments, filteredEnrollments);
+                ModelUtils.merge(allExistingEnrollments, updatedEnrollments, filteredEnrollments);
 
         return existingUpdatedAndPersistedEnrollments;
     }
 
     private void saveResourceDataFromServer(ResourceType resourceType, String extraIdentifier,
-                                            IIdentifiableObjectStore<Enrollment> store, List<Enrollment> updatedItems,
-                                            List<Enrollment> persistedItems, DateTime serverDateTime) {
+                                            IIdentifiableObjectStore<Enrollment> store,
+                                            List<Enrollment> updatedItems,
+                                            List<Enrollment> persistedItems, DateTime
+                                                    serverDateTime) {
         Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(transactionManager.createOperations(store, persistedItems, updatedItems));
+        operations.addAll(DbUtils.createOperations(store, persistedItems, updatedItems));
         transactionManager.transact(operations);
         lastUpdatedPreferences.save(resourceType, serverDateTime, extraIdentifier);
     }
@@ -190,8 +211,10 @@ public final class EnrollmentController implements IEnrollmentController {
     }
 
     private List<Enrollment> getLocallyChangedEnrollments() {
-        List<Enrollment> toPost = stateStore.queryModelsWithActions(Enrollment.class, Action.TO_POST);
-        List<Enrollment> toPut = stateStore.queryModelsWithActions(Enrollment.class, Action.TO_UPDATE);
+        List<Enrollment> toPost = stateStore.queryModelsWithActions(Enrollment.class, Action
+                .TO_POST);
+        List<Enrollment> toPut = stateStore.queryModelsWithActions(Enrollment.class, Action
+                .TO_UPDATE);
         List<Enrollment> enrollments = new ArrayList<>();
         enrollments.addAll(toPost);
         enrollments.addAll(toPut);
@@ -208,7 +231,8 @@ public final class EnrollmentController implements IEnrollmentController {
                 .queryActionsForModel(Enrollment.class);
 
 
-        for (int i = 0; i < enrollments.size(); i++) {/* workaround for not attempting to upload enrollments with local tei reference*/
+        for (int i = 0; i < enrollments.size(); i++) {/* workaround for not attempting to upload
+        enrollments with local tei reference*/
             Enrollment enrollment = enrollments.get(i);
             Action trackedEntityInstanceAction = null;
             TrackedEntityInstance trackedEntityInstance = enrollment.getTrackedEntityInstance();
@@ -216,7 +240,8 @@ public final class EnrollmentController implements IEnrollmentController {
                 trackedEntityInstanceAction = stateStore.queryActionForModel(trackedEntityInstance);
             }
 
-            //we avoid trying to send enrollments whose trackedEntityInstances that have not yet been posted to server
+            //we avoid trying to send enrollments whose trackedEntityInstances that have not yet
+            // been posted to server
             if (Action.TO_POST.equals(trackedEntityInstanceAction)) {
                 enrollments.remove(i);
                 i--;
@@ -237,7 +262,8 @@ public final class EnrollmentController implements IEnrollmentController {
             trackedEntityInstanceAction = stateStore.queryActionForModel(trackedEntityInstance);
         }
 
-        //we avoid trying to send enrollments whose trackedEntityInstances that have not yet been posted to server
+        //we avoid trying to send enrollments whose trackedEntityInstances that have not yet been
+        // posted to server
         if (Action.TO_POST.equals(trackedEntityInstanceAction)) {
             return;
         }
@@ -255,7 +281,8 @@ public final class EnrollmentController implements IEnrollmentController {
     private void postEnrollment(Enrollment enrollment) throws ApiException {
         try {
             ImportSummary importSummary = enrollmentApiClient.postEnrollment(enrollment);
-//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType.ENROLLMENT, enrollment.getId());
+//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType
+// .ENROLLMENT, enrollment.getId());
 
             if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                     ImportSummary.Status.OK.equals(importSummary.getStatus())) {
@@ -273,7 +300,8 @@ public final class EnrollmentController implements IEnrollmentController {
     private void putEnrollment(Enrollment enrollment) throws ApiException {
         try {
             ImportSummary importSummary = enrollmentApiClient.putEnrollment(enrollment);
-//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType.ENROLLMENT, enrollment.getId());
+//            handleImportSummaryWithError(importSummary, failedItemStore, FailedItemType
+// .ENROLLMENT, enrollment.getId());
 
             if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                     ImportSummary.Status.OK.equals(importSummary.getStatus())) {

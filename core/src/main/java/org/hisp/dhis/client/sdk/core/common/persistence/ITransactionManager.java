@@ -28,21 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-
 import java.util.Collection;
-import java.util.List;
 
 public interface ITransactionManager {
     void transact(Collection<IDbOperation> operations);
-
-    /**
-     * This utility method allows to determine which type of operation to apply to
-     * each BaseIdentifiableObject$Flow depending on TimeStamp.
-     *
-     * @param oldModels List of models from local storage.
-     * @param newModels List of models of distance instance of DHIS.
-     */
-    <T extends IdentifiableObject> List<IDbOperation> createOperations(IIdentifiableObjectStore<T> modelStore,
-                                                                       List<T> oldModels, List<T> newModels);
 }

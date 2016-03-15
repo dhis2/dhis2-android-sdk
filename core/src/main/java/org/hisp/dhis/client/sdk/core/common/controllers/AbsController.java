@@ -4,7 +4,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +13,10 @@ import java.util.Map;
 public abstract class AbsController<T extends IdentifiableObject> {
 
     protected List<IDbOperation> getMergeOperations(List<T> existingItems, List<T> updatedItems,
-                                                    List<T> persistedItems, IStore<T> store,
-                                                    IModelUtils modelUtils) {
-        Map<String, T> persistedItemsMap = modelUtils.toMap(persistedItems);
-        Map<String, T> updatedItemsMap = modelUtils.toMap(updatedItems);
-        Map<String, T> existingItemsMap = modelUtils.toMap(existingItems);
+                                                    List<T> persistedItems, IStore<T> store) {
+        Map<String, T> persistedItemsMap = ModelUtils.toMap(persistedItems);
+        Map<String, T> updatedItemsMap = ModelUtils.toMap(updatedItems);
+        Map<String, T> existingItemsMap = ModelUtils.toMap(existingItems);
 
         for (T persistedOrganisationUnit : persistedItems) {
             T updatedOrganisationUnit = updatedItemsMap.get(persistedOrganisationUnit.getUId());

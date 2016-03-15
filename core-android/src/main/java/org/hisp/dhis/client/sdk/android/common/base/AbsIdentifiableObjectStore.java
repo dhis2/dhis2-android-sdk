@@ -41,7 +41,8 @@ import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import java.util.List;
 
 public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableObject,
-        DatabaseEntityType extends Model & IModel> extends AbsStore<ModelType, DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
+        DatabaseEntityType extends Model & IModel> extends AbsStore<ModelType, DatabaseEntityType>
+            implements IIdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectStore(IMapper<ModelType, DatabaseEntityType> mapper) {
         super(mapper);
@@ -62,7 +63,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
                 .from(getMapper().getDatabaseEntityTypeClass())
                 .where(Condition.column(BaseIdentifiableObject$Flow.COLUMN_UID).is(uid))
                 .queryList();
-        if(databaseEntities != null && !databaseEntities.isEmpty()) {
+
+        if (databaseEntities != null && !databaseEntities.isEmpty()) {
             return getMapper().mapToModel(databaseEntities.get(0));
         } else {
             return null;

@@ -29,28 +29,56 @@
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbsTransactionManager implements ITransactionManager {
-    private final IModelUtils modelUtils;
+public class DbUtils {
 
-    protected AbsTransactionManager(IModelUtils modelUtils) {
-        this.modelUtils = modelUtils;
+    private DbUtils() {
+        // no instances
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public <T extends IdentifiableObject> List<IDbOperation> createOperations(IIdentifiableObjectStore<T> modelStore,
-                                                                              List<T> oldModels, List<T> newModels) {
+    public static <T extends IdentifiableObject> List<IDbOperation> createOperations(
+            List<T> existingItems, List<T> updatedItems, List<T> persistedItems, IStore<T> store) {
+        Map<String, T> persistedItemsMap = ModelUtils.toMap(persistedItems);
+        Map<String, T> updatedItemsMap = ModelUtils.toMap(updatedItems);
+        Map<String, T> existingItemsMap = ModelUtils.toMap(existingItems);
+
+        for (T persistedOrganisationUnit : persistedItems) {
+            T updatedOrganisationUnit = updatedItemsMap.get(persistedOrganisationUnit.getUId());
+            if (updatedOrganisationUnit != null) {
+                updatedOrganisationUnit.setId(persistedOrganisationUnit.getId());
+            }
+        }
+
+        List<IDbOperation> operations = new ArrayList<>();
+        for (T updatedItem : updatedItems) {
+            if (persistedItemsMap.containsKey(updatedItem.getUId())) {
+                operations.add(DbOperation.with(store).update(updatedItem));
+            } else {
+                operations.add(DbOperation.with(store).insert(updatedItem));
+            }
+        }
+
+        for (String persistedItemUid : persistedItemsMap.keySet()) {
+            if (!existingItemsMap.containsKey(persistedItemUid)) {
+                operations.add(DbOperation.with(store).delete(persistedItemsMap.get
+                        (persistedItemUid)));
+            }
+        }
+
+        return operations;
+    }
+
+    public static <T extends IdentifiableObject> List<IDbOperation> createOperations(
+            IIdentifiableObjectStore<T> modelStore, List<T> oldModels, List<T> newModels) {
         List<IDbOperation> ops = new ArrayList<>();
 
-        Map<String, T> newModelsMap = modelUtils.toMap(newModels);
-        Map<String, T> oldModelsMap = modelUtils.toMap(oldModels);
+        Map<String, T> newModelsMap = ModelUtils.toMap(newModels);
+        Map<String, T> oldModelsMap = ModelUtils.toMap(oldModels);
 
         // As we will go through map of persisted items, we will try to update existing data.
         // Also, during each iteration we will remove old model key from list of new models.

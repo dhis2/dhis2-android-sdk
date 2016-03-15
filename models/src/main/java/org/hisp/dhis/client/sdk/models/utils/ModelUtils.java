@@ -28,18 +28,22 @@
 
 package org.hisp.dhis.client.sdk.models.utils;
 
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class ModelUtils implements IModelUtils {
-    public ModelUtils() {
+public class ModelUtils {
+    private ModelUtils() {
         // private constructor
     }
 
-    @Override
-    public <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
+    public static <T extends IdentifiableObject> Map<String, T> toMap(Collection<T> objects) {
         Map<String, T> map = new HashMap<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -51,8 +55,7 @@ public class ModelUtils implements IModelUtils {
         return map;
     }
 
-    @Override
-    public <T extends IdentifiableObject> List<String> toUidList(List<T> objects) {
+    public static <T extends IdentifiableObject> List<String> toUidList(List<T> objects) {
         List<String> ids = new ArrayList<>();
         if (objects != null && objects.size() > 0) {
             for (T object : objects) {
@@ -62,8 +65,7 @@ public class ModelUtils implements IModelUtils {
         return ids;
     }
 
-    @Override
-    public <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
+    public static <T extends IdentifiableObject> Set<String> toUidSet(Collection<T> items) {
         Set<String> uIds = new HashSet<>();
 
         if (items != null && !items.isEmpty()) {
@@ -80,9 +82,9 @@ public class ModelUtils implements IModelUtils {
      * the passed existingItems List. Items that are not present in existingItems will not be
      * included.
      */
-    @Override
-    public <T extends IdentifiableObject> List<T> merge(List<T> existingItems, List<T> updatedItems,
-                                                        List<T> persistedItems) {
+    public static <T extends IdentifiableObject> List<T> merge(List<T> existingItems,
+                                                               List<T> updatedItems,
+                                                               List<T> persistedItems) {
         Map<String, T> updatedItemsMap = toMap(updatedItems);
         Map<String, T> persistedItemsMap = toMap(persistedItems);
         Map<String, T> existingItemsMap = new HashMap<>();
@@ -110,23 +112,5 @@ public class ModelUtils implements IModelUtils {
         }
 
         return new ArrayList<>(existingItemsMap.values());
-    }
-
-    @Override
-    public <T extends IdentifiableObject> List<T> mergeWith(Collection<T> one, Collection<T> two,
-                                                            MergeStrategy strategy) {
-        Map<String, T> collectionOneMap = toMap(one);
-        Map<String, T> collectionTwoMap = toMap(two);
-
-        for (String uid : collectionOneMap.keySet()) {
-            T itemOne = collectionOneMap.get(uid);
-            T itemTwo = collectionTwoMap.get(uid);
-
-            if (itemTwo != null) {
-                itemOne.mergeWith(itemTwo, strategy);
-            }
-        }
-
-        return new ArrayList<>(collectionOneMap.values());
     }
 }

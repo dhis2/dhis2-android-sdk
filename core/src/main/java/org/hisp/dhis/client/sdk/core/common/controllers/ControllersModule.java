@@ -38,37 +38,66 @@ import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
-import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
-import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityController;
+import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
+import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
+import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class ControllersModule implements IControllersModule {
+
+    private final IProgramController programController;
+    private final IAssignedProgramsController assignedProgramsController;
+
+    private final IOrganisationUnitController organisationUnitController;
+    private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
+
     private final IUserAccountController userAccountController;
     private final IDashboardController dashboardController;
     private final IEventController eventController;
     private final IEnrollmentController enrollmentController;
     private final IDataController<TrackedEntityAttribute> trackedEntityAttributeController;
     private final IDataController<TrackedEntity> trackedEntityController;
-    private final IProgramController programController;
-    private final IAssignedProgramsController assignedProgramsController;
-    private final IOrganisationUnitController organisationUnitController;
+
 
     public ControllersModule(INetworkModule networkModule, IPersistenceModule persistenceModule,
-                             IPreferencesModule preferencesModule, IModelUtils modelUtils) {
+                             IPreferencesModule preferencesModule) {
         isNull(networkModule, "networkModule must not be null");
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
-        isNull(modelUtils, "modelUtils must not be null");
+
+        programController = new ProgramController(
+                networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
+                networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        assignedProgramsController = new AssignedProgramsController(
+                networkModule.getUserApiClient(), programController);
+
+        organisationUnitController = new OrganisationUnitController(
+                networkModule.getSystemInfoApiClient(),
+                networkModule.getOrganisationUnitApiClient(),
+                networkModule.getUserApiClient(),
+                persistenceModule.getOrganisationUnitStore(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
+                networkModule.getUserApiClient(), organisationUnitController);
+
+        /////////////////////////////////////////////////////////////////////////////////////
+        // LEGACY IMPLEMENTATION
+        /////////////////////////////////////////////////////////////////////////////////////
 
         userAccountController = new UserAccountController(networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
@@ -83,7 +112,7 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTrackedEntityDataValueStore(),
                 persistenceModule.getOrganisationUnitStore(),
                 persistenceModule.getProgramStore(),
-                persistenceModule.getFailedItemStore(), modelUtils);
+                persistenceModule.getFailedItemStore());
 
         dashboardController = null;
 
@@ -96,8 +125,7 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getEnrollmentStore(),
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore(),
-                persistenceModule.getFailedItemStore(),
-                modelUtils
+                persistenceModule.getFailedItemStore()
         );
 
         trackedEntityAttributeController = new TrackedEntityAttributeController(
@@ -105,27 +133,35 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTrackedEntityAttributeStore(),
-                networkModule.getSystemInfoApiClient(),
-                modelUtils
+                networkModule.getSystemInfoApiClient()
         );
 
-        trackedEntityController = new TrackedEntityController(networkModule.getTrackedEntityApiClient(),
-                persistenceModule.getTransactionManager(), preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTrackedEntityStore(), networkModule.getSystemInfoApiClient(), modelUtils);
+        trackedEntityController = new TrackedEntityController(
+                networkModule.getTrackedEntityApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTrackedEntityStore(),
+                networkModule.getSystemInfoApiClient());
+    }
 
-        programController = new ProgramController(networkModule.getProgramApiClient(),
-                persistenceModule.getTransactionManager(), preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getProgramStore(), networkModule.getSystemInfoApiClient(), modelUtils);
+    @Override
+    public IProgramController getProgramController() {
+        return programController;
+    }
 
-        organisationUnitController = new OrganisationUnitController(persistenceModule.getOrganisationUnitStore(),
-                networkModule.getSystemInfoApiClient(), networkModule.getOrganisationUnitApiClient(), preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager(), modelUtils);
+    @Override
+    public IAssignedProgramsController getAssignedProgramsController() {
+        return assignedProgramsController;
+    }
 
-        assignedProgramsController = new AssignedProgramsController(programController, organisationUnitController,
-                persistenceModule.getOrganisationUnitStore(), persistenceModule.getProgramStore(), persistenceModule.getTransactionManager(),
-                networkModule.getUserApiClient(), preferencesModule.getLastUpdatedPreferences(), networkModule.getSystemInfoApiClient(),
-                modelUtils);
+    @Override
+    public IOrganisationUnitController getOrganisationUnitController() {
+        return organisationUnitController;
+    }
 
+    @Override
+    public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
+        return assignedOrganisationUnitsController;
     }
 
     @Override
@@ -149,29 +185,7 @@ public class ControllersModule implements IControllersModule {
     }
 
     @Override
-    public IAssignedProgramsController getAssignedProgramsController() {
-        return assignedProgramsController;
-    }
-
-    @Override
-    public IProgramController getProgramController() {
-        return programController;
-    }
-
-    @Override
-    public IOrganisationUnitController getOrganisationUnitController() {
-        return organisationUnitController;
-    }
-
-    @Override
     public IDataController<TrackedEntity> getTrackedEntityController() {
         return trackedEntityController;
     }
-
-//
-//    @Override
-//    public IDashboardController getDashboardController() {
-//        return dashboardController;
-//    }
-
 }

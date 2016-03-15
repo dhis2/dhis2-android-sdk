@@ -29,61 +29,99 @@
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.controllers.AbsController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.utils.IModelUtils;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public final class OrganisationUnitController extends AbsController<OrganisationUnit> implements IOrganisationUnitController {
-    private final IOrganisationUnitStore organisationUnitStore;
+public class OrganisationUnitController implements IOrganisationUnitController {
+
+    /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IOrganisationUnitApiClient organisationUnitApiClient;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ITransactionManager transactionManager;
-    private final IModelUtils modelUtils;
+    private final IUserApiClient userApiClient;
 
-    public OrganisationUnitController(IOrganisationUnitStore organisationUnitStore, ISystemInfoApiClient systemInfoApiClient,
+    /* Local storage */
+    private final IOrganisationUnitStore organisationUnitStore;
+
+    /* Utilities */
+    private final ITransactionManager transactionManager;
+    private final ILastUpdatedPreferences lastUpdatedPreferences;
+
+    public OrganisationUnitController(ISystemInfoApiClient systemInfoApiClient,
                                       IOrganisationUnitApiClient organisationUnitApiClient,
-                                      ILastUpdatedPreferences lastUpdatedPreferences, ITransactionManager transactionManager, IModelUtils modelUtils) {
-        this.organisationUnitStore = organisationUnitStore;
+                                      IUserApiClient userApiClient,
+                                      IOrganisationUnitStore organisationUnitStore,
+                                      ITransactionManager transactionManager,
+                                      ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.organisationUnitApiClient = organisationUnitApiClient;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
+        this.userApiClient = userApiClient;
+        this.organisationUnitStore = organisationUnitStore;
         this.transactionManager = transactionManager;
-        this.modelUtils = modelUtils;
-    }
-
-    private void getOrganisationUnitsFromServer() {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
-        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.ALL, lastUpdated);
-        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
-        List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
-        transactionManager.transact(getMergeOperations(existingOrganisationUnits, updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore, modelUtils));
-        lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
+        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
     public void sync() throws ApiException {
-        getOrganisationUnitsFromServer();
+        sync(null);
     }
 
     @Override
-    public void sync(Set<String> uidsOfOrganisationUnitsToLoad) throws ApiException {
+    public void sync(Collection<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.ALL, uidsOfOrganisationUnitsToLoad, null);
-        List<OrganisationUnit> existingOrganisationUnits = organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
+
         List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
-        transactionManager.transact(getMergeOperations(existingOrganisationUnits, updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore, modelUtils));
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<OrganisationUnit> allExistingOrganisationUnits =
+                organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
+
+        String[] uidArray = null;
+        if (uids != null) {
+            // here we want to get list of ids of programs which are
+            // stored locally and list of organisation units which we want to download
+            Set<String> persistedOrganisationUnitIds = ModelUtils
+                    .toUidSet(persistedOrganisationUnits);
+            persistedOrganisationUnitIds.addAll(uids);
+
+            uidArray = persistedOrganisationUnitIds.toArray(
+                    new String[persistedOrganisationUnitIds.size()]);
+        }
+
+        // Retrieving only updated organisation units
+        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
+                .getOrganisationUnits(Fields.ALL, lastUpdated, uidArray);
+
+        // we need to mark assigned organisation units as "assigned" before storing them
+        Map<String, OrganisationUnit> assignedOrganisationUnits = ModelUtils
+                .toMap(userApiClient.getUserAccount().getOrganisationUnits());
+
+        for (OrganisationUnit updatedOrganisationUnit : updatedOrganisationUnits) {
+            OrganisationUnit assignedOrganisationUnit = assignedOrganisationUnits
+                    .get(updatedOrganisationUnit.getUId());
+            updatedOrganisationUnit.setIsAssignedToUser(assignedOrganisationUnit != null);
+        }
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingOrganisationUnits,
+                updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore);
+        transactionManager.transact(dbOperations);
+
         lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
     }
 }

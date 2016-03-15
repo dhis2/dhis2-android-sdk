@@ -26,20 +26,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
+package org.hisp.dhis.client.sdk.core.user;
 
-public enum MergeStrategy {
-    /**
-     * For example: we have object A and B.
-     * A.mergeWith(B, MergeStrategy.REPLACE) will result in
-     * replacement of all fields of A object with fields from B
-     */
-    REPLACE,
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-    /**
-     * For example: we have object A and B.
-     * Fields in A will be replaced with fields from B,
-     * only if lastUpdated field on B is newer compared to A.
-     */
-    REPLACE_IF_UPDATED
+import java.util.List;
+import java.util.Set;
+
+public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
+
+    // Api Clients
+    private final IUserApiClient userApiClient;
+
+    // Controllers
+    private final IOrganisationUnitController organisationUnitController;
+
+    public AssignedOrganisationUnitController(
+            IUserApiClient userApiClient, IOrganisationUnitController organisationUnitController) {
+        this.userApiClient = userApiClient;
+        this.organisationUnitController = organisationUnitController;
+    }
+
+    @Override
+    public void sync() throws ApiException {
+        UserAccount userAccount = userApiClient.getUserAccount();
+
+        /* get list of assigned organisation units */
+        List<OrganisationUnit> assignedOrganisationUnits = userAccount.getOrganisationUnits();
+
+        /* convert them to set of ids */
+        Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
+
+        /* get them through program controller */
+        organisationUnitController.sync(ids);
+    }
 }

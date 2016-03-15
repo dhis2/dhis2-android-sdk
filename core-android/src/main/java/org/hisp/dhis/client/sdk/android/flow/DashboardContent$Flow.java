@@ -33,8 +33,6 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 @Table(databaseName = DbDhis.NAME)
 public final class DashboardContent$Flow extends BaseIdentifiableObject$Flow {
@@ -52,10 +50,5 @@ public final class DashboardContent$Flow extends BaseIdentifiableObject$Flow {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
-
     }
 }

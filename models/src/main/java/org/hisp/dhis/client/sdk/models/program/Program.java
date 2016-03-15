@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
@@ -38,26 +41,20 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Program extends BaseIdentifiableObject {
 
-    @JsonProperty("trackedEntity")
-    private TrackedEntity trackedEntity;
-
-    @JsonProperty("programType")
-    private ProgramType programType;
-
     @JsonProperty("version")
     private int version;
-
-    @JsonProperty("enrollmentDateLabel")
-    private String enrollmentDateLabel;
 
     @JsonProperty("description")
     private String description;
 
+    @JsonProperty("externalAccess")
+    private boolean externalAccess;
+
     @JsonProperty("onlyEnrollOnce")
     private boolean onlyEnrollOnce;
 
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
+    @JsonProperty("enrollmentDateLabel")
+    private String enrollmentDateLabel;
 
     @JsonProperty("displayIncidentDate")
     private boolean displayIncidentDate;
@@ -86,6 +83,15 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("selectIncidentDatesInFuture")
     private boolean selectIncidentDatesInFuture;
 
+    @JsonProperty("trackedEntity")
+    private TrackedEntity trackedEntity;
+
+    @JsonProperty("programType")
+    private ProgramType programType;
+
+    @JsonProperty("organisationUnits")
+    private List<OrganisationUnit> organisationUnits;
+
     @JsonProperty("programIndicators")
     private List<ProgramIndicator> programIndicators;
 
@@ -95,28 +101,11 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("programTrackedEntityAttributes")
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
 
-    public List<ProgramIndicator> getProgramIndicators() {
-        return programIndicators;
-    }
+    @JsonIgnore
+    private boolean isAssignedToUser;
 
-    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
-
-    public TrackedEntity getTrackedEntity() {
-        return trackedEntity;
-    }
-
-    public void setTrackedEntity(TrackedEntity trackedEntity) {
-        this.trackedEntity = trackedEntity;
-    }
-
-    public ProgramType getProgramType() {
-        return programType;
-    }
-
-    public void setProgramType(ProgramType programType) {
-        this.programType = programType;
+    public Program() {
+        // explicit empty constructor
     }
 
     public int getVersion() {
@@ -127,20 +116,20 @@ public final class Program extends BaseIdentifiableObject {
         this.version = version;
     }
 
-    public String getEnrollmentDateLabel() {
-        return enrollmentDateLabel;
-    }
-
-    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
-        this.enrollmentDateLabel = enrollmentDateLabel;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isExternalAccess() {
+        return externalAccess;
+    }
+
+    public void setExternalAccess(boolean externalAccess) {
+        this.externalAccess = externalAccess;
     }
 
     public boolean isOnlyEnrollOnce() {
@@ -151,12 +140,12 @@ public final class Program extends BaseIdentifiableObject {
         this.onlyEnrollOnce = onlyEnrollOnce;
     }
 
-    public boolean isExternalAccess() {
-        return externalAccess;
+    public String getEnrollmentDateLabel() {
+        return enrollmentDateLabel;
     }
 
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
+    public void setEnrollmentDateLabel(String enrollmentDateLabel) {
+        this.enrollmentDateLabel = enrollmentDateLabel;
     }
 
     public boolean isDisplayIncidentDate() {
@@ -231,6 +220,38 @@ public final class Program extends BaseIdentifiableObject {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
     }
 
+    public TrackedEntity getTrackedEntity() {
+        return trackedEntity;
+    }
+
+    public void setTrackedEntity(TrackedEntity trackedEntity) {
+        this.trackedEntity = trackedEntity;
+    }
+
+    public ProgramType getProgramType() {
+        return programType;
+    }
+
+    public void setProgramType(ProgramType programType) {
+        this.programType = programType;
+    }
+
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
+    }
+
+    public void setOrganisationUnits(List<OrganisationUnit> organisationUnits) {
+        this.organisationUnits = organisationUnits;
+    }
+
+    public List<ProgramIndicator> getProgramIndicators() {
+        return programIndicators;
+    }
+
+    public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
+        this.programIndicators = programIndicators;
+    }
+
     public List<ProgramStage> getProgramStages() {
         return programStages;
     }
@@ -243,8 +264,16 @@ public final class Program extends BaseIdentifiableObject {
         return programTrackedEntityAttributes;
     }
 
-    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
-                                                          programTrackedEntityAttributes) {
+    public void setProgramTrackedEntityAttributes(
+            List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
         this.programTrackedEntityAttributes = programTrackedEntityAttributes;
+    }
+
+    public boolean isAssignedToUser() {
+        return isAssignedToUser;
+    }
+
+    public void setIsAssignedToUser(boolean isAssignedToUser) {
+        this.isAssignedToUser = isAssignedToUser;
     }
 }

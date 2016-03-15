@@ -32,10 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramStageDataElement extends BaseIdentifiableObject {

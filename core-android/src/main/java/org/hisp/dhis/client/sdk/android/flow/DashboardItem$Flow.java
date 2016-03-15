@@ -35,8 +35,6 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.common.meta.DbDhis;
-import org.hisp.dhis.client.sdk.models.common.MergeStrategy;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 
 @Table(databaseName = DbDhis.NAME)
@@ -51,7 +49,8 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = "dashboard", columnType = String.class, foreignColumnName = "uId")
+                    @ForeignKeyReference(columnName = "dashboard", columnType = String.class,
+                            foreignColumnName = "uId")
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     Dashboard$Flow dashboard;
@@ -81,10 +80,5 @@ public final class DashboardItem$Flow extends BaseIdentifiableObject$Flow {
 
     public void setDashboard(Dashboard$Flow dashboard) {
         this.dashboard = dashboard;
-    }
-
-    @Override
-    public void mergeWith(IdentifiableObject identifiableObject, MergeStrategy mergeStrategy) {
-
     }
 }

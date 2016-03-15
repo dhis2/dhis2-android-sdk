@@ -97,7 +97,7 @@ public class NetworkModule implements INetworkModule {
         AuthInterceptor authInterceptor = new AuthInterceptor(preferencesModule.getUserPreferences(),
                 preferencesModule.getConfigurationPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);//HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient okHttpClient = new OkHttpClient();
         okHttpClient.interceptors().add(authInterceptor);

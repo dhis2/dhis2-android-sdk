@@ -15,12 +15,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
-import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.DefaultPickable;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.IPickable;
 
 import java.util.ArrayList;
@@ -36,7 +34,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     private TextInputLayout textInputLayout;
     private EditText editText;
-    private ProgressBar progressBar;
     private RecyclerView recyclerView;
     private OnOptionSelectedListener onOptionSelectedListener;
     private OptionDialogAdapter optionDialogAdapter;
@@ -52,7 +49,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-
     @Override
     public void setupDialog(Dialog dialog, int style) {
         AppCompatDialog appCompatDialog = (AppCompatDialog) dialog;
@@ -62,8 +58,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         textInputLayout = (TextInputLayout) appCompatDialog.findViewById(R.id.dialog_autocomplete_textinputlayout);
         editText = (EditText) appCompatDialog.findViewById(R.id.dialog_autocomplete_edittext);
 
-        progressBar = (ProgressBar) appCompatDialog.findViewById(R.id.dialog_autocomplete_progress_bar);
-        progressBar.setVisibility(View.GONE);
         recyclerView = (RecyclerView) appCompatDialog.findViewById(R.id.dialog_autocomplete_recyclerview);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -82,7 +76,6 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     }
 
-
     public static AutoCompleteDialogFragment newInstance(String title, List<IPickable> options, OnOptionSelectedListener onOptionSelectedListener) {
         AutoCompleteDialogFragment autoCompleteDialogFragment = new AutoCompleteDialogFragment();
         Bundle args = new Bundle();
@@ -95,8 +88,10 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
     public void setOnOptionSelectedListener(OnOptionSelectedListener onOptionSelectedListener) {
         this.onOptionSelectedListener = onOptionSelectedListener;
+        if (optionDialogAdapter != null) {
+            optionDialogAdapter.setOnOptionSelectedListener(onOptionSelectedListener);
+        }
     }
-
 
     public void show(FragmentManager fragmentManager) {
         show(fragmentManager, TAG);
@@ -127,10 +122,12 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.optionDialogAdapter = optionDialogAdapter;
         }
     }
+
     public static class OptionDialogAdapter extends RecyclerView.Adapter implements Filterable {
         private ArrayList<IPickable> options;
         private OnOptionSelectedListener onOptionSelectedListener;
         private Dialog dialog;
+        private OptionDialogViewHolder mOptionDialogViewHolder;
 
         public OptionDialogAdapter(Dialog dialog, ArrayList<IPickable> options, OnOptionSelectedListener onOptionSelectedListener) {
             this.dialog = dialog;
@@ -144,8 +141,9 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
+            mOptionDialogViewHolder = new OptionDialogViewHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recyclerview_row_autocomplete_dialog, parent, false), dialog, onOptionSelectedListener);
+            return mOptionDialogViewHolder;
         }
 
         @Override
@@ -168,6 +166,14 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         public void setOptions(ArrayList<IPickable> filteredOptions) {
             this.options = filteredOptions;
         }
+
+        public void setOnOptionSelectedListener(OnOptionSelectedListener listener) {
+            this.onOptionSelectedListener = listener;
+            if (mOptionDialogViewHolder != null) {
+                mOptionDialogViewHolder.setOnOptionSelectedListener(listener);
+            }
+
+        }
     }
 
     private static class AutoCompleteRowFilter extends Filter {
@@ -181,19 +187,17 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.filteredOptions = new ArrayList<>();
         }
 
-
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             filteredOptions.clear();
             final FilterResults filterResults = new FilterResults();
 
-            if(constraint.length() == 0) {
+            if (constraint.length() == 0) {
                 filteredOptions.addAll(options);
-            }
-            else {
+            } else {
                 final String filterString = constraint.toString().toLowerCase().trim();
-                for(IPickable option : options) {
-                    if(option.toString().toLowerCase().trim().contains(filterString)) {
+                for (IPickable option : options) {
+                    if (option.toString().toLowerCase().trim().contains(filterString)) {
                         filteredOptions.add(option);
                     }
                 }
@@ -225,10 +229,15 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             optionValueTextView.setOnClickListener(onTextViewClick);
 
         }
+
+        public void setOnOptionSelectedListener(OnOptionSelectedListener listener) {
+            onTextViewClick.setOnOptionItemSelectedListener(listener);
+        }
     }
+
     public static class OnTextViewClick implements View.OnClickListener {
         private final TextView textView;
-        private final OnOptionSelectedListener onOptionItemSelectedListener;
+        private OnOptionSelectedListener onOptionItemSelectedListener;
         private final Dialog parentDialog;
 
         public OnTextViewClick(Dialog parentDialog, TextView textView, OnOptionSelectedListener onOptionItemSelectedListener) {
@@ -237,9 +246,15 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             this.onOptionItemSelectedListener = onOptionItemSelectedListener;
         }
 
+        public void setOnOptionItemSelectedListener(OnOptionSelectedListener listener) {
+            this.onOptionItemSelectedListener = listener;
+        }
+
         @Override
         public void onClick(View v) {
-            onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
+            if (onOptionItemSelectedListener != null) {
+                onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
+            }
             parentDialog.dismiss();
         }
     }

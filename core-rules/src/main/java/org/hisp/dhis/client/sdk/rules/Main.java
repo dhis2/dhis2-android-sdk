@@ -1,6 +1,5 @@
-include ':core', ':core-rules'
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -27,4 +26,16 @@ include ':core', ':core-rules'
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ":models", ":core", ":core-android", ":ui"
+package org.hisp.dhis.client.sdk.rules;
+
+import org.hisp.dhis.client.sdk.models.program.Program;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Program program = new Program();
+        program.setDisplayName("Hello, World");
+
+        System.out.println(program.getDisplayName());
+    }
+}

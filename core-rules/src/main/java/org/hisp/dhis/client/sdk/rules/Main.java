@@ -26,26 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.user;
+package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+public class Main {
 
-import java.util.Map;
+    public static void main(String[] args) {
+        Program program = new Program();
+        program.setDisplayName("Hello, World");
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.QueryMap;
-
-public interface UserApiClientRetrofit {
-
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting user information
-    /////////////////////////////////////////////////////////////////////////
-
-    @GET("me/")
-    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-//
-//    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
-//    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
+        System.out.println(program.getDisplayName());
+    }
 }

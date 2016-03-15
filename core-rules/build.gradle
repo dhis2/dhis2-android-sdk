@@ -26,26 +26,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.user;
+apply plugin: 'java'
 
+def cfg = rootProject.ext.configuration
+def libs = rootProject.ext.libraries
 
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+dependencies {
+    compile project(":models")
 
-import java.util.Map;
-
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.QueryMap;
-
-public interface UserApiClientRetrofit {
-
-    /////////////////////////////////////////////////////////////////////////
-    // Methods for getting user information
-    /////////////////////////////////////////////////////////////////////////
-
-    @GET("me/")
-    Call<UserAccount> getCurrentUserAccount(@QueryMap Map<String, String> queryParams);
-//
-//    @GET("me?fields=organisationUnits[*,!coordinates,!children,!users,programs,!dataSets]")
-//    Call<JsonNode> getOrganisationUnitsWithAssignedPrograms();
+    // Test compile dependencies.
+    testCompile "junit:junit:${libs.jUnitVersion}"
+    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
 }

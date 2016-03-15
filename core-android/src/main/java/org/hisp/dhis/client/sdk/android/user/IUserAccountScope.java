@@ -42,10 +42,9 @@ public interface IUserAccountScope {
 
     Observable<Boolean> signOut();
 
-    Observable<Void> syncAssignedPrograms();
-
     Observable<UserAccount> account();
 
-    Observable<Void> save(UserAccount userAccount);
+    Observable<Void> programs();
 
-    }
+    Observable<Void> save(UserAccount userAccount);
+}

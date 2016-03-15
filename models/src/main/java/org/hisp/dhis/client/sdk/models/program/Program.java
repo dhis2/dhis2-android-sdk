@@ -243,7 +243,8 @@ public final class Program extends BaseIdentifiableObject {
         return programTrackedEntityAttributes;
     }
 
-    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes) {
+    public void setProgramTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
+                                                          programTrackedEntityAttributes) {
         this.programTrackedEntityAttributes = programTrackedEntityAttributes;
     }
 }

@@ -44,22 +44,22 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class UserAccountScope implements IUserAccountScope {
-    private final IUserAccountController mUserAccountController;
-    private final IUserPreferences mUserPreferences;
-    private final IConfigurationPreferences mConfigurationPreferences;
-    private final IAssignedProgramsController mAssignedProgramsController;
-    private final IUserAccountStore mUserAccountStore;
+    private final IUserAccountController userAccountController;
+    private final IUserPreferences userPreferences;
+    private final IConfigurationPreferences configurationPreferences;
+    private final IAssignedProgramsController assignedProgramsController;
+    private final IUserAccountStore userAccountStore;
 
     public UserAccountScope(IUserAccountController userAccountController,
                             IUserPreferences userPreferences,
                             IConfigurationPreferences configurationPreferences,
-                            IAssignedProgramsController mAssignedProgramsController,
+                            IAssignedProgramsController assignedProgramsController,
                             IUserAccountStore userAccountStore) {
-        mUserAccountController = userAccountController;
-        mUserPreferences = userPreferences;
-        mConfigurationPreferences = configurationPreferences;
-        this.mAssignedProgramsController = mAssignedProgramsController;
-        mUserAccountStore = userAccountStore;
+        this.userAccountController = userAccountController;
+        this.userPreferences = userPreferences;
+        this.configurationPreferences = configurationPreferences;
+        this.assignedProgramsController = assignedProgramsController;
+        this.userAccountStore = userAccountStore;
     }
 
     @Override
@@ -70,16 +70,16 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super UserAccount> subscriber) {
                 try {
-                    if (mUserPreferences.isUserConfirmed()) {
+                    if (userPreferences.isUserConfirmed()) {
                         throw new IllegalArgumentException("User is already signed in");
                     }
 
-                    mConfigurationPreferences.save(configuration);
+                    configurationPreferences.save(configuration);
 
                     UserCredentials userCredentials = new UserCredentials(username, password);
-                    mUserPreferences.save(userCredentials);
+                    userPreferences.save(userCredentials);
 
-                    UserAccount userAccount = mUserAccountController.updateAccount();
+                    UserAccount userAccount = userAccountController.updateAccount();
                     subscriber.onNext(userAccount);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -97,7 +97,7 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    if (mUserPreferences.isUserConfirmed()) {
+                    if (userPreferences.isUserConfirmed()) {
                         subscriber.onNext(true);
                     }
                 } catch (Throwable throwable) {
@@ -116,7 +116,7 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    subscriber.onNext(mUserPreferences.clear());
+                    subscriber.onNext(userPreferences.clear());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -127,12 +127,12 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
-    public Observable<Void> syncAssignedPrograms() {
+    public Observable<Void> programs() {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mAssignedProgramsController.sync();
+                    assignedProgramsController.sync();
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -149,7 +149,7 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super UserAccount> subscriber) {
                 try {
-                    List<UserAccount> userAccounts = mUserAccountStore.queryAll();
+                    List<UserAccount> userAccounts = userAccountStore.queryAll();
                     if (userAccounts != null && !userAccounts.isEmpty()) {
                         for (UserAccount userAccount : userAccounts) {
                             subscriber.onNext(userAccount);
@@ -170,7 +170,7 @@ public class UserAccountScope implements IUserAccountScope {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mUserAccountStore.save(userAccount);
+                    userAccountStore.save(userAccount);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

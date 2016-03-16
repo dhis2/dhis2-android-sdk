@@ -35,11 +35,15 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 @Table(database = DbDhis.class)
 public final class ProgramFlow extends BaseIdentifiableObjectFlow {
-
+    public static IMapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
     private static final String TRACKED_ENTITY_KEY = "trackedEntity";
 
     @Column
@@ -237,5 +241,88 @@ public final class ProgramFlow extends BaseIdentifiableObjectFlow {
 
     public void setIsAssignedToUser(boolean isAssignedToUser) {
         this.isAssignedToUser = isAssignedToUser;
+    }
+
+    private static class ProgramMapper extends AbsMapper<Program, ProgramFlow> {
+
+        @Override
+        public ProgramFlow mapToDatabaseEntity(Program program) {
+            if (program == null) {
+                return null;
+            }
+
+            ProgramFlow programFlow = new ProgramFlow();
+            programFlow.setId(program.getId());
+            programFlow.setUId(program.getUId());
+            programFlow.setCreated(program.getCreated());
+            programFlow.setLastUpdated(program.getLastUpdated());
+            programFlow.setName(program.getName());
+            programFlow.setDisplayName(program.getDisplayName());
+            programFlow.setAccess(program.getAccess());
+            programFlow.setTrackedEntity(MapperModuleProvider.getInstance()
+                    .getTrackedEntityMapper().mapToDatabaseEntity(program.getTrackedEntity()));
+            programFlow.setProgramType(program.getProgramType());
+            programFlow.setVersion(program.getVersion());
+            programFlow.setEnrollmentDateLabel(program.getEnrollmentDateLabel());
+            programFlow.setDescription(program.getDescription());
+            programFlow.setOnlyEnrollOnce(program.isOnlyEnrollOnce());
+            programFlow.setExternalAccess(program.isExternalAccess());
+            programFlow.setDisplayIncidentDate(program.isDisplayIncidentDate());
+            programFlow.setIncidentDateLabel(program.getIncidentDateLabel());
+            programFlow.setRegistration(program.isRegistration());
+            programFlow.setSelectEnrollmentDatesInFuture(program.isSelectEnrollmentDatesInFuture());
+            programFlow.setDataEntryMethod(program.isDataEntryMethod());
+            programFlow.setSingleEvent(program.isSingleEvent());
+            programFlow.setIgnoreOverdueEvents(program.isIgnoreOverdueEvents());
+            programFlow.setRelationshipFromA(program.isRelationshipFromA());
+            programFlow.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
+            programFlow.setIsAssignedToUser(program.isAssignedToUser());
+            return programFlow;
+        }
+
+        @Override
+        public Program mapToModel(ProgramFlow programFlow) {
+            if (programFlow == null) {
+                return null;
+            }
+
+            Program program = new Program();
+            program.setId(programFlow.getId());
+            program.setUId(programFlow.getUId());
+            program.setCreated(programFlow.getCreated());
+            program.setLastUpdated(programFlow.getLastUpdated());
+            program.setName(programFlow.getName());
+            program.setDisplayName(programFlow.getDisplayName());
+            program.setAccess(programFlow.getAccess());
+            program.setTrackedEntity(MapperModuleProvider.getInstance()
+                    .getTrackedEntityMapper().mapToModel(programFlow.getTrackedEntity()));
+            program.setProgramType(programFlow.getProgramType());
+            program.setVersion(programFlow.getVersion());
+            program.setEnrollmentDateLabel(programFlow.getEnrollmentDateLabel());
+            program.setDescription(programFlow.getDescription());
+            program.setOnlyEnrollOnce(programFlow.isOnlyEnrollOnce());
+            program.setExternalAccess(programFlow.isExternalAccess());
+            program.setDisplayIncidentDate(programFlow.isDisplayIncidentDate());
+            program.setIncidentDateLabel(programFlow.getIncidentDateLabel());
+            program.setRegistration(programFlow.isRegistration());
+            program.setSelectEnrollmentDatesInFuture(programFlow.isSelectEnrollmentDatesInFuture());
+            program.setDataEntryMethod(programFlow.isDataEntryMethod());
+            program.setSingleEvent(programFlow.isSingleEvent());
+            program.setIgnoreOverdueEvents(programFlow.isIgnoreOverdueEvents());
+            program.setRelationshipFromA(programFlow.isRelationshipFromA());
+            program.setSelectIncidentDatesInFuture(programFlow.isSelectIncidentDatesInFuture());
+            program.setIsAssignedToUser(programFlow.isAssignedToUser());
+            return program;
+        }
+
+        @Override
+        public Class<Program> getModelTypeClass() {
+            return Program.class;
+        }
+
+        @Override
+        public Class<ProgramFlow> getDatabaseEntityTypeClass() {
+            return ProgramFlow.class;
+        }
     }
 }

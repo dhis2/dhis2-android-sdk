@@ -31,7 +31,6 @@ package org.hisp.dhis.client.sdk.android.event;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
@@ -160,43 +159,46 @@ public class EventApiClient implements IEventApiClient {
     }
 
     public static List<Event> unwrap(JsonNode jsonNode) {
-        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
-        List<Event> events;
-        try {
-            if (jsonNode.has("events")) {
-                events = ObjectMapperProvider.getInstance().
-                        readValue(jsonNode.get("events").traverse(), typeRef);
-            } else {
-                events = new ArrayList<>();
-            }
-        } catch (IOException e) {
-            events = new ArrayList<>();
-            e.printStackTrace();
-        }
-        return events;
+//        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
+//        List<Event> events;
+//        try {
+//            if (jsonNode.has("events")) {
+//                events = ObjectMapperProvider.getInstance().
+//                        readValue(jsonNode.get("events").traverse(), typeRef);
+//            } else {
+//                events = new ArrayList<>();
+//            }
+//        } catch (IOException e) {
+//            events = new ArrayList<>();
+//            e.printStackTrace();
+//        }
+//        return events;
+        return null;
     }
 
     private static ImportSummary unwrapImportSummary(Response response) {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
-        try {
-            JsonNode node = ObjectMapperProvider.getInstance().
-                    readTree(response.raw().body().string());
-            if (node == null) {
-                return null;
-            } else if (node.has("response")) {
-                return getPutImportSummary(node);
-            } else {
-                return getPostImportSummary(node);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+//        try {
+//            JsonNode node = ObjectMapperProvider.getInstance().
+//                    readTree(response.raw().body().string());
+//            if (node == null) {
+//                return null;
+//            } else if (node.has("response")) {
+//                return getPutImportSummary(node);
+//            } else {
+//                return getPostImportSummary(node);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+        return null;
     }
 
     private static ImportSummary getPostImportSummary(JsonNode jsonNode) throws IOException {
-        return ObjectMapperProvider.getInstance().treeToValue(jsonNode, ImportSummary.class);
+        // return ObjectMapperProvider.getInstance().treeToValue(jsonNode, ImportSummary.class);
+        return null;
     }
 
     private static ImportSummary getPutImportSummary(JsonNode jsonNode) throws IOException {

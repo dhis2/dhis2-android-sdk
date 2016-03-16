@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow> {
@@ -49,7 +49,8 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow
         programStageFlow.setName(programStage.getName());
         programStageFlow.setDisplayName(programStage.getDisplayName());
         programStageFlow.setAccess(programStage.getAccess());
-        programStageFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programStage.getProgram()));
+        programStageFlow.setProgram(ProgramFlow.MAPPER
+                .mapToDatabaseEntity(programStage.getProgram()));
         programStageFlow.setDataEntryType(programStage.getDataEntryType());
         programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
         programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
@@ -85,7 +86,8 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow
         programStage.setName(programStageFlow.getName());
         programStage.setDisplayName(programStageFlow.getDisplayName());
         programStage.setAccess(programStageFlow.getAccess());
-        programStage.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programStageFlow.getProgram()));
+        programStage.setProgram(ProgramFlow.MAPPER
+                .mapToModel(programStageFlow.getProgram()));
         programStage.setDataEntryType(programStageFlow.getDataEntryType());
         programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
         programStage.setReportDateDescription(programStageFlow.getReportDateDescription());

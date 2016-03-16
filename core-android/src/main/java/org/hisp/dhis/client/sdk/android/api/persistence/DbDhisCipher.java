@@ -26,17 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.user;
+package org.hisp.dhis.client.sdk.android.api.persistence;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserAccountFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import com.raizlabs.android.dbflow.DatabaseHelperListener;
+import com.raizlabs.android.dbflow.config.BaseDatabaseDefinition;
+import com.raizlabs.dbflow.android.sqlcipher.SQLCipherOpenHelper;
 
-public final class UserAccountStore extends AbsIdentifiableObjectStore<UserAccount,
-        UserAccountFlow> implements IUserAccountStore {
+public class DbDhisCipher extends SQLCipherOpenHelper {
 
-    public UserAccountStore() {
-        super(UserAccountFlow.MAPPER);
+    public DbDhisCipher(BaseDatabaseDefinition databaseDefinition,
+                        DatabaseHelperListener listener) {
+        super(databaseDefinition, listener);
+    }
+
+    // TODO replace with proper cipher secret
+    @Override
+    protected String getCipherSecret() {
+        return "dbflow-rules";
     }
 }

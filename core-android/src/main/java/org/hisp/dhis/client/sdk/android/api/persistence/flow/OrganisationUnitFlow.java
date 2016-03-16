@@ -35,9 +35,15 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 @Table(database = DbDhis.class)
 public final class OrganisationUnitFlow extends BaseIdentifiableObjectFlow {
+    public static IMapper<OrganisationUnit, OrganisationUnitFlow>
+            MAPPER = new OrganisationUnitMapper();
+
     private final String ORGANISATION_UNIT_PARENT_KEY = "parent";
 
     @Column
@@ -81,5 +87,63 @@ public final class OrganisationUnitFlow extends BaseIdentifiableObjectFlow {
 
     public void setIsAssignedToUser(boolean isAssignedToUser) {
         this.isAssignedToUser = isAssignedToUser;
+    }
+
+    private static class OrganisationUnitMapper extends AbsMapper<OrganisationUnit,
+            OrganisationUnitFlow> {
+
+        public OrganisationUnitMapper() {
+            // empty constructor
+        }
+
+        @Override
+        public OrganisationUnitFlow mapToDatabaseEntity(OrganisationUnit organisationUnit) {
+            if (organisationUnit == null) {
+                return null;
+            }
+
+            OrganisationUnitFlow organisationUnitFlow = new OrganisationUnitFlow();
+            organisationUnitFlow.setId(organisationUnit.getId());
+            organisationUnitFlow.setUId(organisationUnit.getUId());
+            organisationUnitFlow.setCreated(organisationUnit.getCreated());
+            organisationUnitFlow.setLastUpdated(organisationUnit.getLastUpdated());
+            organisationUnitFlow.setName(organisationUnit.getName());
+            organisationUnitFlow.setDisplayName(organisationUnit.getDisplayName());
+            organisationUnitFlow.setAccess(organisationUnit.getAccess());
+            organisationUnitFlow.setLevel(organisationUnit.getLevel());
+            organisationUnitFlow.setParent(mapToDatabaseEntity(organisationUnit.getParent()));
+            organisationUnitFlow.setIsAssignedToUser(organisationUnit.isAssignedToUser());
+            return organisationUnitFlow;
+        }
+
+        @Override
+        public OrganisationUnit mapToModel(OrganisationUnitFlow organisationUnitFlow) {
+            if (organisationUnitFlow == null) {
+                return null;
+            }
+
+            OrganisationUnit organisationUnit = new OrganisationUnit();
+            organisationUnit.setId(organisationUnitFlow.getId());
+            organisationUnit.setUId(organisationUnitFlow.getUId());
+            organisationUnit.setCreated(organisationUnitFlow.getCreated());
+            organisationUnit.setLastUpdated(organisationUnitFlow.getLastUpdated());
+            organisationUnit.setName(organisationUnitFlow.getName());
+            organisationUnit.setDisplayName(organisationUnitFlow.getDisplayName());
+            organisationUnit.setAccess(organisationUnitFlow.getAccess());
+            organisationUnit.setLevel(organisationUnitFlow.getLevel());
+            organisationUnit.setParent(mapToModel(organisationUnitFlow.getParent()));
+            organisationUnit.setIsAssignedToUser(organisationUnitFlow.isAssignedToUser());
+            return organisationUnit;
+        }
+
+        @Override
+        public Class<OrganisationUnit> getModelTypeClass() {
+            return OrganisationUnit.class;
+        }
+
+        @Override
+        public Class<OrganisationUnitFlow> getDatabaseEntityTypeClass() {
+            return OrganisationUnitFlow.class;
+        }
     }
 }

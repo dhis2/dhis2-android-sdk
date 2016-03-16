@@ -29,10 +29,8 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
@@ -49,7 +47,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -141,21 +138,22 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     public static List<Program> unwrapList(JsonNode jsonNode) {
-        TypeReference<List<Program>> typeRef = new TypeReference<List<Program>>() {
-        };
-        List<Program> programs;
-        try {
-            if (jsonNode.has("programs")) {
-                programs = ObjectMapperProvider.getInstance().
-                        readValue(jsonNode.get("programs").traverse(), typeRef);
-            } else {
-                programs = new ArrayList<>();
-            }
-        } catch (IOException e) {
-            programs = new ArrayList<>();
-            e.printStackTrace();
-        }
-        return programs;
+//        TypeReference<List<Program>> typeRef = new TypeReference<List<Program>>() {
+//        };
+//        List<Program> programs = null;
+//        try {
+//            if (jsonNode.has("programs")) {
+//                // programs = ObjectMapperProvider.getInstance().
+//                        // readValue(jsonNode.get("programs").traverse(), typeRef);
+//            } else {
+//                programs = new ArrayList<>();
+//            }
+//        } catch (IOException e) {
+//            programs = new ArrayList<>();
+//            e.printStackTrace();
+//        }
+//        return programs;
+        return null;
     }
 
     private static String getFieldsFilter() {
@@ -289,7 +287,8 @@ public class ProgramApiClient implements IProgramApiClient {
     }
 
     @Override
-    public List<Program> getPrograms(Fields fields, DateTime lastUpdated, String... ids) throws ApiException {
+    public List<Program> getPrograms(Fields fields, DateTime lastUpdated, String... ids) throws
+            ApiException {
         return null;
     }
 }

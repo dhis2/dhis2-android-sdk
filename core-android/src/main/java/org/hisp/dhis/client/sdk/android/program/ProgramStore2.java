@@ -30,11 +30,10 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
@@ -50,13 +49,10 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, ProgramFl
 
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
-
     private final ITransactionManager transactionManager;
 
-
-    public ProgramStore2(IMapper<Program, ProgramFlow> mapper,
-                         ITransactionManager transactionManager) {
-        super(mapper);
+    public ProgramStore2(ITransactionManager transactionManager) {
+        super(ProgramFlow.MAPPER);
 
         this.transactionManager = transactionManager;
     }

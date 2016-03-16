@@ -31,9 +31,8 @@ package org.hisp.dhis.client.sdk.android.api.persistence;
 import com.raizlabs.android.dbflow.annotation.Database;
 
 @Database(
-        name = DbDhis.NAME,
-        version = DbDhis.VERSION
-        // generatedClassSeparator = "_"
+        name = DbDhis.NAME, version = DbDhis.VERSION,
+        sqlHelperClass = DbDhisCipher.class
 )
 public final class DbDhis {
     public static final String NAME = "dhis";

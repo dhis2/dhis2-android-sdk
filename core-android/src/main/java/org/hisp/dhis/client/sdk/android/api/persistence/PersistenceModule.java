@@ -51,17 +51,9 @@ public class PersistenceModule implements IPersistenceModule {
         FlowManager.init(context);
 
         transactionManager = new TransactionManager();
-
-        programStore = new ProgramStore2(
-                MapperModuleProvider.getInstance().getProgramMapper(),
-                transactionManager);
-
-        userAccountStore = new UserAccountStore(
-                MapperModuleProvider.getInstance().getUserAccountMapper());
-
-        organisationUnitStore = new OrganisationUnitStore(
-                MapperModuleProvider.getInstance().getOrganisationUnitMapper(),
-                transactionManager);
+        programStore = new ProgramStore2(transactionManager);
+        userAccountStore = new UserAccountStore();
+        organisationUnitStore = new OrganisationUnitStore(transactionManager);
     }
 
     @Override

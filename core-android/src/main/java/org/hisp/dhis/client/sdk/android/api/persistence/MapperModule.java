@@ -29,6 +29,33 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConstantFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.common.IStateMapper;
 import org.hisp.dhis.client.sdk.android.common.StateMapper;
@@ -41,41 +68,9 @@ import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
 import org.hisp.dhis.client.sdk.android.dataset.DataSetMapper;
 import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentMapper;
 import org.hisp.dhis.client.sdk.android.event.EventMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConstantFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserAccountFlow;
 import org.hisp.dhis.client.sdk.android.optionset.OptionMapper;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableMapper;
@@ -90,7 +85,6 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValu
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityMapper;
-import org.hisp.dhis.client.sdk.android.user.UserAccountMapper;
 import org.hisp.dhis.client.sdk.android.user.UserMapper;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
@@ -103,8 +97,6 @@ import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
@@ -121,11 +113,9 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.user.User;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public class MapperModule {
 
-    private final IMapper<UserAccount, UserAccountFlow> userAccountMapper;
     private final IStateMapper stateMapper;
     private final IMapper<Dashboard, DashboardFlow> dashboardMapper;
     private final IMapper<DashboardItem, DashboardItemFlow> dashboardItemMapper;
@@ -134,21 +124,25 @@ public class MapperModule {
 
     private final IMapper<Event, EventFlow> eventMapper;
     private final IMapper<Enrollment, EnrollmentFlow> enrollmentMapper;
-    private final IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow> trackedEntityInstanceMapper;
-    private final IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow> trackedEntityDataValueMapper;
-    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow> trackedEntityAttributeValueMapper;
+    private final IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
+            trackedEntityInstanceMapper;
+    private final IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow>
+            trackedEntityDataValueMapper;
+    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
+            trackedEntityAttributeValueMapper;
     private final IMapper<Relationship, RelationshipFlow> relationshipMapper;
 
     private final IMapper<Constant, ConstantFlow> constantMapper;
     private final IMapper<DataElement, DataElementFlow> dataElementMapper;
     private final IMapper<Option, OptionFlow> optionMapper;
     private final IMapper<OptionSet, OptionSetFlow> optionSetMapper;
-    private final IMapper<OrganisationUnit, OrganisationUnitFlow> organisationUnitMapper;
-    private final IMapper<Program, ProgramFlow> programMapper;
     private final IMapper<TrackedEntity, TrackedEntityFlow> trackedEntityMapper;
-    private final IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> trackedEntityAttributeMapper;
-    private final IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> programTrackedEntityAttributeMapper;
-    private final IMapper<ProgramStageDataElement, ProgramStageDataElementFlow> programStageDataElementMapper;
+    private final IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
+            trackedEntityAttributeMapper;
+    private final IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
+            programTrackedEntityAttributeMapper;
+    private final IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
+            programStageDataElementMapper;
     private final IMapper<ProgramIndicator, ProgramIndicatorFlow> programIndicatorMapper;
     private final IMapper<ProgramStageSection, ProgramStageSectionFlow> programStageSectionMapper;
     private final IMapper<ProgramStage, ProgramStageFlow> programStageMapper;
@@ -161,7 +155,6 @@ public class MapperModule {
     private final IMapper<User, UserFlow> userMapper;
 
     public MapperModule() {
-        userAccountMapper = new UserAccountMapper();
         stateMapper = new StateMapper();
         dashboardMapper = new DashboardMapper();
         dashboardItemMapper = new DashboardItemMapper();
@@ -176,7 +169,6 @@ public class MapperModule {
         optionMapper = new OptionMapper();
         optionSetMapper = new OptionSetMapper();
         dataElementMapper = new DataElementMapper();
-        organisationUnitMapper = new OrganisationUnitMapper();
         trackedEntityMapper = new TrackedEntityMapper();
         trackedEntityAttributeMapper = new TrackedEntityAttributeMapper();
         programTrackedEntityAttributeMapper = new ProgramTrackedEntityAttributeMapper();
@@ -189,16 +181,11 @@ public class MapperModule {
         relationshipTypeMapper = new RelationshipTypeMapper();
         dataSetMapper = new DataSetMapper();
 
-        programMapper = new ProgramMapper();
         programStageMapper = new ProgramStageMapper();
         programIndicatorMapper = new ProgramIndicatorMapper();
         programStageSectionMapper = new ProgramStageSectionMapper();
 
         userMapper = new UserMapper();
-    }
-
-    public IMapper<UserAccount, UserAccountFlow> getUserAccountMapper() {
-        return userAccountMapper;
     }
 
     public IStateMapper getStateMapper() {
@@ -229,15 +216,18 @@ public class MapperModule {
         return enrollmentMapper;
     }
 
-    public IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow> getTrackedEntityInstanceMapper() {
+    public IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
+    getTrackedEntityInstanceMapper() {
         return trackedEntityInstanceMapper;
     }
 
-    public IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow> getTrackedEntityDataValueMapper() {
+    public IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow>
+    getTrackedEntityDataValueMapper() {
         return trackedEntityDataValueMapper;
     }
 
-    public IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow> getTrackedEntityAttributeValueMapper() {
+    public IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
+    getTrackedEntityAttributeValueMapper() {
         return trackedEntityAttributeValueMapper;
     }
 
@@ -261,27 +251,22 @@ public class MapperModule {
         return optionSetMapper;
     }
 
-    public IMapper<OrganisationUnit, OrganisationUnitFlow> getOrganisationUnitMapper() {
-        return organisationUnitMapper;
-    }
-
-    public IMapper<Program, ProgramFlow> getProgramMapper() {
-        return programMapper;
-    }
-
     public IMapper<TrackedEntity, TrackedEntityFlow> getTrackedEntityMapper() {
         return trackedEntityMapper;
     }
 
-    public IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> getTrackedEntityAttributeMapper() {
+    public IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
+    getTrackedEntityAttributeMapper() {
         return trackedEntityAttributeMapper;
     }
 
-    public IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> getProgramTrackedEntityAttributeMapper() {
+    public IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
+    getProgramTrackedEntityAttributeMapper() {
         return programTrackedEntityAttributeMapper;
     }
 
-    public IMapper<ProgramStageDataElement, ProgramStageDataElementFlow> getProgramStageDataElementMapper() {
+    public IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
+    getProgramStageDataElementMapper() {
         return programStageDataElementMapper;
     }
 

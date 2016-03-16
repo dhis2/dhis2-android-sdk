@@ -34,12 +34,16 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.joda.time.DateTime;
 
 @Table(database = DbDhis.class)
 public final class UserAccountFlow extends BaseModel implements IdentifiableObject {
+    public static IMapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
 
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;
@@ -281,5 +285,81 @@ public final class UserAccountFlow extends BaseModel implements IdentifiableObje
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    private static class UserAccountMapper extends AbsMapper<UserAccount, UserAccountFlow> {
+
+        @Override
+        public UserAccountFlow mapToDatabaseEntity(UserAccount userAccount) {
+            if (userAccount == null) {
+                return null;
+            }
+
+            // flowAccount.setId(userAccount.getId());
+
+            UserAccountFlow flowAccount = new UserAccountFlow();
+            flowAccount.setUId(userAccount.getUId());
+            flowAccount.setCreated(userAccount.getCreated());
+            flowAccount.setLastUpdated(userAccount.getLastUpdated());
+            flowAccount.setName(userAccount.getName());
+            flowAccount.setDisplayName(userAccount.getDisplayName());
+            flowAccount.setAccess(userAccount.getAccess());
+            flowAccount.setAction(userAccount.getAction());
+            flowAccount.setFirstName(userAccount.getFirstName());
+            flowAccount.setSurname(userAccount.getSurname());
+            flowAccount.setGender(userAccount.getGender());
+            flowAccount.setBirthday(userAccount.getBirthday());
+            flowAccount.setIntroduction(userAccount.getIntroduction());
+            flowAccount.setEducation(userAccount.getEducation());
+            flowAccount.setEmployer(userAccount.getEmployer());
+            flowAccount.setInterests(userAccount.getInterests());
+            flowAccount.setJobTitle(userAccount.getJobTitle());
+            flowAccount.setLanguages(userAccount.getLanguages());
+            flowAccount.setEmail(userAccount.getEmail());
+            flowAccount.setPhoneNumber(userAccount.getPhoneNumber());
+
+            return flowAccount;
+        }
+
+        @Override
+        public UserAccount mapToModel(UserAccountFlow flowAccount) {
+            if (flowAccount == null) {
+                return null;
+            }
+
+            UserAccount account = new UserAccount();
+            account.setId(flowAccount.getId());
+            account.setUId(flowAccount.getUId());
+            account.setCreated(flowAccount.getCreated());
+            account.setLastUpdated(flowAccount.getLastUpdated());
+            account.setName(flowAccount.getName());
+            account.setDisplayName(flowAccount.getDisplayName());
+            account.setAccess(flowAccount.getAccess());
+            account.setAction(flowAccount.getAction());
+            account.setFirstName(flowAccount.getFirstName());
+            account.setSurname(flowAccount.getSurname());
+            account.setGender(flowAccount.getGender());
+            account.setBirthday(flowAccount.getBirthday());
+            account.setIntroduction(flowAccount.getIntroduction());
+            account.setEducation(flowAccount.getEducation());
+            account.setEmployer(flowAccount.getEmployer());
+            account.setInterests(flowAccount.getInterests());
+            account.setJobTitle(flowAccount.getJobTitle());
+            account.setLanguages(flowAccount.getLanguages());
+            account.setEmail(flowAccount.getEmail());
+            account.setPhoneNumber(flowAccount.getPhoneNumber());
+
+            return account;
+        }
+
+        @Override
+        public Class<UserAccount> getModelTypeClass() {
+            return UserAccount.class;
+        }
+
+        @Override
+        public Class<UserAccountFlow> getDatabaseEntityTypeClass() {
+            return UserAccountFlow.class;
+        }
     }
 }

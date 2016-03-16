@@ -32,11 +32,10 @@ import android.support.annotation.Nullable;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
@@ -52,12 +51,10 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         OrganisationUnitFlow> implements IOrganisationUnitStore {
 
     private static final String UNITS_TO_PROGRAMS = "organisationUnitsToPrograms";
-
     private final ITransactionManager transactionManager;
 
-    public OrganisationUnitStore(IMapper<OrganisationUnit, OrganisationUnitFlow> mapper,
-                                 ITransactionManager transactionManager) {
-        super(mapper);
+    public OrganisationUnitStore(ITransactionManager transactionManager) {
+        super(OrganisationUnitFlow.MAPPER);
 
         this.transactionManager = transactionManager;
     }

@@ -72,7 +72,7 @@ dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:${libs.dbFlowVersion}"
     compile "com.github.Raizlabs.DBFlow:dbflow:${libs.dbFlowVersion}"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:${libs.dbFlowVersion}"
-    //    compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${libs.dbFlowVersion}"
+        compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${libs.dbFlowVersion}"
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"

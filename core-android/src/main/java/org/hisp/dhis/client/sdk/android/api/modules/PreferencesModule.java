@@ -39,28 +39,34 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 
 public class PreferencesModule implements IPreferencesModule {
-    private final ILastUpdatedPreferences mLastUpdatedPreferences;
-    private final IUserPreferences mUserPreferences;
-    private final IConfigurationPreferences mConfigurationPreferences;
+    private final IConfigurationPreferences configurationPreferences;
+    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final IUserPreferences userPreferences;
 
     public PreferencesModule(Context context) {
-        mLastUpdatedPreferences = new LastUpdatedPreferences(context);
-        mUserPreferences = new UserPreferences(context);
-        mConfigurationPreferences = new ConfigurationPreferences(context);
-    }
-
-    @Override
-    public ILastUpdatedPreferences getLastUpdatedPreferences() {
-        return mLastUpdatedPreferences;
-    }
-
-    @Override
-    public IUserPreferences getUserPreferences() {
-        return mUserPreferences;
+        configurationPreferences = new ConfigurationPreferences(context);
+        lastUpdatedPreferences = new LastUpdatedPreferences(context);
+        userPreferences = new UserPreferences(context);
     }
 
     @Override
     public IConfigurationPreferences getConfigurationPreferences() {
-        return mConfigurationPreferences;
+        return configurationPreferences;
+    }
+
+    @Override
+    public ILastUpdatedPreferences getLastUpdatedPreferences() {
+        return lastUpdatedPreferences;
+    }
+
+    @Override
+    public IUserPreferences getUserPreferences() {
+        return userPreferences;
+    }
+
+    @Override
+    public boolean clearAllPreferences() {
+        return configurationPreferences.clear() && lastUpdatedPreferences.clear()
+                && userPreferences.clear();
     }
 }

@@ -42,6 +42,8 @@ public interface IStore<T extends IModel> {
 
     boolean delete(T object);
 
+    boolean deleteAll();
+
     T queryById(long id);
 
     List<T> queryAll();

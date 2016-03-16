@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.common.base;
 
 import com.raizlabs.android.dbflow.sql.language.Condition;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.NameAlias;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.Model;
@@ -123,6 +124,12 @@ public abstract class AbsStore<ModelType extends IModel,
                 .from(mapper.getDatabaseEntityTypeClass())
                 .queryList();
         return mapper.mapToModels(databaseEntities);
+    }
+
+    @Override
+    public boolean deleteAll() {
+        Delete.tables(mapper.getDatabaseEntityTypeClass());
+        return true;
     }
 
     protected IMapper<ModelType, DatabaseEntityType> getMapper() {

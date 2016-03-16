@@ -74,6 +74,11 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
+    public boolean deleteAll() {
+        return false;
+    }
+
+    @Override
     public List<InterpretationElement> queryAll() {
         List<InterpretationElementFlow> elementFlows = new Select()
                 .from(InterpretationElementFlow.class)

@@ -73,6 +73,11 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
+    public boolean deleteAll() {
+        return false;
+    }
+
+    @Override
     public List<InterpretationComment> queryAll() {
         List<InterpretationCommentFlow> commentFlows = new Select()
                 .from(InterpretationCommentFlow.class)

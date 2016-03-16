@@ -32,6 +32,7 @@ package org.hisp.dhis.client.sdk.android.user;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
+import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import rx.Observable;
@@ -39,7 +40,7 @@ import rx.Observable;
 public interface IUserAccountScope {
 
     // User session methods
-    Observable<UserAccount> signIn(Configuration configuration, String username, String password);
+    Observable<UserAccount> signIn(String username, String password);
 
     Observable<Boolean> isSignedIn();
 
@@ -48,6 +49,8 @@ public interface IUserAccountScope {
 
     // UserAccount related methods
     Observable<UserAccount> account();
+
+    Observable<UserCredentials> userCredentials();
 
     Observable<Boolean> save(UserAccount userAccount);
 

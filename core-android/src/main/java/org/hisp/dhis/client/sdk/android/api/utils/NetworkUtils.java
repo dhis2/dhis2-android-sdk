@@ -201,8 +201,9 @@ public class NetworkUtils {
                         .getEntities(queryMap, combinedFilters)), apiResource.getResourceName()));
             }
         } else {
-            allPrograms.addAll(unwrap(call(apiResource
-                    .getEntities(queryMap, filters)), apiResource.getResourceName()));
+            allPrograms.addAll(unwrap(call(
+
+                    apiResource.getEntities(queryMap, filters)), apiResource.getResourceName()));
         }
 
         return allPrograms;

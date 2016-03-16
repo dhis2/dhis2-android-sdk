@@ -76,6 +76,11 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
     }
 
     @Override
+    public boolean deleteAll() {
+        return false;
+    }
+
+    @Override
     public List<Interpretation> queryAll() {
         List<InterpretationFlow> interpretationFlows = new Select()
                 .from(InterpretationFlow.class)

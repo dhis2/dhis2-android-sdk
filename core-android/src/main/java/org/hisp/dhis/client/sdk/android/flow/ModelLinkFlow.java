@@ -56,8 +56,10 @@ import java.util.Set;
 
 import static android.text.TextUtils.isEmpty;
 
-@Table(database = DbDhis.class, uniqueColumnGroups = {@UniqueGroup(
-        groupNumber = ModelLinkFlow.UNIQUE_LINK, uniqueConflict = ConflictAction.REPLACE)})
+@Table(database = DbDhis.class, uniqueColumnGroups = {
+        @UniqueGroup(groupNumber = ModelLinkFlow.UNIQUE_LINK,
+                uniqueConflict = ConflictAction.REPLACE)
+})
 public class ModelLinkFlow extends BaseModelFlow {
     final static int UNIQUE_LINK = 779472;
     final static String KEY_ONE = "modelKeyOne";
@@ -265,6 +267,7 @@ public class ModelLinkFlow extends BaseModelFlow {
 
     public static <T extends IdentifiableObject> void deleteRelatedModels(
             @NonNull T model, @NonNull String linkMimeType) {
+
         new Delete()
                 .from(ModelLinkFlow.class)
                 .where(ModelLinkFlow_Table.linkMimeType.is(linkMimeType))

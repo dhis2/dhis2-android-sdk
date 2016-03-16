@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.common.state.Action;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class AbsDataStore<ModelType extends IModel, DatabaseEntityType
+public abstract class AbsDataStore<ModelType extends IModel, DatabaseEntityType
         extends IModel & Model> extends AbsStore<ModelType, DatabaseEntityType> {
 
     private final IStateStore stateStore;

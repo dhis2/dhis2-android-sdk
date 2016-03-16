@@ -28,118 +28,19 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
-import org.hisp.dhis.client.sdk.core.common.IModelsStore;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.constant.IConstantStore;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardElementStore;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemContentStore;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemStore;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardStore;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
-import org.hisp.dhis.client.sdk.core.dataset.IDataSetStore;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
-import org.hisp.dhis.client.sdk.core.event.IEventStore;
-import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
-import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
-import org.hisp.dhis.client.sdk.core.program.*;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityInstanceStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
-import org.hisp.dhis.client.sdk.core.user.IUserStore;
-import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
-import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public interface IPersistenceModule {
+
     ITransactionManager getTransactionManager();
 
-    IStateStore getStateStore();
-
-    // User store object
     IUserAccountStore getUserAccountStore();
-
-    IModelsStore getModelStore();
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Dashboard stores.
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    IDashboardStore getDashboardStore();
-
-    IDashboardItemStore getDashboardItemStore();
-
-    IDashboardElementStore getDashboardElementStore();
-
-    IDashboardItemContentStore getDashboardContentStore();
-
-    IConstantStore getConstantStore();
-
-    IDataElementStore getDataElementStore();
-
-    IOptionStore getOptionStore();
-
-    IOptionSetStore getOptionSetStore();
-
-    IOrganisationUnitStore getOrganisationUnitStore();
 
     IProgramStore getProgramStore();
 
-    IIdentifiableObjectStore<TrackedEntity> getTrackedEntityStore();
+    IOrganisationUnitStore getOrganisationUnitStore();
 
-    ITrackedEntityAttributeStore getTrackedEntityAttributeStore();
-
-    IProgramTrackedEntityAttributeStore getProgramTrackedEntityAttributeStore();
-
-    IProgramStageDataElementStore getProgramStageDataElementStore();
-
-    IProgramIndicatorStore getProgramIndicatorStore();
-
-    IProgramStageSectionStore getProgramStageSectionStore();
-
-    IProgramStageStore getProgramStageStore();
-
-    IProgramRuleStore getProgramRuleStore();
-
-    IProgramRuleActionStore getProgramRuleActionStore();
-
-    IProgramRuleVariableStore getProgramRuleVariableStore();
-
-    IIdentifiableObjectStore<RelationshipType> getRelationshipTypeStore();
-
-    IDataSetStore getDataStore();
-
-    //Tracker store objects
-    ITrackedEntityAttributeValueStore getTrackedEntityAttributeValueStore();
-
-    IRelationshipStore getRelationshipStore();
-
-    ITrackedEntityInstanceStore getTrackedEntityInstanceStore();
-
-    ITrackedEntityDataValueStore getTrackedEntityDataValueStore();
-
-    IEventStore getEventStore();
-
-    IEnrollmentStore getEnrollmentStore();
-
-    // Interpretation store objects
-    IIdentifiableObjectStore<Interpretation> getInterpretationStore();
-
-    IInterpretationCommentStore getInterpretationCommentStore();
-
-    IInterpretationElementStore getInterpretationElementStore();
-
-
-    IUserStore getUserStore();
-
-    IFailedItemStore getFailedItemStore();
-
+    boolean deleteAllTables();
 }

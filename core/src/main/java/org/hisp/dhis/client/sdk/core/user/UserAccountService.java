@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.IModelsStore;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
@@ -37,11 +36,9 @@ import java.util.List;
 
 public class UserAccountService implements IUserAccountService {
     private final IUserAccountStore userAccountStore;
-    private final IModelsStore modelsStore;
 
-    public UserAccountService(IUserAccountStore userAccountStore, IModelsStore modelsStore) {
+    public UserAccountService(IUserAccountStore userAccountStore) {
         this.userAccountStore = userAccountStore;
-        this.modelsStore = modelsStore;
     }
 
     @Override
@@ -77,11 +74,5 @@ public class UserAccountService implements IUserAccountService {
         user.setName(userAccount.getName());
         user.setDisplayName(userAccount.getDisplayName());
         return user;
-    }
-
-    @Override
-    public void signOut() {
-        // removing all existing data
-        modelsStore.deleteAllTables();
     }
 }

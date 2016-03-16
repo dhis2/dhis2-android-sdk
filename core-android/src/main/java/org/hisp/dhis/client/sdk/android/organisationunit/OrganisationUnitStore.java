@@ -71,7 +71,8 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
     public List<OrganisationUnit> query(boolean assignedToCurrentUser) {
         List<OrganisationUnitFlow> organisationUnitFlows = new Select()
                 .from(OrganisationUnitFlow.class)
-                .where(OrganisationUnitFlow_Table.isAssignedToUser.is(assignedToCurrentUser))
+                .where(OrganisationUnitFlow_Table
+                        .isAssignedToUser.is(assignedToCurrentUser))
                 .queryList();
 
         List<OrganisationUnit> orgUnits = getMapper().mapToModels(organisationUnitFlows);
@@ -154,7 +155,6 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
 
     @Nullable
     private List<OrganisationUnit> queryUnitRelationships(@Nullable List<OrganisationUnit> units) {
-
         if (units != null) {
             Map<String, List<Program>> organisationUnitsToPrograms = ModelLinkFlow
                     .queryLinksForModel(Program.class, UNITS_TO_PROGRAMS);
@@ -170,7 +170,6 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
 
     @Nullable
     private OrganisationUnit queryUnitRelationships(@Nullable OrganisationUnit organisationUnit) {
-
         if (organisationUnit != null) {
             List<Program> programs = ModelLinkFlow.queryLinksForModel(
                     Program.class, UNITS_TO_PROGRAMS, organisationUnit.getUId());

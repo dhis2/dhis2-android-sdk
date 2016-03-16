@@ -61,8 +61,7 @@ public class OrganisationUnitController implements IOrganisationUnitController {
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public OrganisationUnitController(ISystemInfoApiClient systemInfoApiClient,
-                                      IOrganisationUnitApiClient
-                                              organisationUnitApiClient,
+                                      IOrganisationUnitApiClient organisationUnitApiClient,
                                       IUserApiClient userApiClient,
                                       IOrganisationUnitStore organisationUnitStore,
                                       ITransactionManager transactionManager,

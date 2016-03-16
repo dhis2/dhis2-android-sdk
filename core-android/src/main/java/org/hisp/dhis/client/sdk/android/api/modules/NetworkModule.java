@@ -43,7 +43,6 @@ import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
@@ -53,6 +52,7 @@ import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -66,9 +66,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 import static android.text.TextUtils.isEmpty;
 import static okhttp3.Credentials.basic;
 
-// import retrofit2.BaseUrl;
-// import retrofit2.JacksonConverterFactory;
 
+// Find a way to organize session
 public class NetworkModule implements INetworkModule {
     private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s
     private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000;      // 20s
@@ -81,20 +80,19 @@ public class NetworkModule implements INetworkModule {
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
-                preferencesModule.getUserPreferences(),
-                preferencesModule.getConfigurationPreferences());
+                preferencesModule.getUserPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.interceptors().add(authInterceptor);
-        okHttpClient.interceptors().add(loggingInterceptor);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(authInterceptor) // TODO Consider replacing with Authenticator
+                .addInterceptor(loggingInterceptor)
+                .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
+                .build();
 
-//        okHttpClient.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-//        okHttpClient.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-//        okHttpClient.setWriteTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
-
-        /* constructing jackson's object mapper */
+        // Constructing jackson's object mapper
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.disable(
@@ -102,29 +100,30 @@ public class NetworkModule implements INetworkModule {
                 MapperFeature.AUTO_DETECT_GETTERS, MapperFeature.AUTO_DETECT_IS_GETTERS,
                 MapperFeature.AUTO_DETECT_SETTERS);
 
+        // Extracting base url
+        Configuration configuration = preferencesModule
+                .getConfigurationPreferences().get();
+        HttpUrl url = HttpUrl.parse(configuration.getServerUrl())
+                .newBuilder()
+                .addPathSegment("api")
+                .build();
+        HttpUrl modifiedUrl = HttpUrl.parse(url.toString() + "/"); // TODO EW!!!
+
+        // Creating retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(new ApiBaseUrl(preferencesModule.getConfigurationPreferences()))
+                .baseUrl(modifiedUrl)
                 .client(okHttpClient)
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
-        programApiClient = new ProgramApiClient2(retrofit.create(IProgramApiClientRetrofit.class));
-
-
+        programApiClient = new ProgramApiClient2(retrofit.create(
+                IProgramApiClientRetrofit.class));
         systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClient(retrofit.create(
                 IUserApiClientRetrofit.class));
         organisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
                 IOrganisationUnitApiClientRetrofit.class));
-
-        // LEGACY
-//        mDashboardApiClient = new DashboardApiClient(retrofit.create(
-//                DashboardApiClientRetrofit.class));
-//        mEventApiClient = new EventApiClient(retrofit.create(EventApiClientRetrofit.class));
-//        mEnrollmentApiClient = null;
-//        mTrackedEntityAttributeApiClient = null;
-//        mTrackedEntityApiClient = null;
     }
 
     @Override
@@ -147,49 +146,29 @@ public class NetworkModule implements INetworkModule {
         return userApiClient;
     }
 
-    private static class ApiBaseUrl {
-        private final IConfigurationPreferences mConfigurationPreferences;
-
-        public ApiBaseUrl(IConfigurationPreferences configurationPreferences) {
-            mConfigurationPreferences = configurationPreferences;
-        }
-
-        public HttpUrl url() {
-            Configuration configuration = mConfigurationPreferences.get();
-            HttpUrl url = HttpUrl.parse(configuration.getServerUrl())
-                    .newBuilder()
-                    .addPathSegment("api")
-                    .build();
-            HttpUrl modifiedUrl = HttpUrl.parse(url.toString() + "/");
-            //System.out.println("ApiBaseUrl.url: " + modifiedUrl);
-            return modifiedUrl;
-        }
-    }
-
     private static class AuthInterceptor implements Interceptor {
         private final IUserPreferences mUserPreferences;
-        private final IConfigurationPreferences mConfigurationPreferences;
+        // private final IConfigurationPreferences mConfigurationPreferences;
 
-        public AuthInterceptor(IUserPreferences preferences,
-                               IConfigurationPreferences configurationPreferences) {
+        public AuthInterceptor(IUserPreferences preferences) {
             mUserPreferences = preferences;
-            mConfigurationPreferences = configurationPreferences;
+            // mConfigurationPreferences = configurationPreferences;
         }
 
         @Override
         public Response intercept(Chain chain) throws IOException {
             UserCredentials userCredentials = mUserPreferences.get();
-            if (isEmpty(userCredentials.getUsername()) || isEmpty(userCredentials.getPassword())) {
+            if (isEmpty(userCredentials.getUsername()) ||
+                    isEmpty(userCredentials.getPassword())) {
                 return chain.proceed(chain.request());
             }
 
-            String base64Credentials = basic(userCredentials.getUsername(),
+            String base64Credentials = basic(
+                    userCredentials.getUsername(),
                     userCredentials.getPassword());
             Request request = chain.request().newBuilder()
                     .addHeader("Authorization", base64Credentials)
                     .build();
-
-            //System.out.println("Request: " + request.urlString());
 
             Response response = chain.proceed(request);
             if (!response.isSuccessful() &&
@@ -199,11 +178,6 @@ public class NetworkModule implements INetworkModule {
                     // invalidate existing user
                     mUserPreferences.invalidateUser();
                 } else {
-                    if (!mUserPreferences.isUserInvalidated()) {
-                        // remove server URL address
-                        mConfigurationPreferences.clear();
-                    }
-
                     // remove username/password
                     mUserPreferences.clear();
                 }
@@ -212,6 +186,7 @@ public class NetworkModule implements INetworkModule {
                     mUserPreferences.confirmUser();
                 }
             }
+
             return response;
         }
     }

@@ -122,6 +122,11 @@ public final class FailedItemStore implements IFailedItemStore {
     }
 
     @Override
+    public boolean deleteAll() {
+        throw new UnsupportedOperationException("Unimplemented method");
+    }
+
+    @Override
     public FailedItem queryById(long id) {
         return null;
     }

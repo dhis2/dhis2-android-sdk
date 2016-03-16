@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.optionset;
 
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -44,9 +44,10 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public final class OptionSetController implements IDataController<OptionSet> {
+public final class OptionSetController implements IIdentifiableController<OptionSet> {
     private final IOptionSetApiClient optionSetApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
@@ -129,5 +130,10 @@ public final class OptionSetController implements IDataController<OptionSet> {
     @Override
     public void sync() throws ApiException {
         getOptionSetDataFromServer();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

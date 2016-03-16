@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.constant;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -41,11 +41,12 @@ import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public final class ConstantController implements IDataController<Constant> {
+public final class ConstantController implements IIdentifiableController<Constant> {
     private final IConstantApiClient constantApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
@@ -91,5 +92,10 @@ public final class ConstantController implements IDataController<Constant> {
     @Override
     public void sync() throws ApiException {
         getConstantsDataFromServer();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

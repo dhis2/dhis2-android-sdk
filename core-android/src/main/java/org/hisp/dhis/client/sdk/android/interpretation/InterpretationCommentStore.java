@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.interpretation;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationComment$Flow$Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow_Table;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
@@ -43,8 +42,8 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean insert(InterpretationComment object) {
-        InterpretationComment$Flow commentFlow = null;
-                //InterpretationComment$Flow.fromModel(object);
+        InterpretationCommentFlow commentFlow = null;
+                //InterpretationComment_Flow.fromModel(object);
         commentFlow.insert();
 
         object.setId(commentFlow.getId());
@@ -53,14 +52,14 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean update(InterpretationComment object) {
-        //InterpretationComment$Flow.fromModel(object).update();
+        //InterpretationComment_Flow.fromModel(object).update();
         return true;
     }
 
     @Override
     public boolean save(InterpretationComment object) {
-        InterpretationComment$Flow commentFlow = null;
-                //InterpretationComment$Flow.fromModel(object);
+        InterpretationCommentFlow commentFlow = null;
+                //InterpretationComment_Flow.fromModel(object);
         commentFlow.save();
 
         object.setId(commentFlow.getId());
@@ -69,34 +68,39 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     @Override
     public boolean delete(InterpretationComment object) {
-        //InterpretationComment$Flow.fromModel(object).delete();
+        //InterpretationComment_Flow.fromModel(object).delete();
         return true;
     }
 
     @Override
+    public boolean deleteAll() {
+        return false;
+    }
+
+    @Override
     public List<InterpretationComment> queryAll() {
-        List<InterpretationComment$Flow> commentFlows = new Select()
-                .from(InterpretationComment$Flow.class)
+        List<InterpretationCommentFlow> commentFlows = new Select()
+                .from(InterpretationCommentFlow.class)
                 .queryList();
-        return null;//InterpretationComment$Flow.toModels(commentFlows);
+        return null;//InterpretationComment_Flow.toModels(commentFlows);
     }
 
     @Override
     public InterpretationComment queryById(long id) {
-        InterpretationComment$Flow commentFlow = new Select()
-                .from(InterpretationComment$Flow.class)
-                .where(Condition.column(InterpretationComment$Flow$Table.ID).is(id))
+        InterpretationCommentFlow commentFlow = new Select()
+                .from(InterpretationCommentFlow.class)
+                .where(InterpretationCommentFlow_Table.id.is(id))
                 .querySingle();
-        return null;//InterpretationComment$Flow.toModel(commentFlow);
+        return null;//InterpretationComment_Flow.toModel(commentFlow);
     }
 
     @Override
     public InterpretationComment queryByUid(String uid) {
-        InterpretationComment$Flow commentFlow = new Select()
-                .from(InterpretationComment$Flow.class)
-                .where(Condition.column(InterpretationComment$Flow$Table.UID).is(uid))
+        InterpretationCommentFlow commentFlow = new Select()
+                .from(InterpretationCommentFlow.class)
+                .where(InterpretationCommentFlow_Table.uId.is(uid))
                 .querySingle();
-        return null;//InterpretationComment$Flow.toModel(commentFlow);
+        return null;//InterpretationComment_Flow.toModel(commentFlow);
     }
 
     @Override
@@ -106,23 +110,23 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
 
     /* @Override
     public List<InterpretationComment> filter(Action action) {
-        List<InterpretationComment$Flow> commentFlows = new Select()
-                .from(InterpretationComment$Flow.class)
-                .where(Condition.column(InterpretationComment$Flow$Table
+        List<InterpretationComment_Flow> commentFlows = new Select()
+                .from(InterpretationComment_Flow.class)
+                .where(Condition.column(InterpretationComment_Flow_Table
                         .ACTION).isNot(action.toString()))
                 .queryList();
-        return InterpretationComment$Flow.toModels(commentFlows);
+        return InterpretationComment_Flow.toModels(commentFlows);
     }
 
     @Override
     public List<InterpretationComment> filter(Interpretation interpretation, Action action) {
-        List<InterpretationComment$Flow> commentFlows = new Select()
-                .from(InterpretationComment$Flow.class)
-                .where(Condition.column(InterpretationComment$Flow$Table
+        List<InterpretationComment_Flow> commentFlows = new Select()
+                .from(InterpretationComment_Flow.class)
+                .where(Condition.column(InterpretationComment_Flow_Table
                         .INTERPRETATION_INTERPRETATION).is(interpretation.getId()))
-                .and(Condition.column(InterpretationComment$Flow$Table
+                .and(Condition.column(InterpretationComment_Flow_Table
                         .ACTION).isNot(action.toString()))
                 .queryList();
-        return InterpretationComment$Flow.toModels(commentFlows);
+        return InterpretationComment_Flow.toModels(commentFlows);
     } */
 }

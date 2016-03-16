@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-import org.hisp.dhis.client.sdk.android.api.utils.ApiResource;
+import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
@@ -38,9 +38,9 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Call;
+import retrofit2.Call;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.getCollection;
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
     private final IOrganisationUnitApiClientRetrofit unitApiClientRetrofit;

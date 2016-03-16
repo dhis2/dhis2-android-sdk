@@ -28,32 +28,17 @@
 
 package org.hisp.dhis.client.sdk.core.common.network;
 
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentApiClient;
-import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 public interface INetworkModule {
-    IUserApiClient getUserApiClient();
-
-    IDashboardApiClient getDashboardApiClient();
-
     ISystemInfoApiClient getSystemInfoApiClient();
 
-    IEventApiClient getEventApiClient();
-
-    IEnrollmentApiClient getEnrollmentApiClient();
-
-    ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient();
-
-    IProgramApiClient getProgramApiClient();
+    IUserApiClient getUserApiClient();
 
     IOrganisationUnitApiClient getOrganisationUnitApiClient();
 
-    ITrackedEntityApiClient getTrackedEntityApiClient();
+    IProgramApiClient getProgramApiClient();
 }

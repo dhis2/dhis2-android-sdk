@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -41,9 +41,10 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.List;
 
-public final class DataElementController implements IDataController<DataElement> {
+public final class DataElementController implements IIdentifiableController<DataElement> {
     private final IDataElementApiClient dataElementApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IIdentifiableObjectStore<DataElement> mDataElementStore;
@@ -88,5 +89,10 @@ public final class DataElementController implements IDataController<DataElement>
     @Override
     public void sync() throws ApiException {
         getProgramRulesDataFromServer();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 }

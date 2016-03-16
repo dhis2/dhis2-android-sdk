@@ -28,24 +28,25 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
-public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariable$Flow> {
+public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariableFlow> {
 
     public ProgramRuleVariableMapper() {
         // empty constructor
     }
 
     @Override
-    public ProgramRuleVariable$Flow mapToDatabaseEntity(ProgramRuleVariable programRuleVariable) {
+    public ProgramRuleVariableFlow mapToDatabaseEntity(ProgramRuleVariable programRuleVariable) {
         if (programRuleVariable == null) {
             return null;
         }
 
-        ProgramRuleVariable$Flow programRuleVariableFlow = new ProgramRuleVariable$Flow();
+        ProgramRuleVariableFlow programRuleVariableFlow = new ProgramRuleVariableFlow();
         programRuleVariableFlow.setId(programRuleVariable.getId());
         programRuleVariableFlow.setUId(programRuleVariable.getUId());
         programRuleVariableFlow.setCreated(programRuleVariable.getCreated());
@@ -56,13 +57,14 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
         programRuleVariableFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programRuleVariable.getDataElement()));
         programRuleVariableFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programRuleVariable.getTrackedEntityAttribute()));
         programRuleVariableFlow.setSourceType(programRuleVariable.getSourceType());
-        programRuleVariableFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programRuleVariable.getProgram()));
+        programRuleVariableFlow.setProgram(ProgramFlow.MAPPER
+                .mapToDatabaseEntity(programRuleVariable.getProgram()));
         programRuleVariableFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programRuleVariable.getProgramStage()));
         return programRuleVariableFlow;
     }
 
     @Override
-    public ProgramRuleVariable mapToModel(ProgramRuleVariable$Flow programRuleVariableFlow) {
+    public ProgramRuleVariable mapToModel(ProgramRuleVariableFlow programRuleVariableFlow) {
         if (programRuleVariableFlow == null) {
             return null;
         }
@@ -78,7 +80,8 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
         programRuleVariable.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programRuleVariableFlow.getDataElement()));
         programRuleVariable.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programRuleVariableFlow.getTrackedEntityAttribute()));
         programRuleVariable.setSourceType(programRuleVariableFlow.getSourceType());
-        programRuleVariable.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programRuleVariableFlow.getProgram()));
+        programRuleVariable.setProgram(ProgramFlow.MAPPER
+                .mapToModel(programRuleVariableFlow.getProgram()));
         programRuleVariable.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programRuleVariableFlow.getProgramStage()));
         return programRuleVariable;
     }
@@ -89,7 +92,7 @@ public class ProgramRuleVariableMapper extends AbsMapper<ProgramRuleVariable, Pr
     }
 
     @Override
-    public Class<ProgramRuleVariable$Flow> getDatabaseEntityTypeClass() {
-        return ProgramRuleVariable$Flow.class;
+    public Class<ProgramRuleVariableFlow> getDatabaseEntityTypeClass() {
+        return ProgramRuleVariableFlow.class;
     }
 }

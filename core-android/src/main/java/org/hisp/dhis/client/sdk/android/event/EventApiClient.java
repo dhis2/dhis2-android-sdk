@@ -31,7 +31,6 @@ package org.hisp.dhis.client.sdk.android.event;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import org.hisp.dhis.client.sdk.android.api.utils.ObjectMapperProvider;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
@@ -44,16 +43,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit.Response;
+import retrofit2.Response;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
 
 public class EventApiClient implements IEventApiClient {
 
-    private final EventApiClientRetrofit mEventApiClientRetrofit;
+    private final EventApiClientRetrofit eventApiClientRetrofit;
 
-    public EventApiClient(EventApiClientRetrofit mEventApiClientRetrofit) {
-        this.mEventApiClientRetrofit = mEventApiClientRetrofit;
+    public EventApiClient(EventApiClientRetrofit eventApiClientRetrofit) {
+        this.eventApiClientRetrofit = eventApiClientRetrofit;
     }
 
     @Override
@@ -63,10 +62,12 @@ public class EventApiClient implements IEventApiClient {
         queryMap.put("program", s1);
         queryMap.put("pageSize", Integer.toString(i));
         queryMap.put("page", "0");
+
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -78,7 +79,7 @@ public class EventApiClient implements IEventApiClient {
         queryMap.put("program", s1);
         queryMap.put("pageSize", Integer.toString(i));
         queryMap.put("page", "0");
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -92,7 +93,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -106,7 +107,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -120,7 +121,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        JsonNode eventsJsonNode = call(mEventApiClientRetrofit.getEvents(queryMap));
+        JsonNode eventsJsonNode = call(eventApiClientRetrofit.getEvents(queryMap));
         List<Event> updatedEvents = unwrap(eventsJsonNode);
         return updatedEvents;
     }
@@ -131,7 +132,7 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        Event event = call(mEventApiClientRetrofit.getEvent(s, queryMap));
+        Event event = call(eventApiClientRetrofit.getEvent(s, queryMap));
         return event;
     }
 
@@ -141,60 +142,63 @@ public class EventApiClient implements IEventApiClient {
         if (dateTime != null) {
             queryMap.put("lastUpdated", dateTime.toString());
         }
-        Event event = call(mEventApiClientRetrofit.getEvent(s, queryMap));
+        Event event = call(eventApiClientRetrofit.getEvent(s, queryMap));
         return event;
     }
 
     @Override
     public ImportSummary postEvent(Event event) throws ApiException {
-        Response response = call(mEventApiClientRetrofit.postEvent(event));
+        Response response = call(eventApiClientRetrofit.postEvent(event));
         return unwrapImportSummary(response);
     }
 
     @Override
     public ImportSummary putEvent(Event event) {
-        Response response = call(mEventApiClientRetrofit.putEvent(event.getUId(), event));
+        Response response = call(eventApiClientRetrofit.putEvent(event.getUId(), event));
         return unwrapImportSummary(response);
     }
 
     public static List<Event> unwrap(JsonNode jsonNode) {
-        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
-        List<Event> events;
-        try {
-            if (jsonNode.has("events")) {
-                events = ObjectMapperProvider.getInstance().
-                        readValue(jsonNode.get("events").traverse(), typeRef);
-            } else {
-                events = new ArrayList<>();
-            }
-        } catch (IOException e) {
-            events = new ArrayList<>();
-            e.printStackTrace();
-        }
-        return events;
+//        TypeReference<List<Event>> typeRef = new TypeReference<List<Event>>() {};
+//        List<Event> events;
+//        try {
+//            if (jsonNode.has("events")) {
+//                events = ObjectMapperProvider.getInstance().
+//                        readValue(jsonNode.get("events").traverse(), typeRef);
+//            } else {
+//                events = new ArrayList<>();
+//            }
+//        } catch (IOException e) {
+//            events = new ArrayList<>();
+//            e.printStackTrace();
+//        }
+//        return events;
+        return null;
     }
 
     private static ImportSummary unwrapImportSummary(Response response) {
         //because the web api almost randomly gives the responses in different forms, this
         //method checks which one it is that is being returned, and parses accordingly.
-        try {
-            JsonNode node = ObjectMapperProvider.getInstance().
-                    readTree(response.raw().body().string());
-            if (node == null) {
-                return null;
-            } else if (node.has("response")) {
-                return getPutImportSummary(node);
-            } else {
-                return getPostImportSummary(node);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+//        try {
+//            JsonNode node = ObjectMapperProvider.getInstance().
+//                    readTree(response.raw().body().string());
+//            if (node == null) {
+//                return null;
+//            } else if (node.has("response")) {
+//                return getPutImportSummary(node);
+//            } else {
+//                return getPostImportSummary(node);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+        return null;
     }
 
     private static ImportSummary getPostImportSummary(JsonNode jsonNode) throws IOException {
-        return ObjectMapperProvider.getInstance().treeToValue(jsonNode, ImportSummary.class);
+        // return ObjectMapperProvider.getInstance().treeToValue(jsonNode, ImportSummary.class);
+        return null;
     }
 
     private static ImportSummary getPutImportSummary(JsonNode jsonNode) throws IOException {

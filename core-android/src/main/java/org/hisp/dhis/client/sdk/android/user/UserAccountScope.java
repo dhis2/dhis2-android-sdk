@@ -31,9 +31,7 @@ package org.hisp.dhis.client.sdk.android.user;
 
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
-import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
@@ -44,7 +42,6 @@ import rx.Subscriber;
 
 public class UserAccountScope implements IUserAccountScope {
     // preferences
-    private final IConfigurationPreferences configurationPreferences;
     private final IUserPreferences userPreferences;
 
     // services
@@ -57,13 +54,11 @@ public class UserAccountScope implements IUserAccountScope {
     private final IUserProgramScope userProgramScope;
     private final IUserOrganisationUnitScope organisationUnitScope;
 
-    public UserAccountScope(IConfigurationPreferences configurationPreferences,
-                            IUserPreferences userPreferences,
+    public UserAccountScope(IUserPreferences userPreferences,
                             IUserAccountService userAccountService,
                             IUserAccountController userAccountController,
                             IUserProgramScope userProgramScope,
                             IUserOrganisationUnitScope organisationUnitScope) {
-        this.configurationPreferences = configurationPreferences;
         this.userPreferences = userPreferences;
         this.userAccountService = userAccountService;
         this.userAccountController = userAccountController;
@@ -72,8 +67,7 @@ public class UserAccountScope implements IUserAccountScope {
     }
 
     @Override
-    public Observable<UserAccount> signIn(final Configuration configuration, final String username,
-                                          final String password) {
+    public Observable<UserAccount> signIn(final String username, final String password) {
         return Observable.create(new Observable.OnSubscribe<UserAccount>() {
 
             @Override
@@ -82,8 +76,6 @@ public class UserAccountScope implements IUserAccountScope {
                     if (userPreferences.isUserConfirmed()) {
                         throw new IllegalArgumentException("User is already signed in");
                     }
-
-                    configurationPreferences.save(configuration);
 
                     UserCredentials userCredentials = new UserCredentials(username, password);
                     userPreferences.save(userCredentials);
@@ -143,6 +135,22 @@ public class UserAccountScope implements IUserAccountScope {
             public void call(Subscriber<? super UserAccount> subscriber) {
                 try {
                     subscriber.onNext(userAccountService.getCurrentUserAccount());
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<UserCredentials> userCredentials() {
+        return Observable.create(new Observable.OnSubscribe<UserCredentials>() {
+            @Override
+            public void call(Subscriber<? super UserCredentials> subscriber) {
+                try {
+                    subscriber.onNext(userPreferences.get());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

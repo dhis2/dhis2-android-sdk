@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Option$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionFlow;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 
-public class OptionMapper extends AbsMapper<Option, Option$Flow> {
+public class OptionMapper extends AbsMapper<Option, OptionFlow> {
 
     @Override
-    public Option$Flow mapToDatabaseEntity(Option option) {
+    public OptionFlow mapToDatabaseEntity(Option option) {
         if (option == null) {
             return null;
         }
 
-        Option$Flow optionFlow = new Option$Flow();
+        OptionFlow optionFlow = new OptionFlow();
         optionFlow.setId(option.getId());
         optionFlow.setUId(option.getUId());
         optionFlow.setCreated(option.getCreated());
@@ -56,7 +56,7 @@ public class OptionMapper extends AbsMapper<Option, Option$Flow> {
     }
 
     @Override
-    public Option mapToModel(Option$Flow optionFlow) {
+    public Option mapToModel(OptionFlow optionFlow) {
         if (optionFlow == null) {
             return null;
         }
@@ -81,7 +81,7 @@ public class OptionMapper extends AbsMapper<Option, Option$Flow> {
     }
 
     @Override
-    public Class<Option$Flow> getDatabaseEntityTypeClass() {
-        return Option$Flow.class;
+    public Class<OptionFlow> getDatabaseEntityTypeClass() {
+        return OptionFlow.class;
     }
 }

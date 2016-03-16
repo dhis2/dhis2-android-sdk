@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
-public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flow> {
+public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow> {
 
     @Override
-    public ProgramStage$Flow mapToDatabaseEntity(ProgramStage programStage) {
+    public ProgramStageFlow mapToDatabaseEntity(ProgramStage programStage) {
         if (programStage == null) {
             return null;
         }
 
-        ProgramStage$Flow programStageFlow = new ProgramStage$Flow();
+        ProgramStageFlow programStageFlow = new ProgramStageFlow();
         programStageFlow.setId(programStage.getId());
         programStageFlow.setUId(programStage.getUId());
         programStageFlow.setCreated(programStage.getCreated());
@@ -49,7 +49,8 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStageFlow.setName(programStage.getName());
         programStageFlow.setDisplayName(programStage.getDisplayName());
         programStageFlow.setAccess(programStage.getAccess());
-        programStageFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programStage.getProgram()));
+        programStageFlow.setProgram(ProgramFlow.MAPPER
+                .mapToDatabaseEntity(programStage.getProgram()));
         programStageFlow.setDataEntryType(programStage.getDataEntryType());
         programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
         programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
@@ -72,7 +73,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
     }
 
     @Override
-    public ProgramStage mapToModel(ProgramStage$Flow programStageFlow) {
+    public ProgramStage mapToModel(ProgramStageFlow programStageFlow) {
         if (programStageFlow == null) {
             return null;
         }
@@ -85,7 +86,8 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
         programStage.setName(programStageFlow.getName());
         programStage.setDisplayName(programStageFlow.getDisplayName());
         programStage.setAccess(programStageFlow.getAccess());
-        programStage.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programStageFlow.getProgram()));
+        programStage.setProgram(ProgramFlow.MAPPER
+                .mapToModel(programStageFlow.getProgram()));
         programStage.setDataEntryType(programStageFlow.getDataEntryType());
         programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
         programStage.setReportDateDescription(programStageFlow.getReportDateDescription());
@@ -113,7 +115,7 @@ public class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStage$Flo
     }
 
     @Override
-    public Class<ProgramStage$Flow> getDatabaseEntityTypeClass() {
-        return ProgramStage$Flow.class;
+    public Class<ProgramStageFlow> getDatabaseEntityTypeClass() {
+        return ProgramStageFlow.class;
     }
 }

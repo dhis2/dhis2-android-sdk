@@ -28,21 +28,21 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttribute$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribute,
-        TrackedEntityAttribute$Flow> {
+        TrackedEntityAttributeFlow> {
 
     @Override
-    public TrackedEntityAttribute$Flow mapToDatabaseEntity(TrackedEntityAttribute trackedEntityAttribute) {
+    public TrackedEntityAttributeFlow mapToDatabaseEntity(TrackedEntityAttribute trackedEntityAttribute) {
         if (trackedEntityAttribute == null) {
             return null;
         }
 
-        TrackedEntityAttribute$Flow trackedEntityAttributeFlow = new TrackedEntityAttribute$Flow();
+        TrackedEntityAttributeFlow trackedEntityAttributeFlow = new TrackedEntityAttributeFlow();
         trackedEntityAttributeFlow.setId(trackedEntityAttribute.getId());
         trackedEntityAttributeFlow.setUId(trackedEntityAttribute.getUId());
         trackedEntityAttributeFlow.setCreated(trackedEntityAttribute.getCreated());
@@ -67,7 +67,7 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
     }
 
     @Override
-    public TrackedEntityAttribute mapToModel(TrackedEntityAttribute$Flow trackedEntityAttributeFlow) {
+    public TrackedEntityAttribute mapToModel(TrackedEntityAttributeFlow trackedEntityAttributeFlow) {
         if (trackedEntityAttributeFlow == null) {
             return null;
         }
@@ -102,7 +102,7 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
     }
 
     @Override
-    public Class<TrackedEntityAttribute$Flow> getDatabaseEntityTypeClass() {
-        return TrackedEntityAttribute$Flow.class;
+    public Class<TrackedEntityAttributeFlow> getDatabaseEntityTypeClass() {
+        return TrackedEntityAttributeFlow.class;
     }
 }

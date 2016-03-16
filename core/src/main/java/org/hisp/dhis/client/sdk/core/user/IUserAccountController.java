@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public interface IUserAccountController extends IController<UserAccount> {
-
+public interface IUserAccountController {
     UserAccount updateAccount();
 }

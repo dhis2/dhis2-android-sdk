@@ -28,61 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardService;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentService;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
-import org.hisp.dhis.client.sdk.core.program.*;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipService;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipTypeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityService;
+import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 
 public interface IServicesModule {
     IUserAccountService getUserAccountService();
 
-    IDashboardService getDashboardService();
-
     IProgramService getProgramService();
 
     IOrganisationUnitService getOrganisationUnitService();
-
-    IEventService getEventService();
-
-    IConstantService getConstantService();
-
-    IDataElementService getDataElementService();
-
-    IEnrollmentService getEnrollmentService();
-
-    IOptionSetService getOptionSetService();
-
-    IProgramStageService getProgramStageService();
-
-    IProgramStageDataElementService getProgramStageDataElementService();
-
-    IProgramStageSectionService getProgramStageSectionService();
-
-    IRelationshipService getRelationshipService();
-
-    IRelationshipTypeService getRelationshipTypeService();
-
-    ITrackedEntityAttributeService getTrackedEntityAttributeService();
-
-    ITrackedEntityAttributeValueService getTrackedEntityAttributeValueService();
-
-    ITrackedEntityDataValueService getTrackedEntityDataValueService();
-
-    IProgramIndicatorService getProgramIndicatorService();
-
-    IProgramTrackedEntityAttributeService getProgramTrackedEntityAttributeService();
-
-    ITrackedEntityService getTrackedEntities();
 
 }

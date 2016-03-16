@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.user;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.User$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.core.user.IUserStore;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-public final class UserStore extends AbsIdentifiableObjectStore<User, User$Flow> implements IUserStore {
+public final class UserStore extends AbsIdentifiableObjectStore<User, UserFlow> implements IUserStore {
 
-    public UserStore(IMapper<User, User$Flow> mapper) {
+    public UserStore(IMapper<User, UserFlow> mapper) {
         super(mapper);
     }
 }

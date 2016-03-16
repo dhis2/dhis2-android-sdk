@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStage$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -48,12 +47,15 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import java.util.List;
 
 public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramStage,
-        ProgramStage$Flow> implements IProgramStageStore {
+        ProgramStageFlow> implements IProgramStageStore {
     private final IProgramIndicatorStore mProgramIndicatorStore;
     private final IProgramStageDataElementStore mProgramStageDataElementStore;
     private final IProgramStageSectionStore mProgramStageSectionStore;
 
-    public ProgramStageStore(IMapper<ProgramStage, ProgramStage$Flow> mapper, IProgramIndicatorStore mProgramIndicatorStore, IProgramStageDataElementStore mProgramStageDataElementStore, IProgramStageSectionStore mProgramStageSectionStore) {
+    public ProgramStageStore(IMapper<ProgramStage, ProgramStageFlow> mapper,
+                             IProgramIndicatorStore mProgramIndicatorStore,
+                             IProgramStageDataElementStore mProgramStageDataElementStore,
+                             IProgramStageSectionStore mProgramStageSectionStore) {
         super(mapper);
         this.mProgramIndicatorStore = mProgramIndicatorStore;
         this.mProgramStageDataElementStore = mProgramStageDataElementStore;
@@ -62,7 +64,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
 
     @Override
     public boolean insert(ProgramStage programStage) {
-        ProgramStage$Flow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
+        ProgramStageFlow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -103,7 +105,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
 
     @Override
     public boolean save(ProgramStage programStage) {
-        ProgramStage$Flow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
+        ProgramStageFlow databaseEntity = getMapper().mapToDatabaseEntity(programStage);
         if (databaseEntity != null) {
             databaseEntity.save();
 
@@ -119,7 +121,8 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
                 }
             }
 
-            List<ProgramStageDataElement> programStageDataElements = programStage.getProgramStageDataElements();
+            List<ProgramStageDataElement> programStageDataElements =
+                    programStage.getProgramStageDataElements();
             if(programStageDataElements != null) {
                 for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                     if (!mProgramStageDataElementStore.save(programStageDataElement)) {
@@ -128,7 +131,8 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
                 }
             }
 
-            List<ProgramStageSection> programStageSections = programStage.getProgramStageSections();
+            List<ProgramStageSection> programStageSections =
+                    programStage.getProgramStageSections();
             if(programStageSections != null) {
                 for (ProgramStageSection programStageSection : programStageSections) {
                     if (!mProgramStageSectionStore.save(programStageSection)) {
@@ -144,10 +148,9 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
 
     @Override
     public List<ProgramStage> query(Program program) {
-        List<ProgramStage$Flow> programStageFlows = new Select()
-                .from(ProgramStage$Flow.class).where(Condition
-                        .column(ProgramStage$Flow$Table.PROGRAM_PROGRAM)
-                        .is(program.getUId()))
+        List<ProgramStageFlow> programStageFlows = new Select()
+                .from(ProgramStageFlow.class).where(ProgramStageFlow_Table
+                        .program.is(program.getUId()))
                 .queryList();
         return getMapper().mapToModels(programStageFlows);
     }

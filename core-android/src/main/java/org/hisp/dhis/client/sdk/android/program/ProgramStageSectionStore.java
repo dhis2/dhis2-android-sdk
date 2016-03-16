@@ -28,18 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorToProgramStageSectionRelation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicatorToProgramStageSectionRelation$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageDataElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -51,19 +45,22 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import java.util.List;
 
 public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<ProgramStageSection,
-        ProgramStageSection$Flow> implements IProgramStageSectionStore {
+        ProgramStageSectionFlow> implements IProgramStageSectionStore {
     private final IProgramIndicatorStore mProgramIndicatorStore;
     private final IProgramStageDataElementStore mProgramStageDataElementStore;
 
-    public ProgramStageSectionStore(IMapper<ProgramStageSection, ProgramStageSection$Flow> mapper, IProgramIndicatorStore mProgramIndicatorStore, IProgramStageDataElementStore mProgramStageDataElementStore) {
+    public ProgramStageSectionStore(IMapper<ProgramStageSection,
+            ProgramStageSectionFlow> mapper, IProgramIndicatorStore mProgramIndicatorStore,
+                                    IProgramStageDataElementStore mProgramStageDataElementStore) {
         super(mapper);
+
         this.mProgramIndicatorStore = mProgramIndicatorStore;
         this.mProgramStageDataElementStore = mProgramStageDataElementStore;
     }
 
     @Override
     public boolean insert(ProgramStageSection object) {
-        ProgramStageSection$Flow databaseEntity = getMapper().mapToDatabaseEntity(object);
+        ProgramStageSectionFlow databaseEntity = getMapper().mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -95,7 +92,7 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
 
     @Override
     public boolean save(ProgramStageSection object) {
-        ProgramStageSection$Flow databaseEntity = getMapper().mapToDatabaseEntity(object);
+        ProgramStageSectionFlow databaseEntity = getMapper().mapToDatabaseEntity(object);
         if (databaseEntity != null) {
             databaseEntity.save();
 
@@ -127,10 +124,9 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
 
     @Override
     public List<ProgramStageSection> query(ProgramStage programStage) {
-        List<ProgramStageSection$Flow> programStageSectionFlows = new Select()
-                .from(ProgramStageSection$Flow.class).where(Condition
-                        .column(ProgramStageSection$Flow$Table.PROGRAMSTAGE_PROGRAMSTAGE)
-                        .is(programStage.getUId()))
+        List<ProgramStageSectionFlow> programStageSectionFlows = new Select()
+                .from(ProgramStageSectionFlow.class).where(ProgramStageSectionFlow_Table
+                        .programstage.is(programStage.getUId()))
                 .queryList();
         return getMapper().mapToModels(programStageSectionFlows);
     }

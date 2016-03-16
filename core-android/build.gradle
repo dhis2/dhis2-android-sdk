@@ -60,18 +60,19 @@ dependencies {
     compile "com.android.support:support-annotations:${libs.supportVersion}"
 
     // Square
-    compile "com.squareup.okhttp:okhttp:${libs.okhttpVersion}"
-    compile "com.squareup.okhttp:logging-interceptor:${libs.okhttpVersion}"
-    compile "com.squareup.retrofit:retrofit:${libs.retrofitVersion}"
-    compile("com.squareup.retrofit:converter-jackson:${libs.retrofitVersion}")
+    compile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
+    compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
+    compile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
+    compile("com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}")
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";
 
     // Raizlabs.
-    apt "com.raizlabs.android:DBFlow-Compiler:${libs.dbFlowVersion}"
-    compile "com.raizlabs.android:DBFlow-Core:${libs.dbFlowVersion}"
-    compile "com.raizlabs.android:DBFlow:${libs.dbFlowVersion}"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:${libs.dbFlowVersion}"
+    compile "com.github.Raizlabs.DBFlow:dbflow:${libs.dbFlowVersion}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:${libs.dbFlowVersion}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${libs.dbFlowVersion}"
 
     // Test
     testCompile "junit:junit:${libs.jUnitVersion}"

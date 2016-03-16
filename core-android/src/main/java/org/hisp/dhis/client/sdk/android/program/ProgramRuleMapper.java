@@ -28,20 +28,21 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRule$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
-public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> {
+public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
 
     @Override
-    public ProgramRule$Flow mapToDatabaseEntity(ProgramRule programRule) {
+    public ProgramRuleFlow mapToDatabaseEntity(ProgramRule programRule) {
         if (programRule == null) {
             return null;
         }
 
-        ProgramRule$Flow programRuleFlow = new ProgramRule$Flow();
+        ProgramRuleFlow programRuleFlow = new ProgramRuleFlow();
         programRuleFlow.setId(programRule.getId());
         programRuleFlow.setUId(programRule.getUId());
         programRuleFlow.setCreated(programRule.getCreated());
@@ -49,15 +50,17 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRuleFlow.setName(programRule.getName());
         programRuleFlow.setDisplayName(programRule.getDisplayName());
         programRuleFlow.setAccess(programRule.getAccess());
-        programRuleFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programRule.getProgramStage()));
-        programRuleFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programRule.getProgram()));
+        programRuleFlow.setProgramStage(MapperModuleProvider.getInstance()
+                .getProgramStageMapper().mapToDatabaseEntity(programRule.getProgramStage()));
+        programRuleFlow.setProgram(ProgramFlow.MAPPER
+                .mapToDatabaseEntity(programRule.getProgram()));
         programRuleFlow.setCondition(programRule.getCondition());
         programRuleFlow.setExternalAction(programRule.isExternalAction());
         return programRuleFlow;
     }
 
     @Override
-    public ProgramRule mapToModel(ProgramRule$Flow programRuleFlow) {
+    public ProgramRule mapToModel(ProgramRuleFlow programRuleFlow) {
         if (programRuleFlow == null) {
             return null;
         }
@@ -70,8 +73,10 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
         programRule.setName(programRuleFlow.getName());
         programRule.setDisplayName(programRuleFlow.getDisplayName());
         programRule.setAccess(programRuleFlow.getAccess());
-        programRule.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programRuleFlow.getProgramStage()));
-        programRule.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programRuleFlow.getProgram()));
+        programRule.setProgramStage(MapperModuleProvider.getInstance()
+                .getProgramStageMapper().mapToModel(programRuleFlow.getProgramStage()));
+        programRule.setProgram(ProgramFlow.MAPPER
+                .mapToModel(programRuleFlow.getProgram()));
         programRule.setCondition(programRuleFlow.getCondition());
         programRule.setExternalAction(programRuleFlow.isExternalAction());
         return programRule;
@@ -83,7 +88,7 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRule$Flow> 
     }
 
     @Override
-    public Class<ProgramRule$Flow> getDatabaseEntityTypeClass() {
-        return ProgramRule$Flow.class;
+    public Class<ProgramRuleFlow> getDatabaseEntityTypeClass() {
+        return ProgramRuleFlow.class;
     }
 }

@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-public interface IAssignedOrganisationUnitsController extends IController<OrganisationUnit> {
+public interface IAssignedOrganisationUnitsController {
     void sync() throws ApiException;
 }

@@ -28,28 +28,30 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityInstance$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public final class TrackedEntityInstanceStore extends AbsDataStore<TrackedEntityInstance,
-        TrackedEntityInstance$Flow> implements ITrackedEntityInstanceStore {
+        TrackedEntityInstanceFlow> implements ITrackedEntityInstanceStore {
 
-    public TrackedEntityInstanceStore(IMapper<TrackedEntityInstance, TrackedEntityInstance$Flow> mapper, IStateStore stateStore) {
+    public TrackedEntityInstanceStore(IMapper<TrackedEntityInstance,
+            TrackedEntityInstanceFlow> mapper, IStateStore stateStore) {
         super(mapper, stateStore);
     }
 
     @Override
     public TrackedEntityInstance queryByUid(String uid) {
-        TrackedEntityInstance$Flow trackedEntityInstanceFlow = new Select().from(TrackedEntityInstance$Flow
-                .class).where(Condition.column(TrackedEntityInstance$Flow$Table.TRACKEDENTITYINSTANCEUID).is(uid))
+        TrackedEntityInstanceFlow trackedEntityInstanceFlow = new Select()
+                .from(TrackedEntityInstanceFlow.class)
+                .where(TrackedEntityInstanceFlow_Table
+                        .trackedEntityInstanceUid.is(uid))
                 .querySingle();
         return getMapper().mapToModel(trackedEntityInstanceFlow);
     }

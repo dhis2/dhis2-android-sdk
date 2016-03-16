@@ -31,17 +31,11 @@ package org.hisp.dhis.client.sdk.core.user;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-
-import java.util.List;
 
 public interface IUserAccountService extends IService, IUpdate<UserAccount>, ISave<UserAccount> {
     UserAccount getCurrentUserAccount();
 
     User toUser(UserAccount userAccount);
-
-    void signOut();
 }

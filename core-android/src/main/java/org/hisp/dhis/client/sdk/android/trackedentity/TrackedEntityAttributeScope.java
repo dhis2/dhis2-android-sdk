@@ -29,9 +29,8 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
@@ -41,9 +40,10 @@ import rx.Subscriber;
 
 public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope {
     private ITrackedEntityAttributeService mTrackedEntityAttributeService;
-    private IDataController<TrackedEntityAttribute> mTrackedEntityAttributeController;
+    private IIdentifiableController<TrackedEntityAttribute> mTrackedEntityAttributeController;
 
-    public TrackedEntityAttributeScope(ITrackedEntityAttributeService trackedEntityAttributeService, IDataController<TrackedEntityAttribute> trackedEntityAttributeController) {
+    public TrackedEntityAttributeScope(ITrackedEntityAttributeService trackedEntityAttributeService,
+                                       IIdentifiableController<TrackedEntityAttribute> trackedEntityAttributeController) {
         this.mTrackedEntityAttributeService = trackedEntityAttributeService;
         this.mTrackedEntityAttributeController = trackedEntityAttributeController;
     }

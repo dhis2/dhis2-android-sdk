@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.Collection;
 
-public interface IProgramController extends IController<Program> {
-    void sync() throws ApiException;
-
-    void sync(Collection<String> uids) throws ApiException;
+public interface IProgramController extends IIdentifiableController<Program> {
 }

@@ -28,20 +28,21 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramIndicator$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 
-public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramIndicator$Flow> {
+public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramIndicatorFlow> {
 
     @Override
-    public ProgramIndicator$Flow mapToDatabaseEntity(ProgramIndicator programIndicator) {
+    public ProgramIndicatorFlow mapToDatabaseEntity(ProgramIndicator programIndicator) {
         if (programIndicator == null) {
             return null;
         }
 
-        ProgramIndicator$Flow programIndicatorFlow = new ProgramIndicator$Flow();
+        ProgramIndicatorFlow programIndicatorFlow = new ProgramIndicatorFlow();
         programIndicatorFlow.setId(programIndicator.getId());
         programIndicatorFlow.setUId(programIndicator.getUId());
         programIndicatorFlow.setCreated(programIndicator.getCreated());
@@ -56,14 +57,18 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicatorFlow.setExternalAccess(programIndicator.isExternalAccess());
         programIndicatorFlow.setValueType(programIndicator.getValueType());
         programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
-        programIndicatorFlow.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToDatabaseEntity(programIndicator.getProgram()));
-        programIndicatorFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programIndicator.getProgramStage()));
-        programIndicatorFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programIndicator.getProgramStageSection()));
+        programIndicatorFlow.setProgram(ProgramFlow.MAPPER
+                .mapToDatabaseEntity(programIndicator.getProgram()));
+        programIndicatorFlow.setProgramStage(MapperModuleProvider.getInstance()
+                .getProgramStageMapper().mapToDatabaseEntity(programIndicator.getProgramStage()));
+        programIndicatorFlow.setProgramStageSection(MapperModuleProvider.getInstance()
+                .getProgramStageSectionMapper().mapToDatabaseEntity(programIndicator
+                        .getProgramStageSection()));
         return programIndicatorFlow;
     }
 
     @Override
-    public ProgramIndicator mapToModel(ProgramIndicator$Flow programIndicatorFlow) {
+    public ProgramIndicator mapToModel(ProgramIndicatorFlow programIndicatorFlow) {
         if (programIndicatorFlow == null) {
             return null;
         }
@@ -83,9 +88,13 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicator.setExternalAccess(programIndicatorFlow.isExternalAccess());
         programIndicator.setValueType(programIndicatorFlow.getValueType());
         programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
-        programIndicator.setProgram(MapperModuleProvider.getInstance().getProgramMapper().mapToModel(programIndicatorFlow.getProgram()));
-        programIndicator.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programIndicatorFlow.getProgramStage()));
-        programIndicator.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModel(programIndicatorFlow.getProgramStageSection()));
+        programIndicator.setProgram(ProgramFlow.MAPPER
+                .mapToModel(programIndicatorFlow.getProgram()));
+        programIndicator.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper
+                ().mapToModel(programIndicatorFlow.getProgramStage()));
+        programIndicator.setProgramStageSection(MapperModuleProvider.getInstance()
+                .getProgramStageSectionMapper().mapToModel(programIndicatorFlow
+                        .getProgramStageSection()));
         return programIndicator;
     }
 
@@ -95,7 +104,7 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
     }
 
     @Override
-    public Class<ProgramIndicator$Flow> getDatabaseEntityTypeClass() {
-        return ProgramIndicator$Flow.class;
+    public Class<ProgramIndicatorFlow> getDatabaseEntityTypeClass() {
+        return ProgramIndicatorFlow.class;
     }
 }

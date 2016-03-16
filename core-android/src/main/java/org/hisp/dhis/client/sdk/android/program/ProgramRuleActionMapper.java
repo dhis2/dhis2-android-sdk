@@ -28,24 +28,24 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleAction$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
-public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, ProgramRuleAction$Flow> {
+public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
 
     public ProgramRuleActionMapper() {
         // empty constructor
     }
 
     @Override
-    public ProgramRuleAction$Flow mapToDatabaseEntity(ProgramRuleAction programRuleAction) {
+    public ProgramRuleActionFlow mapToDatabaseEntity(ProgramRuleAction programRuleAction) {
         if (programRuleAction == null) {
             return null;
         }
 
-        ProgramRuleAction$Flow programRuleActionFlow = new ProgramRuleAction$Flow();
+        ProgramRuleActionFlow programRuleActionFlow = new ProgramRuleActionFlow();
         programRuleActionFlow.setId(programRuleAction.getId());
         programRuleActionFlow.setUId(programRuleAction.getUId());
         programRuleActionFlow.setCreated(programRuleAction.getCreated());
@@ -67,7 +67,7 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
     }
 
     @Override
-    public ProgramRuleAction mapToModel(ProgramRuleAction$Flow programRuleActionFlow) {
+    public ProgramRuleAction mapToModel(ProgramRuleActionFlow programRuleActionFlow) {
         if (programRuleActionFlow == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
     }
 
     @Override
-    public Class<ProgramRuleAction$Flow> getDatabaseEntityTypeClass() {
-        return ProgramRuleAction$Flow.class;
+    public Class<ProgramRuleActionFlow> getDatabaseEntityTypeClass() {
+        return ProgramRuleActionFlow.class;
     }
 }

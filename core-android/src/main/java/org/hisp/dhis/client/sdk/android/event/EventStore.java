@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Event$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
@@ -42,43 +38,45 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public final class EventStore extends AbsDataStore<Event, Event$Flow> implements IEventStore {
+public final class EventStore extends AbsDataStore<Event, EventFlow> implements IEventStore {
 
-    public EventStore(IMapper<Event, Event$Flow> mapper, IStateStore stateStore) {
+    public EventStore(IMapper<Event, EventFlow> mapper, IStateStore stateStore) {
         super(mapper, stateStore);
     }
 
     public Event queryByUid(String uid) {
-        Event$Flow eventFlow = new Select()
-                .from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table.EVENTUID).is(uid))
-                .querySingle();
-        return getMapper().mapToModel(eventFlow);
+//        Event_Flow eventFlow = new Select()
+//                .from(Event_Flow.class)
+//                .where(Condition.column(Event_Flow_Table.EVENTUID).is(uid))
+//                .querySingle();
+//        return getMapper().mapToModel(eventFlow);
+        return null;
     }
 
     @Override
     public List<Event> query(Enrollment enrollment) {
-        List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table
-                        .ENROLLMENT_ENROLLMENT).is(enrollment.getUId())).queryList();
-        return getMapper().mapToModels(eventFlows);
+//        List<Event_Flow> eventFlows = new Select()
+//                .from(Event_Flow.class)
+//                .where(Condition.column(Event_Flow_Table
+//                        .ENROLLMENT_ENROLLMENT).is(enrollment.getUId())).queryList();
+//        return getMapper().mapToModels(eventFlows);
+        return null;
     }
 
     @Override
     public List<Event> query(OrganisationUnit organisationUnit, Program program) {
-        if (organisationUnit == null || program == null) {
-            return new ArrayList<>();
-        }
-        List<Event$Flow> eventFlows = new Select()
-                .from(Event$Flow.class)
-                .where(Condition.column(Event$Flow$Table
-                        .ORGANISATIONUNITID).is(organisationUnit.getUId()))
-                .and(Condition.column(Event$Flow$Table
-                        .PROGRAMID).is(program.getUId())).queryList();
-        return getMapper().mapToModels(eventFlows);
+//        if (organisationUnit == null || program == null) {
+//            return new ArrayList<>();
+//        }
+//        List<Event_Flow> eventFlows = new Select()
+//                .from(Event_Flow.class)
+//                .where(Condition.column(Event_Flow_Table
+//                        .ORGANISATIONUNITID).is(organisationUnit.getUId()))
+//                .and(Condition.column(Event_Flow_Table
+//                        .PROGRAMID).is(program.getUId())).queryList();
+//        return getMapper().mapToModels(eventFlows);
+        return null;
     }
 }

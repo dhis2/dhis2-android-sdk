@@ -29,12 +29,8 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 

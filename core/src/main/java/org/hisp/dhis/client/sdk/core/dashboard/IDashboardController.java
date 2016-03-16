@@ -28,20 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
-import org.joda.time.DateTime;
 
-import java.util.List;
-
-public interface IDashboardController extends IDataController<Dashboard> {
-
-    void update();
-
-    void send();
-
-    List<IDbOperation> updateDashboards(DateTime lastUpdated);
-
-    List<IDbOperation> updateDashboardItems(DateTime lastUpdated);
+public interface IDashboardController extends IIdentifiableController<Dashboard> {
 }

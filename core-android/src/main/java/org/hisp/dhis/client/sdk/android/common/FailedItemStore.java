@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.common;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.Conflict$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Conflict$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.FailedItem$Flow;
-import org.hisp.dhis.client.sdk.android.flow.FailedItem$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.ImportSummary$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConflictFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConflictFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.FailedItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.FailedItemFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ImportSummaryFlow;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItemType;
@@ -50,15 +49,16 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean insert(FailedItem object) {
-        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
-        ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-        if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select()
-                    .from(Conflict$Flow.class)
-                    .where(Condition.column(Conflict$Flow$Table
-                            .IMPORTSUMMARY_IMPORTSUMMARY)
-                            .is(importSummaryFlow)).queryList();
-            for(Conflict$Flow conflictFlow : conflicts) {
+        FailedItemFlow failedItemFlow = null;
+        ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+
+        if (importSummaryFlow != null) {
+            List<ConflictFlow> conflicts = new Select()
+                    .from(ConflictFlow.class)
+                    .where(ConflictFlow_Table
+                            .importSummary.is(importSummaryFlow.getId()))
+                    .queryList();
+            for (ConflictFlow conflictFlow : conflicts) {
                 conflictFlow.insert();
             }
         }
@@ -68,16 +68,16 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean update(FailedItem object) {
-        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
-        ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-        if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select()
-                    .from(Conflict$Flow.class)
-                    .where(Condition.column(Conflict$Flow$Table
-                            .IMPORTSUMMARY_IMPORTSUMMARY)
-                            .is(importSummaryFlow))
+        FailedItemFlow failedItemFlow = null;//FailedItem_Flow.fromModel(object);
+        ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+
+        if (importSummaryFlow != null) {
+            List<ConflictFlow> conflicts = new Select()
+                    .from(ConflictFlow.class)
+                    .where(ConflictFlow_Table
+                            .importSummary.is(importSummaryFlow.getId()))
                     .queryList();
-            for(Conflict$Flow conflictFlow : conflicts) {
+            for (ConflictFlow conflictFlow : conflicts) {
                 conflictFlow.update();
             }
         }
@@ -87,16 +87,15 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean save(FailedItem object) {
-        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
-        ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-        if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select()
-                    .from(Conflict$Flow.class)
-                    .where(Condition.column(Conflict$Flow$Table
-                            .IMPORTSUMMARY_IMPORTSUMMARY)
-                            .is(importSummaryFlow))
+        FailedItemFlow failedItemFlow = null;//FailedItem_Flow.fromModel(object);
+        ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+        if (importSummaryFlow != null) {
+            List<ConflictFlow> conflicts = new Select()
+                    .from(ConflictFlow.class)
+                    .where(ConflictFlow_Table
+                            .importSummary.is(importSummaryFlow.getId()))
                     .queryList();
-            for(Conflict$Flow conflictFlow : conflicts) {
+            for (ConflictFlow conflictFlow : conflicts) {
                 conflictFlow.save();
             }
         }
@@ -106,21 +105,25 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public boolean delete(FailedItem object) {
-        FailedItem$Flow failedItemFlow = null;//FailedItem$Flow.fromModel(object);
-        ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-        if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select()
-                    .from(Conflict$Flow.class)
-                    .where(Condition.column(Conflict$Flow$Table
-                            .IMPORTSUMMARY_IMPORTSUMMARY)
-                            .is(importSummaryFlow))
+        FailedItemFlow failedItemFlow = null;//FailedItem_Flow.fromModel(object);
+        ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+        if (importSummaryFlow != null) {
+            List<ConflictFlow> conflicts = new Select()
+                    .from(ConflictFlow.class)
+                    .where(ConflictFlow_Table
+                            .importSummary.is(importSummaryFlow.getId()))
                     .queryList();
-            for(Conflict$Flow conflictFlow : conflicts) {
+            for (ConflictFlow conflictFlow : conflicts) {
                 conflictFlow.delete();
             }
         }
         failedItemFlow.delete();
         return true;
+    }
+
+    @Override
+    public boolean deleteAll() {
+        throw new UnsupportedOperationException("Unimplemented method");
     }
 
     @Override
@@ -130,64 +133,64 @@ public final class FailedItemStore implements IFailedItemStore {
 
     @Override
     public List<FailedItem> queryAll() {
-        List<FailedItem$Flow> failedItemFlows = new Select()
-                .from(FailedItem$Flow.class)
+        List<FailedItemFlow> failedItemFlows = new Select()
+                .from(FailedItemFlow.class)
                 .queryList();
-        for(FailedItem$Flow failedItemFlow : failedItemFlows) {
-            ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-            if(importSummaryFlow != null) {
-                List<Conflict$Flow> conflicts = new Select()
-                        .from(Conflict$Flow.class)
-                        .where(Condition.column(Conflict$Flow$Table
-                                .IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow))
+        for (FailedItemFlow failedItemFlow : failedItemFlows) {
+            ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+            if (importSummaryFlow != null) {
+                List<ConflictFlow> conflicts = new Select()
+                        .from(ConflictFlow.class)
+                        .where(ConflictFlow_Table
+                                .importSummary.is(importSummaryFlow.getId()))
                         .queryList();
                 importSummaryFlow.setConflicts(conflicts);
             }
         }
-        return null;//FailedItem$Flow.toModels(failedItemFlows);
+        return null;//FailedItem_Flow.toModels(failedItemFlows);
     }
 
     @Override
     public List<FailedItem> query(FailedItemType type) {
-        List<FailedItem$Flow> failedItemFlows = new Select()
-                .from(FailedItem$Flow.class)
-                .where(Condition.column(FailedItem$Flow$Table
-                        .ITEMTYPE).is(type))
+        List<FailedItemFlow> failedItemFlows = new Select()
+                .from(FailedItemFlow.class)
+                .where(FailedItemFlow_Table
+                        .itemType.is(type))
                 .queryList();
 
-        for(FailedItem$Flow failedItemFlow : failedItemFlows) {
-            ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
+        for (FailedItemFlow failedItemFlow : failedItemFlows) {
+            ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
 
-            if(importSummaryFlow != null) {
-                List<Conflict$Flow> conflicts = new Select()
-                        .from(Conflict$Flow.class)
-                        .where(Condition.column(Conflict$Flow$Table
-                                .IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow))
+            if (importSummaryFlow != null) {
+                List<ConflictFlow> conflicts = new Select()
+                        .from(ConflictFlow.class)
+                        .where(ConflictFlow_Table
+                                .importSummary.is(importSummaryFlow.getId()))
                         .queryList();
 
                 importSummaryFlow.setConflicts(conflicts);
             }
         }
 
-        return null;//FailedItem$Flow.toModels(failedItemFlows);
+        return null;//FailedItem_Flow.toModels(failedItemFlows);
     }
 
     @Override
     public FailedItem query(FailedItemType type, long itemId) {
-        FailedItem$Flow failedItemFlow = new Select()
-                .from(FailedItem$Flow.class)
-                .where(Condition.column(FailedItem$Flow$Table.ITEMTYPE)
-                        .is(type)).and(Condition.column(FailedItem$Flow$Table.ITEMID).is(itemId))
+        FailedItemFlow failedItemFlow = new Select()
+                .from(FailedItemFlow.class)
+                .where(FailedItemFlow_Table.itemType.is(type))
+                .and(FailedItemFlow_Table.itemId.is(itemId))
                 .querySingle();
-        ImportSummary$Flow importSummaryFlow = failedItemFlow.getImportSummary();
-        if(importSummaryFlow != null) {
-            List<Conflict$Flow> conflicts = new Select()
-                    .from(Conflict$Flow.class)
-                    .where(Condition.column(Conflict$Flow$Table
-                            .IMPORTSUMMARY_IMPORTSUMMARY).is(importSummaryFlow))
+        ImportSummaryFlow importSummaryFlow = failedItemFlow.getImportSummary();
+        if (importSummaryFlow != null) {
+            List<ConflictFlow> conflicts = new Select()
+                    .from(ConflictFlow.class)
+                    .where(ConflictFlow_Table
+                            .importSummary.is(importSummaryFlow.getId()))
                     .queryList();
             importSummaryFlow.setConflicts(conflicts);
         }
-        return null;//FailedItem$Flow.toModel(failedItemFlow);
+        return null;
     }
 }

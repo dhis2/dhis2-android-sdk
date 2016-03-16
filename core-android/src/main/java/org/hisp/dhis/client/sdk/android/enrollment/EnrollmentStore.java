@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Enrollment$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
-import org.hisp.dhis.client.sdk.core.event.IEventStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -46,56 +40,66 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public final class EnrollmentStore extends AbsDataStore<Enrollment, Enrollment$Flow> implements IEnrollmentStore {
+public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFlow> implements
+        IEnrollmentStore {
 
     public EnrollmentStore(IStateStore stateStore,
-                           IMapper<Enrollment, Enrollment$Flow> mapper) {
+                           IMapper<Enrollment, EnrollmentFlow> mapper) {
         super(mapper, stateStore);
     }
 
     @Override
     public Enrollment queryByUid(String uid) {
-        Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table
-                        .ENROLLMENTUID).is(uid))
-                .querySingle();
-        return getMapper().mapToModel(enrollmentFlow);
+//        Enrollment_Flow enrollmentFlow = new Select().from(Enrollment_Flow.class)
+//                .where(Condition.column(Enrollment_Flow_Table
+//                        .ENROLLMENTUID).is(uid))
+//                .querySingle();
+//        return getMapper().mapToModel(enrollmentFlow);
+        return null;
     }
 
     @Override
     public List<Enrollment> query(Program program, TrackedEntityInstance trackedEntityInstance) {
-        List<Enrollment$Flow> enrollmentFlows = new Select()
-                .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
-                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).queryList();
-        return getMapper().mapToModels(enrollmentFlows);
+//        List<Enrollment_Flow> enrollmentFlows = new Select()
+//                .from(Enrollment_Flow.class).where(Condition.column(Enrollment_Flow_Table.
+//                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment_Flow_Table.
+//                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance
+// .getTrackedEntityInstanceUid())).queryList();
+//        return getMapper().mapToModels(enrollmentFlows);
+        return null;
     }
 
     @Override
-    public Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance, OrganisationUnit organisationUnit, Program program) {
-        Enrollment$Flow enrollmentFlow = new Select().from(Enrollment$Flow.class)
-                .where(Condition.column(Enrollment$Flow$Table.
-                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).
-                        and(Condition.column(Enrollment$Flow$Table.STATUS).is(Enrollment.ACTIVE)).
-                        querySingle();
-        return getMapper().mapToModel(enrollmentFlow);
+    public Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
+                                            OrganisationUnit organisationUnit, Program program) {
+//        Enrollment_Flow enrollmentFlow = new Select().from(Enrollment_Flow.class)
+//                .where(Condition.column(Enrollment_Flow_Table.
+//                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment_Flow_Table.
+//                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance
+//                        .getTrackedEntityInstanceUid())).
+//                        and(Condition.column(Enrollment_Flow_Table.STATUS).is(Enrollment.ACTIVE)).
+//                        querySingle();
+//        return getMapper().mapToModel(enrollmentFlow);
+        return null;
     }
 
     @Override
     public List<Enrollment> query(TrackedEntityInstance trackedEntityInstance) {
-        List<Enrollment$Flow> enrollmentFlows = new Select()
-                .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
-                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance.getTrackedEntityInstanceUid())).queryList();
-        return getMapper().mapToModels(enrollmentFlows);
+//        List<Enrollment_Flow> enrollmentFlows = new Select()
+//                .from(Enrollment_Flow.class).where(Condition.column(Enrollment_Flow_Table.
+//                        TRACKEDENTITYINSTANCE_TEI).is(trackedEntityInstance
+//                        .getTrackedEntityInstanceUid())).queryList();
+//        return getMapper().mapToModels(enrollmentFlows);
+        return null;
     }
 
     @Override
     public List<Enrollment> query(Program program, OrganisationUnit organisationUnit) {
-        List<Enrollment$Flow> enrollmentFlows = new Select()
-                .from(Enrollment$Flow.class).where(Condition.column(Enrollment$Flow$Table.
-                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment$Flow$Table.
-                        ORGUNIT).is(organisationUnit.getUId())).queryList();
-        return getMapper().mapToModels(enrollmentFlows);
+//        List<Enrollment_Flow> enrollmentFlows = new Select()
+//                .from(Enrollment_Flow.class).where(Condition.column(Enrollment_Flow_Table.
+//                        PROGRAM).is(program.getUId())).and(Condition.column(Enrollment_Flow_Table.
+//                        ORGUNIT).is(organisationUnit.getUId())).queryList();
+//        return getMapper().mapToModels(enrollmentFlows);
+        return null;
     }
 }

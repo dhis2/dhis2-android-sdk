@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
@@ -249,10 +250,13 @@ public class ModelLinkFlow extends BaseModelFlow {
 
         Set<String> uids = ModelUtils.toUidSet(relatedItems);
         System.out.println(uids);
+
+        Property<String> uidColumn = new Property<>(modelClass,
+                BaseIdentifiableObjectFlow.COLUMN_UID);
         Where<T> where = new Select()
                 .from(modelClass)
                 .join(ModelLinkFlow.class, Join.JoinType.LEFT_OUTER)
-                .on(ModelLinkFlow_Table.modelKeyOne.eq(BaseIdentifiableObjectFlow.COLUMN_UID))
+                .on(ModelLinkFlow_Table.modelKeyOne.eq(uidColumn))
                 .where(ModelLinkFlow_Table.linkMimeType.is(type));
 
         if (!uids.isEmpty()) {

@@ -34,7 +34,9 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
@@ -68,6 +70,7 @@ public class D2 {
     private final IPreferencesModule preferencesModule;
 
     private final IUserAccountScope userAccountScope;
+    private final IOrganisationUnitScope organisationUnitScope;
     private final IProgramScope programScope;
 
     private D2(Context context) {
@@ -82,6 +85,7 @@ public class D2 {
 
         if (!isD2Configured) {
             userAccountScope = null;
+            organisationUnitScope = null;
             programScope = null;
             return;
         }
@@ -102,6 +106,10 @@ public class D2 {
         programScope = new ProgramScope(
                 servicesModule.getProgramService(),
                 controllersModule.getProgramController());
+
+        organisationUnitScope = new OrganisationUnitScope(
+                servicesModule.getOrganisationUnitService(),
+                controllersModule.getOrganisationUnitController());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),
@@ -150,10 +158,9 @@ public class D2 {
      *
      * @param configuration new configuration
      */
-
-    // TODO probably should return Observable
     public static Observable<Void> configure(@NonNull final Configuration configuration) {
         isNull(configuration, "Configuration must not be null");
+
         return Observable.create(new Observable.OnSubscribe<Void>() {
 
             @Override
@@ -197,5 +204,9 @@ public class D2 {
 
     public static IProgramScope programs() {
         return configuredInstance().programScope;
+    }
+
+    public static IOrganisationUnitScope organisationUnits() {
+        return configuredInstance().organisationUnitScope;
     }
 }

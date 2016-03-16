@@ -40,11 +40,11 @@ public class ItemListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.itemListCardViewRecyclerView);
-        mEmptyItemsTextView = (TextView) view.findViewById(R.id.tvNoItems);
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+//        mRecyclerView = (RecyclerView) view.findViewById(R.id.itemListCardViewRecyclerView);
+//        mEmptyItemsTextView = (TextView) view.findViewById(R.id.tvNoItems);
+//
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
     }
 }

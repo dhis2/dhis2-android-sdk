@@ -34,8 +34,8 @@ import com.raizlabs.android.dbflow.config.BaseDatabaseDefinition;
 import com.raizlabs.dbflow.android.sqlcipher.SQLCipherOpenHelper;
 
 @Database(
-        name = DbDhis.NAME, version = DbDhis.VERSION
-        // sqlHelperClass = DbDhisCipher.class
+        name = DbDhis.NAME, version = DbDhis.VERSION,
+        sqlHelperClass = DbDhisCipher.class
 )
 public final class DbDhis {
     public static final String NAME = "dhis";

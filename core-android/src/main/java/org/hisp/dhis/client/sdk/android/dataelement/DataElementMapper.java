@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.dataelement;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 public class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {

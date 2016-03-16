@@ -46,7 +46,7 @@ import java.util.Map;
 
 import retrofit2.Response;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
 
 public class EventApiClient implements IEventApiClient {
 

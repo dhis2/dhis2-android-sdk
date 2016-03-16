@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribute,

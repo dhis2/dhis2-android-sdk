@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
 public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {

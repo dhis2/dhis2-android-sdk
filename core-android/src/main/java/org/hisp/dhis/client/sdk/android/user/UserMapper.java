@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.user;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.UserFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 public class UserMapper extends AbsMapper<User, UserFlow> {

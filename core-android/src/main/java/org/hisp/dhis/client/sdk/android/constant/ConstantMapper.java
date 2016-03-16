@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.constant;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ConstantFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConstantFlow;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 public class ConstantMapper extends AbsMapper<Constant, ConstantFlow> {

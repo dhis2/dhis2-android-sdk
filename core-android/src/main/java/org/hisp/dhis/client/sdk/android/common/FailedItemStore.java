@@ -30,11 +30,11 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.ConflictFlow;
-import org.hisp.dhis.client.sdk.android.flow.ConflictFlow_Table;
-import org.hisp.dhis.client.sdk.android.flow.FailedItemFlow;
-import org.hisp.dhis.client.sdk.android.flow.FailedItemFlow_Table;
-import org.hisp.dhis.client.sdk.android.flow.ImportSummaryFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConflictFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConflictFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.FailedItemFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.FailedItemFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ImportSummaryFlow;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItem;
 import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItemType;

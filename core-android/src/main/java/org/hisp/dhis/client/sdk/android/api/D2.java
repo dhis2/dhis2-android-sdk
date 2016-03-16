@@ -31,9 +31,9 @@ package org.hisp.dhis.client.sdk.android.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.client.sdk.android.api.modules.NetworkModule;
-import org.hisp.dhis.client.sdk.android.api.modules.PersistenceModule;
-import org.hisp.dhis.client.sdk.android.api.modules.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
+import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;

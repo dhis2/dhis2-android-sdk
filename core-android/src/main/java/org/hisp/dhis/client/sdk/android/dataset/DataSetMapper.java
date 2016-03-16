@@ -29,8 +29,8 @@
 
 package org.hisp.dhis.client.sdk.android.dataset;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataSetFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 
 public class DataSetMapper extends AbsMapper<DataSet, DataSetFlow> {

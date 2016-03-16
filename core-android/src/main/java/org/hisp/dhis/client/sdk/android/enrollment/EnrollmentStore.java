@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.EnrollmentFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;

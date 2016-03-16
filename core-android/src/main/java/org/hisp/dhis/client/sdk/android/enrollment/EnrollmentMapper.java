@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.EnrollmentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 
 public class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {

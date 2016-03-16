@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.constant;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ConstantFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ConstantFlow;
 import org.hisp.dhis.client.sdk.core.constant.IConstantStore;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 

@@ -30,10 +30,10 @@ package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValueFlow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityAttributeValueFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueStore;

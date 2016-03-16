@@ -30,9 +30,9 @@ package org.hisp.dhis.client.sdk.android.interpretation;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElementFlow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationFlow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElementFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow_Table;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;

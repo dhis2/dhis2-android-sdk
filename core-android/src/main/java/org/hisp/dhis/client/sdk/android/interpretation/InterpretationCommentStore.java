@@ -30,8 +30,8 @@ package org.hisp.dhis.client.sdk.android.interpretation;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.InterpretationCommentFlow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationCommentFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow_Table;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;

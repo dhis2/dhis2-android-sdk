@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnitFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 

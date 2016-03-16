@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.retrofit.IDhisApi;
+import org.hisp.dhis.client.sdk.android.api.network.IDhisApi;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
@@ -44,8 +44,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.call;
-import static org.hisp.dhis.client.sdk.android.api.utils.NetworkUtils.unwrap;
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.unwrap;
 
 
 public class DashboardApiClient implements IDashboardApiClient {

@@ -34,6 +34,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.event.EventScope;
+import org.hisp.dhis.client.sdk.android.event.IEventScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
@@ -75,6 +77,7 @@ public class D2 {
     private final IOrganisationUnitScope organisationUnitScope;
     private final IProgramScope programScope;
     private final IProgramStageScope programStageScope;
+    private final IEventScope eventScope;
 
     private D2(Context context) {
         applicationContext = context;
@@ -91,6 +94,7 @@ public class D2 {
             organisationUnitScope = null;
             programScope = null;
             programStageScope = null;
+            eventScope = null;
             return;
         }
 
@@ -118,6 +122,10 @@ public class D2 {
         organisationUnitScope = new OrganisationUnitScope(
                 servicesModule.getOrganisationUnitService(),
                 controllersModule.getOrganisationUnitController());
+
+        eventScope = new EventScope(
+                servicesModule.getEventService(),
+                controllersModule.getEventController());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),

@@ -42,11 +42,11 @@ import rx.Subscriber;
 public class EventScope implements IEventScope {
 
     private final IEventService mEventService;
-    private final IEventController mEventController;
+    private final IEventController eventController;
 
     public EventScope(IEventService eventService, IEventController eventController) {
         this.mEventService = eventService;
-        this.mEventController = eventController;
+        this.eventController = eventController;
     }
 
     @Override
@@ -157,7 +157,7 @@ public class EventScope implements IEventScope {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mEventController.sync();
+                    eventController.sync();
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -174,7 +174,7 @@ public class EventScope implements IEventScope {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mEventController.sync(organisationUnit, program, limit);
+//                    eventController.sync(organisationUnit, program, limit);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -191,7 +191,7 @@ public class EventScope implements IEventScope {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mEventController.sync(organisationUnit, program);
+//                    eventController.sync(organisationUnit, program);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Set;
@@ -83,6 +84,11 @@ public final class EventStore extends AbsDataStore<Event, EventFlow> implements 
 //                .and(Condition.column(Event_Flow_Table
 //                        .PROGRAMID).is(program.getUId())).queryList();
 //        return getMapper().mapToModels(eventFlows);
+        return null;
+    }
+
+    @Override
+    public List<Event> query(OrganisationUnit organisationUnit, Program program, DateTime startDate, DateTime endDate) {
         return null;
     }
 }

@@ -34,6 +34,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.event.EventApiClient2;
+import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
@@ -47,6 +49,7 @@ import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
@@ -81,6 +84,7 @@ public class NetworkModule implements INetworkModule {
     private final IProgramApiClient programApiClient;
     private final IProgramStageApiClient programStageApiClient;
     private final IUserApiClient userApiClient;
+    private final IEventApiClient eventApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -130,6 +134,8 @@ public class NetworkModule implements INetworkModule {
                 IUserApiClientRetrofit.class));
         organisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
                 IOrganisationUnitApiClientRetrofit.class));
+        eventApiClient = new EventApiClient2(retrofit.create(
+                EventApiClientRetrofit.class));
     }
 
     @Override
@@ -155,6 +161,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IUserApiClient getUserApiClient() {
         return userApiClient;
+    }
+
+    @Override
+    public IEventApiClient getEventApiClient() {
+        return eventApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

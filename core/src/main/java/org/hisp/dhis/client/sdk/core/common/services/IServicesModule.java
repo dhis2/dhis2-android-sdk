@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
+import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
@@ -41,4 +42,6 @@ public interface IServicesModule {
     IOrganisationUnitService getOrganisationUnitService();
 
     IProgramStageService getProgramStageService();
+
+    IEventService getEventService();
 }

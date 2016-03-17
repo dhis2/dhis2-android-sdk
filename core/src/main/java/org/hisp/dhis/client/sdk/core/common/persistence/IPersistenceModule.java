@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
+import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
@@ -44,6 +45,8 @@ public interface IPersistenceModule {
     IProgramStageStore getProgramStageStore();
 
     IOrganisationUnitStore getOrganisationUnitStore();
+
+    IEventStore getEventStore();
 
     boolean deleteAllTables();
 }

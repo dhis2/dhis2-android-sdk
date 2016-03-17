@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
+import org.hisp.dhis.client.sdk.core.event.EventService;
+import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
@@ -45,6 +47,7 @@ public final class ServicesModule implements IServicesModule {
     private final IProgramService programService;
     private final IProgramStageService programStageService;
     private final IOrganisationUnitService organisationUnitService;
+    private final IEventService eventService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -57,6 +60,8 @@ public final class ServicesModule implements IServicesModule {
                 persistenceModule.getProgramStageStore());
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
+        eventService = new EventService(
+                persistenceModule.getEventStore());
     }
 
     @Override
@@ -77,5 +82,10 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public IProgramStageService getProgramStageService() {
         return programStageService;
+    }
+
+    @Override
+    public IEventService getEventService() {
+        return eventService;
     }
 }

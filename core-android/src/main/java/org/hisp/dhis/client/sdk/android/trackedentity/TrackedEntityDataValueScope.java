@@ -34,7 +34,10 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -43,7 +46,9 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     private final ITrackedEntityDataValueService mTrackedEntityDataValueService;
     private final IEventController mEventController;
 
-    public TrackedEntityDataValueScope(ITrackedEntityDataValueService trackedEntityDataValueService, IEventController eventController) {
+    public TrackedEntityDataValueScope(ITrackedEntityDataValueService
+                                               trackedEntityDataValueService, IEventController
+            eventController) {
         this.mTrackedEntityDataValueService = trackedEntityDataValueService;
         this.mEventController = eventController;
     }
@@ -54,7 +59,8 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             @Override
             public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
                 try {
-                    TrackedEntityDataValue trackedEntityDataValue = mTrackedEntityDataValueService.get(id);
+                    TrackedEntityDataValue trackedEntityDataValue =
+                            mTrackedEntityDataValueService.get(id);
                     subscriber.onNext(trackedEntityDataValue);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,7 +77,8 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             @Override
             public void call(Subscriber<? super List<TrackedEntityDataValue>> subscriber) {
                 try {
-                    List<TrackedEntityDataValue> trackedEntityDataValues = mTrackedEntityDataValueService.list();
+                    List<TrackedEntityDataValue> trackedEntityDataValues =
+                            mTrackedEntityDataValueService.list();
                     subscriber.onNext(trackedEntityDataValues);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -151,12 +158,16 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     }
 
     @Override
-    public Observable<TrackedEntityDataValue> create(final Event event, final String dataElement, final boolean providedElsewhere, final String storedBy, final String value) {
+    public Observable<TrackedEntityDataValue> create(final Event event, final String dataElement,
+                                                     final boolean providedElsewhere, final
+                                                         String storedBy, final String value) {
         return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
             @Override
             public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
                 try {
-                    TrackedEntityDataValue trackedEntityDataValue = mTrackedEntityDataValueService.create(event, dataElement, providedElsewhere, storedBy, value);
+                    TrackedEntityDataValue trackedEntityDataValue =
+                            mTrackedEntityDataValueService.create(event, dataElement,
+                                    providedElsewhere, storedBy, value);
                     subscriber.onNext(trackedEntityDataValue);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -173,7 +184,8 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             @Override
             public void call(Subscriber<? super List<TrackedEntityDataValue>> subscriber) {
                 try {
-                    List<TrackedEntityDataValue> trackedEntityDataValues = mTrackedEntityDataValueService.list(event);
+                    List<TrackedEntityDataValue> trackedEntityDataValues =
+                            mTrackedEntityDataValueService.list(event);
                     subscriber.onNext(trackedEntityDataValues);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -185,12 +197,14 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     }
 
     @Override
-    public Observable<TrackedEntityDataValue> get(final DataElement dataElement, final Event event) {
+    public Observable<TrackedEntityDataValue> get(final DataElement dataElement, final Event
+            event) {
         return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
             @Override
             public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
                 try {
-                    TrackedEntityDataValue trackedEntityDataValue = mTrackedEntityDataValueService.get(dataElement, event);
+                    TrackedEntityDataValue trackedEntityDataValue =
+                            mTrackedEntityDataValueService.get(dataElement, event);
                     subscriber.onNext(trackedEntityDataValue);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -207,7 +221,8 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mEventController.sync(uid);
+                    Set<String> uidSet = new HashSet<>(Arrays.asList(uid));
+                    mEventController.sync(uidSet);
 //                    subscriber.onNext();
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

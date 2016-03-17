@@ -32,10 +32,12 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
+import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.activities.INavigationCallback;
 
-public class BaseFragment2 extends Fragment {
+public class BaseFragment2 extends Fragment implements Toolbar.OnMenuItemClickListener {
     private INavigationCallback navigationCallback;
 
     @Override
@@ -69,7 +71,26 @@ public class BaseFragment2 extends Fragment {
         if (getParentFragment() != null && getParentFragment() instanceof WrapperFragment) {
             return ((WrapperFragment) getParentFragment()).getToolbar();
         }
-
         return null;
+    }
+
+    protected void setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener listener) {
+        Toolbar t = getParentToolbar();
+        if (getParentToolbar() != null) {
+            t.setOnMenuItemClickListener(listener);
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        System.out.println("refresh clicked.");
+        return false;
+    }
+
+    public void showRefreshButton() {
+        Toolbar t = getParentToolbar();
+        if (t != null) {
+            t.inflateMenu(R.menu.menu_main);
+        }
     }
 }

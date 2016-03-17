@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
+import org.hisp.dhis.client.sdk.core.event.EventController;
+import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
@@ -50,6 +52,7 @@ public class ControllersModule implements IControllersModule {
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
+    private final IEventController eventController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -81,6 +84,31 @@ public class ControllersModule implements IControllersModule {
         userAccountController = new UserAccountController(networkModule
                 .getUserApiClient(),
                 persistenceModule.getUserAccountStore());
+
+        eventController = new EventController(
+                networkModule.getEventApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager(),
+                null, //persistenceModule.getStateStore(),
+                persistenceModule.getEventStore(),
+                null, //persistenceModule.getTrackedEntityDataValueStore(),
+                persistenceModule.getOrganisationUnitStore(),
+                persistenceModule.getProgramStore(),
+                null //persistenceModule.getFailedItemStore()
+        );
+
+                /*
+
+                IEventApiClient eventApiClient,
+                           ISystemInfoApiClient systemInfoApiClient,
+                           ILastUpdatedPreferences lastUpdatedPreferences,
+                           ITransactionManager transactionManager,
+                           IStateStore stateStore, IEventStore eventStore,
+                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
+                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
+                           IFailedItemStore failedItemStore)
+                 */
     }
 
     @Override
@@ -106,5 +134,10 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
         return assignedOrganisationUnitsController;
+    }
+
+    @Override
+    public IEventController getEventController() {
+        return eventController;
     }
 }

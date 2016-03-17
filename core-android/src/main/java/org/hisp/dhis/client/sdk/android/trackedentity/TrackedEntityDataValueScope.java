@@ -34,6 +34,7 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -207,7 +208,7 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    mEventController.sync(uid);
+                    mEventController.sync(Arrays.asList(uid));
 //                    subscriber.onNext();
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

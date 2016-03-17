@@ -33,10 +33,12 @@ import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
 public interface IEventStore extends IIdentifiableObjectStore<Event> {
     List<Event> query(Enrollment enrollment);
     List<Event> query(OrganisationUnit organisationUnit, Program program);
+    List<Event> query(OrganisationUnit organisationUnit, Program program, DateTime startDate, DateTime endDate);
 }

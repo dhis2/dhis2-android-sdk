@@ -26,26 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.joda.time.DateTime;
 
 import java.util.List;
-import java.util.Set;
 
-import rx.Observable;
-
-public interface IProgramStageScope {
-    Observable<List<ProgramStage>> sync();
-
-    Observable<List<ProgramStage>> sync(String... programStageIds);
-
-    Observable<ProgramStage> get(String uid);
-
-    Observable<ProgramStage> get(long id);
-
-    Observable<List<ProgramStage>> list();
-
-    Observable<List<ProgramStage>> list(Program program);
+public interface IProgramStageApiClient {
+    List<ProgramStage> getProgramStages(Fields fields, DateTime lastUpdated,
+                                        String... uids) throws ApiException;
 }

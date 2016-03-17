@@ -31,8 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -42,21 +42,21 @@ import retrofit2.Call;
 
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
-public class ProgramApiClient2 implements IProgramApiClient {
-    private final IProgramApiClientRetrofit programApiClientRetrofit;
+public class ProgramStageApiClient implements IProgramStageApiClient {
+    private final IProgramStageApiClientRetrofit programStageApiClientRetrofit;
 
-    public ProgramApiClient2(IProgramApiClientRetrofit programApiClientRetrofit) {
-        this.programApiClientRetrofit = programApiClientRetrofit;
+    public ProgramStageApiClient(IProgramStageApiClientRetrofit programStageApiClientRetrofit) {
+        this.programStageApiClientRetrofit = programStageApiClientRetrofit;
     }
 
     @Override
-    public List<Program> getPrograms(Fields fields, DateTime lastUpdated,
-                                     String... uids) throws ApiException {
-        ApiResource<Program> apiResource = new ApiResource<Program>() {
+    public List<ProgramStage> getProgramStages(Fields fields, DateTime lastUpdated,
+                                               String... uids) throws ApiException {
+        ApiResource<ProgramStage> apiResource = new ApiResource<ProgramStage>() {
 
             @Override
             public String getResourceName() {
-                return "programs";
+                return "programStages";
             }
 
             @Override
@@ -67,13 +67,13 @@ public class ProgramApiClient2 implements IProgramApiClient {
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
-                        "programType,organisationUnits[id],programStages[id]";
+                        "program[id]";
             }
 
             @Override
-            public Call<Map<String, List<Program>>> getEntities(
+            public Call<Map<String, List<ProgramStage>>> getEntities(
                     Map<String, String> queryMap, List<String> filters) throws ApiException {
-                return programApiClientRetrofit.getPrograms(queryMap, filters);
+                return programStageApiClientRetrofit.getProgramStages(queryMap, filters);
             }
         };
 

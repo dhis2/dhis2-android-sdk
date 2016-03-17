@@ -30,10 +30,10 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -72,7 +72,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
             programStage.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = programStage.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.insert(programIndicator)) {
                         return false;
@@ -80,8 +80,9 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
                 }
             }
 
-            List<ProgramStageDataElement> programStageDataElements = programStage.getProgramStageDataElements();
-            if(programStageDataElements != null) {
+            List<ProgramStageDataElement> programStageDataElements = programStage
+                    .getProgramStageDataElements();
+            if (programStageDataElements != null) {
                 for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                     if (!mProgramStageDataElementStore.insert(programStageDataElement)) {
                         return false;
@@ -90,7 +91,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
             }
 
             List<ProgramStageSection> programStageSections = programStage.getProgramStageSections();
-            if(programStageSections != null) {
+            if (programStageSections != null) {
                 for (ProgramStageSection programStageSection : programStageSections) {
                     if (!mProgramStageSectionStore.insert(programStageSection)) {
                         return false;
@@ -113,7 +114,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
             programStage.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = programStage.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.save(programIndicator)) {
                         return false;
@@ -123,7 +124,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
 
             List<ProgramStageDataElement> programStageDataElements =
                     programStage.getProgramStageDataElements();
-            if(programStageDataElements != null) {
+            if (programStageDataElements != null) {
                 for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                     if (!mProgramStageDataElementStore.save(programStageDataElement)) {
                         return false;
@@ -133,7 +134,7 @@ public final class ProgramStageStore extends AbsIdentifiableObjectStore<ProgramS
 
             List<ProgramStageSection> programStageSections =
                     programStage.getProgramStageSections();
-            if(programStageSections != null) {
+            if (programStageSections != null) {
                 for (ProgramStageSection programStageSection : programStageSections) {
                     if (!mProgramStageSectionStore.save(programStageSection)) {
                         return false;

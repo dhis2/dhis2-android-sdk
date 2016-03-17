@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
@@ -50,8 +50,8 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
         programRuleFlow.setName(programRule.getName());
         programRuleFlow.setDisplayName(programRule.getDisplayName());
         programRuleFlow.setAccess(programRule.getAccess());
-        programRuleFlow.setProgramStage(MapperModuleProvider.getInstance()
-                .getProgramStageMapper().mapToDatabaseEntity(programRule.getProgramStage()));
+        programRuleFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programRule.getProgramStage()));
         programRuleFlow.setProgram(ProgramFlow.MAPPER
                 .mapToDatabaseEntity(programRule.getProgram()));
         programRuleFlow.setCondition(programRule.getCondition());
@@ -73,8 +73,8 @@ public class ProgramRuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
         programRule.setName(programRuleFlow.getName());
         programRule.setDisplayName(programRuleFlow.getDisplayName());
         programRule.setAccess(programRuleFlow.getAccess());
-        programRule.setProgramStage(MapperModuleProvider.getInstance()
-                .getProgramStageMapper().mapToModel(programRuleFlow.getProgramStage()));
+        programRule.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programRuleFlow.getProgramStage()));
         programRule.setProgram(ProgramFlow.MAPPER
                 .mapToModel(programRuleFlow.getProgram()));
         programRule.setCondition(programRuleFlow.getCondition());

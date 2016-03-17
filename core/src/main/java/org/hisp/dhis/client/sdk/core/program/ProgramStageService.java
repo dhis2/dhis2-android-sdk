@@ -28,24 +28,24 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
 
 public class ProgramStageService implements IProgramStageService {
-
-    private IProgramStageStore programStageStore;
+    private final IProgramStageStore programStageStore;
 
     public ProgramStageService(IProgramStageStore programStageStore) {
         this.programStageStore = programStageStore;
     }
+
     @Override
     public List<ProgramStage> list(Program program) {
         Preconditions.isNull(program, "Object must not be null");
+
         return programStageStore.query(program);
     }
 
@@ -62,18 +62,10 @@ public class ProgramStageService implements IProgramStageService {
     @Override
     public List<ProgramStage> list() {
         return programStageStore.queryAll();
-
     }
 
     @Override
-    public boolean remove(ProgramStage object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programStageStore.delete(object);
-    }
-
-    @Override
-    public boolean save(ProgramStage object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programStageStore.save(object);
+    public List<ProgramStage> list(Set<String> uids) {
+        return programStageStore.queryByUids(uids);
     }
 }

@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
 import java.util.List;
+import java.util.Set;
 
 public final class InterpretationStore implements IIdentifiableObjectStore<Interpretation> {
 
@@ -104,6 +105,11 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
                 .where(InterpretationFlow_Table.uId.is(uid))
                 .querySingle();
         return null;//Interpretation_Flow.toModel(interpretationFlow);
+    }
+
+    @Override
+    public List<Interpretation> queryByUids(Set<String> uids) {
+        return null;
     }
 
     /* @Override

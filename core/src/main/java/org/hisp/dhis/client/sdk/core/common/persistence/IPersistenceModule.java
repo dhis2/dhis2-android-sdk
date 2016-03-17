@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
@@ -39,6 +40,8 @@ public interface IPersistenceModule {
     IUserAccountStore getUserAccountStore();
 
     IProgramStore getProgramStore();
+
+    IProgramStageStore getProgramStageStore();
 
     IOrganisationUnitStore getOrganisationUnitStore();
 

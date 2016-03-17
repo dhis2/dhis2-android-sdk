@@ -26,14 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.program;
+package org.hisp.dhis.client.sdk.core.user;
 
-import org.joda.time.DateTime;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public interface IProgramRuleApiClient {
-    List<ProgramRule> getBasicProgramRules(DateTime lastUpdated);
-
-    List<ProgramRule> getFullProgramRules(DateTime lastUpdated);
+public interface IAssignedProgramApiClient {
+    Map<OrganisationUnit, Set<Program>> getAssignedPrograms();
 }

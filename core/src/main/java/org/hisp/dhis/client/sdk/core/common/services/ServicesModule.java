@@ -32,7 +32,9 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 
@@ -41,6 +43,7 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 public final class ServicesModule implements IServicesModule {
     private final IUserAccountService userAccountService;
     private final IProgramService programService;
+    private final IProgramStageService programStageService;
     private final IOrganisationUnitService organisationUnitService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
@@ -48,10 +51,10 @@ public final class ServicesModule implements IServicesModule {
 
         userAccountService = new UserAccountService(
                 persistenceModule.getUserAccountStore());
-
         programService = new ProgramService(
                 persistenceModule.getProgramStore());
-
+        programStageService = new ProgramStageService(
+                persistenceModule.getProgramStageStore());
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
     }
@@ -69,5 +72,10 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public IOrganisationUnitService getOrganisationUnitService() {
         return organisationUnitService;
+    }
+
+    @Override
+    public IProgramStageService getProgramStageService() {
+        return programStageService;
     }
 }

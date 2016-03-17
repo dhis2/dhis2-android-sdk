@@ -37,7 +37,6 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.models.program.IProgramRuleApiClient;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -46,6 +45,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public final class ProgramRuleController implements IIdentifiableController<ProgramRule> {
     private final ITransactionManager transactionManager;
@@ -97,7 +97,7 @@ public final class ProgramRuleController implements IIdentifiableController<Prog
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

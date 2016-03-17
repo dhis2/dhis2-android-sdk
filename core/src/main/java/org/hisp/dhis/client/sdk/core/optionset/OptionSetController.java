@@ -44,8 +44,8 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public final class OptionSetController implements IIdentifiableController<OptionSet> {
     private final IOptionSetApiClient optionSetApiClient;
@@ -133,7 +133,7 @@ public final class OptionSetController implements IIdentifiableController<Option
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

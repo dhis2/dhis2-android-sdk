@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 
@@ -59,8 +60,8 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
         programIndicatorFlow.setProgram(ProgramFlow.MAPPER
                 .mapToDatabaseEntity(programIndicator.getProgram()));
-        programIndicatorFlow.setProgramStage(MapperModuleProvider.getInstance()
-                .getProgramStageMapper().mapToDatabaseEntity(programIndicator.getProgramStage()));
+        programIndicatorFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programIndicator.getProgramStage()));
         programIndicatorFlow.setProgramStageSection(MapperModuleProvider.getInstance()
                 .getProgramStageSectionMapper().mapToDatabaseEntity(programIndicator
                         .getProgramStageSection()));
@@ -90,8 +91,8 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
         programIndicator.setProgram(ProgramFlow.MAPPER
                 .mapToModel(programIndicatorFlow.getProgram()));
-        programIndicator.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper
-                ().mapToModel(programIndicatorFlow.getProgramStage()));
+        programIndicator.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programIndicatorFlow.getProgramStage()));
         programIndicator.setProgramStageSection(MapperModuleProvider.getInstance()
                 .getProgramStageSectionMapper().mapToModel(programIndicatorFlow
                         .getProgramStageSection()));

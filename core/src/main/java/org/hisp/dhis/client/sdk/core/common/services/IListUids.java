@@ -26,26 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.program;
+package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 import java.util.List;
 import java.util.Set;
 
-import rx.Observable;
-
-public interface IProgramStageScope {
-    Observable<List<ProgramStage>> sync();
-
-    Observable<List<ProgramStage>> sync(String... programStageIds);
-
-    Observable<ProgramStage> get(String uid);
-
-    Observable<ProgramStage> get(long id);
-
-    Observable<List<ProgramStage>> list();
-
-    Observable<List<ProgramStage>> list(Program program);
+public interface IListUids<T extends IdentifiableObject> {
+    List<T> list(Set<String> uids);
 }

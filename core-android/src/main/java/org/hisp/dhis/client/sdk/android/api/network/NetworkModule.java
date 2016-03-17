@@ -37,7 +37,9 @@ import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -47,6 +49,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
@@ -76,13 +79,14 @@ public class NetworkModule implements INetworkModule {
     private final IOrganisationUnitApiClient organisationUnitApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
+    private final IProgramStageApiClient programStageApiClient;
     private final IUserApiClient userApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
                 preferencesModule.getUserPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);//HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor) // TODO Consider replacing with Authenticator
@@ -118,6 +122,8 @@ public class NetworkModule implements INetworkModule {
 
         programApiClient = new ProgramApiClient2(retrofit.create(
                 IProgramApiClientRetrofit.class));
+        programStageApiClient = new ProgramStageApiClient(retrofit.create(
+                IProgramStageApiClientRetrofit.class));
         systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClient(retrofit.create(
@@ -137,6 +143,11 @@ public class NetworkModule implements INetworkModule {
     }
 
     @Override
+    public IProgramStageApiClient getProgramStageApiClient() {
+        return programStageApiClient;
+    }
+
+    @Override
     public IOrganisationUnitApiClient getOrganisationUnitApiClient() {
         return organisationUnitApiClient;
     }
@@ -148,11 +159,9 @@ public class NetworkModule implements INetworkModule {
 
     private static class AuthInterceptor implements Interceptor {
         private final IUserPreferences mUserPreferences;
-        // private final IConfigurationPreferences mConfigurationPreferences;
 
         public AuthInterceptor(IUserPreferences preferences) {
             mUserPreferences = preferences;
-            // mConfigurationPreferences = configurationPreferences;
         }
 
         @Override

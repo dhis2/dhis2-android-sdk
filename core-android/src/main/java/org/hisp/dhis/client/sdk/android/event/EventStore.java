@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 public final class EventStore extends AbsDataStore<Event, EventFlow> implements IEventStore {
 
@@ -52,6 +53,11 @@ public final class EventStore extends AbsDataStore<Event, EventFlow> implements 
 //                .where(Condition.column(Event_Flow_Table.EVENTUID).is(uid))
 //                .querySingle();
 //        return getMapper().mapToModel(eventFlow);
+        return null;
+    }
+
+    @Override
+    public List<Event> queryByUids(Set<String> uids) {
         return null;
     }
 

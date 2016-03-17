@@ -41,15 +41,14 @@ public enum ResourceType {
     CONSTANTS,
     USERS,
 
+
+    PROGRAMS,
+    PROGRAM_STAGES,
+
     /* Event and Tracker capture resources */
     PROGRAM_RULE_VARIABLES,
     PROGRAM_RULE_ACTIONS,
     PROGRAM_RULES,
-
-    // ASSIGNED_PROGRAMS,
-    PROGRAMS,
-    PROGRAMS_WITHOUT_REGISTRATION,
-    PROGRAM,
 
     TRACKED_ENTITY_ATTRIBUTES,
     TRACKED_ENTITIES,

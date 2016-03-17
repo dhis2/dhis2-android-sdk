@@ -39,8 +39,10 @@ import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitSc
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
@@ -72,6 +74,7 @@ public class D2 {
     private final IUserAccountScope userAccountScope;
     private final IOrganisationUnitScope organisationUnitScope;
     private final IProgramScope programScope;
+    private final IProgramStageScope programStageScope;
 
     private D2(Context context) {
         applicationContext = context;
@@ -87,6 +90,7 @@ public class D2 {
             userAccountScope = null;
             organisationUnitScope = null;
             programScope = null;
+            programStageScope = null;
             return;
         }
 
@@ -106,6 +110,10 @@ public class D2 {
         programScope = new ProgramScope(
                 servicesModule.getProgramService(),
                 controllersModule.getProgramController());
+
+        programStageScope = new ProgramStageScope(
+                servicesModule.getProgramStageService(),
+                controllersModule.getProgramStageController());
 
         organisationUnitScope = new OrganisationUnitScope(
                 servicesModule.getOrganisationUnitService(),
@@ -140,7 +148,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -204,6 +212,10 @@ public class D2 {
 
     public static IProgramScope programs() {
         return configuredInstance().programScope;
+    }
+
+    public static IProgramStageScope programStages() {
+        return configuredInstance().programStageScope;
     }
 
     public static IOrganisationUnitScope organisationUnits() {

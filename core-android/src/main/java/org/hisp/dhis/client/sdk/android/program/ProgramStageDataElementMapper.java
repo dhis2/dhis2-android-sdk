@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -50,7 +51,8 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElementFlow.setDisplayName(programStageDataElement.getDisplayName());
         programStageDataElementFlow.setAccess(programStageDataElement.getAccess());
         programStageDataElementFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programStageDataElement.getProgramStageSection()));
-        programStageDataElementFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programStageDataElement.getProgramStage()));
+        programStageDataElementFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programStageDataElement.getProgramStage()));
         programStageDataElementFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programStageDataElement.getDataElement()));
         programStageDataElementFlow.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
         programStageDataElementFlow.setSortOrder(programStageDataElement.getSortOrder());
@@ -74,7 +76,8 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElement.setName(programStageDataElementFlow.getName());
         programStageDataElement.setDisplayName(programStageDataElementFlow.getDisplayName());
         programStageDataElement.setAccess(programStageDataElementFlow.getAccess());
-        programStageDataElement.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programStageDataElementFlow.getProgramStage()));
+        programStageDataElement.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programStageDataElementFlow.getProgramStage()));
         programStageDataElement.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programStageDataElementFlow.getDataElement()));
         programStageDataElement.setAllowFutureDate(programStageDataElementFlow.isAllowFutureDate());
         programStageDataElement.setSortOrder(programStageDataElementFlow.getSortOrder());

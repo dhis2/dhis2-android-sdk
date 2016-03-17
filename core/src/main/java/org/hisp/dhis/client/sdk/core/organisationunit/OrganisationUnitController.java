@@ -80,7 +80,7 @@ public class OrganisationUnitController implements IOrganisationUnitController {
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
 

@@ -32,7 +32,6 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
-import java.util.Set;
 
 import rx.Observable;
 
@@ -46,7 +45,7 @@ public interface IProgramScope {
 
     Observable<List<Program>> list(OrganisationUnit... organisationUnits);
 
-    Observable<Void> sync();
+    Observable<List<Program>> sync();
 
-    Observable<Void> sync(Set<String> uids);
+    Observable<List<Program>> sync(String... uids);
 }

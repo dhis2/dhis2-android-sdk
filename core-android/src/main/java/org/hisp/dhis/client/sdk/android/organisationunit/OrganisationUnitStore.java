@@ -144,6 +144,17 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         return isSuccess;
     }
 
+    @Override
+    public boolean deleteAll() {
+        boolean isSuccess = super.deleteAll();
+
+        if (isSuccess) {
+            ModelLinkFlow.deleteModels(UNITS_TO_PROGRAMS);
+        }
+
+        return isSuccess;
+    }
+
     private void updateOrganisationUnitRelationships(OrganisationUnit organisationUnit) {
         List<IDbOperation> dbOperations = ModelLinkFlow.updateLinksToModel(organisationUnit,
                 organisationUnit.getPrograms(), UNITS_TO_PROGRAMS);

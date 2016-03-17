@@ -26,13 +26,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.program;
+package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
-import java.util.Map;
-import java.util.Set;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
-public interface IAssignedProgramApiClient {
-    Map<OrganisationUnit, Set<Program>> getAssignedPrograms();
+import java.util.List;
+
+public class ProgramStageStore2 extends AbsIdentifiableObjectStore<ProgramStage, ProgramStageFlow>
+        implements IProgramStageStore {
+
+    public ProgramStageStore2() {
+        super(ProgramStageFlow.MAPPER);
+    }
+
+    @Override
+    public List<ProgramStage> query(Program program) {
+        List<ProgramStageFlow> programStageFlows = new Select()
+                .from(ProgramStageFlow.class)
+                .where(ProgramStageFlow_Table.program.is(program.getUId()))
+                .queryList();
+
+        return getMapper().mapToModels(programStageFlows);
+    }
 }

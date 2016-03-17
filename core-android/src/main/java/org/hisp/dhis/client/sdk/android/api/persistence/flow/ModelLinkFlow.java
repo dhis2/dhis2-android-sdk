@@ -260,8 +260,7 @@ public class ModelLinkFlow extends BaseModelFlow {
                 .where(ModelLinkFlow_Table.linkMimeType.is(type));
 
         if (!uids.isEmpty()) {
-            String[] uidArray = uids.toArray(new String[uids.size()]);
-            where = where.and(ModelLinkFlow_Table.modelKeyTwo.in(uidArray[0]));
+            where = where.and(ModelLinkFlow_Table.modelKeyTwo.in(uids));
         }
 
         System.out.println("SQL: " + where.toString());
@@ -271,11 +270,17 @@ public class ModelLinkFlow extends BaseModelFlow {
 
     public static <T extends IdentifiableObject> void deleteRelatedModels(
             @NonNull T model, @NonNull String linkMimeType) {
-
         new Delete()
                 .from(ModelLinkFlow.class)
                 .where(ModelLinkFlow_Table.linkMimeType.is(linkMimeType))
                 .and(ModelLinkFlow_Table.modelKeyOne.is(model.getUId()))
+                .query();
+    }
+
+    public static <T extends IdentifiableObject> void deleteModels(@NonNull String linkMimeType) {
+        new Delete()
+                .from(ModelLinkFlow.class)
+                .where(ModelLinkFlow_Table.linkMimeType.is(linkMimeType))
                 .query();
     }
 }

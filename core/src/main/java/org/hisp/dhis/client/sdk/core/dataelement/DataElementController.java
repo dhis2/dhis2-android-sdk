@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public final class DataElementController implements IIdentifiableController<DataElement> {
     private final IDataElementApiClient dataElementApiClient;
@@ -92,7 +92,7 @@ public final class DataElementController implements IIdentifiableController<Data
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

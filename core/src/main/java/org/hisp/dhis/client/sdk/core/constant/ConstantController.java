@@ -41,10 +41,10 @@ import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public final class ConstantController implements IIdentifiableController<Constant> {
     private final IConstantApiClient constantApiClient;
@@ -95,7 +95,7 @@ public final class ConstantController implements IIdentifiableController<Constan
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

@@ -28,24 +28,19 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import rx.Observable;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
-public interface IProgramStageScope {
-    Observable<List<ProgramStage>> sync();
+public interface IProgramStageApiClientRetrofit {
 
-    Observable<List<ProgramStage>> sync(String... programStageIds);
-
-    Observable<ProgramStage> get(String uid);
-
-    Observable<ProgramStage> get(long id);
-
-    Observable<List<ProgramStage>> list();
-
-    Observable<List<ProgramStage>> list(Program program);
+    @GET("programStages")
+    Call<Map<String, List<ProgramStage>>> getProgramStages(@QueryMap Map<String, String> queryMap,
+                                                           @Query("filter") List<String> filters);
 }

@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public final class ProgramRuleVariableController implements IIdentifiableController<ProgramRuleVariable> {
     private final IProgramRuleVariableApiClient programRuleActionApiClient;
@@ -100,7 +101,7 @@ public final class ProgramRuleVariableController implements IIdentifiableControl
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

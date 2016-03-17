@@ -122,14 +122,14 @@ public class ProgramScope implements IProgramScope {
     }
 
     @Override
-    public Observable<Void> sync() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+    public Observable<List<Program>> sync() {
+        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
 
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
                     programController.sync();
-                    subscriber.onNext(null);
+                    subscriber.onNext(programService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -139,21 +139,10 @@ public class ProgramScope implements IProgramScope {
         });
     }
 
+    // TODO think about adding method to service layer
+    // which will get list of uids in and return set of models back
     @Override
-    public Observable<Void> sync(final Set<String> uids) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    programController.sync(uids);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
+    public Observable<List<Program>> sync(final String... uids) {
+        throw new UnsupportedOperationException("This method is not implemented at the moment");
     }
 }

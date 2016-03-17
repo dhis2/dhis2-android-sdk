@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
@@ -51,7 +52,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSectionFlow.setAccess(programStageSection.getAccess());
         programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
         programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
-        programStageSectionFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programStageSection.getProgramStage()));
+        programStageSectionFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programStageSection.getProgramStage()));
         return programStageSectionFlow;
     }
 
@@ -71,7 +73,8 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
         programStageSection.setAccess(programStageSectionFlow.getAccess());
         programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
         programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
-        programStageSection.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programStageSectionFlow.getProgramStage()));
+        programStageSection.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programStageSectionFlow.getProgramStage()));
         return programStageSection;
     }
 

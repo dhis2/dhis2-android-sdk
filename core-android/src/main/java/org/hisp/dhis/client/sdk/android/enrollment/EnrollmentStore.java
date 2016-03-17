@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
+import java.util.Set;
 
 public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFlow> implements
         IEnrollmentStore {
@@ -55,6 +56,11 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFl
 //                        .ENROLLMENTUID).is(uid))
 //                .querySingle();
 //        return getMapper().mapToModel(enrollmentFlow);
+        return null;
+    }
+
+    @Override
+    public List<Enrollment> queryByUids(Set<String> uids) {
         return null;
     }
 

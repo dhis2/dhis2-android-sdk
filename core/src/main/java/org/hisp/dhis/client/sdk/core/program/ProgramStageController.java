@@ -36,38 +36,40 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class ProgramController implements IProgramController {
+public class ProgramStageController implements IProgramStageController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IProgramApiClient programApiClient;
-    private final IUserApiClient userApiClient;
+    private final IProgramStageApiClient programStageApiClient;
 
     /* Local storage */
-    private final IProgramStore programStore;
+    private final IProgramStageStore programStageStore;
+
+    /* Controllers */
+    private final IProgramController programController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public ProgramController(ISystemInfoApiClient systemInfoApiClient,
-                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, ITransactionManager transactionManager,
-                             ILastUpdatedPreferences lastUpdatedPreferences) {
+    public ProgramStageController(ISystemInfoApiClient systemInfoApiClient,
+                                  IProgramStageApiClient programStageApiClient,
+                                  IProgramStageStore programStageStore,
+                                  IProgramController programController,
+                                  ITransactionManager transactionManager,
+                                  ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
-        this.programApiClient = programApiClient;
-        this.userApiClient = userApiClient;
-        this.programStore = programStore;
+        this.programStageApiClient = programStageApiClient;
+        this.programStageStore = programStageStore;
+        this.programController = programController;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
@@ -80,41 +82,46 @@ public class ProgramController implements IProgramController {
     @Override
     public void sync(Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM_STAGES);
 
-        List<Program> persistedPrograms = programStore.queryAll();
+        List<ProgramStage> persistedProgramStages = programStageStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+        List<ProgramStage> allExistingProgramStages = programStageApiClient
+                .getProgramStages(Fields.BASIC, null);
 
         String[] uidArray = null;
         if (uids != null) {
-            // here we want to get list of ids of programs which are
-            // stored locally and list of programs which we want to download
-            Set<String> persistedProgramIds = ModelUtils.toUidSet(persistedPrograms);
-            persistedProgramIds.addAll(uids);
+            // here we want to get list of ids of program stages which are
+            // stored locally and list of program stages which we want to download
+            Set<String> persistedProgramStageIds = ModelUtils.toUidSet(persistedProgramStages);
+            persistedProgramStageIds.addAll(uids);
 
-            uidArray = persistedProgramIds.toArray(new String[persistedProgramIds.size()]);
+            uidArray = persistedProgramStageIds
+                    .toArray(new String[persistedProgramStageIds.size()]);
         }
 
-        List<Program> updatedPrograms = programApiClient.getPrograms(
+        List<ProgramStage> updatedProgramStages = programStageApiClient.getProgramStages(
                 Fields.ALL, lastUpdated, uidArray);
 
-        // we need to mark assigned programs as "assigned" before storing them
-        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
-                .getUserAccount().getPrograms());
-
-        for (Program updatedProgram : updatedPrograms) {
-            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
-            updatedProgram.setIsAssignedToUser(assignedProgram != null);
+        // Retrieving program uids from program stages
+        Set<String> programUids = new HashSet<>();
+        List<ProgramStage> mergedProgramStages = ModelUtils.merge(
+                allExistingProgramStages, updatedProgramStages, persistedProgramStages);
+        for (ProgramStage programStage : mergedProgramStages) {
+            programUids.add(programStage.getProgram().getUId());
         }
 
+        // Syncing programs before saving program stages (since
+        // program stages are referencing them directly)
+        programController.sync(programUids);
+
         // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-                updatedPrograms, persistedPrograms, programStore);
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingProgramStages,
+                updatedProgramStages, persistedProgramStages, programStageStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAMS, serverTime);
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGES, serverTime);
     }
 }

@@ -31,8 +31,11 @@ package org.hisp.dhis.client.sdk.core.organisationunit;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class OrganisationUnitService implements IOrganisationUnitService {
     private final IOrganisationUnitStore organisationUnitStore;
@@ -69,5 +72,10 @@ public class OrganisationUnitService implements IOrganisationUnitService {
     @Override
     public List<OrganisationUnit> list(DataSet... dataSets) {
         return organisationUnitStore.query(dataSets);
+    }
+
+    @Override
+    public List<OrganisationUnit> list(Set<String> uids) {
+        return organisationUnitStore.queryByUids(uids);
     }
 }

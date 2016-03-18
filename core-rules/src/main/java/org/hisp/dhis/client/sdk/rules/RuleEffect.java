@@ -28,32 +28,6 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
+public class RuleEffect {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Main {
-
-    public static void main(String[] args) {
-        RuleEngine ruleEngine = new RuleEngine.Builder()
-                .trackedEntityAttributes(new ArrayList<>())
-                .programRuleVariables(new ArrayList<>())
-                .dataElements(new ArrayList<>())
-                .programRules(new ArrayList<>())
-                .optionSets(new ArrayList<>())
-                .constants(new ArrayList<>())
-                .build();
-
-        List<RuleEffect> ruleEffectsOne = ruleEngine.execute(new Event(), new ArrayList<>());
-        List<RuleEffect> ruleEffectsTwo = ruleEngine.execute(new Event(), new Enrollment());
-
-        processEffects(ruleEffectsOne);
-        processEffects(ruleEffectsTwo);
-    }
-
-    private static void processEffects(List<RuleEffect> ruleEffects) {
-        // processing effects which RuleEngine spitted out
-    }
 }

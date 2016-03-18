@@ -35,7 +35,6 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
-import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;

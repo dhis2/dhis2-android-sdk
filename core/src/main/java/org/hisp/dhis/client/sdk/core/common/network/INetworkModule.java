@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
@@ -45,6 +46,8 @@ public interface INetworkModule {
     IProgramApiClient getProgramApiClient();
 
     IProgramStageApiClient getProgramStageApiClient();
+
+    IProgramStageSectionApiClient getProgramStageSectionApiClient();
 
     IEventApiClient getEventApiClient();
 }

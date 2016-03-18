@@ -45,7 +45,6 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFl
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
@@ -74,7 +73,6 @@ import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeMapper;
@@ -100,7 +98,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
@@ -141,7 +138,6 @@ public class MapperModule {
     private final IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
             programStageDataElementMapper;
     private final IMapper<ProgramIndicator, ProgramIndicatorFlow> programIndicatorMapper;
-    private final IMapper<ProgramStageSection, ProgramStageSectionFlow> programStageSectionMapper;
     private final IMapper<ProgramRule, ProgramRuleFlow> programRuleMapper;
     private final IMapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
     private final IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> programRuleVariableMapper;
@@ -178,7 +174,6 @@ public class MapperModule {
         dataSetMapper = new DataSetMapper();
 
         programIndicatorMapper = new ProgramIndicatorMapper();
-        programStageSectionMapper = new ProgramStageSectionMapper();
 
         userMapper = new UserMapper();
     }
@@ -267,10 +262,6 @@ public class MapperModule {
 
     public IMapper<ProgramIndicator, ProgramIndicatorFlow> getProgramIndicatorMapper() {
         return programIndicatorMapper;
-    }
-
-    public IMapper<ProgramStageSection, ProgramStageSectionFlow> getProgramStageSectionMapper() {
-        return programStageSectionMapper;
     }
 
     public IMapper<ProgramRule, ProgramRuleFlow> getProgramRuleMapper() {

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.joda.time.DateTime;
 
 import java.util.List;
 
-public interface IProgramStageSectionService extends IService, IGet<ProgramStageSection>,
-        IGetUid<ProgramStageSection>, IList<ProgramStageSection> {
-
-    List<ProgramStageSection> list(ProgramStage programStage);
+public interface IProgramStageSectionApiClient {
+    List<ProgramStageSection> getProgramStageSections(Fields fields, DateTime lastUpdated,
+                                                      String... uids) throws ApiException;
 }

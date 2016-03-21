@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.systeminfo;
 
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
 public interface ISystemInfoApiClient {
-    SystemInfo getSystemInfo();
+    SystemInfo getSystemInfo() throws ApiException;
 }

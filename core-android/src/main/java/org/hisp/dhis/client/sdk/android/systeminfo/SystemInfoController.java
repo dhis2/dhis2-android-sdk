@@ -26,53 +26,47 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.api.preferences;
+package org.hisp.dhis.client.sdk.android.systeminfo;
 
-import android.content.Context;
-
-import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
+import org.joda.time.DateTime;
 
-public class PreferencesModule implements IPreferencesModule {
-    private final IConfigurationPreferences configurationPreferences;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IUserPreferences userPreferences;
+public class SystemInfoController implements ISystemInfoController {
+    /* API clients */
+    private final ISystemInfoApiClient systemInfoApiClient;
+
+    /* Stores and preferences */
     private final ISystemInfoPreferences systemInfoPreferences;
+    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public PreferencesModule(Context context) {
-        configurationPreferences = new ConfigurationPreferences(context);
-        lastUpdatedPreferences = new LastUpdatedPreferences(context);
-        userPreferences = new UserPreferences(context);
-        systemInfoPreferences = new SystemInfoPreferences(context);
+    public SystemInfoController(ISystemInfoApiClient systemInfoApiClient,
+                                ISystemInfoPreferences systemInfoPreferences,
+                                ILastUpdatedPreferences lastUpdatedPreferences) {
+        this.systemInfoApiClient = systemInfoApiClient;
+        this.systemInfoPreferences = systemInfoPreferences;
+        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
-    public IConfigurationPreferences getConfigurationPreferences() {
-        return configurationPreferences;
+    public SystemInfo getSystemInfo() throws ApiException {
+        SystemInfo systemInfo = systemInfoPreferences.get();
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.SYSTEM_INFO);
+        DateTime currentDate = DateTime.now();
+
+        if (systemInfo == null) {
+            SystemInfo updatedSystemInfo = systemInfoApiClient.getSystemInfo();
+        }
+
+        return null;
     }
 
-    @Override
-    public ILastUpdatedPreferences getLastUpdatedPreferences() {
-        return lastUpdatedPreferences;
-    }
-
-    @Override
-    public IUserPreferences getUserPreferences() {
-        return userPreferences;
-    }
-
-    @Override
-    public ISystemInfoPreferences getSystemInfoPreferences() {
-        return systemInfoPreferences;
-    }
-
-    @Override
-    public boolean clearAllPreferences() {
-        return configurationPreferences.clear() && lastUpdatedPreferences.clear()
-                && userPreferences.clear();
+    private static boolean isSystemInfoExpired(DateTime currentDate, DateTime lastUpdated) {
+        return false;
     }
 }

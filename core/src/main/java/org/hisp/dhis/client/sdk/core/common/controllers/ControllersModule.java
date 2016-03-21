@@ -41,6 +41,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -51,6 +52,7 @@ import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class ControllersModule implements IControllersModule {
+    private final ISystemInfoController systemInfoController;
     private final IUserAccountController userAccountController;
     private final IProgramController programController;
     private final IProgramStageController programStageController;
@@ -66,6 +68,8 @@ public class ControllersModule implements IControllersModule {
         isNull(networkModule, "networkModule must not be null");
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
+
+        systemInfoController = null;
 
         programController = new ProgramController(
                 networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),

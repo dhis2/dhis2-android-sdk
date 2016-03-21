@@ -60,6 +60,10 @@ public final class SystemInfo {
     @JsonProperty("version")
     String version;
 
+    public SystemInfo() {
+        // explicit empty constructor
+    }
+
     public DateTime getBuildTime() {
         return buildTime;
     }

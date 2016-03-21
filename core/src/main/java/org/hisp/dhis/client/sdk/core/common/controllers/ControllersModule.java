@@ -37,8 +37,10 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitControlle
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -52,6 +54,7 @@ public class ControllersModule implements IControllersModule {
     private final IUserAccountController userAccountController;
     private final IProgramController programController;
     private final IProgramStageController programStageController;
+    private final IProgramStageSectionController programStageSectionController;
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
@@ -75,6 +78,13 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getProgramStageApiClient(),
                 persistenceModule.getProgramStageStore(),
                 programController, persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        programStageSectionController = new ProgramStageSectionController(
+                networkModule.getSystemInfoApiClient(),
+                networkModule.getProgramStageSectionApiClient(),
+                persistenceModule.getProgramStageSectionStore(),
+                programStageController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         assignedProgramsController = new AssignedProgramsController(
@@ -107,18 +117,6 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getProgramStore(),
                 null //persistenceModule.getFailedItemStore()
         );
-
-                /*
-
-                IEventApiClient eventApiClient,
-                           ISystemInfoApiClient systemInfoApiClient,
-                           ILastUpdatedPreferences lastUpdatedPreferences,
-                           ITransactionManager transactionManager,
-                           IStateStore stateStore, IEventStore eventStore,
-                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                           IFailedItemStore failedItemStore)
-                 */
     }
 
     @Override
@@ -134,6 +132,11 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IProgramStageController getProgramStageController() {
         return programStageController;
+    }
+
+    @Override
+    public IProgramStageSectionController getProgramStageSectionController() {
+        return programStageSectionController;
     }
 
     @Override

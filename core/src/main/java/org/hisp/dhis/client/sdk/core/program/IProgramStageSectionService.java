@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import java.util.List;
 
 public interface IProgramStageSectionService extends IService, IGet<ProgramStageSection>,
-        IGetUid<ProgramStageSection>, IList<ProgramStageSection> {
+        IGetUid<ProgramStageSection>, IList<ProgramStageSection>, IListUids<ProgramStageSection> {
 
     List<ProgramStageSection> list(ProgramStage programStage);
 }

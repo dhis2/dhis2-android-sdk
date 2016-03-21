@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
 
 public class ProgramStageSectionService implements IProgramStageSectionService {
     private IProgramStageSectionStore programStageSectionStore;
@@ -60,6 +61,10 @@ public class ProgramStageSectionService implements IProgramStageSectionService {
     @Override
     public List<ProgramStageSection> list() {
         return programStageSectionStore.queryAll();
+    }
 
+    @Override
+    public List<ProgramStageSection> list(Set<String> uids) {
+        return programStageSectionStore.queryByUids(uids);
     }
 }

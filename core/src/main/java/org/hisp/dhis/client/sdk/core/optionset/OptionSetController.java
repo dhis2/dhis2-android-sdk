@@ -54,10 +54,11 @@ public final class OptionSetController implements IIdentifiableController<Option
     private final ITransactionManager transactionManager;
 
     private final IOptionStore mOptionStore;
-    private final IIdentifiableObjectStore<OptionSet> mOptionSetStore;
+    private final IOptionSetStore optionSetStore;
 
-    public OptionSetController(IOptionSetApiClient optionSetApiClient, IOptionStore mOptionStore,
-                               IIdentifiableObjectStore<OptionSet> mOptionSetStore,
+    public OptionSetController(IOptionSetApiClient optionSetApiClient,
+                               IOptionStore mOptionStore,
+                               IOptionSetStore optionSetStore,
                                ISystemInfoApiClient systemInfoApiClient,
                                ILastUpdatedPreferences lastUpdatedPreferences,
                                ITransactionManager transactionManager) {
@@ -65,7 +66,7 @@ public final class OptionSetController implements IIdentifiableController<Option
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.optionSetApiClient = optionSetApiClient;
         this.mOptionStore = mOptionStore;
-        this.mOptionSetStore = mOptionSetStore;
+        this.optionSetStore = optionSetStore;
         this.systemInfoApiClient = systemInfoApiClient;
     }
 
@@ -77,17 +78,17 @@ public final class OptionSetController implements IIdentifiableController<Option
         List<OptionSet> updatedOptionSets = optionSetApiClient.getFullOptionSets(lastUpdated);
         linkOptionsWithOptionSets(updatedOptionSets);
         List<OptionSet> existingPersistedAndUpdatedOptionSets =
-                ModelUtils.merge(allOptionSets, updatedOptionSets, mOptionSetStore.queryAll());
+                ModelUtils.merge(allOptionSets, updatedOptionSets, optionSetStore.queryAll());
 
         List<IDbOperation> operations = new ArrayList<>();
-        List<OptionSet> persistedOptionSets = mOptionSetStore.queryAll();
+        List<OptionSet> persistedOptionSets = optionSetStore.queryAll();
         if (existingPersistedAndUpdatedOptionSets != null &&
                 !existingPersistedAndUpdatedOptionSets.isEmpty()) {
             for (OptionSet optionSet : existingPersistedAndUpdatedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
                 }
-                OptionSet persistedOptionSet = mOptionSetStore.queryByUid(optionSet.getUId());
+                OptionSet persistedOptionSet = optionSetStore.queryByUid(optionSet.getUId());
                 List<Option> persistedOptions;
                 if (persistedOptionSet != null) {
                     persistedOptions = persistedOptionSet.getOptions();
@@ -98,7 +99,7 @@ public final class OptionSetController implements IIdentifiableController<Option
                         persistedOptions, optionSet.getOptions()));
             }
         }
-        operations.addAll(DbUtils.createOperations(mOptionSetStore,
+        operations.addAll(DbUtils.createOperations(optionSetStore,
                 persistedOptionSets, existingPersistedAndUpdatedOptionSets));
 
 //        DbUtils.applyBatch(operations);
@@ -129,7 +130,8 @@ public final class OptionSetController implements IIdentifiableController<Option
 
     @Override
     public void sync() throws ApiException {
-        getOptionSetDataFromServer();
+//        getOptionSetDataFromServer();
+        sync(null);
     }
 
     @Override

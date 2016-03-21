@@ -28,23 +28,27 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSetFlow>
         implements IOptionSetStore {
-    private final IOptionStore mOptionStore;
-
-    public OptionSetStore(IMapper<OptionSet, OptionSetFlow> mapper, IOptionStore optionStore) {
-        super(mapper);
-        this.mOptionStore = optionStore;
+    private final ITransactionManager transactionManager;
+    private static final String OPTIONSET_TO_OPTIONS = "optionsetToOptions";
+    public OptionSetStore(ITransactionManager transactionManager) {
+        super(OptionSetFlow.MAPPER);
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -56,15 +60,15 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
             /* setting id which DbFlows' BaseModel generated after insertion */
             optionSet.setId(databaseEntity.getId());
 
-            List<Option> options = optionSet.getOptions();
-            if(options != null) {
-                for (Option option : options) {
-                    if (!mOptionStore.insert(option)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
+//            List<Option> options = optionSet.getOptions();
+//            if(options != null) {
+//                for (Option option : options) {
+//                    if (!mOptionStore.insert(option)) {
+//                        return false;
+//                    }
+//                }
+//            }
+//            return true;
         }
 
         return false;
@@ -79,17 +83,24 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
             /* setting id which DbFlows' BaseModel generated after insertion */
             optionSet.setId(databaseEntity.getId());
 
-            List<Option> options = optionSet.getOptions();
-            if(options != null) {
-                for (Option option : options) {
-                    if (!mOptionStore.save(option)) {
-                        return false;
-                    }
-                }
-            }
-            return true;
+//            List<Option> options = optionSet.getOptions();
+//            if(options != null) {
+//                for (Option option : options) {
+//                    if (!mOptionStore.save(option)) {
+//                        return false;
+//                    }
+//                }
+//            }
+//            return true;
         }
 
         return false;
+    }
+
+    private void updateProgramStageRelationships(OptionSet optionSet) {
+        List<IDbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(optionSet,
+                optionSet.getOptions(), OPTIONSET_TO_OPTIONS));
+        transactionManager.transact(dbOperations);
     }
 }

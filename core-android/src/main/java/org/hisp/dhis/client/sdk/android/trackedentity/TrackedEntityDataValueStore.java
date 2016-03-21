@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityDataValue$Flow;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityDataValue$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
@@ -44,9 +43,10 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import java.util.List;
 
 public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntityDataValue,
-        TrackedEntityDataValue$Flow> implements ITrackedEntityDataValueStore {
+        TrackedEntityDataValueFlow> implements ITrackedEntityDataValueStore {
 
-    public TrackedEntityDataValueStore(IMapper<TrackedEntityDataValue, TrackedEntityDataValue$Flow> mapper, IStateStore stateStore) {
+    public TrackedEntityDataValueStore(IMapper<TrackedEntityDataValue,
+            TrackedEntityDataValueFlow> mapper, IStateStore stateStore) {
         super(mapper, stateStore);
     }
 
@@ -55,10 +55,9 @@ public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntit
         if (event == null) {
             return null;
         }
-        List<TrackedEntityDataValue$Flow> trackedEntityDataValueFlow = new Select()
-                .from(TrackedEntityDataValue$Flow.class)
-                .where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT)
-                        .is(event))
+        List<TrackedEntityDataValueFlow> trackedEntityDataValueFlow = new Select()
+                .from(TrackedEntityDataValueFlow.class)
+                .where(TrackedEntityDataValueFlow_Table.event.is(event.getUId()))
                 .queryList();
         return getMapper().mapToModels(trackedEntityDataValueFlow);
     }
@@ -68,10 +67,12 @@ public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntit
         if (dataElement == null || event == null) {
             return null;
         }
-        return getMapper().mapToModel(new Select().from(TrackedEntityDataValue$Flow.
-                class).where(Condition.column(TrackedEntityDataValue$Flow$Table.EVENT_EVENT).
-                is(event.getUId())).and(Condition.column(TrackedEntityDataValue$Flow$Table.
-                DATAELEMENT).is(dataElement.getUId())).
-                querySingle());
+        return getMapper().mapToModel(new Select()
+                .from(TrackedEntityDataValueFlow.class)
+                .where(TrackedEntityDataValueFlow_Table
+                        .event.is(event.getUId()))
+                .and(TrackedEntityDataValueFlow_Table
+                        .dataElement.is(dataElement.getUId()))
+                .querySingle());
     }
 }

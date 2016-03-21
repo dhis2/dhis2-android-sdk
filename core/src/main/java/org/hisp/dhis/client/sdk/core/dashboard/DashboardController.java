@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.controllers.IDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
@@ -49,13 +49,14 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-public final class DashboardController implements IDataController<Dashboard> {
+public final class DashboardController implements IIdentifiableController<Dashboard> {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
@@ -93,7 +94,7 @@ public final class DashboardController implements IDataController<Dashboard> {
     }
 
     @Override
-    public void sync() {
+    public void sync() throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
 
@@ -102,6 +103,11 @@ public final class DashboardController implements IDataController<Dashboard> {
 
         /* sync content */
         // syncDashboardContent();
+    }
+
+    @Override
+    public void sync(Collection<String> uids) throws ApiException {
+
     }
 
     private void getDashboardDataFromServer() {

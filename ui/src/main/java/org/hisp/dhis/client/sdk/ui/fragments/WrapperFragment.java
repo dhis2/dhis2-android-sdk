@@ -76,7 +76,7 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        final Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         final Drawable buttonDrawable = DrawableCompat.wrap(ContextCompat
                 .getDrawable(getActivity(), R.drawable.ic_menu));
 
@@ -132,7 +132,7 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
     }
 
     private void attachFragment(@NonNull Fragment fragment) {
-        getFragmentManager().beginTransaction()
+        getChildFragmentManager().beginTransaction()
                 .replace(R.id.container_fragment_frame, fragment)
                 .commit();
     }

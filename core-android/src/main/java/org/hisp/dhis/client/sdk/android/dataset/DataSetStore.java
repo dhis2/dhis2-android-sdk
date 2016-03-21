@@ -28,45 +28,42 @@
 
 package org.hisp.dhis.client.sdk.android.dataset;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.DataSet$Flow;
-import org.hisp.dhis.client.sdk.android.flow.OrganisationUnit$Flow;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow$Table;
-import org.hisp.dhis.client.sdk.android.flow.UnitToDataSetRelationShip$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.core.dataset.IDataSetStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSet$Flow> implements IDataSetStore {
+public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSetFlow>
+        implements IDataSetStore {
 
-    private final IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper;
+    private final IMapper<OrganisationUnit, OrganisationUnitFlow> organisationUnitMapper;
 
-    public DataSetStore(IMapper<DataSet, DataSet$Flow> mapper, IMapper<OrganisationUnit, OrganisationUnit$Flow> organisationUnitMapper) {
+    public DataSetStore(IMapper<DataSet, DataSetFlow> mapper, IMapper<OrganisationUnit,
+            OrganisationUnitFlow> organisationUnitMapper) {
         super(mapper);
         this.organisationUnitMapper = organisationUnitMapper;
     }
 
     @Override
     public List<OrganisationUnit> query(DataSet dataSet) {
-        List<UnitToDataSetRelationShip$Flow> relationShipFlows = new Select()
-                .from(UnitToDataSetRelationShip$Flow.class)
-                .where(Condition.column(UnitToDataSetRelationShip$Flow$Table
-                        .DATASET_DATASET).is(dataSet.getUId()))
-                .queryList();
+//        List<UnitToDataSetRelationShip_Flow> relationShipFlows = new Select()
+//                .from(UnitToDataSetRelationShip_Flow.class)
+//                .where(Condition.column(UnitToDataSetRelationShip_Flow_Table
+//                        .DATASET_DATASET).is(dataSet.getUId()))
+//                .queryList();
 
-        List<OrganisationUnit> organisationUnits = new ArrayList<>();
-        for (UnitToDataSetRelationShip$Flow relationShipFlow : relationShipFlows) {
-            OrganisationUnit$Flow organisationUnitFlow = relationShipFlow.getOrganisationUnit();
-            organisationUnits.add(organisationUnitMapper.mapToModel(organisationUnitFlow));
-        }
+//        List<OrganisationUnit> organisationUnits = new ArrayList<>();
+//        for (UnitToDataSetRelationShip_Flow relationShipFlow : relationShipFlows) {
+//            OrganisationUnit_Flow organisationUnitFlow = relationShipFlow.getOrganisationUnit();
+//            organisationUnits.add(organisationUnitMapper.mapToModel(organisationUnitFlow));
+//        }
 
-        return organisationUnits;
+//        return organisationUnits;
+        return null;
     }
 }

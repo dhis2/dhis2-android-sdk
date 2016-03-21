@@ -35,7 +35,8 @@ public final class UserAccountController implements IUserAccountController {
     private final IUserApiClient userApiClient;
     private final IUserAccountStore userAccountStore;
 
-    public UserAccountController(IUserApiClient userApiClient, IUserAccountStore userAccountStore) {
+    public UserAccountController(IUserApiClient userApiClient, IUserAccountStore
+            userAccountStore) {
         this.userApiClient = userApiClient;
         this.userAccountStore = userAccountStore;
     }

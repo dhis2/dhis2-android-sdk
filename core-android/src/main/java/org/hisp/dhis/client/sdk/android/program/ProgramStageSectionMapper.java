@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramStageSection$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, ProgramStageSection$Flow> {
+public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, ProgramStageSectionFlow> {
 
     @Override
-    public ProgramStageSection$Flow mapToDatabaseEntity(ProgramStageSection programStageSection) {
+    public ProgramStageSectionFlow mapToDatabaseEntity(ProgramStageSection programStageSection) {
         if (programStageSection == null) {
             return null;
         }
 
-        ProgramStageSection$Flow programStageSectionFlow = new ProgramStageSection$Flow();
+        ProgramStageSectionFlow programStageSectionFlow = new ProgramStageSectionFlow();
         programStageSectionFlow.setId(programStageSection.getId());
         programStageSectionFlow.setUId(programStageSection.getUId());
         programStageSectionFlow.setCreated(programStageSection.getCreated());
@@ -56,7 +56,7 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
     }
 
     @Override
-    public ProgramStageSection mapToModel(ProgramStageSection$Flow programStageSectionFlow) {
+    public ProgramStageSection mapToModel(ProgramStageSectionFlow programStageSectionFlow) {
         if (programStageSectionFlow == null) {
             return null;
         }
@@ -81,7 +81,7 @@ public class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection, Pr
     }
 
     @Override
-    public Class<ProgramStageSection$Flow> getDatabaseEntityTypeClass() {
-        return ProgramStageSection$Flow.class;
+    public Class<ProgramStageSectionFlow> getDatabaseEntityTypeClass() {
+        return ProgramStageSectionFlow.class;
     }
 }

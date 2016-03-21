@@ -42,6 +42,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -322,5 +323,33 @@ public final class Event implements Serializable, IdentifiableObject {
 
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    /**
+     * Comparator that returns the Event with the latest EventDate as the greater of the two given.
+     */
+    public static class EventDateComparator implements Comparator<Event> {
+
+        @Override
+        public int compare(Event first, Event second) {
+            if (first == null && second == null) {
+                return 0;
+            } else if (first == null) {
+                return -1;
+            } else if (second == null) {
+                return 1;
+            }
+
+            DateTime firstDate = new DateTime(first.getEventDate());
+            DateTime secondDate = new DateTime(second.getEventDate());
+
+            if (firstDate.isBefore(secondDate)) {
+                return -1;
+            } else if (firstDate.isAfter(secondDate)) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
     }
 }

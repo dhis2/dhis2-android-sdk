@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
-import com.raizlabs.android.dbflow.sql.language.Select;
-
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow;
-import org.hisp.dhis.client.sdk.android.flow.DashboardItem$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
@@ -44,9 +40,10 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem, DashboardItem$Flow> implements IDashboardItemStore {
+public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem,
+        DashboardItemFlow> implements IDashboardItemStore {
 
-    public DashboardItemStore(IMapper<DashboardItem, DashboardItem$Flow> dashboardItemMapper) {
+    public DashboardItemStore(IMapper<DashboardItem, DashboardItemFlow> dashboardItemMapper) {
         super(dashboardItemMapper);
     }
 
@@ -54,12 +51,12 @@ public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem
     public List<DashboardItem> queryByDashboard(Dashboard dashboard) {
         isNull(dashboard, "Dashboard must not be null");
 
-        List<DashboardItem$Flow> dashboardItemFlows = new Select()
-                .from(DashboardItem$Flow.class)
-                .where(Condition.column(DashboardItem$Flow$Table
-                        .DASHBOARD_DASHBOARD).is(dashboard.getId()))
-                .queryList();
-
-        return getMapper().mapToModels(dashboardItemFlows);
+//        List<DashboardItem_Flow> dashboardItemFlows = new Select()
+//                .from(DashboardItem_Flow.class)
+//                .where(DashboardItem_Flow_Table.dashboard.is(dashboard.getId()))
+//                .queryList();
+//
+//        return getMapper().mapToModels(dashboardItemFlows);
+        return null;
     }
 }

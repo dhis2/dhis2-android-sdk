@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.OptionSet$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -38,18 +38,18 @@ import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
-public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSet$Flow>
+public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSetFlow>
         implements IOptionSetStore {
     private final IOptionStore mOptionStore;
 
-    public OptionSetStore(IMapper<OptionSet, OptionSet$Flow> mapper, IOptionStore optionStore) {
+    public OptionSetStore(IMapper<OptionSet, OptionSetFlow> mapper, IOptionStore optionStore) {
         super(mapper);
         this.mOptionStore = optionStore;
     }
 
     @Override
     public boolean insert(OptionSet optionSet) {
-        OptionSet$Flow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
         if (databaseEntity != null) {
             databaseEntity.insert();
 
@@ -72,7 +72,7 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
 
     @Override
     public boolean save(OptionSet optionSet) {
-        OptionSet$Flow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
         if (databaseEntity != null) {
             databaseEntity.save();
 

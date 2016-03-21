@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.relationship;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.Relationship$Flow;
-import org.hisp.dhis.client.sdk.android.flow.Relationship$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
@@ -42,9 +41,11 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public final class RelationshipStore extends AbsDataStore<Relationship, Relationship$Flow> implements IRelationshipStore {
+public final class RelationshipStore extends AbsDataStore<Relationship,
+        RelationshipFlow> implements IRelationshipStore {
 
-    public RelationshipStore(IMapper<Relationship, Relationship$Flow> mapper, IStateStore stateStore) {
+    public RelationshipStore(IMapper<Relationship, RelationshipFlow> mapper,
+                             IStateStore stateStore) {
         super(mapper, stateStore);
     }
 
@@ -53,12 +54,12 @@ public final class RelationshipStore extends AbsDataStore<Relationship, Relation
         if (trackedEntityInstance == null) {
             return null;
         }
-        List<Relationship$Flow> relationshipFlow = new Select()
-                .from(Relationship$Flow.class).where(Condition.column(Relationship$Flow$Table
-                        .TRACKEDENTITYINSTANCEA_TRACKEDENTITYINSTANCEA).is(trackedEntityInstance.getTrackedEntityInstanceUid()
-                )).or(Condition.column(Relationship$Flow$Table
-                        .TRACKEDENTITYINSTANCEB_TRACKEDENTITYINSTANCEB).is(trackedEntityInstance.getTrackedEntityInstanceUid()
-                ))
+        List<RelationshipFlow> relationshipFlow = new Select()
+                .from(RelationshipFlow.class)
+                .where(RelationshipFlow_Table.trackedEntityInstanceA
+                        .is(trackedEntityInstance.getTrackedEntityInstanceUid()))
+                .or(RelationshipFlow_Table.trackedEntityInstanceB
+                        .is(trackedEntityInstance.getTrackedEntityInstanceUid()))
                 .queryList();
         return getMapper().mapToModels(relationshipFlow);
     }

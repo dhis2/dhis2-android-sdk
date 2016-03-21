@@ -28,23 +28,23 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.Dashboard$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
-public class DashboardMapper extends AbsMapper<Dashboard, Dashboard$Flow> {
+public class DashboardMapper extends AbsMapper<Dashboard, DashboardFlow> {
 
     public DashboardMapper() {
         // empty constructor
     }
 
     @Override
-    public Dashboard$Flow mapToDatabaseEntity(Dashboard dashboard) {
+    public DashboardFlow mapToDatabaseEntity(Dashboard dashboard) {
         if (dashboard == null) {
             return null;
         }
 
-        Dashboard$Flow dashboardFlow = new Dashboard$Flow();
+        DashboardFlow dashboardFlow = new DashboardFlow();
         dashboardFlow.setId(dashboard.getId());
         dashboardFlow.setUId(dashboard.getUId());
         dashboardFlow.setCreated(dashboard.getCreated());
@@ -56,7 +56,7 @@ public class DashboardMapper extends AbsMapper<Dashboard, Dashboard$Flow> {
     }
 
     @Override
-    public Dashboard mapToModel(Dashboard$Flow dashboardFlow) {
+    public Dashboard mapToModel(DashboardFlow dashboardFlow) {
         if (dashboardFlow == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public class DashboardMapper extends AbsMapper<Dashboard, Dashboard$Flow> {
     }
 
     @Override
-    public Class<Dashboard$Flow> getDatabaseEntityTypeClass() {
-        return Dashboard$Flow.class;
+    public Class<DashboardFlow> getDatabaseEntityTypeClass() {
+        return DashboardFlow.class;
     }
 }

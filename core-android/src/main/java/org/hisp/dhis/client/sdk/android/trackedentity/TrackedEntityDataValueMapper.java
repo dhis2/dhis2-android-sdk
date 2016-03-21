@@ -28,21 +28,21 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.android.api.utils.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.TrackedEntityDataValue$Flow;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue,
-        TrackedEntityDataValue$Flow> {
+        TrackedEntityDataValueFlow> {
 
     @Override
-    public TrackedEntityDataValue$Flow mapToDatabaseEntity(TrackedEntityDataValue trackedEntityDataValue) {
+    public TrackedEntityDataValueFlow mapToDatabaseEntity(TrackedEntityDataValue trackedEntityDataValue) {
         if (trackedEntityDataValue == null) {
             return null;
         }
 
-        TrackedEntityDataValue$Flow trackedEntityDataValueFlow = new TrackedEntityDataValue$Flow();
+        TrackedEntityDataValueFlow trackedEntityDataValueFlow = new TrackedEntityDataValueFlow();
         trackedEntityDataValueFlow.setId(trackedEntityDataValue.getId());
         trackedEntityDataValueFlow.setEvent(MapperModuleProvider.getInstance().getEventMapper().mapToDatabaseEntity(trackedEntityDataValue.getEvent()));
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
@@ -53,7 +53,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
     }
 
     @Override
-    public TrackedEntityDataValue mapToModel(TrackedEntityDataValue$Flow trackedEntityDataValueFlow) {
+    public TrackedEntityDataValue mapToModel(TrackedEntityDataValueFlow trackedEntityDataValueFlow) {
         if (trackedEntityDataValueFlow == null) {
             return null;
         }
@@ -74,7 +74,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
     }
 
     @Override
-    public Class<TrackedEntityDataValue$Flow> getDatabaseEntityTypeClass() {
-        return TrackedEntityDataValue$Flow.class;
+    public Class<TrackedEntityDataValueFlow> getDatabaseEntityTypeClass() {
+        return TrackedEntityDataValueFlow.class;
     }
 }

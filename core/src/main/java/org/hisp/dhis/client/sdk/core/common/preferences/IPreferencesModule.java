@@ -29,9 +29,11 @@
 package org.hisp.dhis.client.sdk.core.common.preferences;
 
 public interface IPreferencesModule {
+    IConfigurationPreferences getConfigurationPreferences();
+
     ILastUpdatedPreferences getLastUpdatedPreferences();
 
     IUserPreferences getUserPreferences();
 
-    IConfigurationPreferences getConfigurationPreferences();
+    boolean clearAllPreferences();
 }

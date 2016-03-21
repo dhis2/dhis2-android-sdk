@@ -29,65 +29,25 @@
 package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
-import org.hisp.dhis.client.sdk.core.constant.ConstantService;
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
-import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardService;
-import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
-import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentService;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentService;
-import org.hisp.dhis.client.sdk.core.event.EventService;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
-import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.client.sdk.core.program.*;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipService;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipTypeService;
-import org.hisp.dhis.client.sdk.core.relationship.RelationshipService;
-import org.hisp.dhis.client.sdk.core.relationship.RelationshipTypeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.*;
+import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public final class ServicesModule implements IServicesModule {
-    private final IDashboardService dashboardService;
     private final IUserAccountService userAccountService;
     private final IProgramService programService;
     private final IOrganisationUnitService organisationUnitService;
-    private final IEventService eventService;
-    private final IConstantService constantService;
-    private final IDataElementService dataElementService;
-    private final IEnrollmentService enrollmentService;
-    private final IOptionSetService optionSetService;
-    private final IProgramStageService programStageService;
-    private final IProgramRuleService programRuleService;
-    private final IProgramIndicatorService programIndicatorService;
-    private final IProgramTrackedEntityAttributeService programTrackedEntityAttributeService;
-    private final ITrackedEntityService trackedEntityService;
-    private final IProgramStageDataElementService programStageDataElementService;
-    private final IProgramStageSectionService programStageSectionService;
-    private final IRelationshipService relationshipService;
-    private final IRelationshipTypeService relationshipTypeService;
-    private final ITrackedEntityAttributeService trackedEntityAttributeService;
-    private final ITrackedEntityAttributeValueService trackedEntityAttributeValueService;
-    private final ITrackedEntityDataValueService trackedEntityDataValueService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
-        Preconditions.isNull(persistenceModule, "persistenceModule must not be null");
-
-        dashboardService = new DashboardService(
-                persistenceModule.getDashboardStore(),
-                persistenceModule.getDashboardItemStore(),
-                persistenceModule.getDashboardElementStore(),
-                persistenceModule.getStateStore(), null, null);
+        isNull(persistenceModule, "persistenceModule must not be null");
 
         userAccountService = new UserAccountService(
-                persistenceModule.getUserAccountStore(),
-                persistenceModule.getModelStore());
+                persistenceModule.getUserAccountStore());
 
         programService = new ProgramService(
                 persistenceModule.getProgramStore());
@@ -95,82 +55,11 @@ public final class ServicesModule implements IServicesModule {
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
 
-        eventService = new EventService(
-                persistenceModule.getEventStore(),
-                persistenceModule.getStateStore());
-
-        constantService = new ConstantService(
-                persistenceModule.getConstantStore());
-
-        dataElementService = new DataElementService(
-                persistenceModule.getDataElementStore());
-
-        enrollmentService = new EnrollmentService(
-                persistenceModule.getEnrollmentStore(),
-                persistenceModule.getStateStore(),
-                this.getEventService()
-        );
-
-        optionSetService =  new OptionSetService(
-                persistenceModule.getOptionSetStore(),
-                persistenceModule.getOptionStore()
-                );
-
-        programStageService = new ProgramStageService(
-                persistenceModule.getProgramStageStore());
-
-        programRuleService = new ProgramRuleService(
-                persistenceModule.getProgramRuleStore());
-
-        programStageDataElementService = new ProgramStageDataElementService(
-                persistenceModule.getProgramStageDataElementStore()
-                );
-
-        programStageSectionService = new ProgramStageSectionService(
-                persistenceModule.getProgramStageSectionStore()
-        );
-
-        programIndicatorService = new ProgramIndicatorService(
-                persistenceModule.getProgramIndicatorStore());
-
-        programTrackedEntityAttributeService = new ProgramTrackedEntityAttributeService(
-                persistenceModule.getProgramTrackedEntityAttributeStore());
-
-        relationshipService = new RelationshipService(
-                persistenceModule.getRelationshipStore(),
-                persistenceModule.getStateStore()
-        );
-
-        relationshipTypeService = new RelationshipTypeService(
-                persistenceModule.getRelationshipTypeStore()
-        );
-
-        trackedEntityAttributeService = new TrackedEntityAttributeService(
-                persistenceModule.getTrackedEntityAttributeStore()
-        );
-
-        trackedEntityAttributeValueService = new TrackedEntityAttributeValueService(
-                persistenceModule.getTrackedEntityAttributeValueStore(),
-                persistenceModule.getStateStore()
-        );
-
-        trackedEntityDataValueService = new TrackedEntityDataValueService(
-                persistenceModule.getTrackedEntityDataValueStore(),
-                persistenceModule.getStateStore()
-        );
-
-        trackedEntityService = new TrackedEntityService(
-                persistenceModule.getTrackedEntityStore());
     }
 
     @Override
     public IUserAccountService getUserAccountService() {
         return userAccountService;
-    }
-
-    @Override
-    public IDashboardService getDashboardService() {
-        return dashboardService;
     }
 
     @Override
@@ -183,88 +72,4 @@ public final class ServicesModule implements IServicesModule {
         return organisationUnitService;
     }
 
-    @Override
-    public IEventService getEventService() {
-        return eventService;
-    }
-
-    @Override
-    public IConstantService getConstantService() {
-        return constantService;
-    }
-
-    @Override
-    public IDataElementService getDataElementService() {
-        return dataElementService;
-    }
-
-    @Override
-    public IEnrollmentService getEnrollmentService() {
-        return enrollmentService;
-    }
-
-    @Override
-    public IOptionSetService getOptionSetService() {
-        return optionSetService;
-    }
-
-    @Override
-    public IProgramStageService getProgramStageService() {
-        return programStageService;
-    }
-
-    @Override
-    public IProgramStageDataElementService getProgramStageDataElementService() {
-        return programStageDataElementService;
-    }
-
-    @Override
-    public IProgramStageSectionService getProgramStageSectionService() {
-        return programStageSectionService;
-    }
-
-    @Override
-    public IRelationshipService getRelationshipService() {
-        return relationshipService;
-    }
-
-    @Override
-    public IRelationshipTypeService getRelationshipTypeService() {
-        return relationshipTypeService;
-    }
-
-    @Override
-    public ITrackedEntityAttributeService getTrackedEntityAttributeService() {
-        return trackedEntityAttributeService;
-    }
-
-    @Override
-    public ITrackedEntityAttributeValueService getTrackedEntityAttributeValueService() {
-        return trackedEntityAttributeValueService;
-    }
-
-    @Override
-    public ITrackedEntityDataValueService getTrackedEntityDataValueService() {
-        return trackedEntityDataValueService;
-    }
-
-    @Override
-    public IProgramIndicatorService getProgramIndicatorService() {
-        return programIndicatorService;
-    }
-
-    @Override
-    public IProgramTrackedEntityAttributeService getProgramTrackedEntityAttributeService() {
-        return programTrackedEntityAttributeService;
-    }
-
-    @Override
-    public ITrackedEntityService getTrackedEntities() {
-        return trackedEntityService;
-    }
-
-    @Override
-    public IProgramRuleService getProgramRuleService() {
-        return programRuleService;
-    }
 }

@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.joda.time.DateTime;
 
 public class InterpretationCommentService implements IInterpretationCommentService {

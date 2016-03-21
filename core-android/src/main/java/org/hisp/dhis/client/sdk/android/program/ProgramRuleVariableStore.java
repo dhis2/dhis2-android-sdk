@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow;
-import org.hisp.dhis.client.sdk.android.flow.ProgramRuleVariable$Flow$Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -43,28 +42,29 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import java.util.List;
 
 public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<ProgramRuleVariable,
-        ProgramRuleVariable$Flow> implements IProgramRuleVariableStore {
+        ProgramRuleVariableFlow> implements IProgramRuleVariableStore {
 
-    public ProgramRuleVariableStore(IMapper<ProgramRuleVariable, ProgramRuleVariable$Flow> mapper) {
+    public ProgramRuleVariableStore(IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> mapper) {
         super(mapper);
     }
 
     @Override
     public ProgramRuleVariable query(Program program, DataElement dataElement) {
-        ProgramRuleVariable$Flow programRuleVariableFlow = new Select()
-                .from(ProgramRuleVariable$Flow.class)
-                .where(Condition.column(ProgramRuleVariable$Flow$Table.PROGRAM_PROGRAM)
-                        .is(program.getUId())).and(Condition.column(ProgramRuleVariable$Flow$Table
-                        .DATAELEMENT_DATAELEMENT).is(dataElement.getUId()))
+        ProgramRuleVariableFlow programRuleVariableFlow = new Select()
+                .from(ProgramRuleVariableFlow.class)
+                .where(ProgramRuleVariableFlow_Table
+                        .program.is(program.getUId()))
+                .and(ProgramRuleVariableFlow_Table
+                        .dataelement.is(dataElement.getUId()))
                 .querySingle();
         return getMapper().mapToModel(programRuleVariableFlow);
     }
 
     @Override
     public List<ProgramRuleVariable> query(Program program) {
-        List<ProgramRuleVariable$Flow> programRuleVariableFlow = new Select()
-                .from(ProgramRuleVariable$Flow.class).where(Condition
-                        .column(ProgramRuleVariable$Flow$Table.PROGRAM_PROGRAM).is(program.getUId()))
+        List<ProgramRuleVariableFlow> programRuleVariableFlow = new Select()
+                .from(ProgramRuleVariableFlow.class).where(ProgramRuleVariableFlow_Table
+                        .program.is(program.getUId()))
                 .queryList();
         return getMapper().mapToModels(programRuleVariableFlow);
     }

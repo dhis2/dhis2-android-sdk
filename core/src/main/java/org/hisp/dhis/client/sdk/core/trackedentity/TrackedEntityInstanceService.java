@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
-import org.hisp.dhis.client.sdk.core.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 
 import java.util.List;
 

@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.enrollment;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
-import org.hisp.dhis.client.sdk.core.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;

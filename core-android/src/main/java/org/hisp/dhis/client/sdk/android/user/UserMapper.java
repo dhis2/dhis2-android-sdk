@@ -28,23 +28,23 @@
 
 package org.hisp.dhis.client.sdk.android.user;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsMapper;
-import org.hisp.dhis.client.sdk.android.flow.User$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-public class UserMapper extends AbsMapper<User, User$Flow> {
+public class UserMapper extends AbsMapper<User, UserFlow> {
 
     public UserMapper() {
         // empty constructor
     }
 
     @Override
-    public User$Flow mapToDatabaseEntity(User user) {
+    public UserFlow mapToDatabaseEntity(User user) {
         if (user == null) {
             return null;
         }
 
-        User$Flow userFlow = new User$Flow();
+        UserFlow userFlow = new UserFlow();
         userFlow.setId(user.getId());
         userFlow.setUId(user.getUId());
         userFlow.setCreated(user.getCreated());
@@ -56,7 +56,7 @@ public class UserMapper extends AbsMapper<User, User$Flow> {
     }
 
     @Override
-    public User mapToModel(User$Flow userFlow) {
+    public User mapToModel(UserFlow userFlow) {
         if (userFlow == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public class UserMapper extends AbsMapper<User, User$Flow> {
     }
 
     @Override
-    public Class<User$Flow> getDatabaseEntityTypeClass() {
-        return User$Flow.class;
+    public Class<UserFlow> getDatabaseEntityTypeClass() {
+        return UserFlow.class;
     }
 }

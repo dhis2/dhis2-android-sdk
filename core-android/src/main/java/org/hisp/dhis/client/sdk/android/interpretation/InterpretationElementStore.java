@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.client.sdk.android.interpretation;
 
-import com.raizlabs.android.dbflow.sql.builder.Condition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.flow.Interpretation$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow;
-import org.hisp.dhis.client.sdk.android.flow.InterpretationElement$Flow$Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow_Table;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
@@ -44,8 +43,8 @@ public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
     public boolean insert(InterpretationElement object) {
-        InterpretationElement$Flow elementFlow =
-                InterpretationElement$Flow.fromModel(object);
+        InterpretationElementFlow elementFlow =
+                InterpretationElementFlow.fromModel(object);
         elementFlow.insert();
 
         object.setId(elementFlow.getId());
@@ -54,14 +53,14 @@ public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
     public boolean update(InterpretationElement object) {
-        InterpretationElement$Flow.fromModel(object).update();
+        InterpretationElementFlow.fromModel(object).update();
         return true;
     }
 
     @Override
     public boolean save(InterpretationElement object) {
-        InterpretationElement$Flow elementFlow =
-                InterpretationElement$Flow.fromModel(object);
+        InterpretationElementFlow elementFlow =
+                InterpretationElementFlow.fromModel(object);
         elementFlow.save();
 
         object.setId(elementFlow.getId());
@@ -70,44 +69,49 @@ public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
     public boolean delete(InterpretationElement object) {
-        InterpretationElement$Flow.fromModel(object).delete();
+        InterpretationElementFlow.fromModel(object).delete();
         return true;
     }
 
     @Override
+    public boolean deleteAll() {
+        return false;
+    }
+
+    @Override
     public List<InterpretationElement> queryAll() {
-        List<InterpretationElement$Flow> elementFlows = new Select()
-                .from(InterpretationElement$Flow.class)
+        List<InterpretationElementFlow> elementFlows = new Select()
+                .from(InterpretationElementFlow.class)
                 .queryList();
-        return InterpretationElement$Flow.toModels(elementFlows);
+        return InterpretationElementFlow.toModels(elementFlows);
     }
 
     @Override
     public InterpretationElement queryById(long id) {
-        InterpretationElement$Flow elementFlow = new Select()
-                .from(InterpretationElement$Flow.class)
-                .where(Condition.column(InterpretationElement$Flow$Table.ID).is(id))
+        InterpretationElementFlow elementFlow = new Select()
+                .from(InterpretationElementFlow.class)
+                .where(InterpretationElementFlow_Table.id.is(id))
                 .querySingle();
-        return InterpretationElement$Flow.toModel(elementFlow);
+        return InterpretationElementFlow.toModel(elementFlow);
     }
 
     @Override
     public InterpretationElement queryByUid(String uid) {
-        InterpretationElement$Flow elementFlow = new Select()
-                .from(InterpretationElement$Flow.class)
-                .where(Condition.column(InterpretationElement$Flow$Table.UID).is(uid))
+        InterpretationElementFlow elementFlow = new Select()
+                .from(InterpretationElementFlow.class)
+                .where(InterpretationElementFlow_Table.uId.is(uid))
                 .querySingle();
-        return InterpretationElement$Flow.toModel(elementFlow);
+        return InterpretationElementFlow.toModel(elementFlow);
     }
 
     @Override
     public List<InterpretationElement> list(Interpretation interpretation) {
-        Interpretation$Flow interpretationFlow = null;//Interpretation$Flow.fromModel(interpretation);
-        List<InterpretationElement$Flow> elementFlow = new Select()
-                .from(InterpretationElement$Flow.class)
-                .where(Condition.column(InterpretationElement$Flow$Table
-                        .INTERPRETATION_INTERPRETATION).is(interpretationFlow.getId()))
+        InterpretationFlow interpretationFlow = null;//Interpretation_Flow.fromModel(interpretation);
+        List<InterpretationElementFlow> elementFlow = new Select()
+                .from(InterpretationElementFlow.class)
+                .where(InterpretationElementFlow_Table
+                        .interpretation.is(interpretationFlow.getUId()))
                 .queryList();
-        return InterpretationElement$Flow.toModels(elementFlow);
+        return InterpretationElementFlow.toModels(elementFlow);
     }
 }

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.client.sdk.android.relationship;
 
-import org.hisp.dhis.client.sdk.android.common.base.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.base.IMapper;
-import org.hisp.dhis.client.sdk.android.flow.RelationshipType$Flow;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 public final class RelationshipTypeStore extends AbsIdentifiableObjectStore<RelationshipType,
-        RelationshipType$Flow> implements IIdentifiableObjectStore<RelationshipType> {
+        RelationshipTypeFlow> implements IIdentifiableObjectStore<RelationshipType> {
 
-    public RelationshipTypeStore(IMapper<RelationshipType, RelationshipType$Flow> mapper) {
+    public RelationshipTypeStore(IMapper<RelationshipType, RelationshipTypeFlow> mapper) {
         super(mapper);
     }
 }

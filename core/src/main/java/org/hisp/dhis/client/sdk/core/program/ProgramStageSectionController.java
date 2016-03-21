@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -72,12 +73,12 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(null);
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
+        sync(syncStrategy, null);
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM_STAGE_SECTIONS);
 
@@ -115,7 +116,7 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
 
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
-        programStageController.sync(programStageSectionUids);
+        programStageController.sync(syncStrategy, programStageSectionUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(

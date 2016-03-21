@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.trackedentity;
 
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
@@ -139,7 +140,7 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    mTrackedEntityAttributeController.sync();
+                    mTrackedEntityAttributeController.sync(SyncStrategy.CONDITIONAL);
 //                    boolean status = mTrackedEntityAttributeController.sync();
 //                    subscriber.onNext(status);
                 } catch (Throwable throwable) {

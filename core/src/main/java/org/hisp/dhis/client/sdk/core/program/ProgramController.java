@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -72,12 +73,12 @@ public class ProgramController implements IProgramController {
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(null);
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
+        sync(syncStrategy, null);
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS);
 

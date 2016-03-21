@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -121,13 +122,13 @@ public class ProgramScope implements IProgramScope {
     }
 
     @Override
-    public Observable<List<Program>> sync() {
+    public Observable<List<Program>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<Program>>() {
 
             @Override
             public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
-                    programController.sync();
+                    programController.sync(syncStrategy);
                     subscriber.onNext(programService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -141,7 +142,7 @@ public class ProgramScope implements IProgramScope {
     // TODO think about adding method to service layer
     // which will get list of uids in and return set of models back
     @Override
-    public Observable<List<Program>> sync(final String... uids) {
+    public Observable<List<Program>> sync(SyncStrategy syncStrategy, final String... uids) {
         throw new UnsupportedOperationException("This method is not implemented at the moment");
     }
 }

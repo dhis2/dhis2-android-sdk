@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -37,6 +38,7 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import java.util.List;
 import java.util.Set;
 
+// TODO revisit SyncStategy
 public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
 
     // Api Clients
@@ -63,6 +65,6 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
         Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
 
         /* get them through program controller */
-        organisationUnitController.sync(ids);
+        organisationUnitController.sync(SyncStrategy.CONDITIONAL, ids);
     }
 }

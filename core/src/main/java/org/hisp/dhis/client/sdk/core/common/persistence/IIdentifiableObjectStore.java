@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -37,4 +38,6 @@ public interface IIdentifiableObjectStore<T extends IdentifiableObject> extends 
     T queryByUid(String uid);
 
     List<T> queryByUids(Set<String> uids);
+
+    boolean areStored(Collection<T> objects);
 }

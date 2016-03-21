@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.interpretation;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
@@ -566,13 +567,13 @@ public final class InterpretationController implements IIdentifiableController<I
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         getInterpretationDataFromServer();
         sendLocalChanges();
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

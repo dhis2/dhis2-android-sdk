@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -40,6 +41,7 @@ import java.util.Set;
 /**
  * This class is inteded to build relationships between organisation units and programs.
  */
+// TODO Revisit SyncStrategy
 public class AssignedProgramsController implements IAssignedProgramsController {
     /* Api clients */
     private final IUserApiClient userApiClient;
@@ -64,6 +66,6 @@ public class AssignedProgramsController implements IAssignedProgramsController {
         Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
 
         /* get them through program controller */
-        programController.sync(ids);
+        programController.sync(SyncStrategy.CONDITIONAL, ids);
     }
 }

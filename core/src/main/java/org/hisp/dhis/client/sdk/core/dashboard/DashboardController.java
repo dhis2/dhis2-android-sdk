@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
@@ -94,7 +95,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
 
@@ -106,7 +107,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 

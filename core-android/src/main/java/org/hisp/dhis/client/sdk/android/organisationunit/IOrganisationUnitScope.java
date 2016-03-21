@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public interface IOrganisationUnitScope {
     // Controller methods
     ///////////////////////////////////////////////////////////////////////////////////////////
 
-    Observable<List<OrganisationUnit>> sync();
+    Observable<List<OrganisationUnit>> sync(SyncStrategy syncStrategy);
 
-    Observable<List<OrganisationUnit>> sync(String... uids);
+    Observable<List<OrganisationUnit>> sync(SyncStrategy syncStrategy, String... uids);
 }

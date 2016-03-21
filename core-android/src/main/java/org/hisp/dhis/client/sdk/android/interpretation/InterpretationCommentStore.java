@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -107,6 +108,11 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     @Override
     public List<InterpretationComment> queryByUids(Set<String> uids) {
         return null;
+    }
+
+    @Override
+    public boolean areStored(Collection<InterpretationComment> objects) {
+        return false;
     }
 
     @Override

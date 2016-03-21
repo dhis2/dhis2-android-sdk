@@ -39,9 +39,14 @@ import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 public abstract class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
-        DatabaseEntityType extends Model & IModel> extends AbsDataStore<ModelType,
+        DatabaseEntityType extends Model & IdentifiableObject> extends AbsDataStore<ModelType,
         DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectDataStore(IMapper<ModelType, DatabaseEntityType> mapper,
@@ -66,5 +71,38 @@ public abstract class AbsIdentifiableObjectDataStore<ModelType extends Identifia
                 .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
                         .COLUMN_UID)).is(uid)).querySingle();
         return getMapper().mapToModel(databaseEntity);
+    }
+
+    @Override
+    public List<ModelType> queryByUids(Set<String> uids) {
+        if (uids != null && !uids.isEmpty()) {
+            List<DatabaseEntityType> databaseEntities = query(uids);
+
+            if (databaseEntities != null && !databaseEntities.isEmpty()) {
+                return getMapper().mapToModels(databaseEntities);
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean areStored(Collection<ModelType> objects) {
+        Set<String> uids = ModelUtils.toUidSet(objects);
+        List<DatabaseEntityType> databaseEntities = query(uids);
+
+        return ModelUtils.toUidSet(databaseEntities).equals(uids);
+    }
+
+    private List<DatabaseEntityType> query(Set<String> uids) {
+        if (uids != null && !uids.isEmpty()) {
+            return new Select()
+                    .from(getMapper().getDatabaseEntityTypeClass())
+                    .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
+                            .COLUMN_UID)).in(uids))
+                    .queryList();
+        }
+
+        return null;
     }
 }

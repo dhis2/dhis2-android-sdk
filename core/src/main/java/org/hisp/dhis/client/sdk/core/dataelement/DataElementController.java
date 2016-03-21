@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.core.dataelement;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -87,12 +88,12 @@ public final class DataElementController implements IIdentifiableController<Data
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         getProgramRulesDataFromServer();
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

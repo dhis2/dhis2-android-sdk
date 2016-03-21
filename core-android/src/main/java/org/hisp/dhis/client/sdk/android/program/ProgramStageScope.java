@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -53,13 +54,13 @@ public class ProgramStageScope implements IProgramStageScope {
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync() {
+    public Observable<List<ProgramStage>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
-                    programStageController.sync();
+                    programStageController.sync(syncStrategy);
                     subscriber.onNext(programStageService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,14 +72,15 @@ public class ProgramStageScope implements IProgramStageScope {
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync(final String... programStageIds) {
+    public Observable<List<ProgramStage>> sync(final SyncStrategy syncStrategy,
+                                               final String... programStageIds) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
                     Set<String> uids = new HashSet<>(ModelUtils.asList(programStageIds));
-                    programStageController.sync(uids);
+                    programStageController.sync(syncStrategy, uids);
                     subscriber.onNext(programStageService.list(uids));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

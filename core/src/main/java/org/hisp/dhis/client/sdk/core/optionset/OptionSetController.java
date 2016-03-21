@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.optionset;
 
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
@@ -128,12 +129,12 @@ public final class OptionSetController implements IIdentifiableController<Option
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         getOptionSetDataFromServer();
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -53,13 +54,13 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync() {
+    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
-                    programStageSectionController.sync();
+                    programStageSectionController.sync(syncStrategy);
                     subscriber.onNext(programStageSectionService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,14 +72,15 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(final String... uids) {
+    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy,
+                                                      final String... uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
                     Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                    programStageSectionController.sync(uidSet);
+                    programStageSectionController.sync(syncStrategy, uidSet);
                     subscriber.onNext(programStageSectionService.list(uidSet));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

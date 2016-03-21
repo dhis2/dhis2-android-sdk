@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -108,6 +109,11 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     @Override
     public List<InterpretationElement> queryByUids(Set<String> uids) {
         return null;
+    }
+
+    @Override
+    public boolean areStored(Collection<InterpretationElement> objects) {
+        return false;
     }
 
     @Override

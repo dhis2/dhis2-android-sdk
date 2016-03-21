@@ -46,4 +46,6 @@ public interface IDataElementScope {
     Observable<Boolean> save(DataElement object);
 
     Observable<Boolean> remove(DataElement object);
+
+    Observable<List<DataElement>> sync();
 }

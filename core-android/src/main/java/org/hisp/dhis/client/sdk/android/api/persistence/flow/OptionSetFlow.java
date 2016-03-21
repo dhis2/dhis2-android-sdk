@@ -32,11 +32,15 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class OptionSetFlow extends BaseIdentifiableObjectFlow {
+    public static IMapper<OptionSet, OptionSetFlow> MAPPER = new OptionSetMapper();
 
     @Column
     int version;

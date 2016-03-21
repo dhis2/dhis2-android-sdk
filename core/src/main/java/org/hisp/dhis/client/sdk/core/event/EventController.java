@@ -98,8 +98,8 @@ public final class EventController implements IEventController {
 
         String[] uidArray = null;
         if (uids != null) {
-            // here we want to get list of ids of programs which are
-            // stored locally and list of programs which we want to download
+            // here we want to get list of ids of events which are
+            // stored locally and list of events which we want to download
             Set<String> persistedEventIds = ModelUtils.toUidSet(persistedEvents);
             persistedEventIds.addAll(uids);
 

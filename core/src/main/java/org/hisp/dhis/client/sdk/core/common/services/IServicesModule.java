@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 
@@ -40,11 +42,15 @@ public interface IServicesModule {
 
     IProgramService getProgramService();
 
-    IOrganisationUnitService getOrganisationUnitService();
-
     IProgramStageService getProgramStageService();
 
     IProgramStageDataElementService getProgramStageDataElementService();
 
+    IProgramStageSectionService getProgramStageSectionService();
+
+    IOrganisationUnitService getOrganisationUnitService();
+
     IEventService getEventService();
+
+    IDataElementService getDataElementService();
 }

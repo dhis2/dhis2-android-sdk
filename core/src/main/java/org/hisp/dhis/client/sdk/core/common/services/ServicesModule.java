@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
@@ -38,6 +40,12 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
+
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
+
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
@@ -48,9 +56,11 @@ public final class ServicesModule implements IServicesModule {
     private final IUserAccountService userAccountService;
     private final IProgramService programService;
     private final IProgramStageService programStageService;
+    private final IProgramStageSectionService programStageSectionService;
     private final IOrganisationUnitService organisationUnitService;
     private final IEventService eventService;
     private final IProgramStageDataElementService programStageDataElementService;
+    private final IDataElementService dataElementService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -61,13 +71,20 @@ public final class ServicesModule implements IServicesModule {
                 persistenceModule.getProgramStore());
         programStageService = new ProgramStageService(
                 persistenceModule.getProgramStageStore());
+
         programStageDataElementService = new ProgramStageDataElementService(
                 persistenceModule.getProgramStageDataElementStore());
+
+        programStageSectionService = new ProgramStageSectionService(
+                persistenceModule.getProgramStageSectionStore());
+
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
 
         eventService = new EventService(
                 persistenceModule.getEventStore());
+        dataElementService = new DataElementService(
+                persistenceModule.getDataElementStore());
     }
 
     @Override
@@ -95,8 +112,17 @@ public final class ServicesModule implements IServicesModule {
         return programStageDataElementService;
     }
 
+    public IProgramStageSectionService getProgramStageSectionService() {
+        return programStageSectionService;
+    }
+
     @Override
     public IEventService getEventService() {
         return eventService;
+    }
+
+    @Override
+    public IDataElementService getDataElementService() {
+        return dataElementService;
     }
 }

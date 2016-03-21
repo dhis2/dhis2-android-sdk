@@ -34,6 +34,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClient;
+import org.hisp.dhis.client.sdk.android.dataelement.IDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient2;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
@@ -51,6 +53,7 @@ import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
@@ -89,12 +92,13 @@ public class NetworkModule implements INetworkModule {
     private final IProgramStageSectionApiClient programStageSectionApiClient;
     private final IUserApiClient userApiClient;
     private final IEventApiClient eventApiClient;
+    private final IDataElementApiClient dataElementApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
                 preferencesModule.getUserPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor) // TODO Consider replacing with Authenticator
@@ -142,6 +146,8 @@ public class NetworkModule implements INetworkModule {
                 IOrganisationUnitApiClientRetrofit.class));
         eventApiClient = new EventApiClient2(retrofit.create(
                 EventApiClientRetrofit.class));
+        dataElementApiClient = new DataElementApiClient(retrofit.create(
+                IDataElementApiClientRetrofit.class));
     }
 
     @Override
@@ -177,6 +183,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IEventApiClient getEventApiClient() {
         return eventApiClient;
+    }
+
+    @Override
+    public IDataElementApiClient getDataElementApiClient() {
+        return dataElementApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

@@ -37,6 +37,10 @@ import java.util.List;
 import rx.Observable;
 
 public interface IProgramStageSectionScope {
+    Observable<List<ProgramStageSection>> sync();
+
+    Observable<List<ProgramStageSection>> sync(String... uids);
+
     Observable<ProgramStageSection> get(String uid);
 
     Observable<ProgramStageSection> get(long id);

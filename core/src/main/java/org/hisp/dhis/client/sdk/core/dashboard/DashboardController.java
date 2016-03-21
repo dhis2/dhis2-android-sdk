@@ -49,12 +49,12 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 public final class DashboardController implements IIdentifiableController<Dashboard> {
     private final IDashboardStore dashboardStore;
@@ -106,7 +106,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 

@@ -105,7 +105,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.list(programStage, dataElement);
+                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.query(programStage, dataElement);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

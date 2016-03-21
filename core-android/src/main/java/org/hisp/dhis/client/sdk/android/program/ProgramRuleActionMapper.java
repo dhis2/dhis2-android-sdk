@@ -29,8 +29,10 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
@@ -57,8 +59,10 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
         programRuleActionFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programRuleAction.getTrackedEntityAttribute()));
         programRuleActionFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programRuleAction.getDataElement()));
         programRuleActionFlow.setProgramIndicator(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntity(programRuleAction.getProgramIndicator()));
-        programRuleActionFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programRuleAction.getProgramStage()));
-        programRuleActionFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
+        programRuleActionFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programRuleAction.getProgramStage()));
+        programRuleActionFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
         programRuleActionFlow.setProgramRuleActionType(programRuleAction.getProgramRuleActionType());
         programRuleActionFlow.setContent(programRuleAction.getContent());
         programRuleActionFlow.setLocation(programRuleAction.getLocation());
@@ -84,8 +88,10 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
         programRuleAction.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programRuleActionFlow.getTrackedEntityAttribute()));
         programRuleAction.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programRuleActionFlow.getDataElement()));
         programRuleAction.setProgramIndicator(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModel(programRuleActionFlow.getProgramIndicator()));
-        programRuleAction.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programRuleActionFlow.getProgramStage()));
-        programRuleAction.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModel(programRuleActionFlow.getProgramStageSection()));
+        programRuleAction.setProgramStage(ProgramStageFlow.MAPPER.
+                mapToModel(programRuleActionFlow.getProgramStage()));
+        programRuleAction.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToModel(programRuleActionFlow.getProgramStageSection()));
         programRuleAction.setProgramRuleActionType(programRuleActionFlow.getProgramRuleActionType());
         programRuleAction.setContent(programRuleActionFlow.getContent());
         programRuleAction.setLocation(programRuleActionFlow.getLocation());

@@ -28,8 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
+import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
@@ -39,9 +41,13 @@ public interface IControllersModule {
 
     IProgramController getProgramController();
 
+    IProgramStageController getProgramStageController();
+
     IOrganisationUnitController getOrganisationUnitController();
 
     IAssignedProgramsController getAssignedProgramsController();
 
     IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
+
+    IEventController getEventController();
 }

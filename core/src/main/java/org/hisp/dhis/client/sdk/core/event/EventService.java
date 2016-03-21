@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -37,7 +36,6 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.joda.time.DateTime;
 
@@ -47,21 +45,21 @@ import java.util.List;
 public class EventService implements IEventService {
 
     private final IEventStore eventStore;
-    private final IStateStore stateStore;
+//    private final IStateStore stateStore;
 
-    public EventService(IEventStore eventStore, IStateStore stateStore) {
+    public EventService(IEventStore eventStore) {
         this.eventStore = eventStore;
-        this.stateStore = stateStore;
+//        this.stateStore = stateStore;
     }
 
     @Override
     public Event get(String uid) {
-        Event event = eventStore.queryByUid(uid);
-        Action action = stateStore.queryActionForModel(event);
-        if (!Action.TO_DELETE.equals(action)) {
-            return event;
-        }
-        return null;
+//        Event event = eventStore.queryByUid(uid);
+//        Action action = stateStore.queryActionForModel(event);
+//        if (!Action.TO_DELETE.equals(action)) {
+//            return event;
+//        }
+        return eventStore.queryByUid(uid);
     }
 
     @Override
@@ -111,15 +109,7 @@ public class EventService implements IEventService {
 
     @Override
     public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate) {
-        List<Event> events = eventStore.query(organisationUnit, program);
-        for(int i = 0; i<events.size(); i++) {
-            Event event = events.get(i);
-            if(event.getDueDate().isBefore(startDate) || event.getDueDate().isAfter(endDate)) {
-                events.remove(i);
-                i--;
-            }
-        }
-        return events;
+        return eventStore.query(organisationUnit, program, startDate, endDate);
     }
 
     @Override
@@ -130,68 +120,73 @@ public class EventService implements IEventService {
     @Override
     public boolean add(Event object) {
         Preconditions.isNull(object, "event argument must not be null");
-
-        if(!eventStore.insert(object)) {
-            return false;
-        }
-        return stateStore.saveActionForModel(object, Action.TO_POST);
+//
+//        if(!eventStore.insert(object)) {
+//            return false;
+//        }
+//        return stateStore.saveActionForModel(object, Action.TO_POST);
+        return eventStore.insert(object);
     }
 
     @Override
     public Event get(long id) {
-        Event event = eventStore.queryById(id);
-        Action action = stateStore.queryActionForModel(event);
-        if (!Action.TO_DELETE.equals(action)) {
-            return event;
-        }
-        return null;
+//        Event event = eventStore.queryById(id);
+//        Action action = stateStore.queryActionForModel(event);
+//        if (!Action.TO_DELETE.equals(action)) {
+//            return event;
+//        }
+//        return null;
+        return eventStore.queryById(id);
     }
 
     @Override
     public List<Event> list() {
-        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED, Action.TO_UPDATE);
+//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED, Action.TO_UPDATE);
+        return eventStore.queryAll();
     }
 
     @Override
     public boolean remove(Event object) {
         Preconditions.isNull(object, "event argument must not be null");
 
-        if(!eventStore.delete(object)) {
-            return false;
-        }
-        return stateStore.deleteActionForModel(object);
+//        if(!eventStore.delete(object)) {
+//            return false;
+//        }
+//        return stateStore.deleteActionForModel(object);
+        return eventStore.delete(object);
     }
 
     @Override
     public boolean save(Event object) {
         Preconditions.isNull(object, "event argument must not be null");
 
-        if(!eventStore.save(object)) {
-            return false;
-        }
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null || Action.TO_POST.equals(action)) {
-            return stateStore.saveActionForModel(object, Action.TO_POST);
-        } else {
-            return stateStore.saveActionForModel(object, Action.TO_UPDATE);
-        }
+//        if(!eventStore.save(object)) {
+//            return false;
+//        }
+//        Action action = stateStore.queryActionForModel(object);
+//        if (action == null || Action.TO_POST.equals(action)) {
+//            return stateStore.saveActionForModel(object, Action.TO_POST);
+//        } else {
+//            return stateStore.saveActionForModel(object, Action.TO_UPDATE);
+//        }
+        return eventStore.save(object);
     }
 
     @Override
     public boolean update(Event object) {
         Preconditions.isNull(object, "event argument must not be null");
 
-        Action action = stateStore.queryActionForModel(object);
-        if (Action.TO_DELETE.equals(action)) {
-            throw new IllegalArgumentException("The object with Action." +
-                    "TO_DELETE cannot be updated");
-        }
-
-        /* if object was not posted to the server before,
-        you don't have anything to update */
-        if (!Action.TO_POST.equals(action)) {
-            stateStore.saveActionForModel(object, Action.TO_UPDATE);
-        }
+//        Action action = stateStore.queryActionForModel(object);
+//        if (Action.TO_DELETE.equals(action)) {
+//            throw new IllegalArgumentException("The object with Action." +
+//                    "TO_DELETE cannot be updated");
+//        }
+//
+//        /* if object was not posted to the server before,
+//        you don't have anything to update */
+//        if (!Action.TO_POST.equals(action)) {
+//            stateStore.saveActionForModel(object, Action.TO_UPDATE);
+//        }
         return eventStore.update(object);
     }
 }

@@ -35,13 +35,17 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
-
-    static final String PROGRAM_STAGE_KEY = "programstage";
+    public static final IMapper<ProgramStageSection,
+            ProgramStageSectionFlow> MAPPER = new ProgramStageSectionMapper();
+    private static final String PROGRAM_STAGE_KEY = "programstage";
 
     @Column
     int sortOrder;
@@ -90,7 +94,8 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
         return programStageDataElements;
     }
 
-    public void setProgramStageDataElements(List<ProgramStageDataElementFlow> programStageDataElements) {
+    public void setProgramStageDataElements(List<ProgramStageDataElementFlow>
+                                                    programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
     }
 
@@ -104,5 +109,62 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
 
     public ProgramStageSectionFlow() {
         // empty constructor
+    }
+
+    private static class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection,
+            ProgramStageSectionFlow> {
+
+        @Override
+        public ProgramStageSectionFlow mapToDatabaseEntity(ProgramStageSection
+                                                                           programStageSection) {
+            if (programStageSection == null) {
+                return null;
+            }
+
+            ProgramStageSectionFlow programStageSectionFlow = new ProgramStageSectionFlow();
+            programStageSectionFlow.setId(programStageSection.getId());
+            programStageSectionFlow.setUId(programStageSection.getUId());
+            programStageSectionFlow.setCreated(programStageSection.getCreated());
+            programStageSectionFlow.setLastUpdated(programStageSection.getLastUpdated());
+            programStageSectionFlow.setName(programStageSection.getName());
+            programStageSectionFlow.setDisplayName(programStageSection.getDisplayName());
+            programStageSectionFlow.setAccess(programStageSection.getAccess());
+            programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
+            programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
+            programStageSectionFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(programStageSection.getProgramStage()));
+            return programStageSectionFlow;
+        }
+
+        @Override
+        public ProgramStageSection mapToModel(ProgramStageSectionFlow programStageSectionFlow) {
+            if (programStageSectionFlow == null) {
+                return null;
+            }
+
+            ProgramStageSection programStageSection = new ProgramStageSection();
+            programStageSection.setId(programStageSectionFlow.getId());
+            programStageSection.setUId(programStageSectionFlow.getUId());
+            programStageSection.setCreated(programStageSectionFlow.getCreated());
+            programStageSection.setLastUpdated(programStageSectionFlow.getLastUpdated());
+            programStageSection.setName(programStageSectionFlow.getName());
+            programStageSection.setDisplayName(programStageSectionFlow.getDisplayName());
+            programStageSection.setAccess(programStageSectionFlow.getAccess());
+            programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
+            programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
+            programStageSection.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programStageSectionFlow.getProgramStage()));
+            return programStageSection;
+        }
+
+        @Override
+        public Class<ProgramStageSection> getModelTypeClass() {
+            return ProgramStageSection.class;
+        }
+
+        @Override
+        public Class<ProgramStageSectionFlow> getDatabaseEntityTypeClass() {
+            return ProgramStageSectionFlow.class;
+        }
     }
 }

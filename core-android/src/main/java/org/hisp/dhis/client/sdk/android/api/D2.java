@@ -34,15 +34,21 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.event.EventScope;
+import org.hisp.dhis.client.sdk.android.event.IEventScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
@@ -76,6 +82,9 @@ public class D2 {
     private final IUserAccountScope userAccountScope;
     private final IOrganisationUnitScope organisationUnitScope;
     private final IProgramScope programScope;
+    private final IProgramStageScope programStageScope;
+    private final IEventScope eventScope;
+    private final IProgramStageDataElementScope programStageDataElementScope;
 
     private D2(Context context) {
         applicationContext = context;
@@ -91,6 +100,9 @@ public class D2 {
             userAccountScope = null;
             organisationUnitScope = null;
             programScope = null;
+            programStageScope = null;
+            eventScope = null;
+            programStageDataElementScope = null;
             return;
         }
 
@@ -111,9 +123,20 @@ public class D2 {
                 servicesModule.getProgramService(),
                 controllersModule.getProgramController());
 
+        programStageScope = new ProgramStageScope(
+                servicesModule.getProgramStageService(),
+                controllersModule.getProgramStageController());
+
+        programStageDataElementScope = new ProgramStageDataElementScope(
+                servicesModule.getProgramStageDataElementService());
+
         organisationUnitScope = new OrganisationUnitScope(
                 servicesModule.getOrganisationUnitService(),
                 controllersModule.getOrganisationUnitController());
+
+        eventScope = new EventScope(
+                servicesModule.getEventService(),
+                controllersModule.getEventController());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),
@@ -145,7 +168,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -211,7 +234,19 @@ public class D2 {
         return configuredInstance().programScope;
     }
 
+    public static IProgramStageScope programStages() {
+        return configuredInstance().programStageScope;
+    }
+
     public static IOrganisationUnitScope organisationUnits() {
         return configuredInstance().organisationUnitScope;
+    }
+
+    public static IEventScope events() {
+        return configuredInstance().eventScope;
+    }
+
+    public static IProgramStageDataElementScope programStageDataElements() {
+        return configuredInstance().programStageDataElementScope;
     }
 }

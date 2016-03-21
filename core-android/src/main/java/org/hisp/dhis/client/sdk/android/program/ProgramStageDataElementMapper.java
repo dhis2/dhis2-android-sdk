@@ -29,14 +29,18 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 
-public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement, ProgramStageDataElementFlow> {
+public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement,
+        ProgramStageDataElementFlow> {
 
     @Override
-    public ProgramStageDataElementFlow mapToDatabaseEntity(ProgramStageDataElement programStageDataElement) {
+    public ProgramStageDataElementFlow mapToDatabaseEntity(ProgramStageDataElement
+                                                                       programStageDataElement) {
         if (programStageDataElement == null) {
             return null;
         }
@@ -49,19 +53,26 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElementFlow.setName(programStageDataElement.getName());
         programStageDataElementFlow.setDisplayName(programStageDataElement.getDisplayName());
         programStageDataElementFlow.setAccess(programStageDataElement.getAccess());
-        programStageDataElementFlow.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToDatabaseEntity(programStageDataElement.getProgramStageSection()));
-        programStageDataElementFlow.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToDatabaseEntity(programStageDataElement.getProgramStage()));
-        programStageDataElementFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programStageDataElement.getDataElement()));
+        programStageDataElementFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToDatabaseEntity(programStageDataElement.getProgramStageSection()));
+        programStageDataElementFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programStageDataElement.getProgramStage()));
+        programStageDataElementFlow.setDataElement(MapperModuleProvider.getInstance()
+                .getDataElementMapper().mapToDatabaseEntity(programStageDataElement
+                        .getDataElement()));
         programStageDataElementFlow.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
         programStageDataElementFlow.setSortOrder(programStageDataElement.getSortOrder());
-        programStageDataElementFlow.setDisplayInReports(programStageDataElement.isDisplayInReports());
-        programStageDataElementFlow.setAllowProvidedElsewhere(programStageDataElement.isAllowProvidedElsewhere());
+        programStageDataElementFlow.setDisplayInReports(programStageDataElement
+                .isDisplayInReports());
+        programStageDataElementFlow.setAllowProvidedElsewhere(programStageDataElement
+                .isAllowProvidedElsewhere());
         programStageDataElementFlow.setCompulsory(programStageDataElement.isCompulsory());
         return programStageDataElementFlow;
     }
 
     @Override
-    public ProgramStageDataElement mapToModel(ProgramStageDataElementFlow programStageDataElementFlow) {
+    public ProgramStageDataElement mapToModel(ProgramStageDataElementFlow
+                                                          programStageDataElementFlow) {
         if (programStageDataElementFlow == null) {
             return null;
         }
@@ -74,14 +85,19 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
         programStageDataElement.setName(programStageDataElementFlow.getName());
         programStageDataElement.setDisplayName(programStageDataElementFlow.getDisplayName());
         programStageDataElement.setAccess(programStageDataElementFlow.getAccess());
-        programStageDataElement.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper().mapToModel(programStageDataElementFlow.getProgramStage()));
-        programStageDataElement.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programStageDataElementFlow.getDataElement()));
+        programStageDataElement.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programStageDataElementFlow.getProgramStage()));
+        programStageDataElement.setDataElement(MapperModuleProvider.getInstance()
+                .getDataElementMapper().mapToModel(programStageDataElementFlow.getDataElement()));
         programStageDataElement.setAllowFutureDate(programStageDataElementFlow.isAllowFutureDate());
         programStageDataElement.setSortOrder(programStageDataElementFlow.getSortOrder());
-        programStageDataElement.setDisplayInReports(programStageDataElementFlow.isDisplayInReports());
-        programStageDataElement.setAllowProvidedElsewhere(programStageDataElementFlow.isAllowProvidedElsewhere());
+        programStageDataElement.setDisplayInReports(programStageDataElementFlow
+                .isDisplayInReports());
+        programStageDataElement.setAllowProvidedElsewhere(programStageDataElementFlow
+                .isAllowProvidedElsewhere());
         programStageDataElement.setCompulsory(programStageDataElementFlow.isCompulsory());
-        programStageDataElement.setProgramStageSection(MapperModuleProvider.getInstance().getProgramStageSectionMapper().mapToModel(programStageDataElementFlow.getProgramStageSection()));
+        programStageDataElement.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToModel(programStageDataElementFlow.getProgramStageSection()));
         return programStageDataElement;
     }
 

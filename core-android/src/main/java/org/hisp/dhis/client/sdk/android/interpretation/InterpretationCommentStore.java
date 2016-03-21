@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 
 import java.util.List;
+import java.util.Set;
 
 public class InterpretationCommentStore implements IInterpretationCommentStore {
 
@@ -101,6 +102,11 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
                 .where(InterpretationCommentFlow_Table.uId.is(uid))
                 .querySingle();
         return null;//InterpretationComment_Flow.toModel(commentFlow);
+    }
+
+    @Override
+    public List<InterpretationComment> queryByUids(Set<String> uids) {
+        return null;
     }
 
     @Override

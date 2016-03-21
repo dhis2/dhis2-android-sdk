@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class UserController implements IIdentifiableController<UserAccount> {
 
@@ -42,7 +43,7 @@ public class UserController implements IIdentifiableController<UserAccount> {
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

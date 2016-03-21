@@ -28,13 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public interface IProgramStageService extends IService, ISave<ProgramStage>, IRemove<ProgramStage>,
-        IGet<ProgramStage>, IGetUid<ProgramStage>, IList<ProgramStage> {
+public interface IProgramStageService extends IService, IGet<ProgramStage>, IGetUid<ProgramStage>,
+        IList<ProgramStage>, IListUids<ProgramStage> {
+
     List<ProgramStage> list(Program program);
 }

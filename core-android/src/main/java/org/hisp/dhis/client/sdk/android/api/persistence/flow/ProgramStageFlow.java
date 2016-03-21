@@ -35,13 +35,14 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-
-import java.util.List;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 @Table(database = DbDhis.class)
 public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
-
-    static final String PROGRAM_KEY = "program";
+    public static final IMapper<ProgramStage, ProgramStageFlow> MAPPER = new ProgramStageMapper();
+    private static final String PROGRAM_KEY = "program";
 
     @Column
     @ForeignKey(
@@ -106,11 +107,9 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
     @Column
     int minDaysFromStart;
 
-    List<ProgramStageDataElementFlow> programStageDataElements;
-
-    List<ProgramStageSectionFlow> programStageSections;
-
-    List<ProgramIndicatorFlow> programIndicators;
+    public ProgramStageFlow() {
+        // empty constructor
+    }
 
     public ProgramFlow getProgram() {
         return program;
@@ -264,31 +263,92 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
         this.minDaysFromStart = minDaysFromStart;
     }
 
-    public List<ProgramStageDataElementFlow> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
+    private static class ProgramStageMapper extends AbsMapper<ProgramStage, ProgramStageFlow> {
 
-    public void setProgramStageDataElements(List<ProgramStageDataElementFlow> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
+        @Override
+        public ProgramStageFlow mapToDatabaseEntity(ProgramStage programStage) {
+            if (programStage == null) {
+                return null;
+            }
 
-    public List<ProgramStageSectionFlow> getProgramStageSections() {
-        return programStageSections;
-    }
+            ProgramStageFlow programStageFlow = new ProgramStageFlow();
+            programStageFlow.setId(programStage.getId());
+            programStageFlow.setUId(programStage.getUId());
+            programStageFlow.setCreated(programStage.getCreated());
+            programStageFlow.setLastUpdated(programStage.getLastUpdated());
+            programStageFlow.setName(programStage.getName());
+            programStageFlow.setDisplayName(programStage.getDisplayName());
+            programStageFlow.setAccess(programStage.getAccess());
+            programStageFlow.setProgram(ProgramFlow.MAPPER
+                    .mapToDatabaseEntity(programStage.getProgram()));
+            programStageFlow.setDataEntryType(programStage.getDataEntryType());
+            programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
+            programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
+            programStageFlow.setDisplayGenerateEventBox(programStage.isDisplayGenerateEventBox());
+            programStageFlow.setDescription(programStage.getDescription());
+            programStageFlow.setExternalAccess(programStage.isExternalAccess());
+            programStageFlow.setOpenAfterEnrollment(programStage.isOpenAfterEnrollment());
+            programStageFlow.setCaptureCoordinates(programStage.isCaptureCoordinates());
+            programStageFlow.setDefaultTemplateMessage(programStage.getDefaultTemplateMessage());
+            programStageFlow.setRemindCompleted(programStage.isRemindCompleted());
+            programStageFlow.setValidCompleteOnly(programStage.isValidCompleteOnly());
+            programStageFlow.setSortOrder(programStage.getSortOrder());
+            programStageFlow.setGeneratedByEnrollmentDate(
+                    programStage.isGeneratedByEnrollmentDate());
+            programStageFlow.setPreGenerateUID(programStage.isPreGenerateUID());
+            programStageFlow.setAutoGenerateEvent(programStage.isAutoGenerateEvent());
+            programStageFlow.setAllowGenerateNextVisit(programStage.isAllowGenerateNextVisit());
+            programStageFlow.setRepeatable(programStage.isRepeatable());
+            programStageFlow.setMinDaysFromStart(programStage.getMinDaysFromStart());
+            return programStageFlow;
+        }
 
-    public void setProgramStageSections(List<ProgramStageSectionFlow> programStageSections) {
-        this.programStageSections = programStageSections;
-    }
+        @Override
+        public ProgramStage mapToModel(ProgramStageFlow programStageFlow) {
+            if (programStageFlow == null) {
+                return null;
+            }
 
-    public List<ProgramIndicatorFlow> getProgramIndicators() {
-        return programIndicators;
-    }
+            ProgramStage programStage = new ProgramStage();
+            programStage.setId(programStageFlow.getId());
+            programStage.setUId(programStageFlow.getUId());
+            programStage.setCreated(programStageFlow.getCreated());
+            programStage.setLastUpdated(programStageFlow.getLastUpdated());
+            programStage.setName(programStageFlow.getName());
+            programStage.setDisplayName(programStageFlow.getDisplayName());
+            programStage.setAccess(programStageFlow.getAccess());
+            programStage.setProgram(ProgramFlow.MAPPER
+                    .mapToModel(programStageFlow.getProgram()));
+            programStage.setDataEntryType(programStageFlow.getDataEntryType());
+            programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
+            programStage.setReportDateDescription(programStageFlow.getReportDateDescription());
+            programStage.setDisplayGenerateEventBox(programStageFlow.isDisplayGenerateEventBox());
+            programStage.setDescription(programStageFlow.getDescription());
+            programStage.setExternalAccess(programStageFlow.isExternalAccess());
+            programStage.setOpenAfterEnrollment(programStageFlow.isOpenAfterEnrollment());
+            programStage.setCaptureCoordinates(programStageFlow.isCaptureCoordinates());
+            programStage.setDefaultTemplateMessage(programStageFlow.getDefaultTemplateMessage());
+            programStage.setRemindCompleted(programStageFlow.isRemindCompleted());
+            programStage.setValidCompleteOnly(programStageFlow.isValidCompleteOnly());
+            programStage.setSortOrder(programStageFlow.getSortOrder());
+            programStage.setGeneratedByEnrollmentDate(
+                    programStageFlow.isGeneratedByEnrollmentDate());
+            programStage.setPreGenerateUID(programStageFlow.isPreGenerateUID());
+            programStage.setAutoGenerateEvent(programStageFlow.isAutoGenerateEvent());
+            programStage.setAllowGenerateNextVisit(programStageFlow.isAllowGenerateNextVisit());
+            programStage.setRepeatable(programStageFlow.isRepeatable());
+            programStage.setMinDaysFromStart(programStageFlow.getMinDaysFromStart());
+            return programStage;
+        }
 
-    public void setProgramIndicators(List<ProgramIndicatorFlow> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
+        @Override
+        public Class<ProgramStage> getModelTypeClass() {
+            return ProgramStage.class;
+        }
 
-    public ProgramStageFlow() {
-        // empty constructor
+        @Override
+        public Class<ProgramStageFlow> getDatabaseEntityTypeClass() {
+            return ProgramStageFlow.class;
+        }
     }
 }

@@ -31,10 +31,14 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
+import org.hisp.dhis.client.sdk.core.event.EventController;
+import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -47,9 +51,11 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 public class ControllersModule implements IControllersModule {
     private final IUserAccountController userAccountController;
     private final IProgramController programController;
+    private final IProgramStageController programStageController;
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
+    private final IEventController eventController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -62,6 +68,13 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
                 networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        programStageController = new ProgramStageController(
+                networkModule.getSystemInfoApiClient(),
+                networkModule.getProgramStageApiClient(),
+                persistenceModule.getProgramStageStore(),
+                programController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         assignedProgramsController = new AssignedProgramsController(
@@ -78,9 +91,34 @@ public class ControllersModule implements IControllersModule {
         assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
                 networkModule.getUserApiClient(), organisationUnitController);
 
-        userAccountController = new UserAccountController(networkModule
-                .getUserApiClient(),
+        userAccountController = new UserAccountController(
+                networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
+
+        eventController = new EventController(
+                networkModule.getEventApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager(),
+                null, //persistenceModule.getStateStore(),
+                persistenceModule.getEventStore(),
+                null, //persistenceModule.getTrackedEntityDataValueStore(),
+                persistenceModule.getOrganisationUnitStore(),
+                persistenceModule.getProgramStore(),
+                null //persistenceModule.getFailedItemStore()
+        );
+
+                /*
+
+                IEventApiClient eventApiClient,
+                           ISystemInfoApiClient systemInfoApiClient,
+                           ILastUpdatedPreferences lastUpdatedPreferences,
+                           ITransactionManager transactionManager,
+                           IStateStore stateStore, IEventStore eventStore,
+                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
+                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
+                           IFailedItemStore failedItemStore)
+                 */
     }
 
     @Override
@@ -91,6 +129,11 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IProgramController getProgramController() {
         return programController;
+    }
+
+    @Override
+    public IProgramStageController getProgramStageController() {
+        return programStageController;
     }
 
     @Override
@@ -106,5 +149,10 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
         return assignedOrganisationUnitsController;
+    }
+
+    @Override
+    public IEventController getEventController() {
+        return eventController;
     }
 }

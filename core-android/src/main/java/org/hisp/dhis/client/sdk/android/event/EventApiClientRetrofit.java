@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.client.sdk.models.event.Event;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -64,4 +65,9 @@ public interface EventApiClientRetrofit {
 
     @PUT("/events/{eventUid}")
     Call<Response> putEvent(@Path("eventUid") String eventUid, @Body Event event);
+
+
+    @GET("events")
+    Call<Map<String, List<Event>>> getEvents(@QueryMap Map<String, String> queryMap,
+                                                 @Query("filter") List<String> filters);
 }

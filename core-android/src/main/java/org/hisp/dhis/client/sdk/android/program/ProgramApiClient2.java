@@ -43,11 +43,6 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramApiClient2 implements IProgramApiClient {
-
-    /* amount of programs which we should get by each request */
-    // private static final int PROGRAMS_PER_REQUEST = 64;
-
-    /* Retrofit implementation of the client */
     private final IProgramApiClientRetrofit programApiClientRetrofit;
 
     public ProgramApiClient2(IProgramApiClientRetrofit programApiClientRetrofit) {
@@ -72,7 +67,7 @@ public class ProgramApiClient2 implements IProgramApiClient {
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
-                        "programType,organisationUnits[id]";
+                        "programType,organisationUnits[id],programStages[id]";
             }
 
             @Override
@@ -84,69 +79,4 @@ public class ProgramApiClient2 implements IProgramApiClient {
 
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
-
-//    @Override
-//    public List<Program> getPrograms(Fields fields, DateTime lastUpdated,
-//                                     String... ids) throws ApiException {
-//        Map<String, String> queryMap = new HashMap<>();
-//        List<String> filters = new ArrayList<>();
-//
-//        /* disable paging */
-//        queryMap.put("paging", "false");
-//
-//        /* filter programs by lastUpdated field */
-//        if (lastUpdated != null) {
-//            filters.add("lastUpdated:gt:" + lastUpdated.toString());
-//        }
-//
-//        switch (fields) {
-//            case BASIC: {
-//                queryMap.put("fields", "id,displayName");
-//                break;
-//            }
-//            case ALL: {
-//                queryMap.put("fields", "id,name,displayName,created,lastUpdated," +
-//                        "access,programType,organisationUnits[id]");
-//                break;
-//            }
-//        }
-//
-//        List<Program> allPrograms = new ArrayList<>();
-//        if (ids != null && ids.length > 0) {
-//            // splitting up request into chunks
-//            List<String> idFilters = buildIdFilter(ids);
-//            for (String idFilter : idFilters) {
-//                List<String> combinedFilters = new ArrayList<>(filters);
-//                combinedFilters.add(idFilter);
-//
-//                // downloading subset of programs
-//                allPrograms.addAll(unwrap(call(programApiClientRetrofit
-//                        .getPrograms(queryMap, combinedFilters)), "programs"));
-//            }
-//        } else {
-//            allPrograms.addAll(unwrap(call(programApiClientRetrofit
-//                    .getPrograms(queryMap, filters)), "programs"));
-//        }
-//
-//        return allPrograms;
-//    }
-//
-//    public static List<String> buildIdFilter(String[] ids) {
-//        List<String> idFilters = new ArrayList<>();
-//
-//        if (ids != null && ids.length > 0) {
-//            List<List<String>> splittedIds = CollectionUtils.slice(
-//                    Arrays.asList(ids), PROGRAMS_PER_REQUEST);
-//
-//            for (List<String> listOfIds : splittedIds) {
-//                StringBuilder builder = new StringBuilder();
-//                idFilters.add(builder.append("id:in:[")
-//                        .append(CollectionUtils.join(listOfIds, ","))
-//                        .append("]")
-//                        .toString());
-//            }
-//        }
-//
-//        return idFilters;
-//    }
 }

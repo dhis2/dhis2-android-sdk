@@ -31,8 +31,7 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -40,7 +39,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import java.util.List;
 
 public interface IProgramService extends IService, IGet<Program>, IGetUid<Program>,
-        IList<Program> {
+        IList<Program>, IListUids<Program> {
 
     List<Program> list(boolean assignedToCurrentUser);
 

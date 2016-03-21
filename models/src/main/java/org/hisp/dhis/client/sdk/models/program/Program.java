@@ -89,14 +89,14 @@ public final class Program extends BaseIdentifiableObject {
     @JsonProperty("programType")
     private ProgramType programType;
 
+    @JsonProperty("programStages")
+    private List<ProgramStage> programStages;
+
     @JsonProperty("organisationUnits")
     private List<OrganisationUnit> organisationUnits;
 
     @JsonProperty("programIndicators")
     private List<ProgramIndicator> programIndicators;
-
-    @JsonProperty("programStages")
-    private List<ProgramStage> programStages;
 
     @JsonProperty("programTrackedEntityAttributes")
     private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;

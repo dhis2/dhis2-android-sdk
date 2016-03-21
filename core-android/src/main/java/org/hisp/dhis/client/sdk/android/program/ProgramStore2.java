@@ -39,7 +39,9 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,7 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, ProgramFl
 
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
+    private static final String PROGRAM_TO_PROGRAM_STAGES = "programToProgramStages";
     private final ITransactionManager transactionManager;
 
     public ProgramStore2(ITransactionManager transactionManager) {
@@ -118,6 +121,17 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, ProgramFl
     }
 
     @Override
+    public boolean save(Program object) {
+        boolean isSuccess = super.save(object);
+
+        if (isSuccess) {
+            updateProgramRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
     public boolean delete(Program object) {
         boolean isSuccess = super.delete(object);
 
@@ -129,30 +143,35 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, ProgramFl
     }
 
     @Override
-    public boolean save(Program object) {
-        boolean isSuccess = super.save(object);
+    public boolean deleteAll() {
+        boolean isSuccess = super.deleteAll();
 
         if (isSuccess) {
-            updateProgramRelationships(object);
+            ModelLinkFlow.deleteModels(PROGRAM_TO_ORGANISATION_UNITS);
         }
 
         return isSuccess;
     }
 
     private void updateProgramRelationships(Program program) {
-        List<IDbOperation> dbOperations = ModelLinkFlow.updateLinksToModel(program,
-                program.getOrganisationUnits(), PROGRAM_TO_ORGANISATION_UNITS);
+        List<IDbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(program,
+                program.getOrganisationUnits(), PROGRAM_TO_ORGANISATION_UNITS));
+        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(program,
+                program.getProgramStages(), PROGRAM_TO_PROGRAM_STAGES));
         transactionManager.transact(dbOperations);
     }
 
     private List<Program> queryProgramRelationships(List<Program> programs) {
-
         // resolving relationships with organisation units
         if (programs != null) {
             Map<String, List<OrganisationUnit>> programsToUnits = ModelLinkFlow
                     .queryLinksForModel(OrganisationUnit.class, PROGRAM_TO_ORGANISATION_UNITS);
+            Map<String, List<ProgramStage>> programToProgramStages = ModelLinkFlow
+                    .queryLinksForModel(ProgramStage.class, PROGRAM_TO_PROGRAM_STAGES);
             for (Program program : programs) {
                 program.setOrganisationUnits(programsToUnits.get(program.getUId()));
+                program.setProgramStages(programToProgramStages.get(program.getUId()));
             }
         }
 
@@ -160,11 +179,13 @@ public class ProgramStore2 extends AbsIdentifiableObjectStore<Program, ProgramFl
     }
 
     private Program queryProgramRelationships(Program program) {
-
         if (program != null) {
             List<OrganisationUnit> organisationUnits = ModelLinkFlow.queryLinksForModel(
                     OrganisationUnit.class, PROGRAM_TO_ORGANISATION_UNITS, program.getUId());
+            List<ProgramStage> programStages = ModelLinkFlow.queryLinksForModel(
+                    ProgramStage.class, PROGRAM_TO_PROGRAM_STAGES, program.getUId());
             program.setOrganisationUnits(organisationUnits);
+            program.setProgramStages(programStages);
         }
 
         return program;

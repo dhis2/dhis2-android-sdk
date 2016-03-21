@@ -41,7 +41,6 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,10 +60,8 @@ public class ProgramController implements IProgramController {
     private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramController(ISystemInfoApiClient systemInfoApiClient,
-                             IProgramApiClient programApiClient, IUserApiClient
-                                     userApiClient,
-                             IProgramStore programStore, ITransactionManager
-                                     transactionManager,
+                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                             IProgramStore programStore, ITransactionManager transactionManager,
                              ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.programApiClient = programApiClient;
@@ -80,9 +77,9 @@ public class ProgramController implements IProgramController {
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS);
 
         List<Program> persistedPrograms = programStore.queryAll();
 
@@ -117,6 +114,6 @@ public class ProgramController implements IProgramController {
                 updatedPrograms, persistedPrograms, programStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAM, serverTime);
+        lastUpdatedPreferences.save(ResourceType.PROGRAMS, serverTime);
     }
 }

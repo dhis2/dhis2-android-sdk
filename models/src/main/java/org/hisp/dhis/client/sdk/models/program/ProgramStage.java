@@ -104,6 +104,10 @@ public final class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty("programIndicators")
     private List<ProgramIndicator> programIndicators;
 
+    public ProgramStage() {
+        // explicit empty constructor
+    }
+
     public Program getProgram() {
         return program;
     }
@@ -260,8 +264,8 @@ public final class ProgramStage extends BaseIdentifiableObject {
         return programStageDataElements;
     }
 
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
+    public void setProgramStageDataElements(List<ProgramStageDataElement> stageDataElements) {
+        this.programStageDataElements = stageDataElements;
     }
 
     public List<ProgramStageSection> getProgramStageSections() {

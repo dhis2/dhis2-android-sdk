@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -58,7 +56,7 @@ public class ProgramStageDataElementService implements IProgramStageDataElementS
     }
 
     @Override
-    public ProgramStageDataElement list(ProgramStage programStage, DataElement dataElement) {
+    public ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement) {
         Preconditions.isNull(programStage, "Object must not be null");
         Preconditions.isNull(dataElement, "Object must not be null");
         return programStageDataElementStore.query(programStage, dataElement);

@@ -32,10 +32,10 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import java.util.Collection;
+import java.util.Set;
 
 public interface IIdentifiableController<T extends IdentifiableObject> {
     void sync() throws ApiException;
 
-    void sync(Collection<String> uids) throws ApiException;
+    void sync(Set<String> uids) throws ApiException;
 }

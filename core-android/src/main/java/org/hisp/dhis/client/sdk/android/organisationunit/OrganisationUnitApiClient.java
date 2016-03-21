@@ -42,6 +42,7 @@ import retrofit2.Call;
 
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
+// TODO add parent organisation unit support
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
     private final IOrganisationUnitApiClientRetrofit unitApiClientRetrofit;
 
@@ -68,7 +69,7 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
-                        "programs[id],dataSets[id]";
+                        "level,openingDate,programs[id],dataSets[id]";
             }
 
             @Override

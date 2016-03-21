@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class InterpretationController implements IIdentifiableController<Interpretation> {
     private final IInterpretationService mInterpretationService;
@@ -571,7 +572,7 @@ public final class InterpretationController implements IIdentifiableController<I
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

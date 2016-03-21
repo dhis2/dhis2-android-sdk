@@ -34,6 +34,7 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 

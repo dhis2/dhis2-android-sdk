@@ -45,6 +45,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     public ProgramStageSectionScope(IProgramStageSectionService programStageSectionService) {
         this.mProgramStageSectionService = programStageSectionService;
     }
+
     @Override
     public Observable<ProgramStageSection> get(final String uid) {
         return Observable.create(new Observable.OnSubscribe<ProgramStageSection>() {
@@ -68,7 +69,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
             @Override
             public void call(Subscriber<? super ProgramStageSection> subscriber) {
                 try {
-                    ProgramStageSection programStageSection  = mProgramStageSectionService.get(id);
+                    ProgramStageSection programStageSection = mProgramStageSectionService.get(id);
                     subscriber.onNext(programStageSection);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -85,7 +86,8 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
-                    List<ProgramStageSection> programStageSections = mProgramStageSectionService.list();
+                    List<ProgramStageSection> programStageSections =
+                            mProgramStageSectionService.list();
                     subscriber.onNext(programStageSections);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -102,42 +104,9 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
-                    List<ProgramStageSection> programStageSections = mProgramStageSectionService.list(programStage);
+                    List<ProgramStageSection> programStageSections =
+                            mProgramStageSectionService.list(programStage);
                     subscriber.onNext(programStageSections);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> save(final ProgramStageSection object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mProgramStageSectionService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final ProgramStageSection object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mProgramStageSectionService.remove(object);
-                    subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

@@ -119,12 +119,12 @@ public final class OrganisationUnit extends BaseIdentifiableObject {
         }
 
         @Override
-        public int compare(OrganisationUnit lhs, OrganisationUnit rhs) {
-            if (lhs.getLevel() == rhs.getLevel()) {
+        public int compare(OrganisationUnit first, OrganisationUnit second) {
+            if (first.getLevel() == second.getLevel()) {
                 return 0;
             }
 
-            if (lhs.getLevel() > rhs.getLevel()) {
+            if (first.getLevel() > second.getLevel()) {
                 return 1;
             }
 

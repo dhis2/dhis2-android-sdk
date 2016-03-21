@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 public final class ProgramService implements IProgramService {
     private final IProgramStore programStore;
@@ -63,5 +64,10 @@ public final class ProgramService implements IProgramService {
     @Override
     public List<Program> list(OrganisationUnit... organisationUnits) {
         return programStore.query(organisationUnits);
+    }
+
+    @Override
+    public List<Program> list(Set<String> uids) {
+        return programStore.queryByUids(uids);
     }
 }

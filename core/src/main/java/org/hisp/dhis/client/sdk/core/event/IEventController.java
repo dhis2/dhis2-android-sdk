@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -35,15 +36,17 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface IEventController {
-    void sync() throws ApiException;
-    void sync(OrganisationUnit organisationUnit, Program program, int limit, DateTime serverDateTime) throws ApiException;
-    void sync(OrganisationUnit organisationUnit, Program program, int limit) throws ApiException;
-    void sync(OrganisationUnit organisationUnit, Program program) throws ApiException;
-    void sync(Enrollment enrollment) throws ApiException;
-    void sync(String uid);
-    void getEventsDataFromServer(Enrollment enrollment) throws ApiException;
-    void sendEventChanges(List<Event> events) throws ApiException;
+public interface IEventController extends IIdentifiableController<Event>{
+//    void sync() throws ApiException;
+//    void sync(Collection<String> uids) throws ApiException;
+//    void sync(OrganisationUnit organisationUnit, Program program, int limit, DateTime serverDateTime) throws ApiException;
+//    void sync(OrganisationUnit organisationUnit, Program program, int limit) throws ApiException;
+//    void sync(OrganisationUnit organisationUnit, Program program) throws ApiException;
+//    void sync(Enrollment enrollment) throws ApiException;
+//    void sync(String uid);
+//    void getEventsDataFromServer(Enrollment enrollment) throws ApiException;
+//    void sendEventChanges(List<Event> events) throws ApiException;
 }

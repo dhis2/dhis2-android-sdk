@@ -35,13 +35,17 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.event.EventMapper;
 import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
-public final class EventFlow extends BaseModelFlow {
+public final class EventFlow extends BaseIdentifiableObjectFlow {
+    public static IMapper<Event, EventFlow> MAPPER = new EventMapper();
     final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
     final static String ENROLLMENT_KEY = "enrollment";
 
@@ -90,21 +94,6 @@ public final class EventFlow extends BaseModelFlow {
 
     @Column
     DateTime dueDate;
-
-    @Column
-    String name;
-
-    @Column
-    String displayName;
-
-    @Column
-    DateTime created;
-
-    @Column
-    DateTime lastUpdated;
-
-    @Column
-    Access access;
 
     List<TrackedEntityDataValueFlow> trackedEntityDataValues;
 
@@ -203,46 +192,6 @@ public final class EventFlow extends BaseModelFlow {
     public void setTrackedEntityDataValues(List<TrackedEntityDataValueFlow>
                                                    trackedEntityDataValues) {
         this.trackedEntityDataValues = trackedEntityDataValues;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    public DateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(DateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Access getAccess() {
-        return access;
-    }
-
-    public void setAccess(Access access) {
-        this.access = access;
     }
 
     public EventFlow() {

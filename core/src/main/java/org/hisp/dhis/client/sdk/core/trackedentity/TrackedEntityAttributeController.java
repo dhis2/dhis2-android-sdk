@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 public final class TrackedEntityAttributeController implements
         IIdentifiableController<TrackedEntityAttribute> {
@@ -102,7 +103,7 @@ public final class TrackedEntityAttributeController implements
     }
 
     @Override
-    public void sync(Collection<String> uids) throws ApiException {
+    public void sync(Set<String> uids) throws ApiException {
 
     }
 }

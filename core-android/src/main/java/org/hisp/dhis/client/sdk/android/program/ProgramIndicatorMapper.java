@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 
@@ -57,13 +58,13 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicatorFlow.setExternalAccess(programIndicator.isExternalAccess());
         programIndicatorFlow.setValueType(programIndicator.getValueType());
         programIndicatorFlow.setDisplayShortName(programIndicator.getDisplayShortName());
+
         programIndicatorFlow.setProgram(ProgramFlow.MAPPER
                 .mapToDatabaseEntity(programIndicator.getProgram()));
-        programIndicatorFlow.setProgramStage(MapperModuleProvider.getInstance()
-                .getProgramStageMapper().mapToDatabaseEntity(programIndicator.getProgramStage()));
-        programIndicatorFlow.setProgramStageSection(MapperModuleProvider.getInstance()
-                .getProgramStageSectionMapper().mapToDatabaseEntity(programIndicator
-                        .getProgramStageSection()));
+        programIndicatorFlow.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToDatabaseEntity(programIndicator.getProgramStage()));
+        programIndicatorFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToDatabaseEntity(programIndicator.getProgramStageSection()));
         return programIndicatorFlow;
     }
 
@@ -88,13 +89,13 @@ public class ProgramIndicatorMapper extends AbsMapper<ProgramIndicator, ProgramI
         programIndicator.setExternalAccess(programIndicatorFlow.isExternalAccess());
         programIndicator.setValueType(programIndicatorFlow.getValueType());
         programIndicator.setDisplayShortName(programIndicatorFlow.getDisplayShortName());
+
         programIndicator.setProgram(ProgramFlow.MAPPER
                 .mapToModel(programIndicatorFlow.getProgram()));
-        programIndicator.setProgramStage(MapperModuleProvider.getInstance().getProgramStageMapper
-                ().mapToModel(programIndicatorFlow.getProgramStage()));
-        programIndicator.setProgramStageSection(MapperModuleProvider.getInstance()
-                .getProgramStageSectionMapper().mapToModel(programIndicatorFlow
-                        .getProgramStageSection()));
+        programIndicator.setProgramStage(ProgramStageFlow.MAPPER
+                .mapToModel(programIndicatorFlow.getProgramStage()));
+        programIndicator.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                .mapToModel(programIndicatorFlow.getProgramStageSection()));
         return programIndicator;
     }
 

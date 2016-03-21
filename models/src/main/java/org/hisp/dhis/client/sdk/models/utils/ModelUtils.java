@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.models.utils;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,5 +113,13 @@ public class ModelUtils {
         }
 
         return new ArrayList<>(existingItemsMap.values());
+    }
+
+    public static <T> List<T> asList(T... items) {
+        if (items == null || items.length == 0) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.asList(items);
     }
 }

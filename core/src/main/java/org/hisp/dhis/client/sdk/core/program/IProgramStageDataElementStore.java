@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface IProgramStageDataElementStore extends IStore<ProgramStageDataElement> {
+public interface IProgramStageDataElementStore extends IIdentifiableObjectStore<ProgramStageDataElement> {
     List<ProgramStageDataElement> query(ProgramStage programStage);
     List<ProgramStageDataElement> query(ProgramStageSection programStageSection);
     ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement);

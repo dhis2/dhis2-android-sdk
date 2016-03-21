@@ -43,5 +43,5 @@ public interface IProgramStageDataElementService extends IService, ISave<Program
 
     List<ProgramStageDataElement> list(ProgramStageSection programStageSection);
 
-    ProgramStageDataElement list(ProgramStage programStage, DataElement dataElement);
+    ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement);
 }

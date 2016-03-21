@@ -37,6 +37,10 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
         @UniqueGroup(
@@ -44,6 +48,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlow {
+    public static IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
+            MAPPER = new ProgramStageDataElementMapper();
     static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
     static final String PROGRAM_STAGE_KEY = "programstage";
     static final String DATA_ELEMENT_KEY = "dataelement";

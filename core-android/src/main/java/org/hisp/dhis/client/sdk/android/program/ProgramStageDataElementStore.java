@@ -30,10 +30,12 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.AbsStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
@@ -43,20 +45,12 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public final class ProgramStageDataElementStore extends AbsStore<ProgramStageDataElement,
+public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
         ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
-
-    public ProgramStageDataElementStore(IMapper<ProgramStageDataElement,
-            ProgramStageDataElementFlow> mapper, IDataElementStore dataElementStore) {
-        super(mapper);
-    }
-
-    @Override
-    public List<ProgramStageDataElement> queryAll() {
-        List<ProgramStageDataElementFlow> programStageDataElementFlows = new Select()
-                .from(ProgramStageDataElementFlow.class)
-                .queryList();
-        return getMapper().mapToModels(programStageDataElementFlows);
+    private final ITransactionManager transactionManager;
+    public ProgramStageDataElementStore(ITransactionManager transactionManager) {
+        super(ProgramStageDataElementFlow.MAPPER);
+        this.transactionManager = transactionManager;
     }
 
     @Override

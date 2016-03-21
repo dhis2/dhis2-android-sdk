@@ -26,16 +26,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.program;
+package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
+import java.util.Map;
 
-public interface IProgramStageSectionService extends IService, IGet<ProgramStageSection>,
-        IGetUid<ProgramStageSection>, IList<ProgramStageSection> {
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
-    List<ProgramStageSection> list(ProgramStage programStage);
+public interface IProgramStageSectionApiClientRetrofit {
+
+    @GET("programs")
+    Call<Map<String, List<ProgramStageSection>>> getProgramStageSections(
+            @QueryMap Map<String, String> queryMap, @Query("filter") List<String> filters);
 }

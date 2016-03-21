@@ -34,6 +34,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.event.EventStore2;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
@@ -41,6 +42,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
@@ -50,6 +52,7 @@ public class PersistenceModule implements IPersistenceModule {
     private final IUserAccountStore userAccountStore;
     private final IProgramStore programStore;
     private final IProgramStageStore programStageStore;
+    private final IProgramStageSectionStore programStageSectionStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IEventStore eventStore;
 
@@ -59,6 +62,7 @@ public class PersistenceModule implements IPersistenceModule {
         transactionManager = new TransactionManager();
         programStore = new ProgramStore2(transactionManager);
         programStageStore = new ProgramStageStore2();
+        programStageSectionStore = new ProgramStageSectionStore2();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         eventStore = new EventStore2(transactionManager);
@@ -82,6 +86,11 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public IProgramStageStore getProgramStageStore() {
         return programStageStore;
+    }
+
+    @Override
+    public IProgramStageSectionStore getProgramStageSectionStore() {
+        return programStageSectionStore;
     }
 
     @Override

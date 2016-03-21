@@ -40,8 +40,10 @@ import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiCli
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -53,6 +55,7 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
@@ -83,6 +86,7 @@ public class NetworkModule implements INetworkModule {
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramApiClient programApiClient;
     private final IProgramStageApiClient programStageApiClient;
+    private final IProgramStageSectionApiClient programStageSectionApiClient;
     private final IUserApiClient userApiClient;
     private final IEventApiClient eventApiClient;
 
@@ -128,6 +132,8 @@ public class NetworkModule implements INetworkModule {
                 IProgramApiClientRetrofit.class));
         programStageApiClient = new ProgramStageApiClient(retrofit.create(
                 IProgramStageApiClientRetrofit.class));
+        programStageSectionApiClient = new ProgramStageSectionApiClient(
+                retrofit.create(IProgramStageSectionApiClientRetrofit.class));
         systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClient(retrofit.create(
@@ -151,6 +157,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IProgramStageApiClient getProgramStageApiClient() {
         return programStageApiClient;
+    }
+
+    @Override
+    public IProgramStageSectionApiClient getProgramStageSectionApiClient() {
+        return programStageSectionApiClient;
     }
 
     @Override

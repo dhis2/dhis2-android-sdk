@@ -28,14 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-import java.util.List;
-
-public interface IProgramStageSectionService extends IService, IGet<ProgramStageSection>,
-        IGetUid<ProgramStageSection>, IList<ProgramStageSection> {
-
-    List<ProgramStageSection> list(ProgramStage programStage);
+public interface IProgramStageSectionController extends
+        IIdentifiableController<ProgramStageSection> {
 }

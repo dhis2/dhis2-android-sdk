@@ -32,6 +32,7 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore2;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
@@ -40,6 +41,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -55,6 +57,7 @@ public class PersistenceModule implements IPersistenceModule {
     private final IProgramStageSectionStore programStageSectionStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IEventStore eventStore;
+    private final IDataElementStore dataElementStore;
 
     public PersistenceModule(Context context) {
         FlowManager.init(context);
@@ -66,6 +69,7 @@ public class PersistenceModule implements IPersistenceModule {
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         eventStore = new EventStore2(transactionManager);
+        dataElementStore = new DataElementStore(transactionManager);
     }
 
     @Override
@@ -101,6 +105,11 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public IEventStore getEventStore() {
         return eventStore;
+    }
+
+    @Override
+    public IDataElementStore getDataElementStore() {
+        return dataElementStore;
     }
 
     @Override

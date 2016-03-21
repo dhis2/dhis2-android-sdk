@@ -34,6 +34,8 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
+import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
 import org.hisp.dhis.client.sdk.android.event.EventScope;
 import org.hisp.dhis.client.sdk.android.event.IEventScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
@@ -78,6 +80,7 @@ public class D2 {
     private final IProgramScope programScope;
     private final IProgramStageScope programStageScope;
     private final IEventScope eventScope;
+    private final IDataElementScope dataElementScope;
 
     private D2(Context context) {
         applicationContext = context;
@@ -95,6 +98,7 @@ public class D2 {
             programScope = null;
             programStageScope = null;
             eventScope = null;
+            dataElementScope = null;
             return;
         }
 
@@ -126,6 +130,10 @@ public class D2 {
         eventScope = new EventScope(
                 servicesModule.getEventService(),
                 controllersModule.getEventController());
+
+        dataElementScope = new DataElementScope(
+                servicesModule.getDataElementService(),
+                controllersModule.getDataElementController());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),
@@ -228,5 +236,9 @@ public class D2 {
 
     public static IOrganisationUnitScope organisationUnits() {
         return configuredInstance().organisationUnitScope;
+    }
+
+    public static IDataElementScope dataElements() {
+        return configuredInstance().dataElementScope;
     }
 }

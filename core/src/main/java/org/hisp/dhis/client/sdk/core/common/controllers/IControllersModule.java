@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
@@ -35,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 public interface IControllersModule {
     IUserAccountController getUserAccountController();
@@ -50,4 +52,6 @@ public interface IControllersModule {
     IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
 
     IEventController getEventController();
+
+    IDataElementController getDataElementController();
 }

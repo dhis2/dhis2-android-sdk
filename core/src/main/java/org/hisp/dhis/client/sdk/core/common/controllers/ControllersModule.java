@@ -31,6 +31,8 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
@@ -45,6 +47,7 @@ import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
@@ -56,6 +59,7 @@ public class ControllersModule implements IControllersModule {
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
     private final IEventController eventController;
+    private final IDataElementController dataElementController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -108,6 +112,13 @@ public class ControllersModule implements IControllersModule {
                 null //persistenceModule.getFailedItemStore()
         );
 
+        dataElementController = new DataElementController(
+                networkModule.getDataElementApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getDataElementStore(),
+                persistenceModule.getTransactionManager());
+
                 /*
 
                 IEventApiClient eventApiClient,
@@ -154,5 +165,10 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IEventController getEventController() {
         return eventController;
+    }
+
+    @Override
+    public IDataElementController getDataElementController() {
+        return dataElementController;
     }
 }

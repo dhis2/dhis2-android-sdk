@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 public interface IDataElementApiClient {
-    List<DataElement> getBasicDataElements(DateTime lastUpdated);
-
-    List<DataElement> getFullDataElements(DateTime lastUpdated);
+    List<DataElement> getDataElements(Fields fields, DateTime lastUpdated,
+                                                String... uids) throws ApiException;
 }

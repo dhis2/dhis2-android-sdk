@@ -31,13 +31,19 @@ package org.hisp.dhis.client.sdk.android.dataelement;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow> implements IDataElementStore {
+public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow>
+        implements IDataElementStore {
 
-    public DataElementStore(IMapper<DataElement, DataElementFlow> mapper, IOptionSetStore mOptionSetStore) {
-        super(mapper);
+    private ITransactionManager transactionManager;
+
+    public DataElementStore(ITransactionManager transactionManager) {
+        super(DataElementFlow.MAPPER);
+
+        this.transactionManager = transactionManager;
     }
 }

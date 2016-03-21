@@ -33,11 +33,14 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitControlle
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 
 public interface IControllersModule {
+    ISystemInfoController getSystemInfoController();
+
     IUserAccountController getUserAccountController();
 
     IProgramController getProgramController();

@@ -42,6 +42,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -69,7 +70,10 @@ public class ControllersModule implements IControllersModule {
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
 
-        systemInfoController = null;
+        systemInfoController = new SystemInfoController(
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getSystemInfoPreferences(),
+                preferencesModule.getLastUpdatedPreferences());
 
         programController = new ProgramController(
                 networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
@@ -121,6 +125,11 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getProgramStore(),
                 null //persistenceModule.getFailedItemStore()
         );
+    }
+
+    @Override
+    public ISystemInfoController getSystemInfoController() {
+        return systemInfoController;
     }
 
     @Override

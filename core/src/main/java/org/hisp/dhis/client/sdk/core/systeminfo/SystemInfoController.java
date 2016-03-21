@@ -26,18 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.systeminfo;
+package org.hisp.dhis.client.sdk.core.systeminfo;
 
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 
 public class SystemInfoController implements ISystemInfoController {
+    private static final int EXPIRATION_THRESHOLD = 64;
+
     /* API clients */
     private final ISystemInfoApiClient systemInfoApiClient;
 
@@ -56,17 +56,23 @@ public class SystemInfoController implements ISystemInfoController {
     @Override
     public SystemInfo getSystemInfo() throws ApiException {
         SystemInfo systemInfo = systemInfoPreferences.get();
+
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.SYSTEM_INFO);
         DateTime currentDate = DateTime.now();
 
-        if (systemInfo == null) {
-            SystemInfo updatedSystemInfo = systemInfoApiClient.getSystemInfo();
+        // if we don't have SystemInfo object in place, force update
+        if (systemInfo == null || isSystemInfoExpired(currentDate, lastUpdated)) {
+            systemInfo = systemInfoApiClient.getSystemInfo();
+
+            lastUpdatedPreferences.save(ResourceType.SYSTEM_INFO, currentDate);
+            systemInfoPreferences.save(systemInfo);
         }
 
-        return null;
+        return systemInfo;
     }
 
     private static boolean isSystemInfoExpired(DateTime currentDate, DateTime lastUpdated) {
-        return false;
+        return Seconds.secondsBetween(currentDate,
+                lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }
 }

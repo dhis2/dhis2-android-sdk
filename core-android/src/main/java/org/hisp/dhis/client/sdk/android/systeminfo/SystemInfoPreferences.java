@@ -35,6 +35,8 @@ import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 import org.joda.time.DateTime;
 
+import java.util.Map;
+
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class SystemInfoPreferences implements ISystemInfoPreferences {
@@ -82,25 +84,35 @@ public class SystemInfoPreferences implements ISystemInfoPreferences {
 
     @Override
     public SystemInfo get() {
-        DateTime buildTime = DateTime.parse(getString(KEY_BUILD_TIME));
-        DateTime serverDate = DateTime.parse(getString(KEY_SERVER_DATE));
+        if (!isEmpty()) {
+            DateTime buildTime = DateTime.parse(getString(KEY_BUILD_TIME));
+            DateTime serverDate = DateTime.parse(getString(KEY_SERVER_DATE));
 
-        SystemInfo systemInfo = new SystemInfo();
-        systemInfo.setBuildTime(buildTime);
-        systemInfo.setServerDate(serverDate);
-        systemInfo.setCalendar(getString(KEY_CALENDAR));
-        systemInfo.setDateFormat(getString(KEY_DATE_FORMAT));
-        systemInfo.setRevision(getInt(KEY_REVISION));
-        systemInfo.setVersion(getString(KEY_VERSION));
-        systemInfo.setIntervalSinceLastAnalyticsTableSuccess(getString(KEY_ANALYTICS_SYNC));
-        systemInfo.setLastAnalyticsTableSuccess(getString(KEY_LAST_TABLE_SUCCESS));
+            SystemInfo systemInfo = new SystemInfo();
+            systemInfo.setBuildTime(buildTime);
+            systemInfo.setServerDate(serverDate);
+            systemInfo.setCalendar(getString(KEY_CALENDAR));
+            systemInfo.setDateFormat(getString(KEY_DATE_FORMAT));
+            systemInfo.setRevision(getInt(KEY_REVISION));
+            systemInfo.setVersion(getString(KEY_VERSION));
+            systemInfo.setIntervalSinceLastAnalyticsTableSuccess(getString(KEY_ANALYTICS_SYNC));
+            systemInfo.setLastAnalyticsTableSuccess(getString(KEY_LAST_TABLE_SUCCESS));
 
-        return systemInfo;
+            return systemInfo;
+        }
+
+        return null;
     }
 
     @Override
     public boolean clear() {
         return preferences.edit().clear().commit();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        Map<String, ?> entries = preferences.getAll();
+        return entries != null && !entries.isEmpty();
     }
 
     private boolean putString(String key, String value) {

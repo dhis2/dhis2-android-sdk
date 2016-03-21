@@ -35,5 +35,7 @@ public interface ISystemInfoPreferences {
 
     SystemInfo get();
 
+    boolean isEmpty();
+
     boolean clear();
 }

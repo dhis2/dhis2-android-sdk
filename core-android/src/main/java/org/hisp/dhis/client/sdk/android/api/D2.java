@@ -44,9 +44,11 @@ import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
@@ -79,6 +81,7 @@ public class D2 {
     private final IOrganisationUnitScope organisationUnitScope;
     private final IProgramScope programScope;
     private final IProgramStageScope programStageScope;
+    private final IProgramStageSectionScope programStageSectionScope;
     private final IEventScope eventScope;
     private final IDataElementScope dataElementScope;
 
@@ -97,6 +100,7 @@ public class D2 {
             organisationUnitScope = null;
             programScope = null;
             programStageScope = null;
+            programStageSectionScope = null;
             eventScope = null;
             dataElementScope = null;
             return;
@@ -122,6 +126,10 @@ public class D2 {
         programStageScope = new ProgramStageScope(
                 servicesModule.getProgramStageService(),
                 controllersModule.getProgramStageController());
+
+        programStageSectionScope = new ProgramStageSectionScope(
+                controllersModule.getProgramStageSectionController(),
+                servicesModule.getProgramStageSectionService());
 
         organisationUnitScope = new OrganisationUnitScope(
                 servicesModule.getOrganisationUnitService(),
@@ -164,7 +172,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p/>
+     * <p>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -232,6 +240,10 @@ public class D2 {
 
     public static IProgramStageScope programStages() {
         return configuredInstance().programStageScope;
+    }
+
+    public static IProgramStageSectionScope programStageSections() {
+        return configuredInstance().programStageSectionScope;
     }
 
     public static IOrganisationUnitScope organisationUnits() {

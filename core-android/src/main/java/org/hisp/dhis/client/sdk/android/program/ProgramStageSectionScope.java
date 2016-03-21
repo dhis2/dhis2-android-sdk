@@ -29,30 +29,74 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramStageSectionScope implements IProgramStageSectionScope {
+    private final IProgramStageSectionController programStageSectionController;
+    private final IProgramStageSectionService programStageSectionService;
 
-    private IProgramStageSectionService mProgramStageSectionService;
+    public ProgramStageSectionScope(IProgramStageSectionController programStageSectionController,
+                                    IProgramStageSectionService programStageSectionService) {
+        this.programStageSectionController = programStageSectionController;
+        this.programStageSectionService = programStageSectionService;
+    }
 
-    public ProgramStageSectionScope(IProgramStageSectionService programStageSectionService) {
-        this.mProgramStageSectionService = programStageSectionService;
+    @Override
+    public Observable<List<ProgramStageSection>> sync() {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
+
+            @Override
+            public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
+                try {
+                    programStageSectionController.sync();
+                    subscriber.onNext(programStageSectionService.list());
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStageSection>> sync(final String... uids) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
+
+            @Override
+            public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
+                try {
+                    Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
+                    programStageSectionController.sync(uidSet);
+                    subscriber.onNext(programStageSectionService.list(uidSet));
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
     public Observable<ProgramStageSection> get(final String uid) {
         return Observable.create(new Observable.OnSubscribe<ProgramStageSection>() {
+
             @Override
             public void call(Subscriber<? super ProgramStageSection> subscriber) {
                 try {
-                    ProgramStageSection programStageSection = mProgramStageSectionService.get(uid);
+                    ProgramStageSection programStageSection = programStageSectionService.get(uid);
                     subscriber.onNext(programStageSection);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -66,10 +110,11 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     @Override
     public Observable<ProgramStageSection> get(final long id) {
         return Observable.create(new Observable.OnSubscribe<ProgramStageSection>() {
+
             @Override
             public void call(Subscriber<? super ProgramStageSection> subscriber) {
                 try {
-                    ProgramStageSection programStageSection = mProgramStageSectionService.get(id);
+                    ProgramStageSection programStageSection = programStageSectionService.get(id);
                     subscriber.onNext(programStageSection);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -83,11 +128,12 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     @Override
     public Observable<List<ProgramStageSection>> list() {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
+
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
                     List<ProgramStageSection> programStageSections =
-                            mProgramStageSectionService.list();
+                            programStageSectionService.list();
                     subscriber.onNext(programStageSections);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -101,11 +147,12 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     @Override
     public Observable<List<ProgramStageSection>> list(final ProgramStage programStage) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageSection>>() {
+
             @Override
             public void call(Subscriber<? super List<ProgramStageSection>> subscriber) {
                 try {
                     List<ProgramStageSection> programStageSections =
-                            mProgramStageSectionService.list(programStage);
+                            programStageSectionService.list(programStage);
                     subscriber.onNext(programStageSections);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -40,7 +40,7 @@ import retrofit2.http.QueryMap;
 
 public interface IProgramStageSectionApiClientRetrofit {
 
-    @GET("programs")
+    @GET("programStageSections")
     Call<Map<String, List<ProgramStageSection>>> getProgramStageSections(
             @QueryMap Map<String, String> queryMap, @Query("filter") List<String> filters);
 }

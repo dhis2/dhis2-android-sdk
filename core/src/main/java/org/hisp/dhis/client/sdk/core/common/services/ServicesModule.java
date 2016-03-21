@@ -36,8 +36,10 @@ import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
@@ -48,6 +50,7 @@ public final class ServicesModule implements IServicesModule {
     private final IUserAccountService userAccountService;
     private final IProgramService programService;
     private final IProgramStageService programStageService;
+    private final IProgramStageSectionService programStageSectionService;
     private final IOrganisationUnitService organisationUnitService;
     private final IEventService eventService;
     private final IDataElementService dataElementService;
@@ -61,6 +64,8 @@ public final class ServicesModule implements IServicesModule {
                 persistenceModule.getProgramStore());
         programStageService = new ProgramStageService(
                 persistenceModule.getProgramStageStore());
+        programStageSectionService = new ProgramStageSectionService(
+                persistenceModule.getProgramStageSectionStore());
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
         eventService = new EventService(
@@ -87,6 +92,11 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public IProgramStageService getProgramStageService() {
         return programStageService;
+    }
+
+    @Override
+    public IProgramStageSectionService getProgramStageSectionService() {
+        return programStageSectionService;
     }
 
     @Override

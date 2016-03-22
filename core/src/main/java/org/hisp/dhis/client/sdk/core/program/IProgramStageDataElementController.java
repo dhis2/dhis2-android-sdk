@@ -1,7 +1,7 @@
 package org.hisp.dhis.client.sdk.core.program;
 
-/**
- * Created by erling on 22.03.16.
- */
-public interface IProgramStageDataElementController {
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
+
+public interface IProgramStageDataElementController extends IIdentifiableController<ProgramStageDataElement> {
 }

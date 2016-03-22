@@ -26,8 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.controllers;
+package org.hisp.dhis.client.sdk.core.common.preferences;
 
-public enum SyncStrategy {
-    DEFAULT, FORCE_UPDATE
+public enum DateType {
+    LOCAL, SERVER
 }

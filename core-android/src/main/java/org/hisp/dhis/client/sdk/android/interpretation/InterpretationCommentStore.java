@@ -111,7 +111,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public boolean areStored(Collection<InterpretationComment> objects) {
+    public boolean areStored(Set<String> objects) {
         return false;
     }
 

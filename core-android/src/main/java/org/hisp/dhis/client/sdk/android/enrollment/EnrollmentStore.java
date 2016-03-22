@@ -65,7 +65,7 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFl
     }
 
     @Override
-    public boolean areStored(Collection<Enrollment> objects) {
+    public boolean areStored(Set<String> uids) {
         return false;
     }
 

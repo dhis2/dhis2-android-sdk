@@ -38,7 +38,6 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import java.util.List;
 import java.util.Set;
 
-// TODO revisit SyncStategy
 public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
 
     // Api Clients
@@ -56,6 +55,11 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
 
     @Override
     public void sync() throws ApiException {
+        sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public void sync(SyncStrategy strategy) throws ApiException {
         UserAccount userAccount = userApiClient.getUserAccount();
 
         /* get list of assigned organisation units */
@@ -65,6 +69,6 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
         Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
 
         /* get them through program controller */
-        organisationUnitController.sync(SyncStrategy.CONDITIONAL, ids);
+        organisationUnitController.sync(strategy, ids);
     }
 }

@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
@@ -89,7 +90,7 @@ public final class EventController implements IEventController {
     @Override
     public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
 
         List<Event> persistedEvents = eventStore.queryAll();
 
@@ -116,6 +117,6 @@ public final class EventController implements IEventController {
                 updatedEvents, persistedEvents, eventStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.EVENTS, serverTime);
+        lastUpdatedPreferences.save(ResourceType.EVENTS, DateType.SERVER, serverTime);
     }
 }

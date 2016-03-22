@@ -159,7 +159,7 @@ public class EventScope implements IEventScope {
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     // TODO revise SyncStrategy
-                    eventController.sync(SyncStrategy.CONDITIONAL);
+                    eventController.sync(SyncStrategy.DEFAULT);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -112,7 +113,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     private void getDashboardDataFromServer() {
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS, DateType.SERVER);
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
         List<Dashboard> dashboards = updateDashboards(lastUpdated);
@@ -129,7 +130,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         operations.addAll(createOperations(dashboardItems));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, serverDateTime);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverDateTime);
     }
 
     private List<Dashboard> updateDashboards(DateTime lastUpdated) {

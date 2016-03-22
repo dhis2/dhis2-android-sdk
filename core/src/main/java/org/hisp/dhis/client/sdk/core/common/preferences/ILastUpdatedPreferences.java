@@ -33,20 +33,13 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 public interface ILastUpdatedPreferences {
-    boolean save(ResourceType key, DateTime value);
+    boolean save(ResourceType resourceType, DateType dateType, DateTime dateTime);
 
-    boolean delete(ResourceType key);
+    DateTime get(ResourceType resourceType, DateType dateType);
 
-    boolean isSet(ResourceType key);
+    boolean delete(ResourceType resourceType, DateType dateType);
+
+    List<DateTime> list();
 
     boolean clear();
-
-    DateTime get(ResourceType key);
-
-    List<DateTime> get();
-
-    boolean save(ResourceType resourceType, DateTime dateTime, String extra);
-
-    DateTime get(ResourceType resourceType, String extra);
-
 }

@@ -99,12 +99,11 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getUserApiClient(), programController);
 
         organisationUnitController = new OrganisationUnitController(
-                networkModule.getSystemInfoApiClient(),
                 networkModule.getOrganisationUnitApiClient(),
                 networkModule.getUserApiClient(),
                 persistenceModule.getOrganisationUnitStore(),
-                persistenceModule.getTransactionManager(),
-                preferencesModule.getLastUpdatedPreferences());
+                preferencesModule.getLastUpdatedPreferences(), systemInfoController,
+                persistenceModule.getTransactionManager());
 
         assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
                 networkModule.getUserApiClient(), organisationUnitController);

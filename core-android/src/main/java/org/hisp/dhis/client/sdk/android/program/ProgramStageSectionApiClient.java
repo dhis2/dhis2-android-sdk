@@ -54,6 +54,7 @@ public class ProgramStageSectionApiClient implements IProgramStageSectionApiClie
                                                              String... uids) throws ApiException {
 
         ApiResource<ProgramStageSection> apiResource = new ApiResource<ProgramStageSection>() {
+
             @Override
             public String getResourceName() {
                 return "programStageSections";

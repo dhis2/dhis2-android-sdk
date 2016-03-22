@@ -112,7 +112,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
-    public boolean areStored(Collection<InterpretationElement> objects) {
+    public boolean areStored(Set<String> objects) {
         return false;
     }
 

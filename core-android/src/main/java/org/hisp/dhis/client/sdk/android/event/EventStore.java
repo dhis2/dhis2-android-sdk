@@ -64,7 +64,7 @@ public final class EventStore extends AbsDataStore<Event, EventFlow> implements 
     }
 
     @Override
-    public boolean areStored(Collection<Event> objects) {
+    public boolean areStored(Set<String> objects) {
         return false;
     }
 

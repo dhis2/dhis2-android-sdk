@@ -29,7 +29,9 @@
 package org.hisp.dhis.client.sdk.core.common.preferences;
 
 public enum ResourceType {
-    /* Dashboard app resources */
+    SYSTEM_INFO,
+
+
     DASHBOARDS_CONTENT,
     INTERPRETATIONS,
     DASHBOARDS,
@@ -41,13 +43,11 @@ public enum ResourceType {
     CONSTANTS,
     USERS,
 
-    SYSTEM_INFO,
 
     PROGRAMS,
     PROGRAM_STAGES,
     PROGRAM_STAGE_SECTIONS,
 
-    /* Event and Tracker capture resources */
     PROGRAM_RULE_VARIABLES,
     PROGRAM_RULE_ACTIONS,
     PROGRAM_RULES,

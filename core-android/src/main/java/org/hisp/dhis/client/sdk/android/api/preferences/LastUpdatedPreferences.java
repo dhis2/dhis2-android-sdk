@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.android.api.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.joda.time.DateTime;
@@ -44,89 +45,72 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class LastUpdatedPreferences implements ILastUpdatedPreferences {
     private static final String PREFERENCES = "preferences:lastUpdated";
-    private static final String METADATA_UPDATE_DATETIME = "key:metaDataUpdateDateTime";
-
-    private final SharedPreferences mPrefs;
+    private final SharedPreferences preferences;
 
     public LastUpdatedPreferences(Context context) {
         isNull(context, "Context object must not be null");
-        mPrefs = context.getSharedPreferences(PREFERENCES,
+        preferences = context.getSharedPreferences(PREFERENCES,
                 Context.MODE_PRIVATE);
     }
 
     @Override
-    public boolean save(ResourceType resourceType, DateTime dateTime) {
-        return save(resourceType, dateTime, null);
-    }
-
-    @Override
-    public boolean save(ResourceType resourceType, DateTime dateTime, String extra) {
-        isNull(resourceType, "ResourceType object must not be null");
+    public boolean save(ResourceType resourceType, DateType dateType, DateTime dateTime) {
         isNull(dateTime, "DateTime object must not be null");
-
-        String identifier = METADATA_UPDATE_DATETIME + resourceType.toString();
-        if (extra != null) {
-            identifier += extra;
-        }
-
-        putString(identifier, dateTime.toString());
-        return true;
+        return putString(buildKey(resourceType, dateType), dateTime.toString());
     }
 
     @Override
-    public boolean delete(ResourceType resourceType) {
-        mPrefs.edit().clear().commit();
-        return true;
-    }
+    public DateTime get(ResourceType resourceType, DateType dateType) {
+        String dateTimeString = getString(buildKey(resourceType, dateType));
 
-    @Override
-    public boolean isSet(ResourceType resourceType) {
-        return get(resourceType) != null;
-    }
-
-    @Override
-    public boolean clear() {
-        mPrefs.edit().clear().commit();
-        return true;
-    }
-
-    @Override
-    public DateTime get(ResourceType resourceType) {
-        return get(resourceType, null);
-    }
-
-    @Override
-    public DateTime get(ResourceType resourceType, String extra) {
-        String identifier = METADATA_UPDATE_DATETIME + resourceType.toString();
-        if (extra != null) {
-            identifier += extra;
-        }
-
-        String dateTimeString = getString(identifier);
         if (dateTimeString != null) {
             return DateTime.parse(dateTimeString);
         }
+
         return null;
     }
 
     @Override
-    public List<DateTime> get() {
-        Map<String, ?> values = mPrefs.getAll();
+    public boolean delete(ResourceType resourceType, DateType dateType) {
+        return delete(buildKey(resourceType, dateType));
+    }
+
+    @Override
+    public List<DateTime> list() {
+        Map<String, ?> values = preferences.getAll();
         List<DateTime> dateTimes = new ArrayList<>();
+
         for (String key : values.keySet()) {
             String value = (String) values.get(key);
             if (value != null) {
                 dateTimes.add(DateTime.parse(value));
             }
         }
+
         return dateTimes;
     }
 
-    private void putString(String key, String value) {
-        mPrefs.edit().putString(key, value).commit();
+    @Override
+    public boolean clear() {
+        return preferences.edit().clear().commit();
+    }
+
+    private static String buildKey(ResourceType resourceType, DateType dateType) {
+        isNull(resourceType, "ResourceType object must not be null");
+        isNull(dateType, "DateType object must not be null");
+
+        return resourceType.name() + "." + dateType.name();
+    }
+
+    private boolean putString(String key, String value) {
+        return preferences.edit().putString(key, value).commit();
     }
 
     private String getString(String key) {
-        return mPrefs.getString(key, null);
+        return preferences.getString(key, null);
+    }
+
+    private boolean delete(String key) {
+        return preferences.edit().remove(key).commit();
     }
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -69,7 +70,7 @@ public final class ConstantController implements IIdentifiableController<Constan
     private void getConstantsDataFromServer() throws ApiException {
         ResourceType resource = ResourceType.CONSTANTS;
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
+        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
@@ -87,7 +88,7 @@ public final class ConstantController implements IIdentifiableController<Constan
                 existingPersistedAndUpdatedConstants, constantStore.queryAll()));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, serverTime);
+        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
     }
 
     @Override

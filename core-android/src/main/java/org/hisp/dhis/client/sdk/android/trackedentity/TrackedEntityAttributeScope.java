@@ -140,7 +140,7 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    mTrackedEntityAttributeController.sync(SyncStrategy.CONDITIONAL);
+                    mTrackedEntityAttributeController.sync(SyncStrategy.DEFAULT);
 //                    boolean status = mTrackedEntityAttributeController.sync();
 //                    subscriber.onNext(status);
                 } catch (Throwable throwable) {

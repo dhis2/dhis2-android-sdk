@@ -34,6 +34,7 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -83,7 +84,8 @@ public class ProgramStageController implements IProgramStageController {
     @Override
     public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM_STAGES);
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_STAGES, DateType.SERVER);
 
         List<ProgramStage> persistedProgramStages = programStageStore.queryAll();
 
@@ -123,6 +125,6 @@ public class ProgramStageController implements IProgramStageController {
                 updatedProgramStages, persistedProgramStages, programStageStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGES, serverTime);
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGES, DateType.SERVER, serverTime);
     }
 }

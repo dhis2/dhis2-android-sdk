@@ -39,9 +39,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * This class is inteded to build relationships between organisation units and programs.
+ * This class is intended to build relationships between organisation units and programs.
  */
-// TODO Revisit SyncStrategy
 public class AssignedProgramsController implements IAssignedProgramsController {
     /* Api clients */
     private final IUserApiClient userApiClient;
@@ -57,6 +56,11 @@ public class AssignedProgramsController implements IAssignedProgramsController {
 
     @Override
     public void sync() throws ApiException {
+        sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public void sync(SyncStrategy strategy) throws ApiException {
         UserAccount userAccount = userApiClient.getUserAccount();
 
         /* get list of assigned programs */
@@ -66,6 +70,6 @@ public class AssignedProgramsController implements IAssignedProgramsController {
         Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
 
         /* get them through program controller */
-        programController.sync(SyncStrategy.CONDITIONAL, ids);
+        programController.sync(strategy, ids);
     }
 }

@@ -28,9 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.systeminfo;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
 public interface ISystemInfoController {
     SystemInfo getSystemInfo() throws ApiException;
+
+    SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException;
 }

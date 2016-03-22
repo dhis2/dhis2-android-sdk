@@ -90,10 +90,8 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     }
 
     @Override
-    public boolean areStored(Collection<ModelType> objects) {
-        Set<String> uids = ModelUtils.toUidSet(objects);
+    public boolean areStored(Set<String> uids) {
         List<DatabaseEntityType> databaseEntities = query(uids);
-
         return ModelUtils.toUidSet(databaseEntities).equals(uids);
     }
 

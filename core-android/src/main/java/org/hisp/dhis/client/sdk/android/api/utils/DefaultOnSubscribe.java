@@ -26,8 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.controllers;
+package org.hisp.dhis.client.sdk.android.api.utils;
 
-public enum SyncStrategy {
-    DEFAULT, FORCE_UPDATE
+import rx.Observable;
+import rx.Subscriber;
+
+public abstract class DefaultOnSubscribe<T> implements Observable.OnSubscribe<T> {
+
+    @Override
+    public final void call(Subscriber<? super T> subscriber) {
+        try {
+            subscriber.onNext(call());
+        } catch (Throwable throwable) {
+            subscriber.onError(throwable);
+        }
+
+        subscriber.onCompleted();
+    }
+
+    public abstract T call();
 }

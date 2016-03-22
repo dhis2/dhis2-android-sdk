@@ -114,7 +114,7 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
     }
 
     @Override
-    public boolean areStored(Collection<Interpretation> objects) {
+    public boolean areStored(Set<String> objects) {
         return false;
     }
 

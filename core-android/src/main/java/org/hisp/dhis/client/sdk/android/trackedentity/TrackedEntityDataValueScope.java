@@ -223,7 +223,7 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     Set<String> uidSet = new HashSet<>(Arrays.asList(uid));
-                    mEventController.sync(SyncStrategy.CONDITIONAL, uidSet);
+                    mEventController.sync(SyncStrategy.DEFAULT, uidSet);
 //                    subscriber.onNext();
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -73,7 +74,7 @@ public final class OptionSetController implements IIdentifiableController<Option
     private void getOptionSetDataFromServer() throws ApiException {
         ResourceType resource = ResourceType.OPTION_SETS;
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
+        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
         List<OptionSet> allOptionSets = optionSetApiClient.getBasicOptionSets(null);
         List<OptionSet> updatedOptionSets = optionSetApiClient.getFullOptionSets(lastUpdated);
         linkOptionsWithOptionSets(updatedOptionSets);
@@ -104,7 +105,7 @@ public final class OptionSetController implements IIdentifiableController<Option
 
 //        DbUtils.applyBatch(operations);
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.OPTION_SETS, serverTime);
+        lastUpdatedPreferences.save(ResourceType.OPTION_SETS, DateType.SERVER, serverTime);
     }
 
     private void linkOptionsWithOptionSets(List<OptionSet> optionSets) {

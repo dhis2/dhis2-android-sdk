@@ -29,5 +29,5 @@
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
 public enum SyncStrategy {
-    CONDITIONAL, FORCE
+    CONDITIONAL, UNCONDITIONAL
 }

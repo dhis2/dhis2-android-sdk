@@ -52,8 +52,6 @@ public class RuleEffect {
 
     private ProgramRuleActionType programRuleActionType;
 
-    private boolean externalAccess;
-
     private String content;
 
     private String location;

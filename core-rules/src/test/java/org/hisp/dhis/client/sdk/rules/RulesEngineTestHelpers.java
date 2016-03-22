@@ -33,6 +33,8 @@ public class RulesEngineTestHelpers {
         pr.setCondition(ruleCondition);
         pr.setProgramRuleActions(actions);
 
+        pra.setProgramRule(pr);
+
         return pr;
     }
 

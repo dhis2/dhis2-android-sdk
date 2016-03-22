@@ -68,7 +68,7 @@ public class PersistenceModule implements IPersistenceModule {
         transactionManager = new TransactionManager();
         programStore = new ProgramStore2(transactionManager);
         programStageStore = new ProgramStageStore2(transactionManager);
-        programStageSectionStore = new ProgramStageSectionStore2();
+        programStageSectionStore = new ProgramStageSectionStore2(transactionManager);
         programStageDataElementStore = new ProgramStageDataElementStore(transactionManager);
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);

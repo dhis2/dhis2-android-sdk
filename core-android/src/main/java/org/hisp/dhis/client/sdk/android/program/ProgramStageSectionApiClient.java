@@ -67,7 +67,7 @@ public class ProgramStageSectionApiClient implements IProgramStageSectionApiClie
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
-                        "programStage[id]";
+                        "programStage[id],programStageDataElementId[id]";
             }
 
             @Override

@@ -42,6 +42,8 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 public class EventService implements IEventService {
 
     private final IEventStore eventStore;
@@ -87,10 +89,10 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event create(OrganisationUnit organisationUnit, String status, Program program, ProgramStage programStage) {
-        Preconditions.isNull(organisationUnit, "organisationUnit argument must not be null");
-        Preconditions.isNull(program, "program argument must not be null");
-        Preconditions.isNull(programStage, "programStage argument must not be null");
+    public Event create(String organisationUnitId, String programId, String programStageId,String status) {
+        Preconditions.isNull(organisationUnitId, "program argument must not be null");
+        Preconditions.isNull(programId, "program argument must not be null");
+        Preconditions.isNull(programStageId, "programStage argument must not be null");
         Preconditions.isNull(status, "status argument must not be null");
 
         if(!Event.STATUS_ACTIVE.equals(status) && !Event.STATUS_COMPLETED.equals(status)) {
@@ -100,9 +102,9 @@ public class EventService implements IEventService {
         Event event = new Event();
         event.setUId(CodeGenerator.generateCode());
         event.setStatus(status);
-        event.setOrganisationUnitId(organisationUnit.getUId());
-        event.setProgramId(program.getUId());
-        event.setProgramStageId(programStage.getUId());
+        event.setOrganisationUnitId(organisationUnitId);
+        event.setProgramId(programId);
+        event.setProgramStageId(programStageId);
         event.setTrackedEntityDataValues(new ArrayList<TrackedEntityDataValue>());
         return event;
     }

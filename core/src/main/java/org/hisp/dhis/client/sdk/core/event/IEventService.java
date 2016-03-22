@@ -42,7 +42,7 @@ import java.util.List;
 public interface IEventService extends IService, IAdd<Event>, ISave<Event>,
         IUpdate<Event>, IRemove<Event>, IGet<Event>, IGetUid<Event>, IList<Event> {
     Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment, OrganisationUnit organisationUnit, Program program, ProgramStage programStage, String status);
-    Event create(OrganisationUnit organisationUnit, String status, Program program, ProgramStage programStage);
+    Event create(String organisationUnit, String programId, String programStageId, String status);
     List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate);
     List<Event> list(Program program, OrganisationUnit organisationUnit);
 }

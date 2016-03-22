@@ -30,11 +30,13 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.AbsStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
@@ -43,11 +45,15 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
         ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
     private final ITransactionManager transactionManager;
+    private static final String PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS =
+            "programStageDataElementsToProgramStageSections";
     public ProgramStageDataElementStore(ITransactionManager transactionManager) {
         super(ProgramStageDataElementFlow.MAPPER);
         this.transactionManager = transactionManager;
@@ -68,7 +74,9 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
                         .programstagesection.is(programStageSection.getUId())).queryList();
-        return getMapper().mapToModels(programStageDataElementFlows);
+
+        List<ProgramStageDataElement> programStageDataElements = getMapper().mapToModels(programStageDataElementFlows);
+        return programStageDataElements;
     }
 
     @Override
@@ -81,4 +89,80 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
                         .dataelement.is(dataElement.getUId())).querySingle();
         return getMapper().mapToModel(programStageDataElementFlow);
     }
+
+    @Override
+    public List<ProgramStageDataElement> queryAll() {
+        return queryProgramStageRelationships(super.queryAll());
+    }
+
+    @Override
+    public ProgramStageDataElement queryById(long id) {
+        return queryProgramStageRelationships(super.queryById(id));
+    }
+
+    @Override
+    public ProgramStageDataElement queryByUid(String uid) {
+        return queryProgramStageRelationships(super.queryByUid(uid));
+    }
+
+    @Override
+    public List<ProgramStageDataElement> queryByUids(Set<String> uids) {
+        return queryProgramStageRelationships(super.queryByUids(uids));
+    }
+
+    @Override
+    public boolean insert(ProgramStageDataElement object) {
+        boolean isSuccess = super.insert(object);
+
+        if (isSuccess) {
+            updateProgramStageRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean update(ProgramStageDataElement object) {
+        boolean isSuccess = super.update(object);
+
+        if (isSuccess) {
+            updateProgramStageRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean save(ProgramStageDataElement object) {
+        boolean isSuccess = super.save(object);
+
+        if (isSuccess) {
+            updateProgramStageRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean delete(ProgramStageDataElement object) {
+        boolean isSuccess = super.delete(object);
+
+        if (isSuccess) {
+            ModelLinkFlow.deleteRelatedModels(object, PROGRAMSTAGE_TO_PROGRAMSTAGESECTIONS);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean deleteAll() {
+        boolean isSuccess = super.deleteAll();
+
+        if (isSuccess) {
+            ModelLinkFlow.deleteModels(PROGRAMSTAGE_TO_PROGRAMSTAGESECTIONS);
+        }
+
+        return isSuccess;
+    }
+
 }

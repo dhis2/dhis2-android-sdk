@@ -118,6 +118,23 @@ public class EventScope implements IEventScope {
     }
 
     @Override
+    public Observable<Event> create(final String organisationUnitId, final String programId, final String programStageId, final String status) {
+        return Observable.create(new Observable.OnSubscribe<Event>() {
+            @Override
+            public void call(Subscriber<? super Event> subscriber) {
+                try {
+                    Event event = mEventService.create(organisationUnitId, programId, programStageId, status);
+                    subscriber.onNext(event);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
     public Observable<List<Event>> list() {
         return Observable.create(new Observable.OnSubscribe<List<Event>>() {
             @Override

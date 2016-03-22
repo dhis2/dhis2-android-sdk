@@ -36,6 +36,9 @@ import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
+import java.util.List;
+import java.util.Set;
+
 public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow>
         implements IDataElementStore {
 
@@ -45,5 +48,50 @@ public final class DataElementStore extends AbsIdentifiableObjectStore<DataEleme
         super(DataElementFlow.MAPPER);
 
         this.transactionManager = transactionManager;
+    }
+
+    @Override
+    public boolean insert(DataElement object) {
+        return super.insert(object);
+    }
+
+    @Override
+    public boolean update(DataElement object) {
+        return super.update(object);
+    }
+
+    @Override
+    public boolean save(DataElement object) {
+        return super.save(object);
+    }
+
+    @Override
+    public List<DataElement> queryAll() {
+        return super.queryAll();
+    }
+
+    @Override
+    public boolean delete(DataElement object) {
+        return super.delete(object);
+    }
+
+    @Override
+    public boolean deleteAll() {
+        return super.deleteAll();
+    }
+
+    @Override
+    public DataElement queryByUid(String uid) {
+        return super.queryByUid(uid);
+    }
+
+    @Override
+    public List<DataElement> queryByUids(Set<String> uids) {
+        return super.queryByUids(uids);
+    }
+
+    @Override
+    public DataElement queryById(long id) {
+        return super.queryById(id);
     }
 }

@@ -28,48 +28,61 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.ArrayList;
+
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.*;
 
 public class RulesEngineTests {
 
+
     @Before
     public void setUp() {
-        // set up mocks
+
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void ruleEngineInstantiationShouldFailOnNullProgramRuleVariables() {
-        new RuleEngine.Builder()
+    @Test
+    public void ruleEngineExecuteSimpleWarningRule() {
+        String errorMessage = "this error will always always occur";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "true", errorMessage));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
                 .trackedEntityAttributes(new ArrayList<>())
-                .programRules(new ArrayList<>())
+                .programRules(rules)
                 .dataElements(new ArrayList<>())
                 .optionSets(new ArrayList<>())
                 .constants(new ArrayList<>())
                 .build();
+
+
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects,errorMessage,null,null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void ruleEngineInstantiationShouldFailOnNullProgramRules() {
-        new RuleEngine.Builder()
+    @Test
+    public void ruleEngineExecuteSimpleWarningRuleNotInEffect() {
+        String errorMessage = "this error will always always occur";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "false", errorMessage));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
                 .trackedEntityAttributes(new ArrayList<>())
-                .programRuleVariables(new ArrayList<>())
+                .programRules(rules)
                 .dataElements(new ArrayList<>())
                 .optionSets(new ArrayList<>())
                 .constants(new ArrayList<>())
                 .build();
-    }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void ruleEngineInstantiationShouldFailOnNullDataElements() {
-        new RuleEngine.Builder()
-                .trackedEntityAttributes(new ArrayList<>())
-                .programRuleVariables(new ArrayList<>())
-                .programRules(new ArrayList<>())
-                .optionSets(new ArrayList<>())
-                .constants(new ArrayList<>())
-                .build();
+
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects,errorMessage,null,null);
     }
 }

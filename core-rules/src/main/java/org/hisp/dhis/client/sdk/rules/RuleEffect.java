@@ -28,6 +28,115 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+
 public class RuleEffect {
 
+    private ProgramRule programRule;
+
+    private TrackedEntityAttribute trackedEntityAttribute;
+
+    private DataElement dataElement;
+
+    private ProgramIndicator programIndicator;
+
+    private ProgramStage programStage;
+
+    private ProgramStageSection programStageSection;
+
+    private ProgramRuleActionType programRuleActionType;
+
+    private boolean externalAccess;
+
+    private String content;
+
+    private String location;
+
+    private String data;
+
+    public ProgramRule getProgramRule() {
+        return programRule;
+    }
+
+    public void setProgramRule(ProgramRule programRule) {
+        this.programRule = programRule;
+    }
+
+    public TrackedEntityAttribute getTrackedEntityAttribute() {
+        return trackedEntityAttribute;
+    }
+
+    public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
+        this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public DataElement getDataElement() {
+        return dataElement;
+    }
+
+    public void setDataElement(DataElement dataElement) {
+        this.dataElement = dataElement;
+    }
+
+    public ProgramStageSection getProgramStageSection() {
+        return programStageSection;
+    }
+
+    public void setProgramStageSection(ProgramStageSection programStageSection) {
+        this.programStageSection = programStageSection;
+    }
+
+    public ProgramRuleActionType getProgramRuleActionType() {
+        return programRuleActionType;
+    }
+
+    public void setProgramRuleActionType(ProgramRuleActionType programRuleActionType) {
+        this.programRuleActionType = programRuleActionType;
+    }
+
+    public ProgramIndicator getProgramIndicator() {
+        return programIndicator;
+    }
+
+    public void setProgramIndicator(ProgramIndicator programIndicator) {
+        this.programIndicator = programIndicator;
+    }
+
+    public ProgramStage getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage programStage) {
+        this.programStage = programStage;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
 }

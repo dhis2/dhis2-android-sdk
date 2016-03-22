@@ -55,15 +55,9 @@ public class RuleEngine {
                        List<ProgramRuleVariable> programRuleVariables,
                        List<ProgramRule> programRules, List<DataElement> dataElements,
                        List<OptionSet> optionSets, List<Constant> constants) {
-
-        this.programRuleVariables = isNull(programRuleVariables,
-                "Program rule variables must be provided");
-        this.programRules = isNull(programRules,
-                "Program rules must be provided");
-        this.dataElements = isNull(dataElements,
-                "Data elements must be provided");
-
-        // ? optional properties ?
+        this.programRuleVariables = programRuleVariables;
+        this.programRules = programRules;
+        this.dataElements = dataElements;
         this.trackedEntityAttributes = trackedEntityAttributes;
         this.optionSets = optionSets;
         this.constants = constants;

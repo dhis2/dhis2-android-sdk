@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
@@ -37,62 +38,70 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementController implements IIdentifiableController<DataElement> {
+public final class DataElementController implements IDataElementController {
     private final IDataElementApiClient dataElementApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IIdentifiableObjectStore<DataElement> mDataElementStore;
+    private final IDataElementStore dataElementStore;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final ITransactionManager transactionManager;
 
     public DataElementController(IDataElementApiClient dataElementApiClient,
                                  ISystemInfoApiClient systemInfoApiClient,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
-                                 IIdentifiableObjectStore<DataElement> mDataElementStore,
+                                 IDataElementStore dataElementStore,
                                  ITransactionManager transactionManager) {
         this.dataElementApiClient = dataElementApiClient;
         this.systemInfoApiClient = systemInfoApiClient;
-        this.mDataElementStore = mDataElementStore;
+        this.dataElementStore = dataElementStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.transactionManager = transactionManager;
     }
 
-    private void getProgramRulesDataFromServer() throws ApiException {
-        ResourceType resource = ResourceType.DATA_ELEMENTS;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
-
-        //fetching id and name for all items on server. This is needed in case something is
-        // deleted on the server and we want to reflect that locally
-        List<DataElement> allDataElements = dataElementApiClient.getBasicDataElements(null);
-
-        //fetch all updated items
-        List<DataElement> updatedDataElements = dataElementApiClient
-                .getFullDataElements(lastUpdated);
-
-        //merging updated items with persisted items, and removing ones not present in server.
-        List<DataElement> existingPersistedAndUpdatedDataElements = ModelUtils.merge(
-                allDataElements, updatedDataElements, mDataElementStore.queryAll());
-
-        List<IDbOperation> dbOperations = DbUtils.createOperations(mDataElementStore,
-                mDataElementStore.queryAll(), existingPersistedAndUpdatedDataElements);
-        transactionManager.transact(dbOperations);
-        lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, serverTime);
-    }
-
     @Override
     public void sync() throws ApiException {
-        getProgramRulesDataFromServer();
+        sync(null);
     }
 
     @Override
     public void sync(Set<String> uids) throws ApiException {
+        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DATA_ELEMENTS);
 
+        List<DataElement> persistedDataElements = dataElementStore.queryAll();
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<DataElement> allExistingDataElements = dataElementApiClient
+                .getDataElements(Fields.BASIC, null);
+
+        String[] uidArray = null;
+        if (uids != null) {
+            // here we want to get list of ids of data elements which are
+            // stored locally and list of data elements which we want to download
+            Set<String> persistedDataElementIds = ModelUtils.toUidSet(persistedDataElements);
+            persistedDataElementIds.addAll(uids);
+
+            uidArray = persistedDataElementIds
+                    .toArray(new String[persistedDataElementIds.size()]);
+        }
+
+        List<DataElement> updatedDataElements = dataElementApiClient.getDataElements(
+                Fields.ALL, lastUpdated, uidArray);
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
+                updatedDataElements, persistedDataElements, dataElementStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS , serverTime);
     }
 }

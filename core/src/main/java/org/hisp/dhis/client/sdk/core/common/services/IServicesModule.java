@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
@@ -47,4 +48,6 @@ public interface IServicesModule {
     IOrganisationUnitService getOrganisationUnitService();
 
     IEventService getEventService();
+
+    IDataElementService getDataElementService();
 }

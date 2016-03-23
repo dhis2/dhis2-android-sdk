@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
@@ -38,10 +39,12 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class DataElementScope implements IDataElementScope {
-    private final IDataElementService mDataElementService;
-
-    public DataElementScope(IDataElementService dataElementService) {
-        this.mDataElementService = dataElementService;
+    private final IDataElementService dataElementService;
+    private final IIdentifiableController<DataElement> dataElementController;
+    public DataElementScope(IDataElementService dataElementService,
+                            IIdentifiableController<DataElement> dataElementController) {
+        this.dataElementService = dataElementService;
+        this.dataElementController = dataElementController;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber subscriber) {
                 try {
-                    DataElement dataElement = mDataElementService.get(uid);
+                    DataElement dataElement = dataElementService.get(uid);
                     subscriber.onNext(dataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -67,7 +70,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber subscriber) {
                 try {
-                    DataElement dataElement = mDataElementService.get(id);
+                    DataElement dataElement = dataElementService.get(id);
                     subscriber.onNext(dataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -84,7 +87,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber<? super List<DataElement>> subscriber) {
                 try {
-                    List<DataElement> dataElements = mDataElementService.list();
+                    List<DataElement> dataElements = dataElementService.list();
                     subscriber.onNext(dataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -101,7 +104,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mDataElementService.save(object);
+                    boolean status = dataElementService.save(object);
                     subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -118,8 +121,26 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mDataElementService.remove(object);
+                    boolean status = dataElementService.remove(object);
                     subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<DataElement>> sync() {
+        return Observable.create(new Observable.OnSubscribe<List<DataElement>>() {
+            @Override
+            public void call(Subscriber<? super List<DataElement>> subscriber) {
+                try {
+                    dataElementController.sync();
+                    List<DataElement> dataElements = dataElementService.list();
+                    subscriber.onNext(dataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

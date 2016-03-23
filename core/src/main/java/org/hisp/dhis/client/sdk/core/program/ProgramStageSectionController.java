@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -49,33 +49,32 @@ import java.util.Set;
 public class ProgramStageSectionController extends AbsSyncStrategyController<ProgramStageSection>
         implements IProgramStageSectionController {
     /* Api clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramStageSectionApiClient programStageSectionApiClient;
 
-    /* Local storage */
+    /* Controllers */
+    private final ISystemInfoController systemInfoController;
     private final IProgramStageController programStageController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public ProgramStageSectionController(ISystemInfoApiClient systemInfoApiClient,
-                                         IProgramStageSectionApiClient programStageSectionApiClient,
+    public ProgramStageSectionController(IProgramStageSectionApiClient programStageSectionApiClient,
                                          IProgramStageSectionStore programStageSectionStore,
                                          IProgramStageController programStageController,
+                                         ISystemInfoController systemInfoController,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAM_STAGE_SECTIONS,
                 programStageSectionStore, lastUpdatedPreferences);
-
-        this.systemInfoApiClient = systemInfoApiClient;
         this.programStageSectionApiClient = programStageSectionApiClient;
+        this.systemInfoController = systemInfoController;
         this.programStageController = programStageController;
         this.transactionManager = transactionManager;
     }
 
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_STAGE_SECTIONS, DateType.SERVER);
 

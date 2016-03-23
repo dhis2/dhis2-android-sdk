@@ -36,15 +36,16 @@ import com.raizlabs.android.dbflow.structure.Model;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseModelFlow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableObject,
-        DatabaseEntityType extends Model & IModel> extends AbsStore<ModelType, DatabaseEntityType>
-        implements IIdentifiableObjectStore<ModelType> {
+        DatabaseEntityType extends Model & IdentifiableObject> extends AbsStore<ModelType,
+        DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectStore(IMapper<ModelType, DatabaseEntityType> mapper) {
         super(mapper);
@@ -78,15 +79,29 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
     @Override
     public List<ModelType> queryByUids(Set<String> uids) {
         if (uids != null && !uids.isEmpty()) {
-            List<DatabaseEntityType> databaseEntities = new Select()
-                    .from(getMapper().getDatabaseEntityTypeClass())
-                    .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                            .COLUMN_UID)).in(uids))
-                    .queryList();
+            List<DatabaseEntityType> databaseEntities = query(uids);
 
             if (databaseEntities != null && !databaseEntities.isEmpty()) {
                 return getMapper().mapToModels(databaseEntities);
             }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean areStored(Set<String> uids) {
+        List<DatabaseEntityType> databaseEntities = query(uids);
+        return ModelUtils.toUidSet(databaseEntities).equals(uids);
+    }
+
+    private List<DatabaseEntityType> query(Set<String> uids) {
+        if (uids != null && !uids.isEmpty()) {
+            return new Select()
+                    .from(getMapper().getDatabaseEntityTypeClass())
+                    .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
+                            .COLUMN_UID)).in(uids))
+                    .queryList();
         }
 
         return null;

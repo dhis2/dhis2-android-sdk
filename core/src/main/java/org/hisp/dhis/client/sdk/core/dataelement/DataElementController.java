@@ -29,54 +29,47 @@
 package org.hisp.dhis.client.sdk.core.dataelement;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.models.common.SystemInfo;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class DataElementController implements IDataElementController {
+public final class DataElementController extends AbsSyncStrategyController<DataElement>
+        implements IDataElementController {
     private final IDataElementApiClient dataElementApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IDataElementStore dataElementStore;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final ISystemInfoController systemInfoController;
     private final ITransactionManager transactionManager;
 
     public DataElementController(IDataElementApiClient dataElementApiClient,
-                                 ISystemInfoApiClient systemInfoApiClient,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
                                  IDataElementStore dataElementStore,
+                                 ISystemInfoController systemInfoController,
                                  ITransactionManager transactionManager) {
+        super(ResourceType.DATA_ELEMENTS, dataElementStore, lastUpdatedPreferences);
+
         this.dataElementApiClient = dataElementApiClient;
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.dataElementStore = dataElementStore;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
+        this.systemInfoController = systemInfoController;
         this.transactionManager = transactionManager;
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(null);
-    }
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.DATA_ELEMENTS, DateType.LOCAL);
 
-    @Override
-    public void sync(Set<String> uids) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DATA_ELEMENTS);
-
-        List<DataElement> persistedDataElements = dataElementStore.queryAll();
+        List<DataElement> persistedDataElements = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -99,9 +92,8 @@ public final class DataElementController implements IDataElementController {
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
-                updatedDataElements, persistedDataElements, dataElementStore);
+                updatedDataElements, persistedDataElements, identifiableObjectStore);
         transactionManager.transact(dbOperations);
-
-        lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS , serverTime);
+        lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, DateType.SERVER, serverTime);
     }
 }

@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow_
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -110,6 +111,11 @@ public final class InterpretationStore implements IIdentifiableObjectStore<Inter
     @Override
     public List<Interpretation> queryByUids(Set<String> uids) {
         return null;
+    }
+
+    @Override
+    public boolean areStored(Set<String> objects) {
+        return false;
     }
 
     /* @Override

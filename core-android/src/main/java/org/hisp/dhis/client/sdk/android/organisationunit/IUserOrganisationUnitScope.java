@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
@@ -37,6 +38,8 @@ import rx.Observable;
 
 public interface IUserOrganisationUnitScope {
     Observable<List<OrganisationUnit>> sync() throws ApiException;
+
+    Observable<List<OrganisationUnit>> sync(SyncStrategy strategy) throws ApiException;
 
     Observable<List<OrganisationUnit>> list();
 }

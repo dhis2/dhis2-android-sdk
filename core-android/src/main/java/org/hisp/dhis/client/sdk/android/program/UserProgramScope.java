@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -36,7 +39,6 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class UserProgramScope implements IUserProgramScope {
     private final IProgramService programService;
@@ -50,57 +52,46 @@ public class UserProgramScope implements IUserProgramScope {
 
     @Override
     public Observable<List<Program>> sync() {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    assignedProgramsController.sync();
+            public List<Program> call() {
+                assignedProgramsController.sync();
+                return programService.list(true);
+            }
+        });
+    }
 
-                    // if the sync process is finished, we can
-                    // fetch a list of programs from service
-                    List<Program> programs = programService.list(true);
+    @Override
+    public Observable<List<Program>> sync(final SyncStrategy strategy) throws ApiException {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
-                    subscriber.onNext(programs);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            @Override
+            public List<Program> call() {
+                assignedProgramsController.sync(strategy);
+                return programService.list(true);
             }
         });
     }
 
     @Override
     public Observable<List<Program>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    subscriber.onNext(programService.list(true));
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Program> call() {
+                return programService.list(true);
             }
         });
     }
 
     @Override
     public Observable<List<Program>> list(final OrganisationUnit... organisationUnits) {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    subscriber.onNext(programService.list(organisationUnits));
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Program> call() {
+                return programService.list(organisationUnits);
             }
         });
     }

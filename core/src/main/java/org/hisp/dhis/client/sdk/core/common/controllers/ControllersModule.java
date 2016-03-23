@@ -51,7 +51,6 @@ import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
@@ -79,10 +78,9 @@ public class ControllersModule implements IControllersModule {
                 preferencesModule.getSystemInfoPreferences(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        programController = new ProgramController(
-                networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
+        programController = new ProgramController(networkModule.getProgramApiClient(),
                 networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
-                persistenceModule.getTransactionManager(),
+                systemInfoController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageController = new ProgramStageController(
@@ -93,22 +91,21 @@ public class ControllersModule implements IControllersModule {
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageSectionController = new ProgramStageSectionController(
-                networkModule.getSystemInfoApiClient(),
                 networkModule.getProgramStageSectionApiClient(),
                 persistenceModule.getProgramStageSectionStore(),
-                programStageController, persistenceModule.getTransactionManager(),
+                programStageController, systemInfoController,
+                persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         assignedProgramsController = new AssignedProgramsController(
                 networkModule.getUserApiClient(), programController);
 
         organisationUnitController = new OrganisationUnitController(
-                networkModule.getSystemInfoApiClient(),
                 networkModule.getOrganisationUnitApiClient(),
                 networkModule.getUserApiClient(),
                 persistenceModule.getOrganisationUnitStore(),
-                persistenceModule.getTransactionManager(),
-                preferencesModule.getLastUpdatedPreferences());
+                preferencesModule.getLastUpdatedPreferences(), systemInfoController,
+                persistenceModule.getTransactionManager());
 
         assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
                 networkModule.getUserApiClient(), organisationUnitController);
@@ -132,22 +129,21 @@ public class ControllersModule implements IControllersModule {
 
         dataElementController = new DataElementController(
                 networkModule.getDataElementApiClient(),
-                networkModule.getSystemInfoApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getDataElementStore(),
-                persistenceModule.getTransactionManager());
+                systemInfoController, persistenceModule.getTransactionManager());
 
-                /*
+        /*
 
-                IEventApiClient eventApiClient,
-                           ISystemInfoApiClient systemInfoApiClient,
-                           ILastUpdatedPreferences lastUpdatedPreferences,
-                           ITransactionManager transactionManager,
-                           IStateStore stateStore, IEventStore eventStore,
-                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                           IFailedItemStore failedItemStore)
-                 */
+        IEventApiClient eventApiClient,
+                   ISystemInfoApiClient systemInfoApiClient,
+                   ILastUpdatedPreferences lastUpdatedPreferences,
+                   ITransactionManager transactionManager,
+                   IStateStore stateStore, IEventStore eventStore,
+                   ITrackedEntityDataValueStore trackedEntityDataValueStore,
+                   IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
+                   IFailedItemStore failedItemStore)
+         */
 
     }
 

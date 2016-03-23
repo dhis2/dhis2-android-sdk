@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -54,6 +55,11 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
 
     @Override
     public void sync() throws ApiException {
+        sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public void sync(SyncStrategy strategy) throws ApiException {
         UserAccount userAccount = userApiClient.getUserAccount();
 
         /* get list of assigned organisation units */
@@ -63,6 +69,6 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
         Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
 
         /* get them through program controller */
-        organisationUnitController.sync(ids);
+        organisationUnitController.sync(strategy, ids);
     }
 }

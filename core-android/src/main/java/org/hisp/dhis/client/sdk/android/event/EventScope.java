@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -157,7 +158,8 @@ public class EventScope implements IEventScope {
             @Override
             public void call(Subscriber<? super Void> subscriber) {
                 try {
-                    eventController.sync();
+                    // TODO revise SyncStrategy
+                    eventController.sync(SyncStrategy.DEFAULT);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

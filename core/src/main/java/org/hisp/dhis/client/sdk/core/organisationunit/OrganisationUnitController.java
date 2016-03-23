@@ -29,62 +29,56 @@
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class OrganisationUnitController implements IOrganisationUnitController {
-
+public class OrganisationUnitController extends AbsSyncStrategyController<OrganisationUnit>
+        implements IOrganisationUnitController {
     /* Api clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
     private final IOrganisationUnitApiClient organisationUnitApiClient;
     private final IUserApiClient userApiClient;
 
-    /* Local storage */
-    private final IOrganisationUnitStore organisationUnitStore;
+    /* Controllers */
+    private final ISystemInfoController systemInfoController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public OrganisationUnitController(ISystemInfoApiClient systemInfoApiClient,
-                                      IOrganisationUnitApiClient organisationUnitApiClient,
+    public OrganisationUnitController(IOrganisationUnitApiClient organisationUnitApiClient,
                                       IUserApiClient userApiClient,
                                       IOrganisationUnitStore organisationUnitStore,
-                                      ITransactionManager transactionManager,
-                                      ILastUpdatedPreferences lastUpdatedPreferences) {
-        this.systemInfoApiClient = systemInfoApiClient;
+                                      ILastUpdatedPreferences lastUpdatedPreferences,
+                                      ISystemInfoController systemInfoController,
+                                      ITransactionManager transactionManager) {
+        super(ResourceType.ORGANISATION_UNITS, organisationUnitStore, lastUpdatedPreferences);
         this.organisationUnitApiClient = organisationUnitApiClient;
         this.userApiClient = userApiClient;
-        this.organisationUnitStore = organisationUnitStore;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
+        this.systemInfoController = systemInfoController;
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(null);
-    }
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.ORGANISATION_UNITS, DateType.SERVER);
 
-    @Override
-    public void sync(Set<String> uids) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.ORGANISATION_UNITS);
-
-        List<OrganisationUnit> persistedOrganisationUnits = organisationUnitStore.queryAll();
+        List<OrganisationUnit> persistedOrganisationUnits = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -119,9 +113,9 @@ public class OrganisationUnitController implements IOrganisationUnitController {
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingOrganisationUnits,
-                updatedOrganisationUnits, persistedOrganisationUnits, organisationUnitStore);
+                updatedOrganisationUnits, persistedOrganisationUnits, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, serverTime);
+        lastUpdatedPreferences.save(ResourceType.ORGANISATION_UNITS, DateType.SERVER, serverTime);
     }
 }

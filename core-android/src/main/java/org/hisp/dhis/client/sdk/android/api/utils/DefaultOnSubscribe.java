@@ -26,25 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.user;
+package org.hisp.dhis.client.sdk.android.api.utils;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import rx.Observable;
+import rx.Subscriber;
 
-import java.util.Collection;
-import java.util.Set;
-
-public class UserController implements IIdentifiableController<UserAccount> {
+public abstract class DefaultOnSubscribe<T> implements Observable.OnSubscribe<T> {
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public final void call(Subscriber<? super T> subscriber) {
+        try {
+            subscriber.onNext(call());
+        } catch (Throwable throwable) {
+            subscriber.onError(throwable);
+        }
 
+        subscriber.onCompleted();
     }
 
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
-
-    }
+    public abstract T call();
 }

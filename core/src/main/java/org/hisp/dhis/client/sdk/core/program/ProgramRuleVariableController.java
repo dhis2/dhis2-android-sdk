@@ -29,11 +29,13 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -70,7 +72,7 @@ public final class ProgramRuleVariableController implements IIdentifiableControl
     private void getProgramRuleVariablesDataFromServer() throws ApiException {
         ResourceType resource = ResourceType.PROGRAM_RULE_VARIABLES;
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
+        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
 
         //fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
@@ -91,17 +93,17 @@ public final class ProgramRuleVariableController implements IIdentifiableControl
                         .queryAll()));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, serverTime, null);
+        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
 
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         getProgramRuleVariablesDataFromServer();
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

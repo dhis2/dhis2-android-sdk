@@ -26,60 +26,67 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.systeminfo;
+package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.models.common.SystemInfo;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
-public class SystemInfoController implements ISystemInfoController {
-    private static final int EXPIRATION_THRESHOLD = 64;
+import java.util.Set;
 
-    /* API clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
+public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
+        implements IIdentifiableController<T> {
+    private static final int EXPIRATION_THRESHOLD = 128;
 
-    /* Stores and preferences */
-    private final ISystemInfoPreferences systemInfoPreferences;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    protected final ResourceType resourceType;
+    protected final IIdentifiableObjectStore<T> identifiableObjectStore;
+    protected final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public SystemInfoController(ISystemInfoApiClient systemInfoApiClient,
-                                ISystemInfoPreferences systemInfoPreferences,
-                                ILastUpdatedPreferences lastUpdatedPreferences) {
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.systemInfoPreferences = systemInfoPreferences;
+    protected AbsSyncStrategyController(ResourceType resourceType,
+                                        IIdentifiableObjectStore<T> identifiableObjectStore,
+                                        ILastUpdatedPreferences lastUpdatedPreferences) {
+        this.resourceType = resourceType;
+        this.identifiableObjectStore = identifiableObjectStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
-    public SystemInfo getSystemInfo() throws ApiException {
-        return getSystemInfo(SyncStrategy.DEFAULT);
+    public final void sync(SyncStrategy strategy) throws ApiException {
+        sync(strategy, null);
     }
 
     @Override
-    public SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException {
-        SystemInfo systemInfo = systemInfoPreferences.get();
+    public final void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
         DateTime currentDate = DateTime.now();
 
-        if (SyncStrategy.FORCE_UPDATE.equals(strategy) || (SyncStrategy.DEFAULT.equals(strategy) &&
-                isSystemInfoExpired(currentDate))) {
-            systemInfo = systemInfoApiClient.getSystemInfo();
+        /* if we don't have objects with given uids in place, we have
+        to force a sync even if strategy is set to be DEFAULT */
+        if (SyncStrategy.FORCE_UPDATE.equals(strategy) ||
+                !identifiableObjectStore.areStored(uids)) {
+            synchronize(SyncStrategy.FORCE_UPDATE, uids);
 
-            lastUpdatedPreferences.save(ResourceType.SYSTEM_INFO, DateType.LOCAL, currentDate);
-            systemInfoPreferences.save(systemInfo);
+            lastUpdatedPreferences.save(resourceType, DateType.LOCAL, currentDate);
+            return;
         }
 
-        return systemInfo;
+        if (SyncStrategy.DEFAULT.equals(strategy) && isResourceOutdated(currentDate)) {
+            synchronize(SyncStrategy.DEFAULT, uids);
+
+            lastUpdatedPreferences.save(resourceType, DateType.LOCAL, currentDate);
+        }
     }
 
-    private boolean isSystemInfoExpired(DateTime currentDate) {
-        DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.SYSTEM_INFO, DateType.LOCAL);
+    private boolean isResourceOutdated(DateTime currentDate) {
+        DateTime lastUpdated = lastUpdatedPreferences.get(resourceType, DateType.LOCAL);
+
         return lastUpdated == null || Seconds.secondsBetween(currentDate,
                 lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }
+
+    protected abstract void synchronize(SyncStrategy strategy, Set<String> uids);
 }

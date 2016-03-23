@@ -26,25 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.user;
+package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-
-import java.util.Collection;
-import java.util.Set;
-
-public class UserController implements IIdentifiableController<UserAccount> {
-
-    @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-
-    }
-
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
-
-    }
+public enum DateType {
+    LOCAL, SERVER
 }

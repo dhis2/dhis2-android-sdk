@@ -29,11 +29,13 @@
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -70,7 +72,7 @@ public final class TrackedEntityController implements IIdentifiableController<Tr
     private void getTrackedEntityAttributesFromServer() throws ApiException {
         ResourceType resource = ResourceType.TRACKED_ENTITIES;
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource);
+        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
 
         // fetching id and name for all items on server. This is needed in case something is
         // deleted on the server and we want to reflect that locally
@@ -92,16 +94,16 @@ public final class TrackedEntityController implements IIdentifiableController<Tr
                 existingPersistedAndUpdatedTrackedEntities, trackedEntityStore.queryAll()));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, serverTime);
+        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         getTrackedEntityAttributesFromServer();
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

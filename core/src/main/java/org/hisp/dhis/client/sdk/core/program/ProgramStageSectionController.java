@@ -29,13 +29,15 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -44,45 +46,40 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageSectionController implements IProgramStageSectionController {
+public class ProgramStageSectionController extends AbsSyncStrategyController<ProgramStageSection>
+        implements IProgramStageSectionController {
     /* Api clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramStageSectionApiClient programStageSectionApiClient;
 
-    /* Local storage */
-    private final IProgramStageSectionStore programStageSectionStore;
+    /* Controllers */
+    private final ISystemInfoController systemInfoController;
     private final IProgramStageController programStageController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
-    public ProgramStageSectionController(ISystemInfoApiClient systemInfoApiClient,
-                                         IProgramStageSectionApiClient programStageSectionApiClient,
+    public ProgramStageSectionController(IProgramStageSectionApiClient programStageSectionApiClient,
                                          IProgramStageSectionStore programStageSectionStore,
                                          IProgramStageController programStageController,
+                                         ISystemInfoController systemInfoController,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
-        this.systemInfoApiClient = systemInfoApiClient;
+        super(ResourceType.PROGRAM_STAGE_SECTIONS,
+                programStageSectionStore, lastUpdatedPreferences);
         this.programStageSectionApiClient = programStageSectionApiClient;
-        this.programStageSectionStore = programStageSectionStore;
+        this.systemInfoController = systemInfoController;
         this.programStageController = programStageController;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(null);
-    }
-
-    @Override
-    public void sync(Set<String> uids) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM_STAGE_SECTIONS);
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_STAGE_SECTIONS, DateType.SERVER);
 
         List<ProgramStageSection> persistedProgramStageSections =
-                programStageSectionStore.queryAll();
+                identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -115,14 +112,15 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
 
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
-        programStageController.sync(programStageSectionUids);
+        programStageController.sync(strategy, programStageSectionUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(
                 allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections, programStageSectionStore);
+                persistedProgramStageSections, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_SECTIONS, serverTime);
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_SECTIONS,
+                DateType.SERVER, serverTime);
     }
 }

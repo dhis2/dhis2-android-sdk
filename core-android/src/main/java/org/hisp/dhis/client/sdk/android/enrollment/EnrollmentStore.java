@@ -38,14 +38,14 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFlow> implements
         IEnrollmentStore {
 
-    public EnrollmentStore(IStateStore stateStore,
-                           IMapper<Enrollment, EnrollmentFlow> mapper) {
+    public EnrollmentStore(IStateStore stateStore, IMapper<Enrollment, EnrollmentFlow> mapper) {
         super(mapper, stateStore);
     }
 
@@ -62,6 +62,11 @@ public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFl
     @Override
     public List<Enrollment> queryByUids(Set<String> uids) {
         return null;
+    }
+
+    @Override
+    public boolean areStored(Set<String> uids) {
+        return false;
     }
 
     @Override

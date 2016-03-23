@@ -79,14 +79,14 @@
                     android:id="@+id/drawer_item_settings"
                     android:icon="@drawable/ic_settings"
                     android:title="@string/drawer_item_settings" />
-                <item
+                <!--<item
                     android:id="@+id/drawer_item_help"
                     android:icon="@drawable/ic_help"
                     android:title="@string/drawer_item_help" />
                 <item
                     android:id="@+id/drawer_item_about"
                     android:icon="@drawable/ic_about"
-                    android:title="@string/drawer_item_about" />
+                    android:title="@string/drawer_item_about" /> -->
             </group>
         </menu>
     </item>

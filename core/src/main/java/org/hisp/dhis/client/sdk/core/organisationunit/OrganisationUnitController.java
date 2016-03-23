@@ -47,9 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-// TODO problem 1: ResourceType based timestamps is a different thing (they contain server
-// datetime objects)
 public class OrganisationUnitController extends AbsSyncStrategyController<OrganisationUnit>
         implements IOrganisationUnitController {
     /* Api clients */

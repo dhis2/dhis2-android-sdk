@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -51,20 +51,20 @@ public class ProgramController extends AbsSyncStrategyController<Program>
         implements IProgramController {
 
     /* Api clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final ISystemInfoController systemInfoController;
     private final IProgramApiClient programApiClient;
     private final IUserApiClient userApiClient;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public ProgramController(ISystemInfoApiClient systemInfoApiClient,
-                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, ITransactionManager transactionManager,
+    public ProgramController(IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                             IProgramStore programStore, ISystemInfoController systemInfoController,
+                             ITransactionManager transactionManager,
                              ILastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 
-        this.systemInfoApiClient = systemInfoApiClient;
+        this.systemInfoController = systemInfoController;
         this.programApiClient = programApiClient;
         this.userApiClient = userApiClient;
         this.transactionManager = transactionManager;
@@ -72,7 +72,7 @@ public class ProgramController extends AbsSyncStrategyController<Program>
 
     @Override
     protected void synchronize(SyncStrategy syncStrategy, Set<String> uids) {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS, DateType.SERVER);
 
         List<Program> persistedPrograms = identifiableObjectStore.queryAll();

@@ -41,7 +41,7 @@ import java.util.Set;
 
 public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
         implements IIdentifiableController<T> {
-    private static final int EXPIRATION_THRESHOLD = 64;
+    private static final int EXPIRATION_THRESHOLD = 128;
 
     protected final ResourceType resourceType;
     protected final IIdentifiableObjectStore<T> identifiableObjectStore;
@@ -62,22 +62,27 @@ public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
 
     @Override
     public final void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        DateTime currentDate = DateTime.now();
+
         /* if we don't have objects with given uids in place, we have
         to force a sync even if strategy is set to be DEFAULT */
         if (SyncStrategy.FORCE_UPDATE.equals(strategy) ||
                 !identifiableObjectStore.areStored(uids)) {
             synchronize(SyncStrategy.FORCE_UPDATE, uids);
+
+            lastUpdatedPreferences.save(resourceType, DateType.LOCAL, currentDate);
             return;
         }
 
-        if (SyncStrategy.DEFAULT.equals(strategy) && isResourceOutdated()) {
+        if (SyncStrategy.DEFAULT.equals(strategy) && isResourceOutdated(currentDate)) {
             synchronize(SyncStrategy.DEFAULT, uids);
+
+            lastUpdatedPreferences.save(resourceType, DateType.LOCAL, currentDate);
         }
     }
 
-    private boolean isResourceOutdated() {
+    private boolean isResourceOutdated(DateTime currentDate) {
         DateTime lastUpdated = lastUpdatedPreferences.get(resourceType, DateType.LOCAL);
-        DateTime currentDate = DateTime.now();
 
         return lastUpdated == null || Seconds.secondsBetween(currentDate,
                 lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));

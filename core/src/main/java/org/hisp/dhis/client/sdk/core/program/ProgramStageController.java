@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -46,21 +46,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageController implements IProgramStageController {
+public class ProgramStageController extends AbsSyncStrategyController<ProgramStage>
+        implements IProgramStageController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramStageApiClient programStageApiClient;
-
-    /* Local storage */
-    private final IProgramStageStore programStageStore;
 
     /* Controllers */
     private final IProgramController programController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramStageController(ISystemInfoApiClient systemInfoApiClient,
                                   IProgramStageApiClient programStageApiClient,
@@ -68,26 +65,20 @@ public class ProgramStageController implements IProgramStageController {
                                   IProgramController programController,
                                   ITransactionManager transactionManager,
                                   ILastUpdatedPreferences lastUpdatedPreferences) {
+        super(ResourceType.PROGRAM_STAGES, programStageStore, lastUpdatedPreferences);
         this.systemInfoApiClient = systemInfoApiClient;
         this.programStageApiClient = programStageApiClient;
-        this.programStageStore = programStageStore;
         this.programController = programController;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        sync(syncStrategy, null);
-    }
-
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_STAGES, DateType.SERVER);
 
-        List<ProgramStage> persistedProgramStages = programStageStore.queryAll();
+        List<ProgramStage> persistedProgramStages = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -118,11 +109,11 @@ public class ProgramStageController implements IProgramStageController {
 
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
-        programController.sync(syncStrategy, programUids);
+        programController.sync(strategy, programUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingProgramStages,
-                updatedProgramStages, persistedProgramStages, programStageStore);
+                updatedProgramStages, persistedProgramStages, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGES, DateType.SERVER, serverTime);

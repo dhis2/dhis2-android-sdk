@@ -54,6 +54,16 @@ public class ProgramStageScope implements IProgramStageScope {
     }
 
     @Override
+    public Observable<List<ProgramStage>> sync() {
+        return sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<ProgramStage>> sync(String... programStageIds) {
+        return sync(SyncStrategy.DEFAULT, programStageIds);
+    }
+
+    @Override
     public Observable<List<ProgramStage>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
 

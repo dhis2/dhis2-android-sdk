@@ -63,11 +63,10 @@ public class SystemInfoController implements ISystemInfoController {
     @Override
     public SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException {
         SystemInfo systemInfo = systemInfoPreferences.get();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.SYSTEM_INFO, DateType.LOCAL);
         DateTime currentDate = DateTime.now();
 
         if (SyncStrategy.FORCE_UPDATE.equals(strategy) || (SyncStrategy.DEFAULT.equals(strategy) &&
-                isSystemInfoExpired(lastUpdated, currentDate))) {
+                isSystemInfoExpired(currentDate))) {
             systemInfo = systemInfoApiClient.getSystemInfo();
 
             lastUpdatedPreferences.save(ResourceType.SYSTEM_INFO, DateType.LOCAL, currentDate);
@@ -77,8 +76,10 @@ public class SystemInfoController implements ISystemInfoController {
         return systemInfo;
     }
 
-    private static boolean isSystemInfoExpired(DateTime lastUpdated, DateTime currentDate) {
-        return Seconds.secondsBetween(currentDate,
+    private boolean isSystemInfoExpired(DateTime currentDate) {
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.SYSTEM_INFO, DateType.LOCAL);
+        return lastUpdated == null || Seconds.secondsBetween(currentDate,
                 lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }
 }

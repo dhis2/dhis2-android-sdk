@@ -112,7 +112,7 @@ public class SystemInfoPreferences implements ISystemInfoPreferences {
     @Override
     public boolean isEmpty() {
         Map<String, ?> entries = preferences.getAll();
-        return entries != null && !entries.isEmpty();
+        return entries == null || entries.isEmpty();
     }
 
     private boolean putString(String key, String value) {

@@ -75,10 +75,9 @@ public class ControllersModule implements IControllersModule {
                 preferencesModule.getSystemInfoPreferences(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        programController = new ProgramController(
-                networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
+        programController = new ProgramController(networkModule.getProgramApiClient(),
                 networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
-                persistenceModule.getTransactionManager(),
+                systemInfoController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageController = new ProgramStageController(

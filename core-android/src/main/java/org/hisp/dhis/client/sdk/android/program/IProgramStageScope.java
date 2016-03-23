@@ -38,6 +38,10 @@ import java.util.Set;
 import rx.Observable;
 
 public interface IProgramStageScope {
+    Observable<List<ProgramStage>> sync();
+
+    Observable<List<ProgramStage>> sync(String... programStageIds);
+
     Observable<List<ProgramStage>> sync(SyncStrategy syncStrategy);
 
     Observable<List<ProgramStage>> sync(SyncStrategy syncStrategy, String... programStageIds);

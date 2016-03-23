@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -46,18 +46,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageSectionController implements IProgramStageSectionController {
+public class ProgramStageSectionController extends AbsSyncStrategyController<ProgramStageSection>
+        implements IProgramStageSectionController {
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramStageSectionApiClient programStageSectionApiClient;
 
     /* Local storage */
-    private final IProgramStageSectionStore programStageSectionStore;
     private final IProgramStageController programStageController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramStageSectionController(ISystemInfoApiClient systemInfoApiClient,
                                          IProgramStageSectionApiClient programStageSectionApiClient,
@@ -65,27 +64,23 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
                                          IProgramStageController programStageController,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
+        super(ResourceType.PROGRAM_STAGE_SECTIONS,
+                programStageSectionStore, lastUpdatedPreferences);
+
         this.systemInfoApiClient = systemInfoApiClient;
         this.programStageSectionApiClient = programStageSectionApiClient;
-        this.programStageSectionStore = programStageSectionStore;
         this.programStageController = programStageController;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        sync(syncStrategy, null);
-    }
-
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_STAGE_SECTIONS, DateType.SERVER);
 
         List<ProgramStageSection> persistedProgramStageSections =
-                programStageSectionStore.queryAll();
+                identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -118,12 +113,12 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
 
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
-        programStageController.sync(syncStrategy, programStageSectionUids);
+        programStageController.sync(strategy, programStageSectionUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(
                 allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections, programStageSectionStore);
+                persistedProgramStageSections, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_SECTIONS,

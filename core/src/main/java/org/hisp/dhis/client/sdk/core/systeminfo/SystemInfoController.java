@@ -38,7 +38,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 
 public class SystemInfoController implements ISystemInfoController {
-    private static final int EXPIRATION_THRESHOLD = 64;
+    private static final int EXPIRATION_THRESHOLD = 128;
 
     /* API clients */
     private final ISystemInfoApiClient systemInfoApiClient;
@@ -79,7 +79,7 @@ public class SystemInfoController implements ISystemInfoController {
     private boolean isSystemInfoExpired(DateTime currentDate) {
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.SYSTEM_INFO, DateType.LOCAL);
-        return lastUpdated == null || Seconds.secondsBetween(currentDate,
-                lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
+        return lastUpdated == null || Seconds.secondsBetween(lastUpdated,
+                currentDate).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }
 }

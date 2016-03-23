@@ -41,7 +41,7 @@ import java.util.Set;
 
 public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
         implements IIdentifiableController<T> {
-    private static final int EXPIRATION_THRESHOLD = 128;
+    private static final int EXPIRATION_THRESHOLD = 64;
 
     protected final ResourceType resourceType;
     protected final IIdentifiableObjectStore<T> identifiableObjectStore;
@@ -84,8 +84,8 @@ public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
     private boolean isResourceOutdated(DateTime currentDate) {
         DateTime lastUpdated = lastUpdatedPreferences.get(resourceType, DateType.LOCAL);
 
-        return lastUpdated == null || Seconds.secondsBetween(currentDate,
-                lastUpdated).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
+        return lastUpdated == null || Seconds.secondsBetween(lastUpdated,
+                currentDate).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }
 
     protected abstract void synchronize(SyncStrategy strategy, Set<String> uids);

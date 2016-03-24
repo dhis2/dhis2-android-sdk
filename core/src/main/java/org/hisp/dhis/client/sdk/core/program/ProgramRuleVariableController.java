@@ -43,13 +43,13 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public final class ProgramRuleVariableController implements IIdentifiableController<ProgramRuleVariable> {
+public final class ProgramRuleVariableController implements
+        IIdentifiableController<ProgramRuleVariable> {
     private final IProgramRuleVariableApiClient programRuleActionApiClient;
     private final ITransactionManager transactionManager;
     private final ILastUpdatedPreferences lastUpdatedPreferences;

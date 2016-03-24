@@ -28,22 +28,24 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance,
         TrackedEntityInstanceFlow> {
 
     @Override
-    public TrackedEntityInstanceFlow mapToDatabaseEntity(TrackedEntityInstance trackedEntityInstance) {
+    public TrackedEntityInstanceFlow mapToDatabaseEntity(TrackedEntityInstance
+                                                                     trackedEntityInstance) {
         if (trackedEntityInstance == null) {
             return null;
         }
 
         TrackedEntityInstanceFlow trackedEntityInstanceFlow = new TrackedEntityInstanceFlow();
         trackedEntityInstanceFlow.setId(trackedEntityInstance.getId());
-        trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance.getTrackedEntityInstanceUid());
+        trackedEntityInstanceFlow.setTrackedEntityInstanceUid(trackedEntityInstance
+                .getTrackedEntityInstanceUid());
         trackedEntityInstanceFlow.setTrackedEntity(trackedEntityInstance.getTrackedEntity());
         trackedEntityInstanceFlow.setOrgUnit(trackedEntityInstance.getOrgUnit());
         trackedEntityInstanceFlow.setCreated(trackedEntityInstance.getCreated());
@@ -59,7 +61,8 @@ public class TrackedEntityInstanceMapper extends AbsMapper<TrackedEntityInstance
 
         TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
         trackedEntityInstance.setId(trackedEntityInstanceFlow.getId());
-        trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceFlow.getTrackedEntityInstanceUid());
+        trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceFlow
+                .getTrackedEntityInstanceUid());
         trackedEntityInstance.setTrackedEntity(trackedEntityInstanceFlow.getTrackedEntity());
         trackedEntityInstance.setOrgUnit(trackedEntityInstanceFlow.getOrgUnit());
         trackedEntityInstance.setCreated(trackedEntityInstanceFlow.getCreated());

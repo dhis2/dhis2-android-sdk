@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 public class CheckBoxRowView implements IRowView {
     private static final String TRUE = "true";
     private static final String EMPTY_FIELD = "";
+
     public CheckBoxRowView() {
         // explicit empty constructor
     }
@@ -92,8 +93,7 @@ public class CheckBoxRowView implements IRowView {
 
             if (EMPTY_FIELD.equals(dataEntity.getValue())) {
                 checkBox.setChecked(false);
-            }
-            else if(TRUE.equals(dataEntity.getValue())) {
+            } else if (TRUE.equals(dataEntity.getValue())) {
                 checkBox.setChecked(true);
             }
         }

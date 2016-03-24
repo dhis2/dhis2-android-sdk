@@ -28,21 +28,22 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.joda.time.DateTime;
 
 public class InterpretationCommentService implements IInterpretationCommentService {
     private final IInterpretationCommentStore interpretationCommentStore;
     private final IStateStore stateStore;
 
-    public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore, IStateStore stateStore) {
+    public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore,
+                                        IStateStore stateStore) {
         this.interpretationCommentStore = interpretationCommentStore;
         this.stateStore = stateStore;
     }
@@ -78,7 +79,8 @@ public class InterpretationCommentService implements IInterpretationCommentServi
      */
     @Override
     public boolean remove(InterpretationComment interpretationComment) {
-        Preconditions.isNull(interpretationComment, "InterpretationComment object must not be null");
+        Preconditions.isNull(interpretationComment, "InterpretationComment object must not be " +
+                "null");
 
         Action action = stateStore.queryActionForModel(interpretationComment);
         if (action == null) {

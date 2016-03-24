@@ -35,8 +35,6 @@ import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
-import java.util.Map;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class TrackedEntityAttribute extends BaseNameableObject {
 

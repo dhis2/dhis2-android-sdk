@@ -46,7 +46,8 @@ public interface IEventScope {
 
     Observable<Event> get(String uid);
 
-    Observable<Event> create(String organisationUnitId, String programId, String programStageId, String status);
+    Observable<Event> create(String organisationUnitId, String programId, String programStageId,
+                             String status);
 
     Observable<List<Event>> list();
 

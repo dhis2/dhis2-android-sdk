@@ -40,7 +40,8 @@ public interface ITrackedEntityInstanceApiClient {
 
     List<TrackedEntityAttribute> getFullTrackedEntityAttributes(DateTime lastUpdated);
 
-    List<TrackedEntityInstance> getBasicTrackedEntityInstances(String organisationUnitId, DateTime lastUpdated);
+    List<TrackedEntityInstance> getBasicTrackedEntityInstances(String organisationUnitId,
+                                                               DateTime lastUpdated);
 
     TrackedEntityInstance getFullTrackedEntityInstance(String uid, DateTime lastUpdated);
 

@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 
 public class DashboardElementMapper extends AbsMapper<DashboardElement, DashboardElementFlow> {
@@ -49,7 +49,8 @@ public class DashboardElementMapper extends AbsMapper<DashboardElement, Dashboar
         dashboardElementFlow.setAccess(dashboardElement.getAccess());
         dashboardElementFlow.setName(dashboardElement.getName());
         dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
-        dashboardElementFlow.setDashboardItem(MapperModuleProvider.getInstance().getDashboardItemMapper()
+        dashboardElementFlow.setDashboardItem(MapperModuleProvider.getInstance()
+                .getDashboardItemMapper()
                 .mapToDatabaseEntity(dashboardElement.getDashboardItem()));
         return dashboardElementFlow;
     }
@@ -68,7 +69,8 @@ public class DashboardElementMapper extends AbsMapper<DashboardElement, Dashboar
         dashboardElement.setAccess(dashboardElementFlow.getAccess());
         dashboardElement.setName(dashboardElementFlow.getName());
         dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
-        dashboardElement.setDashboardItem(MapperModuleProvider.getInstance().getDashboardItemMapper()
+        dashboardElement.setDashboardItem(MapperModuleProvider.getInstance()
+                .getDashboardItemMapper()
                 .mapToModel(dashboardElementFlow.getDashboardItem()));
         return dashboardElement;
     }

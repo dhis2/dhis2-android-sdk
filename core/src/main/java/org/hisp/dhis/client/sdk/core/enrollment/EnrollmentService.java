@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.core.enrollment;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -50,7 +50,8 @@ public class EnrollmentService implements IEnrollmentService {
     private final IStateStore stateStore;
     private final IEventService eventService;
 
-    public EnrollmentService(IEnrollmentStore enrollmentStore, IStateStore stateStore, IEventService eventService) {
+    public EnrollmentService(IEnrollmentStore enrollmentStore, IStateStore stateStore,
+                             IEventService eventService) {
         this.enrollmentStore = enrollmentStore;
         this.stateStore = stateStore;
         this.eventService = eventService;
@@ -85,19 +86,22 @@ public class EnrollmentService implements IEnrollmentService {
 
         if (!program.isSelectEnrollmentDatesInFuture()) {
             if (dateOfEnrollment.isAfterNow()) {
-                throw new IllegalArgumentException("Program doesn't allow to set future enrollment dates");
+                throw new IllegalArgumentException("Program doesn't allow to set future " +
+                        "enrollment dates");
             }
         }
         if (!program.isSelectIncidentDatesInFuture()) {
             if (dateOfIncident.isAfterNow()) {
-                throw new IllegalArgumentException("Program doesn't allow to set future incident dates");
+                throw new IllegalArgumentException("Program doesn't allow to set future incident " +
+                        "dates");
             }
         }
 
         if (program.isOnlyEnrollOnce()) {
             List<Enrollment> enrollments = enrollmentStore.query(program, trackedEntityInstance);
             if (enrollments.size() > 0) {
-                throw new IllegalArgumentException("Tracked entity instance can only be enrolled once");
+                throw new IllegalArgumentException("Tracked entity instance can only be enrolled " +
+                        "once");
             }
         }
 
@@ -127,7 +131,8 @@ public class EnrollmentService implements IEnrollmentService {
     @Override
     public Enrollment getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
                                           OrganisationUnit organisationUnit, Program program) {
-        return enrollmentStore.queryActiveEnrollment(trackedEntityInstance, organisationUnit, program);
+        return enrollmentStore.queryActiveEnrollment(trackedEntityInstance, organisationUnit,
+                program);
     }
 
     @Override
@@ -159,7 +164,8 @@ public class EnrollmentService implements IEnrollmentService {
 
     @Override
     public List<Enrollment> list() {
-        return stateStore.queryModelsWithActions(Enrollment.class, Action.SYNCED, Action.TO_UPDATE, Action.TO_POST);
+        return stateStore.queryModelsWithActions(Enrollment.class, Action.SYNCED, Action
+                .TO_UPDATE, Action.TO_POST);
     }
 
     @Override

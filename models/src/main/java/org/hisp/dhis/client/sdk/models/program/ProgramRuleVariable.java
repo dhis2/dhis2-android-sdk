@@ -42,35 +42,26 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramRuleVariable extends BaseIdentifiableObject {
 
-    @JsonProperty("dataElement")
-    private DataElement dataElement;
-
-    @JsonProperty("attribute")
-    private TrackedEntityAttribute trackedEntityAttribute;
-
-    @JsonProperty("programRuleVariableSourceType")
-    private ProgramRuleVariableSourceType sourceType;
-
-    @JsonProperty("program")
-    private Program program;
-
-    @JsonProperty("programStage")
-    private ProgramStage programStage;
-
     @JsonIgnore
     String variableValue;
-
     @JsonIgnore
     ValueType variableType;
-
     @JsonIgnore
     boolean hasValue;
-
     @JsonIgnore
     String variableEventDate;
-
     @JsonIgnore
     List<String> allValues;
+    @JsonProperty("dataElement")
+    private DataElement dataElement;
+    @JsonProperty("attribute")
+    private TrackedEntityAttribute trackedEntityAttribute;
+    @JsonProperty("programRuleVariableSourceType")
+    private ProgramRuleVariableSourceType sourceType;
+    @JsonProperty("program")
+    private Program program;
+    @JsonProperty("programStage")
+    private ProgramStage programStage;
 
     public DataElement getDataElement() {
         return dataElement;

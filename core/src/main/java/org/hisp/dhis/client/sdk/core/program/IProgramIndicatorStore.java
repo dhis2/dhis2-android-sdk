@@ -38,6 +38,8 @@ import java.util.List;
 
 public interface IProgramIndicatorStore extends IIdentifiableObjectStore<ProgramIndicator> {
     List<ProgramIndicator> query(Program program);
+
     List<ProgramIndicator> query(ProgramStage programStage);
+
     List<ProgramIndicator> query(ProgramStageSection programStageSection);
 }

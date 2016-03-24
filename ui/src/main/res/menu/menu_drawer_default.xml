@@ -34,7 +34,7 @@
             android:id="@+id/drawer_item_profile"
             android:icon="@drawable/ic_profile"
             android:orderInCategory="110"
-            android:title="@string/drawer_item_profile" />
+            android:title="@string/drawer_item_profile"/>
         <item
             android:id="@+id/drawer_item_apps"
             android:orderInCategory="200"
@@ -47,22 +47,22 @@
                         android:id="@+id/drawer_item_dashboard"
                         android:icon="@drawable/ic_dashboard"
                         android:orderInCategory="200"
-                        android:title="@string/drawer_item_dashboard" />
+                        android:title="@string/drawer_item_dashboard"/>
                     <item
                         android:id="@+id/drawer_item_data_capture"
                         android:icon="@drawable/ic_data_capture"
                         android:orderInCategory="200"
-                        android:title="@string/drawer_item_data_capture" />
+                        android:title="@string/drawer_item_data_capture"/>
                     <item
                         android:id="@+id/drawer_item_event_capture"
                         android:icon="@drawable/ic_event_capture"
                         android:orderInCategory="200"
-                        android:title="@string/drawer_item_event_capture" />
+                        android:title="@string/drawer_item_event_capture"/>
                     <item
                         android:id="@+id/drawer_item_tracker_capture"
                         android:icon="@drawable/ic_tracker_capture"
                         android:orderInCategory="200"
-                        android:title="@string/drawer_item_tracker_capture" />
+                        android:title="@string/drawer_item_tracker_capture"/>
                 </group>
             </menu>
         </item>
@@ -78,7 +78,7 @@
                 <item
                     android:id="@+id/drawer_item_settings"
                     android:icon="@drawable/ic_settings"
-                    android:title="@string/drawer_item_settings" />
+                    android:title="@string/drawer_item_settings"/>
                 <!--<item
                     android:id="@+id/drawer_item_help"
                     android:icon="@drawable/ic_help"
@@ -102,7 +102,7 @@
                     android:id="@+id/drawer_item_synchronized"
                     android:enabled="false"
                     android:icon="@drawable/ic_synchronized"
-                    android:title="@string/drawer_item_synchronized" />
+                    android:title="@string/drawer_item_synchronized"/>
             </group>
         </menu>
     </item>

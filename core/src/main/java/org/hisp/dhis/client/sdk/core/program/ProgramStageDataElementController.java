@@ -1,3 +1,31 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
@@ -34,8 +62,10 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
     private final ITransactionManager transactionManager;
 
     public ProgramStageDataElementController(ISystemInfoApiClient systemInfoApiClient,
-                                             IProgramStageDataElementApiClient programStageDataElementApiClient,
-                                             IProgramStageDataElementStore programStageDataElementStore,
+                                             IProgramStageDataElementApiClient
+                                                     programStageDataElementApiClient,
+                                             IProgramStageDataElementStore
+                                                     programStageDataElementStore,
                                              IDataElementController dataElementController,
                                              ITransactionManager transactionManager,
                                              ILastUpdatedPreferences lastUpdatedPreferences) {
@@ -51,14 +81,16 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAM_STAGE_DATA_ELEMENTS, DateType.SERVER);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType
+                .PROGRAM_STAGE_DATA_ELEMENTS, DateType.SERVER);
 
         List<ProgramStageDataElement> programStageDataElements =
                 identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<ProgramStageDataElement> allExistingProgramStageDataElements = programStageDataElementApiClient
+        List<ProgramStageDataElement> allExistingProgramStageDataElements =
+                programStageDataElementApiClient
                 .getProgramStageDataElements(Fields.BASIC, null);
 
         String[] uidArray = null;
@@ -73,7 +105,8 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
                     .toArray(new String[persistedProgramStageDataElementIds.size()]);
         }
 
-        List<ProgramStageDataElement> updatedProgramStageDataElements = programStageDataElementApiClient
+        List<ProgramStageDataElement> updatedProgramStageDataElements =
+                programStageDataElementApiClient
                 .getProgramStageDataElements(Fields.ALL, lastUpdated, uidArray);
 
         // Retrieving data element uids from program stage data elements

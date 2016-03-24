@@ -72,6 +72,10 @@ public final class FailedItemFlow extends BaseModel {
     @Column
     String errorMessage;
 
+    public FailedItemFlow() {
+        // empty constructor
+    }
+
     public long getId() {
         return id;
     }
@@ -118,9 +122,5 @@ public final class FailedItemFlow extends BaseModel {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-
-    public FailedItemFlow() {
-        // empty constructor
     }
 }

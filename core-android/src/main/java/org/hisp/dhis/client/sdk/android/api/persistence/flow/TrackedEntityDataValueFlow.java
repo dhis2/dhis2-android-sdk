@@ -71,6 +71,10 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
     @Column
     String value;
 
+    public TrackedEntityDataValueFlow() {
+        // empty constructor
+    }
+
     public EventFlow getEvent() {
         return event;
     }
@@ -109,9 +113,5 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public TrackedEntityDataValueFlow() {
-        // empty constructor
     }
 }

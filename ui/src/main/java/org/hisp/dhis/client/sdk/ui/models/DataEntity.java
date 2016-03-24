@@ -64,7 +64,8 @@ public class DataEntity implements IDataEntity<CharSequence> {
     }
 
     private DataEntity(String label, String value, Type type,
-                       OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener) {
+                       OnValueChangeListener<Pair<CharSequence, CharSequence>>
+                               onValueChangeListener) {
         isNull(label, "label must not be null");
         isNull(type, "type must not be null");
 
@@ -79,12 +80,15 @@ public class DataEntity implements IDataEntity<CharSequence> {
         return new DataEntity(label, "", type);
     }
 
-    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type) {
+    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type
+            type) {
         return new DataEntity(label, value, type);
     }
 
-    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type type,
-                                    OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener) {
+    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type
+            type,
+                                    OnValueChangeListener<Pair<CharSequence, CharSequence>>
+                                            onValueChangeListener) {
         return new DataEntity(label, value, type, onValueChangeListener);
     }
 
@@ -96,6 +100,11 @@ public class DataEntity implements IDataEntity<CharSequence> {
     @Override
     public OnValueChangeListener<CharSequence> getOnValueChangedListener() {
         return null;
+    }
+
+    public void setOnValueChangedListener(OnValueChangeListener<Pair<CharSequence, CharSequence>>
+                                                  onValueChangedListener) {
+        this.onValueChangeListener = onValueChangedListener;
     }
 
     @Override
@@ -115,15 +124,11 @@ public class DataEntity implements IDataEntity<CharSequence> {
         return type;
     }
 
-    public void setOnValueChangedListener(OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangedListener) {
-        this.onValueChangeListener = onValueChangedListener;
-    }
-
     @Override
     public boolean updateValue(@NonNull CharSequence value) {
         if (validateValue(value) && (!value.equals(this.value))) {
             this.value = value;
-            this.onValueChangeListener.onValueChanged(new Pair<>(this.label,value));
+            this.onValueChangeListener.onValueChanged(new Pair<>(this.label, value));
 
             return true;
         }
@@ -147,7 +152,7 @@ public class DataEntity implements IDataEntity<CharSequence> {
     }
 
     public enum Type {
-        TEXT, DATE, TRUE_ONLY, AUTO_COMPLETE, COORDINATES, BOOLEAN,INTEGER, NUMBER,
+        TEXT, DATE, TRUE_ONLY, AUTO_COMPLETE, COORDINATES, BOOLEAN, INTEGER, NUMBER,
         LONG_TEXT, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
         INTEGER_POSITIVE, GENDER, INDICATOR, EVENT_DATE,
         ENROLLMENT_DATE, FILE, INCIDENT_DATE

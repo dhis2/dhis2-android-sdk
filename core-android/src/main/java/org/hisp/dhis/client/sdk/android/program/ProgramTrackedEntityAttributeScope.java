@@ -41,7 +41,8 @@ import rx.Subscriber;
 public class ProgramTrackedEntityAttributeScope implements IProgramTrackedEntityAttributeScope {
     private IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService;
 
-    public ProgramTrackedEntityAttributeScope(IProgramTrackedEntityAttributeService programTrackedEntityAttributeService) {
+    public ProgramTrackedEntityAttributeScope(IProgramTrackedEntityAttributeService
+                                                      programTrackedEntityAttributeService) {
         mProgramTrackedEntityAttributeService = programTrackedEntityAttributeService;
     }
 
@@ -51,7 +52,8 @@ public class ProgramTrackedEntityAttributeScope implements IProgramTrackedEntity
             @Override
             public void call(Subscriber<? super ProgramTrackedEntityAttribute> subscriber) {
                 try {
-                    ProgramTrackedEntityAttribute programTrackedEntityAttribute = mProgramTrackedEntityAttributeService.get(id);
+                    ProgramTrackedEntityAttribute programTrackedEntityAttribute =
+                            mProgramTrackedEntityAttributeService.get(id);
                     subscriber.onNext(programTrackedEntityAttribute);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -68,7 +70,8 @@ public class ProgramTrackedEntityAttributeScope implements IProgramTrackedEntity
             @Override
             public void call(Subscriber<? super List<ProgramTrackedEntityAttribute>> subscriber) {
                 try {
-                    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = mProgramTrackedEntityAttributeService.list();
+                    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                            mProgramTrackedEntityAttributeService.list();
                     subscriber.onNext(programTrackedEntityAttributes);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -85,7 +88,8 @@ public class ProgramTrackedEntityAttributeScope implements IProgramTrackedEntity
             @Override
             public void call(Subscriber<? super List<ProgramTrackedEntityAttribute>> subscriber) {
                 try {
-                    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes = mProgramTrackedEntityAttributeService.list(program);
+                    List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes =
+                            mProgramTrackedEntityAttributeService.list(program);
                     subscriber.onNext(programTrackedEntityAttributes);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

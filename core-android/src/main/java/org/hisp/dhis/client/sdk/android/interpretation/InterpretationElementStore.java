@@ -31,13 +31,12 @@ package org.hisp.dhis.client.sdk.android.interpretation;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow_Table;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
 import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationElementStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -118,7 +117,8 @@ public class InterpretationElementStore implements IInterpretationElementStore {
 
     @Override
     public List<InterpretationElement> list(Interpretation interpretation) {
-        InterpretationFlow interpretationFlow = null;//Interpretation_Flow.fromModel(interpretation);
+        InterpretationFlow interpretationFlow = null;//Interpretation_Flow.fromModel
+        // (interpretation);
         List<InterpretationElementFlow> elementFlow = new Select()
                 .from(InterpretationElementFlow.class)
                 .where(InterpretationElementFlow_Table

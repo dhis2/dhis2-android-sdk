@@ -82,19 +82,19 @@ public final class UnitToDataSetRelationShipFlow extends BaseModel {
         return id;
     }
 
-    public void setOrganisationUnit(OrganisationUnitFlow unit) {
-        this.organisationUnit = isNull(unit, "OrganisationUnit object must not be null");
-    }
-
-    public void setDataSet(DataSetFlow dataSet) {
-        this.dataSet = isNull(dataSet, "DataSet object must not be null");
-    }
-
     public OrganisationUnitFlow getOrganisationUnit() {
         return organisationUnit;
     }
 
+    public void setOrganisationUnit(OrganisationUnitFlow unit) {
+        this.organisationUnit = isNull(unit, "OrganisationUnit object must not be null");
+    }
+
     public DataSetFlow getDataSet() {
         return dataSet;
+    }
+
+    public void setDataSet(DataSetFlow dataSet) {
+        this.dataSet = isNull(dataSet, "DataSet object must not be null");
     }
 }

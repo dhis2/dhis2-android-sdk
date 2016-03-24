@@ -32,7 +32,6 @@ import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.models.event.Event;
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -46,7 +45,8 @@ public class EventApiClient implements IEventApiClient {
     }
 
     @Override
-    public List<Event> getEvents(Fields fields, DateTime lastUpdated, String... uids) throws ApiException {
+    public List<Event> getEvents(Fields fields, DateTime lastUpdated, String... uids) throws
+            ApiException {
         return null;
     }
 
@@ -197,8 +197,10 @@ public class EventApiClient implements IEventApiClient {
 //    }
 //
 //    private static ImportSummary getPutImportSummary(JsonNode jsonNode) throws IOException {
-////        ApiResponse apiResponse = ObjectMapperProvider.getInstance().treeToValue(jsonNode, ApiResponse.class);
-////        if(apiResponse !=null && apiResponse.getImportSummaries() != null && !apiResponse.getImportSummaries().isEmpty()) {
+////        ApiResponse apiResponse = ObjectMapperProvider.getInstance().treeToValue(jsonNode,
+// ApiResponse.class);
+////        if(apiResponse !=null && apiResponse.getImportSummaries() != null && !apiResponse
+// .getImportSummaries().isEmpty()) {
 ////            return(apiResponse.getImportSummaries().get(0));
 ////        } else {
 ////            return null;

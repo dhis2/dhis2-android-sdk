@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
@@ -38,7 +38,8 @@ public final class TrackedEntityAttributeStore extends
         AbsIdentifiableObjectStore<TrackedEntityAttribute, TrackedEntityAttributeFlow>
         implements ITrackedEntityAttributeStore {
 
-    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> mapper) {
+    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute,
+            TrackedEntityAttributeFlow> mapper) {
         super(mapper);
     }
 }

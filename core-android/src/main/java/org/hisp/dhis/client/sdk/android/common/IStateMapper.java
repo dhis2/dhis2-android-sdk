@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.state.State;

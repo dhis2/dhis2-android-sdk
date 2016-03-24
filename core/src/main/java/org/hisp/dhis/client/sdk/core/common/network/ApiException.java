@@ -32,6 +32,18 @@ import java.io.IOException;
 
 public class ApiException extends RuntimeException {
 
+    private final String url;
+    private final Response response;
+    private final Kind kind;
+
+    ApiException(String message, String url, Response response,
+                 Kind kind, Throwable exception) {
+        super(message, exception);
+        this.url = url;
+        this.response = response;
+        this.kind = kind;
+    }
+
     public static ApiException networkError(String url, IOException exception) {
         return new ApiException(exception.getMessage(), url,
                 null, Kind.NETWORK, exception);
@@ -51,6 +63,27 @@ public class ApiException extends RuntimeException {
     public static ApiException unexpectedError(String url, Throwable exception) {
         return new ApiException(exception.getMessage(), url, null, Kind.UNEXPECTED,
                 exception);
+    }
+
+    /**
+     * The request URL which produced the error.
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Response object containing status code, headers, body, etc.
+     */
+    public Response getResponse() {
+        return response;
+    }
+
+    /**
+     * The event kind which triggered this error.
+     */
+    public Kind getKind() {
+        return kind;
     }
 
     /**
@@ -74,38 +107,5 @@ public class ApiException extends RuntimeException {
          * re-throw this exception so your application crashes.
          */
         UNEXPECTED
-    }
-
-    private final String url;
-    private final Response response;
-    private final Kind kind;
-
-    ApiException(String message, String url, Response response,
-                 Kind kind, Throwable exception) {
-        super(message, exception);
-        this.url = url;
-        this.response = response;
-        this.kind = kind;
-    }
-
-    /**
-     * The request URL which produced the error.
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     * Response object containing status code, headers, body, etc.
-     */
-    public Response getResponse() {
-        return response;
-    }
-
-    /**
-     * The event kind which triggered this error.
-     */
-    public Kind getKind() {
-        return kind;
     }
 }

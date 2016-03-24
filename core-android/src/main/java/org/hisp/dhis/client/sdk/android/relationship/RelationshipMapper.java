@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.relationship;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 
 public class RelationshipMapper extends AbsMapper<Relationship, RelationshipFlow> {
@@ -44,8 +44,12 @@ public class RelationshipMapper extends AbsMapper<Relationship, RelationshipFlow
         RelationshipFlow relationshipFlow = new RelationshipFlow();
         relationshipFlow.setId(relationship.getId());
         relationshipFlow.setRelationship(relationship.getRelationship());
-        relationshipFlow.setTrackedEntityInstanceA(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(relationship.getTrackedEntityInstanceA()));
-        relationshipFlow.setTrackedEntityInstanceB(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(relationship.getTrackedEntityInstanceB()));
+        relationshipFlow.setTrackedEntityInstanceA(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToDatabaseEntity(relationship
+                        .getTrackedEntityInstanceA()));
+        relationshipFlow.setTrackedEntityInstanceB(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToDatabaseEntity(relationship
+                        .getTrackedEntityInstanceB()));
         relationshipFlow.setDisplayName(relationship.getDisplayName());
         return relationshipFlow;
     }
@@ -59,8 +63,12 @@ public class RelationshipMapper extends AbsMapper<Relationship, RelationshipFlow
         Relationship relationship = new Relationship();
         relationship.setId(relationshipFlow.getId());
         relationship.setRelationship(relationshipFlow.getRelationship());
-        relationship.setTrackedEntityInstanceA(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(relationshipFlow.getTrackedEntityInstanceA()));
-        relationship.setTrackedEntityInstanceB(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(relationshipFlow.getTrackedEntityInstanceB()));
+        relationship.setTrackedEntityInstanceA(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToModel(relationshipFlow
+                        .getTrackedEntityInstanceA()));
+        relationship.setTrackedEntityInstanceB(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToModel(relationshipFlow
+                        .getTrackedEntityInstanceB()));
         relationship.setDisplayName(relationshipFlow.getDisplayName());
         return relationship;
     }

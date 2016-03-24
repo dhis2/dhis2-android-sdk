@@ -31,8 +31,6 @@ package org.hisp.dhis.client.sdk.android.api.network;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
-import org.hisp.dhis.client.sdk.android.api.network.ResponseMapper;
 import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
@@ -77,7 +75,7 @@ public class NetworkUtils {
 
     /**
      * List of errors which this method should handle:
-     * <p/>
+     * <p>
      * 400 Bad Request
      * 401 Unauthorized (user password has changed)
      * 403 Forbidden (access denied)

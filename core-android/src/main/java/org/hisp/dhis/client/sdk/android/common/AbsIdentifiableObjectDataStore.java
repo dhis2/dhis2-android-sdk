@@ -37,11 +37,9 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObj
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseModelFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 

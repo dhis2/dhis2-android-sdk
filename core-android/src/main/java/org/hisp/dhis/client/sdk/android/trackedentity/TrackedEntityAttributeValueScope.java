@@ -42,7 +42,8 @@ import rx.Subscriber;
 public class TrackedEntityAttributeValueScope implements ITrackedEntityAttributeValueScope {
     private ITrackedEntityAttributeValueService mTrackedEntityAttributeValueService;
 
-    public TrackedEntityAttributeValueScope(ITrackedEntityAttributeValueService trackedEntityAttributeValueService) {
+    public TrackedEntityAttributeValueScope(ITrackedEntityAttributeValueService
+                                                    trackedEntityAttributeValueService) {
         this.mTrackedEntityAttributeValueService = trackedEntityAttributeValueService;
     }
 
@@ -52,7 +53,8 @@ public class TrackedEntityAttributeValueScope implements ITrackedEntityAttribute
             @Override
             public void call(Subscriber<? super TrackedEntityAttributeValue> subscriber) {
                 try {
-                    TrackedEntityAttributeValue trackedEntityAttributeValue = mTrackedEntityAttributeValueService.get(id);
+                    TrackedEntityAttributeValue trackedEntityAttributeValue =
+                            mTrackedEntityAttributeValueService.get(id);
                     subscriber.onNext(trackedEntityAttributeValue);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -64,12 +66,16 @@ public class TrackedEntityAttributeValueScope implements ITrackedEntityAttribute
     }
 
     @Override
-    public Observable<TrackedEntityAttributeValue> get(final TrackedEntityInstance trackedEntityInstance, final TrackedEntityAttribute trackedEntityAttribute) {
+    public Observable<TrackedEntityAttributeValue> get(final TrackedEntityInstance
+                                                                   trackedEntityInstance, final
+    TrackedEntityAttribute trackedEntityAttribute) {
         return Observable.create(new Observable.OnSubscribe<TrackedEntityAttributeValue>() {
             @Override
             public void call(Subscriber<? super TrackedEntityAttributeValue> subscriber) {
                 try {
-                    TrackedEntityAttributeValue trackedEntityAttributeValue = mTrackedEntityAttributeValueService.get(trackedEntityInstance, trackedEntityAttribute);
+                    TrackedEntityAttributeValue trackedEntityAttributeValue =
+                            mTrackedEntityAttributeValueService.get(trackedEntityInstance,
+                                    trackedEntityAttribute);
                     subscriber.onNext(trackedEntityAttributeValue);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -86,7 +92,8 @@ public class TrackedEntityAttributeValueScope implements ITrackedEntityAttribute
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttributeValue>> subscriber) {
                 try {
-                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues = mTrackedEntityAttributeValueService.list();
+                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
+                            mTrackedEntityAttributeValueService.list();
                     subscriber.onNext(trackedEntityAttributeValues);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -98,12 +105,14 @@ public class TrackedEntityAttributeValueScope implements ITrackedEntityAttribute
     }
 
     @Override
-    public Observable<List<TrackedEntityAttributeValue>> list(final TrackedEntityInstance trackedEntityInstance) {
+    public Observable<List<TrackedEntityAttributeValue>> list(final TrackedEntityInstance
+                                                                          trackedEntityInstance) {
         return Observable.create(new Observable.OnSubscribe<List<TrackedEntityAttributeValue>>() {
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttributeValue>> subscriber) {
                 try {
-                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues = mTrackedEntityAttributeValueService.list(trackedEntityInstance);
+                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
+                            mTrackedEntityAttributeValueService.list(trackedEntityInstance);
                     subscriber.onNext(trackedEntityAttributeValues);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -120,7 +129,8 @@ public class TrackedEntityAttributeValueScope implements ITrackedEntityAttribute
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttributeValue>> subscriber) {
                 try {
-                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues = mTrackedEntityAttributeValueService.list(enrollment);
+                    List<TrackedEntityAttributeValue> trackedEntityAttributeValues =
+                            mTrackedEntityAttributeValueService.list(enrollment);
                     subscriber.onNext(trackedEntityAttributeValues);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

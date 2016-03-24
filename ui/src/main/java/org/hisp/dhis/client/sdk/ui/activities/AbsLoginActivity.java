@@ -159,14 +159,6 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         );
     }
 
-    private class FieldTextWatcher extends AbsTextWatcher {
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            AbsLoginActivity.this.onTextChanged();
-        }
-    }
-
     /**
      * Should be called in order to show progressbar.
      */
@@ -199,4 +191,12 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
     protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username,
                                                  Editable password);
+
+    private class FieldTextWatcher extends AbsTextWatcher {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            AbsLoginActivity.this.onTextChanged();
+        }
+    }
 }

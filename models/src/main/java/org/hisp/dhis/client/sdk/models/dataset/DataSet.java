@@ -87,10 +87,6 @@ public final class DataSet extends BaseIdentifiableObject {
         this.categoryCombo = categoryCombo;
     }
 
-    public void setSections(List<Object> sections) {
-        this.sections = sections;
-    }
-
     public String getDisplayName() {
         return displayName;
     }
@@ -133,6 +129,10 @@ public final class DataSet extends BaseIdentifiableObject {
 
     public List<Object> getSections() {
         return sections;
+    }
+
+    public void setSections(List<Object> sections) {
+        this.sections = sections;
     }
 
     public List<DataElement> getDataElements() {

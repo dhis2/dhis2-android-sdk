@@ -38,7 +38,11 @@ import java.util.List;
 
 public interface IEnrollmentStore extends IIdentifiableObjectStore<Enrollment> {
     List<Enrollment> query(Program program, TrackedEntityInstance trackedEntityInstance);
-    Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance, OrganisationUnit organisationUnit, Program program);
+
+    Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
+                                     OrganisationUnit organisationUnit, Program program);
+
     List<Enrollment> query(TrackedEntityInstance trackedEntityInstance);
+
     List<Enrollment> query(Program program, OrganisationUnit organisationUnit);
 }

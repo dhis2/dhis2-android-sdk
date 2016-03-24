@@ -39,7 +39,8 @@ import java.util.List;
 public class ProgramStageDataElementService implements IProgramStageDataElementService {
     private IProgramStageDataElementStore programStageDataElementStore;
 
-    public ProgramStageDataElementService(IProgramStageDataElementStore programStageDataElementStore) {
+    public ProgramStageDataElementService(IProgramStageDataElementStore
+                                                  programStageDataElementStore) {
         this.programStageDataElementStore = programStageDataElementStore;
     }
 

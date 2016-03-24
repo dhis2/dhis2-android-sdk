@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 public class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {
@@ -57,7 +57,8 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {
         dataElementFlow.setDomainType(dataElement.getDomainType());
         dataElementFlow.setDimension(dataElement.getDimension());
         dataElementFlow.setDisplayFormName(dataElement.getDisplayFormName());
-        dataElementFlow.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToDatabaseEntity(dataElement.getOptionSet()));
+        dataElementFlow.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper()
+                .mapToDatabaseEntity(dataElement.getOptionSet()));
         return dataElementFlow;
     }
 
@@ -83,7 +84,8 @@ public class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {
         dataElement.setDomainType(dataElementFlow.getDomainType());
         dataElement.setDimension(dataElementFlow.getDimension());
         dataElement.setDisplayFormName(dataElementFlow.getDisplayFormName());
-        dataElement.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToModel(dataElementFlow.getOptionSet()));
+        dataElement.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper()
+                .mapToModel(dataElementFlow.getOptionSet()));
         return dataElement;
     }
 

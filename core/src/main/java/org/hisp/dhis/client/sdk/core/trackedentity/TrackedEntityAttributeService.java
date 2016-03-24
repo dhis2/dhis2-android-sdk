@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
@@ -39,7 +37,8 @@ import java.util.List;
 public class TrackedEntityAttributeService implements ITrackedEntityAttributeService {
     private IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
-    public TrackedEntityAttributeService(IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore) {
+    public TrackedEntityAttributeService(IIdentifiableObjectStore<TrackedEntityAttribute>
+                                                 trackedEntityAttributeStore) {
         this.trackedEntityAttributeStore = trackedEntityAttributeStore;
     }
 

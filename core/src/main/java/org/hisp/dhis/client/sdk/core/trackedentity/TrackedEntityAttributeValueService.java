@@ -43,21 +43,27 @@ public class TrackedEntityAttributeValueService implements ITrackedEntityAttribu
     private ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private IStateStore stateStore;
 
-    public TrackedEntityAttributeValueService(ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore, IStateStore stateStore) {
+    public TrackedEntityAttributeValueService(ITrackedEntityAttributeValueStore
+                                                      trackedEntityAttributeValueStore,
+                                              IStateStore stateStore) {
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.stateStore = stateStore;
     }
 
     @Override
-    public TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance, TrackedEntityAttribute trackedEntityAttribute) {
+    public TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance,
+                                           TrackedEntityAttribute trackedEntityAttribute) {
         Preconditions.isNull(trackedEntityInstance, "Object must not be null");
         Preconditions.isNull(trackedEntityAttribute, "Object must not be null");
 
         Action action = stateStore.queryActionForModel(trackedEntityInstance);
-        Action actionForTrackedEntityAttribute = stateStore.queryActionForModel(trackedEntityAttribute);
+        Action actionForTrackedEntityAttribute = stateStore.queryActionForModel
+                (trackedEntityAttribute);
 
-        if (!Action.TO_DELETE.equals(action) || !Action.TO_DELETE.equals(actionForTrackedEntityAttribute)) {
-            return trackedEntityAttributeValueStore.query(trackedEntityInstance, trackedEntityAttribute);
+        if (!Action.TO_DELETE.equals(action) || !Action.TO_DELETE.equals
+                (actionForTrackedEntityAttribute)) {
+            return trackedEntityAttributeValueStore.query(trackedEntityInstance,
+                    trackedEntityAttribute);
         }
 
         return null;
@@ -91,7 +97,8 @@ public class TrackedEntityAttributeValueService implements ITrackedEntityAttribu
 
     @Override
     public TrackedEntityAttributeValue get(long id) {
-        TrackedEntityAttributeValue trackedEntityAttributeValue = trackedEntityAttributeValueStore.queryById(id);
+        TrackedEntityAttributeValue trackedEntityAttributeValue =
+                trackedEntityAttributeValueStore.queryById(id);
 
         if (trackedEntityAttributeValue != null) {
             Action action = stateStore.queryActionForModel(trackedEntityAttributeValue);

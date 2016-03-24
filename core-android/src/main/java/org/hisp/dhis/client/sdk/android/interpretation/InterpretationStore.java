@@ -35,7 +35,6 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow_
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 

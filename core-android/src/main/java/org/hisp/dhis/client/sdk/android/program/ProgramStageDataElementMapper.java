@@ -40,7 +40,7 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
 
     @Override
     public ProgramStageDataElementFlow mapToDatabaseEntity(ProgramStageDataElement
-                                                                       programStageDataElement) {
+                                                                   programStageDataElement) {
         if (programStageDataElement == null) {
             return null;
         }
@@ -72,7 +72,7 @@ public class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataEle
 
     @Override
     public ProgramStageDataElement mapToModel(ProgramStageDataElementFlow
-                                                          programStageDataElementFlow) {
+                                                      programStageDataElementFlow) {
         if (programStageDataElementFlow == null) {
             return null;
         }

@@ -43,7 +43,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;

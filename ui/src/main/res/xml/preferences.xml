@@ -33,7 +33,7 @@
             android:defaultValue="false"
             android:key="@string/background_synchronization_key"
             android:summary="@string/background_synchronization_description"
-            android:title="@string/background_synchronization_name" />
+            android:title="@string/background_synchronization_name"/>
         <ListPreference
             android:defaultValue="@string/synchronization_period_option_value_default"
             android:dependency="@string/background_synchronization_key"
@@ -42,11 +42,11 @@
             android:entryValues="@array/synchronization_period_option_values"
             android:key="@string/synchronization_period_key"
             android:summary="@string/synchronization_period_description"
-            android:title="@string/synchronization_period_name" />
+            android:title="@string/synchronization_period_name"/>
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/crash_reports_key"
             android:summary="@string/crash_reports_description"
-            android:title="@string/crash_reports_name" />
+            android:title="@string/crash_reports_name"/>
     </PreferenceCategory>
 </PreferenceScreen>

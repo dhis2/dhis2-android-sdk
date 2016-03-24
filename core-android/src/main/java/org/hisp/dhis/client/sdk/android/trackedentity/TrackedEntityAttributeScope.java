@@ -44,7 +44,8 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
     private IIdentifiableController<TrackedEntityAttribute> mTrackedEntityAttributeController;
 
     public TrackedEntityAttributeScope(ITrackedEntityAttributeService trackedEntityAttributeService,
-                                       IIdentifiableController<TrackedEntityAttribute> trackedEntityAttributeController) {
+                                       IIdentifiableController<TrackedEntityAttribute>
+                                               trackedEntityAttributeController) {
         this.mTrackedEntityAttributeService = trackedEntityAttributeService;
         this.mTrackedEntityAttributeController = trackedEntityAttributeController;
     }
@@ -55,7 +56,8 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super TrackedEntityAttribute> subscriber) {
                 try {
-                    TrackedEntityAttribute trackedEntityAttribute = mTrackedEntityAttributeService.get(id);
+                    TrackedEntityAttribute trackedEntityAttribute =
+                            mTrackedEntityAttributeService.get(id);
                     subscriber.onNext(trackedEntityAttribute);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -72,7 +74,8 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super TrackedEntityAttribute> subscriber) {
                 try {
-                    TrackedEntityAttribute trackedEntityAttribute = mTrackedEntityAttributeService.get(uid);
+                    TrackedEntityAttribute trackedEntityAttribute =
+                            mTrackedEntityAttributeService.get(uid);
                     subscriber.onNext(trackedEntityAttribute);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -89,7 +92,8 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
                 try {
-                    List<TrackedEntityAttribute> trackedEntityAttributes = mTrackedEntityAttributeService.list();
+                    List<TrackedEntityAttribute> trackedEntityAttributes =
+                            mTrackedEntityAttributeService.list();
                     subscriber.onNext(trackedEntityAttributes);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

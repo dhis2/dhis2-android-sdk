@@ -30,10 +30,10 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.Program;

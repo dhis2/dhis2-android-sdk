@@ -63,7 +63,8 @@ public class ProgramStageSectionController extends AbsSyncStrategyController<Pro
     public ProgramStageSectionController(IProgramStageSectionApiClient programStageSectionApiClient,
                                          IProgramStageSectionStore programStageSectionStore,
                                          IProgramStageController programStageController,
-                                         IProgramStageDataElementController programStageDataElementController,
+                                         IProgramStageDataElementController
+                                                 programStageDataElementController,
                                          ISystemInfoController systemInfoController,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
@@ -72,7 +73,8 @@ public class ProgramStageSectionController extends AbsSyncStrategyController<Pro
         this.programStageSectionApiClient = programStageSectionApiClient;
         this.systemInfoController = systemInfoController;
         this.programStageController = programStageController;
-        this.programStageDataElementController = programStageDataElementController; //// TODO: Remove this when linking logic is resolved
+        this.programStageDataElementController = programStageDataElementController; //// TODO:
+        // Remove this when linking logic is resolved
         this.transactionManager = transactionManager;
     }
 
@@ -121,7 +123,8 @@ public class ProgramStageSectionController extends AbsSyncStrategyController<Pro
         Set<String> programStageDataElementUids = new HashSet<>();
 
         for (ProgramStageSection programStageSection : mergedProgramStageSections) {
-            for(ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
+            for (ProgramStageDataElement programStageDataElement : programStageSection
+                    .getProgramStageDataElements()) {
                 programStageDataElementUids.add(programStageDataElement.getUId());
             }
         }

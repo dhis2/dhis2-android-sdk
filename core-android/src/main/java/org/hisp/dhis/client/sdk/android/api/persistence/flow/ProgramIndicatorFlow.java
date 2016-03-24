@@ -92,6 +92,10 @@ public final class ProgramIndicatorFlow extends BaseIdentifiableObjectFlow {
     )
     ProgramStageSectionFlow programStageSection;
 
+    public ProgramIndicatorFlow() {
+        // empty constructor
+    }
+
     public String getCode() {
         return code;
     }
@@ -146,10 +150,6 @@ public final class ProgramIndicatorFlow extends BaseIdentifiableObjectFlow {
 
     public void setDisplayShortName(String displayShortName) {
         this.displayShortName = displayShortName;
-    }
-
-    public ProgramIndicatorFlow() {
-        // empty constructor
     }
 
     public ProgramFlow getProgram() {

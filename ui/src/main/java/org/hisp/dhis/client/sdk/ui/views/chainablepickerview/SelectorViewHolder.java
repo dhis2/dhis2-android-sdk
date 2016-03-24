@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -48,7 +47,8 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
 
     public SelectorViewHolder(View itemView) {
         super(itemView);
-        autoCompleteTextView = (AutoCompleteTextView) itemView.findViewById(R.id.autoCompleteTextView);
+        autoCompleteTextView = (AutoCompleteTextView) itemView.findViewById(R.id
+                .autoCompleteTextView);
         autoCompleteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +61,7 @@ public class SelectorViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 autoCompleteTextView.setText("");
-                if(picker != null) {
+                if (picker != null) {
                     picker.setPickedItem(null);
                     picker.hideNextSibling();
                 }

@@ -32,7 +32,6 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -51,8 +50,10 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     private IProgramStageDataElementService programStageDataElementService;
     private IProgramStageDataElementController programStageDataElementController;
 
-    public ProgramStageDataElementScope(IProgramStageDataElementService programStageDataElementService,
-                                        IProgramStageDataElementController programStageDataElementController) {
+    public ProgramStageDataElementScope(IProgramStageDataElementService
+                                                programStageDataElementService,
+                                        IProgramStageDataElementController
+                                                programStageDataElementController) {
         this.programStageDataElementService = programStageDataElementService;
         this.programStageDataElementController = programStageDataElementController;
 
@@ -72,7 +73,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
                 try {
                     Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
                     programStageDataElementController.sync(syncStrategy, uidSet);
-                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
+                    List<ProgramStageDataElement> programStageDataElements =
+                            programStageDataElementService.list();
                     subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -107,7 +109,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = programStageDataElementService.get(id);
+                    ProgramStageDataElement programStageDataElement =
+                            programStageDataElementService.get(id);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -124,7 +127,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
+                    List<ProgramStageDataElement> programStageDataElements =
+                            programStageDataElementService.list();
                     subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -141,7 +145,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list(programStage);
+                    List<ProgramStageDataElement> programStageDataElements =
+                            programStageDataElementService.list(programStage);
                     subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -153,12 +158,14 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<ProgramStageDataElement> list(final ProgramStage programStage, final DataElement dataElement) {
+    public Observable<ProgramStageDataElement> list(final ProgramStage programStage, final
+    DataElement dataElement) {
         return Observable.create(new Observable.OnSubscribe<ProgramStageDataElement>() {
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = programStageDataElementService.query(programStage, dataElement);
+                    ProgramStageDataElement programStageDataElement =
+                            programStageDataElementService.query(programStage, dataElement);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -170,12 +177,14 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> list(final ProgramStageSection programStageSection) {
+    public Observable<List<ProgramStageDataElement>> list(final ProgramStageSection
+                                                                      programStageSection) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list(programStageSection);
+                    List<ProgramStageDataElement> programStageDataElements =
+                            programStageDataElementService.list(programStageSection);
 
                     subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {

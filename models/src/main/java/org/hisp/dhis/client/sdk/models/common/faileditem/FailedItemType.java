@@ -29,5 +29,5 @@
 package org.hisp.dhis.client.sdk.models.common.faileditem;
 
 public enum FailedItemType {
-        EVENT, ENROLLMENT, TRACKED_ENTITY_INSTANCE
-    }
+    EVENT, ENROLLMENT, TRACKED_ENTITY_INSTANCE
+}

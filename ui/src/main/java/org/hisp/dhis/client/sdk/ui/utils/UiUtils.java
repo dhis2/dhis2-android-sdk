@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.client.sdk.ui.utils;
 
-import android.support.v4.app.FragmentManager;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.support.v4.app.FragmentManager;
 
 import org.hisp.dhis.client.sdk.ui.dialogs.CustomDialogFragment;
 
@@ -47,13 +44,15 @@ public final class UiUtils {
         uiUtils = new UiUtils();
     }
 
-    private UiUtils() {}
+    private UiUtils() {
+    }
 
     private static UiUtils getInstance() {
         return uiUtils;
     }
 
-    public static void showConfirmDialog(final FragmentManager activity, final String title, final String message,
+    public static void showConfirmDialog(final FragmentManager activity, final String title,
+                                         final String message,
                                          final String confirmOption, final String cancelOption,
                                          DialogInterface.OnClickListener onClickListener) {
         new CustomDialogFragment(title, message, confirmOption, cancelOption, onClickListener).

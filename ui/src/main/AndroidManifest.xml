@@ -27,9 +27,9 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.hisp.dhis.client.sdk.ui">
+<manifest package="org.hisp.dhis.client.sdk.ui"
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <application android:theme="@style/AppTheme.Base" />
+    <application android:theme="@style/AppTheme.Base"/>
 
 </manifest>

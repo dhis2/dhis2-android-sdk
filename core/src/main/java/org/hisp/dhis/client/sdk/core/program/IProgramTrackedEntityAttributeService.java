@@ -29,16 +29,22 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-public interface IProgramTrackedEntityAttributeService extends IService, ISave<ProgramTrackedEntityAttribute>, IRemove<ProgramTrackedEntityAttribute>,
+public interface IProgramTrackedEntityAttributeService extends IService,
+        ISave<ProgramTrackedEntityAttribute>, IRemove<ProgramTrackedEntityAttribute>,
         IGet<ProgramTrackedEntityAttribute>, IList<ProgramTrackedEntityAttribute> {
     List<ProgramTrackedEntityAttribute> list(Program program);
 
-    ProgramTrackedEntityAttribute list(Program program, TrackedEntityAttribute trackedEntityAttribute);
+    ProgramTrackedEntityAttribute list(Program program, TrackedEntityAttribute
+            trackedEntityAttribute);
 }

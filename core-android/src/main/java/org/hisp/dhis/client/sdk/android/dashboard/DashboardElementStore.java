@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardElementStore;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;

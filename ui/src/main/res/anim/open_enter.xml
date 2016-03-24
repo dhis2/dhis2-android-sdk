@@ -28,11 +28,11 @@
   -->
 
 <set
-    android:zAdjustment="top"
-  	xmlns:android="http://schemas.android.com/apk/res/android">
-    <translate 
-        android:interpolator="@anim/decelerate_quint" 
-        android:duration="@integer/activity_anim_duration" 
-        android:fromXDelta="100.0%p" 
-        android:toXDelta="0.0%p" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:zAdjustment="top">
+    <translate
+        android:duration="@integer/activity_anim_duration"
+        android:fromXDelta="100.0%p"
+        android:interpolator="@anim/decelerate_quint"
+        android:toXDelta="0.0%p"/>
 </set>

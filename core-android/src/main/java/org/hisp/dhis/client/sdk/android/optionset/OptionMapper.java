@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.optionset;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 
 public class OptionMapper extends AbsMapper<Option, OptionFlow> {
@@ -50,7 +50,8 @@ public class OptionMapper extends AbsMapper<Option, OptionFlow> {
         optionFlow.setDisplayName(option.getDisplayName());
         optionFlow.setAccess(option.getAccess());
         optionFlow.setSortOrder(option.getSortOrder());
-        optionFlow.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToDatabaseEntity(option.getOptionSet()));
+        optionFlow.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper()
+                .mapToDatabaseEntity(option.getOptionSet()));
         optionFlow.setCode(option.getCode());
         return optionFlow;
     }
@@ -70,7 +71,8 @@ public class OptionMapper extends AbsMapper<Option, OptionFlow> {
         option.setDisplayName(optionFlow.getDisplayName());
         option.setAccess(optionFlow.getAccess());
         option.setSortOrder(optionFlow.getSortOrder());
-        option.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToModel(optionFlow.getOptionSet()));
+        option.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToModel
+                (optionFlow.getOptionSet()));
         option.setCode(optionFlow.getCode());
         return option;
     }

@@ -31,8 +31,6 @@ package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -45,6 +43,17 @@ import java.util.List;
  */
 public class Picker implements Parcelable {
 
+    public static final Creator<Picker> CREATOR = new Creator<Picker>() {
+        @Override
+        public Picker createFromParcel(Parcel in) {
+            return new Picker(in);
+        }
+
+        @Override
+        public Picker[] newArray(int size) {
+            return new Picker[size];
+        }
+    };
     private Picker nextLinkedSibling;
     private List<IPickable> pickableItems;
     private AdapterView.OnItemClickListener listener;
@@ -83,24 +92,16 @@ public class Picker implements Parcelable {
         this.added = booleanValues[0];
     }
 
-    public static final Creator<Picker> CREATOR = new Creator<Picker>() {
-        @Override
-        public Picker createFromParcel(Parcel in) {
-            return new Picker(in);
-        }
-
-        @Override
-        public Picker[] newArray(int size) {
-            return new Picker[size];
-        }
-    };
-
     public void registerPickedItemClearListener(IPickableItemClearListener listener) {
         this.pickedItemClearListener = listener;
     }
 
     public View.OnFocusChangeListener getOnFocusChangeListener() {
         return onFocusChangeListener;
+    }
+
+    public void setOnFocusChangeListener(final View.OnFocusChangeListener onFocusChangeListener) {
+        this.onFocusChangeListener = onFocusChangeListener;
     }
 
     public void setParentList(List<Picker> parentList) {
@@ -111,12 +112,8 @@ public class Picker implements Parcelable {
         return listener;
     }
 
-    public void setParentView(RecyclerView recyclerView) {
-        this.parentView = recyclerView;
-    }
-
     public void setListener(final AdapterView.OnItemClickListener listener) {
-        AutoCompleteOnItemClickListener mergedListener = new AutoCompleteOnItemClickListener(){
+        AutoCompleteOnItemClickListener mergedListener = new AutoCompleteOnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 super.onItemClick(parent, view, position, id);
@@ -126,8 +123,8 @@ public class Picker implements Parcelable {
         this.listener = mergedListener;
     }
 
-    public void setOnFocusChangeListener(final View.OnFocusChangeListener onFocusChangeListener) {
-        this.onFocusChangeListener = onFocusChangeListener;
+    public void setParentView(RecyclerView recyclerView) {
+        this.parentView = recyclerView;
     }
 
     public boolean isAdded() {
@@ -138,12 +135,12 @@ public class Picker implements Parcelable {
         this.added = added;
     }
 
-    public void setNextLinkedSibling(Picker picker) {
-        this.nextLinkedSibling = picker;
-    }
-
     public Picker getNextLinkedSibling() {
         return nextLinkedSibling;
+    }
+
+    public void setNextLinkedSibling(Picker picker) {
+        this.nextLinkedSibling = picker;
     }
 
     public IPickable getPickedItem() {
@@ -153,7 +150,7 @@ public class Picker implements Parcelable {
     public void setPickedItem(IPickable pickable) {
         this.pickedItem = pickable;
 
-        if(pickedItem == null && pickedItemClearListener != null) {
+        if (pickedItem == null && pickedItemClearListener != null) {
             pickedItemClearListener.clearedCallback();
         }
         parentView.getAdapter().notifyDataSetChanged();
@@ -165,7 +162,7 @@ public class Picker implements Parcelable {
 
     public void setPickableItems(List<IPickable> pickableItems) {
         this.pickableItems = pickableItems;
-        if(parentView != null) {
+        if (parentView != null) {
             parentView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -179,7 +176,7 @@ public class Picker implements Parcelable {
     }
 
     public void showNext() {
-        if(nextLinkedSibling != null && !parentList.contains(nextLinkedSibling)) {
+        if (nextLinkedSibling != null && !parentList.contains(nextLinkedSibling)) {
             nextLinkedSibling.setParentList(parentList);
             nextLinkedSibling.setParentView(parentView);
             int position = parentList.indexOf(this);
@@ -198,7 +195,7 @@ public class Picker implements Parcelable {
     }
 
     public void hideNextSibling() {
-        if(nextLinkedSibling != null && nextLinkedSibling.isAdded()) {
+        if (nextLinkedSibling != null && nextLinkedSibling.isAdded()) {
             nextLinkedSibling.hide();
             parentView.getAdapter().notifyDataSetChanged();
         }
@@ -242,6 +239,7 @@ public class Picker implements Parcelable {
 
         }
     }
+
     /**
      * Triggers the next chained {@link Picker} to be shown if it has been set.
      */
@@ -268,30 +266,30 @@ public class Picker implements Parcelable {
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if(!(v instanceof AutoCompleteTextView)) {
+            if (!(v instanceof AutoCompleteTextView)) {
                 return;
             }
             AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) v;
 
-            if(hasFocus) {
+            if (hasFocus) {
                 autoCompleteTextView.showDropDown();
                 return;
             } else {
-                if(autoCompleteTextView.getText().length() <= 0) {
+                if (autoCompleteTextView.getText().length() <= 0) {
                     return;
                 }
             }
-            for(IPickable pickable : picker.getPickableItems()) {
-                if(pickable.toString().equals(autoCompleteTextView.getText().toString())) {
+            for (IPickable pickable : picker.getPickableItems()) {
+                if (pickable.toString().equals(autoCompleteTextView.getText().toString())) {
                     return;
                 }
             }
             String previousText = "";
-            if(pickedItem != null) {
+            if (pickedItem != null) {
                 previousText = pickedItem.toString();
             }
             autoCompleteTextView.setText(previousText);
-            if(previousText.length() <= 0) {
+            if (previousText.length() <= 0) {
                 picker.hideNextSibling();
             }
         }

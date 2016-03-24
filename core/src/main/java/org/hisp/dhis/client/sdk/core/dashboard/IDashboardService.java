@@ -28,24 +28,33 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
-public interface IDashboardService extends IService, ISave<Dashboard>, IRemove<Dashboard>, IGet<Dashboard>,
+public interface IDashboardService extends IService, ISave<Dashboard>, IRemove<Dashboard>,
+        IGet<Dashboard>,
         IGetUid<Dashboard>, IList<Dashboard> {
 
     Dashboard create(String name);
 
     /**
      * Will try to append DashboardContent to current dashboard.
-     * If the type of DashboardContent is embedded (chart, eventChart, map, eventReport, reportTable),
+     * If the type of DashboardContent is embedded (chart, eventChart, map, eventReport,
+     * reportTable),
      * method will create a new item and append it to dashboard.
-     * <p/>
+     * <p>
      * If the type of DashboardContent is link type (users, reports, resources),
-     * method will try to append content to existing item. Otherwise it will create a new dashboard item.
-     * <p/>
-     * If the overall countElements of items in dashboard is bigger that Dashboard.MAX_ITEMS, method will not
+     * method will try to append content to existing item. Otherwise it will create a new
+     * dashboard item.
+     * <p>
+     * If the overall countElements of items in dashboard is bigger that Dashboard.MAX_ITEMS,
+     * method will not
      * add content and return false;
      *
      * @param dashboard dashboard to which we want add new content.

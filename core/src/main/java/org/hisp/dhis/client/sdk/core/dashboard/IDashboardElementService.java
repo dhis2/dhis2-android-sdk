@@ -29,16 +29,17 @@
 package org.hisp.dhis.client.sdk.core.dashboard;
 
 
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 import java.util.List;
 
-public interface IDashboardElementService extends IService, IRemove<DashboardElement>, IList<DashboardElement> {
+public interface IDashboardElementService extends IService, IRemove<DashboardElement>,
+        IList<DashboardElement> {
 
     DashboardElement create(DashboardItem dashboardItem, DashboardContent dashboardContent);
 

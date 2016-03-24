@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
@@ -38,7 +38,6 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 

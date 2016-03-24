@@ -95,6 +95,20 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         this.transactionManager = transactionManager;
     }
 
+    /* this method subtracts content of bList from aList */
+    private static List<String> subtract(List<String> aList, List<String> bList) {
+        List<String> aListCopy = new ArrayList<>(aList);
+        if (bList != null && !bList.isEmpty()) {
+            for (String bItem : bList) {
+                if (aListCopy.contains(bItem)) {
+                    int index = aListCopy.indexOf(bItem);
+                    aListCopy.remove(index);
+                }
+            }
+        }
+        return aListCopy;
+    }
+
     @Override
     public void sync(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
@@ -213,7 +227,6 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         return actualItems;
     }
 
-
     private List<DbOperation> createOperations(List<DashboardItem> refreshedItems) {
         List<DbOperation> dbOperations = new ArrayList<>();
 
@@ -264,22 +277,6 @@ public final class DashboardController implements IIdentifiableController<Dashbo
 
         return dbOperations;
     }
-
-
-    /* this method subtracts content of bList from aList */
-    private static List<String> subtract(List<String> aList, List<String> bList) {
-        List<String> aListCopy = new ArrayList<>(aList);
-        if (bList != null && !bList.isEmpty()) {
-            for (String bItem : bList) {
-                if (aListCopy.contains(bItem)) {
-                    int index = aListCopy.indexOf(bItem);
-                    aListCopy.remove(index);
-                }
-            }
-        }
-        return aListCopy;
-    }
-
 
     // TODO move this method out
     private Map<Long, List<DashboardItem>> getDashboardItemMap() {

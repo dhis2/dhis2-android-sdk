@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
@@ -39,9 +37,11 @@ import java.util.List;
 public class RelationshipTypeService implements IRelationshipTypeService {
     private IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
-    public RelationshipTypeService(IIdentifiableObjectStore<RelationshipType> relationshipTypeStore) {
+    public RelationshipTypeService(IIdentifiableObjectStore<RelationshipType>
+                                           relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }
+
     @Override
     public RelationshipType get(long id) {
         return relationshipTypeStore.queryById(id);

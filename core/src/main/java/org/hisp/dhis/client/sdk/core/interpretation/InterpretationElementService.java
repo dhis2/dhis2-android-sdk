@@ -49,7 +49,8 @@ public class InterpretationElementService implements IInterpretationElementServi
      * @return new InterpretationElement
      */
     @Override
-    public InterpretationElement create(Interpretation interpretation, DashboardElement dashboardElement,
+    public InterpretationElement create(Interpretation interpretation, DashboardElement
+            dashboardElement,
                                         String mimeType) {
         Preconditions.isNull(interpretation, "interpretation must not be null");
         Preconditions.isNull(dashboardElement, "dashboardElement must not be null");
@@ -61,7 +62,8 @@ public class InterpretationElementService implements IInterpretationElementServi
             case DashboardContent.TYPE_REPORT_TABLE:
                 break;
             default:
-                throw new IllegalArgumentException(mimeType + " is unsupported by interpretations.");
+                throw new IllegalArgumentException(mimeType + " is unsupported by interpretations" +
+                        ".");
         }
 
         InterpretationElement interpretationElement = new InterpretationElement();

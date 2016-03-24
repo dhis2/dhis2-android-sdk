@@ -30,10 +30,11 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow
+        .ProgramTrackedEntityAttributeFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow_Table;
 import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
@@ -41,9 +42,12 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> implements IProgramTrackedEntityAttributeStore {
+public final class ProgramTrackedEntityAttributeStore extends
+        AbsStore<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> implements
+        IProgramTrackedEntityAttributeStore {
 
-    public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> mapper) {
+    public ProgramTrackedEntityAttributeStore(IMapper<ProgramTrackedEntityAttribute,
+            ProgramTrackedEntityAttributeFlow> mapper) {
         super(mapper);
     }
 
@@ -61,7 +65,8 @@ public final class ProgramTrackedEntityAttributeStore extends AbsStore<ProgramTr
     }
 
     @Override
-    public ProgramTrackedEntityAttribute query(Program program, TrackedEntityAttribute trackedEntityAttribute) {
+    public ProgramTrackedEntityAttribute query(Program program, TrackedEntityAttribute
+            trackedEntityAttribute) {
         if (program == null || trackedEntityAttribute == null) {
             return null;
         }

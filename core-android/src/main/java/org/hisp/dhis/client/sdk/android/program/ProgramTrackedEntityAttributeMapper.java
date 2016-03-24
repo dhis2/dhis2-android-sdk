@@ -30,56 +30,75 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
-public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> {
+public class ProgramTrackedEntityAttributeMapper extends AbsMapper<ProgramTrackedEntityAttribute,
+        ProgramTrackedEntityAttributeFlow> {
 
     @Override
-    public ProgramTrackedEntityAttributeFlow mapToDatabaseEntity(ProgramTrackedEntityAttribute programTrackedEntityAttribute) {
+    public ProgramTrackedEntityAttributeFlow mapToDatabaseEntity(ProgramTrackedEntityAttribute
+                                                                             programTrackedEntityAttribute) {
         if (programTrackedEntityAttribute == null) {
             return null;
         }
 
-        ProgramTrackedEntityAttributeFlow programTrackedEntityAttributeFlow = new ProgramTrackedEntityAttributeFlow();
+        ProgramTrackedEntityAttributeFlow programTrackedEntityAttributeFlow = new
+                ProgramTrackedEntityAttributeFlow();
         programTrackedEntityAttributeFlow.setId(programTrackedEntityAttribute.getId());
         programTrackedEntityAttributeFlow.setUId(programTrackedEntityAttribute.getUId());
         programTrackedEntityAttributeFlow.setCreated(programTrackedEntityAttribute.getCreated());
-        programTrackedEntityAttributeFlow.setLastUpdated(programTrackedEntityAttribute.getLastUpdated());
+        programTrackedEntityAttributeFlow.setLastUpdated(programTrackedEntityAttribute
+                .getLastUpdated());
         programTrackedEntityAttributeFlow.setName(programTrackedEntityAttribute.getName());
-        programTrackedEntityAttributeFlow.setDisplayName(programTrackedEntityAttribute.getDisplayName());
+        programTrackedEntityAttributeFlow.setDisplayName(programTrackedEntityAttribute
+                .getDisplayName());
         programTrackedEntityAttributeFlow.setAccess(programTrackedEntityAttribute.getAccess());
-        programTrackedEntityAttributeFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programTrackedEntityAttribute.getTrackedEntityAttribute()));
+        programTrackedEntityAttributeFlow.setTrackedEntityAttribute(MapperModuleProvider
+                .getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity
+                        (programTrackedEntityAttribute.getTrackedEntityAttribute()));
         programTrackedEntityAttributeFlow.setProgram(ProgramFlow.MAPPER
                 .mapToDatabaseEntity(programTrackedEntityAttribute.getProgram()));
-        programTrackedEntityAttributeFlow.setSortOrder(programTrackedEntityAttribute.getSortOrder());
-        programTrackedEntityAttributeFlow.setAllowFutureDate(programTrackedEntityAttribute.isAllowFutureDate());
-        programTrackedEntityAttributeFlow.setDisplayInList(programTrackedEntityAttribute.isDisplayInList());
+        programTrackedEntityAttributeFlow.setSortOrder(programTrackedEntityAttribute.getSortOrder
+                ());
+        programTrackedEntityAttributeFlow.setAllowFutureDate(programTrackedEntityAttribute
+                .isAllowFutureDate());
+        programTrackedEntityAttributeFlow.setDisplayInList(programTrackedEntityAttribute
+                .isDisplayInList());
         programTrackedEntityAttributeFlow.setMandatory(programTrackedEntityAttribute.isMandatory());
         return programTrackedEntityAttributeFlow;
     }
 
     @Override
-    public ProgramTrackedEntityAttribute mapToModel(ProgramTrackedEntityAttributeFlow programTrackedEntityAttributeFlow) {
+    public ProgramTrackedEntityAttribute mapToModel(ProgramTrackedEntityAttributeFlow
+                                                                programTrackedEntityAttributeFlow) {
         if (programTrackedEntityAttributeFlow == null) {
             return null;
         }
 
-        ProgramTrackedEntityAttribute programTrackedEntityAttribute = new ProgramTrackedEntityAttribute();
+        ProgramTrackedEntityAttribute programTrackedEntityAttribute = new
+                ProgramTrackedEntityAttribute();
         programTrackedEntityAttribute.setId(programTrackedEntityAttributeFlow.getId());
         programTrackedEntityAttribute.setUId(programTrackedEntityAttributeFlow.getUId());
         programTrackedEntityAttribute.setCreated(programTrackedEntityAttributeFlow.getCreated());
-        programTrackedEntityAttribute.setLastUpdated(programTrackedEntityAttributeFlow.getLastUpdated());
+        programTrackedEntityAttribute.setLastUpdated(programTrackedEntityAttributeFlow
+                .getLastUpdated());
         programTrackedEntityAttribute.setName(programTrackedEntityAttributeFlow.getName());
-        programTrackedEntityAttribute.setDisplayName(programTrackedEntityAttributeFlow.getDisplayName());
+        programTrackedEntityAttribute.setDisplayName(programTrackedEntityAttributeFlow
+                .getDisplayName());
         programTrackedEntityAttribute.setAccess(programTrackedEntityAttributeFlow.getAccess());
-        programTrackedEntityAttribute.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programTrackedEntityAttributeFlow.getTrackedEntityAttribute()));
+        programTrackedEntityAttribute.setTrackedEntityAttribute(MapperModuleProvider.getInstance
+                ().getTrackedEntityAttributeMapper().mapToModel(programTrackedEntityAttributeFlow
+                .getTrackedEntityAttribute()));
         programTrackedEntityAttribute.setProgram(ProgramFlow.MAPPER
                 .mapToModel(programTrackedEntityAttributeFlow.getProgram()));
-        programTrackedEntityAttribute.setSortOrder(programTrackedEntityAttributeFlow.getSortOrder());
-        programTrackedEntityAttribute.setAllowFutureDate(programTrackedEntityAttributeFlow.isAllowFutureDate());
-        programTrackedEntityAttribute.setDisplayInList(programTrackedEntityAttributeFlow.isDisplayInList());
+        programTrackedEntityAttribute.setSortOrder(programTrackedEntityAttributeFlow.getSortOrder
+                ());
+        programTrackedEntityAttribute.setAllowFutureDate(programTrackedEntityAttributeFlow
+                .isAllowFutureDate());
+        programTrackedEntityAttribute.setDisplayInList(programTrackedEntityAttributeFlow
+                .isDisplayInList());
         programTrackedEntityAttribute.setMandatory(programTrackedEntityAttributeFlow.isMandatory());
         return programTrackedEntityAttribute;
     }

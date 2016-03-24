@@ -37,5 +37,7 @@ import java.util.List;
 
 public interface IProgramTrackedEntityAttributeStore extends IStore<ProgramTrackedEntityAttribute> {
     List<ProgramTrackedEntityAttribute> query(Program program);
-    ProgramTrackedEntityAttribute query(Program program, TrackedEntityAttribute trackedEntityAttribute);
+
+    ProgramTrackedEntityAttribute query(Program program, TrackedEntityAttribute
+            trackedEntityAttribute);
 }

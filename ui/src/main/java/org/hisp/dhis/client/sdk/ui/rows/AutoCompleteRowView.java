@@ -1,3 +1,31 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.design.widget.TextInputLayout;
@@ -27,7 +55,9 @@ public class AutoCompleteRowView implements IRowView {
     private ArrayList<IPickable> options;
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
+    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
+                                                      LayoutInflater inflater, ViewGroup parent,
+                                                      DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(AutoCompleteRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -81,7 +111,8 @@ public class AutoCompleteRowView implements IRowView {
             onFocusChangeListener = new OnFocusChangeListener(textInputLayout, optionText);
             onValueChangedListener = new OnValueChangedListener();
             onOptionSelectedListener = new OnOptionSelectedListener(optionText);
-            onEditTextClickedListener = new OnEditTextClickedListener(fragmentManager, onOptionSelectedListener);
+            onEditTextClickedListener = new OnEditTextClickedListener(fragmentManager,
+                    onOptionSelectedListener);
 
 
             optionText.addTextChangedListener(onValueChangedListener);
@@ -139,7 +170,8 @@ public class AutoCompleteRowView implements IRowView {
         }
     }
 
-    public static class OnOptionSelectedListener implements AutoCompleteDialogFragment.OnOptionSelectedListener {
+    public static class OnOptionSelectedListener implements AutoCompleteDialogFragment
+            .OnOptionSelectedListener {
         private final TextView valueTextView;
         private DataEntity dataEntity;
 
@@ -159,9 +191,9 @@ public class AutoCompleteRowView implements IRowView {
     }
 
     private static class OnClearListener implements View.OnClickListener {
+        private static final String EMPTY_FIELD = "";
         private final EditText editText;
         private DataEntity dataEntity;
-        private static final String EMPTY_FIELD = "";
 
         public OnClearListener(EditText editText) {
             this.editText = editText;
@@ -179,13 +211,13 @@ public class AutoCompleteRowView implements IRowView {
     }
 
     private static class OnEditTextClickedListener implements View.OnClickListener {
+        AutoCompleteDialogFragment mOptionDialogFragment;
         private FragmentManager fragmentManager;
         private ArrayList<IPickable> options;
-        AutoCompleteDialogFragment mOptionDialogFragment;
-
         private OnOptionSelectedListener onOptionSelectedListener;
 
-        public OnEditTextClickedListener(FragmentManager fragmentManager, OnOptionSelectedListener onOptionSelectedListener) {
+        public OnEditTextClickedListener(FragmentManager fragmentManager,
+                                         OnOptionSelectedListener onOptionSelectedListener) {
             this.fragmentManager = fragmentManager;
             this.onOptionSelectedListener = onOptionSelectedListener;
 
@@ -202,7 +234,8 @@ public class AutoCompleteRowView implements IRowView {
                 options.add(new DefaultPickable("Female", "Female"));
             }
 
-            mOptionDialogFragment = AutoCompleteDialogFragment.newInstance("Find option:", options, onOptionSelectedListener);
+            mOptionDialogFragment = AutoCompleteDialogFragment.newInstance("Find option:",
+                    options, onOptionSelectedListener);
             mOptionDialogFragment.show(fragmentManager, "tag");
         }
 
@@ -214,7 +247,8 @@ public class AutoCompleteRowView implements IRowView {
             AutoCompleteDialogFragment mOptionDialogFragment;
             this.onOptionSelectedListener = listener;
             if (listener != null) {
-                mOptionDialogFragment = (AutoCompleteDialogFragment) fragmentManager.findFragmentByTag("tag");
+                mOptionDialogFragment = (AutoCompleteDialogFragment) fragmentManager
+                        .findFragmentByTag("tag");
                 if (mOptionDialogFragment != null) {
                     mOptionDialogFragment.setOnOptionSelectedListener(listener);
                 }

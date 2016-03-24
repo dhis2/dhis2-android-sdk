@@ -1,3 +1,31 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.v4.app.FragmentManager;
@@ -9,8 +37,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 
 
@@ -20,7 +48,9 @@ public class RadioButtonRowView implements IRowView {
     private static final String FALSE = "false";
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater, ViewGroup parent, DataEntity.Type type) {
+    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
+                                                      LayoutInflater inflater, ViewGroup parent,
+                                                      DataEntity.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(RadioButtonRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -35,13 +65,11 @@ public class RadioButtonRowView implements IRowView {
         DataEntity entity = (DataEntity) dataEntity;
         radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(entity);
         radioButtonRowViewHolder.labelTextView.setText(entity.getLabel());
-        if(TRUE.equals(dataEntity.getValue())) {
+        if (TRUE.equals(dataEntity.getValue())) {
             radioButtonRowViewHolder.firstRadioButton.setChecked(true);
-        }
-        else if(FALSE.equals(dataEntity.getValue())) {
+        } else if (FALSE.equals(dataEntity.getValue())) {
             radioButtonRowViewHolder.secondRadioButton.setChecked(true);
-        }
-        else {
+        } else {
             radioButtonRowViewHolder.radioGroup.clearCheck();
         }
 
@@ -83,13 +111,11 @@ public class RadioButtonRowView implements IRowView {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             String newValue = "";
 
-            if(checkedId == R.id.first_radiobutton_radiobutton_row) {
+            if (checkedId == R.id.first_radiobutton_radiobutton_row) {
                 newValue = TRUE;
-            }
-            else if (checkedId == R.id.second_radiobutton_radiobutton_row) {
+            } else if (checkedId == R.id.second_radiobutton_radiobutton_row) {
                 newValue = FALSE;
-            }
-            else {
+            } else {
                 newValue = EMPTY_FIELD;
             }
             dataEntity.updateValue(newValue);

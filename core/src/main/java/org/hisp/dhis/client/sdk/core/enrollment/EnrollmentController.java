@@ -31,9 +31,6 @@ package org.hisp.dhis.client.sdk.core.enrollment;
 import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
@@ -41,19 +38,11 @@ import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
 
 public final class EnrollmentController implements IEnrollmentController {
     private final IEnrollmentApiClient enrollmentApiClient;
@@ -94,7 +83,8 @@ public final class EnrollmentController implements IEnrollmentController {
 //        }
 //
 //        DateTime lastUpdated = lastUpdatedPreferences
-//                .get(ResourceType.ENROLLMENTS, trackedEntityInstance.getTrackedEntityInstanceUid());
+//                .get(ResourceType.ENROLLMENTS, trackedEntityInstance
+// .getTrackedEntityInstanceUid());
 //        DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 //
 //        List<Enrollment> existingUpdatedAndPersistedEnrollments = updateEnrollments
@@ -142,7 +132,8 @@ public final class EnrollmentController implements IEnrollmentController {
 //        }
 //        if (persistedEnrollment != null) {
 //            updatedEnrollment.setId(persistedEnrollment.getId());
-//            if (updatedEnrollment.getLastUpdated().isAfter(persistedEnrollment.getLastUpdated())) {
+//            if (updatedEnrollment.getLastUpdated().isAfter(persistedEnrollment.getLastUpdated()
+// )) {
 //                DbOperation.with(enrollmentStore).update(updatedEnrollment).execute();
 //            }
 //        } else {
@@ -241,7 +232,8 @@ public final class EnrollmentController implements IEnrollmentController {
 //            Action trackedEntityInstanceAction = null;
 //            TrackedEntityInstance trackedEntityInstance = enrollment.getTrackedEntityInstance();
 //            if (trackedEntityInstance == null) {
-//                trackedEntityInstanceAction = stateStore.queryActionForModel(trackedEntityInstance);
+//                trackedEntityInstanceAction = stateStore.queryActionForModel
+// (trackedEntityInstance);
 //            }
 //
 //            //we avoid trying to send enrollments whose trackedEntityInstances that have not yet

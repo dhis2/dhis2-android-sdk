@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p/>
+ * <p>
  * This model class is intended to represent content of Interpretation {map, chart,
  * reportTable, dataSet, period, organisationUnit}
  */
@@ -64,22 +64,6 @@ public final class InterpretationElementFlow extends BaseIdentifiableObjectFlow 
 
     public InterpretationElementFlow() {
         // empty constructor
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public InterpretationFlow getInterpretation() {
-        return interpretation;
-    }
-
-    public void setInterpretation(InterpretationFlow interpretation) {
-        this.interpretation = interpretation;
     }
 
     public static InterpretationElement toModel(InterpretationElementFlow elementFlow) {
@@ -144,5 +128,21 @@ public final class InterpretationElementFlow extends BaseIdentifiableObjectFlow 
         }
 
         return elementFlows;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public InterpretationFlow getInterpretation() {
+        return interpretation;
+    }
+
+    public void setInterpretation(InterpretationFlow interpretation) {
+        this.interpretation = interpretation;
     }
 }

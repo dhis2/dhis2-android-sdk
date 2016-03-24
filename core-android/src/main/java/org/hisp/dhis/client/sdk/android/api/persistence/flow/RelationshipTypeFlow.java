@@ -42,6 +42,10 @@ public final class RelationshipTypeFlow extends BaseIdentifiableObjectFlow {
     @Column
     String bIsToA;
 
+    public RelationshipTypeFlow() {
+        // empty constructor
+    }
+
     public String getaIsToB() {
         return aIsToB;
     }
@@ -56,9 +60,5 @@ public final class RelationshipTypeFlow extends BaseIdentifiableObjectFlow {
 
     public void setbIsToA(String bIsToA) {
         this.bIsToA = bIsToA;
-    }
-
-    public RelationshipTypeFlow() {
-        // empty constructor
     }
 }

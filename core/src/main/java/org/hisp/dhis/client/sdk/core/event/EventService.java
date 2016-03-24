@@ -42,8 +42,6 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 public class EventService implements IEventService {
 
     private final IEventStore eventStore;
@@ -65,8 +63,11 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment, OrganisationUnit organisationUnit, Program program, ProgramStage programStage, String status) {
-        Preconditions.isNull(trackedEntityInstance, "trackedEntityInstance argument must not be null");
+    public Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment,
+                        OrganisationUnit organisationUnit, Program program, ProgramStage
+                                    programStage, String status) {
+        Preconditions.isNull(trackedEntityInstance, "trackedEntityInstance argument must not be " +
+                "null");
         Preconditions.isNull(enrollment, "enrollment argument must not be null");
         Preconditions.isNull(organisationUnit, "organisationUnit argument must not be null");
         Preconditions.isNull(program, "program argument must not be null");
@@ -89,13 +90,14 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event create(String organisationUnitId, String programId, String programStageId,String status) {
+    public Event create(String organisationUnitId, String programId, String programStageId,
+                        String status) {
         Preconditions.isNull(organisationUnitId, "program argument must not be null");
         Preconditions.isNull(programId, "program argument must not be null");
         Preconditions.isNull(programStageId, "programStage argument must not be null");
         Preconditions.isNull(status, "status argument must not be null");
 
-        if(!Event.STATUS_ACTIVE.equals(status) && !Event.STATUS_COMPLETED.equals(status)) {
+        if (!Event.STATUS_ACTIVE.equals(status) && !Event.STATUS_COMPLETED.equals(status)) {
             throw new IllegalArgumentException("event status must be either ACTIVE or COMPLETED");
         }
 
@@ -110,7 +112,8 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate) {
+    public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime
+            startDate, DateTime endDate) {
         return eventStore.query(organisationUnit, program, startDate, endDate);
     }
 
@@ -143,7 +146,8 @@ public class EventService implements IEventService {
 
     @Override
     public List<Event> list() {
-//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED, Action.TO_UPDATE);
+//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED,
+// Action.TO_UPDATE);
         return eventStore.queryAll();
     }
 

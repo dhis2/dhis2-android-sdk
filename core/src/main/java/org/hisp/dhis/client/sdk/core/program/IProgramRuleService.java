@@ -43,5 +43,6 @@ import java.util.List;
 public interface IProgramRuleService extends IService, IGet<ProgramRule>, IGetUid<ProgramRule>,
         IList<ProgramRule>, ISave<ProgramRule>, IRemove<ProgramRule> {
     List<ProgramRule> list(ProgramStage programStage);
+
     List<ProgramRule> list(Program program);
 }

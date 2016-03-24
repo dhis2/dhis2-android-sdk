@@ -66,6 +66,10 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
 
     List<ProgramIndicatorFlow> programIndicators;
 
+    public ProgramStageSectionFlow() {
+        // empty constructor
+    }
+
     public int getSortOrder() {
         return sortOrder;
     }
@@ -107,16 +111,12 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
         this.programIndicators = programIndicators;
     }
 
-    public ProgramStageSectionFlow() {
-        // empty constructor
-    }
-
     private static class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection,
             ProgramStageSectionFlow> {
 
         @Override
         public ProgramStageSectionFlow mapToDatabaseEntity(ProgramStageSection
-                                                                           programStageSection) {
+                                                                   programStageSection) {
             if (programStageSection == null) {
                 return null;
             }

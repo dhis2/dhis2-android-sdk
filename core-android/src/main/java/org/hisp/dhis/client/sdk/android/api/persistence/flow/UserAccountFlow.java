@@ -43,11 +43,9 @@ import org.joda.time.DateTime;
 
 @Table(database = DbDhis.class)
 public final class UserAccountFlow extends BaseModel implements IdentifiableObject {
-    public static IMapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
-
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;
-
+    public static IMapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
     @Column(name = "id")
     @PrimaryKey(autoincrement = false)
     long id = LOCAL_ID;

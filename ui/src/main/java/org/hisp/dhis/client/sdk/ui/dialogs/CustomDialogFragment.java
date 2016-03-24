@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, University of Oslo
+ * Copyright (c) 2016, University of Oslo
  *
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,8 @@ public class CustomDialogFragment extends AppCompatDialogFragment {
     OnClickListener thirdOptionListener;
     int iconId = -1;
 
-    public CustomDialogFragment(String title, String message, String firstOption, OnClickListener firstOptionListener) {
+    public CustomDialogFragment(String title, String message, String firstOption, OnClickListener
+            firstOptionListener) {
         this.title = title;
         this.message = message;
         this.firstOption = firstOption;
@@ -72,7 +73,8 @@ public class CustomDialogFragment extends AppCompatDialogFragment {
         this.firstOptionListener = null;
     }
 
-    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, OnClickListener firstOptionListener) {
+    public CustomDialogFragment(String title, String message, String firstOption, String
+            secondOption, OnClickListener firstOptionListener) {
         this.title = title;
         this.message = message;
         this.firstOption = firstOption;
@@ -80,7 +82,8 @@ public class CustomDialogFragment extends AppCompatDialogFragment {
         this.firstOptionListener = firstOptionListener;
     }
 
-    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, int iconId, DialogInterface.OnClickListener firstOptionListener) {
+    public CustomDialogFragment(String title, String message, String firstOption, String
+            secondOption, int iconId, DialogInterface.OnClickListener firstOptionListener) {
         this.title = title;
         this.message = message;
         this.firstOption = firstOption;
@@ -89,7 +92,8 @@ public class CustomDialogFragment extends AppCompatDialogFragment {
         this.firstOptionListener = firstOptionListener;
     }
 
-    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, OnClickListener firstOptionListener,
+    public CustomDialogFragment(String title, String message, String firstOption, String
+            secondOption, OnClickListener firstOptionListener,
                                 OnClickListener secondOptionListener) {
         this.title = title;
         this.message = message;
@@ -99,7 +103,8 @@ public class CustomDialogFragment extends AppCompatDialogFragment {
         this.secondOptionListener = secondOptionListener;
     }
 
-    public CustomDialogFragment(String title, String message, String firstOption, String secondOption, int iconId,
+    public CustomDialogFragment(String title, String message, String firstOption, String
+            secondOption, int iconId,
                                 OnClickListener firstOptionListener,
                                 OnClickListener secondOptionListener) {
         this.title = title;

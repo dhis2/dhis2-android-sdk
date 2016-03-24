@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -40,6 +44,7 @@ import java.util.List;
 public interface IEnrollmentService extends IService, ISave<Enrollment>,
         IRemove<Enrollment>, IGet<Enrollment>, IList<Enrollment> {
     Enrollment get(String uid);
+
     Enrollment create(OrganisationUnit organisationUnit,
                       TrackedEntityInstance trackedEntityInstance,
                       Program program, boolean followUp, DateTime dateOfEnrollment,
@@ -48,6 +53,7 @@ public interface IEnrollmentService extends IService, ISave<Enrollment>,
     /**
      * Returns the active enrollment (if any) for the given Tracked Entity Instance, Program,
      * and Organisation Unit
+     *
      * @param trackedEntityInstance
      * @param organisationUnit
      * @param program
@@ -58,6 +64,7 @@ public interface IEnrollmentService extends IService, ISave<Enrollment>,
 
     /**
      * Returns a list of all Enrollments for a given Tracked Entity Instance
+     *
      * @param trackedEntityInstance
      * @return
      */
@@ -65,6 +72,7 @@ public interface IEnrollmentService extends IService, ISave<Enrollment>,
 
     /**
      * Returns a list of all Enrollments for a program and organisation unit
+     *
      * @param program
      * @param organisationUnit
      * @return

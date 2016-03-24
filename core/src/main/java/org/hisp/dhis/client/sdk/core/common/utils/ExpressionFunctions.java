@@ -1,30 +1,29 @@
 /*
- *  Copyright (c) 2016, University of Oslo
- *  * All rights reserved.
- *  *
- *  * Redistribution and use in source and binary forms, with or without
- *  * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  * list of conditions and the following disclaimer.
- *  *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  * this list of conditions and the following disclaimer in the documentation
- *  * and/or other materials provided with the distribution.
- *  * Neither the name of the HISP project nor the names of its contributors may
- *  * be used to endorse or promote products derived from this software without
- *  * specific prior written permission.
- *  *
- *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright (c) 2016, University of Oslo
  *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.client.sdk.core.common.utils;
@@ -43,8 +42,10 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
  * Defines a set of functions that can be used in expressions in
  * {@link org.hisp.dhis.client.sdk.models.program.ProgramRule}s and
  * {@link org.hisp.dhis.client.sdk.models.program.ProgramIndicator}s
- * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
- * org.hisp.dhis.client.sdk.models.event.Event)} needs to be called before the functions in this class are called.
+ * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment
+ * .Enrollment,
+ * org.hisp.dhis.client.sdk.models.event.Event)} needs to be called before the functions in this
+ * class are called.
  */
 public class ExpressionFunctions {
     public static final String NAMESPACE = "d2";
@@ -84,12 +85,12 @@ public class ExpressionFunctions {
         }
 
         return (value.doubleValue() >= 0d) ? 1d : 0d;
-    }    
-    
+    }
+
     /**
      * Function which will return the count of zero or positive values among the
      * given argument values.
-     * 
+     *
      * @param values the arguments.
      * @return an Integer.
      */
@@ -97,41 +98,41 @@ public class ExpressionFunctions {
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Argument is null or empty: " + values);
         }
-        
+
         int count = 0;
-        
+
         for (Number value : values) {
             if (value != null && value.doubleValue() >= 0d) {
                 count++;
             }
         }
-        
-        return count;        
+
+        return count;
     }
 
     /**
      * Functions which will return the true value if the condition is true, false
      * value if not.
-     * 
+     *
      * @param condititon the condition.
-     * @param trueValue the true value.
+     * @param trueValue  the true value.
      * @param falseValue the false value.
      * @return a String.
      */
     public Object condition(String condititon, Object trueValue, Object falseValue) {
         return expressionUtils.isTrue(condititon, null) ? trueValue : falseValue;
     }
-    
+
     /**
      * Function which will return the number of days between the two given dates.
-     * 
-     * @param start the start date. 
-     * @param end the end date.
+     *
+     * @param start the start date.
+     * @param end   the end date.
      * @return number of days between dates.
      */
     public Integer daysBetween(String start, String end)
-		throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+            throws ParseException {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
@@ -140,32 +141,35 @@ public class ExpressionFunctions {
     }
 
     public Integer weeksBetween(String start, String end) throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);
-        int weeks = new Long((endDate.getMillis() - startDate.getMillis()) / (86400000 * 7)).intValue();
+        int weeks = new Long((endDate.getMillis() - startDate.getMillis()) / (86400000 * 7))
+                .intValue();
         return weeks;
     }
 
-    public Integer monthsBetween(String start, String end)  throws ParseException {
-        if(isEmpty(start) || isEmpty(end)) {
+    public Integer monthsBetween(String start, String end) throws ParseException {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);
-        int months = Months.monthsBetween(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1)).getMonths();
+        int months = Months.monthsBetween(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1))
+                .getMonths();
         return months;
     }
 
     public Integer yearsBetween(String start, String end) {
-        if(isEmpty(start) || isEmpty(end)) {
+        if (isEmpty(start) || isEmpty(end)) {
             return 0;
         }
         DateTime startDate = new DateTime(start);
         DateTime endDate = new DateTime(end);
-        int years = Years.yearsBetween(startDate.withDayOfMonth(1).withMonthOfYear(1), endDate.withDayOfMonth(1).withMonthOfYear(1)).getYears();
+        int years = Years.yearsBetween(startDate.withDayOfMonth(1).withMonthOfYear(1), endDate
+                .withDayOfMonth(1).withMonthOfYear(1)).getYears();
         return years;
     }
 
@@ -180,8 +184,9 @@ public class ExpressionFunctions {
 
     public String concatenate(Object... values) {
         String returnString = "";
-        for(Object value : values) {
-            returnString += String.valueOf(value);;
+        for (Object value : values) {
+            returnString += String.valueOf(value);
+            ;
         }
         return returnString;
     }
@@ -193,14 +198,16 @@ public class ExpressionFunctions {
     }
 
     public Integer count(String variableName) {
-        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get
+                (variableName);
         Integer count = 0;
-        if(programRuleVariable != null) {
-            if(programRuleVariable.isHasValue()) {
-                if(programRuleVariable.getAllValues() != null) {
+        if (programRuleVariable != null) {
+            if (programRuleVariable.isHasValue()) {
+                if (programRuleVariable.getAllValues() != null) {
                     count = programRuleVariable.getAllValues().size();
                 } else {
-                    //If there is a value found for the variable, the count is 1 even if there is no list of alternate values
+                    //If there is a value found for the variable, the count is 1 even if there is
+                    // no list of alternate values
                     //This happens for variables of "DATAELEMENT_CURRENT_STAGE" and "TEI_ATTRIBUTE"
                     count = 1;
                 }
@@ -210,20 +217,23 @@ public class ExpressionFunctions {
     }
 
     public Integer countIfZeroPos(String variableName) {
-        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get
+                (variableName);
 
         Integer count = 0;
-        if(programRuleVariable != null) {
-            if( programRuleVariable.isHasValue() ) {
-                if(programRuleVariable.getAllValues() != null && programRuleVariable.getAllValues().size() > 0) {
-                    for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        if(programRuleVariable.getAllValues().get(i) != null) {
+        if (programRuleVariable != null) {
+            if (programRuleVariable.isHasValue()) {
+                if (programRuleVariable.getAllValues() != null && programRuleVariable
+                        .getAllValues().size() > 0) {
+                    for (int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
+                        if (programRuleVariable.getAllValues().get(i) != null) {
                             count++;
                         }
                     }
                 } else {
-                    //The variable has a value, but no list of alternates. This means we only compare the elements real value
-                    if(programRuleVariable.getVariableValue() != null) {
+                    //The variable has a value, but no list of alternates. This means we only
+                    // compare the elements real value
+                    if (programRuleVariable.getVariableValue() != null) {
                         count = 1;
                     }
                 }
@@ -234,23 +244,26 @@ public class ExpressionFunctions {
     }
 
     public Integer countIfValue(String variableName) {
-        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get
+                (variableName);
 
         String valueToCompare = programRuleVariable.getVariableValue();
-        valueToCompare = variableUtils.processSingleValue(valueToCompare, programRuleVariable.getVariableType());
+        valueToCompare = variableUtils.processSingleValue(valueToCompare, programRuleVariable
+                .getVariableType());
 
         Integer count = 0;
-        if(programRuleVariable != null) {
-            if( programRuleVariable.isHasValue() ) {
-                if( programRuleVariable.getAllValues() != null ) {
-                    for(int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
-                        if(valueToCompare.equals(programRuleVariable.getAllValues().get(i))) {
+        if (programRuleVariable != null) {
+            if (programRuleVariable.isHasValue()) {
+                if (programRuleVariable.getAllValues() != null) {
+                    for (int i = 0; i < programRuleVariable.getAllValues().size(); i++) {
+                        if (valueToCompare.equals(programRuleVariable.getAllValues().get(i))) {
                             count++;
                         }
                     }
                 } else {
-                    //The variable has a value, but no list of alternates. This means we compare the standard variablevalue
-                    if(valueToCompare.equals(programRuleVariable.getVariableValue())) {
+                    //The variable has a value, but no list of alternates. This means we compare
+                    // the standard variablevalue
+                    if (valueToCompare.equals(programRuleVariable.getVariableValue())) {
                         count = 1;
                     }
                 }
@@ -271,10 +284,11 @@ public class ExpressionFunctions {
     }
 
     public Boolean hasValue(String variableName) {
-        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get
+                (variableName);
         boolean valueFound = false;
-        if(programRuleVariable != null) {
-            if(programRuleVariable.isHasValue()){
+        if (programRuleVariable != null) {
+            if (programRuleVariable.isHasValue()) {
                 valueFound = true;
             }
         }
@@ -282,10 +296,11 @@ public class ExpressionFunctions {
     }
 
     public String lastEventDate(String variableName) {
-        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(variableName);
+        ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get
+                (variableName);
         String valueFound = "''";
-        if(programRuleVariable != null) {
-            if(programRuleVariable.getVariableEventDate() != null) {
+        if (programRuleVariable != null) {
+            if (programRuleVariable.getVariableEventDate() != null) {
                 valueFound = programRuleVariable.getVariableEventDate();
                 valueFound = variableUtils.processSingleValue(valueFound, ValueType.DATE);
             }

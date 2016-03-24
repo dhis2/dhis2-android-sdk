@@ -58,6 +58,10 @@ public final class TrackedEntityInstanceFlow extends BaseModelFlow {
 
     List<RelationshipFlow> relationships;
 
+    public TrackedEntityInstanceFlow() {
+        // empty constructor
+    }
+
     public String getTrackedEntityInstanceUid() {
         return trackedEntityInstanceUid;
     }
@@ -112,9 +116,5 @@ public final class TrackedEntityInstanceFlow extends BaseModelFlow {
 
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
-    }
-
-    public TrackedEntityInstanceFlow() {
-        // empty constructor
     }
 }

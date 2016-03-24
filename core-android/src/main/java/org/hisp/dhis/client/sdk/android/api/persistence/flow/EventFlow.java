@@ -37,7 +37,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.event.EventMapper;
-import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
@@ -45,10 +44,9 @@ import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class EventFlow extends BaseIdentifiableObjectFlow {
-    public static IMapper<Event, EventFlow> MAPPER = new EventMapper();
     final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
     final static String ENROLLMENT_KEY = "enrollment";
-
+    public static IMapper<Event, EventFlow> MAPPER = new EventMapper();
     @Column
     String eventUid;
 
@@ -96,6 +94,10 @@ public final class EventFlow extends BaseIdentifiableObjectFlow {
     DateTime dueDate;
 
     List<TrackedEntityDataValueFlow> trackedEntityDataValues;
+
+    public EventFlow() {
+        // empty constructor
+    }
 
     public String getEventUid() {
         return eventUid;
@@ -192,9 +194,5 @@ public final class EventFlow extends BaseIdentifiableObjectFlow {
     public void setTrackedEntityDataValues(List<TrackedEntityDataValueFlow>
                                                    trackedEntityDataValues) {
         this.trackedEntityDataValues = trackedEntityDataValues;
-    }
-
-    public EventFlow() {
-        // empty constructor
     }
 }

@@ -37,5 +37,6 @@ import java.util.List;
 
 public interface IProgramRuleVariableStore extends IIdentifiableObjectStore<ProgramRuleVariable> {
     ProgramRuleVariable query(Program program, DataElement dataElement);
+
     List<ProgramRuleVariable> query(Program program);
 }

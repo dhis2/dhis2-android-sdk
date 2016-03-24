@@ -34,6 +34,7 @@ import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 
 import java.util.List;
 
-public interface IInterpretationCommentStore extends IIdentifiableObjectStore<InterpretationComment> {
+public interface IInterpretationCommentStore extends
+        IIdentifiableObjectStore<InterpretationComment> {
     List<InterpretationComment> queryByInterpretation(Interpretation interpretation);
 }

@@ -29,8 +29,8 @@
 package org.hisp.dhis.client.sdk.android.enrollment;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 
 public class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {
@@ -45,7 +45,9 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {
         enrollmentFlow.setId(enrollment.getId());
         enrollmentFlow.setEnrollmentUid(enrollment.getUId());
         enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
-        enrollmentFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(enrollment.getTrackedEntityInstance()));
+        enrollmentFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToDatabaseEntity(enrollment
+                        .getTrackedEntityInstance()));
         enrollmentFlow.setProgram(enrollment.getProgram());
         enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
         enrollmentFlow.setDateOfIncident(enrollment.getDateOfIncident());
@@ -69,7 +71,9 @@ public class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {
         enrollment.setId(enrollmentFlow.getId());
         enrollment.setUId(enrollmentFlow.getEnrollmentUid());
         enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
-        enrollment.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(enrollmentFlow.getTrackedEntityInstance()));
+        enrollment.setTrackedEntityInstance(MapperModuleProvider.getInstance()
+                .getTrackedEntityInstanceMapper().mapToModel(enrollmentFlow
+                        .getTrackedEntityInstance()));
         enrollment.setProgram(enrollmentFlow.getProgram());
         enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
         enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());

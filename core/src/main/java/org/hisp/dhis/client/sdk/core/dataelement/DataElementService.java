@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
@@ -42,6 +40,7 @@ public class DataElementService implements IDataElementService {
     public DataElementService(IDataElementStore dataElementStore) {
         this.dataElementStore = dataElementStore;
     }
+
     @Override
     public DataElement get(long id) {
         return dataElementStore.queryById(id);

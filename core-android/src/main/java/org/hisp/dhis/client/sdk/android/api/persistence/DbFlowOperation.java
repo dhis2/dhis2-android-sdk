@@ -49,6 +49,22 @@ public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<
         mDbAction = isNull(dbAction, "BaseModel.DbAction object must not be null");
     }
 
+    public static <Type extends BaseModel> DbFlowOperation<Type> insert(Type model) {
+        return new DbFlowOperation<>(DbAction.INSERT, model);
+    }
+
+    public static <Type extends BaseModel> DbFlowOperation<Type> update(Type model) {
+        return new DbFlowOperation<>(DbAction.UPDATE, model);
+    }
+
+    public static <Type extends BaseModel> DbFlowOperation<Type> save(Type model) {
+        return new DbFlowOperation<>(DbAction.SAVE, model);
+    }
+
+    public static <Type extends BaseModel> DbFlowOperation<Type> delete(Type model) {
+        return new DbFlowOperation<>(DbAction.DELETE, model);
+    }
+
     public T getModel() {
         return mModel;
     }
@@ -76,21 +92,5 @@ public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<
                 break;
             }
         }
-    }
-
-    public static <Type extends BaseModel> DbFlowOperation<Type> insert(Type model) {
-        return new DbFlowOperation<>(DbAction.INSERT, model);
-    }
-
-    public static <Type extends BaseModel> DbFlowOperation<Type> update(Type model) {
-        return new DbFlowOperation<>(DbAction.UPDATE, model);
-    }
-
-    public static <Type extends BaseModel> DbFlowOperation<Type> save(Type model) {
-        return new DbFlowOperation<>(DbAction.SAVE, model);
-    }
-
-    public static <Type extends BaseModel> DbFlowOperation<Type> delete(Type model) {
-        return new DbFlowOperation<>(DbAction.DELETE, model);
     }
 }

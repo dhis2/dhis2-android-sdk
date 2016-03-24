@@ -80,64 +80,6 @@ public class ModelLinkFlow extends BaseModelFlow {
         // explicit empty constructor
     }
 
-    public String getKeyOne() {
-        return keyOne;
-    }
-
-    public void setKeyOne(String keyOne) {
-        this.keyOne = keyOne;
-    }
-
-    public String getKeyTwo() {
-        return keyTwo;
-    }
-
-    public void setKeyTwo(String keyTwo) {
-        this.keyTwo = keyTwo;
-    }
-
-    public String getLinkMimeType() {
-        return linkMimeType;
-    }
-
-    public void setLinkMimeType(String linkMimeType) {
-        this.linkMimeType = linkMimeType;
-    }
-
-    @Override
-    public void save() {
-        checkKeys();
-        super.save();
-    }
-
-    @Override
-    public void update() {
-        checkKeys();
-        super.update();
-    }
-
-    @Override
-    public void insert() {
-        checkKeys();
-        super.insert();
-    }
-
-    @Override
-    public String toString() {
-        return "ModelLink_Flow{" +
-                "keyOne='" + keyOne + '\'' +
-                ", keyTwo='" + keyTwo + '\'' +
-                ", linkMimeType='" + linkMimeType + '\'' +
-                '}';
-    }
-
-    private void checkKeys() {
-        if (isEmpty(keyOne) || isEmpty(keyTwo)) {
-            throw new IllegalArgumentException("Both keys must be present " +
-                    "in model before going to database");
-        }
-    }
-
     @NonNull
     public static List<IDbOperation> createOperations(
             List<ModelLinkFlow> persistedLinks, List<ModelLinkFlow> updatedLinks) {
@@ -282,5 +224,63 @@ public class ModelLinkFlow extends BaseModelFlow {
                 .from(ModelLinkFlow.class)
                 .where(ModelLinkFlow_Table.linkMimeType.is(linkMimeType))
                 .query();
+    }
+
+    public String getKeyOne() {
+        return keyOne;
+    }
+
+    public void setKeyOne(String keyOne) {
+        this.keyOne = keyOne;
+    }
+
+    public String getKeyTwo() {
+        return keyTwo;
+    }
+
+    public void setKeyTwo(String keyTwo) {
+        this.keyTwo = keyTwo;
+    }
+
+    public String getLinkMimeType() {
+        return linkMimeType;
+    }
+
+    public void setLinkMimeType(String linkMimeType) {
+        this.linkMimeType = linkMimeType;
+    }
+
+    @Override
+    public void save() {
+        checkKeys();
+        super.save();
+    }
+
+    @Override
+    public void update() {
+        checkKeys();
+        super.update();
+    }
+
+    @Override
+    public void insert() {
+        checkKeys();
+        super.insert();
+    }
+
+    @Override
+    public String toString() {
+        return "ModelLink_Flow{" +
+                "keyOne='" + keyOne + '\'' +
+                ", keyTwo='" + keyTwo + '\'' +
+                ", linkMimeType='" + linkMimeType + '\'' +
+                '}';
+    }
+
+    private void checkKeys() {
+        if (isEmpty(keyOne) || isEmpty(keyTwo)) {
+            throw new IllegalArgumentException("Both keys must be present " +
+                    "in model before going to database");
+        }
     }
 }

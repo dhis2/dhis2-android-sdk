@@ -54,7 +54,8 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
     private Toolbar toolbar;
 
     @NonNull
-    public static WrapperFragment newInstance(@NonNull Class<? extends Fragment> fragmentClass, String title) {
+    public static WrapperFragment newInstance(@NonNull Class<? extends Fragment> fragmentClass,
+                                              String title) {
         isNull(fragmentClass, "Fragment class must bot be null");
         isNull(title, "title must bot be null");
 
@@ -70,7 +71,8 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         return inflater.inflate(R.layout.fragment_wrapper, container, false);
     }
 

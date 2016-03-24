@@ -54,6 +54,10 @@ public final class ImportCountFlow extends BaseModel {
     @Column
     int deleted;
 
+    public ImportCountFlow() {
+        // empty constructor
+    }
+
     public long getId() {
         return id;
     }
@@ -92,9 +96,5 @@ public final class ImportCountFlow extends BaseModel {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
-    }
-
-    public ImportCountFlow() {
-        // empty constructor
     }
 }

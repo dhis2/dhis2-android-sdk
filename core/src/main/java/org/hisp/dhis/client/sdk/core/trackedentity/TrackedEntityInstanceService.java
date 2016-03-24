@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
+import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
@@ -35,9 +38,6 @@ import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 
 import java.util.List;
 
@@ -47,7 +47,9 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
     private final IRelationshipStore relationshipStore;
     private final IStateStore stateStore;
 
-    public TrackedEntityInstanceService(ITrackedEntityInstanceStore trackedEntityInstanceStore, IRelationshipStore relationshipStore, IStateStore stateStore) {
+    public TrackedEntityInstanceService(ITrackedEntityInstanceStore trackedEntityInstanceStore,
+                                        IRelationshipStore relationshipStore, IStateStore
+                                                stateStore) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;
         this.stateStore = stateStore;
@@ -66,7 +68,8 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
     }
 
     @Override
-    public TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit) {
+    public TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit
+            organisationUnit) {
         Preconditions.isNull(trackedEntity, "Tracked entity must not be null");
         Preconditions.isNull(organisationUnit, "Organisation unit must not be null");
 
@@ -80,7 +83,9 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
     }
 
     @Override
-    public boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA, TrackedEntityInstance trackedEntityInstanceB, RelationshipType relationshipType) {
+    public boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA,
+                                   TrackedEntityInstance trackedEntityInstanceB, RelationshipType
+                                               relationshipType) {
         Preconditions.isNull(trackedEntityInstanceA, "Tracked entity instance A must not be null");
         Preconditions.isNull(trackedEntityInstanceB, "Tracked entity instance B must not be null");
         Preconditions.isNull(relationshipType, "Relationship type must not be null");
@@ -130,7 +135,8 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
 
     @Override
     public List<TrackedEntityInstance> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityInstance.class, Action.SYNCED, Action.TO_UPDATE, Action.TO_POST);
+        return stateStore.queryModelsWithActions(TrackedEntityInstance.class, Action.SYNCED,
+                Action.TO_UPDATE, Action.TO_POST);
     }
 
     @Override
@@ -146,7 +152,7 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
     public boolean save(TrackedEntityInstance object) {
         Preconditions.isNull(object, "Tracked entity instance must not be null");
 
-        if (!trackedEntityInstanceStore.save(object)){
+        if (!trackedEntityInstanceStore.save(object)) {
             return false;
         }
 

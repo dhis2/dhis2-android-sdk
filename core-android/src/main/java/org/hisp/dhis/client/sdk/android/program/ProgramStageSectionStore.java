@@ -30,10 +30,10 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -68,7 +68,7 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
             object.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = object.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.insert(programIndicator)) {
                         return false;
@@ -76,8 +76,9 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
                 }
             }
 
-            List<ProgramStageDataElement> programStageDataElements = object.getProgramStageDataElements();
-            if(programStageDataElements != null) {
+            List<ProgramStageDataElement> programStageDataElements = object
+                    .getProgramStageDataElements();
+            if (programStageDataElements != null) {
                 for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                     if (!mProgramStageDataElementStore.insert(programStageDataElement)) {
                         return false;
@@ -100,7 +101,7 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
             object.setId(databaseEntity.getId());
 
             List<ProgramIndicator> programIndicators = object.getProgramIndicators();
-            if(programIndicators != null) {
+            if (programIndicators != null) {
                 for (ProgramIndicator programIndicator : programIndicators) {
                     if (!mProgramIndicatorStore.save(programIndicator)) {
                         return false;
@@ -108,8 +109,9 @@ public final class ProgramStageSectionStore extends AbsIdentifiableObjectStore<P
                 }
             }
 
-            List<ProgramStageDataElement> programStageDataElements = object.getProgramStageDataElements();
-            if(programStageDataElements != null) {
+            List<ProgramStageDataElement> programStageDataElements = object
+                    .getProgramStageDataElements();
+            if (programStageDataElements != null) {
                 for (ProgramStageDataElement programStageDataElement : programStageDataElements) {
                     if (!mProgramStageDataElementStore.save(programStageDataElement)) {
                         return false;

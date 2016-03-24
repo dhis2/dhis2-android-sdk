@@ -30,25 +30,19 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
+public final class ProgramStageDataElementStore extends
+        AbsIdentifiableObjectStore<ProgramStageDataElement,
         ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
 
     public ProgramStageDataElementStore() {
@@ -89,7 +83,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         if (programStageDataElementFlow != null && !programStageDataElementFlow.isEmpty()) {
             return getMapper().mapToModel(programStageDataElementFlow.get(0));
         }
-        
+
         return null;
     }
 }

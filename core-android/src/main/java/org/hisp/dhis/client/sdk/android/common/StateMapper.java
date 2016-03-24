@@ -30,14 +30,14 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import com.raizlabs.android.dbflow.structure.Model;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardElementFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationCommentFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
@@ -145,7 +145,8 @@ public class StateMapper extends AbsMapper<State, StateFlow> implements IStateMa
     }
 
     @Override
-    public Class<? extends Model> getRelatedDatabaseEntityClass(Class<? extends IModel> objectClass) {
+    public Class<? extends Model> getRelatedDatabaseEntityClass(Class<? extends IModel>
+                                                                            objectClass) {
         isNull(objectClass, "Class object must not be null");
 
         if (Dashboard.class.equals(objectClass)) {

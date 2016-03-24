@@ -34,6 +34,7 @@ import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
 
 import java.util.List;
 
-public interface IInterpretationElementStore extends IIdentifiableObjectStore<InterpretationElement> {
+public interface IInterpretationElementStore extends
+        IIdentifiableObjectStore<InterpretationElement> {
     List<InterpretationElement> list(Interpretation interpretation);
 }

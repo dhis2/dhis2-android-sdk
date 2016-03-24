@@ -30,8 +30,8 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;

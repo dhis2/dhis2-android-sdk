@@ -42,6 +42,7 @@ import rx.Subscriber;
 public class DataElementScope implements IDataElementScope {
     private final IDataElementService dataElementService;
     private final IIdentifiableController<DataElement> dataElementController;
+
     public DataElementScope(IDataElementService dataElementService,
                             IIdentifiableController<DataElement> dataElementController) {
         this.dataElementService = dataElementService;

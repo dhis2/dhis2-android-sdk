@@ -1,30 +1,29 @@
 /*
- *  Copyright (c) 2016, University of Oslo
- *  * All rights reserved.
- *  *
- *  * Redistribution and use in source and binary forms, with or without
- *  * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  * list of conditions and the following disclaimer.
- *  *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  * this list of conditions and the following disclaimer in the documentation
- *  * and/or other materials provided with the distribution.
- *  * Neither the name of the HISP project nor the names of its contributors may
- *  * be used to endorse or promote products derived from this software without
- *  * specific prior written permission.
- *  *
- *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright (c) 2016, University of Oslo
  *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.client.sdk.core.common.utils;
@@ -49,33 +48,35 @@ public class ExpressionUtils {
 
     private final Map<String, String> EL_SQL_MAP;
     private final String IGNORED_KEYWORDS_REGEX =
-            "SUM|sum|AVERAGE|average|COUNT|count|STDDEV|stddev|VARIANCE|variance|MIN|min|MAX|max|NONE|none";
+            "SUM|sum|AVERAGE|average|COUNT|count|STDDEV|stddev|VARIANCE|variance|MIN|min|MAX|max" +
+                    "|NONE|none";
 
-    private final Pattern NUMERIC_PATTERN = Pattern.compile( "^(-?0|-?[1-9]\\d*)(\\.\\d+)?$" );
+    private final Pattern NUMERIC_PATTERN = Pattern.compile("^(-?0|-?[1-9]\\d*)(\\.\\d+)?$");
 
     private final VariableUtils variableUtils;
 
     public ExpressionUtils(VariableUtils variableUtils) {
         this.variableUtils = variableUtils;
         Map<String, Object> functions = new HashMap<>();
-        functions.put( ExpressionFunctions.NAMESPACE, new ExpressionFunctions(this.variableUtils, this) );
+        functions.put(ExpressionFunctions.NAMESPACE, new ExpressionFunctions(this.variableUtils,
+                this));
 
         JEXL = new JexlEngine();
-        JEXL.setFunctions( functions );
+        JEXL.setFunctions(functions);
         JEXL.setCache(512);
         JEXL.setSilent(false);
         JEXL.setLenient(true); // Lenient
 
         JEXL_STRICT = new JexlEngine();
-        JEXL_STRICT.setFunctions( functions );
+        JEXL_STRICT.setFunctions(functions);
         JEXL_STRICT.setCache(512);
         JEXL_STRICT.setSilent(false);
         JEXL_STRICT.setStrict(true); // Strict
 
         EL_SQL_MAP = new HashMap<>();
-        EL_SQL_MAP.put( "&&", "and" );
-        EL_SQL_MAP.put( "\\|\\|", "or" );
-        EL_SQL_MAP.put( "==", "=" );
+        EL_SQL_MAP.put("&&", "and");
+        EL_SQL_MAP.put("\\|\\|", "or");
+        EL_SQL_MAP.put("==", "=");
 
         //TODO Add support for textual operators like eq, ne and lt
     }
@@ -85,11 +86,10 @@ public class ExpressionUtils {
      * in the expression.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public Object evaluate( String expression, Map<String, Object> vars )
-    {
+    public Object evaluate(String expression, Map<String, Object> vars) {
         try {
             return evaluate(expression, vars, false);
         } catch (Exception e) {
@@ -100,21 +100,20 @@ public class ExpressionUtils {
 
     /**
      * @param expression the expression.
-     * @param vars the variables, can be null.
-     * @param strict indicates whether to use strict or lenient engine mode.
+     * @param vars       the variables, can be null.
+     * @param strict     indicates whether to use strict or lenient engine mode.
      * @return the result of the evaluation.
      */
-    private Object evaluate( String expression, Map<String, Object> vars, boolean strict )
-    {
-        expression = expression.replaceAll( IGNORED_KEYWORDS_REGEX, StringUtils.EMPTY );
+    private Object evaluate(String expression, Map<String, Object> vars, boolean strict) {
+        expression = expression.replaceAll(IGNORED_KEYWORDS_REGEX, StringUtils.EMPTY);
 
         JexlEngine engine = strict ? JEXL_STRICT : JEXL;
 
-        Expression exp = engine.createExpression( expression );
+        Expression exp = engine.createExpression(expression);
 
-        JexlContext context = vars != null ? new MapContext( vars ) : new MapContext();
+        JexlContext context = vars != null ? new MapContext(vars) : new MapContext();
 
-        return exp.evaluate( context );
+        return exp.evaluate(context);
     }
 
     /**
@@ -124,24 +123,22 @@ public class ExpressionUtils {
      * a Double
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return the result of the evaluation.
      */
-    public Double evaluateToDouble( String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
+    public Double evaluateToDouble(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
 
-        if ( result == null )
-        {
-            throw new IllegalStateException( "Result must be not null" );
+        if (result == null) {
+            throw new IllegalStateException("Result must be not null");
         }
 
-        if ( !isNumeric( String.valueOf( result ) ) )
-        {
-            throw new IllegalStateException( "Result must be numeric: " + result + ", " + result.getClass() );
+        if (!isNumeric(String.valueOf(result))) {
+            throw new IllegalStateException("Result must be numeric: " + result + ", " + result
+                    .getClass());
         }
 
-        return Double.valueOf( String.valueOf( result ) );
+        return Double.valueOf(String.valueOf(result));
     }
 
     /**
@@ -149,14 +146,13 @@ public class ExpressionUtils {
      * be substituted in the expression.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public boolean isTrue( String expression, Map<String, Object> vars )
-    {
-        Object result = evaluate( expression, vars );
+    public boolean isTrue(String expression, Map<String, Object> vars) {
+        Object result = evaluate(expression, vars);
 
-        return ( result != null && result instanceof Boolean ) ? (Boolean) result : false;
+        return (result != null && result instanceof Boolean) ? (Boolean) result : false;
     }
 
     /**
@@ -164,27 +160,23 @@ public class ExpressionUtils {
      * false.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public boolean isBoolean( String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars );
+    public boolean isBoolean(String expression, Map<String, Object> vars) {
+        try {
+            Object result = evaluate(expression, vars);
 
-            return ( result instanceof Boolean );
-        }
-        catch ( JexlException ex )
-        {
+            return (result instanceof Boolean);
+        } catch (JexlException ex) {
             return false;
         }
     }
 
-    public boolean isBoolean( String value ) {
-        if(value == null) {
+    public boolean isBoolean(String value) {
+        if (value == null) {
             return false;
-        } else if(value.equals("true") || value.equals("false")) {
+        } else if (value.equals("true") || value.equals("false")) {
             return true;
         } else {
             return false;
@@ -196,21 +188,16 @@ public class ExpressionUtils {
      * evaluated.
      *
      * @param expression the expression.
-     * @param vars the variables, can be null.
+     * @param vars       the variables, can be null.
      * @return true or false.
      */
-    public boolean isValid( String expression, Map<String, Object> vars )
-    {
-        try
-        {
-            Object result = evaluate( expression, vars, true );
+    public boolean isValid(String expression, Map<String, Object> vars) {
+        try {
+            Object result = evaluate(expression, vars, true);
 
             return result != null;
-        }
-        catch ( JexlException ex )
-        {
-            if ( ex.getMessage().contains( "divide error" ) )
-            {
+        } catch (JexlException ex) {
+            if (ex.getMessage().contains("divide error")) {
                 return true; //TODO Masking bug in Jexl, fix
             }
 
@@ -224,9 +211,8 @@ public class ExpressionUtils {
      * @param value the value.
      * @return true or false.
      */
-    public boolean isNumeric( String value )
-    {
-        return NUMERIC_PATTERN.matcher( value ).matches();
+    public boolean isNumeric(String value) {
+        return NUMERIC_PATTERN.matcher(value).matches();
     }
 
     /**
@@ -235,16 +221,13 @@ public class ExpressionUtils {
      * @param expression the expression.
      * @return an SQL clause.
      */
-    public String asSql( String expression )
-    {
-        if ( expression == null )
-        {
+    public String asSql(String expression) {
+        if (expression == null) {
             return null;
         }
 
-        for ( String key : EL_SQL_MAP.keySet() )
-        {
-            expression = expression.replaceAll( key, EL_SQL_MAP.get( key ) );
+        for (String key : EL_SQL_MAP.keySet()) {
+            expression = expression.replaceAll(key, EL_SQL_MAP.get(key));
         }
 
         return expression;

@@ -81,7 +81,8 @@ public final class ProgramStageSection extends BaseIdentifiableObject {
         return programStageDataElements;
     }
 
-    public void setProgramStageDataElements(List<ProgramStageDataElement> programStageDataElements) {
+    public void setProgramStageDataElements(List<ProgramStageDataElement>
+                                                    programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
     }
 

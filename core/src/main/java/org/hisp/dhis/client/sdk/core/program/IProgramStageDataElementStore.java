@@ -36,8 +36,11 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface IProgramStageDataElementStore extends IIdentifiableObjectStore<ProgramStageDataElement> {
+public interface IProgramStageDataElementStore extends
+        IIdentifiableObjectStore<ProgramStageDataElement> {
     List<ProgramStageDataElement> query(ProgramStage programStage);
+
     List<ProgramStageDataElement> query(ProgramStageSection programStageSection);
+
     ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement);
 }

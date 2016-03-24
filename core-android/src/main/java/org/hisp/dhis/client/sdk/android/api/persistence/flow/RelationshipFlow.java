@@ -79,6 +79,10 @@ public final class RelationshipFlow extends BaseModelFlow {
     @Column
     String displayName;
 
+    public RelationshipFlow() {
+        // empty constructor
+    }
+
     public String getRelationship() {
         return relationship;
     }
@@ -109,9 +113,5 @@ public final class RelationshipFlow extends BaseModelFlow {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
-    }
-
-    public RelationshipFlow() {
-        // empty constructor
     }
 }

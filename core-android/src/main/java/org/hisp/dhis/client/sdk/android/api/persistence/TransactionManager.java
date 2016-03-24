@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 

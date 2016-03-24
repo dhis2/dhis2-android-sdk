@@ -60,13 +60,13 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
 
     private ProgramStageSection programStageSection;
 
+    public DataElement getDataElement() {
+        return dataElement;
+    }
+
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement;
-    }
-
-    public DataElement getDataElement() {
-        return dataElement;
     }
 
     public ProgramStage getProgramStage() {

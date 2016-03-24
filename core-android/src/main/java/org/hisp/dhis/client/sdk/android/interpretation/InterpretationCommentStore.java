@@ -36,7 +36,6 @@ import org.hisp.dhis.client.sdk.core.interpretation.IInterpretationCommentStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     @Override
     public boolean insert(InterpretationComment object) {
         InterpretationCommentFlow commentFlow = null;
-                //InterpretationComment_Flow.fromModel(object);
+        //InterpretationComment_Flow.fromModel(object);
         commentFlow.insert();
 
         object.setId(commentFlow.getId());
@@ -61,7 +60,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     @Override
     public boolean save(InterpretationComment object) {
         InterpretationCommentFlow commentFlow = null;
-                //InterpretationComment_Flow.fromModel(object);
+        //InterpretationComment_Flow.fromModel(object);
         commentFlow.save();
 
         object.setId(commentFlow.getId());

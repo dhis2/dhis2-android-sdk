@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

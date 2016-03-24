@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
@@ -36,11 +40,12 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface ITrackedEntityAttributeValueService extends IService, ISave<TrackedEntityAttributeValue>, IRemove<TrackedEntityAttributeValue>,
+public interface ITrackedEntityAttributeValueService extends IService,
+        ISave<TrackedEntityAttributeValue>, IRemove<TrackedEntityAttributeValue>,
         IGet<TrackedEntityAttributeValue>, IList<TrackedEntityAttributeValue> {
 
     TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance,
-                                      TrackedEntityAttribute trackedEntityAttribute);
+                                    TrackedEntityAttribute trackedEntityAttribute);
 
     List<TrackedEntityAttributeValue> list(TrackedEntityInstance trackedEntityInstance);
 

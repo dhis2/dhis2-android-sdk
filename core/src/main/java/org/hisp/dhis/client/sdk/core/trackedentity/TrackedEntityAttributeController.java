@@ -43,7 +43,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -57,10 +56,12 @@ public final class TrackedEntityAttributeController implements
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
 
-    public TrackedEntityAttributeController(ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient,
+    public TrackedEntityAttributeController(ITrackedEntityAttributeApiClient
+                                                    trackedEntityAttributeApiClient,
                                             ITransactionManager transactionManager,
                                             ILastUpdatedPreferences lastUpdatedPreferences,
-                                            IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore,
+                                            IIdentifiableObjectStore<TrackedEntityAttribute>
+                                                    trackedEntityAttributeStore,
                                             ISystemInfoApiClient systemInfoApiClient) {
         this.trackedEntityAttributeApiClient = trackedEntityAttributeApiClient;
         this.transactionManager = transactionManager;

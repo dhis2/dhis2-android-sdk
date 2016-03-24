@@ -113,6 +113,10 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     String data;
 
+    public ProgramRuleActionFlow() {
+        // empty constructor
+    }
+
     public ProgramRuleFlow getProgramRule() {
         return programRule;
     }
@@ -191,9 +195,5 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
 
     public void setData(String data) {
         this.data = data;
-    }
-
-    public ProgramRuleActionFlow() {
-        // empty constructor
     }
 }

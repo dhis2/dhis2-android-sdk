@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
         holder.autoCompleteTextView.setHint(picker.getHint());
 
         IPickable pickedItem = picker.getPickedItem();
-        if(pickedItem != null) {
+        if (pickedItem != null) {
             holder.autoCompleteTextView.setText(pickedItem.toString());
         } else {
             holder.autoCompleteTextView.setText("");
@@ -87,7 +86,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
     }
 
     public void recycle() {
-        for(Picker picker : pickers) {
+        for (Picker picker : pickers) {
             picker.recycle();
         }
         pickers.clear();

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +115,8 @@ public class DashboardElementService implements IDashboardElementService {
     public List<DashboardElement> list(DashboardItem dashboardItem) {
         Preconditions.isNull(dashboardItem, "DashboardItem object must not be null");
 
-        List<DashboardElement> allDashboardElements = dashboardElementStore.queryByDashboardItem(dashboardItem);
+        List<DashboardElement> allDashboardElements = dashboardElementStore.queryByDashboardItem
+                (dashboardItem);
         Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardElement.class);
 
         List<DashboardElement> dashboardElements = new ArrayList<>();

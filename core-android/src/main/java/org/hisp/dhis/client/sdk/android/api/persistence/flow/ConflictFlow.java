@@ -55,6 +55,10 @@ public final class ConflictFlow extends BaseModelFlow {
     @Column
     String value;
 
+    public ConflictFlow() {
+        // empty constructor
+    }
+
     public ImportSummaryFlow getImportSummary() {
         return importSummary;
     }
@@ -77,9 +81,5 @@ public final class ConflictFlow extends BaseModelFlow {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public ConflictFlow() {
-        // empty constructor
     }
 }

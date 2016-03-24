@@ -39,6 +39,9 @@ import java.util.List;
 
 public interface IEventStore extends IIdentifiableObjectStore<Event> {
     List<Event> query(Enrollment enrollment);
+
     List<Event> query(OrganisationUnit organisationUnit, Program program);
-    List<Event> query(OrganisationUnit organisationUnit, Program program, DateTime startDate, DateTime endDate);
+
+    List<Event> query(OrganisationUnit organisationUnit, Program program, DateTime startDate,
+                      DateTime endDate);
 }

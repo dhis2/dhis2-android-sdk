@@ -76,6 +76,10 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
 
     List<ProgramRuleActionFlow> programRuleActions;
 
+    public ProgramRuleFlow() {
+        // empty constructor
+    }
+
     public ProgramStageFlow getProgramStage() {
         return programStage;
     }
@@ -130,9 +134,5 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
 
     public void setProgramRuleActions(List<ProgramRuleActionFlow> programRuleActions) {
         this.programRuleActions = programRuleActions;
-    }
-
-    public ProgramRuleFlow() {
-        // empty constructor
     }
 }

@@ -44,6 +44,7 @@ public class RelationshipService implements IRelationshipService {
         this.relationshipStore = relationshipStore;
         this.stateStore = stateStore;
     }
+
     @Override
     public List<Relationship> list(TrackedEntityInstance trackedEntityInstance) {
         Preconditions.isNull(trackedEntityInstance, "Object must not be null");

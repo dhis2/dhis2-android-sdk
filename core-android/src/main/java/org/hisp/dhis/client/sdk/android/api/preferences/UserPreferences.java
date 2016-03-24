@@ -31,7 +31,6 @@ package org.hisp.dhis.client.sdk.android.api.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 

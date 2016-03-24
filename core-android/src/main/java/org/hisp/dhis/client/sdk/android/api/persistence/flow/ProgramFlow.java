@@ -43,9 +43,8 @@ import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 @Table(database = DbDhis.class)
 public final class ProgramFlow extends BaseIdentifiableObjectFlow {
-    public static IMapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
     private static final String TRACKED_ENTITY_KEY = "trackedEntity";
-
+    public static IMapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
     @Column
     @ForeignKey(
             references = {

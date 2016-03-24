@@ -33,7 +33,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public final class ProgramIndicator extends BaseNameableObject {
@@ -51,12 +50,17 @@ public final class ProgramIndicator extends BaseNameableObject {
     public static final String VAR_ZERO_POS_VALUE_COUNT = "zero_pos_value_count";
     public static final String VALUE_TYPE_DATE = "date";
     public static final String VALUE_TYPE_INT = "int";
-    public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE + "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
-            INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?(\\w*)\\}";
+    public static final String EXPRESSION_REGEXP = "(" + KEY_DATAELEMENT + "|" + KEY_ATTRIBUTE +
+            "|" + KEY_PROGRAM_VARIABLE + "|" + KEY_CONSTANT + ")\\{(\\w+|" +
+            INCIDENT_DATE + "|" + ENROLLMENT_DATE + "|" + CURRENT_DATE + ")" + SEPARATOR_ID + "?" +
+            "(\\w*)\\}";
     public static final Pattern EXPRESSION_PATTERN = Pattern.compile(EXPRESSION_REGEXP);
-    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
-    public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})\\}");
-    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT + "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
+    public static final Pattern DATAELEMENT_PATTERN = Pattern.compile(KEY_DATAELEMENT + "\\{" +
+            "(\\w{11})" + SEPARATOR_ID + "(\\w{11})\\}");
+    public static final Pattern ATTRIBUTE_PATTERN = Pattern.compile(KEY_ATTRIBUTE + "\\{(\\w{11})" +
+            "\\}");
+    public static final Pattern VALUECOUNT_PATTERN = Pattern.compile("V\\{(" + VAR_VALUE_COUNT +
+            "|" + VAR_ZERO_POS_VALUE_COUNT + ")\\}");
     public static final String VALID = "valid";
     public static final String EXPRESSION_NOT_WELL_FORMED = "expression_not_well_formed";
     public static String SEP_OBJECT = ":";

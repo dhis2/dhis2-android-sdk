@@ -48,8 +48,10 @@ import java.util.Set;
 
 public class ProgramStageSectionStore2 extends AbsIdentifiableObjectStore<ProgramStageSection,
         ProgramStageSectionFlow> implements IProgramStageSectionStore {
-    private static final String PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS = "programStageSectionToProgramStageDataElements";
+    private static final String PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS =
+            "programStageSectionToProgramStageDataElements";
     private final ITransactionManager transactionManager;
+
     public ProgramStageSectionStore2(ITransactionManager transactionManager) {
         super(ProgramStageSectionFlow.MAPPER);
         this.transactionManager = transactionManager;
@@ -123,7 +125,8 @@ public class ProgramStageSectionStore2 extends AbsIdentifiableObjectStore<Progra
         boolean isSuccess = super.delete(object);
 
         if (isSuccess) {
-            ModelLinkFlow.deleteRelatedModels(object, PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS);
+            ModelLinkFlow.deleteRelatedModels(object,
+                    PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS);
         }
 
         return isSuccess;
@@ -143,17 +146,21 @@ public class ProgramStageSectionStore2 extends AbsIdentifiableObjectStore<Progra
     private void updateProgramStageRelationships(ProgramStageSection programStageSection) {
         List<IDbOperation> dbOperations = new ArrayList<>();
         dbOperations.addAll(ModelLinkFlow.updateLinksToModel(programStageSection,
-                programStageSection.getProgramStageDataElements(), PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS));
+                programStageSection.getProgramStageDataElements(),
+                PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS));
         transactionManager.transact(dbOperations);
     }
 
-    private List<ProgramStageSection> queryProgramStageRelationships(List<ProgramStageSection> programStageSections) {
+    private List<ProgramStageSection> queryProgramStageRelationships(List<ProgramStageSection>
+                                                                             programStageSections) {
         if (programStageSections != null) {
             Map<String, List<ProgramStageDataElement>> sectionsToElements = ModelLinkFlow
                     .queryLinksForModel(
-                            ProgramStageDataElement.class, PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS);
+                            ProgramStageDataElement.class,
+                            PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS);
             for (ProgramStageSection programStageSection : programStageSections) {
-                programStageSection.setProgramStageDataElements(sectionsToElements.get(programStageSection.getUId()));
+                programStageSection.setProgramStageDataElements(sectionsToElements.get
+                        (programStageSection.getUId()));
             }
         }
 

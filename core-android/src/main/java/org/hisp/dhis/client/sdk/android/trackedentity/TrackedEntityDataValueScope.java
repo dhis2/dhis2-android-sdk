@@ -49,7 +49,7 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
 
     public TrackedEntityDataValueScope(ITrackedEntityDataValueService
                                                trackedEntityDataValueService, IEventController
-            eventController) {
+                                               eventController) {
         this.mTrackedEntityDataValueService = trackedEntityDataValueService;
         this.mEventController = eventController;
     }
@@ -161,7 +161,7 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     @Override
     public Observable<TrackedEntityDataValue> create(final Event event, final String dataElement,
                                                      final boolean providedElsewhere, final
-                                                         String storedBy, final String value) {
+                                                     String storedBy, final String value) {
         return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
             @Override
             public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {

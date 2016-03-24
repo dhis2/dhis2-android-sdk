@@ -47,6 +47,10 @@ public final class OptionSetFlow extends BaseIdentifiableObjectFlow {
 
     List<OptionFlow> options;
 
+    public OptionSetFlow() {
+        // empty constructor
+    }
+
     public int getVersion() {
         return version;
     }
@@ -61,9 +65,5 @@ public final class OptionSetFlow extends BaseIdentifiableObjectFlow {
 
     public void setOptions(List<OptionFlow> options) {
         this.options = options;
-    }
-
-    public OptionSetFlow() {
-        // empty constructor
     }
 }

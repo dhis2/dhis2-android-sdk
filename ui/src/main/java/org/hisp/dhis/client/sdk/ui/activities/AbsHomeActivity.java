@@ -62,7 +62,8 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     private static final String APPS_DASHBOARD_PACKAGE = "org.hisp.dhis.android.dashboard";
     private static final String APPS_DATA_CAPTURE_PACKAGE = "org.dhis2.mobile";
     private static final String APPS_EVENT_CAPTURE_PACKAGE = "org.hisp.dhis.android.eventcapture";
-    private static final String APPS_TRACKER_CAPTURE_PACKAGE = "org.hisp.dhis.android.trackercapture";
+    private static final String APPS_TRACKER_CAPTURE_PACKAGE = "org.hisp.dhis.android" +
+            ".trackercapture";
 
     private static final int DEFAULT_ORDER_IN_CATEGORY = 100;
 

@@ -1,4 +1,3 @@
-package org.hisp.dhis.client.sdk.models.common;
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -26,6 +25,8 @@ package org.hisp.dhis.client.sdk.models.common;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+package org.hisp.dhis.client.sdk.models.common;
 
 import java.security.SecureRandom;
 import java.util.regex.Pattern;

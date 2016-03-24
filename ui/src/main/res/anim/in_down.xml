@@ -32,12 +32,12 @@
     <translate
         android:duration="700"
         android:fromYDelta="-120%"
-        android:toXDelta="0%" />
+        android:toXDelta="0%"/>
 
     <alpha
         android:duration="500"
         android:fromAlpha="0"
         android:interpolator="@android:anim/accelerate_interpolator"
-        android:toAlpha="1.0" />
+        android:toAlpha="1.0"/>
 
 </set>

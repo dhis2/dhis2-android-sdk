@@ -37,15 +37,11 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
-import org.hisp.dhis.client.sdk.core.program.ProgramService;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
-
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
-
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;

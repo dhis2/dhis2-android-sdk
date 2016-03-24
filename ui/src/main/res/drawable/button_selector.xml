@@ -30,22 +30,22 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp" />
-            <solid android:color="@color/color_accent_light" />
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/color_accent_light"/>
         </shape>
     </item>
 
     <item android:state_pressed="false">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp" />
-            <solid android:color="@color/color_accent_default" />
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/color_accent_default"/>
         </shape>
     </item>
 
     <item android:state_pressed="true">
         <shape android:shape="rectangle">
-            <corners android:radius="1dp" />
-            <solid android:color="@color/color_accent_dark" />
+            <corners android:radius="1dp"/>
+            <solid android:color="@color/color_accent_dark"/>
         </shape>
     </item>
 </selector>

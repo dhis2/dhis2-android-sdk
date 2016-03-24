@@ -41,13 +41,16 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
     private ITrackedEntityDataValueStore trackedEntityDataValueStore;
     private IStateStore stateStore;
 
-    public TrackedEntityDataValueService(ITrackedEntityDataValueStore trackedEntityDataValueStore, IStateStore stateStore) {
+    public TrackedEntityDataValueService(ITrackedEntityDataValueStore
+                                                 trackedEntityDataValueStore, IStateStore
+            stateStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.stateStore = stateStore;
     }
 
     @Override
-    public TrackedEntityDataValue create(Event event, String dataElement, boolean providedElsewhere, String storedBy, String value) {
+    public TrackedEntityDataValue create(Event event, String dataElement, boolean
+            providedElsewhere, String storedBy, String value) {
         Preconditions.isNull(event, "event argument must not be null");
         Preconditions.isNull(dataElement, "dataElement argument must not be null");
         Preconditions.isNull(providedElsewhere, "providedElsewhere argument must not be null");
@@ -79,7 +82,8 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
 
     @Override
     public TrackedEntityDataValue get(DataElement dataElement, Event event) {
-        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.query(dataElement, event);
+        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.query
+                (dataElement, event);
 
         if (trackedEntityDataValue != null) {
             Action action = stateStore.queryActionForModel(trackedEntityDataValue);
@@ -184,7 +188,7 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
     public boolean add(TrackedEntityDataValue object) {
         Preconditions.isNull(object, "TrackedEntityDataValue argument must not be null");
 
-        if(!trackedEntityDataValueStore.insert(object)) {
+        if (!trackedEntityDataValueStore.insert(object)) {
             return false;
         }
         return stateStore.saveActionForModel(object, Action.TO_POST);

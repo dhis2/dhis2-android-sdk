@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) 2016, University of Oslo
   ~
@@ -27,12 +28,12 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_primary_default"
-    android:fillViewport="true"
-    android:orientation="vertical">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_primary_default"
+            android:fillViewport="true"
+            android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layout_content"
@@ -52,13 +53,13 @@
                 android:layout_height="match_parent"
                 app:circle_radius="52dp"
                 app:stroke_color="@android:color/white"
-                app:stroke_width="@dimen/progressbar_stroke_width" />
+                app:stroke_width="@dimen/progressbar_stroke_width"/>
 
             <fr.castorflex.android.circularprogressbar.CircularProgressBar
                 android:id="@+id/progress_bar_circular"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:indeterminate="true" />
+                android:indeterminate="true"/>
 
             <org.hisp.dhis.client.sdk.ui.views.FontTextView
                 android:layout_width="match_parent"
@@ -67,7 +68,7 @@
                 android:text="@string/two"
                 android:textColor="@android:color/white"
                 android:textSize="74sp"
-                app:font="@string/font_name_regular" />
+                app:font="@string/font_name_regular"/>
 
         </FrameLayout>
 
@@ -103,7 +104,7 @@
                         android:hint="@string/server_url"
                         android:inputType="textUri"
                         android:singleLine="true"
-                        app:font="@string/font_name_regular" />
+                        app:font="@string/font_name_regular"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -119,7 +120,7 @@
                         android:hint="@string/username"
                         android:inputType="text"
                         android:singleLine="true"
-                        app:font="@string/font_name_regular" />
+                        app:font="@string/font_name_regular"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -135,7 +136,7 @@
                         android:hint="@string/password"
                         android:inputType="textPassword"
                         android:singleLine="true"
-                        app:font="@string/font_name_regular" />
+                        app:font="@string/font_name_regular"/>
                 </android.support.design.widget.TextInputLayout>
 
                 <org.hisp.dhis.client.sdk.ui.views.FontButton
@@ -148,7 +149,7 @@
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
-                    app:font="@string/font_name_bold" />
+                    app:font="@string/font_name_bold"/>
 
             </LinearLayout>
 

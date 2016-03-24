@@ -62,6 +62,27 @@ public class DashboardService implements IDashboardService {
         this.dashboardElementService = dashboardElementService;
     }
 
+    private static boolean isItemContentTypeEmbedded(String type) {
+        if (type != null) {
+            switch (type) {
+                case DashboardContent.TYPE_CHART:
+                case DashboardContent.TYPE_EVENT_CHART:
+                case DashboardContent.TYPE_MAP:
+                case DashboardContent.TYPE_EVENT_REPORT:
+                case DashboardContent.TYPE_REPORT_TABLE: {
+                    return true;
+                }
+                case DashboardContent.TYPE_USERS:
+                case DashboardContent.TYPE_REPORTS:
+                case DashboardContent.TYPE_RESOURCES: {
+                    return false;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported DashboardContent type: " + type);
+    }
+
     @Override
     public Dashboard create(String name) {
         isNull(name, "Name must not be null");
@@ -223,32 +244,12 @@ public class DashboardService implements IDashboardService {
     private DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
         List<DashboardItem> dashboardItems = dashboardItemService.list(dashboard);
         for (DashboardItem item : dashboardItems) {
-            if (type.equals(item.getType()) && dashboardItemService.countElements(item) < DashboardItem.MAX_CONTENT) {
+            if (type.equals(item.getType()) && dashboardItemService.countElements(item) <
+                    DashboardItem.MAX_CONTENT) {
                 return item;
             }
         }
 
         return null;
-    }
-
-    private static boolean isItemContentTypeEmbedded(String type) {
-        if (type != null) {
-            switch (type) {
-                case DashboardContent.TYPE_CHART:
-                case DashboardContent.TYPE_EVENT_CHART:
-                case DashboardContent.TYPE_MAP:
-                case DashboardContent.TYPE_EVENT_REPORT:
-                case DashboardContent.TYPE_REPORT_TABLE: {
-                    return true;
-                }
-                case DashboardContent.TYPE_USERS:
-                case DashboardContent.TYPE_REPORTS:
-                case DashboardContent.TYPE_RESOURCES: {
-                    return false;
-                }
-            }
-        }
-
-        throw new IllegalArgumentException("Unsupported DashboardContent type: " + type);
     }
 }

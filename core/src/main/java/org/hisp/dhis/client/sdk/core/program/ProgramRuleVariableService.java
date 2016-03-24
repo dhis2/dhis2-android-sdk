@@ -62,8 +62,8 @@ public final class ProgramRuleVariableService implements IProgramRuleVariableSer
         Preconditions.isNull(programRuleVariableName, "programRuleVariableName cannot be null!");
 
         List<ProgramRuleVariable> programRuleVariables = programRuleVariableStore.query(program);
-        for(ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            if(programRuleVariable.getName().equals(programRuleVariableName)) {
+        for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
+            if (programRuleVariable.getName().equals(programRuleVariableName)) {
                 return programRuleVariable;
             }
         }

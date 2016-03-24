@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 

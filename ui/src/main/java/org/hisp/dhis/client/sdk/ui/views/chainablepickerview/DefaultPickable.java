@@ -32,12 +32,30 @@ import android.os.Parcel;
 
 public class DefaultPickable implements IPickable {
 
+    public static final Creator<DefaultPickable> CREATOR = new Creator<DefaultPickable>() {
+        @Override
+        public DefaultPickable createFromParcel(Parcel in) {
+            return new DefaultPickable(in);
+        }
+
+        @Override
+        public DefaultPickable[] newArray(int size) {
+            return new DefaultPickable[size];
+        }
+    };
     String id;
     String label;
 
     public DefaultPickable(String label, String id) {
         this.label = label;
         this.id = id;
+    }
+
+    public DefaultPickable(Parcel in) {
+        String[] data = new String[2];
+        in.readStringArray(data);
+        this.id = data[0];
+        this.label = data[1];
     }
 
     @Override
@@ -54,23 +72,4 @@ public class DefaultPickable implements IPickable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeStringArray(new String[]{id, label});
     }
-
-    public DefaultPickable(Parcel in) {
-        String[] data = new String[2];
-        in.readStringArray(data);
-        this.id = data[0];
-        this.label = data[1];
-    }
-
-    public static final Creator<DefaultPickable> CREATOR = new Creator<DefaultPickable>() {
-        @Override
-        public DefaultPickable createFromParcel(Parcel in) {
-            return new DefaultPickable(in);
-        }
-
-        @Override
-        public DefaultPickable[] newArray(int size) {
-            return new DefaultPickable[size];
-        }
-    };
 }

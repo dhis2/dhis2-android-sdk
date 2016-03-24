@@ -32,9 +32,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
-import org.hisp.dhis.client.sdk.models.common.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.common.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
@@ -119,7 +118,8 @@ public final class Event implements Serializable, IdentifiableObject {
         return event;
     }
 
-    public static Event create(String organisationUnitId, String programId, String programStageId, String eventStatus) {
+    public static Event create(String organisationUnitId, String programId, String
+            programStageId, String eventStatus) {
         Event event = new Event();
         event.setUId(CodeGenerator.generateCode());
         event.setOrganisationUnitId(organisationUnitId);
@@ -144,17 +144,17 @@ public final class Event implements Serializable, IdentifiableObject {
     }
 
     @JsonProperty("coordinate")
-    public void setCoordinate(Map<String, Object> coordinate) {
-        this.latitude = (double) coordinate.get("latitude");
-        this.longitude = (double) coordinate.get("longitude");
-    }
-
-    @JsonProperty("coordinate")
     public Map<String, Object> getCoordinate() {
         Map<String, Object> coordinate = new HashMap<>();
         coordinate.put("latitude", latitude);
         coordinate.put("longitude", longitude);
         return coordinate;
+    }
+
+    @JsonProperty("coordinate")
+    public void setCoordinate(Map<String, Object> coordinate) {
+        this.latitude = (double) coordinate.get("latitude");
+        this.longitude = (double) coordinate.get("longitude");
     }
 
     public long getId() {

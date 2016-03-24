@@ -43,7 +43,8 @@ public class DashboardScope implements IDashboardScope {
     private final IDashboardService mDashboardService;
     private final IDashboardController mDashboardController;
 
-    public DashboardScope(IDashboardService dashboardService, IDashboardController dashboardController) {
+    public DashboardScope(IDashboardService dashboardService, IDashboardController
+            dashboardController) {
         mDashboardService = dashboardService;
         mDashboardController = dashboardController;
     }
@@ -151,7 +152,8 @@ public class DashboardScope implements IDashboardScope {
     }
 
     @Override
-    public Observable<Boolean> addContent(final Dashboard dashboard, final DashboardContent content) {
+    public Observable<Boolean> addContent(final Dashboard dashboard, final DashboardContent
+            content) {
         return Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {

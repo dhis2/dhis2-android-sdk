@@ -47,7 +47,8 @@ import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import static android.text.TextUtils.isEmpty;
 
 
-public abstract class AbsConfirmUserActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class AbsConfirmUserActivity extends AppCompatActivity implements View
+        .OnClickListener {
     private static final String IS_LOADING = "state:isLoading";
 
     private Toolbar mToolbar;

@@ -45,7 +45,8 @@ public class EnrollmentScope implements IEnrollmentScope {
     private final IEnrollmentService mEnrollmentService;
     private final IEnrollmentController mEnrollmentController;
 
-    public EnrollmentScope(IEnrollmentService enrollmentService, IEnrollmentController enrollmentController) {
+    public EnrollmentScope(IEnrollmentService enrollmentService, IEnrollmentController
+            enrollmentController) {
         this.mEnrollmentService = enrollmentService;
         this.mEnrollmentController = enrollmentController;
     }
@@ -85,12 +86,17 @@ public class EnrollmentScope implements IEnrollmentScope {
     }
 
     @Override
-    public Observable<Enrollment> create(final OrganisationUnit organisationUnit, final TrackedEntityInstance trackedEntityInstance, final Program program, final boolean followUp, final DateTime dateOfEnrollment, final DateTime dateOfIncident) {
+    public Observable<Enrollment> create(final OrganisationUnit organisationUnit, final
+    TrackedEntityInstance trackedEntityInstance, final Program program, final boolean followUp,
+                                         final DateTime dateOfEnrollment, final DateTime
+                                                     dateOfIncident) {
         return Observable.create(new Observable.OnSubscribe<Enrollment>() {
             @Override
             public void call(Subscriber<? super Enrollment> subscriber) {
                 try {
-                    Enrollment enrollment = mEnrollmentService.create(organisationUnit, trackedEntityInstance, program, followUp, dateOfEnrollment, dateOfIncident);
+                    Enrollment enrollment = mEnrollmentService.create(organisationUnit,
+                            trackedEntityInstance, program, followUp, dateOfEnrollment,
+                            dateOfIncident);
                     subscriber.onNext(enrollment);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -153,12 +159,14 @@ public class EnrollmentScope implements IEnrollmentScope {
     }
 
     @Override
-    public Observable<List<Enrollment>> list(final Program program, final TrackedEntityInstance trackedEntityInstance) {
+    public Observable<List<Enrollment>> list(final Program program, final TrackedEntityInstance
+            trackedEntityInstance) {
         return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
             @Override
             public void call(Subscriber<? super List<Enrollment>> subscriber) {
                 try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(program, trackedEntityInstance);
+                    List<Enrollment> enrollments = mEnrollmentService.list(program,
+                            trackedEntityInstance);
                     subscriber.onNext(enrollments);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -187,12 +195,14 @@ public class EnrollmentScope implements IEnrollmentScope {
     }
 
     @Override
-    public Observable<List<Enrollment>> list(final Program program, final OrganisationUnit organisationUnit) {
+    public Observable<List<Enrollment>> list(final Program program, final OrganisationUnit
+            organisationUnit) {
         return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
             @Override
             public void call(Subscriber<? super List<Enrollment>> subscriber) {
                 try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(program, organisationUnit);
+                    List<Enrollment> enrollments = mEnrollmentService.list(program,
+                            organisationUnit);
                     subscriber.onNext(enrollments);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -204,12 +214,15 @@ public class EnrollmentScope implements IEnrollmentScope {
     }
 
     @Override
-    public Observable<Enrollment> getActiveEnrollment(final TrackedEntityInstance trackedEntityInstance, final OrganisationUnit organisationUnit, final Program program) {
+    public Observable<Enrollment> getActiveEnrollment(final TrackedEntityInstance
+                                                                  trackedEntityInstance, final
+    OrganisationUnit organisationUnit, final Program program) {
         return Observable.create(new Observable.OnSubscribe<Enrollment>() {
             @Override
             public void call(Subscriber<? super Enrollment> subscriber) {
                 try {
-                    Enrollment enrollment = mEnrollmentService.getActiveEnrollment(trackedEntityInstance, organisationUnit, program);
+                    Enrollment enrollment = mEnrollmentService.getActiveEnrollment
+                            (trackedEntityInstance, organisationUnit, program);
                     subscriber.onNext(enrollment);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

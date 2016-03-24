@@ -55,15 +55,22 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
         programRuleActionFlow.setName(programRuleAction.getName());
         programRuleActionFlow.setDisplayName(programRuleAction.getDisplayName());
         programRuleActionFlow.setAccess(programRuleAction.getAccess());
-        programRuleActionFlow.setProgramRule(MapperModuleProvider.getInstance().getProgramRuleMapper().mapToDatabaseEntity(programRuleAction.getProgramRule()));
-        programRuleActionFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToDatabaseEntity(programRuleAction.getTrackedEntityAttribute()));
-        programRuleActionFlow.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToDatabaseEntity(programRuleAction.getDataElement()));
-        programRuleActionFlow.setProgramIndicator(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToDatabaseEntity(programRuleAction.getProgramIndicator()));
+        programRuleActionFlow.setProgramRule(MapperModuleProvider.getInstance()
+                .getProgramRuleMapper().mapToDatabaseEntity(programRuleAction.getProgramRule()));
+        programRuleActionFlow.setTrackedEntityAttribute(MapperModuleProvider.getInstance()
+                .getTrackedEntityAttributeMapper().mapToDatabaseEntity(programRuleAction
+                        .getTrackedEntityAttribute()));
+        programRuleActionFlow.setDataElement(MapperModuleProvider.getInstance()
+                .getDataElementMapper().mapToDatabaseEntity(programRuleAction.getDataElement()));
+        programRuleActionFlow.setProgramIndicator(MapperModuleProvider.getInstance()
+                .getProgramIndicatorMapper().mapToDatabaseEntity(programRuleAction
+                        .getProgramIndicator()));
         programRuleActionFlow.setProgramStage(ProgramStageFlow.MAPPER
                 .mapToDatabaseEntity(programRuleAction.getProgramStage()));
         programRuleActionFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
                 .mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
-        programRuleActionFlow.setProgramRuleActionType(programRuleAction.getProgramRuleActionType());
+        programRuleActionFlow.setProgramRuleActionType(programRuleAction.getProgramRuleActionType
+                ());
         programRuleActionFlow.setContent(programRuleAction.getContent());
         programRuleActionFlow.setLocation(programRuleAction.getLocation());
         programRuleActionFlow.setData(programRuleAction.getData());
@@ -84,15 +91,22 @@ public class ProgramRuleActionMapper extends AbsMapper<ProgramRuleAction, Progra
         programRuleAction.setName(programRuleActionFlow.getName());
         programRuleAction.setDisplayName(programRuleActionFlow.getDisplayName());
         programRuleAction.setAccess(programRuleActionFlow.getAccess());
-        programRuleAction.setProgramRule(MapperModuleProvider.getInstance().getProgramRuleMapper().mapToModel(programRuleActionFlow.getProgramRule()));
-        programRuleAction.setTrackedEntityAttribute(MapperModuleProvider.getInstance().getTrackedEntityAttributeMapper().mapToModel(programRuleActionFlow.getTrackedEntityAttribute()));
-        programRuleAction.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper().mapToModel(programRuleActionFlow.getDataElement()));
-        programRuleAction.setProgramIndicator(MapperModuleProvider.getInstance().getProgramIndicatorMapper().mapToModel(programRuleActionFlow.getProgramIndicator()));
+        programRuleAction.setProgramRule(MapperModuleProvider.getInstance().getProgramRuleMapper
+                ().mapToModel(programRuleActionFlow.getProgramRule()));
+        programRuleAction.setTrackedEntityAttribute(MapperModuleProvider.getInstance()
+                .getTrackedEntityAttributeMapper().mapToModel(programRuleActionFlow
+                        .getTrackedEntityAttribute()));
+        programRuleAction.setDataElement(MapperModuleProvider.getInstance().getDataElementMapper
+                ().mapToModel(programRuleActionFlow.getDataElement()));
+        programRuleAction.setProgramIndicator(MapperModuleProvider.getInstance()
+                .getProgramIndicatorMapper().mapToModel(programRuleActionFlow.getProgramIndicator
+                        ()));
         programRuleAction.setProgramStage(ProgramStageFlow.MAPPER.
                 mapToModel(programRuleActionFlow.getProgramStage()));
         programRuleAction.setProgramStageSection(ProgramStageSectionFlow.MAPPER
                 .mapToModel(programRuleActionFlow.getProgramStageSection()));
-        programRuleAction.setProgramRuleActionType(programRuleActionFlow.getProgramRuleActionType());
+        programRuleAction.setProgramRuleActionType(programRuleActionFlow.getProgramRuleActionType
+                ());
         programRuleAction.setContent(programRuleActionFlow.getContent());
         programRuleAction.setLocation(programRuleActionFlow.getLocation());
         programRuleAction.setData(programRuleActionFlow.getData());

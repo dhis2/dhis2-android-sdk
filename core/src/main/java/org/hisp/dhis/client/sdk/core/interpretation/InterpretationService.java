@@ -45,7 +45,8 @@ public class InterpretationService implements IInterpretationService {
     private final IInterpretationElementService interpretationElementService;
 
     public InterpretationService(IInterpretationStore interpretationStore,
-                                 IStateStore stateStore, IInterpretationElementService interpretationElementService) {
+                                 IStateStore stateStore, IInterpretationElementService
+                                         interpretationElementService) {
         this.interpretationStore = interpretationStore;
         this.stateStore = stateStore;
         this.interpretationElementService = interpretationElementService;
@@ -54,8 +55,8 @@ public class InterpretationService implements IInterpretationService {
     /**
      * Creates interpretation from: chart, map, reportTable.
      * Please note, it won't work for data sets.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * Note, model won't be saved to database automatically. You have to call .save()
      * both on interpretation and interpretation elements of current object.
      *
@@ -100,7 +101,8 @@ public class InterpretationService implements IInterpretationService {
             }
             case Interpretation.TYPE_REPORT_TABLE: {
                 InterpretationElement element = interpretationElementService
-                        .create(interpretation, item.getReportTable(), Interpretation.TYPE_REPORT_TABLE);
+                        .create(interpretation, item.getReportTable(), Interpretation
+                                .TYPE_REPORT_TABLE);
                 interpretation.setType(Interpretation.TYPE_REPORT_TABLE);
                 interpretation.setReportTable(element);
                 break;

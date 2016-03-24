@@ -67,6 +67,10 @@ public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
     @Column
     String value;
 
+    public TrackedEntityAttributeValueFlow() {
+        // empty constructor
+    }
+
     public String getTrackedEntityAttributeUId() {
         return trackedEntityAttributeUId;
     }
@@ -89,9 +93,5 @@ public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public TrackedEntityAttributeValueFlow() {
-        // empty constructor
     }
 }

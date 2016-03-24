@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.relationship;
 
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 public class RelationshipTypeMapper extends AbsMapper<RelationshipType, RelationshipTypeFlow> {

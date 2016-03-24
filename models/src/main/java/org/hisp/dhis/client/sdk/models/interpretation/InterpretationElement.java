@@ -32,8 +32,8 @@ import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
 /**
  * <p>
- *     This model class is intended to represent content of Interpretation {map, chart,
- *     reportTable, dataSet, period, organisationUnit}
+ * This model class is intended to represent content of Interpretation {map, chart,
+ * reportTable, dataSet, period, organisationUnit}
  */
 public class InterpretationElement extends BaseIdentifiableObject {
     public static final String TYPE_CHART = "chart";

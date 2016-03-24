@@ -66,6 +66,10 @@ public final class ImportSummaryFlow extends BaseModelFlow {
 
     List<ConflictFlow> conflicts;
 
+    public ImportSummaryFlow() {
+        // empty constructor
+    }
+
     public ImportSummary.Status getStatus() {
         return status;
     }
@@ -112,9 +116,5 @@ public final class ImportSummaryFlow extends BaseModelFlow {
 
     public void setConflicts(List<ConflictFlow> conflicts) {
         this.conflicts = conflicts;
-    }
-
-    public ImportSummaryFlow() {
-        // empty constructor
     }
 }

@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.client.sdk.android.dataelement;
 
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-
-import java.util.List;
-import java.util.Set;
 
 public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow>
         implements IDataElementStore {

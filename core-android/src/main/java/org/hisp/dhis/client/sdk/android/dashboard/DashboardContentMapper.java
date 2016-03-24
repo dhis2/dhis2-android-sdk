@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.dashboard;
 
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardContentFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 public class DashboardContentMapper extends AbsMapper<DashboardContent, DashboardContentFlow> {

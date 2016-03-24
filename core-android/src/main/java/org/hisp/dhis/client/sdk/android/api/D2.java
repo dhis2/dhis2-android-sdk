@@ -42,13 +42,11 @@ import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
-
 import org.hisp.dhis.client.sdk.android.program.IProgramScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
-
 import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;

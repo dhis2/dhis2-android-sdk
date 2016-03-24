@@ -30,10 +30,10 @@ package org.hisp.dhis.client.sdk.android.relationship;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;

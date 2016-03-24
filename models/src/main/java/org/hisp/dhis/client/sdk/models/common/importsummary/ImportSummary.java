@@ -37,35 +37,27 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ImportSummary {
 
-    public enum Status {
-        SUCCESS,
-        OK,
-        ERROR
-    }
-
     @JsonIgnore
     private int id;
-
     @JsonProperty("status")
     private Status status;
-
     @JsonProperty("description")
     private String description;
-
     @JsonProperty("importCount")
     private ImportCount importCount;
-
     @JsonProperty("reference")
     private String reference;
-
     @JsonProperty("href")
     private String href;
-
     @JsonProperty("conflicts")
     private List<Conflict> conflicts;
 
     public List<Conflict> getConflicts() {
         return conflicts;
+    }
+
+    public void setConflicts(List<Conflict> conflicts) {
+        this.conflicts = conflicts;
     }
 
     public String getReference() {
@@ -86,6 +78,10 @@ public class ImportSummary {
 
     public ImportCount getImportCount() {
         return importCount;
+    }
+
+    public void setImportCount(ImportCount importCount) {
+        this.importCount = importCount;
     }
 
     public String getDescription() {
@@ -112,11 +108,9 @@ public class ImportSummary {
         this.id = id;
     }
 
-    public void setImportCount(ImportCount importCount) {
-        this.importCount = importCount;
-    }
-
-    public void setConflicts(List<Conflict> conflicts) {
-        this.conflicts = conflicts;
+    public enum Status {
+        SUCCESS,
+        OK,
+        ERROR
     }
 }

@@ -34,7 +34,6 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 

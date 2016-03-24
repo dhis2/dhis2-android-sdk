@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-public interface IInterpretationCommentService extends IService, IRemove<InterpretationComment>, ISave<InterpretationComment> {
+public interface IInterpretationCommentService extends IService, IRemove<InterpretationComment>,
+        ISave<InterpretationComment> {
     InterpretationComment create(Interpretation interpretation, User user, String text);
 }

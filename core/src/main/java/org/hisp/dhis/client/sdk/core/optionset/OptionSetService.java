@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.optionset;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;

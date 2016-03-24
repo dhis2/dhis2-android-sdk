@@ -69,5 +69,5 @@ public interface EventApiClientRetrofit {
 
     @GET("events")
     Call<Map<String, List<Event>>> getEvents(@QueryMap Map<String, String> queryMap,
-                                                 @Query("filter") List<String> filters);
+                                             @Query("filter") List<String> filters);
 }

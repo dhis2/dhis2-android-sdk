@@ -33,7 +33,6 @@ import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-import java.util.Collection;
 import java.util.Set;
 
 public class UserController implements IIdentifiableController<UserAccount> {

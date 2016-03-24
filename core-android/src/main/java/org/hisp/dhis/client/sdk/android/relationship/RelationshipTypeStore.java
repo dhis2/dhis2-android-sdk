@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.android.relationship;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 

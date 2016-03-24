@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;

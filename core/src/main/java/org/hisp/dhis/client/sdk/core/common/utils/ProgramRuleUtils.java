@@ -1,30 +1,29 @@
 /*
- *  Copyright (c) 2016, University of Oslo
- *  * All rights reserved.
- *  *
- *  * Redistribution and use in source and binary forms, with or without
- *  * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  * list of conditions and the following disclaimer.
- *  *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  * this list of conditions and the following disclaimer in the documentation
- *  * and/or other materials provided with the distribution.
- *  * Neither the name of the HISP project nor the names of its contributors may
- *  * be used to endorse or promote products derived from this software without
- *  * specific prior written permission.
- *  *
- *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright (c) 2016, University of Oslo
  *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.client.sdk.core.common.utils;
@@ -51,7 +50,8 @@ public class ProgramRuleUtils {
     private final VariableUtils variableUtils;
     private final ExpressionUtils expressionUtils;
 
-    public ProgramRuleUtils(IProgramRuleVariableService programRuleVariableService, VariableUtils variableUtils, ExpressionUtils expressionUtils) {
+    public ProgramRuleUtils(IProgramRuleVariableService programRuleVariableService, VariableUtils
+            variableUtils, ExpressionUtils expressionUtils) {
         this.programRuleVariableService = programRuleVariableService;
         this.variableUtils = variableUtils;
         this.expressionUtils = expressionUtils;
@@ -59,9 +59,11 @@ public class ProgramRuleUtils {
 
     /**
      * Evaluates a passed expression from a {@link ProgramRule} to true or false.
-     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
+     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models
+     * .enrollment.Enrollment,
      * org.hisp.dhis.client.sdk.models.event.Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
@@ -70,7 +72,7 @@ public class ProgramRuleUtils {
         boolean isTrue = false;
         try {
             isTrue = expressionUtils.isTrue(conditionReplaced, null);
-        } catch(JexlException jxlException) {
+        } catch (JexlException jxlException) {
             jxlException.printStackTrace();
         }
         return isTrue;
@@ -78,9 +80,11 @@ public class ProgramRuleUtils {
 
     /**
      * Returns a condition with replaced values for {@link ProgramRuleVariable}s.
-     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
+     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models
+     * .enrollment.Enrollment,
      * org.hisp.dhis.client.sdk.models.event.Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
@@ -94,7 +98,8 @@ public class ProgramRuleUtils {
             String variablePrefix = matcher.group(1);
             String variableName = matcher.group(2);
             value = variableUtils.getReplacementForProgramRuleVariable(variableName);
-            if(!isNumeric(value) && !Boolean.TRUE.toString().equals(value) && !Boolean.FALSE.toString().equals(value)) {
+            if (!isNumeric(value) && !Boolean.TRUE.toString().equals(value) && !Boolean.FALSE
+                    .toString().equals(value)) {
                 value = '\'' + value + '\'';
             }
             matcher.appendReplacement(buffer, value);
@@ -107,9 +112,11 @@ public class ProgramRuleUtils {
      * Calculates and returns the value of a passed condition from a {@link
      * org.hisp.dhis.client.sdk.models.program.ProgramRuleAction} or
      * {@link ProgramRuleVariable}.
-     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
+     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models
+     * .enrollment.Enrollment,
      * org.hisp.dhis.client.sdk.models.event.Event)} must be called prior
      * to calling this method.
+     *
      * @param condition
      * @return
      */
@@ -121,11 +128,14 @@ public class ProgramRuleUtils {
     }
 
     /**
-     * Returns a list of Uids of {@link org.hisp.dhis.client.sdk.models.dataelement.DataElement}s contained in the given
+     * Returns a list of Uids of {@link org.hisp.dhis.client.sdk.models.dataelement.DataElement}s
+     * contained in the given
      * {@link ProgramRule}.
-     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
+     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models
+     * .enrollment.Enrollment,
      * org.hisp.dhis.client.sdk.models.event.Event)} must be called prior
      * to calling this method.
+     *
      * @param programRule
      * @return
      */
@@ -136,21 +146,25 @@ public class ProgramRuleUtils {
 
         while (matcher.find()) {
             String variableName = matcher.group(2);
-            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName(programRule.getProgram(), variableName);
+            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName
+                    (programRule.getProgram(), variableName);
             if (programRuleVariable != null && programRuleVariable.getDataElement() != null) {
                 dataElementsInRule.add(programRuleVariable.getDataElement().getUId());
             }
         }
 
-        for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-            if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
-                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
-                ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(programRuleVariableName);
-                if(programRuleVariable.getDataElement() != null) {
+        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+            if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN)
+                    && programRuleAction.getContent() != null) {
+                String programRuleVariableName = programRuleAction.getContent().substring(2,
+                        programRuleAction.getContent().length() - 1);
+                ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap
+                        ().get(programRuleVariableName);
+                if (programRuleVariable.getDataElement() != null) {
                     dataElementsInRule.add(programRuleVariable.getDataElement().getUId());
                 }
             }
-            if(programRuleAction.getDataElement() != null) {
+            if (programRuleAction.getDataElement() != null) {
                 dataElementsInRule.add(programRuleAction.getDataElement().getUId());
             }
         }
@@ -159,11 +173,14 @@ public class ProgramRuleUtils {
     }
 
     /**
-     * Returns a list of Uids of {@link org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute}s contained
+     * Returns a list of Uids of {@link org.hisp.dhis.client.sdk.models.trackedentity
+     * .TrackedEntityAttribute}s contained
      * in the given {@link ProgramRule}.
-     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models.enrollment.Enrollment,
+     * Please note that {@link VariableUtils#initialize(org.hisp.dhis.client.sdk.models
+     * .enrollment.Enrollment,
      * org.hisp.dhis.client.sdk.models.event.Event)} must be called prior
      * to calling this method.
+     *
      * @param programRule
      * @return
      */
@@ -174,18 +191,25 @@ public class ProgramRuleUtils {
 
         while (matcher.find()) {
             String variableName = matcher.group(2);
-            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName(programRule.getProgram(), variableName);
-            if (programRuleVariable != null && programRuleVariable.getTrackedEntityAttribute() != null) {
-                trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute().getUId());
+            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName
+                    (programRule.getProgram(), variableName);
+            if (programRuleVariable != null && programRuleVariable.getTrackedEntityAttribute() !=
+                    null) {
+                trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute()
+                        .getUId());
             }
         }
 
-        for(ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
-            if(programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN) && programRuleAction.getContent() != null) {
-                String programRuleVariableName = programRuleAction.getContent().substring(2, programRuleAction.getContent().length()-1);
-                ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap().get(programRuleVariableName);
-                if(programRuleVariable.getTrackedEntityAttribute() != null) {
-                    trackedEntityAttributesInRule.add(programRuleVariable.getTrackedEntityAttribute().getUId());
+        for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+            if (programRuleAction.getProgramRuleActionType().equals(ProgramRuleActionType.ASSIGN)
+                    && programRuleAction.getContent() != null) {
+                String programRuleVariableName = programRuleAction.getContent().substring(2,
+                        programRuleAction.getContent().length() - 1);
+                ProgramRuleVariable programRuleVariable = variableUtils.getProgramRuleVariableMap
+                        ().get(programRuleVariableName);
+                if (programRuleVariable.getTrackedEntityAttribute() != null) {
+                    trackedEntityAttributesInRule.add(programRuleVariable
+                            .getTrackedEntityAttribute().getUId());
                 }
             }
         }

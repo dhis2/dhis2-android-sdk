@@ -29,8 +29,6 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -45,6 +43,7 @@ public class ProgramIndicatorService implements IProgramIndicatorService {
     public ProgramIndicatorService(IProgramIndicatorStore programIndicatorStore) {
         this.programIndicatorStore = programIndicatorStore;
     }
+
     @Override
     public ProgramIndicator get(long id) {
         return programIndicatorStore.queryById(id);

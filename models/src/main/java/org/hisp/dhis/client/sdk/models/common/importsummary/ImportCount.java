@@ -55,16 +55,32 @@ public class ImportCount {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public int getImported() {
         return imported;
+    }
+
+    public void setImported(int imported) {
+        this.imported = imported;
     }
 
     public int getUpdated() {
         return updated;
     }
 
+    public void setUpdated(int updated) {
+        this.updated = updated;
+    }
+
     public int getIgnored() {
         return ignored;
+    }
+
+    public void setIgnored(int ignored) {
+        this.ignored = ignored;
     }
 
     public int getDeleted() {
@@ -73,21 +89,5 @@ public class ImportCount {
 
     public void setDeleted(int deleted) {
         this.deleted = deleted;
-    }
-
-    public void setIgnored(int ignored) {
-        this.ignored = ignored;
-    }
-
-    public void setUpdated(int updated) {
-        this.updated = updated;
-    }
-
-    public void setImported(int imported) {
-        this.imported = imported;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 }

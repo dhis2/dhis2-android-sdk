@@ -53,6 +53,13 @@ public class LastUpdatedPreferences implements ILastUpdatedPreferences {
                 Context.MODE_PRIVATE);
     }
 
+    private static String buildKey(ResourceType resourceType, DateType dateType) {
+        isNull(resourceType, "ResourceType object must not be null");
+        isNull(dateType, "DateType object must not be null");
+
+        return resourceType.name() + "." + dateType.name();
+    }
+
     @Override
     public boolean save(ResourceType resourceType, DateType dateType, DateTime dateTime) {
         isNull(dateTime, "DateTime object must not be null");
@@ -93,13 +100,6 @@ public class LastUpdatedPreferences implements ILastUpdatedPreferences {
     @Override
     public boolean clear() {
         return preferences.edit().clear().commit();
-    }
-
-    private static String buildKey(ResourceType resourceType, DateType dateType) {
-        isNull(resourceType, "ResourceType object must not be null");
-        isNull(dateType, "DateType object must not be null");
-
-        return resourceType.name() + "." + dateType.name();
     }
 
     private boolean putString(String key, String value) {

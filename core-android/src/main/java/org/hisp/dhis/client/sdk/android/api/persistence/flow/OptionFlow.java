@@ -56,6 +56,10 @@ public final class OptionFlow extends BaseIdentifiableObjectFlow {
     @Column
     String code;
 
+    public OptionFlow() {
+        // empty constructor
+    }
+
     public int getSortOrder() {
         return sortOrder;
     }
@@ -78,9 +82,5 @@ public final class OptionFlow extends BaseIdentifiableObjectFlow {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public OptionFlow() {
-        // empty constructor
     }
 }

@@ -90,7 +90,7 @@ public interface IStateStore extends IStore<State> {
     <T extends IModel> Map<Long, Action> queryActionsForModel(Class<T> clazz);
 
     /**
-     * @param clazz  Class, instances of which we want to retrieve from database.
+     * @param clazz   Class, instances of which we want to retrieve from database.
      * @param actions Action(s) which we want to have in resulting payload from database.
      * @return List of Class typed instances which State contain given action.
      */

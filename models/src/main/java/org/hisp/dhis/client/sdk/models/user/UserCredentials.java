@@ -43,11 +43,11 @@ class UserCredentials {
         // explicit empty constructor
     }
 
-    public void setUserRoles(List<UserRole> userRoles) {
-        this.userRoles = userRoles;
-    }
-
     public List<UserRole> getUserRoles() {
         return userRoles;
+    }
+
+    public void setUserRoles(List<UserRole> userRoles) {
+        this.userRoles = userRoles;
     }
 }

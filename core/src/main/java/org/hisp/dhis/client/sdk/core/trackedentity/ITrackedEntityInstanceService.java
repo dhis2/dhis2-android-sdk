@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
@@ -38,18 +42,22 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 public interface ITrackedEntityInstanceService extends IService, ISave<TrackedEntityInstance>,
         IRemove<TrackedEntityInstance>, IGet<TrackedEntityInstance>, IList<TrackedEntityInstance> {
     TrackedEntityInstance get(String uid);
+
     TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit);
 
     /**
      * Creates and adds a relationship for the given parameters.
+     *
      * @param trackedEntityInstanceA
      * @param trackedEntityInstanceB
      * @param relationshipType
      */
-    boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA, TrackedEntityInstance trackedEntityInstanceB, RelationshipType relationshipType);
+    boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA, TrackedEntityInstance
+            trackedEntityInstanceB, RelationshipType relationshipType);
 
     /**
      * Removes a given relationship, both locally and on the server
+     *
      * @param relationship
      * @return
      */

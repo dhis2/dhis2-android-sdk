@@ -28,7 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -36,10 +41,13 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface IProgramIndicatorService extends IService, ISave<ProgramIndicator>, IRemove<ProgramIndicator>,
-        IGet<ProgramIndicator>, IGetUid<ProgramIndicator>, IList<ProgramIndicator>{
+public interface IProgramIndicatorService extends IService, ISave<ProgramIndicator>,
+        IRemove<ProgramIndicator>,
+        IGet<ProgramIndicator>, IGetUid<ProgramIndicator>, IList<ProgramIndicator> {
 
     List<ProgramIndicator> list(Program program);
+
     List<ProgramIndicator> list(ProgramStage programStage);
+
     List<ProgramIndicator> list(ProgramStageSection programStageSection);
 }

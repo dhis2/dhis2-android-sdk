@@ -1,30 +1,29 @@
 /*
- *  Copyright (c) 2016, University of Oslo
- *  * All rights reserved.
- *  *
- *  * Redistribution and use in source and binary forms, with or without
- *  * modification, are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice, this
- *  * list of conditions and the following disclaimer.
- *  *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *  * this list of conditions and the following disclaimer in the documentation
- *  * and/or other materials provided with the distribution.
- *  * Neither the name of the HISP project nor the names of its contributors may
- *  * be used to endorse or promote products derived from this software without
- *  * specific prior written permission.
- *  *
- *  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright (c) 2016, University of Oslo
  *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package org.hisp.dhis.client.sdk.core.common.utils;
@@ -52,7 +51,13 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 /**
@@ -70,10 +75,13 @@ public class ProgramIndicatorUtils {
     private final IProgramStageDataElementService programStageDataElementService;
     private final ExpressionUtils expressionUtils;
 
-    public ProgramIndicatorUtils(IConstantService constantService, IDataElementService dataElementService,
+    public ProgramIndicatorUtils(IConstantService constantService, IDataElementService
+            dataElementService,
                                  ITrackedEntityAttributeService trackedEntityAttributeService,
-                                 IProgramService programService, IProgramStageService programStageService,
-                                 IProgramStageDataElementService programStageDataElementService, ExpressionUtils expressionUtils) {
+                                 IProgramService programService, IProgramStageService
+                                         programStageService,
+                                 IProgramStageDataElementService programStageDataElementService,
+                                 ExpressionUtils expressionUtils) {
         this.constantService = constantService;
         this.dataElementService = dataElementService;
         this.trackedEntityAttributeService = trackedEntityAttributeService;
@@ -83,19 +91,24 @@ public class ProgramIndicatorUtils {
         this.expressionUtils = expressionUtils;
     }
 
+    private static boolean isZeroOrPositive(String value) {
+        return StringUtils.isNumeric(value) && Double.valueOf(value) >= 0d;
+    }
+
     /**
      * Calculate an program indicator value based on enrollment and an
      * indicator defined for a TrackedEntityInstance
      *
-     * @param enrollment  enrollment
+     * @param enrollment       enrollment
      * @param programIndicator ProgramIndicator
      * @return Indicator value
      */
-    public String getProgramIndicatorValue(Enrollment enrollment, ProgramIndicator programIndicator) {
-        if(programIndicator == null) {
+    public String getProgramIndicatorValue(Enrollment enrollment, ProgramIndicator
+            programIndicator) {
+        if (programIndicator == null) {
             return null;
         }
-        
+
         Double value = getValue(enrollment, null, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
@@ -114,10 +127,10 @@ public class ProgramIndicatorUtils {
      * @return Indicator value
      */
     public String getProgramIndicatorValue(Event event, ProgramIndicator programIndicator) {
-        if(programIndicator == null) {
+        if (programIndicator == null) {
             return null;
         }
-        
+
         Double value = getValue(null, event, programIndicator);
 
         if (value != null && !Double.isNaN(value)) {
@@ -138,14 +151,15 @@ public class ProgramIndicatorUtils {
         Map<String, String> result = new HashMap<>();
 
         Program program = programService.get(enrollment.getProgram());
-        Collection<ProgramIndicator> programIndicators = new HashSet(program.getProgramIndicators());
+        Collection<ProgramIndicator> programIndicators = new HashSet(program.getProgramIndicators
+                ());
 
         for (ProgramIndicator programIndicator : programIndicators) {
             String value = getProgramIndicatorValue(enrollment, programIndicator);
 
             if (value != null) {
                 result.put(programIndicator.getDisplayName(),
-                    getProgramIndicatorValue(enrollment, programIndicator));
+                        getProgramIndicatorValue(enrollment, programIndicator));
             }
         }
 
@@ -178,7 +192,8 @@ public class ProgramIndicatorUtils {
 
                     String dataelementName = dataElement.getDisplayName();
 
-                    matcher.appendReplacement(description, programStageName + ProgramIndicator.SEPARATOR_ID + dataelementName);
+                    matcher.appendReplacement(description, programStageName + ProgramIndicator
+                            .SEPARATOR_ID + dataelementName);
                 }
             } else if (ProgramIndicator.KEY_ATTRIBUTE.equals(key)) {
                 TrackedEntityAttribute attribute = trackedEntityAttributeService.get(uid);
@@ -277,7 +292,8 @@ public class ProgramIndicatorUtils {
      * @param indicator the ProgramIndicator.
      * @return a set of ProgramStageDataElements.
      */
-    public Set<ProgramStageDataElement> getProgramStageDataElementsInExpression(ProgramIndicator indicator) {
+    public Set<ProgramStageDataElement> getProgramStageDataElementsInExpression(ProgramIndicator
+                                                                                        indicator) {
         Set<ProgramStageDataElement> elements = new HashSet<>();
 
         Matcher matcher = ProgramIndicator.DATAELEMENT_PATTERN.matcher(indicator.getExpression());
@@ -287,10 +303,14 @@ public class ProgramIndicatorUtils {
             String de = matcher.group(2);
 
             ProgramStage programStage = programStageService.get(ps);
-            programStage.setProgramStageDataElements(programStageDataElementService.list(programStage));
-            Map<String, ProgramStageDataElement> dataElementToProgramStageDataElementMap = new HashMap<>();
-            for(ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
-                dataElementToProgramStageDataElementMap.put(programStageDataElement.getDataElement().getUId(), programStageDataElement);
+            programStage.setProgramStageDataElements(programStageDataElementService.list
+                    (programStage));
+            Map<String, ProgramStageDataElement> dataElementToProgramStageDataElementMap = new
+                    HashMap<>();
+            for (ProgramStageDataElement programStageDataElement : programStage
+                    .getProgramStageDataElements()) {
+                dataElementToProgramStageDataElementMap.put(programStageDataElement
+                        .getDataElement().getUId(), programStageDataElement);
             }
             DataElement dataElement = dataElementService.get(de);
 
@@ -315,6 +335,10 @@ public class ProgramIndicatorUtils {
 
         return elements;
     }
+
+    // -------------------------------------------------------------------------
+    // Supportive methods
+    // -------------------------------------------------------------------------
 
     /**
      * Get all {@link TrackedEntityAttribute} part of the expression of the
@@ -341,17 +365,15 @@ public class ProgramIndicatorUtils {
         return attributes;
     }
 
-    // -------------------------------------------------------------------------
-    // Supportive methods
-    // -------------------------------------------------------------------------
-
     /**
-     * @param currentEnrollment can be null if currentEvent is not null in case single currentEvent without reg
-     * @param currentEvent           can be null if currentEnrollment is not null
+     * @param currentEnrollment can be null if currentEvent is not null in case single
+     *                          currentEvent without reg
+     * @param currentEvent      can be null if currentEnrollment is not null
      * @param indicator
      * @return
      */
-    private Double getValue(Enrollment currentEnrollment, Event currentEvent, ProgramIndicator indicator) {
+    private Double getValue(Enrollment currentEnrollment, Event currentEvent, ProgramIndicator
+            indicator) {
         StringBuffer buffer = new StringBuffer();
 
         String expression = indicator.getExpression();
@@ -364,16 +386,18 @@ public class ProgramIndicatorUtils {
         Program program = programService.get(currentEnrollment.getUId());
         program.setProgramStages(programStageService.list(program));
         Map<String, Event> programStageToEventMap = new HashMap<>();
-        for(Event event1 : currentEnrollment.getEvents()) {
+        for (Event event1 : currentEnrollment.getEvents()) {
             programStageToEventMap.put(event1.getProgramStageId(), event1);
         }
         Map<String, ProgramStage> programStageMap = new HashMap<>();
-        for(ProgramStage programStage : program.getProgramStages()) {
+        for (ProgramStage programStage : program.getProgramStages()) {
             programStageMap.put(programStage.getUId(), programStage);
         }
         Map<String, TrackedEntityAttributeValue> trackedEntityAttributeValueMap = new HashMap<>();
-        for(TrackedEntityAttributeValue trackedEntityAttributeValue : currentEnrollment.getTrackedEntityAttributeValues()) {
-            trackedEntityAttributeValueMap.put(trackedEntityAttributeValue.getTrackedEntityAttributeUId(), trackedEntityAttributeValue);
+        for (TrackedEntityAttributeValue trackedEntityAttributeValue : currentEnrollment
+                .getTrackedEntityAttributeValues()) {
+            trackedEntityAttributeValueMap.put(trackedEntityAttributeValue
+                    .getTrackedEntityAttributeUId(), trackedEntityAttributeValue);
         }
 
 
@@ -388,11 +412,13 @@ public class ProgramIndicatorUtils {
 
                 if (programStageUid != null && de != null) {
                     if (currentEnrollment == null) { //in case single currentEvent without reg
-                        if(event == null) {
+                        if (event == null) {
                             event = currentEvent;
                             if (event.getTrackedEntityDataValues() != null) {
-                                for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
-                                    dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
+                                for (TrackedEntityDataValue dataValue : event
+                                        .getTrackedEntityDataValues()) {
+                                    dataElementToDataValues.put(dataValue.getDataElement(),
+                                            dataValue);
                                 }
                             }
                         }
@@ -401,8 +427,10 @@ public class ProgramIndicatorUtils {
                             event = programStageToEventMap.get(programStageUid);
                             dataElementToDataValues.clear();
                             if (event.getTrackedEntityDataValues() != null) {
-                                for(TrackedEntityDataValue dataValue: event.getTrackedEntityDataValues()) {
-                                    dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
+                                for (TrackedEntityDataValue dataValue : event
+                                        .getTrackedEntityDataValues()) {
+                                    dataElementToDataValues.put(dataValue.getDataElement(),
+                                            dataValue);
                                 }
                             }
                         }
@@ -415,13 +443,15 @@ public class ProgramIndicatorUtils {
                     dataValue = dataElementToDataValues.get(de);
 
                     String value;
-                    if (dataValue == null || dataValue.getValue() == null || dataValue.getValue().isEmpty()) {
+                    if (dataValue == null || dataValue.getValue() == null || dataValue.getValue()
+                            .isEmpty()) {
                         value = NULL_REPLACEMENT;
                     } else {
                         value = dataValue.getValue();
 
                         valueCount++;
-                        zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
+                        zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) :
+                                zeroPosValueCount;
                     }
 
                     matcher.appendReplacement(buffer, value);
@@ -432,15 +462,18 @@ public class ProgramIndicatorUtils {
                 if (currentEnrollment != null) { //in case single currentEvent without reg
 
                     if (uid != null) {
-                        TrackedEntityAttributeValue attributeValue = trackedEntityAttributeValueMap.get(uid);
+                        TrackedEntityAttributeValue attributeValue =
+                                trackedEntityAttributeValueMap.get(uid);
                         String value;
-                        if (attributeValue == null || attributeValue.getValue() == null || attributeValue.getValue().isEmpty()) {
+                        if (attributeValue == null || attributeValue.getValue() == null ||
+                                attributeValue.getValue().isEmpty()) {
                             value = NULL_REPLACEMENT;
                         } else {
                             value = attributeValue.getValue();
 
                             valueCount++;
-                            zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1) : zeroPosValueCount;
+                            zeroPosValueCount = isZeroOrPositive(value) ? (zeroPosValueCount + 1)
+                                    : zeroPosValueCount;
                         }
                         matcher.appendReplacement(buffer, value);
                     } else {
@@ -469,13 +502,14 @@ public class ProgramIndicatorUtils {
                     }
 
                     if (date != null) {
-                        matcher.appendReplacement(buffer, Days.daysBetween(currentDate, date).toString());
+                        matcher.appendReplacement(buffer, Days.daysBetween(currentDate, date)
+                                .toString());
                     }
                 }
             }
         }
-        
-        if(valueCount <= 0) {
+
+        if (valueCount <= 0) {
             //returning null in case there are now values in the expression.
             return null;
         }
@@ -485,7 +519,7 @@ public class ProgramIndicatorUtils {
         // ---------------------------------------------------------------------
         // Value count variable
         // ---------------------------------------------------------------------
-        
+
         buffer = new StringBuffer();
         matcher = ProgramIndicator.VALUECOUNT_PATTERN.matcher(expression);
 
@@ -509,9 +543,5 @@ public class ProgramIndicatorUtils {
             value = new Double(0);
         }
         return value;
-    }
-
-    private static boolean isZeroOrPositive(String value) {
-        return StringUtils.isNumeric(value) && Double.valueOf(value) >= 0d;
     }
 }

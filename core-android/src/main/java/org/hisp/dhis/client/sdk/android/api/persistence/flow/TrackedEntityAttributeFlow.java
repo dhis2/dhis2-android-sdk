@@ -87,6 +87,10 @@ public final class TrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow
     @Column
     int sortOrderInListNoProgram;
 
+    public TrackedEntityAttributeFlow() {
+        // empty constructor
+    }
+
     public OptionSetFlow getOptionSet() {
         return optionSet;
     }
@@ -189,9 +193,5 @@ public final class TrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow
 
     public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
         this.sortOrderInListNoProgram = sortOrderInListNoProgram;
-    }
-
-    public TrackedEntityAttributeFlow() {
-        // empty constructor
     }
 }

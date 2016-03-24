@@ -40,6 +40,9 @@ public interface ITrackedEntityInstanceController {
 
     void sync(List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments);
 
-    List<TrackedEntityInstance> queryServerTrackedEntityInstances(String organisationUnitUid, String programUid,
-                                                                  String queryString, TrackedEntityAttributeValue... params);
+    List<TrackedEntityInstance> queryServerTrackedEntityInstances(String organisationUnitUid,
+                                                                  String programUid,
+                                                                  String queryString,
+                                                                  TrackedEntityAttributeValue...
+                                                                          params);
 }

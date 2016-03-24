@@ -39,7 +39,6 @@ import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 public interface IControllersModule {
     ISystemInfoController getSystemInfoController();

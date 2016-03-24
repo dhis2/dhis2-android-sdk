@@ -29,15 +29,16 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribute,
         TrackedEntityAttributeFlow> {
 
     @Override
-    public TrackedEntityAttributeFlow mapToDatabaseEntity(TrackedEntityAttribute trackedEntityAttribute) {
+    public TrackedEntityAttributeFlow mapToDatabaseEntity(TrackedEntityAttribute
+                                                                      trackedEntityAttribute) {
         if (trackedEntityAttribute == null) {
             return null;
         }
@@ -50,24 +51,30 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
         trackedEntityAttributeFlow.setName(trackedEntityAttribute.getName());
         trackedEntityAttributeFlow.setDisplayName(trackedEntityAttribute.getDisplayName());
         trackedEntityAttributeFlow.setAccess(trackedEntityAttribute.getAccess());
-        trackedEntityAttributeFlow.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToDatabaseEntity(trackedEntityAttribute.getOptionSet()));
+        trackedEntityAttributeFlow.setOptionSet(MapperModuleProvider.getInstance()
+                .getOptionSetMapper().mapToDatabaseEntity(trackedEntityAttribute.getOptionSet()));
         trackedEntityAttributeFlow.setUnique(trackedEntityAttribute.isUnique());
         trackedEntityAttributeFlow.setProgramScope(trackedEntityAttribute.isProgramScope());
         trackedEntityAttributeFlow.setOrgunitScope(trackedEntityAttribute.isOrgunitScope());
-        trackedEntityAttributeFlow.setDisplayInListNoProgram(trackedEntityAttribute.isDisplayInListNoProgram());
-        trackedEntityAttributeFlow.setDisplayOnVisitSchedule(trackedEntityAttribute.isDisplayOnVisitSchedule());
+        trackedEntityAttributeFlow.setDisplayInListNoProgram(trackedEntityAttribute
+                .isDisplayInListNoProgram());
+        trackedEntityAttributeFlow.setDisplayOnVisitSchedule(trackedEntityAttribute
+                .isDisplayOnVisitSchedule());
         trackedEntityAttributeFlow.setExternalAccess(trackedEntityAttribute.isExternalAccess());
         trackedEntityAttributeFlow.setValueType(trackedEntityAttribute.getValueType());
         trackedEntityAttributeFlow.setConfidential(trackedEntityAttribute.isConfidential());
         trackedEntityAttributeFlow.setInherit(trackedEntityAttribute.isInherit());
-        trackedEntityAttributeFlow.setSortOrderVisitSchedule(trackedEntityAttribute.getSortOrderVisitSchedule());
+        trackedEntityAttributeFlow.setSortOrderVisitSchedule(trackedEntityAttribute
+                .getSortOrderVisitSchedule());
         trackedEntityAttributeFlow.setDimension(trackedEntityAttribute.getDimension());
-        trackedEntityAttributeFlow.setSortOrderInListNoProgram(trackedEntityAttribute.getSortOrderInListNoProgram());
+        trackedEntityAttributeFlow.setSortOrderInListNoProgram(trackedEntityAttribute
+                .getSortOrderInListNoProgram());
         return trackedEntityAttributeFlow;
     }
 
     @Override
-    public TrackedEntityAttribute mapToModel(TrackedEntityAttributeFlow trackedEntityAttributeFlow) {
+    public TrackedEntityAttribute mapToModel(TrackedEntityAttributeFlow
+                                                         trackedEntityAttributeFlow) {
         if (trackedEntityAttributeFlow == null) {
             return null;
         }
@@ -80,19 +87,24 @@ public class TrackedEntityAttributeMapper extends AbsMapper<TrackedEntityAttribu
         trackedEntityAttribute.setName(trackedEntityAttributeFlow.getName());
         trackedEntityAttribute.setDisplayName(trackedEntityAttributeFlow.getDisplayName());
         trackedEntityAttribute.setAccess(trackedEntityAttributeFlow.getAccess());
-        trackedEntityAttribute.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper().mapToModel(trackedEntityAttributeFlow.getOptionSet()));
+        trackedEntityAttribute.setOptionSet(MapperModuleProvider.getInstance().getOptionSetMapper
+                ().mapToModel(trackedEntityAttributeFlow.getOptionSet()));
         trackedEntityAttribute.setUnique(trackedEntityAttributeFlow.isUnique());
         trackedEntityAttribute.setProgramScope(trackedEntityAttributeFlow.isProgramScope());
         trackedEntityAttribute.setOrgunitScope(trackedEntityAttributeFlow.isOrgunitScope());
-        trackedEntityAttribute.setDisplayInListNoProgram(trackedEntityAttributeFlow.isDisplayInListNoProgram());
-        trackedEntityAttribute.setDisplayOnVisitSchedule(trackedEntityAttributeFlow.isDisplayOnVisitSchedule());
+        trackedEntityAttribute.setDisplayInListNoProgram(trackedEntityAttributeFlow
+                .isDisplayInListNoProgram());
+        trackedEntityAttribute.setDisplayOnVisitSchedule(trackedEntityAttributeFlow
+                .isDisplayOnVisitSchedule());
         trackedEntityAttribute.setExternalAccess(trackedEntityAttributeFlow.isExternalAccess());
         trackedEntityAttribute.setValueType(trackedEntityAttributeFlow.getValueType());
         trackedEntityAttribute.setConfidential(trackedEntityAttributeFlow.isConfidential());
         trackedEntityAttribute.setInherit(trackedEntityAttributeFlow.isInherit());
-        trackedEntityAttribute.setSortOrderVisitSchedule(trackedEntityAttributeFlow.getSortOrderVisitSchedule());
+        trackedEntityAttribute.setSortOrderVisitSchedule(trackedEntityAttributeFlow
+                .getSortOrderVisitSchedule());
         trackedEntityAttribute.setDimension(trackedEntityAttributeFlow.getDimension());
-        trackedEntityAttribute.setSortOrderInListNoProgram(trackedEntityAttributeFlow.getSortOrderInListNoProgram());
+        trackedEntityAttribute.setSortOrderInListNoProgram(trackedEntityAttributeFlow
+                .getSortOrderInListNoProgram());
         return trackedEntityAttribute;
     }
 

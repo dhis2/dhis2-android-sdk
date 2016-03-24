@@ -182,51 +182,6 @@ public final class DashboardItem extends BaseIdentifiableObject {
         this.messages = messages;
     }
 
-    public void setDashboardElements(List<DashboardElement> dashboardElements) {
-        if (getType() == null || getType().isEmpty()) {
-            return;
-        }
-
-        if (dashboardElements == null || dashboardElements.isEmpty()) {
-            return;
-        }
-
-        switch (getType()) {
-            case DashboardContent.TYPE_CHART: {
-                setChart(dashboardElements.get(0));
-                break;
-            }
-            case DashboardContent.TYPE_EVENT_CHART: {
-                setEventChart(dashboardElements.get(0));
-                break;
-            }
-            case DashboardContent.TYPE_MAP: {
-                setMap(dashboardElements.get(0));
-                break;
-            }
-            case DashboardContent.TYPE_REPORT_TABLE: {
-                setReportTable(dashboardElements.get(0));
-                break;
-            }
-            case DashboardContent.TYPE_EVENT_REPORT: {
-                setEventReport(dashboardElements.get(0));
-                break;
-            }
-            case DashboardContent.TYPE_USERS: {
-                setUsers(dashboardElements);
-                break;
-            }
-            case DashboardContent.TYPE_REPORTS: {
-                setReports(dashboardElements);
-                break;
-            }
-            case DashboardContent.TYPE_RESOURCES: {
-                setResources(dashboardElements);
-                break;
-            }
-        }
-    }
-
     public List<DashboardElement> getDashboardElements() {
 
         List<DashboardElement> elements = new ArrayList<>();
@@ -270,5 +225,50 @@ public final class DashboardItem extends BaseIdentifiableObject {
         }
 
         return elements;
+    }
+
+    public void setDashboardElements(List<DashboardElement> dashboardElements) {
+        if (getType() == null || getType().isEmpty()) {
+            return;
+        }
+
+        if (dashboardElements == null || dashboardElements.isEmpty()) {
+            return;
+        }
+
+        switch (getType()) {
+            case DashboardContent.TYPE_CHART: {
+                setChart(dashboardElements.get(0));
+                break;
+            }
+            case DashboardContent.TYPE_EVENT_CHART: {
+                setEventChart(dashboardElements.get(0));
+                break;
+            }
+            case DashboardContent.TYPE_MAP: {
+                setMap(dashboardElements.get(0));
+                break;
+            }
+            case DashboardContent.TYPE_REPORT_TABLE: {
+                setReportTable(dashboardElements.get(0));
+                break;
+            }
+            case DashboardContent.TYPE_EVENT_REPORT: {
+                setEventReport(dashboardElements.get(0));
+                break;
+            }
+            case DashboardContent.TYPE_USERS: {
+                setUsers(dashboardElements);
+                break;
+            }
+            case DashboardContent.TYPE_REPORTS: {
+                setReports(dashboardElements);
+                break;
+            }
+            case DashboardContent.TYPE_RESOURCES: {
+                setResources(dashboardElements);
+                break;
+            }
+        }
     }
 }

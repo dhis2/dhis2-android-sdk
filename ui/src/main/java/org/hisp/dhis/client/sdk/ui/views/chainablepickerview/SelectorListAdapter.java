@@ -87,8 +87,9 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
     public View getView(int position, View convertView, ViewGroup parent) {
         SelectorListViewHolder holder;
         View view;
-        if(convertView == null) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.picker_list_view_item, null);
+        if (convertView == null) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout
+                    .picker_list_view_item, null);
             TextView textView = (TextView) view.findViewById(R.id.textView);
             holder = new SelectorListViewHolder(textView);
             view.setTag(holder);
@@ -116,12 +117,12 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
                 for (int i = 0; i < allItems.size(); i++) {
                     IPickable item = allItems.get(i);
                     String itemValue = item.toString().toLowerCase();
-                    if(itemValue.contains(filter)) {
+                    if (itemValue.contains(filter)) {
                         values.add(item);
                     }
                 }
             } else {
-                synchronized ( this ) {
+                synchronized (this) {
                     values.addAll(allItems);
                 }
             }
@@ -132,9 +133,9 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            if(constraint == null || constraint.equals("")) {
+            if (constraint == null || constraint.equals("")) {
                 swapFilteredData(allItems);
-            } else if(results.count == 0) {
+            } else if (results.count == 0) {
                 swapFilteredData(new ArrayList<IPickable>());
             } else {
                 filteredItems = (ArrayList<IPickable>) results.values;
@@ -146,6 +147,7 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
 
     private class SelectorListViewHolder {
         TextView textView;
+
         public SelectorListViewHolder(TextView textView) {
             this.textView = textView;
         }

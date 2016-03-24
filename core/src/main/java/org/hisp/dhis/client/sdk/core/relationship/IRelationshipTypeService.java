@@ -28,9 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
-public interface IRelationshipTypeService extends IService, ISave<RelationshipType>, IRemove<RelationshipType>,
+public interface IRelationshipTypeService extends IService, ISave<RelationshipType>,
+        IRemove<RelationshipType>,
         IGet<RelationshipType>, IGetUid<RelationshipType>, IList<RelationshipType> {
 }

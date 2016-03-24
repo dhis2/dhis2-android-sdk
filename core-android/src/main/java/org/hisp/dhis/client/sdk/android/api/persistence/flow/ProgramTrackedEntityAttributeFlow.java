@@ -78,6 +78,10 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
     @Column
     boolean mandatory;
 
+    public ProgramTrackedEntityAttributeFlow() {
+        // empty constructor
+    }
+
     public TrackedEntityAttributeFlow getTrackedEntityAttribute() {
         return trackedEntityAttribute;
     }
@@ -124,9 +128,5 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
 
     public void setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
-    }
-
-    public ProgramTrackedEntityAttributeFlow() {
-        // empty constructor
     }
 }

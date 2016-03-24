@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
 import java.util.List;
 

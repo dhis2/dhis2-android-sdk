@@ -29,13 +29,19 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 
-import org.hisp.dhis.client.sdk.core.common.services.*;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 import java.util.List;
 
-public interface IProgramRuleActionService extends IService, ISave<ProgramRuleAction>, IRemove<ProgramRuleAction>,
+public interface IProgramRuleActionService extends IService, ISave<ProgramRuleAction>,
+        IRemove<ProgramRuleAction>,
         IGet<ProgramRuleAction>, IGetUid<ProgramRuleAction>, IList<ProgramRuleAction> {
 
     List<ProgramRuleAction> list(ProgramRule programRule);

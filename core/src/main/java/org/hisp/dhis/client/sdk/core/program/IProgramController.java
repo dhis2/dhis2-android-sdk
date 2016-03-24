@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.Program;
-
-import java.util.Collection;
 
 public interface IProgramController extends IIdentifiableController<Program> {
 }

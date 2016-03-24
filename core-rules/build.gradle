@@ -34,6 +34,9 @@ def libs = rootProject.ext.libraries
 dependencies {
     compile project(":models")
 
+    // DHIS dependencies
+    compile "org.hisp.dhis:dhis2-support-commons:${libs.dhisCommonsVersion}"
+
     // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"

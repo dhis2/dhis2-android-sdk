@@ -66,8 +66,7 @@ public class RuleEngine {
     private List<RuleEffect> execute(
             Event event, TrackedEntityInstance instance, List<Event> events) {
 
-        // this is the place where magic happens
-        return new ArrayList<>();
+        return RuleEngineExecution.execute(this.programRules);
     }
 
     public List<RuleEffect> execute(Event currentEvent, Enrollment enrollment) {

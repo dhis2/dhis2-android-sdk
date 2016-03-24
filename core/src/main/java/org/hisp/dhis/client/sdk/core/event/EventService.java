@@ -63,8 +63,11 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment, OrganisationUnit organisationUnit, Program program, ProgramStage programStage, String status) {
-        Preconditions.isNull(trackedEntityInstance, "trackedEntityInstance argument must not be null");
+    public Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment,
+                        OrganisationUnit organisationUnit, Program program, ProgramStage
+                                    programStage, Event.EventStatus status) {
+        Preconditions.isNull(trackedEntityInstance, "trackedEntityInstance argument must not be " +
+                "null");
         Preconditions.isNull(enrollment, "enrollment argument must not be null");
         Preconditions.isNull(organisationUnit, "organisationUnit argument must not be null");
         Preconditions.isNull(program, "program argument must not be null");
@@ -73,10 +76,10 @@ public class EventService implements IEventService {
 
         Event event = new Event();
         event.setUId(CodeGenerator.generateCode());
-        event.setEnrollment(enrollment);
+        // event.setEnrollment(enrollment);
         event.setOrganisationUnitId(organisationUnit.getUId());
-        event.setStatus(status);
-        event.setTrackedEntityInstance(trackedEntityInstance);
+        event.setEventStatus(status);
+        // event.setTrackedEntityInstance(trackedEntityInstance);
         event.setProgramId(program.getUId());
         event.setProgramStageId(programStage.getUId());
         event.setTrackedEntityDataValues(new ArrayList<TrackedEntityDataValue>());
@@ -87,19 +90,21 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public Event create(OrganisationUnit organisationUnit, String status, Program program, ProgramStage programStage) {
+    public Event create(OrganisationUnit organisationUnit, Event.EventStatus status, Program
+            program, ProgramStage programStage) {
         Preconditions.isNull(organisationUnit, "organisationUnit argument must not be null");
         Preconditions.isNull(program, "program argument must not be null");
         Preconditions.isNull(programStage, "programStage argument must not be null");
         Preconditions.isNull(status, "status argument must not be null");
 
-        if(!Event.STATUS_ACTIVE.equals(status) && !Event.STATUS_COMPLETED.equals(status)) {
+        if (!Event.EventStatus.ACTIVE.equals(status) && !Event.EventStatus.COMPLETED.equals
+                (status)) {
             throw new IllegalArgumentException("event status must be either ACTIVE or COMPLETED");
         }
 
         Event event = new Event();
         event.setUId(CodeGenerator.generateCode());
-        event.setStatus(status);
+        event.setEventStatus(status);
         event.setOrganisationUnitId(organisationUnit.getUId());
         event.setProgramId(program.getUId());
         event.setProgramStageId(programStage.getUId());
@@ -108,7 +113,8 @@ public class EventService implements IEventService {
     }
 
     @Override
-    public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate, DateTime endDate) {
+    public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime
+            startDate, DateTime endDate) {
         return eventStore.query(organisationUnit, program, startDate, endDate);
     }
 
@@ -141,7 +147,8 @@ public class EventService implements IEventService {
 
     @Override
     public List<Event> list() {
-//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED, Action.TO_UPDATE);
+//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED,
+// Action.TO_UPDATE);
         return eventStore.queryAll();
     }
 

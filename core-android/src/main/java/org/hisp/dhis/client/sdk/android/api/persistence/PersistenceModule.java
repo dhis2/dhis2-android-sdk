@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
@@ -75,6 +76,11 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public ITransactionManager getTransactionManager() {
         return transactionManager;
+    }
+
+    @Override
+    public IStateStore getStateStore() {
+        return null;
     }
 
     @Override

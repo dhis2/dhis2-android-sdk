@@ -114,18 +114,23 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
 
-        eventController = new EventController(
-                networkModule.getEventApiClient(),
-                networkModule.getSystemInfoApiClient(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager(),
-                null, //persistenceModule.getStateStore(),
-                persistenceModule.getEventStore(),
-                null, //persistenceModule.getTrackedEntityDataValueStore(),
-                persistenceModule.getOrganisationUnitStore(),
-                persistenceModule.getProgramStore(),
-                null //persistenceModule.getFailedItemStore()
-        );
+//        eventController = new EventController(
+//                networkModule.getEventApiClient(),
+//                networkModule.getSystemInfoApiClient(),
+//                preferencesModule.getLastUpdatedPreferences(),
+//                persistenceModule.getTransactionManager(),
+//                null, //persistenceModule.getStateStore(),
+//                persistenceModule.getEventStore(),
+//                null, //persistenceModule.getTrackedEntityDataValueStore(),
+//                persistenceModule.getOrganisationUnitStore(),
+//                persistenceModule.getProgramStore(),
+//                null //persistenceModule.getFailedItemStore()
+//        );
+
+        eventController = new EventController(systemInfoController,
+                networkModule.getEventApiClient(), preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getEventStore(), null,
+                persistenceModule.getTransactionManager());
 
         dataElementController = new DataElementController(
                 networkModule.getDataElementApiClient(),

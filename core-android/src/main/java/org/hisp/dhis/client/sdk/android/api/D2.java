@@ -68,6 +68,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
+// TODO Managing logging properly
+// TODO Allow clients to set custom objects (like OkHttpClient)
 public class D2 {
     private static D2 d2;
 

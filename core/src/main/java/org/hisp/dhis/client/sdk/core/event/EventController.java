@@ -42,7 +42,9 @@ import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -50,49 +52,62 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Set;
 
+// TODO re-consider name methods in controllers (replace sync
+// TODO in meta-data controllers with something similar to pullModels()
 public final class EventController implements IEventController {
+
+    /* Controllers */
+    private final ISystemInfoController systemInfoController;
+
+    /* Api clients */
     private final IEventApiClient eventApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
+
+    /* Preferences */
     private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ITransactionManager transactionManager;
-    private final IStateStore stateStore;
+
+    /* Persistence */
     private final IEventStore eventStore;
-    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
-    private final IOrganisationUnitStore organisationUnitStore;
-    private final IProgramStore programStore;
-    private final IFailedItemStore failedItemStore;
+    private final IStateStore stateStore;
 
-    public EventController(IEventApiClient eventApiClient,
-                           ISystemInfoApiClient systemInfoApiClient,
+    /* Utilities */
+    private final ITransactionManager transactionManager;
+
+    public EventController(ISystemInfoController systemInfoController,
+                           IEventApiClient eventApiClient,
                            ILastUpdatedPreferences lastUpdatedPreferences,
-                           ITransactionManager transactionManager,
-                           IStateStore stateStore, IEventStore eventStore,
-                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                           IFailedItemStore failedItemStore) {
+                           IEventStore eventStore, IStateStore stateStore,
+                           ITransactionManager transactionManager) {
+        this.systemInfoController = systemInfoController;
         this.eventApiClient = eventApiClient;
-        this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.transactionManager = transactionManager;
-        this.stateStore = stateStore;
         this.eventStore = eventStore;
-        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
-        this.organisationUnitStore = organisationUnitStore;
-        this.programStore = programStore;
-        this.failedItemStore = failedItemStore;
+        this.stateStore = stateStore;
+        this.transactionManager = transactionManager;
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        sync(syncStrategy, null);
+    public void sync(SyncStrategy strategy) throws ApiException {
+        sync(strategy, null);
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+    public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        /* first we need to get information about new events from server */
+        pullEvents(strategy, uids);
+
+        /* then we should try to push data to server */
+        pushEvents(strategy, uids);
+    }
+
+    // TODO simplify Event model (remove tracker stuff from it).
+    @Override
+    public void pullEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
 
-        List<Event> persistedEvents = eventStore.queryAll();
+        // we need models which we got from server (not those which we created locally)
+        List<Event> persistedEvents = stateStore.queryModelsWithActions(Event.class,
+                Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -111,12 +126,18 @@ public final class EventController implements IEventController {
         List<Event> updatedEvents = eventApiClient.getEvents(
                 Fields.ALL, lastUpdated, uidArray);
 
-
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingEvents,
                 updatedEvents, persistedEvents, eventStore);
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.EVENTS, DateType.SERVER, serverTime);
+    }
+
+    @Override
+    public void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        // 1) check how pullEvents() method works (if it
+        //    overrides data elements with *dirty* state)
+        // 2) Get all e
     }
 }

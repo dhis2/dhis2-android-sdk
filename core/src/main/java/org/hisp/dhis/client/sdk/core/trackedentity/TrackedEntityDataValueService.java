@@ -57,7 +57,7 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
         TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
         trackedEntityDataValue.setEvent(event);
         trackedEntityDataValue.setDataElement(dataElement);
-        trackedEntityDataValue.setProvidedElsewhere(providedElsewhere);
+        // trackedEntityDataValue.setProvidedElsewhere(providedElsewhere);
         trackedEntityDataValue.setStoredBy(storedBy);
         trackedEntityDataValue.setValue(value);
 

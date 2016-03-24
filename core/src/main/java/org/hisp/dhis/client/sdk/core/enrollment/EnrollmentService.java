@@ -116,7 +116,7 @@ public class EnrollmentService implements IEnrollmentService {
         for (ProgramStage programStage : program.getProgramStages()) {
             if (programStage.isAutoGenerateEvent()) {
                 Event event = eventService.create(trackedEntityInstance, enrollment,
-                        organisationUnit, program, programStage, Event.STATUS_FUTURE_VISIT);
+                        organisationUnit, program, programStage, Event.EventStatus.SCHEDULE); //.STATUS_FUTURE_VISIT
                 events.add(event);
             }
         }

@@ -26,17 +26,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.event;
+package org.hisp.dhis.client.sdk.models.common;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.event.Event;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Set;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Coordinates {
 
-public interface IEventController extends IIdentifiableController<Event> {
-    void pullEvents(SyncStrategy strategy, Set<String> uids) throws ApiException;
+    @JsonProperty("latitude")
+    private Double latitude;
 
-    void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException;
+    @JsonProperty("longitude")
+    private Double longitude;
+
+    public Coordinates() {
+        // explicit empty constructor
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 }

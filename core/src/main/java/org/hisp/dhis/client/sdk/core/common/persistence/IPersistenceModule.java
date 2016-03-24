@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
@@ -39,6 +40,8 @@ import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 public interface IPersistenceModule {
 
     ITransactionManager getTransactionManager();
+
+    IStateStore getStateStore();
 
     IUserAccountStore getUserAccountStore();
 

@@ -32,25 +32,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
-import java.io.Serializable;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class TrackedEntityDataValue implements Serializable, IModel {
-
-    @JsonIgnore
-    private long id;
+public final class TrackedEntityDataValue extends BaseModel {
 
     @JsonIgnore
     private Event event;
 
     @JsonProperty("dataElement")
     private String dataElement;
-
-    @JsonProperty("providedElsewhere")
-    private boolean providedElsewhere;
 
     @JsonProperty("storedBy")
     private String storedBy;
@@ -59,15 +51,7 @@ public final class TrackedEntityDataValue implements Serializable, IModel {
     private String value;
 
     public TrackedEntityDataValue() {
-
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+        // explicit empty constructor
     }
 
     public Event getEvent() {
@@ -84,14 +68,6 @@ public final class TrackedEntityDataValue implements Serializable, IModel {
 
     public void setDataElement(String dataElement) {
         this.dataElement = dataElement;
-    }
-
-    public boolean isProvidedElsewhere() {
-        return providedElsewhere;
-    }
-
-    public void setProvidedElsewhere(boolean providedElsewhere) {
-        this.providedElsewhere = providedElsewhere;
     }
 
     public String getStoredBy() {

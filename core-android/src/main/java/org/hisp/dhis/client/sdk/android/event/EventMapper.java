@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
-import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 public class EventMapper extends AbsMapper<Event, EventFlow> {
@@ -44,11 +43,13 @@ public class EventMapper extends AbsMapper<Event, EventFlow> {
         EventFlow eventFlow = new EventFlow();
         eventFlow.setId(event.getId());
         eventFlow.setEventUid(event.getUId());
-        eventFlow.setStatus(event.getStatus());
-        eventFlow.setLatitude(event.getLatitude());
-        eventFlow.setLongitude(event.getLongitude());
-        eventFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToDatabaseEntity(event.getTrackedEntityInstance()));
-        eventFlow.setEnrollment(MapperModuleProvider.getInstance().getEnrollmentMapper().mapToDatabaseEntity(event.getEnrollment()));
+        // eventFlow.setStatus(event.getStatus());
+        // eventFlow.setLatitude(event.getLatitude());
+        // eventFlow.setLongitude(event.getLongitude());
+        // eventFlow.setTrackedEntityInstance(MapperModuleProvider.getInstance()
+        // .getTrackedEntityInstanceMapper().mapToDatabaseEntity(event.getTrackedEntityInstance()));
+        // eventFlow.setEnrollment(MapperModuleProvider.getInstance()
+        // .getEnrollmentMapper().mapToDatabaseEntity(event.getEnrollment()));
         eventFlow.setProgramId(event.getProgramId());
         eventFlow.setProgramStageId(event.getProgramStageId());
         eventFlow.setOrganisationUnitId(event.getOrganisationUnitId());
@@ -71,11 +72,13 @@ public class EventMapper extends AbsMapper<Event, EventFlow> {
         Event event = new Event();
         event.setId(eventFlow.getId());
         event.setUId(eventFlow.getEventUid());
-        event.setStatus(eventFlow.getStatus());
-        event.setLatitude(eventFlow.getLatitude());
-        event.setLongitude(eventFlow.getLongitude());
-        event.setTrackedEntityInstance(MapperModuleProvider.getInstance().getTrackedEntityInstanceMapper().mapToModel(eventFlow.getTrackedEntityInstance()));
-        event.setEnrollment(MapperModuleProvider.getInstance().getEnrollmentMapper().mapToModel(eventFlow.getEnrollment()));
+        // event.setStatus(eventFlow.getStatus());
+        // event.setLatitude(eventFlow.getLatitude());
+        // event.setLongitude(eventFlow.getLongitude());
+        // event.setTrackedEntityInstance(MapperModuleProvider.getInstance()
+        // .getTrackedEntityInstanceMapper().mapToModel(eventFlow.getTrackedEntityInstance()));
+        // event.setEnrollment(MapperModuleProvider.getInstance()
+        // .getEnrollmentMapper().mapToModel(eventFlow.getEnrollment()));
         event.setProgramId(eventFlow.getProgramId());
         event.setProgramStageId(eventFlow.getProgramStageId());
         event.setOrganisationUnitId(eventFlow.getOrganisationUnitId());

@@ -46,7 +46,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
         trackedEntityDataValueFlow.setId(trackedEntityDataValue.getId());
         trackedEntityDataValueFlow.setEvent(MapperModuleProvider.getInstance().getEventMapper().mapToDatabaseEntity(trackedEntityDataValue.getEvent()));
         trackedEntityDataValueFlow.setDataElement(trackedEntityDataValue.getDataElement());
-        trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
+        // trackedEntityDataValueFlow.setProvidedElsewhere(trackedEntityDataValue.isProvidedElsewhere());
         trackedEntityDataValueFlow.setStoredBy(trackedEntityDataValue.getStoredBy());
         trackedEntityDataValueFlow.setValue(trackedEntityDataValue.getValue());
         return trackedEntityDataValueFlow;
@@ -62,7 +62,7 @@ public class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataVal
         trackedEntityDataValue.setId(trackedEntityDataValueFlow.getId());
         trackedEntityDataValue.setEvent(MapperModuleProvider.getInstance().getEventMapper().mapToModel(trackedEntityDataValueFlow.getEvent()));
         trackedEntityDataValue.setDataElement(trackedEntityDataValueFlow.getDataElement());
-        trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
+        // trackedEntityDataValue.setProvidedElsewhere(trackedEntityDataValueFlow.isProvidedElsewhere());
         trackedEntityDataValue.setStoredBy(trackedEntityDataValueFlow.getStoredBy());
         trackedEntityDataValue.setValue(trackedEntityDataValueFlow.getValue());
         return trackedEntityDataValue;

@@ -42,56 +42,7 @@ import java.util.Set;
 public final class DataElementStore extends AbsIdentifiableObjectStore<DataElement, DataElementFlow>
         implements IDataElementStore {
 
-    private ITransactionManager transactionManager;
-
-    public DataElementStore(ITransactionManager transactionManager) {
+    public DataElementStore() {
         super(DataElementFlow.MAPPER);
-
-        this.transactionManager = transactionManager;
-    }
-
-    @Override
-    public boolean insert(DataElement object) {
-        return super.insert(object);
-    }
-
-    @Override
-    public boolean update(DataElement object) {
-        return super.update(object);
-    }
-
-    @Override
-    public boolean save(DataElement object) {
-        return super.save(object);
-    }
-
-    @Override
-    public List<DataElement> queryAll() {
-        return super.queryAll();
-    }
-
-    @Override
-    public boolean delete(DataElement object) {
-        return super.delete(object);
-    }
-
-    @Override
-    public boolean deleteAll() {
-        return super.deleteAll();
-    }
-
-    @Override
-    public DataElement queryByUid(String uid) {
-        return super.queryByUid(uid);
-    }
-
-    @Override
-    public List<DataElement> queryByUids(Set<String> uids) {
-        return super.queryByUids(uids);
-    }
-
-    @Override
-    public DataElement queryById(long id) {
-        return super.queryById(id);
     }
 }

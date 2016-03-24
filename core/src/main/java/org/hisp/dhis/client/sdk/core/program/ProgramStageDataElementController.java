@@ -19,19 +19,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageDataElementController extends AbsSyncStrategyController<ProgramStageDataElement> implements IProgramStageDataElementController {
+public class ProgramStageDataElementController extends AbsSyncStrategyController
+        <ProgramStageDataElement> implements IProgramStageDataElementController {
 
     /* Api clients */
     private final ISystemInfoApiClient systemInfoApiClient;
     private final IProgramStageDataElementApiClient programStageDataElementApiClient;
 
     /* Local storage */
-    private final IProgramStageDataElementStore programStageDataElementStore;
+
     private final IDataElementController dataElementController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
 
     public ProgramStageDataElementController(ISystemInfoApiClient systemInfoApiClient,
                                              IProgramStageDataElementApiClient programStageDataElementApiClient,
@@ -43,10 +43,8 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
                 programStageDataElementStore, lastUpdatedPreferences);
         this.systemInfoApiClient = systemInfoApiClient;
         this.programStageDataElementApiClient = programStageDataElementApiClient;
-        this.programStageDataElementStore = programStageDataElementStore;
         this.dataElementController = dataElementController;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
 
 
@@ -98,7 +96,7 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
 
         List<IDbOperation> dbOperations = DbUtils.createOperations(
                 allExistingProgramStageDataElements, updatedProgramStageDataElements,
-                programStageDataElements, programStageDataElementStore);
+                programStageDataElements, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_DATA_ELEMENTS,

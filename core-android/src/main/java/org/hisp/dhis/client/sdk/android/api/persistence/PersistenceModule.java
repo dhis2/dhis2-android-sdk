@@ -69,11 +69,11 @@ public class PersistenceModule implements IPersistenceModule {
         programStore = new ProgramStore2(transactionManager);
         programStageStore = new ProgramStageStore2(transactionManager);
         programStageSectionStore = new ProgramStageSectionStore2(transactionManager);
-        programStageDataElementStore = new ProgramStageDataElementStore(transactionManager);
+        programStageDataElementStore = new ProgramStageDataElementStore();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         eventStore = new EventStore2(transactionManager);
-        dataElementStore = new DataElementStore(transactionManager);
+        dataElementStore = new DataElementStore();
     }
 
     @Override

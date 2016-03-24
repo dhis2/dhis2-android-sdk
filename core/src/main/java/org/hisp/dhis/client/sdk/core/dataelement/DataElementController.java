@@ -67,7 +67,7 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.DATA_ELEMENTS, DateType.LOCAL);
+                ResourceType.DATA_ELEMENTS, DateType.SERVER);
 
         List<DataElement> persistedDataElements = identifiableObjectStore.queryAll();
 

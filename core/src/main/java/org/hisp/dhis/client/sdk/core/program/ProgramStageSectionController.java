@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -52,6 +53,7 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
     /* Local storage */
     private final IProgramStageSectionStore programStageSectionStore;
     private final IProgramStageController programStageController;
+    private final IProgramStageDataElementController programStageDataElementController;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
@@ -61,12 +63,14 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
                                          IProgramStageSectionApiClient programStageSectionApiClient,
                                          IProgramStageSectionStore programStageSectionStore,
                                          IProgramStageController programStageController,
+                                         IProgramStageDataElementController programStageDataElementController,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.programStageSectionApiClient = programStageSectionApiClient;
         this.programStageSectionStore = programStageSectionStore;
         this.programStageController = programStageController;
+        this.programStageDataElementController = programStageDataElementController; //// TODO: Remove this when linking logic is resolved
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
     }
@@ -116,6 +120,16 @@ public class ProgramStageSectionController implements IProgramStageSectionContro
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
         programStageController.sync(programStageSectionUids);
+
+        Set<String> programStageDataElementUids = new HashSet<>();
+
+        for (ProgramStageSection programStageSection : mergedProgramStageSections) {
+            for(ProgramStageDataElement programStageDataElement : programStageSection.getProgramStageDataElements()) {
+                programStageDataElementUids.add(programStageDataElement.getUId());
+            }
+        }
+
+        programStageDataElementController.sync(programStageDataElementUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(

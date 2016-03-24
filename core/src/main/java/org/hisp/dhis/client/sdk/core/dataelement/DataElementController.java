@@ -98,6 +98,11 @@ public final class DataElementController implements IDataElementController {
                 Fields.ALL, lastUpdated, uidArray);
 
         // we will have to perform something similar to what happens in AbsController
+
+        System.out.println("allExistingDataElements: " + allExistingDataElements);
+        System.out.println("updatedDataElements: " + updatedDataElements);
+        System.out.println("DataElements in store: " + persistedDataElements);
+
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
                 updatedDataElements, persistedDataElements, dataElementStore);
         transactionManager.transact(dbOperations);

@@ -40,6 +40,10 @@ import rx.Observable;
 
 public interface IProgramStageDataElementScope {
 
+    Observable<List<ProgramStageDataElement>> sync();
+
+    Observable<List<ProgramStageDataElement>> sync(String... uids);
+
     Observable<ProgramStageDataElement> get(long id);
 
     Observable<List<ProgramStageDataElement>> list();

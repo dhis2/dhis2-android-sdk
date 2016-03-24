@@ -78,7 +78,7 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             references = {
                     @ForeignKeyReference(columnName = DATA_ELEMENT_KEY,
                             columnType = String.class, foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.CASCADE
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DataElementFlow dataElement;
 

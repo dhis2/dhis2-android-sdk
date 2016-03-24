@@ -42,9 +42,11 @@ import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiCli
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
@@ -58,6 +60,7 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
@@ -93,6 +96,7 @@ public class NetworkModule implements INetworkModule {
     private final IUserApiClient userApiClient;
     private final IEventApiClient eventApiClient;
     private final IDataElementApiClient dataElementApiClient;
+    private final IProgramStageDataElementApiClient programStageDataElementApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -148,6 +152,8 @@ public class NetworkModule implements INetworkModule {
                 EventApiClientRetrofit.class));
         dataElementApiClient = new DataElementApiClient(retrofit.create(
                 IDataElementApiClientRetrofit.class));
+        programStageDataElementApiClient = new ProgramStageDataElementApiClient(retrofit.create(
+                IProgramStageDataElementApiClientRetrofit.class));
     }
 
     @Override
@@ -188,6 +194,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IDataElementApiClient getDataElementApiClient() {
         return dataElementApiClient;
+    }
+
+    @Override
+    public IProgramStageDataElementApiClient getProgramStageDataElementApiClient() {
+        return programStageDataElementApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

@@ -30,6 +30,8 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
@@ -39,10 +41,15 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitControlle
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -63,6 +70,7 @@ public class ControllersModule implements IControllersModule {
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
     private final IEventController eventController;
     private final IDataElementController dataElementController;
+    private final IProgramStageDataElementController programStageDataElementController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -84,11 +92,28 @@ public class ControllersModule implements IControllersModule {
                 programController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
+        dataElementController = new DataElementController(
+                networkModule.getDataElementApiClient(),
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getDataElementStore(),
+                persistenceModule.getTransactionManager());
+
+        programStageDataElementController = new ProgramStageDataElementController(
+                networkModule.getSystemInfoApiClient(),
+                networkModule.getProgramStageDataElementApiClient(),
+                persistenceModule.getProgramStageDataElementStore(),
+                dataElementController,
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
         programStageSectionController = new ProgramStageSectionController(
                 networkModule.getSystemInfoApiClient(),
                 networkModule.getProgramStageSectionApiClient(),
                 persistenceModule.getProgramStageSectionStore(),
-                programStageController, persistenceModule.getTransactionManager(),
+                programStageController,
+                programStageDataElementController,
+                persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         assignedProgramsController = new AssignedProgramsController(
@@ -122,12 +147,6 @@ public class ControllersModule implements IControllersModule {
                 null //persistenceModule.getFailedItemStore()
         );
 
-        dataElementController = new DataElementController(
-                networkModule.getDataElementApiClient(),
-                networkModule.getSystemInfoApiClient(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getDataElementStore(),
-                persistenceModule.getTransactionManager());
 
                 /*
 
@@ -186,5 +205,10 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IDataElementController getDataElementController() {
         return dataElementController;
+    }
+
+    @Override
+    public IProgramStageDataElementController getProgramStageDataElementController() {
+        return programStageDataElementController;
     }
 }

@@ -29,23 +29,69 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramStageDataElementScope implements IProgramStageDataElementScope {
 
-    private IProgramStageDataElementService mProgramStageDataElementService;
+    private IProgramStageDataElementService programStageDataElementService;
+    private IProgramStageDataElementController programStageDataElementController;
 
-    public ProgramStageDataElementScope(IProgramStageDataElementService programStageDataElementService) {
-        this.mProgramStageDataElementService = programStageDataElementService;
+    public ProgramStageDataElementScope(IProgramStageDataElementService programStageDataElementService,
+                                        IProgramStageDataElementController programStageDataElementController) {
+        this.programStageDataElementService = programStageDataElementService;
+        this.programStageDataElementController = programStageDataElementController;
+
+    }
+
+    @Override
+    public Observable<List<ProgramStageDataElement>> sync() {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
+                try {
+                    programStageDataElementController.sync();
+                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
+                    subscriber.onNext(programStageDataElements);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramStageDataElement>> sync(final String... uids) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
+                try {
+                    Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
+                    programStageDataElementController.sync(uidSet);
+                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
+                    subscriber.onNext(programStageDataElements);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
     }
 
     @Override
@@ -54,7 +100,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.get(id);
+                    ProgramStageDataElement programStageDataElement = programStageDataElementService.get(id);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,8 +117,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.list();
-                    subscriber.onNext(programRuleActions);
+                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
+                    subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -88,8 +134,8 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.list(programStage);
-                    subscriber.onNext(programRuleActions);
+                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list(programStage);
+                    subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -105,7 +151,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
                 try {
-                    ProgramStageDataElement programStageDataElement = mProgramStageDataElementService.query(programStage, dataElement);
+                    ProgramStageDataElement programStageDataElement = programStageDataElementService.query(programStage, dataElement);
                     subscriber.onNext(programStageDataElement);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -122,8 +168,9 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    List<ProgramStageDataElement> programRuleActions = mProgramStageDataElementService.list(programStageSection);
-                    subscriber.onNext(programRuleActions);
+                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list(programStageSection);
+
+                    subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }
@@ -139,7 +186,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramStageDataElementService.save(object);
+                    boolean status = programStageDataElementService.save(object);
                     subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -156,7 +203,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramStageDataElementService.remove(object);
+                    boolean status = programStageDataElementService.remove(object);
                     subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

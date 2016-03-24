@@ -34,11 +34,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.AbsStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -46,12 +43,16 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
         ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
     private final ITransactionManager transactionManager;
+    private static final String PROGRAMSTAGEDATAELEMENT_TO_DATAELEMENT =
+            "programStageDataElementToDataElement";
     private static final String PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS =
             "programStageDataElementsToProgramStageSections";
     public ProgramStageDataElementStore(ITransactionManager transactionManager) {
@@ -89,25 +90,24 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
                         .dataelement.is(dataElement.getUId())).querySingle();
         return getMapper().mapToModel(programStageDataElementFlow);
     }
-
     @Override
     public List<ProgramStageDataElement> queryAll() {
-        return queryProgramStageRelationships(super.queryAll());
+        return queryProgramStageDataElementRelationships(super.queryAll());
     }
 
     @Override
     public ProgramStageDataElement queryById(long id) {
-        return queryProgramStageRelationships(super.queryById(id));
+        return queryProgramStageDataElementRelationships(super.queryById(id));
     }
 
     @Override
     public ProgramStageDataElement queryByUid(String uid) {
-        return queryProgramStageRelationships(super.queryByUid(uid));
+        return queryProgramStageDataElementRelationships(super.queryByUid(uid));
     }
 
     @Override
     public List<ProgramStageDataElement> queryByUids(Set<String> uids) {
-        return queryProgramStageRelationships(super.queryByUids(uids));
+        return queryProgramStageDataElementRelationships(super.queryByUids(uids));
     }
 
     @Override
@@ -115,7 +115,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         boolean isSuccess = super.insert(object);
 
         if (isSuccess) {
-            updateProgramStageRelationships(object);
+            updateProgramStageDataElementRelationships(object);
         }
 
         return isSuccess;
@@ -126,7 +126,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         boolean isSuccess = super.update(object);
 
         if (isSuccess) {
-            updateProgramStageRelationships(object);
+            updateProgramStageDataElementRelationships(object);
         }
 
         return isSuccess;
@@ -137,7 +137,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         boolean isSuccess = super.save(object);
 
         if (isSuccess) {
-            updateProgramStageRelationships(object);
+            updateProgramStageDataElementRelationships(object);
         }
 
         return isSuccess;
@@ -148,7 +148,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         boolean isSuccess = super.delete(object);
 
         if (isSuccess) {
-            ModelLinkFlow.deleteRelatedModels(object, PROGRAMSTAGE_TO_PROGRAMSTAGESECTIONS);
+            ModelLinkFlow.deleteRelatedModels(object, PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS);
         }
 
         return isSuccess;
@@ -159,10 +159,42 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         boolean isSuccess = super.deleteAll();
 
         if (isSuccess) {
-            ModelLinkFlow.deleteModels(PROGRAMSTAGE_TO_PROGRAMSTAGESECTIONS);
+            ModelLinkFlow.deleteModels(PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS);
         }
 
         return isSuccess;
+    }
+
+    private void updateProgramStageDataElementRelationships(ProgramStageDataElement programStageDataElement) {
+//        List<IDbOperation> dbOperations = new ArrayList<>();
+//        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(programStageDataElement,
+//                Arrays.asList(programStageDataElement.getProgramStageSection()), PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS));
+//        transactionManager.transact(dbOperations);
+    }
+
+    private List<ProgramStageDataElement> queryProgramStageDataElementRelationships(List<ProgramStageDataElement> programStageDataElements) {
+//        if (programStageDataElements != null) {
+//            Map<String, List<ProgramStageSection>> sectionsToElements = ModelLinkFlow
+//                    .queryLinksForModel(
+//                            ProgramStageSection.class, PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS);
+//            for (ProgramStageDataElement programStageDataElement: programStageDataElements) {
+//                programStageDataElement.setProgramStageSection(sectionsToElements.get(programStageDataElement.getUId()).get(0));
+//            }
+//        }
+
+        return programStageDataElements;
+    }
+
+    private ProgramStageDataElement queryProgramStageDataElementRelationships(ProgramStageDataElement programStageDataElement) {
+//        if (programStageDataElement != null) {
+//            List<ProgramStageSection> programStageSections = ModelLinkFlow
+//                    .queryLinksForModel(ProgramStageSection.class,
+//                            PROGRAMSTAGEDATAELEMENT_TO_PROGRAMSTAGESECTIONS, programStageDataElement.getUId());
+//            System.out.println("PROGRAMSTAGEDATAELEMENTSTORE QUERY PSDTERlationship: Section: " + programStageSections.get(0).getUId());
+//            programStageDataElement.setProgramStageSection(programStageSections.get(0));
+//        }
+
+        return programStageDataElement;
     }
 
 }

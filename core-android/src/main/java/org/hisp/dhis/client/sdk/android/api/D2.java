@@ -137,7 +137,8 @@ public class D2 {
                 controllersModule.getProgramStageController());
 
         programStageDataElementScope = new ProgramStageDataElementScope(
-                servicesModule.getProgramStageDataElementService());
+                servicesModule.getProgramStageDataElementService(),
+                controllersModule.getProgramStageDataElementController());
 
         programStageSectionScope = new ProgramStageSectionScope(
                 controllersModule.getProgramStageSectionController(),

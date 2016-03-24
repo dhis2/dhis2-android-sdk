@@ -1,100 +1,34 @@
-/*
- * Copyright (c) 2016, University of Oslo
- *
- * All rights reserved.
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.hisp.dhis.client.sdk.android.event;
 
-import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.joda.time.DateTime;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-public final class EventStore extends AbsDataStore<Event, EventFlow> implements IEventStore {
+public class EventStore extends AbsIdentifiableObjectStore<Event, EventFlow>
+        implements IEventStore {
 
-    public EventStore(IMapper<Event, EventFlow> mapper, IStateStore stateStore) {
-        super(mapper, stateStore);
-    }
-
-    public Event queryByUid(String uid) {
-//        Event_Flow eventFlow = new Select()
-//                .from(Event_Flow.class)
-//                .where(Condition.column(Event_Flow_Table.EVENTUID).is(uid))
-//                .querySingle();
-//        return getMapper().mapToModel(eventFlow);
-        return null;
-    }
-
-    @Override
-    public List<Event> queryByUids(Set<String> uids) {
-        return null;
-    }
-
-    @Override
-    public boolean areStored(Set<String> objects) {
-        return false;
-    }
-
-    @Override
-    public List<Event> query(Enrollment enrollment) {
-//        List<Event_Flow> eventFlows = new Select()
-//                .from(Event_Flow.class)
-//                .where(Condition.column(Event_Flow_Table
-//                        .ENROLLMENT_ENROLLMENT).is(enrollment.getUId())).queryList();
-//        return getMapper().mapToModels(eventFlows);
-        return null;
+    public EventStore() {
+        super(EventFlow.MAPPER);
     }
 
     @Override
     public List<Event> query(OrganisationUnit organisationUnit, Program program) {
-//        if (organisationUnit == null || program == null) {
-//            return new ArrayList<>();
-//        }
-//        List<Event_Flow> eventFlows = new Select()
-//                .from(Event_Flow.class)
-//                .where(Condition.column(Event_Flow_Table
-//                        .ORGANISATIONUNITID).is(organisationUnit.getUId()))
-//                .and(Condition.column(Event_Flow_Table
-//                        .PROGRAMID).is(program.getUId())).queryList();
-//        return getMapper().mapToModels(eventFlows);
-        return null;
-    }
+        List<EventFlow> eventFlows = new Select()
+                .from(EventFlow.class)
+                .where(EventFlow_Table
+                        .organisationUnitId.is(organisationUnit.getUId()))
+                .and(EventFlow_Table
+                        .programId.is((program.getUId())))
+                .queryList();
 
-    @Override
-    public List<Event> query(OrganisationUnit organisationUnit, Program program, DateTime startDate, DateTime endDate) {
-        return null;
+        return getMapper().mapToModels(eventFlows);
     }
 }

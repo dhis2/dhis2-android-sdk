@@ -33,7 +33,7 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
-import org.hisp.dhis.client.sdk.android.event.EventStore2;
+import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
@@ -69,7 +69,7 @@ public class PersistenceModule implements IPersistenceModule {
         programStageSectionStore = new ProgramStageSectionStore2();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
-        eventStore = new EventStore2(transactionManager);
+        eventStore = new EventStore();
         dataElementStore = new DataElementStore(transactionManager);
     }
 

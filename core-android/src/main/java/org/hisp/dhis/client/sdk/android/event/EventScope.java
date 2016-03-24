@@ -136,12 +136,13 @@ public class EventScope implements IEventScope {
     }
 
     @Override
-    public Observable<List<Event>> list(final OrganisationUnit organisationUnit, final Program program) {
+    public Observable<List<Event>> list(final OrganisationUnit organisationUnit, final Program
+            program) {
         return Observable.create(new Observable.OnSubscribe<List<Event>>() {
             @Override
             public void call(Subscriber<? super List<Event>> subscriber) {
                 try {
-                    List<Event> events = mEventService.list(program, organisationUnit);
+                    List<Event> events = mEventService.list(organisationUnit, program);
                     subscriber.onNext(events);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -171,7 +172,8 @@ public class EventScope implements IEventScope {
     }
 
     @Override
-    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program program, final int limit) {
+    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program
+            program, final int limit) {
         return Observable.create(new Observable.OnSubscribe<Void>() {
             @Override
             public void call(Subscriber<? super Void> subscriber) {

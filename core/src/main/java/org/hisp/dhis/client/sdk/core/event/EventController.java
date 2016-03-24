@@ -136,8 +136,7 @@ public final class EventController implements IEventController {
 
     @Override
     public void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        // 1) check how pullEvents() method works (if it
-        //    overrides data elements with *dirty* state)
+
         // 2) Get all e
     }
 }

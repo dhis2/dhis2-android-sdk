@@ -16,7 +16,7 @@ public class RuleEngineExecution {
         ArrayList<RuleEffect> effects = new ArrayList<>();
 
         for (ProgramRule rule:rules) {
-            if( ExpressionUtils.isTrue(rule.getCondition(), null) ) {
+            if(ExpressionUtils.isTrue(rule.getCondition(), null)) {
                 for(ProgramRuleAction action: rule.getProgramRuleActions()) {
                     effects.add(createEffect(action));
                 }
@@ -26,7 +26,7 @@ public class RuleEngineExecution {
         return effects;
     }
 
-    private static RuleEffect createEffect( ProgramRuleAction action ) {
+    private static RuleEffect createEffect(ProgramRuleAction action) {
         RuleEffect effect = new RuleEffect();
         effect.setProgramRule(action.getProgramRule());
         effect.setProgramRuleActionType(action.getProgramRuleActionType());

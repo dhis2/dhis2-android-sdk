@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.dataelement;
 
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
@@ -138,7 +139,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber<? super List<DataElement>> subscriber) {
                 try {
-                    dataElementController.sync();
+                    dataElementController.sync(SyncStrategy.DEFAULT);
                     List<DataElement> dataElements = dataElementService.list();
                     subscriber.onNext(dataElements);
                 } catch (Throwable throwable) {

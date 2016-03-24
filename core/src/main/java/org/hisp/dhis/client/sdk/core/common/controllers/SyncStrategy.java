@@ -26,22 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.common;
+package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.models.common.SystemInfo;
-
-import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
-
-public class SystemInfoApiClient implements ISystemInfoApiClient {
-    private final SystemInfoApiClientRetrofit mClient;
-
-    public SystemInfoApiClient(SystemInfoApiClientRetrofit client) {
-        mClient = client;
-    }
-
-    @Override
-    public SystemInfo getSystemInfo() {
-        return call(mClient.getSystemInfo());
-    }
+public enum SyncStrategy {
+    DEFAULT, FORCE_UPDATE
 }

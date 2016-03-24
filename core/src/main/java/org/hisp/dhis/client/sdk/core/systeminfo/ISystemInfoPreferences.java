@@ -26,16 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.common;
-
+package org.hisp.dhis.client.sdk.core.systeminfo;
 
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
-import retrofit2.Call;
-import retrofit2.http.GET;
+public interface ISystemInfoPreferences {
+    boolean save(SystemInfo systemInfo);
 
-public interface SystemInfoApiClientRetrofit {
+    SystemInfo get();
 
-    @GET("system/info/")
-    Call<SystemInfo> getSystemInfo();
+    boolean isEmpty();
+
+    boolean clear();
 }

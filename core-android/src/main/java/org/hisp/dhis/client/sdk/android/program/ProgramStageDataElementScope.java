@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
@@ -59,11 +60,18 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
 
     @Override
     public Observable<List<ProgramStageDataElement>> sync() {
+        return sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<ProgramStageDataElement>> sync(final SyncStrategy syncStrategy,
+                                                          final String... uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    programStageDataElementController.sync();
+                    Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
+                    programStageDataElementController.sync(syncStrategy, uidSet);
                     List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
                     subscriber.onNext(programStageDataElements);
                 } catch (Throwable throwable) {
@@ -76,15 +84,14 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> sync(final String... uids) {
+    public Observable<List<ProgramStageDataElement>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+
             @Override
             public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
                 try {
-                    Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                    programStageDataElementController.sync(uidSet);
-                    List<ProgramStageDataElement> programStageDataElements = programStageDataElementService.list();
-                    subscriber.onNext(programStageDataElements);
+                    programStageDataElementController.sync(syncStrategy);
+                    subscriber.onNext(programStageDataElementService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

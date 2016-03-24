@@ -30,23 +30,24 @@ package org.hisp.dhis.client.sdk.android.api.preferences;
 
 import android.content.Context;
 
-import org.hisp.dhis.client.sdk.android.api.preferences.ConfigurationPreferences;
-import org.hisp.dhis.client.sdk.android.api.preferences.LastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.android.api.preferences.UserPreferences;
+import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
 
 public class PreferencesModule implements IPreferencesModule {
     private final IConfigurationPreferences configurationPreferences;
     private final ILastUpdatedPreferences lastUpdatedPreferences;
     private final IUserPreferences userPreferences;
+    private final ISystemInfoPreferences systemInfoPreferences;
 
     public PreferencesModule(Context context) {
         configurationPreferences = new ConfigurationPreferences(context);
         lastUpdatedPreferences = new LastUpdatedPreferences(context);
         userPreferences = new UserPreferences(context);
+        systemInfoPreferences = new SystemInfoPreferences(context);
     }
 
     @Override
@@ -62,6 +63,11 @@ public class PreferencesModule implements IPreferencesModule {
     @Override
     public IUserPreferences getUserPreferences() {
         return userPreferences;
+    }
+
+    @Override
+    public ISystemInfoPreferences getSystemInfoPreferences() {
+        return systemInfoPreferences;
     }
 
     @Override

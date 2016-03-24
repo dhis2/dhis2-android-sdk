@@ -26,38 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
+package org.hisp.dhis.client.sdk.android.api.utils;
 
-public enum ResourceType {
-    SYSTEM_INFO,
+import rx.Observable;
+import rx.Subscriber;
 
+public abstract class DefaultOnSubscribe<T> implements Observable.OnSubscribe<T> {
 
-    DASHBOARDS_CONTENT,
-    INTERPRETATIONS,
-    DASHBOARDS,
+    @Override
+    public final void call(Subscriber<? super T> subscriber) {
+        try {
+            subscriber.onNext(call());
+        } catch (Throwable throwable) {
+            subscriber.onError(throwable);
+        }
 
-    RELATIONSHIP_TYPES,
-    ORGANISATION_UNITS,
-    DATA_ELEMENTS,
-    OPTION_SETS,
-    CONSTANTS,
-    USERS,
+        subscriber.onCompleted();
+    }
 
-
-    PROGRAMS,
-    PROGRAM_STAGES,
-    PROGRAM_STAGE_SECTIONS,
-    PROGRAM_STAGE_DATA_ELEMENTS,
-
-    PROGRAM_RULE_VARIABLES,
-    PROGRAM_RULE_ACTIONS,
-    PROGRAM_RULES,
-
-    TRACKED_ENTITY_ATTRIBUTES,
-    TRACKED_ENTITIES,
-    TRACKED_ENTITY_INSTANCE,
-    ENROLLMENTS,
-    ENROLLMENT,
-    EVENTS,
-    EVENT,
+    public abstract T call();
 }

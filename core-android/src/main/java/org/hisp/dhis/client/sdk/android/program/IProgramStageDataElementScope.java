@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -42,7 +43,9 @@ public interface IProgramStageDataElementScope {
 
     Observable<List<ProgramStageDataElement>> sync();
 
-    Observable<List<ProgramStageDataElement>> sync(String... uids);
+    Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy, String... uids);
 
     Observable<ProgramStageDataElement> get(long id);
 

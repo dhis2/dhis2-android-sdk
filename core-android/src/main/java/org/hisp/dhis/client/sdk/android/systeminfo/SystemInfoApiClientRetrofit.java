@@ -26,38 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
-
-public enum ResourceType {
-    SYSTEM_INFO,
+package org.hisp.dhis.client.sdk.android.systeminfo;
 
 
-    DASHBOARDS_CONTENT,
-    INTERPRETATIONS,
-    DASHBOARDS,
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
-    RELATIONSHIP_TYPES,
-    ORGANISATION_UNITS,
-    DATA_ELEMENTS,
-    OPTION_SETS,
-    CONSTANTS,
-    USERS,
+import retrofit2.Call;
+import retrofit2.http.GET;
 
+public interface SystemInfoApiClientRetrofit {
 
-    PROGRAMS,
-    PROGRAM_STAGES,
-    PROGRAM_STAGE_SECTIONS,
-    PROGRAM_STAGE_DATA_ELEMENTS,
-
-    PROGRAM_RULE_VARIABLES,
-    PROGRAM_RULE_ACTIONS,
-    PROGRAM_RULES,
-
-    TRACKED_ENTITY_ATTRIBUTES,
-    TRACKED_ENTITIES,
-    TRACKED_ENTITY_INSTANCE,
-    ENROLLMENTS,
-    ENROLLMENT,
-    EVENTS,
-    EVENT,
+    @GET("system/info/")
+    Call<SystemInfo> getSystemInfo();
 }

@@ -26,38 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
+package org.hisp.dhis.client.sdk.core.systeminfo;
 
-public enum ResourceType {
-    SYSTEM_INFO,
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
+public interface ISystemInfoController {
+    SystemInfo getSystemInfo() throws ApiException;
 
-    DASHBOARDS_CONTENT,
-    INTERPRETATIONS,
-    DASHBOARDS,
-
-    RELATIONSHIP_TYPES,
-    ORGANISATION_UNITS,
-    DATA_ELEMENTS,
-    OPTION_SETS,
-    CONSTANTS,
-    USERS,
-
-
-    PROGRAMS,
-    PROGRAM_STAGES,
-    PROGRAM_STAGE_SECTIONS,
-    PROGRAM_STAGE_DATA_ELEMENTS,
-
-    PROGRAM_RULE_VARIABLES,
-    PROGRAM_RULE_ACTIONS,
-    PROGRAM_RULES,
-
-    TRACKED_ENTITY_ATTRIBUTES,
-    TRACKED_ENTITIES,
-    TRACKED_ENTITY_INSTANCE,
-    ENROLLMENTS,
-    ENROLLMENT,
-    EVENTS,
-    EVENT,
+    SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException;
 }

@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
 public interface IAssignedProgramsController {
     void sync() throws ApiException;
+
+    void sync(SyncStrategy strategy) throws ApiException;
 }

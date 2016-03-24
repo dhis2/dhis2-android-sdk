@@ -32,8 +32,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClient;
-import org.hisp.dhis.client.sdk.android.common.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClient;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient2;
@@ -48,6 +46,8 @@ import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;

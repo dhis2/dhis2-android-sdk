@@ -150,7 +150,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
     }
 
     private TrackedEntityInstance getTrackedEntityInstanceDataFromServer(String uid, boolean getEnrollments) {
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.TRACKED_ENTITY_INSTANCE, uid);
+        DateTime lastUpdated = DateTime.now();// lastUpdatedPreferences.get(ResourceType.TRACKED_ENTITY_INSTANCE, uid);
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
@@ -186,7 +186,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
             operations.addAll(createOperations(relationshipStore, persistedRelationships, updatedRelationships));
         }
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.TRACKED_ENTITY_INSTANCE, serverDateTime, uid);
+        // lastUpdatedPreferences.save(ResourceType.TRACKED_ENTITY_INSTANCE, serverDateTime, uid);
         if (getEnrollments) {
             enrollmentController.sync(updatedTrackedEntityInstance);
         }

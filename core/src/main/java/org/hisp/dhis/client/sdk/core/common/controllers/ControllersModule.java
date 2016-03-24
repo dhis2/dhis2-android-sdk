@@ -30,8 +30,6 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
@@ -41,26 +39,25 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitControlle
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
-import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class ControllersModule implements IControllersModule {
+    private final ISystemInfoController systemInfoController;
     private final IUserAccountController userAccountController;
     private final IProgramController programController;
     private final IProgramStageController programStageController;
@@ -79,10 +76,14 @@ public class ControllersModule implements IControllersModule {
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
 
-        programController = new ProgramController(
-                networkModule.getSystemInfoApiClient(), networkModule.getProgramApiClient(),
+        systemInfoController = new SystemInfoController(
+                networkModule.getSystemInfoApiClient(),
+                preferencesModule.getSystemInfoPreferences(),
+                preferencesModule.getLastUpdatedPreferences());
+
+        programController = new ProgramController(networkModule.getProgramApiClient(),
                 networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
-                persistenceModule.getTransactionManager(),
+                systemInfoController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageController = new ProgramStageController(
@@ -94,10 +95,10 @@ public class ControllersModule implements IControllersModule {
 
         dataElementController = new DataElementController(
                 networkModule.getDataElementApiClient(),
-                networkModule.getSystemInfoApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getDataElementStore(),
-                persistenceModule.getTransactionManager());
+                systemInfoController, persistenceModule.getTransactionManager());
+
 
         programStageDataElementController = new ProgramStageDataElementController(
                 networkModule.getSystemInfoApiClient(),
@@ -108,11 +109,11 @@ public class ControllersModule implements IControllersModule {
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageSectionController = new ProgramStageSectionController(
-                networkModule.getSystemInfoApiClient(),
                 networkModule.getProgramStageSectionApiClient(),
                 persistenceModule.getProgramStageSectionStore(),
                 programStageController,
                 programStageDataElementController,
+                systemInfoController,
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
@@ -120,12 +121,11 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getUserApiClient(), programController);
 
         organisationUnitController = new OrganisationUnitController(
-                networkModule.getSystemInfoApiClient(),
                 networkModule.getOrganisationUnitApiClient(),
                 networkModule.getUserApiClient(),
                 persistenceModule.getOrganisationUnitStore(),
-                persistenceModule.getTransactionManager(),
-                preferencesModule.getLastUpdatedPreferences());
+                preferencesModule.getLastUpdatedPreferences(), systemInfoController,
+                persistenceModule.getTransactionManager());
 
         assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
                 networkModule.getUserApiClient(), organisationUnitController);
@@ -148,18 +148,25 @@ public class ControllersModule implements IControllersModule {
         );
 
 
-                /*
 
-                IEventApiClient eventApiClient,
-                           ISystemInfoApiClient systemInfoApiClient,
-                           ILastUpdatedPreferences lastUpdatedPreferences,
-                           ITransactionManager transactionManager,
-                           IStateStore stateStore, IEventStore eventStore,
-                           ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                           IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                           IFailedItemStore failedItemStore)
-                 */
 
+        /*
+
+        IEventApiClient eventApiClient,
+                   ISystemInfoApiClient systemInfoApiClient,
+                   ILastUpdatedPreferences lastUpdatedPreferences,
+                   ITransactionManager transactionManager,
+                   IStateStore stateStore, IEventStore eventStore,
+                   ITrackedEntityDataValueStore trackedEntityDataValueStore,
+                   IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
+                   IFailedItemStore failedItemStore)
+         */
+
+    }
+
+    @Override
+    public ISystemInfoController getSystemInfoController() {
+        return systemInfoController;
     }
 
     @Override

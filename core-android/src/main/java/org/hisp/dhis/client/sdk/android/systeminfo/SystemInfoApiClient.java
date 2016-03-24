@@ -26,38 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
+package org.hisp.dhis.client.sdk.android.systeminfo;
 
-public enum ResourceType {
-    SYSTEM_INFO,
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
 
-    DASHBOARDS_CONTENT,
-    INTERPRETATIONS,
-    DASHBOARDS,
+public class SystemInfoApiClient implements ISystemInfoApiClient {
+    private final SystemInfoApiClientRetrofit mClient;
 
-    RELATIONSHIP_TYPES,
-    ORGANISATION_UNITS,
-    DATA_ELEMENTS,
-    OPTION_SETS,
-    CONSTANTS,
-    USERS,
+    public SystemInfoApiClient(SystemInfoApiClientRetrofit client) {
+        mClient = client;
+    }
 
-
-    PROGRAMS,
-    PROGRAM_STAGES,
-    PROGRAM_STAGE_SECTIONS,
-    PROGRAM_STAGE_DATA_ELEMENTS,
-
-    PROGRAM_RULE_VARIABLES,
-    PROGRAM_RULE_ACTIONS,
-    PROGRAM_RULES,
-
-    TRACKED_ENTITY_ATTRIBUTES,
-    TRACKED_ENTITIES,
-    TRACKED_ENTITY_INSTANCE,
-    ENROLLMENTS,
-    ENROLLMENT,
-    EVENTS,
-    EVENT,
+    @Override
+    public SystemInfo getSystemInfo() {
+        return call(mClient.getSystemInfo());
+    }
 }

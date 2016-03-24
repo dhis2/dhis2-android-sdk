@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -38,6 +39,8 @@ import rx.Observable;
 
 public interface IUserProgramScope {
     Observable<List<Program>> sync() throws ApiException;
+
+    Observable<List<Program>> sync(SyncStrategy strategy) throws ApiException;
 
     Observable<List<Program>> list();
 

@@ -30,12 +30,14 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
@@ -94,7 +96,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync() throws ApiException {
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
 
@@ -106,12 +108,12 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync(Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 
     private void getDashboardDataFromServer() {
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS);
+        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.DASHBOARDS, DateType.SERVER);
         DateTime serverDateTime = systemInfoApiClient.getSystemInfo().getServerDate();
 
         List<Dashboard> dashboards = updateDashboards(lastUpdated);
@@ -128,7 +130,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         operations.addAll(createOperations(dashboardItems));
 
         transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, serverDateTime);
+        lastUpdatedPreferences.save(ResourceType.DASHBOARDS, DateType.SERVER, serverDateTime);
     }
 
     private List<Dashboard> updateDashboards(DateTime lastUpdated) {

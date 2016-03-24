@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -39,13 +40,13 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class OrganisationUnitScope implements IOrganisationUnitScope {
-    private final IOrganisationUnitService mOrganisationUnitService;
-    private final IOrganisationUnitController mOrganisationUnitController;
+    private final IOrganisationUnitService organisationUnitService;
+    private final IOrganisationUnitController organisationUnitController;
 
-    public OrganisationUnitScope(IOrganisationUnitService mOrganisationUnitService,
-                                 IOrganisationUnitController mOrganisationUnitController) {
-        this.mOrganisationUnitService = mOrganisationUnitService;
-        this.mOrganisationUnitController = mOrganisationUnitController;
+    public OrganisationUnitScope(IOrganisationUnitService organisationUnitService,
+                                 IOrganisationUnitController organisationUnitController) {
+        this.organisationUnitService = organisationUnitService;
+        this.organisationUnitController = organisationUnitController;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
             @Override
             public void call(Subscriber<? super OrganisationUnit> subscriber) {
                 try {
-                    OrganisationUnit organisationUnit = mOrganisationUnitService.get(id);
+                    OrganisationUnit organisationUnit = organisationUnitService.get(id);
                     subscriber.onNext(organisationUnit);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,7 +72,7 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
             @Override
             public void call(Subscriber<? super OrganisationUnit> subscriber) {
                 try {
-                    OrganisationUnit organisationUnit = mOrganisationUnitService.get(uid);
+                    OrganisationUnit organisationUnit = organisationUnitService.get(uid);
                     subscriber.onNext(organisationUnit);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -88,7 +89,7 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
             @Override
             public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
-                    List<OrganisationUnit> organisationUnits = mOrganisationUnitService.list();
+                    List<OrganisationUnit> organisationUnits = organisationUnitService.list();
                     subscriber.onNext(organisationUnits);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -100,12 +101,12 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
     }
 
     @Override
-    public Observable<List<OrganisationUnit>> sync() {
+    public Observable<List<OrganisationUnit>> sync(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<OrganisationUnit>>() {
             @Override
             public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
-                    mOrganisationUnitController.sync();
+                    organisationUnitController.sync(syncStrategy);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -117,7 +118,7 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
     }
 
     @Override
-    public Observable<List<OrganisationUnit>> sync(String... uids) {
+    public Observable<List<OrganisationUnit>> sync(SyncStrategy syncStrategy, String... uids) {
         return null;
     }
 }

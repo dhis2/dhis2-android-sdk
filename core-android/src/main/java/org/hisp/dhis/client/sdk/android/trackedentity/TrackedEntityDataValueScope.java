@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
@@ -222,7 +223,7 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
             public void call(Subscriber<? super Void> subscriber) {
                 try {
                     Set<String> uidSet = new HashSet<>(Arrays.asList(uid));
-                    mEventController.sync(uidSet);
+                    mEventController.sync(SyncStrategy.DEFAULT, uidSet);
 //                    subscriber.onNext();
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

@@ -37,4 +37,6 @@ public interface IIdentifiableObjectStore<T extends IdentifiableObject> extends 
     T queryByUid(String uid);
 
     List<T> queryByUids(Set<String> uids);
+
+    boolean areStored(Set<String> uids);
 }

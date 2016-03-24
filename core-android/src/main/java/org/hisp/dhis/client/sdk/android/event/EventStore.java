@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +61,11 @@ public final class EventStore extends AbsDataStore<Event, EventFlow> implements 
     @Override
     public List<Event> queryByUids(Set<String> uids) {
         return null;
+    }
+
+    @Override
+    public boolean areStored(Set<String> objects) {
+        return false;
     }
 
     @Override

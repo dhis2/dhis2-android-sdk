@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -45,7 +46,7 @@ public interface IProgramScope {
 
     Observable<List<Program>> list(OrganisationUnit... organisationUnits);
 
-    Observable<List<Program>> sync();
+    Observable<List<Program>> sync(SyncStrategy syncStrategy);
 
-    Observable<List<Program>> sync(String... uids);
+    Observable<List<Program>> sync(SyncStrategy syncStrategy, String... uids);
 }

@@ -1,10 +1,13 @@
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
@@ -36,6 +39,22 @@ public class RulesEngineTestHelpers {
         pra.setProgramRule(pr);
 
         return pr;
+    }
+
+    public static ProgramRuleVariable createProgramRuleVariableCurrentEvent(String variableName, DataElement dataElement) {
+        ProgramRuleVariable prv = new ProgramRuleVariable();
+        prv.setDataElement(dataElement);
+        prv.setDisplayName(variableName);
+        prv.setSourceType(ProgramRuleVariableSourceType.DATAELEMENT_CURRENT_EVENT);
+        return prv;
+    }
+
+    public static DataElement createDataElement (String identifier, String name, ValueType valueType ) {
+        DataElement dataElement = new DataElement();
+        dataElement.setDisplayName(name);
+        dataElement.setValueType(valueType);
+        dataElement.setUId(identifier);
+        return dataElement;
     }
 
     public static void assertErrorRuleInEffect(List<RuleEffect> allEffects,

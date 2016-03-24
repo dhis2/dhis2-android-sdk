@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -73,16 +77,47 @@ public class RulesEngineTests {
         rules.add(createSimpleProgramRuleShowError("r1", "a1", "false", errorMessage));
 
         RuleEngine ruleEngine = new RuleEngine.Builder()
-                .trackedEntityAttributes(new ArrayList<>())
                 .programRules(rules)
-                .dataElements(new ArrayList<>())
-                .optionSets(new ArrayList<>())
-                .constants(new ArrayList<>())
                 .build();
 
 
         List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
 
-        assertErrorRuleNotInEffect(effects,errorMessage,null,null);
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteWarningRuleWithCurrentEventVariable() {
+        //Metadata
+        String errorMessage = "this error will occur based on the value of variable simpleBoolean";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean}", errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleBoolean", d1));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
+        TrackedEntityDataValue falseDataValue = new TrackedEntityDataValue();
+        falseDataValue.setDataElement(d1.getUId());
+        falseDataValue.setValue("true");
+        dataValues.add(falseDataValue);
+
+        Event simpleEvent = new Event();
+        simpleEvent.setTrackedEntityDataValues(dataValues);
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
 }

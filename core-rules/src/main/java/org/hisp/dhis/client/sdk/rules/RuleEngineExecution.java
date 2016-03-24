@@ -17,7 +17,7 @@ public class RuleEngineExecution {
         ArrayList<RuleEffect> effects = new ArrayList<>();
 
         for (ProgramRule rule:rules) {
-            if(ExpressionUtils.isTrue(rule.getCondition(), null)) {
+            if(conditionIsTrue(rule.getCondition())) {
                 for(ProgramRuleAction action: rule.getProgramRuleActions()) {
                     effects.add(createEffect(action));
                 }
@@ -32,7 +32,7 @@ public class RuleEngineExecution {
      * @param condition
      * @return
      */
-    private static boolean evaluate(final String condition) {
+    private static boolean conditionIsTrue(final String condition) {
         boolean isTrue = false;
         try {
             isTrue = ExpressionUtils.isTrue(condition, null);

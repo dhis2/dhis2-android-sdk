@@ -28,11 +28,19 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
+import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
+
+import retrofit2.Call;
+
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class OptionSetApiClient implements IOptionSetApiClient {
     private final IOptionSetApiClientRetrofit optionSetApiClientRetrofit;
@@ -41,13 +49,37 @@ public class OptionSetApiClient implements IOptionSetApiClient {
         this.optionSetApiClientRetrofit = optionSetApiClientRetrofit;
     }
 
-    @Override
-    public List<OptionSet> getBasicOptionSets(DateTime dateTime) {
-        return null;
-    }
 
     @Override
-    public List<OptionSet> getFullOptionSets(DateTime dateTime) {
-        return null;
+    public List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
+                                                             String... uids) throws ApiException {
+
+        ApiResource<OptionSet> apiResource = new ApiResource<OptionSet>() {
+
+            @Override
+            public String getResourceName() {
+                return "optionSets";
+            }
+
+            @Override
+            public String getBasicProperties() {
+                return "id,displayName";
+            }
+
+            @Override
+            public String getAllProperties() {
+                return "id,name,displayName,created,lastUpdated,access," +
+                        "version,options[id,name,displayName,created,lastUpdated,access,code]";
+            }
+
+            @Override
+            public Call<Map<String, List<OptionSet>>> getEntities(
+                    Map<String, String> queryMap, List<String> filters) throws ApiException {
+                return optionSetApiClientRetrofit
+                        .getOptionSets(queryMap, filters);
+            }
+        };
+
+        return getCollection(apiResource, fields, lastUpdated, uids);
     }
 }

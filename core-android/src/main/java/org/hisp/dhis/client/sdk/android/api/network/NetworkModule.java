@@ -36,6 +36,8 @@ import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClient;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient2;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.optionset.IOptionSetApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClient;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
@@ -57,6 +59,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
@@ -97,6 +100,7 @@ public class NetworkModule implements INetworkModule {
     private final IEventApiClient eventApiClient;
     private final IDataElementApiClient dataElementApiClient;
     private final IProgramStageDataElementApiClient programStageDataElementApiClient;
+    private final IOptionSetApiClient optionSetApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -154,6 +158,8 @@ public class NetworkModule implements INetworkModule {
                 IDataElementApiClientRetrofit.class));
         programStageDataElementApiClient = new ProgramStageDataElementApiClient(retrofit.create(
                 IProgramStageDataElementApiClientRetrofit.class));
+        optionSetApiClient = new OptionSetApiClient(retrofit.create(
+                IOptionSetApiClientRetrofit.class));
     }
 
     @Override
@@ -199,6 +205,11 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IProgramStageDataElementApiClient getProgramStageDataElementApiClient() {
         return programStageDataElementApiClient;
+    }
+
+    @Override
+    public IOptionSetApiClient getOptionSetApiClient() {
+        return optionSetApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

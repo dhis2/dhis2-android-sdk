@@ -29,63 +29,149 @@
 package org.hisp.dhis.client.sdk.core.optionset;
 
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class OptionSetController implements IIdentifiableController<OptionSet> {
+public final class OptionSetController extends AbsSyncStrategyController
+        <OptionSet> implements IOptionSetController {
     private final IOptionSetApiClient optionSetApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final ISystemInfoController systemInfoController;
     private final ITransactionManager transactionManager;
-
-    private final IOptionStore mOptionStore;
+    private final IOptionStore optionStore;
     private final IOptionSetStore optionSetStore;
 
     public OptionSetController(IOptionSetApiClient optionSetApiClient,
-                               IOptionStore mOptionStore,
+                               IOptionStore optionStore,
                                IOptionSetStore optionSetStore,
-                               ISystemInfoApiClient systemInfoApiClient,
+                               ISystemInfoController systemInfoController,
                                ILastUpdatedPreferences lastUpdatedPreferences,
                                ITransactionManager transactionManager) {
+        super(ResourceType.OPTION_SETS, optionSetStore, lastUpdatedPreferences);
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
         this.optionSetApiClient = optionSetApiClient;
-        this.mOptionStore = mOptionStore;
+        this.optionStore = optionStore;
         this.optionSetStore = optionSetStore;
-        this.systemInfoApiClient = systemInfoApiClient;
+        this.systemInfoController = systemInfoController;
     }
 
-    private void getOptionSetDataFromServer() throws ApiException {
-        ResourceType resource = ResourceType.OPTION_SETS;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-        List<OptionSet> allOptionSets = optionSetApiClient.getBasicOptionSets(null);
-        List<OptionSet> updatedOptionSets = optionSetApiClient.getFullOptionSets(lastUpdated);
-        linkOptionsWithOptionSets(updatedOptionSets);
-        List<OptionSet> existingPersistedAndUpdatedOptionSets =
-                ModelUtils.merge(allOptionSets, updatedOptionSets, optionSetStore.queryAll());
 
-        List<IDbOperation> operations = new ArrayList<>();
-        List<OptionSet> persistedOptionSets = optionSetStore.queryAll();
-        if (existingPersistedAndUpdatedOptionSets != null &&
-                !existingPersistedAndUpdatedOptionSets.isEmpty()) {
-            for (OptionSet optionSet : existingPersistedAndUpdatedOptionSets) {
+//    private void linkOptionsWithOptionSets(List<OptionSet> optionSets) {
+//        // Building option to optionset relationship.
+//        if (optionSets != null && !optionSets.isEmpty()) {
+//            for (OptionSet optionSet : optionSets) {
+//                if (optionSet == null || optionSet.getOptions() == null) {
+//                    continue;
+//                }
+//                int sortOrder = 0;
+//                for (Option option : optionSet.getOptions()) {
+//                    option.setUId(optionSet.getUId() + option.getCode());//options don't have
+//                    // uid, but uid is used in createOperations
+//                    option.setLastUpdated(new DateTime());//same with these dates
+//                    option.setCreated(new DateTime());
+//                    option.setOptionSet(optionSet);
+//                    option.setSortOrder(sortOrder);
+//                    sortOrder++;
+//                }
+//            }
+//        }
+//    }
+//
+//
+//    @Override
+//    protected void synchronizes(SyncStrategy strategy, Set<String> uids) {
+//        ResourceType resource = ResourceType.OPTION_SETS;
+//        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+//        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
+//        List<OptionSet> allOptionSets = optionSetApiClient.getOptionSets(Fields.BASIC, lastUpdated, null);
+//        List<OptionSet> updatedOptionSets = optionSetApiClient.getOptionSets(lastUpdated);
+////        linkOptionsWithOptionSets(updatedOptionSets);
+//        List<OptionSet> existingPersistedAndUpdatedOptionSets =
+//                ModelUtils.merge(allOptionSets, updatedOptionSets, optionSetStore.queryAll());
+//
+//        List<IDbOperation> operations = new ArrayList<>();
+//        List<OptionSet> persistedOptionSets = optionSetStore.queryAll();
+//        if (existingPersistedAndUpdatedOptionSets != null &&
+//                !existingPersistedAndUpdatedOptionSets.isEmpty()) {
+//            for (OptionSet optionSet : existingPersistedAndUpdatedOptionSets) {
+//                if (optionSet == null || optionSet.getOptions() == null) {
+//                    continue;
+//                }
+//                OptionSet persistedOptionSet = optionSetStore.queryByUid(optionSet.getUId());
+//                List<Option> persistedOptions;
+//                if (persistedOptionSet != null) {
+//                    persistedOptions = persistedOptionSet.getOptions();
+//                } else {
+//                    persistedOptions = new ArrayList<>();
+//                }
+//                operations.addAll(DbUtils.createOperations(optionStore,
+//                        persistedOptions, optionSet.getOptions()));
+//            }
+//        }
+//        operations.addAll(DbUtils.createOperations(optionSetStore,
+//                persistedOptionSets, existingPersistedAndUpdatedOptionSets));
+//
+////        DbUtils.applyBatch(operations);
+//        transactionManager.transact(operations);
+//        lastUpdatedPreferences.save(ResourceType.OPTION_SETS, DateType.SERVER, serverTime);
+//    }
+
+    @Override
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.OPTION_SETS, DateType.SERVER);
+
+        List<OptionSet> persistedOptionSets =
+                identifiableObjectStore.queryAll();
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<OptionSet> allExistingOptionSets = optionSetApiClient
+                .getOptionSets(Fields.BASIC, null);
+
+        String[] uidArray = null;
+        if (uids != null) {
+            // here we want to get list of ids of option sets which are
+            // stored locally and list of option sets which we want to download
+            Set<String> persistedOptionSetIds = ModelUtils
+                    .toUidSet(persistedOptionSets);
+            persistedOptionSetIds.addAll(uids);
+
+            uidArray = persistedOptionSetIds
+                    .toArray(new String[persistedOptionSetIds.size()]);
+        }
+
+        List<OptionSet> updatedOptionSets = optionSetApiClient
+                .getOptionSets(Fields.ALL, lastUpdated, uidArray);
+
+
+        List<OptionSet> mergedOptionSets = ModelUtils.merge(
+                allExistingOptionSets, updatedOptionSets,
+                persistedOptionSets);
+
+
+        List<IDbOperation> optionDbOperations = new ArrayList<>();
+
+        if (mergedOptionSets != null &&
+                !mergedOptionSets.isEmpty()) {
+            for (OptionSet optionSet : mergedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
                 }
@@ -96,46 +182,22 @@ public final class OptionSetController implements IIdentifiableController<Option
                 } else {
                     persistedOptions = new ArrayList<>();
                 }
-                operations.addAll(DbUtils.createOperations(mOptionStore,
+                optionDbOperations.addAll(DbUtils.createOperations(optionStore,
                         persistedOptions, optionSet.getOptions()));
             }
         }
-        operations.addAll(DbUtils.createOperations(optionSetStore,
-                persistedOptionSets, existingPersistedAndUpdatedOptionSets));
 
-//        DbUtils.applyBatch(operations);
-        transactionManager.transact(operations);
-        lastUpdatedPreferences.save(ResourceType.OPTION_SETS, DateType.SERVER, serverTime);
-    }
 
-    private void linkOptionsWithOptionSets(List<OptionSet> optionSets) {
-        // Building option to optionset relationship.
-        if (optionSets != null && !optionSets.isEmpty()) {
-            for (OptionSet optionSet : optionSets) {
-                if (optionSet == null || optionSet.getOptions() == null) {
-                    continue;
-                }
-                int sortOrder = 0;
-                for (Option option : optionSet.getOptions()) {
-                    option.setUId(optionSet.getUId() + option.getCode());//options don't have
-                    // uid, but uid is used in createOperations
-                    option.setLastUpdated(new DateTime());//same with these dates
-                    option.setCreated(new DateTime());
-                    option.setOptionSet(optionSet);
-                    option.setSortOrder(sortOrder);
-                    sortOrder++;
-                }
-            }
-        }
-    }
 
-    @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+        // we will have to perform something similar to what happens in AbsController
 
-    }
+        List<IDbOperation> dbOperations = DbUtils.createOperations(
+                allExistingOptionSets, updatedOptionSets,
+                persistedOptionSets, identifiableObjectStore);
+        transactionManager.transact(optionDbOperations);
+        transactionManager.transact(dbOperations);
 
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
-
+        lastUpdatedPreferences.save(ResourceType.OPTION_SETS,
+                DateType.SERVER, serverTime);
     }
 }

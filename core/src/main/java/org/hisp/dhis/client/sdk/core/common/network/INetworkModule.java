@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.common.network;
 
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
@@ -56,4 +57,6 @@ public interface INetworkModule {
     IDataElementApiClient getDataElementApiClient();
 
     IProgramStageDataElementApiClient getProgramStageDataElementApiClient();
+
+    IOptionSetApiClient getOptionSetApiClient();
 }

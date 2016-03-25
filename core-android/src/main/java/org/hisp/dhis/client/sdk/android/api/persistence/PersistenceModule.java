@@ -34,6 +34,8 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore2;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
+import org.hisp.dhis.client.sdk.android.optionset.OptionStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
@@ -44,6 +46,8 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
@@ -61,6 +65,8 @@ public class PersistenceModule implements IPersistenceModule {
     private final IEventStore eventStore;
     private final IProgramStageDataElementStore programStageDataElementStore;
     private final IDataElementStore dataElementStore;
+    private final IOptionSetStore optionSetStore;
+    private final IOptionStore optionStore;
 
     public PersistenceModule(Context context) {
         FlowManager.init(context);
@@ -74,6 +80,8 @@ public class PersistenceModule implements IPersistenceModule {
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         eventStore = new EventStore2(transactionManager);
         dataElementStore = new DataElementStore();
+        optionSetStore = new OptionSetStore();
+        optionStore = new OptionStore();
     }
 
     @Override
@@ -122,11 +130,21 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
+    public IOptionSetStore getOptionSetStore() {
+        return optionSetStore;
+    }
+
+    @Override
+    public IOptionStore getOptionStore() {
+        return optionStore;
+    }
+
+    @Override
     public boolean deleteAllTables() {
         return organisationUnitStore.deleteAll() &&
                 userAccountStore.deleteAll() && programStore.deleteAll()
                 && dataElementStore.deleteAll() && programStageStore.deleteAll()
                 && programStageDataElementStore.deleteAll() && programStageSectionStore.deleteAll()
-                && eventStore.deleteAll();
+                && eventStore.deleteAll() && optionStore.deleteAll() && optionSetStore.deleteAll();
     }
 }

@@ -54,13 +54,14 @@ package org.hisp.dhis.client.sdk.core.optionset;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 public interface IOptionSetApiClient {
-    List<OptionSet> getBasicOptionSets(DateTime lastUpdated);
-
-    List<OptionSet> getFullOptionSets(DateTime lastUpdated);
+    List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
+                                                      String... uids) throws ApiException;
 }

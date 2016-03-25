@@ -35,6 +35,8 @@ import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
@@ -68,6 +70,7 @@ public class ControllersModule implements IControllersModule {
     private final IEventController eventController;
     private final IDataElementController dataElementController;
     private final IProgramStageDataElementController programStageDataElementController;
+    private final IOptionSetController optionSetController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -93,11 +96,21 @@ public class ControllersModule implements IControllersModule {
                 programController, persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
+        optionSetController = new OptionSetController(
+                networkModule.getOptionSetApiClient(),
+                persistenceModule.getOptionStore(),
+                persistenceModule.getOptionSetStore(),
+                systemInfoController,
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
+
         dataElementController = new DataElementController(
                 networkModule.getDataElementApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getDataElementStore(),
-                systemInfoController, persistenceModule.getTransactionManager());
+                systemInfoController,
+                optionSetController,
+                persistenceModule.getTransactionManager());
 
 
         programStageDataElementController = new ProgramStageDataElementController(
@@ -217,5 +230,10 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IProgramStageDataElementController getProgramStageDataElementController() {
         return programStageDataElementController;
+    }
+
+    @Override
+    public IOptionSetController getOptionSetController() {
+        return optionSetController;
     }
 }

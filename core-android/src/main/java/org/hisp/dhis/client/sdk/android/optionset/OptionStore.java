@@ -43,8 +43,8 @@ import java.util.List;
 public final class OptionStore extends AbsIdentifiableObjectStore<Option, OptionFlow> implements
         IOptionStore {
 
-    public OptionStore(IMapper<Option, OptionFlow> mapper) {
-        super(mapper);
+    public OptionStore() {
+        super(OptionFlow.MAPPER);
     }
 
     @Override

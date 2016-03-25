@@ -37,11 +37,13 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,16 +52,19 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
     private final IDataElementApiClient dataElementApiClient;
     private final ISystemInfoController systemInfoController;
     private final ITransactionManager transactionManager;
+    private final IOptionSetController optionSetController;
 
     public DataElementController(IDataElementApiClient dataElementApiClient,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
                                  IDataElementStore dataElementStore,
                                  ISystemInfoController systemInfoController,
+                                 IOptionSetController optionSetController,
                                  ITransactionManager transactionManager) {
         super(ResourceType.DATA_ELEMENTS, dataElementStore, lastUpdatedPreferences);
 
         this.dataElementApiClient = dataElementApiClient;
         this.systemInfoController = systemInfoController;
+        this.optionSetController = optionSetController;
         this.transactionManager = transactionManager;
     }
 
@@ -89,6 +94,22 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
 
         List<DataElement> updatedDataElements = dataElementApiClient.getDataElements(
                 Fields.ALL, lastUpdated, uidArray);
+
+        // Retrieving program stage uids from program stages sections
+        Set<String> optionSetUids = new HashSet<>();
+        List<DataElement> mergedDataElements = ModelUtils.merge(
+                allExistingDataElements, updatedDataElements,
+                persistedDataElements);
+        for (DataElement dataElement : mergedDataElements) {
+            if(dataElement.getOptionSet() != null) {
+                optionSetUids.add(dataElement.getOptionSet().getUId());
+            }
+        }
+
+        // Syncing option sets before saving data elements(since
+        // data elements are referencing them directly)
+        optionSetController.sync(strategy, optionSetUids);
+
 
         // we will have to perform something similar to what happens in AbsController
 

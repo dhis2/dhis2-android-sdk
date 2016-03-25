@@ -40,6 +40,7 @@ public enum ResourceType {
     ORGANISATION_UNITS,
     DATA_ELEMENTS,
     OPTION_SETS,
+    OPTIONS,
     CONSTANTS,
     USERS,
 

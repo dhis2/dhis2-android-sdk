@@ -41,64 +41,64 @@ import java.util.List;
 
 public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSetFlow>
         implements IOptionSetStore {
-    private static final String OPTIONSET_TO_OPTIONS = "optionsetToOptions";
-    private final ITransactionManager transactionManager;
+//    private static final String OPTIONSET_TO_OPTIONS = "optionsetToOptions";
+//    private final ITransactionManager transactionManager;
 
-    public OptionSetStore(ITransactionManager transactionManager) {
+    public OptionSetStore() {
         super(OptionSetFlow.MAPPER);
-        this.transactionManager = transactionManager;
+//        this.transactionManager = transactionManager;
     }
 
-    @Override
-    public boolean insert(OptionSet optionSet) {
-        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
-        if (databaseEntity != null) {
-            databaseEntity.insert();
+//    @Override
+//    public boolean insert(OptionSet optionSet) {
+//        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+//        if (databaseEntity != null) {
+//            databaseEntity.insert();
+//
+//            /* setting id which DbFlows' BaseModel generated after insertion */
+//            optionSet.setId(databaseEntity.getId());
+//
+////            List<Option> options = optionSet.getOptions();
+////            if(options != null) {
+////                for (Option option : options) {
+////                    if (!mOptionStore.insert(option)) {
+////                        return false;
+////                    }
+////                }
+////            }
+////            return true;
+//        }
+//
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean save(OptionSet optionSet) {
+//        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
+//        if (databaseEntity != null) {
+//            databaseEntity.save();
+//
+//            /* setting id which DbFlows' BaseModel generated after insertion */
+//            optionSet.setId(databaseEntity.getId());
+//
+////            List<Option> options = optionSet.getOptions();
+////            if(options != null) {
+////                for (Option option : options) {
+////                    if (!mOptionStore.save(option)) {
+////                        return false;
+////                    }
+////                }
+////            }
+////            return true;
+//        }
+//
+//        return false;
+//    }
 
-            /* setting id which DbFlows' BaseModel generated after insertion */
-            optionSet.setId(databaseEntity.getId());
-
-//            List<Option> options = optionSet.getOptions();
-//            if(options != null) {
-//                for (Option option : options) {
-//                    if (!mOptionStore.insert(option)) {
-//                        return false;
-//                    }
-//                }
-//            }
-//            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean save(OptionSet optionSet) {
-        OptionSetFlow databaseEntity = getMapper().mapToDatabaseEntity(optionSet);
-        if (databaseEntity != null) {
-            databaseEntity.save();
-
-            /* setting id which DbFlows' BaseModel generated after insertion */
-            optionSet.setId(databaseEntity.getId());
-
-//            List<Option> options = optionSet.getOptions();
-//            if(options != null) {
-//                for (Option option : options) {
-//                    if (!mOptionStore.save(option)) {
-//                        return false;
-//                    }
-//                }
-//            }
-//            return true;
-        }
-
-        return false;
-    }
-
-    private void updateProgramStageRelationships(OptionSet optionSet) {
-        List<IDbOperation> dbOperations = new ArrayList<>();
-        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(optionSet,
-                optionSet.getOptions(), OPTIONSET_TO_OPTIONS));
-        transactionManager.transact(dbOperations);
-    }
+//    private void updateOptionSetRelationships(OptionSet optionSet) {
+//        List<IDbOperation> dbOperations = new ArrayList<>();
+//        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(optionSet,
+//                optionSet.getOptions(), OPTIONSET_TO_OPTIONS));
+//        transactionManager.transact(dbOperations);
+//    }
 }

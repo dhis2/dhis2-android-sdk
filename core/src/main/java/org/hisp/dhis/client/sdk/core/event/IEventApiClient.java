@@ -34,28 +34,9 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IEventApiClient {
-    List<Event> getEvents(Fields fields, DateTime lastUpdated,
-                          String... uids) throws ApiException;
-//    List<Event> getFullEvents(String programUid, String organisationUnitId, int limit, DateTime
-// lastUpdated);
-//
-//    List<Event> getFullEvents(String programUid, String organisationUnitId, int limit);
-//
-//    List<Event> getFullEvents(String programUid, String organisationUnitId, DateTime lastUpdated);
-//
-//    List<Event> getBasicEvents(String programUid, String enrollmentStatus, String
-// trackedEntityInstanceUid, DateTime lastUpdated);
-//
-//    List<Event> getFullEvents(String programUid, String enrollmentStatus, String
-// trackedEntityInstanceUid, DateTime lastUpdated);
-//
-//    Event getFullEvent(String uid, DateTime lastUpdated);
-//
-//    Event getBasicEvent(String uid, DateTime lastUpdated);
-//
-//    ImportSummary postEvent(Event event);
-//
-//    ImportSummary putEvent(Event event);
+    List<Event> getEvents(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 }

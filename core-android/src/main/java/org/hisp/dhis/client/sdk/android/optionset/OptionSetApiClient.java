@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -49,37 +50,42 @@ public class OptionSetApiClient implements IOptionSetApiClient {
         this.optionSetApiClientRetrofit = optionSetApiClientRetrofit;
     }
 
+    ApiResource<OptionSet> apiResource = new ApiResource<OptionSet>() {
+
+        @Override
+        public String getResourceName() {
+            return "optionSets";
+        }
+
+        @Override
+        public String getBasicProperties() {
+            return "id,displayName";
+        }
+
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "version,options[id,name,displayName,created,lastUpdated,access,code]";
+        }
+
+        @Override
+        public Call<Map<String, List<OptionSet>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return optionSetApiClientRetrofit
+                    .getOptionSets(queryMap, filters);
+        }
+    };
 
     @Override
     public List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
-                                                             String... uids) throws ApiException {
-
-        ApiResource<OptionSet> apiResource = new ApiResource<OptionSet>() {
-
-            @Override
-            public String getResourceName() {
-                return "optionSets";
-            }
-
-            @Override
-            public String getBasicProperties() {
-                return "id,displayName";
-            }
-
-            @Override
-            public String getAllProperties() {
-                return "id,name,displayName,created,lastUpdated,access," +
-                        "version,options[id,name,displayName,created,lastUpdated,access,code]";
-            }
-
-            @Override
-            public Call<Map<String, List<OptionSet>>> getEntities(
-                    Map<String, String> queryMap, List<String> filters) throws ApiException {
-                return optionSetApiClientRetrofit
-                        .getOptionSets(queryMap, filters);
-            }
-        };
-
+                                         Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
+    }
+
+    @Override
+    public List<OptionSet> getOptionSets(
+            Fields fields, Set<String> optionSetUids) throws ApiException {
+        return getCollection(apiResource, "options.id",
+                fields, null, optionSetUids);
     }
 }

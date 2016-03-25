@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -50,8 +51,8 @@ public class ProgramStageApiClient implements IProgramStageApiClient {
     }
 
     @Override
-    public List<ProgramStage> getProgramStages(Fields fields, DateTime lastUpdated,
-                                               String... uids) throws ApiException {
+    public List<ProgramStage> getProgramStages(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         ApiResource<ProgramStage> apiResource = new ApiResource<ProgramStage>() {
 
             @Override
@@ -67,7 +68,7 @@ public class ProgramStageApiClient implements IProgramStageApiClient {
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
-                        "program[id],programStageSections[id]";
+                        "program[id],programStageSections[id],programStageDataElements[id]";
             }
 
             @Override

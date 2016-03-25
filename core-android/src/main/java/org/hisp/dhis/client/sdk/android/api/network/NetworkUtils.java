@@ -42,10 +42,10 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -75,7 +75,7 @@ public class NetworkUtils {
 
     /**
      * List of errors which this method should handle:
-     * <p>
+     * <p/>
      * 400 Bad Request
      * 401 Unauthorized (user password has changed)
      * 403 Forbidden (access denied)
@@ -161,9 +161,16 @@ public class NetworkUtils {
     }
 
     @NonNull
-    public static <T> List<T> getCollection(@NonNull ApiResource<T> apiResource,
-                                            @NonNull Fields fields, @Nullable DateTime lastUpdated,
-                                            @Nullable String... uids) {
+    public static <T> List<T> getCollection(
+            @NonNull ApiResource<T> apiResource, @NonNull Fields fields,
+            @Nullable DateTime lastUpdated, @Nullable Set<String> uids) {
+        return getCollection(apiResource, "id", fields, lastUpdated, uids);
+    }
+
+    @NonNull
+    public static <T> List<T> getCollection(
+            @NonNull ApiResource<T> apiResource, @NonNull String idProperty,
+            @NonNull Fields fields, @Nullable DateTime lastUpdated, @Nullable Set<String> uids) {
 
         Map<String, String> queryMap = new HashMap<>();
         List<String> filters = new ArrayList<>();
@@ -188,10 +195,10 @@ public class NetworkUtils {
         }
 
         List<T> allPrograms = new ArrayList<>();
-        if (uids != null && uids.length > 0) {
+        if (uids != null && uids.size() > 0) {
 
             // splitting up request into chunks
-            List<String> idFilters = buildIdFilter(uids);
+            List<String> idFilters = buildIdFilter(idProperty, uids);
             for (String idFilter : idFilters) {
                 List<String> combinedFilters = new ArrayList<>(filters);
                 combinedFilters.add(idFilter);
@@ -209,14 +216,14 @@ public class NetworkUtils {
         return allPrograms;
     }
 
-    private static List<String> buildIdFilter(String[] ids) {
+    private static List<String> buildIdFilter(String idProperty, Set<String> ids) {
         List<String> idFilters = new ArrayList<>();
 
-        if (ids != null && ids.length > 0) {
-            List<List<String>> splittedIds = CollectionUtils.slice(Arrays.asList(ids), 64);
+        if (ids != null && ids.size() > 0) {
+            List<List<String>> splittedIds = CollectionUtils.slice(new ArrayList<>(ids), 64);
             for (List<String> listOfIds : splittedIds) {
                 StringBuilder builder = new StringBuilder();
-                idFilters.add(builder.append("id:in:[")
+                idFilters.add(builder.append(idProperty).append(":in:[")
                         .append(CollectionUtils.join(listOfIds, ","))
                         .append("]")
                         .toString());

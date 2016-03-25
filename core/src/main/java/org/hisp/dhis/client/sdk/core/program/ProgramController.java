@@ -50,17 +50,19 @@ import java.util.Set;
 public class ProgramController extends AbsSyncStrategyController<Program>
         implements IProgramController {
 
-    /* Api clients */
+    /* Controllers */
     private final ISystemInfoController systemInfoController;
+
+    /* Api clients */
     private final IProgramApiClient programApiClient;
     private final IUserApiClient userApiClient;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public ProgramController(IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, ISystemInfoController systemInfoController,
-                             ITransactionManager transactionManager,
+    public ProgramController(ISystemInfoController systemInfoController,
+                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
+                             IProgramStore programStore, ITransactionManager transactionManager,
                              ILastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 
@@ -79,20 +81,18 @@ public class ProgramController extends AbsSyncStrategyController<Program>
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null);
+        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of programs which are
             // stored locally and list of programs which we want to download
-            Set<String> persistedProgramIds = ModelUtils.toUidSet(persistedPrograms);
-            persistedProgramIds.addAll(uids);
-
-            uidArray = persistedProgramIds.toArray(new String[persistedProgramIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedPrograms);
+            uidSet.addAll(uids);
         }
 
         List<Program> updatedPrograms = programApiClient.getPrograms(
-                Fields.ALL, lastUpdated, uidArray);
+                Fields.ALL, lastUpdated, uidSet);
 
         // we need to mark assigned programs as "assigned" before storing them
         Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient

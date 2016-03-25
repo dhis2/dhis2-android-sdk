@@ -43,6 +43,8 @@ public interface IProgramStageDataElementScope {
 
     Observable<List<ProgramStageDataElement>> sync();
 
+    Observable<List<ProgramStageDataElement>> sync(String... uids);
+
     Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy);
 
     Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy, String... uids);

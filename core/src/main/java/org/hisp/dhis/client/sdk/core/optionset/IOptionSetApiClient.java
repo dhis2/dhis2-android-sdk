@@ -60,8 +60,11 @@ import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IOptionSetApiClient {
     List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
-                                                      String... uids) throws ApiException;
+                                  Set<String> uids) throws ApiException;
+    public List<OptionSet> getOptionSets(
+            Fields fields, Set<String> optionSetUids) throws ApiException;
 }

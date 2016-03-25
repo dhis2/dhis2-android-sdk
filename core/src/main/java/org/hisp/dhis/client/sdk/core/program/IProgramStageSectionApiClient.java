@@ -34,8 +34,12 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IProgramStageSectionApiClient {
-    List<ProgramStageSection> getProgramStageSections(Fields fields, DateTime lastUpdated,
-                                                      String... uids) throws ApiException;
+    List<ProgramStageSection> getProgramStageSections(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
+
+    List<ProgramStageSection> getProgramStageSections(
+            Fields fields, Set<String> stageDataElementUids) throws ApiException;
 }

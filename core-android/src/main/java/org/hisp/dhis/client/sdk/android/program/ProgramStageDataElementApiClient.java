@@ -37,49 +37,51 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramStageDataElementApiClient implements IProgramStageDataElementApiClient {
-    private final IProgramStageDataElementApiClientRetrofit
-            programStageDataElementApiClientRetrofit;
+    private final IProgramStageDataElementApiClientRetrofit apiClientRetrofit;
 
-    public ProgramStageDataElementApiClient(IProgramStageDataElementApiClientRetrofit
-                                                    retrofitClient) {
-        this.programStageDataElementApiClientRetrofit = retrofitClient;
+    public ProgramStageDataElementApiClient(
+            IProgramStageDataElementApiClientRetrofit retrofitClient) {
+        this.apiClientRetrofit = retrofitClient;
     }
 
     @Override
     public List<ProgramStageDataElement> getProgramStageDataElements(Fields fields, DateTime
-            lastUpdated, String... uids) throws ApiException {
-        ApiResource<ProgramStageDataElement> apiResource = new
-                ApiResource<ProgramStageDataElement>() {
-            @Override
-            public String getResourceName() {
-                return "programStageDataElements";
-            }
+            lastUpdated, Set<String> uids) throws ApiException {
 
-            @Override
-            public String getBasicProperties() {
-                return "id";
-            }
+        ApiResource<ProgramStageDataElement> apiResource =
+                new ApiResource<ProgramStageDataElement>() {
 
-            @Override
-            public String getAllProperties() {
-                return "id,created,lastUpdated,access," +
-                        "programStage[id],dataElement[id],allowFutureDate,"
-                        + "sortOrder,displayInReports,allowProvidedElsewhere,compulsory";
-            }
+                    @Override
+                    public String getResourceName() {
+                        return "programStageDataElements";
+                    }
 
-            @Override
-            public Call<Map<String, List<ProgramStageDataElement>>> getEntities(
-                    Map<String, String> queryMap, List<String> filters) throws ApiException {
-                return programStageDataElementApiClientRetrofit
-                        .getProgramStageDataElements(queryMap, filters);
-            }
-        };
+                    @Override
+                    public String getBasicProperties() {
+                        return "id";
+                    }
+
+                    @Override
+                    public String getAllProperties() {
+                        return "id,created,lastUpdated,access," +
+                                "programStage[id],dataElement[id],allowFutureDate," +
+                                "sortOrder,displayInReports,allowProvidedElsewhere,compulsory";
+                    }
+
+                    @Override
+                    public Call<Map<String, List<ProgramStageDataElement>>> getEntities(
+                            Map<String, String> queryMap, List<String> filters) throws
+                            ApiException {
+                        return apiClientRetrofit.getProgramStageDataElements(queryMap, filters);
+                    }
+                };
 
         return getCollection(apiResource, fields, lastUpdated, uids);
     }

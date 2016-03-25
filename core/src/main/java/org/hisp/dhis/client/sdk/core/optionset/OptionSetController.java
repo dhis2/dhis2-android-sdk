@@ -146,20 +146,16 @@ public final class OptionSetController extends AbsSyncStrategyController
         List<OptionSet> allExistingOptionSets = optionSetApiClient
                 .getOptionSets(Fields.BASIC, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of option sets which are
             // stored locally and list of option sets which we want to download
-            Set<String> persistedOptionSetIds = ModelUtils
-                    .toUidSet(persistedOptionSets);
-            persistedOptionSetIds.addAll(uids);
-
-            uidArray = persistedOptionSetIds
-                    .toArray(new String[persistedOptionSetIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedOptionSets);
+            uidSet.addAll(uids);
         }
 
         List<OptionSet> updatedOptionSets = optionSetApiClient
-                .getOptionSets(Fields.ALL, lastUpdated, uidArray);
+                .getOptionSets(Fields.ALL, lastUpdated, uidSet);
 
 
         List<OptionSet> mergedOptionSets = ModelUtils.merge(

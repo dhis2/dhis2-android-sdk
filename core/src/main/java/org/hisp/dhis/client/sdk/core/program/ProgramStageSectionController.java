@@ -38,7 +38,6 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -49,32 +48,28 @@ import java.util.Set;
 
 public class ProgramStageSectionController extends AbsSyncStrategyController<ProgramStageSection>
         implements IProgramStageSectionController {
-    /* Api clients */
-    private final IProgramStageSectionApiClient programStageSectionApiClient;
 
     /* Controllers */
     private final ISystemInfoController systemInfoController;
     private final IProgramStageController programStageController;
-    private final IProgramStageDataElementController programStageDataElementController;
+
+    /* Api clients */
+    private final IProgramStageSectionApiClient programStageSectionApiClient;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public ProgramStageSectionController(IProgramStageSectionApiClient programStageSectionApiClient,
-                                         IProgramStageSectionStore programStageSectionStore,
-                                         IProgramStageController programStageController,
-                                         IProgramStageDataElementController
-                                                 programStageDataElementController,
+    public ProgramStageSectionController(IProgramStageController programStageController,
                                          ISystemInfoController systemInfoController,
+                                         IProgramStageSectionApiClient programStageSectionApiClient,
+                                         IProgramStageSectionStore sectionStore,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences) {
-        super(ResourceType.PROGRAM_STAGE_SECTIONS,
-                programStageSectionStore, lastUpdatedPreferences);
+        super(ResourceType.PROGRAM_STAGE_SECTIONS, sectionStore, lastUpdatedPreferences);
+
         this.programStageSectionApiClient = programStageSectionApiClient;
         this.systemInfoController = systemInfoController;
         this.programStageController = programStageController;
-        this.programStageDataElementController = programStageDataElementController; //// TODO:
-        // Remove this when linking logic is resolved
         this.transactionManager = transactionManager;
     }
 
@@ -92,20 +87,16 @@ public class ProgramStageSectionController extends AbsSyncStrategyController<Pro
         List<ProgramStageSection> allExistingProgramStageSections = programStageSectionApiClient
                 .getProgramStageSections(Fields.BASIC, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of program stage sections which are
             // stored locally and list of program stage sections which we want to download
-            Set<String> persistedProgramStageSectionIds = ModelUtils
-                    .toUidSet(persistedProgramStageSections);
-            persistedProgramStageSectionIds.addAll(uids);
-
-            uidArray = persistedProgramStageSectionIds
-                    .toArray(new String[persistedProgramStageSectionIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedProgramStageSections);
+            uidSet.addAll(uids);
         }
 
         List<ProgramStageSection> updatedProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.ALL, lastUpdated, uidArray);
+                .getProgramStageSections(Fields.ALL, lastUpdated, uidSet);
 
         // Retrieving program stage uids from program stages sections
         Set<String> programStageSectionUids = new HashSet<>();
@@ -119,17 +110,6 @@ public class ProgramStageSectionController extends AbsSyncStrategyController<Pro
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
         programStageController.sync(strategy, programStageSectionUids);
-
-        Set<String> programStageDataElementUids = new HashSet<>();
-
-        for (ProgramStageSection programStageSection : mergedProgramStageSections) {
-            for (ProgramStageDataElement programStageDataElement : programStageSection
-                    .getProgramStageDataElements()) {
-                programStageDataElementUids.add(programStageDataElement.getUId());
-            }
-        }
-
-        programStageDataElementController.sync(strategy, programStageDataElementUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(

@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
@@ -40,9 +41,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface IProgramStageDataElementService extends IService,
-        ISave<ProgramStageDataElement>, IRemove<ProgramStageDataElement>,
-        IGet<ProgramStageDataElement>, IList<ProgramStageDataElement> {
+public interface IProgramStageDataElementService extends IService, ISave<ProgramStageDataElement>,
+        IRemove<ProgramStageDataElement>, IGet<ProgramStageDataElement>,
+        IList<ProgramStageDataElement>, IListUids<ProgramStageDataElement> {
 
     List<ProgramStageDataElement> list(ProgramStage programStage);
 

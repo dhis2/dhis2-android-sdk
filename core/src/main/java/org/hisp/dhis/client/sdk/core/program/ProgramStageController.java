@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -49,32 +49,32 @@ import java.util.Set;
 public class ProgramStageController extends AbsSyncStrategyController<ProgramStage>
         implements IProgramStageController {
 
-    /* Api clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IProgramStageApiClient programStageApiClient;
-
     /* Controllers */
     private final IProgramController programController;
+    private final ISystemInfoController systemInfoController;
+
+    /* Api clients */
+    private final IProgramStageApiClient programStageApiClient;
 
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public ProgramStageController(ISystemInfoApiClient systemInfoApiClient,
+    public ProgramStageController(IProgramController programController,
+                                  ISystemInfoController systemInfoController,
                                   IProgramStageApiClient programStageApiClient,
                                   IProgramStageStore programStageStore,
-                                  IProgramController programController,
                                   ITransactionManager transactionManager,
                                   ILastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAM_STAGES, programStageStore, lastUpdatedPreferences);
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.programStageApiClient = programStageApiClient;
         this.programController = programController;
+        this.systemInfoController = systemInfoController;
+        this.programStageApiClient = programStageApiClient;
         this.transactionManager = transactionManager;
     }
 
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_STAGES, DateType.SERVER);
 
@@ -83,21 +83,18 @@ public class ProgramStageController extends AbsSyncStrategyController<ProgramSta
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<ProgramStage> allExistingProgramStages = programStageApiClient
-                .getProgramStages(Fields.BASIC, null);
+                .getProgramStages(Fields.BASIC, null, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of program stages which are
             // stored locally and list of program stages which we want to download
-            Set<String> persistedProgramStageIds = ModelUtils.toUidSet(persistedProgramStages);
-            persistedProgramStageIds.addAll(uids);
-
-            uidArray = persistedProgramStageIds
-                    .toArray(new String[persistedProgramStageIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedProgramStages);
+            uidSet.addAll(uids);
         }
 
         List<ProgramStage> updatedProgramStages = programStageApiClient.getProgramStages(
-                Fields.ALL, lastUpdated, uidArray);
+                Fields.ALL, lastUpdated, uidSet);
 
         // Retrieving program uids from program stages
         Set<String> programUids = new HashSet<>();

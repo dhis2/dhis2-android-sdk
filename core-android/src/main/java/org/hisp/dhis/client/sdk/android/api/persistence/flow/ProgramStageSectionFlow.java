@@ -39,12 +39,9 @@ import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
-import java.util.List;
-
 @Table(database = DbDhis.class)
 public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<ProgramStageSection,
-            ProgramStageSectionFlow> MAPPER = new ProgramStageSectionMapper();
+    public static final IMapper<ProgramStageSection, ProgramStageSectionFlow> MAPPER = new Mapper();
     private static final String PROGRAM_STAGE_KEY = "programstage";
 
     @Column
@@ -61,10 +58,6 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageFlow programStage;
-
-    List<ProgramStageDataElementFlow> programStageDataElements;
-
-    List<ProgramIndicatorFlow> programIndicators;
 
     public ProgramStageSectionFlow() {
         // empty constructor
@@ -94,29 +87,11 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
         this.programStage = programStage;
     }
 
-    public List<ProgramStageDataElementFlow> getProgramStageDataElements() {
-        return programStageDataElements;
-    }
-
-    public void setProgramStageDataElements(List<ProgramStageDataElementFlow>
-                                                    programStageDataElements) {
-        this.programStageDataElements = programStageDataElements;
-    }
-
-    public List<ProgramIndicatorFlow> getProgramIndicators() {
-        return programIndicators;
-    }
-
-    public void setProgramIndicators(List<ProgramIndicatorFlow> programIndicators) {
-        this.programIndicators = programIndicators;
-    }
-
-    private static class ProgramStageSectionMapper extends AbsMapper<ProgramStageSection,
-            ProgramStageSectionFlow> {
+    private static class Mapper extends AbsMapper<ProgramStageSection, ProgramStageSectionFlow> {
 
         @Override
-        public ProgramStageSectionFlow mapToDatabaseEntity(ProgramStageSection
-                                                                   programStageSection) {
+        public ProgramStageSectionFlow mapToDatabaseEntity(
+                ProgramStageSection programStageSection) {
             if (programStageSection == null) {
                 return null;
             }

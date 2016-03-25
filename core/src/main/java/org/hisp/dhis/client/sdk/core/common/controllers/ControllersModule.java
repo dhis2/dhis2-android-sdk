@@ -84,16 +84,18 @@ public class ControllersModule implements IControllersModule {
                 preferencesModule.getSystemInfoPreferences(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        programController = new ProgramController(networkModule.getProgramApiClient(),
-                networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
-                systemInfoController, persistenceModule.getTransactionManager(),
+        programController = new ProgramController(
+                systemInfoController, networkModule.getProgramApiClient(),
+                networkModule.getUserApiClient(),
+                persistenceModule.getProgramStore(),
+                persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         programStageController = new ProgramStageController(
-                networkModule.getSystemInfoApiClient(),
+                programController, systemInfoController,
                 networkModule.getProgramStageApiClient(),
                 persistenceModule.getProgramStageStore(),
-                programController, persistenceModule.getTransactionManager(),
+                persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         optionSetController = new OptionSetController(
@@ -105,39 +107,36 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager());
 
         dataElementController = new DataElementController(
-                networkModule.getDataElementApiClient(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getDataElementStore(),
                 systemInfoController,
+                networkModule.getDataElementApiClient(),
+                persistenceModule.getDataElementStore(),
                 optionSetController,
+                preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager());
 
-
-        programStageDataElementController = new ProgramStageDataElementController(
-                networkModule.getSystemInfoApiClient(),
-                networkModule.getProgramStageDataElementApiClient(),
-                persistenceModule.getProgramStageDataElementStore(),
-                dataElementController,
+        programStageSectionController = new ProgramStageSectionController(
+                programStageController, systemInfoController,
+                networkModule.getProgramStageSectionApiClient(),
+                persistenceModule.getProgramStageSectionStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        programStageSectionController = new ProgramStageSectionController(
+        programStageDataElementController = new ProgramStageDataElementController(
+                systemInfoController, programStageController,
+                programStageSectionController, dataElementController,
                 networkModule.getProgramStageSectionApiClient(),
-                persistenceModule.getProgramStageSectionStore(),
-                programStageController,
-                programStageDataElementController,
-                systemInfoController,
+                networkModule.getProgramStageDataElementApiClient(),
+                persistenceModule.getProgramStageDataElementStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
         assignedProgramsController = new AssignedProgramsController(
-                networkModule.getUserApiClient(), programController);
+                programController, networkModule.getUserApiClient());
 
         organisationUnitController = new OrganisationUnitController(
-                networkModule.getOrganisationUnitApiClient(),
-                networkModule.getUserApiClient(),
-                persistenceModule.getOrganisationUnitStore(),
-                preferencesModule.getLastUpdatedPreferences(), systemInfoController,
+                systemInfoController, networkModule.getOrganisationUnitApiClient(),
+                networkModule.getUserApiClient(), persistenceModule.getOrganisationUnitStore(),
+                preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager());
 
         assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
@@ -159,21 +158,6 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getProgramStore(),
                 null //persistenceModule.getFailedItemStore()
         );
-
-
-
-
-        /*
-
-        IEventApiClient eventApiClient,
-                   ISystemInfoApiClient systemInfoApiClient,
-                   ILastUpdatedPreferences lastUpdatedPreferences,
-                   ITransactionManager transactionManager,
-                   IStateStore stateStore, IEventStore eventStore,
-                   ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                   IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                   IFailedItemStore failedItemStore)
-         */
 
     }
 

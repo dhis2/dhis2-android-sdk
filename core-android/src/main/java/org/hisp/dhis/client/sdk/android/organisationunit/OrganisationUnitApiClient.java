@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -51,8 +52,8 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
     }
 
     @Override
-    public List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime lastUpdated,
-                                                       String... uids) throws ApiException {
+    public List<OrganisationUnit> getOrganisationUnits(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
 
         ApiResource<OrganisationUnit> apiResource = new ApiResource<OrganisationUnit>() {
 

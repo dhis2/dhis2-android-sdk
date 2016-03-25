@@ -37,8 +37,9 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
@@ -161,5 +162,75 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
 
     public void setProgramStageSection(ProgramStageSectionFlow programStageSection) {
         this.programStageSection = programStageSection;
+    }
+
+    private static class ProgramStageDataElementMapper extends AbsMapper<ProgramStageDataElement,
+            ProgramStageDataElementFlow> {
+
+        @Override
+        public ProgramStageDataElementFlow mapToDatabaseEntity(ProgramStageDataElement model) {
+            if (model == null) {
+                return null;
+            }
+
+            ProgramStageDataElementFlow flow = new ProgramStageDataElementFlow();
+            flow.setId(model.getId());
+            flow.setUId(model.getUId());
+            flow.setCreated(model.getCreated());
+            flow.setLastUpdated(model.getLastUpdated());
+            flow.setName(model.getName());
+            flow.setDisplayName(model.getDisplayName());
+            flow.setAccess(model.getAccess());
+            flow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToDatabaseEntity(model.getProgramStageSection()));
+            flow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(model.getProgramStage()));
+            flow.setDataElement(MapperModuleProvider.getInstance()
+                    .getDataElementMapper().mapToDatabaseEntity(model.getDataElement()));
+            flow.setAllowFutureDate(model.isAllowFutureDate());
+            flow.setSortOrder(model.getSortOrder());
+            flow.setDisplayInReports(model.isDisplayInReports());
+            flow.setAllowProvidedElsewhere(model.isAllowProvidedElsewhere());
+            flow.setCompulsory(model.isCompulsory());
+            return flow;
+        }
+
+        @Override
+        public ProgramStageDataElement mapToModel(ProgramStageDataElementFlow flow) {
+            if (flow == null) {
+                return null;
+            }
+
+            ProgramStageDataElement model = new ProgramStageDataElement();
+            model.setId(flow.getId());
+            model.setUId(flow.getUId());
+            model.setCreated(flow.getCreated());
+            model.setLastUpdated(flow.getLastUpdated());
+            model.setName(flow.getName());
+            model.setDisplayName(flow.getDisplayName());
+            model.setAccess(flow.getAccess());
+            model.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(flow.getProgramStage()));
+            model.setDataElement(MapperModuleProvider.getInstance()
+                    .getDataElementMapper().mapToModel(flow.getDataElement()));
+            model.setAllowFutureDate(flow.isAllowFutureDate());
+            model.setSortOrder(flow.getSortOrder());
+            model.setDisplayInReports(flow.isDisplayInReports());
+            model.setAllowProvidedElsewhere(flow.isAllowProvidedElsewhere());
+            model.setCompulsory(flow.isCompulsory());
+            model.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToModel(flow.getProgramStageSection()));
+            return model;
+        }
+
+        @Override
+        public Class<ProgramStageDataElement> getModelTypeClass() {
+            return ProgramStageDataElement.class;
+        }
+
+        @Override
+        public Class<ProgramStageDataElementFlow> getDatabaseEntityTypeClass() {
+            return ProgramStageDataElementFlow.class;
+        }
     }
 }

@@ -96,21 +96,18 @@ public final class EventController implements IEventController {
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<Event> allExistingEvents = eventApiClient.getEvents(Fields.BASIC, null);
+        List<Event> allExistingEvents = eventApiClient.getEvents(Fields.BASIC, null, null);
 
-        String[] uidArray = null;
+        Set<String> uidsSet = null;
         if (uids != null) {
             // here we want to get list of ids of events which are
             // stored locally and list of events which we want to download
-            Set<String> persistedEventIds = ModelUtils.toUidSet(persistedEvents);
-            persistedEventIds.addAll(uids);
-
-            uidArray = persistedEventIds.toArray(new String[persistedEventIds.size()]);
+            uidsSet = ModelUtils.toUidSet(persistedEvents);
+            uidsSet.addAll(uids);
         }
 
         List<Event> updatedEvents = eventApiClient.getEvents(
-                Fields.ALL, lastUpdated, uidArray);
-
+                Fields.ALL, lastUpdated, uidsSet);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingEvents,

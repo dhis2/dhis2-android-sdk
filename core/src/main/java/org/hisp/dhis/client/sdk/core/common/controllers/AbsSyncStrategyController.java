@@ -68,7 +68,7 @@ public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
         to force a sync even if strategy is set to be DEFAULT */
         if (SyncStrategy.FORCE_UPDATE.equals(strategy) ||
                 !identifiableObjectStore.areStored(uids)) {
-            synchronize(SyncStrategy.FORCE_UPDATE, uids);
+            synchronize(strategy, uids);
 
             lastUpdatedPreferences.save(resourceType, DateType.LOCAL, currentDate);
             return;
@@ -83,7 +83,6 @@ public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
 
     private boolean isResourceOutdated(DateTime currentDate) {
         DateTime lastUpdated = lastUpdatedPreferences.get(resourceType, DateType.LOCAL);
-
         return lastUpdated == null || Seconds.secondsBetween(lastUpdated,
                 currentDate).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
     }

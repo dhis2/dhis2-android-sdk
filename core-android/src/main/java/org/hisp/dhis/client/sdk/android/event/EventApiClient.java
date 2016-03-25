@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public class EventApiClient implements IEventApiClient {
 
@@ -45,7 +46,7 @@ public class EventApiClient implements IEventApiClient {
     }
 
     @Override
-    public List<Event> getEvents(Fields fields, DateTime lastUpdated, String... uids) throws
+    public List<Event> getEvents(Fields fields, DateTime lastUpdated, Set<String> uids) throws
             ApiException {
         return null;
     }

@@ -35,12 +35,13 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
 
 public class ProgramStageDataElementService implements IProgramStageDataElementService {
-    private IProgramStageDataElementStore programStageDataElementStore;
+    private final IProgramStageDataElementStore programStageDataElementStore;
 
-    public ProgramStageDataElementService(IProgramStageDataElementStore
-                                                  programStageDataElementStore) {
+    public ProgramStageDataElementService(
+            IProgramStageDataElementStore programStageDataElementStore) {
         this.programStageDataElementStore = programStageDataElementStore;
     }
 
@@ -83,5 +84,10 @@ public class ProgramStageDataElementService implements IProgramStageDataElementS
     public boolean save(ProgramStageDataElement object) {
         Preconditions.isNull(object, "Object must not be null");
         return programStageDataElementStore.save(object);
+    }
+
+    @Override
+    public List<ProgramStageDataElement> list(Set<String> uids) {
+        return programStageDataElementStore.queryByUids(uids);
     }
 }

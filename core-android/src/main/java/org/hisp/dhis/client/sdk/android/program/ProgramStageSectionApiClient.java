@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -50,35 +51,41 @@ public class ProgramStageSectionApiClient implements IProgramStageSectionApiClie
     }
 
     @Override
-    public List<ProgramStageSection> getProgramStageSections(Fields fields, DateTime lastUpdated,
-                                                             String... uids) throws ApiException {
-
-        ApiResource<ProgramStageSection> apiResource = new ApiResource<ProgramStageSection>() {
-
-            @Override
-            public String getResourceName() {
-                return "programStageSections";
-            }
-
-            @Override
-            public String getBasicProperties() {
-                return "id,displayName";
-            }
-
-            @Override
-            public String getAllProperties() {
-                return "id,name,displayName,created,lastUpdated,access," +
-                        "programStage,programStageDataElements[id]";
-            }
-
-            @Override
-            public Call<Map<String, List<ProgramStageSection>>> getEntities(
-                    Map<String, String> queryMap, List<String> filters) throws ApiException {
-                return programStageSectionApiClientRetrofit
-                        .getProgramStageSections(queryMap, filters);
-            }
-        };
-
+    public List<ProgramStageSection> getProgramStageSections(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
+
+    @Override
+    public List<ProgramStageSection> getProgramStageSections(
+            Fields fields, Set<String> stageDataElementUids) throws ApiException {
+        return getCollection(apiResource, "programStageDataElements.id",
+                fields, null, stageDataElementUids);
+    }
+
+    private final ApiResource<ProgramStageSection> apiResource =
+            new ApiResource<ProgramStageSection>() {
+
+                @Override
+                public String getResourceName() {
+                    return "programStageSections";
+                }
+
+                @Override
+                public String getBasicProperties() {
+                    return "id,displayName";
+                }
+
+                @Override
+                public String getAllProperties() {
+                    return "id,name,displayName,created,lastUpdated,access," +
+                            "programStage,programStageDataElements[id]";
+                }
+
+                public Call<Map<String, List<ProgramStageSection>>> getEntities(
+                        Map<String, String> queryMap, List<String> filters) throws ApiException {
+                    return programStageSectionApiClientRetrofit
+                            .getProgramStageSections(queryMap, filters);
+                }
+            };
 }

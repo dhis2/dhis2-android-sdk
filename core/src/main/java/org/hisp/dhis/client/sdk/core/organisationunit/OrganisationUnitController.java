@@ -49,27 +49,29 @@ import java.util.Set;
 
 public class OrganisationUnitController extends AbsSyncStrategyController<OrganisationUnit>
         implements IOrganisationUnitController {
-    /* Api clients */
-    private final IOrganisationUnitApiClient organisationUnitApiClient;
-    private final IUserApiClient userApiClient;
 
     /* Controllers */
     private final ISystemInfoController systemInfoController;
 
+    /* Api clients */
+    private final IOrganisationUnitApiClient organisationUnitApiClient;
+    private final IUserApiClient userApiClient;
+
     /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public OrganisationUnitController(IOrganisationUnitApiClient organisationUnitApiClient,
+    public OrganisationUnitController(ISystemInfoController systemInfoController,
+                                      IOrganisationUnitApiClient organisationUnitApiClient,
                                       IUserApiClient userApiClient,
                                       IOrganisationUnitStore organisationUnitStore,
                                       ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoController systemInfoController,
                                       ITransactionManager transactionManager) {
         super(ResourceType.ORGANISATION_UNITS, organisationUnitStore, lastUpdatedPreferences);
+
+        this.systemInfoController = systemInfoController;
         this.organisationUnitApiClient = organisationUnitApiClient;
         this.userApiClient = userApiClient;
         this.transactionManager = transactionManager;
-        this.systemInfoController = systemInfoController;
     }
 
     @Override
@@ -83,23 +85,19 @@ public class OrganisationUnitController extends AbsSyncStrategyController<Organi
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<OrganisationUnit> allExistingOrganisationUnits =
-                organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null);
+                organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of programs which are
             // stored locally and list of organisation units which we want to download
-            Set<String> persistedOrganisationUnitIds = ModelUtils
-                    .toUidSet(persistedOrganisationUnits);
-            persistedOrganisationUnitIds.addAll(uids);
-
-            uidArray = persistedOrganisationUnitIds.toArray(
-                    new String[persistedOrganisationUnitIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedOrganisationUnits);
+            uidSet.addAll(uids);
         }
 
         // Retrieving only updated organisation units
         List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
-                .getOrganisationUnits(Fields.ALL, lastUpdated, uidArray);
+                .getOrganisationUnits(Fields.ALL, lastUpdated, uidSet);
 
         // we need to mark assigned organisation units as "assigned" before storing them
         Map<String, OrganisationUnit> assignedOrganisationUnits = ModelUtils

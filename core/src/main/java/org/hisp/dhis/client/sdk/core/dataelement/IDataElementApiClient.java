@@ -34,8 +34,9 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IDataElementApiClient {
-    List<DataElement> getDataElements(Fields fields, DateTime lastUpdated,
-                                      String... uids) throws ApiException;
+    List<DataElement> getDataElements(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 }

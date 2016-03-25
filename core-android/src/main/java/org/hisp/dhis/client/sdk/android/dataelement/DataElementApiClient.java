@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -50,9 +51,10 @@ public class DataElementApiClient implements IDataElementApiClient {
     }
 
     @Override
-    public List<DataElement> getDataElements(Fields fields, DateTime lastUpdated, String... uids)
-            throws ApiException {
-        ApiResource<DataElement> apiResource = new ApiResource<DataElement>() {
+    public List<DataElement> getDataElements(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+
+        final ApiResource<DataElement> apiResource = new ApiResource<DataElement>() {
 
             @Override
             public String getResourceName() {

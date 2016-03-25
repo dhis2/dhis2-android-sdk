@@ -36,9 +36,9 @@ import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore2;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
-import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -66,9 +66,9 @@ public class PersistenceModule implements IPersistenceModule {
         FlowManager.init(context);
 
         transactionManager = new TransactionManager();
-        programStore = new ProgramStore2(transactionManager);
-        programStageStore = new ProgramStageStore2(transactionManager);
-        programStageSectionStore = new ProgramStageSectionStore2(transactionManager);
+        programStore = new ProgramStore(transactionManager);
+        programStageStore = new ProgramStageStore(transactionManager);
+        programStageSectionStore = new ProgramStageSectionStore(transactionManager);
         programStageDataElementStore = new ProgramStageDataElementStore();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);

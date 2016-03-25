@@ -34,8 +34,9 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IOrganisationUnitApiClient {
-    List<OrganisationUnit> getOrganisationUnits(Fields fields, DateTime lastUpdated,
-                                                String... uids) throws ApiException;
+    List<OrganisationUnit> getOrganisationUnits(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 }

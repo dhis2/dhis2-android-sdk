@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,12 +37,6 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramStageDataElement extends BaseIdentifiableObject {
-
-    @JsonProperty("programStage")
-    private ProgramStage programStage;
-
-    @JsonProperty("dataElement")
-    private DataElement dataElement;
 
     @JsonProperty("allowFutureDate")
     private boolean allowFutureDate;
@@ -58,23 +53,17 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
     @JsonProperty("compulsory")
     private boolean compulsory;
 
-    private ProgramStageSection programStageSection;
-
-    public DataElement getDataElement() {
-        return dataElement;
-    }
+    @JsonProperty("programStage")
+    private ProgramStage programStage;
 
     @JsonProperty("dataElement")
-    public void setDataElement(DataElement dataElement) {
-        this.dataElement = dataElement;
-    }
+    private DataElement dataElement;
 
-    public ProgramStage getProgramStage() {
-        return programStage;
-    }
+    @JsonIgnore
+    private ProgramStageSection programStageSection;
 
-    public void setProgramStage(ProgramStage programStage) {
-        this.programStage = programStage;
+    public ProgramStageDataElement() {
+        //
     }
 
     public boolean isAllowFutureDate() {
@@ -115,6 +104,22 @@ public final class ProgramStageDataElement extends BaseIdentifiableObject {
 
     public void setCompulsory(boolean compulsory) {
         this.compulsory = compulsory;
+    }
+
+    public ProgramStage getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(ProgramStage programStage) {
+        this.programStage = programStage;
+    }
+
+    public DataElement getDataElement() {
+        return dataElement;
+    }
+
+    public void setDataElement(DataElement dataElement) {
+        this.dataElement = dataElement;
     }
 
     public ProgramStageSection getProgramStageSection() {

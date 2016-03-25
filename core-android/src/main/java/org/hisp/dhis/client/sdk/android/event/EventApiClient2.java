@@ -37,6 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 
@@ -50,9 +51,9 @@ public class EventApiClient2 implements IEventApiClient {
     }
 
     @Override
-    public List<Event> getEvents(Fields fields, DateTime lastUpdated,
-                                 String... uids) throws ApiException {
-        ApiResource<Event> apiResource = new ApiResource<Event>() {
+    public List<Event> getEvents(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+        final ApiResource<Event> apiResource = new ApiResource<Event>() {
 
             @Override
             public String getResourceName() {

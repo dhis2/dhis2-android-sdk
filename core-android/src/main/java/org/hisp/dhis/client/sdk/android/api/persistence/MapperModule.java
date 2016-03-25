@@ -43,7 +43,6 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlo
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramTrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
@@ -71,7 +70,6 @@ import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableMapper;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramTrackedEntityAttributeMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeMapper;
@@ -96,7 +94,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
@@ -134,8 +131,6 @@ public class MapperModule {
             trackedEntityAttributeMapper;
     private final IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
             programTrackedEntityAttributeMapper;
-    private final IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
-            programStageDataElementMapper;
     private final IMapper<ProgramIndicator, ProgramIndicatorFlow> programIndicatorMapper;
     private final IMapper<ProgramRule, ProgramRuleFlow> programRuleMapper;
     private final IMapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
@@ -163,7 +158,6 @@ public class MapperModule {
         trackedEntityMapper = new TrackedEntityMapper();
         trackedEntityAttributeMapper = new TrackedEntityAttributeMapper();
         programTrackedEntityAttributeMapper = new ProgramTrackedEntityAttributeMapper();
-        programStageDataElementMapper = new ProgramStageDataElementMapper();
         trackedEntityAttributeValueMapper = new TrackedEntityAttributeValueMapper();
 
         programRuleActionMapper = new ProgramRuleActionMapper();
@@ -252,11 +246,6 @@ public class MapperModule {
     public IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
     getProgramTrackedEntityAttributeMapper() {
         return programTrackedEntityAttributeMapper;
-    }
-
-    public IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
-    getProgramStageDataElementMapper() {
-        return programStageDataElementMapper;
     }
 
     public IMapper<ProgramIndicator, ProgramIndicatorFlow> getProgramIndicatorMapper() {

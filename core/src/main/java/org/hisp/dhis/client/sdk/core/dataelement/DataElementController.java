@@ -47,19 +47,25 @@ import java.util.Set;
 
 public final class DataElementController extends AbsSyncStrategyController<DataElement>
         implements IDataElementController {
-    private final IDataElementApiClient dataElementApiClient;
+
+    /* Controllers */
     private final ISystemInfoController systemInfoController;
+
+    /* Api clients */
+    private final IDataElementApiClient dataElementApiClient;
+
+    /* Utilities */
     private final ITransactionManager transactionManager;
 
-    public DataElementController(IDataElementApiClient dataElementApiClient,
-                                 ILastUpdatedPreferences lastUpdatedPreferences,
+    public DataElementController(ISystemInfoController systemInfoController,
+                                 IDataElementApiClient dataElementApiClient,
                                  IDataElementStore dataElementStore,
-                                 ISystemInfoController systemInfoController,
+                                 ILastUpdatedPreferences lastUpdatedPreferences,
                                  ITransactionManager transactionManager) {
         super(ResourceType.DATA_ELEMENTS, dataElementStore, lastUpdatedPreferences);
 
-        this.dataElementApiClient = dataElementApiClient;
         this.systemInfoController = systemInfoController;
+        this.dataElementApiClient = dataElementApiClient;
         this.transactionManager = transactionManager;
     }
 
@@ -74,21 +80,18 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<DataElement> allExistingDataElements = dataElementApiClient
-                .getDataElements(Fields.BASIC, null);
+                .getDataElements(Fields.BASIC, null, null);
 
-        String[] uidArray = null;
+        Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of data elements which are
             // stored locally and list of data elements which we want to download
-            Set<String> persistedDataElementIds = ModelUtils.toUidSet(persistedDataElements);
-            persistedDataElementIds.addAll(uids);
-
-            uidArray = persistedDataElementIds
-                    .toArray(new String[persistedDataElementIds.size()]);
+            uidSet = ModelUtils.toUidSet(persistedDataElements);
+            uidSet.addAll(uids);
         }
 
         List<DataElement> updatedDataElements = dataElementApiClient.getDataElements(
-                Fields.ALL, lastUpdated, uidArray);
+                Fields.ALL, lastUpdated, uidSet);
 
         // we will have to perform something similar to what happens in AbsController
 

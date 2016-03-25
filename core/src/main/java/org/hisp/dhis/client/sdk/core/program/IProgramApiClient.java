@@ -34,8 +34,9 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IProgramApiClient {
-    List<Program> getPrograms(Fields fields, DateTime lastUpdated,
-                              String... uids) throws ApiException;
+    List<Program> getPrograms(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 }

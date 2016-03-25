@@ -66,7 +66,9 @@ public class RuleEngine {
     private List<RuleEffect> execute(
             Event event, TrackedEntityInstance instance, List<Event> events) {
 
-        return RuleEngineExecution.execute(this.programRules);
+        RuleEngineVariableValueMap variableValueMap = new RuleEngineVariableValueMap(this.programRuleVariables, event);
+
+        return RuleEngineExecution.execute(this.programRules, variableValueMap);
     }
 
     public List<RuleEffect> execute(Event currentEvent, Enrollment enrollment) {

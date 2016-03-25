@@ -57,17 +57,6 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     @JsonProperty("programStage")
     private ProgramStage programStage;
 
-    @JsonIgnore
-    String variableValue;
-
-    @JsonIgnore
-    ValueType variableType;
-
-    @JsonIgnore
-    boolean hasValue;
-
-    @JsonIgnore
-    String variableEventDate;
 
     @JsonIgnore
     List<String> allValues;
@@ -110,45 +99,5 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
 
     public void setProgramStage(ProgramStage programStage) {
         this.programStage = programStage;
-    }
-
-    public String getVariableValue() {
-        return variableValue;
-    }
-
-    public void setVariableValue(String variableValue) {
-        this.variableValue = variableValue;
-    }
-
-    public ValueType getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(ValueType variableType) {
-        this.variableType = variableType;
-    }
-
-    public boolean isHasValue() {
-        return hasValue;
-    }
-
-    public void setHasValue(boolean hasValue) {
-        this.hasValue = hasValue;
-    }
-
-    public String getVariableEventDate() {
-        return variableEventDate;
-    }
-
-    public void setVariableEventDate(String variableEventDate) {
-        this.variableEventDate = variableEventDate;
-    }
-
-    public List<String> getAllValues() {
-        return allValues;
-    }
-
-    public void setAllValues(List<String> allValues) {
-        this.allValues = allValues;
     }
 }

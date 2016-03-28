@@ -52,8 +52,9 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
     @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = EVENT_KEY,
-                            columnType = String.class, foreignKeyColumnName = "eventUid"),
+                    @ForeignKeyReference(
+                            columnName = EVENT_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     EventFlow event;

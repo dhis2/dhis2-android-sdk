@@ -55,7 +55,6 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstan
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.android.common.IStateMapper;
-import org.hisp.dhis.client.sdk.android.common.StateMapper;
 import org.hisp.dhis.client.sdk.android.constant.ConstantMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementMapper;
@@ -106,8 +105,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 public class MapperModule {
-
-    private final IStateMapper stateMapper;
     private final IMapper<Dashboard, DashboardFlow> dashboardMapper;
     private final IMapper<DashboardItem, DashboardItemFlow> dashboardItemMapper;
     private final IMapper<DashboardElement, DashboardElementFlow> dashboardElementMapper;
@@ -143,7 +140,6 @@ public class MapperModule {
     private final IMapper<User, UserFlow> userMapper;
 
     public MapperModule() {
-        stateMapper = new StateMapper();
         dashboardMapper = new DashboardMapper();
         dashboardItemMapper = new DashboardItemMapper();
         dashboardElementMapper = new DashboardElementMapper();
@@ -171,10 +167,6 @@ public class MapperModule {
         programIndicatorMapper = new ProgramIndicatorMapper();
 
         userMapper = new UserMapper();
-    }
-
-    public IStateMapper getStateMapper() {
-        return stateMapper;
     }
 
     public IMapper<Dashboard, DashboardFlow> getDashboardMapper() {

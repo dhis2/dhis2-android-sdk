@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.models.common.importsummary;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,15 +35,6 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ImportSummary {
-
-    public enum Status {
-        SUCCESS,
-        OK,
-        ERROR
-    }
-
-    @JsonIgnore
-    private int id;
 
     @JsonProperty("status")
     private Status status;
@@ -64,59 +54,35 @@ public class ImportSummary {
     @JsonProperty("conflicts")
     private List<Conflict> conflicts;
 
-    public List<Conflict> getConflicts() {
-        return conflicts;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public ImportCount getImportCount() {
-        return importCount;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public ImportSummary() {
+        // explicit empty constructor
     }
 
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public String getDescription() {
+        return description;
     }
 
-    public int getId() {
-        return id;
+    public ImportCount getImportCount() {
+        return importCount;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getReference() {
+        return reference;
     }
 
-    public void setImportCount(ImportCount importCount) {
-        this.importCount = importCount;
+    public String getHref() {
+        return href;
     }
 
-    public void setConflicts(List<Conflict> conflicts) {
-        this.conflicts = conflicts;
+    public List<Conflict> getConflicts() {
+        return conflicts;
+    }
+
+    public enum Status {
+        SUCCESS, OK, ERROR
     }
 }

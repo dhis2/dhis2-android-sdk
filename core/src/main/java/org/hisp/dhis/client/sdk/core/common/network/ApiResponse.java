@@ -29,9 +29,33 @@
 package org.hisp.dhis.client.sdk.core.common.network;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportCount;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
     public static final String RESPONSE_TYPE_IMPORT_SUMMARIES = "ImportSummaries";
     public static final String RESPONSE_TYPE_IMPORT_SUMMARY = "ImportSummary";
+
+    @JsonProperty("responseType")
+    private String responseType;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("importCount")
+    private ImportCount importCount;
+
+    public ApiResponse() {
+        // explicit empty constructor
+    }
+
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 }

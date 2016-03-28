@@ -365,7 +365,7 @@ public class ProgramIndicatorUtils {
         program.setProgramStages(programStageService.list(program));
         Map<String, Event> programStageToEventMap = new HashMap<>();
         for(Event event1 : currentEnrollment.getEvents()) {
-            programStageToEventMap.put(event1.getProgramStageId(), event1);
+            programStageToEventMap.put(event1.getProgramStage(), event1);
         }
         Map<String, ProgramStage> programStageMap = new HashMap<>();
         for(ProgramStage programStage : program.getProgramStages()) {
@@ -390,8 +390,8 @@ public class ProgramIndicatorUtils {
                     if (currentEnrollment == null) { //in case single currentEvent without reg
                         if(event == null) {
                             event = currentEvent;
-                            if (event.getTrackedEntityDataValues() != null) {
-                                for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
+                            if (event.getDataValues() != null) {
+                                for (TrackedEntityDataValue dataValue : event.getDataValues()) {
                                     dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
                                 }
                             }
@@ -400,8 +400,8 @@ public class ProgramIndicatorUtils {
                         if (event == null || !event.getUId().equals(programStageUid)) {
                             event = programStageToEventMap.get(programStageUid);
                             dataElementToDataValues.clear();
-                            if (event.getTrackedEntityDataValues() != null) {
-                                for(TrackedEntityDataValue dataValue: event.getTrackedEntityDataValues()) {
+                            if (event.getDataValues() != null) {
+                                for(TrackedEntityDataValue dataValue: event.getDataValues()) {
                                     dataElementToDataValues.put(dataValue.getDataElement(), dataValue);
                                 }
                             }
@@ -409,7 +409,7 @@ public class ProgramIndicatorUtils {
                     }
 
                     TrackedEntityDataValue dataValue;
-                    if (event.getTrackedEntityDataValues() == null) {
+                    if (event.getDataValues() == null) {
                         continue;
                     }
                     dataValue = dataElementToDataValues.get(de);

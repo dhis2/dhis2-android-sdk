@@ -182,10 +182,10 @@ public class VariableUtils {
         //setting events in map for each program stage
         setEventsForProgramStages(new HashMap<String, List<Event>>());
         for(Event event : getEventsForEnrollment()) {
-            List<Event> eventsForProgramStage = getEventsForProgramStages().get(event.getProgramStageId());
+            List<Event> eventsForProgramStage = getEventsForProgramStages().get(event.getProgramStage());
             if(eventsForProgramStage == null) {
                 eventsForProgramStage = new ArrayList<>();
-                getEventsForProgramStages().put(event.getProgramStageId(), eventsForProgramStage);
+                getEventsForProgramStages().put(event.getProgramStage(), eventsForProgramStage);
             }
             eventsForProgramStage.add(event);
         }
@@ -194,7 +194,7 @@ public class VariableUtils {
         setEventDataValueMaps(new HashMap<Event, Map<String, TrackedEntityDataValue>>());
         for(Event event : getEventsForEnrollment()) {
             Map<String, TrackedEntityDataValue> dataValueMap = new HashMap<>();
-            for(TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
+            for(TrackedEntityDataValue dataValue : event.getDataValues()) {
                 dataValueMap.put(dataValue.getDataElement(), dataValue);
             }
             getEventDataValueMaps().put(event, dataValueMap);

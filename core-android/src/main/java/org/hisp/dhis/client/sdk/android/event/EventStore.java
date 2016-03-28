@@ -29,9 +29,9 @@ public class EventStore extends AbsIdentifiableObjectStore<Event, EventFlow>
         List<EventFlow> eventFlows = new Select()
                 .from(EventFlow.class)
                 .where(EventFlow_Table
-                        .organisationUnitId.is(organisationUnit.getUId()))
+                        .orgUnit.is(organisationUnit.getUId()))
                 .and(EventFlow_Table
-                        .programId.is((program.getUId())))
+                        .program.is((program.getUId())))
                 .queryList();
 
         return getMapper().mapToModels(eventFlows);

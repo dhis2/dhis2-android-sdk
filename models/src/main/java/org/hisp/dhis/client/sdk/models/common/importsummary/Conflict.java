@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.client.sdk.models.common.importsummary;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Conflict extends BaseModel {
-
-    @JsonIgnore
-    private ImportSummary importSummary;
+public class Conflict {
 
     @JsonProperty("object")
     private String object;
@@ -46,27 +40,15 @@ public class Conflict extends BaseModel {
     @JsonProperty("value")
     private String value;
 
-    public ImportSummary getImportSummary() {
-        return importSummary;
-    }
-
-    public void setImportSummary(ImportSummary importSummary) {
-        this.importSummary = importSummary;
+    public Conflict() {
+        // explicit empty constructor
     }
 
     public String getObject() {
         return object;
     }
 
-    public void setObject(String object) {
-        this.object = object;
-    }
-
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

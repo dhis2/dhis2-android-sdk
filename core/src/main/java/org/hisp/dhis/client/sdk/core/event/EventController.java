@@ -138,9 +138,10 @@ public final class EventController implements IEventController {
         List<Event> eventsToDelete = stateStore.queryModelsWithActions(
                 Event.class, Action.TO_DELETE);
 
+        sendEvents(eventsToSend);
 
         // Memo: TrackedDataEntityValues exist only in scope of Events
-        // (no standalone data value resource)
+        // (no standalone data value resource in web API)
 
         // 1) it is possible to POST events within bulk operation
         //       - Yes
@@ -153,5 +154,9 @@ public final class EventController implements IEventController {
 
         // 3) Is is possible to send bulk DELETE operations?
         //       - BAM (Better ask Morten)
+    }
+
+    private void sendEvents(List<Event> events) throws ApiException {
+
     }
 }

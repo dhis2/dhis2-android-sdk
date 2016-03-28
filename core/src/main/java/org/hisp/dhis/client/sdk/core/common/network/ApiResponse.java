@@ -29,45 +29,9 @@
 package org.hisp.dhis.client.sdk.core.common.network;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
     public static final String RESPONSE_TYPE_IMPORT_SUMMARIES = "ImportSummaries";
     public static final String RESPONSE_TYPE_IMPORT_SUMMARY = "ImportSummary";
-
-    @JsonProperty("imported")
-    private int imported;
-
-    @JsonProperty("ignored")
-    private int ignored;
-
-    @JsonProperty("response")
-    private Map<String, Object> response;
-
-    public Map<String, Object> getResponse() {
-        return response;
-    }
-
-    public void setResponse(Map<String, Object> response) {
-        this.response = response;
-    }
-
-    public int getImported() {
-        return imported;
-    }
-
-    public void setImported(int imported) {
-        this.imported = imported;
-    }
-
-    public int getIgnored() {
-        return ignored;
-    }
-
-    public void setIgnored(int ignored) {
-        this.ignored = ignored;
-    }
 }

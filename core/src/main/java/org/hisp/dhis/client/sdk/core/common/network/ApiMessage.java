@@ -28,6 +28,48 @@
 
 package org.hisp.dhis.client.sdk.core.common.network;
 
-public interface AuthHandler {
-    UserCredentials getUserCredentials();
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ApiMessage {
+
+    @JsonProperty("httpStatus")
+    private String httpStatus;
+
+    @JsonProperty("httpStatusCode")
+    private int httpStatusCode;
+
+    @JsonProperty("message")
+    private String message;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("response")
+    private ApiResponse response;
+
+    public ApiMessage() {
+        // explicit empty constructor
+    }
+
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public ApiResponse getResponse() {
+        return response;
+    }
 }

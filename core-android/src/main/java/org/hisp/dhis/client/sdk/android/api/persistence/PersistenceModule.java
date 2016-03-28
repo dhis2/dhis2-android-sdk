@@ -32,6 +32,8 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.common.StateStore;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
@@ -52,6 +54,7 @@ import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
 public class PersistenceModule implements IPersistenceModule {
     private final ITransactionManager transactionManager;
+    private final IStateStore stateStore;
     private final IUserAccountStore userAccountStore;
     private final IProgramStore programStore;
     private final IProgramStageStore programStageStore;
@@ -64,6 +67,8 @@ public class PersistenceModule implements IPersistenceModule {
         FlowManager.init(context);
 
         transactionManager = new TransactionManager();
+        stateStore = new StateStore(EventFlow.MAPPER);
+
         programStore = new ProgramStore2(transactionManager);
         programStageStore = new ProgramStageStore2(transactionManager);
         programStageSectionStore = new ProgramStageSectionStore2();
@@ -80,7 +85,7 @@ public class PersistenceModule implements IPersistenceModule {
 
     @Override
     public IStateStore getStateStore() {
-        return null;
+        return stateStore;
     }
 
     @Override

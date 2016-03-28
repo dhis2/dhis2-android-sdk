@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
@@ -39,11 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -99,7 +94,6 @@ public final class EventController implements IEventController {
         pushEvents(strategy, uids);
     }
 
-    // TODO simplify Event model (remove tracker stuff from it).
     @Override
     public void pullEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();

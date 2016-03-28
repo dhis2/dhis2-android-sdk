@@ -49,35 +49,6 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
     }
 
     @Override
-    public boolean add(TrackedEntityDataValue object) {
-        isNull(object, "TrackedEntityDataValue argument must not be null");
-
-        if (!trackedEntityDataValueStore.insert(object)) {
-            return false;
-        }
-
-        return stateStore.saveActionForModel(object, Action.TO_POST);
-    }
-
-    @Override
-    public boolean update(TrackedEntityDataValue object) {
-        isNull(object, "TrackedEntityDataValue argument must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (Action.TO_DELETE.equals(action)) {
-            throw new IllegalArgumentException("The object with Action." +
-                    "TO_DELETE cannot be updated");
-        }
-
-        /* if object was not posted to the server before,
-        you don't have anything to update */
-        if (!Action.TO_POST.equals(action)) {
-            stateStore.saveActionForModel(object, Action.TO_UPDATE);
-        }
-        return trackedEntityDataValueStore.update(object);
-    }
-
-    @Override
     public boolean save(TrackedEntityDataValue object) {
         isNull(object, "Object must not be null");
 

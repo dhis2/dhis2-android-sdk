@@ -29,38 +29,70 @@
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.event.IEventService;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+
 // TODO try to implement generic service for data
 public class TrackedEntityDataValueService2 implements ITrackedEntityDataValueService {
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final IEventService eventService;
     private final IStateStore stateStore;
 
-    public TrackedEntityDataValueService2(ITrackedEntityDataValueStore trackedEntityDataValueStore,
+    public TrackedEntityDataValueService2(IEventService eventService,
+                                          ITrackedEntityDataValueStore dataValueStore,
                                           IStateStore stateStore) {
-        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+        this.trackedEntityDataValueStore = dataValueStore;
+        this.eventService = eventService;
         this.stateStore = stateStore;
     }
 
     @Override
-    public boolean add(TrackedEntityDataValue object) {
-        // first make sure that event exists
-        // make sure that it is not removed
-        return false;
-    }
+    public boolean save(TrackedEntityDataValue dataValue) {
+        checkDataValueProperties(dataValue);
 
-    @Override
-    public boolean save(TrackedEntityDataValue object) {
-        return false;
-    }
+        Event event = dataValue.getEvent();
+        Action action = stateStore.queryActionForModel(event);
 
-    @Override
-    public boolean update(TrackedEntityDataValue object) {
-        return false;
+//        if (action == null) {
+//            boolean status = dashboardStore.save(object);
+//
+//            if (status) {
+//                status = stateStore.saveActionForModel(object, Action.TO_POST);
+//            }
+//
+//            return status;
+//        }
+
+        boolean status = false;
+        switch (action) {
+            case TO_POST:
+            case TO_UPDATE: {
+                status = trackedEntityDataValueStore.save(dataValue);
+                break;
+            }
+            case SYNCED: {
+                status = trackedEntityDataValueStore.save(dataValue);
+
+                if (status) {
+                    status = stateStore.saveActionForModel(event, Action.TO_UPDATE);
+                }
+                break;
+            }
+            case TO_DELETE: {
+                status = false;
+                break;
+            }
+
+        }
+
+        return status;
     }
 
     @Override
@@ -86,5 +118,17 @@ public class TrackedEntityDataValueService2 implements ITrackedEntityDataValueSe
     @Override
     public TrackedEntityDataValue get(Event event, DataElement dataElement) {
         return null;
+    }
+
+    private void checkDataValueProperties(TrackedEntityDataValue dataValue) {
+        isNull(dataValue, "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getEvent(), "Event associated with " +
+                "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getDataElement(), "DataElement associated with " +
+                "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getStoredBy(), "storedBy field in " +
+                "TrackedEntityDataValue must not be null");
+        isNull(eventService.get(dataValue.getEvent().getId()), "Given event " +
+                "is not persisted locally, save event first");
     }
 }

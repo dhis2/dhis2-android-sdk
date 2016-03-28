@@ -28,21 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.services.IAdd;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
-import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
-public interface ITrackedEntityDataValueService extends IService, IAdd<TrackedEntityDataValue>,
-        IUpdate<TrackedEntityDataValue>, ISave<TrackedEntityDataValue>,
+public interface ITrackedEntityDataValueService extends IService, ISave<TrackedEntityDataValue>,
         IRemove<TrackedEntityDataValue>, IGet<TrackedEntityDataValue>,
         IList<TrackedEntityDataValue> {
 

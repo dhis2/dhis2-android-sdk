@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
@@ -88,14 +89,14 @@ public final class EventController implements IEventController {
     @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
         /* first we need to get information about new events from server */
-        pullEvents(strategy, uids);
+        pullUpdates(strategy, uids);
 
         /* then we should try to push data to server */
-        pushEvents(strategy, uids);
+        pushUpdates(strategy, uids);
     }
 
     @Override
-    public void pullEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
 
@@ -129,7 +130,7 @@ public final class EventController implements IEventController {
     }
 
     @Override
-    public void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
         // both posts and updates are done through POST verb: EWWWW!
         List<Event> eventsToSend = stateStore.queryModelsWithActions(
                 Event.class, Action.TO_POST, Action.TO_UPDATE);
@@ -139,6 +140,7 @@ public final class EventController implements IEventController {
                 Event.class, Action.TO_DELETE);
 
         sendEvents(eventsToSend);
+        deleteEvents(eventsToDelete);
 
         // Memo: TrackedDataEntityValues exist only in scope of Events
         // (no standalone data value resource in web API)
@@ -157,6 +159,29 @@ public final class EventController implements IEventController {
     }
 
     private void sendEvents(List<Event> events) throws ApiException {
+        try {
+            ApiResponse apiResponse = eventApiClient.postEvents(events);
+        } catch (ApiException apiException) {
+            // catch certain type of exceptions, handle them appropriately
+            // if something serious happened, throw ApiException and stop syncing process
+        }
 
+        // unpack import summary, find conflicts
+        // take actions based on conflicts
+        // update time stamp of events, update flags
+    }
+
+    private void deleteEvents(List<Event> events) throws ApiException {
+        if (events != null && !events.isEmpty()) {
+            for (Event event : events) {
+                try {
+                    ApiResponse apiResponse = eventApiClient.deleteEvent(event);
+                    // take action based on apiResponse
+                } catch (ApiException apiException) {
+                    // catch certain type of exceptions, handle them appropriately
+                    // if something serious happened, throw ApiException and stop syncing process
+                }
+            }
+        }
     }
 }

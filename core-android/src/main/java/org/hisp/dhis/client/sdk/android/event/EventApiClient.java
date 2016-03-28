@@ -3,6 +3,7 @@ package org.hisp.dhis.client.sdk.android.event;
 import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
@@ -51,5 +52,15 @@ public class EventApiClient implements IEventApiClient {
         };
 
         return getCollection(apiResource, fields, lastUpdated, uids);
+    }
+
+    @Override
+    public ApiResponse postEvents(List<Event> events) throws ApiException {
+        return null;
+    }
+
+    @Override
+    public ApiResponse deleteEvent(Event event) throws ApiException {
+        return null;
     }
 }

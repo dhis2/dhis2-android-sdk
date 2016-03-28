@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import java.util.Set;
 
 public interface IEventController extends IIdentifiableController<Event> {
-    void pullEvents(SyncStrategy strategy, Set<String> uids) throws ApiException;
+    void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
 
-    void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException;
+    void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
 }

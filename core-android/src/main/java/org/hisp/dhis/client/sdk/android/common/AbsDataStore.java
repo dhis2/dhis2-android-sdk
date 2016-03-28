@@ -50,34 +50,39 @@ public abstract class AbsDataStore<ModelType extends IModel, DatabaseEntityType
 
     @Override
     public boolean insert(ModelType object) {
-        if (super.insert(object)) {
-            stateStore.saveActionForModel(object, Action.SYNCED);
-            return true;
+        boolean isSuccess = super.insert(object);
+
+        if (isSuccess) {
+            isSuccess = stateStore.saveActionForModel(object, Action.SYNCED);
         }
-        return false;
+
+        return isSuccess;
     }
 
     @Override
     public boolean save(ModelType object) {
-        if (super.save(object)) {
+        boolean isSuccess = super.save(object);
+
+        if (isSuccess) {
             Action action = stateStore.queryActionForModel(object);
             if (action == null) {
                 action = Action.SYNCED;
             }
-            stateStore.saveActionForModel(object, action);
-            return true;
+
+            isSuccess = stateStore.saveActionForModel(object, action);
         }
 
-        return false;
+        return isSuccess;
     }
 
     @Override
     public boolean delete(ModelType object) {
-        if (super.delete(object)) {
-            stateStore.deleteActionForModel(object);
-            return true;
+        boolean isSuccess = super.delete(object);
+
+        if (isSuccess) {
+            isSuccess = stateStore.deleteActionForModel(object);
         }
 
-        return false;
+        return isSuccess;
     }
 }

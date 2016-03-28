@@ -49,12 +49,10 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.common.IStateMapper;
 import org.hisp.dhis.client.sdk.android.constant.ConstantMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementMapper;
@@ -75,7 +73,6 @@ import org.hisp.dhis.client.sdk.android.relationship.RelationshipMapper;
 import org.hisp.dhis.client.sdk.android.relationship.RelationshipTypeMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeValueMapper;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityInstanceMapper;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityMapper;
 import org.hisp.dhis.client.sdk.android.user.UserMapper;
@@ -100,7 +97,6 @@ import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.user.User;
 
@@ -113,8 +109,6 @@ public class MapperModule {
     private final IMapper<Enrollment, EnrollmentFlow> enrollmentMapper;
     private final IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
             trackedEntityInstanceMapper;
-    private final IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow>
-            trackedEntityDataValueMapper;
     private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
             trackedEntityAttributeValueMapper;
     private final IMapper<Relationship, RelationshipFlow> relationshipMapper;
@@ -144,7 +138,6 @@ public class MapperModule {
         dashboardItemMapper = new DashboardItemMapper();
         dashboardElementMapper = new DashboardElementMapper();
         dashboardContentMapper = new DashboardContentMapper();
-        trackedEntityDataValueMapper = new TrackedEntityDataValueMapper();
         enrollmentMapper = new EnrollmentMapper();
         trackedEntityInstanceMapper = new TrackedEntityInstanceMapper();
         relationshipMapper = new RelationshipMapper();
@@ -192,11 +185,6 @@ public class MapperModule {
     public IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
     getTrackedEntityInstanceMapper() {
         return trackedEntityInstanceMapper;
-    }
-
-    public IMapper<TrackedEntityDataValue, TrackedEntityDataValueFlow>
-    getTrackedEntityDataValueMapper() {
-        return trackedEntityDataValueMapper;
     }
 
     public IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>

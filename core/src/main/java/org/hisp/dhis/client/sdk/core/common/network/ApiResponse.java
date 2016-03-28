@@ -32,6 +32,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportCount;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
@@ -47,6 +50,9 @@ public class ApiResponse {
     @JsonProperty("importCount")
     private ImportCount importCount;
 
+    @JsonProperty("importSummaries")
+    private List<ImportSummary> importSummaries;
+
     public ApiResponse() {
         // explicit empty constructor
     }
@@ -57,5 +63,13 @@ public class ApiResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public ImportCount getImportCount() {
+        return importCount;
+    }
+
+    public List<ImportSummary> getImportSummaries() {
+        return importSummaries;
     }
 }

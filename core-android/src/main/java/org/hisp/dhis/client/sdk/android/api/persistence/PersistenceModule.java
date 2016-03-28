@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
@@ -50,6 +51,7 @@ import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
 public class PersistenceModule implements IPersistenceModule {
@@ -61,6 +63,7 @@ public class PersistenceModule implements IPersistenceModule {
     private final IProgramStageSectionStore programStageSectionStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IEventStore eventStore;
+    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
     private final IDataElementStore dataElementStore;
 
     public PersistenceModule(Context context) {
@@ -75,6 +78,7 @@ public class PersistenceModule implements IPersistenceModule {
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         eventStore = new EventStore();
+        trackedEntityDataValueStore = new TrackedEntityDataValueStore(stateStore);
         dataElementStore = new DataElementStore(transactionManager);
     }
 
@@ -116,6 +120,11 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public IEventStore getEventStore() {
         return eventStore;
+    }
+
+    @Override
+    public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
+        return null;
     }
 
     @Override

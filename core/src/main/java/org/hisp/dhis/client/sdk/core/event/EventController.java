@@ -130,6 +130,28 @@ public final class EventController implements IEventController {
 
     @Override
     public void pushEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        // 2) Get all e
+        // both posts and updates are done through POST verb: EWWWW!
+        List<Event> eventsToSend = stateStore.queryModelsWithActions(
+                Event.class, Action.TO_POST, Action.TO_UPDATE);
+
+        // removing events possibly will happen one-by-one
+        List<Event> eventsToDelete = stateStore.queryModelsWithActions(
+                Event.class, Action.TO_DELETE);
+
+
+        // Memo: TrackedDataEntityValues exist only in scope of Events
+        // (no standalone data value resource)
+
+        // 1) it is possible to POST events within bulk operation
+        //       - Yes
+
+        // 2) is it possible to UPDATE events in bulk operation (do I have to
+        //    send all related DataValues as well, or only those which were updated,
+        //    or not to send any events at all)
+        //       - Yes, you have to send all data values along events (no granular updates).
+        //         You have to use POST for both updates and creation of new events
+
+        // 3) Is is possible to send bulk DELETE operations?
+        //       - BAM (Better ask Morten)
     }
 }

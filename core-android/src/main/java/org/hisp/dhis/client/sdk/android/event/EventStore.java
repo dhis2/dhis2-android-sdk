@@ -12,6 +12,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+
 public class EventStore extends AbsIdentifiableObjectStore<Event, EventFlow>
         implements IEventStore {
 
@@ -21,6 +23,9 @@ public class EventStore extends AbsIdentifiableObjectStore<Event, EventFlow>
 
     @Override
     public List<Event> query(OrganisationUnit organisationUnit, Program program) {
+        isNull(organisationUnit, "OrganisationUnit must not be null");
+        isNull(program, "Program must not be null");
+
         List<EventFlow> eventFlows = new Select()
                 .from(EventFlow.class)
                 .where(EventFlow_Table

@@ -42,8 +42,8 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
     private final IStateStore stateStore;
 
-    public TrackedEntityDataValueService(ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                                         IStateStore stateStore) {
+    public TrackedEntityDataValueService(
+            ITrackedEntityDataValueStore trackedEntityDataValueStore, IStateStore stateStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.stateStore = stateStore;
     }
@@ -55,6 +55,7 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
         if (!trackedEntityDataValueStore.insert(object)) {
             return false;
         }
+
         return stateStore.saveActionForModel(object, Action.TO_POST);
     }
 

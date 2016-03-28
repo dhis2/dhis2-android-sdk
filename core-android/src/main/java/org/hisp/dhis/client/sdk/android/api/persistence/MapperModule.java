@@ -37,7 +37,6 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
@@ -65,7 +64,6 @@ import org.hisp.dhis.client.sdk.android.dashboard.DashboardMapper;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
 import org.hisp.dhis.client.sdk.android.dataset.DataSetMapper;
 import org.hisp.dhis.client.sdk.android.enrollment.EnrollmentMapper;
-import org.hisp.dhis.client.sdk.android.event.EventMapper;
 import org.hisp.dhis.client.sdk.android.optionset.OptionMapper;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorMapper;
@@ -90,7 +88,6 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
@@ -116,7 +113,6 @@ public class MapperModule {
     private final IMapper<DashboardElement, DashboardElementFlow> dashboardElementMapper;
     private final IMapper<DashboardContent, DashboardContentFlow> dashboardContentMapper;
 
-    private final IMapper<Event, EventFlow> eventMapper;
     private final IMapper<Enrollment, EnrollmentFlow> enrollmentMapper;
     private final IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
             trackedEntityInstanceMapper;
@@ -153,7 +149,6 @@ public class MapperModule {
         dashboardElementMapper = new DashboardElementMapper();
         dashboardContentMapper = new DashboardContentMapper();
         trackedEntityDataValueMapper = new TrackedEntityDataValueMapper();
-        eventMapper = new EventMapper();
         enrollmentMapper = new EnrollmentMapper();
         trackedEntityInstanceMapper = new TrackedEntityInstanceMapper();
         relationshipMapper = new RelationshipMapper();
@@ -196,10 +191,6 @@ public class MapperModule {
 
     public IMapper<DashboardContent, DashboardContentFlow> getDashboardContentMapper() {
         return dashboardContentMapper;
-    }
-
-    public IMapper<Event, EventFlow> getEventMapper() {
-        return eventMapper;
     }
 
     public IMapper<Enrollment, EnrollmentFlow> getEnrollmentMapper() {

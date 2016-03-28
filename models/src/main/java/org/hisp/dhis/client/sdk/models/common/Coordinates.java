@@ -44,6 +44,11 @@ public class Coordinates {
         // explicit empty constructor
     }
 
+    public Coordinates(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public Double getLatitude() {
         return latitude;
     }

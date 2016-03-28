@@ -29,86 +29,53 @@
 package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 
 import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ForeignKey;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyAction;
-import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.android.event.EventMapper;
+import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.event.Event.EventStatus;
 import org.joda.time.DateTime;
-
-import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class EventFlow extends BaseIdentifiableObjectFlow {
-    public static IMapper<Event, EventFlow> MAPPER = new EventMapper();
-    final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
-    final static String ENROLLMENT_KEY = "enrollment";
+    public static final IMapper<Event, EventFlow> MAPPER = new EventMapper();
 
-    @Column
-    String eventUid;
+    @Column(name = "status")
+    EventStatus status;
 
-    @Column
-    String status;
-
-    @Column
+    @Column(name = "latitude")
     Double latitude;
 
-    @Column
+    @Column(name = "longitude")
     Double longitude;
 
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(
-                            columnName = TRACKED_ENTITY_INSTANCE_KEY, columnType = String.class,
-                            foreignKeyColumnName = "trackedEntityInstanceUid"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
-    )
-    TrackedEntityInstanceFlow trackedEntityInstance;
+    @Column(name = "program")
+    String program;
 
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = ENROLLMENT_KEY, columnType = String.class,
-                            foreignKeyColumnName = "enrollmentUid"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
-    )
-    EnrollmentFlow enrollment;
+    @Column(name = "programStage")
+    String programStage;
 
-    @Column
-    String programId;
+    @Column(name = "orgUnit")
+    String orgUnit;
 
-    @Column
-    String programStageId;
-
-    @Column
-    String organisationUnitId;
-
-    @Column
+    @Column(name = "eventDate")
     DateTime eventDate;
 
-    @Column
+    @Column(name = "dueDate")
     DateTime dueDate;
 
-    List<TrackedEntityDataValueFlow> trackedEntityDataValues;
-
-    public String getEventUid() {
-        return eventUid;
+    public EventFlow() {
+        // explicit empty constructor
     }
 
-    public void setEventUid(String eventUid) {
-        this.eventUid = eventUid;
-    }
-
-    public String getStatus() {
+    public EventStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EventStatus status) {
         this.status = status;
     }
 
@@ -128,44 +95,28 @@ public final class EventFlow extends BaseIdentifiableObjectFlow {
         this.longitude = longitude;
     }
 
-    public TrackedEntityInstanceFlow getTrackedEntityInstance() {
-        return trackedEntityInstance;
+    public String getProgram() {
+        return program;
     }
 
-    public void setTrackedEntityInstance(TrackedEntityInstanceFlow trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    public void setProgram(String program) {
+        this.program = program;
     }
 
-    public EnrollmentFlow getEnrollment() {
-        return enrollment;
+    public String getProgramStage() {
+        return programStage;
     }
 
-    public void setEnrollment(EnrollmentFlow enrollment) {
-        this.enrollment = enrollment;
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
     }
 
-    public String getProgramId() {
-        return programId;
+    public String getOrgUnit() {
+        return orgUnit;
     }
 
-    public void setProgramId(String programId) {
-        this.programId = programId;
-    }
-
-    public String getProgramStageId() {
-        return programStageId;
-    }
-
-    public void setProgramStageId(String programStageId) {
-        this.programStageId = programStageId;
-    }
-
-    public String getOrganisationUnitId() {
-        return organisationUnitId;
-    }
-
-    public void setOrganisationUnitId(String organisationUnitId) {
-        this.organisationUnitId = organisationUnitId;
+    public void setOrgUnit(String orgUnit) {
+        this.orgUnit = orgUnit;
     }
 
     public DateTime getEventDate() {
@@ -184,16 +135,79 @@ public final class EventFlow extends BaseIdentifiableObjectFlow {
         this.dueDate = dueDate;
     }
 
-    public List<TrackedEntityDataValueFlow> getTrackedEntityDataValues() {
-        return trackedEntityDataValues;
-    }
+    private static class EventMapper extends AbsMapper<Event, EventFlow> {
 
-    public void setTrackedEntityDataValues(List<TrackedEntityDataValueFlow>
-                                                   trackedEntityDataValues) {
-        this.trackedEntityDataValues = trackedEntityDataValues;
-    }
+        @Override
+        public EventFlow mapToDatabaseEntity(Event event) {
+            if (event == null) {
+                return null;
+            }
 
-    public EventFlow() {
-        // empty constructor
+            EventFlow eventFlow = new EventFlow();
+            eventFlow.setId(event.getId());
+            eventFlow.setUId(event.getUId());
+            eventFlow.setName(event.getName());
+            eventFlow.setDisplayName(event.getDisplayName());
+            eventFlow.setCreated(event.getCreated());
+            eventFlow.setLastUpdated(event.getLastUpdated());
+            eventFlow.setAccess(event.getAccess());
+            eventFlow.setStatus(event.getStatus());
+
+            // un-wrapping coordinates
+            Coordinates coordinates = event.getCoordinate();
+            if (coordinates != null) {
+                eventFlow.setLatitude(coordinates.getLatitude());
+                eventFlow.setLongitude(coordinates.getLongitude());
+            }
+
+            eventFlow.setProgram(event.getProgram());
+            eventFlow.setProgramStage(event.getProgramStage());
+            eventFlow.setOrgUnit(event.getOrgUnit());
+            eventFlow.setEventDate(event.getEventDate());
+            eventFlow.setDueDate(event.getDueDate());
+
+            return eventFlow;
+        }
+
+        @Override
+        public Event mapToModel(EventFlow eventFlow) {
+            if (eventFlow == null) {
+                return null;
+            }
+
+            Event event = new Event();
+            event.setId(eventFlow.getId());
+            event.setUId(eventFlow.getUId());
+            event.setName(eventFlow.getName());
+            event.setDisplayName(eventFlow.getDisplayName());
+            event.setCreated(eventFlow.getCreated());
+            event.setLastUpdated(eventFlow.getLastUpdated());
+            event.setAccess(eventFlow.getAccess());
+            event.setStatus(eventFlow.getStatus());
+
+            // wrapping coordinates
+            Coordinates coordinates = new Coordinates(
+                    eventFlow.getLatitude(),
+                    eventFlow.getLongitude());
+            event.setCoordinate(coordinates);
+
+            event.setProgram(eventFlow.getProgram());
+            event.setProgramStage(eventFlow.getProgramStage());
+            event.setOrgUnit(eventFlow.getOrgUnit());
+            event.setEventDate(eventFlow.getEventDate());
+            event.setDueDate(eventFlow.getDueDate());
+
+            return event;
+        }
+
+        @Override
+        public Class<Event> getModelTypeClass() {
+            return Event.class;
+        }
+
+        @Override
+        public Class<EventFlow> getDatabaseEntityTypeClass() {
+            return EventFlow.class;
+        }
     }
 }

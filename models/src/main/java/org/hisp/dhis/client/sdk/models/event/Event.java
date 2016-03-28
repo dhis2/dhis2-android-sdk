@@ -45,7 +45,7 @@ import java.util.List;
 public final class Event extends BaseModel implements IdentifiableObject {
 
     @JsonProperty("event")
-    private String eventUid;
+    private String uId;
 
     @JsonProperty("name")
     private String name;
@@ -63,19 +63,19 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private Access access;
 
     @JsonProperty("status")
-    private EventStatus eventStatus;
+    private EventStatus status;
 
     @JsonProperty("coordinate")
     private Coordinates coordinate;
 
     @JsonProperty("program")
-    private String programId;
+    private String program;
 
     @JsonProperty("programStage")
-    private String programStageId;
+    private String programStage;
 
     @JsonProperty("orgUnit")
-    private String organisationUnitId;
+    private String orgUnit;
 
     @JsonProperty("eventDate")
     private DateTime eventDate;
@@ -84,20 +84,20 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private DateTime dueDate;
 
     @JsonProperty("dataValues")
-    private List<TrackedEntityDataValue> trackedEntityDataValues;
+    private List<TrackedEntityDataValue> dataValues;
 
     public Event() {
-        // explicit constructor
+        // explicit empty constructor
     }
 
     @Override
     public String getUId() {
-        return eventUid;
+        return uId;
     }
 
     @Override
     public void setUId(String uId) {
-        this.eventUid = uId;
+        this.uId = uId;
     }
 
     @Override
@@ -150,12 +150,12 @@ public final class Event extends BaseModel implements IdentifiableObject {
         this.access = access;
     }
 
-    public EventStatus getEventStatus() {
-        return eventStatus;
+    public EventStatus getStatus() {
+        return status;
     }
 
-    public void setEventStatus(EventStatus eventStatus) {
-        this.eventStatus = eventStatus;
+    public void setStatus(EventStatus status) {
+        this.status = status;
     }
 
     public Coordinates getCoordinate() {
@@ -166,28 +166,28 @@ public final class Event extends BaseModel implements IdentifiableObject {
         this.coordinate = coordinate;
     }
 
-    public String getProgramId() {
-        return programId;
+    public String getProgram() {
+        return program;
     }
 
-    public void setProgramId(String programId) {
-        this.programId = programId;
+    public void setProgram(String program) {
+        this.program = program;
     }
 
-    public String getProgramStageId() {
-        return programStageId;
+    public String getProgramStage() {
+        return programStage;
     }
 
-    public void setProgramStageId(String programStageId) {
-        this.programStageId = programStageId;
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
     }
 
-    public String getOrganisationUnitId() {
-        return organisationUnitId;
+    public String getOrgUnit() {
+        return orgUnit;
     }
 
-    public void setOrganisationUnitId(String organisationUnitId) {
-        this.organisationUnitId = organisationUnitId;
+    public void setOrgUnit(String orgUnit) {
+        this.orgUnit = orgUnit;
     }
 
     public DateTime getEventDate() {
@@ -206,12 +206,12 @@ public final class Event extends BaseModel implements IdentifiableObject {
         this.dueDate = dueDate;
     }
 
-    public List<TrackedEntityDataValue> getTrackedEntityDataValues() {
-        return trackedEntityDataValues;
+    public List<TrackedEntityDataValue> getDataValues() {
+        return dataValues;
     }
 
-    public void setTrackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues) {
-        this.trackedEntityDataValues = trackedEntityDataValues;
+    public void setDataValues(List<TrackedEntityDataValue> dataValues) {
+        this.dataValues = dataValues;
     }
 
     public enum EventStatus {

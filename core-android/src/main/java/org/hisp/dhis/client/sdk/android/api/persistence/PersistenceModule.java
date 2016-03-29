@@ -77,7 +77,7 @@ public class PersistenceModule implements IPersistenceModule {
         programStageSectionStore = new ProgramStageSectionStore2();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
-        eventStore = new EventStore();
+        eventStore = new EventStore(stateStore);
         trackedEntityDataValueStore = new TrackedEntityDataValueStore();
         dataElementStore = new DataElementStore(transactionManager);
     }
@@ -124,7 +124,7 @@ public class PersistenceModule implements IPersistenceModule {
 
     @Override
     public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
-        return null;
+        return trackedEntityDataValueStore;
     }
 
     @Override

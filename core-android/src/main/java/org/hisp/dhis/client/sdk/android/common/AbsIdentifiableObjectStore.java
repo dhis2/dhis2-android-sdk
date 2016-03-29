@@ -39,7 +39,6 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -58,6 +57,7 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
                 .where(Condition.column(new NameAlias(BaseModelFlow
                         .COLUMN_ID)).is(id))
                 .querySingle();
+
         return getMapper().mapToModel(databaseEntity);
     }
 

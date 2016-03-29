@@ -4,7 +4,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -14,11 +15,11 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public class EventStore extends AbsIdentifiableObjectStore<Event, EventFlow>
+public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
         implements IEventStore {
 
-    public EventStore() {
-        super(EventFlow.MAPPER);
+    public EventStore(IStateStore stateStore) {
+        super(EventFlow.MAPPER, stateStore);
     }
 
     @Override

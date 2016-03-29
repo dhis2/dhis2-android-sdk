@@ -36,8 +36,10 @@ import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.Model;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
@@ -51,6 +53,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
@@ -181,15 +184,21 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
 
     @Override
     public <T extends IModel> List<T> queryModelsWithActions(Class<T> aClass, Action... actions) {
-        return getObjectsByAction(aClass, true, actions);
+        return getObjectsByAction(aClass, null, true, actions);
+    }
+
+    @Override
+    public <T extends IModel> List<T> queryModelsWithActions(
+            Class<T> clazz, Set<String> uids, Action... actions) {
+        return getObjectsByAction(clazz, uids, true, actions);
     }
 
     @SuppressWarnings("unchecked")
     private <T extends IModel> List<T> getObjectsByAction(
-            Class<T> clazz, boolean withAction, Action... actions) {
+            Class<T> clazz, Set<String> uids, boolean withAction, Action... actions) {
 
         if (Event.class.equals(clazz)) {
-            List<EventFlow> eventFlows = (List<EventFlow>) queryModels(clazz,
+            List<EventFlow> eventFlows = (List<EventFlow>) queryModels(clazz, uids,
                     EventFlow_Table.id.withTable(), withAction, actions);
             return (List<T>) eventMapper.mapToModels(eventFlows);
         }
@@ -197,8 +206,9 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
         return null;
     }
 
-    private List<? extends Model> queryModels(Class<? extends IModel> clazz, LongProperty column,
-                                              boolean withAction, @Nullable Action... actions) {
+    private List<? extends Model> queryModels(
+            Class<? extends IModel> clazz, Set<String> uids, LongProperty column,
+            boolean withAction, @Nullable Action... actions) {
 
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
@@ -209,6 +219,12 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
 
         Where<? extends Model> where = from.where(StateFlow_Table.itemType
                 .is(getStateMapper().getRelatedModelClass(clazz)));
+
+        if (uids != null && !uids.isEmpty()) {
+            Property<String> uidColumn = new Property<>(getStateMapper()
+                    .getRelatedDatabaseEntityClass(clazz), BaseIdentifiableObjectFlow.COLUMN_UID);
+            where = where.and(uidColumn.in(uids));
+        }
 
         if (actions != null) {
             for (int i = 0; i < actions.length; i++) {

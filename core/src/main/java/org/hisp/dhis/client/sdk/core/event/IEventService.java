@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.services.IAdd;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
@@ -36,15 +35,14 @@ import org.hisp.dhis.client.sdk.core.common.services.IListUids;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
-import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
-public interface IEventService extends IService, IAdd<Event>, ISave<Event>, IUpdate<Event>,
-        IRemove<Event>, IGet<Event>, IGetUid<Event>, IList<Event>, IListUids<Event> {
+public interface IEventService extends IService, ISave<Event>, IRemove<Event>, IGet<Event>,
+        IGetUid<Event>, IList<Event>, IListUids<Event> {
 
     List<Event> list(OrganisationUnit organisationUnit, Program program);
 }

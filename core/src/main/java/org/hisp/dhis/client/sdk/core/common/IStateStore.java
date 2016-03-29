@@ -66,6 +66,14 @@ public interface IStateStore extends IStore<State> {
     <T extends IModel> boolean deleteActionForModel(T object);
 
     /**
+     *
+     * @param modelType the model class for which we want to remove all corresponding actions
+     * @param <T> type of model class (must extend IModel interface)
+     * @return true if operation succeeded
+     */
+    <T extends IModel> boolean deleteActionsForModelType(Class<T> modelType);
+
+    /**
      * @param object IModel which state the method returns.
      * @return State of given object.
      */

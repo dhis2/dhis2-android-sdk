@@ -34,55 +34,52 @@ import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
-
-
-public abstract class AbsDataStore<ModelType extends IModel, DatabaseEntityType
-        extends IModel & Model> extends AbsStore<ModelType, DatabaseEntityType> {
+public class AbsDataStore<ModelType extends IModel, DataBaseEntityType extends IModel & Model>
+        extends AbsStore<ModelType, DataBaseEntityType> {
 
     private final IStateStore stateStore;
 
-    public AbsDataStore(IMapper<ModelType, DatabaseEntityType> mapper, IStateStore stateStore) {
+    public AbsDataStore(IMapper<ModelType, DataBaseEntityType> mapper,
+                        IStateStore stateStore) {
         super(mapper);
-
-        this.stateStore = isNull(stateStore, "stateStore object must not be null");
+        this.stateStore = stateStore;
     }
 
     @Override
     public boolean insert(ModelType object) {
-        boolean isSuccess = super.insert(object);
+        return saveActionForModel(super.insert(object), object);
+    }
 
-        if (isSuccess) {
-            isSuccess = stateStore.saveActionForModel(object, Action.SYNCED);
-        }
-
-        return isSuccess;
+    @Override
+    public boolean update(ModelType object) {
+        return saveActionForModel(super.update(object), object);
     }
 
     @Override
     public boolean save(ModelType object) {
-        boolean isSuccess = super.save(object);
-
-        if (isSuccess) {
-            Action action = stateStore.queryActionForModel(object);
-            if (action == null) {
-                action = Action.SYNCED;
-            }
-
-            isSuccess = stateStore.saveActionForModel(object, action);
-        }
-
-        return isSuccess;
+        return saveActionForModel(super.save(object), object);
     }
 
     @Override
     public boolean delete(ModelType object) {
-        boolean isSuccess = super.delete(object);
+        return deleteActionForModel(super.delete(object), object);
+    }
 
-        if (isSuccess) {
-            isSuccess = stateStore.deleteActionForModel(object);
-        }
+    @Override
+    public boolean deleteAll() {
+        return deleteAllActionsForModelType(super.deleteAll());
+    }
 
-        return isSuccess;
+    private boolean saveActionForModel(boolean isModelSaved, ModelType model) {
+        return isModelSaved && stateStore.saveActionForModel(model, Action.SYNCED);
+    }
+
+    private boolean deleteActionForModel(boolean isDeleted, ModelType model) {
+        return isDeleted && stateStore.deleteActionForModel(model);
+    }
+
+    private boolean deleteAllActionsForModelType(boolean areModelsRemoved) {
+        return areModelsRemoved && stateStore.deleteActionsForModelType(
+                getMapper().getModelTypeClass());
     }
 }

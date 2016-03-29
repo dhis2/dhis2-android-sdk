@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.android.common;
 
 import android.support.annotation.Nullable;
 
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.From;
 import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -103,6 +104,19 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
 
         State state = queryStateForModel(object);
         return state != null && delete(state);
+    }
+
+    @Override
+    public <T extends IModel> boolean deleteActionsForModelType(Class<T> modelType) {
+        isNull(modelType, "model class must not be null");
+
+        new Delete()
+                .from(StateFlow.class)
+                .where(StateFlow_Table
+                        .itemType.is(getStateMapper().getRelatedModelClass(modelType)))
+                .query();
+
+        return true;
     }
 
     @Override

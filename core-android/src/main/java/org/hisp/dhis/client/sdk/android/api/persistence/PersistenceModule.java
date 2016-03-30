@@ -78,7 +78,7 @@ public class PersistenceModule implements IPersistenceModule {
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         trackedEntityDataValueStore = new TrackedEntityDataValueStore();
-        eventStore = new EventStore(stateStore, trackedEntityDataValueStore);
+        eventStore = new EventStore(stateStore, trackedEntityDataValueStore, transactionManager);
         dataElementStore = new DataElementStore(transactionManager);
     }
 

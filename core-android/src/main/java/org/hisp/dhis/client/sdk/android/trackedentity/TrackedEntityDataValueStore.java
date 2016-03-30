@@ -37,8 +37,11 @@ import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
@@ -50,13 +53,14 @@ public final class TrackedEntityDataValueStore extends AbsStore<TrackedEntityDat
     }
 
     @Override
-    public List<TrackedEntityDataValue> query(Event event) {
-        isNull(event, "Event object must not be null");
+    public List<TrackedEntityDataValue> query(Event... events) {
+        isNull(events, "List of events must not be null");
 
+        Set<String> eventUids = ModelUtils.toUidSet(Arrays.asList(events));
         List<TrackedEntityDataValueFlow> trackedEntityDataValueFlows = new Select()
                 .from(TrackedEntityDataValueFlow.class)
                 .where(TrackedEntityDataValueFlow_Table
-                        .event.is(event.getUId()))
+                        .event.in(eventUids))
                 .queryList();
 
         return getMapper().mapToModels(trackedEntityDataValueFlows);

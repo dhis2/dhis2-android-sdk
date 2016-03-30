@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.commons.util.ExpressionUtils;
@@ -37,20 +38,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.jexl2.*;
-
 /**
  * Created by markusbekken on 23.03.2016.
  */
 public class RuleEngineExecution {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("[A#CV]\\{(\\w+.?\\w*)\\}");
 
-    public static List<RuleEffect> execute(List<ProgramRule> rules, RuleEngineVariableValueMap variableValueMap) {
+    public static List<RuleEffect> execute(
+            List<ProgramRule> rules, RuleEngineVariableValueMap variableValueMap) {
 
         ArrayList<RuleEffect> effects = new ArrayList<>();
-        for (ProgramRule rule:rules) {
-            if(conditionIsTrue(rule.getCondition(), variableValueMap)) {
-                for(ProgramRuleAction action: rule.getProgramRuleActions()) {
+        for (ProgramRule rule : rules) {
+            if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
+                for (ProgramRuleAction action : rule.getProgramRuleActions()) {
                     effects.add(createEffect(action));
                 }
             }
@@ -59,18 +59,20 @@ public class RuleEngineExecution {
         return effects;
     }
 
-    private static String replaceVariables(String expression, final RuleEngineVariableValueMap variableValueMap) {
+    private static String replaceVariables(String expression,
+                                           final RuleEngineVariableValueMap variableValueMap) {
 
         ArrayList<String> variablesFound = new ArrayList<>();
 
         Matcher m = VARIABLE_PATTERN.matcher(expression);
-        while(m.find()) {
+        while (m.find()) {
             String variable = expression.substring(m.start(), m.end());
             variablesFound.add(variable);
         }
 
-        for(String variable : variablesFound) {
-            expression = expression.replace(variable, variableValueMap.getProgramRuleVariableValue(variable.replace("#{","").replace("}","")).toString());
+        for (String variable : variablesFound) {
+            expression = expression.replace(variable, variableValueMap.getProgramRuleVariableValue(
+                    variable.replace("#{", "").replace("}", "")).toString());
         }
 
         return expression;
@@ -78,16 +80,18 @@ public class RuleEngineExecution {
 
     /**
      * Evaluates a passed expression from a {@link ProgramRule} to true or false.
+     *
      * @param condition
      * @return
      */
-    private static boolean conditionIsTrue(String condition, final RuleEngineVariableValueMap variableValueMap ) {
+    private static boolean conditionIsTrue(String condition,
+                                           final RuleEngineVariableValueMap variableValueMap) {
         condition = replaceVariables(condition, variableValueMap);
 
         boolean isTrue = false;
         try {
             isTrue = ExpressionUtils.isTrue(condition, null);
-        } catch(JexlException jxlException) {
+        } catch (JexlException jxlException) {
             jxlException.printStackTrace();
         }
         return isTrue;
@@ -95,6 +99,7 @@ public class RuleEngineExecution {
 
     /**
      * Mapping method for creating a {@link RuleEffect} from a {@link ProgramRuleAction} object.
+     *
      * @param action
      * @return
      */

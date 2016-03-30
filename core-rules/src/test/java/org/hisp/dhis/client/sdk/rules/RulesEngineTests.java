@@ -37,10 +37,16 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.*;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.assertErrorRuleInEffect;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.assertErrorRuleNotInEffect;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.createDataElement;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers
+        .createProgramRuleVariableCurrentEvent;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers
+        .createSimpleProgramRuleShowError;
 
 public class RulesEngineTests {
 
@@ -65,9 +71,9 @@ public class RulesEngineTests {
                 .build();
 
 
-        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<>());
 
-        assertErrorRuleInEffect(effects,errorMessage,null,null);
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
 
     @Test
@@ -81,7 +87,7 @@ public class RulesEngineTests {
                 .build();
 
 
-        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<>());
 
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
     }
@@ -116,7 +122,7 @@ public class RulesEngineTests {
         Event simpleEvent = new Event();
         simpleEvent.setTrackedEntityDataValues(dataValues);
 
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }

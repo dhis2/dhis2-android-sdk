@@ -38,10 +38,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class RuleEngine {
     private final List<TrackedEntityAttribute> trackedEntityAttributes;
@@ -66,7 +63,8 @@ public class RuleEngine {
     private List<RuleEffect> execute(
             Event event, TrackedEntityInstance instance, List<Event> events) {
 
-        RuleEngineVariableValueMap variableValueMap = new RuleEngineVariableValueMap(this.programRuleVariables, event);
+        RuleEngineVariableValueMap variableValueMap =
+                new RuleEngineVariableValueMap(this.programRuleVariables, event);
 
         return RuleEngineExecution.execute(this.programRules, variableValueMap);
     }

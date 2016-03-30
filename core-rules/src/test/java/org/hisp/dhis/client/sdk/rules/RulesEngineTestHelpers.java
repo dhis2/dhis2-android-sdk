@@ -42,7 +42,8 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by markusbekken on 22.03.2016.
@@ -69,7 +70,8 @@ public class RulesEngineTestHelpers {
         return pr;
     }
 
-    public static ProgramRuleVariable createProgramRuleVariableCurrentEvent(String variableName, DataElement dataElement) {
+    public static ProgramRuleVariable createProgramRuleVariableCurrentEvent(
+            String variableName, DataElement dataElement) {
         ProgramRuleVariable prv = new ProgramRuleVariable();
         prv.setDataElement(dataElement);
         prv.setDisplayName(variableName);
@@ -77,7 +79,8 @@ public class RulesEngineTestHelpers {
         return prv;
     }
 
-    public static DataElement createDataElement (String identifier, String name, ValueType valueType ) {
+    public static DataElement createDataElement(String identifier,
+                                                String name, ValueType valueType) {
         DataElement dataElement = new DataElement();
         dataElement.setDisplayName(name);
         dataElement.setValueType(valueType);
@@ -101,9 +104,9 @@ public class RulesEngineTestHelpers {
     }
 
     public static void assertErrorRuleNotInEffect(List<RuleEffect> allEffects,
-                                               String errorMessage,
-                                               DataElement dataElement,
-                                               TrackedEntityAttribute attribute) {
+                                                  String errorMessage,
+                                                  DataElement dataElement,
+                                                  TrackedEntityAttribute attribute) {
         assertFalse(genericRuleEffectInEffect(allEffects,
                 ProgramRuleActionType.SHOWERROR,
                 null,
@@ -124,10 +127,10 @@ public class RulesEngineTestHelpers {
             DataElement dataElement,
             TrackedEntityAttribute attribute,
             ProgramIndicator programIndicator,
-            ProgramStage programStage ) {
+            ProgramStage programStage) {
 
-        for (RuleEffect ruleEffect:allEffects) {
-            if(isMatchingOrNotMatched(action, ruleEffect.getProgramRuleActionType()) &&
+        for (RuleEffect ruleEffect : allEffects) {
+            if (isMatchingOrNotMatched(action, ruleEffect.getProgramRuleActionType()) &&
                     isMatchingOrNotMatched(location, ruleEffect.getLocation()) &&
                     isMatchingOrNotMatched(content, ruleEffect.getContent()) &&
                     isMatchingOrNotMatched(data, ruleEffect.getData()) &&
@@ -140,59 +143,56 @@ public class RulesEngineTestHelpers {
         }
 
         //The loop came to an end without finding any matching rule effects
-        return  false;
+        return false;
     }
 
     private static boolean isMatchingOrNotMatched(String original, String toCompare) {
-        if(original == null || !original.isEmpty()) {
+        if (original == null || !original.isEmpty()) {
             return true;
-        }
-        else {
+        } else {
             return original == toCompare;
         }
     }
 
-    private static boolean isMatchingOrNotMatched(ProgramRuleActionType original, ProgramRuleActionType toCompare) {
-        if(original == null) {
+    private static boolean isMatchingOrNotMatched(ProgramRuleActionType original,
+                                                  ProgramRuleActionType toCompare) {
+        if (original == null) {
             return true;
-        }
-        else {
+        } else {
             return original == toCompare;
         }
     }
 
     private static boolean isMatchingOrNotMatched(DataElement original, DataElement toCompare) {
-        if(original == null) {
+        if (original == null) {
             return true;
-        }
-        else {
+        } else {
             return original.getUId() == toCompare.getUId();
         }
     }
 
-    private static boolean isMatchingOrNotMatched(TrackedEntityAttribute original, TrackedEntityAttribute toCompare) {
-        if(original == null) {
+    private static boolean isMatchingOrNotMatched(TrackedEntityAttribute original,
+                                                  TrackedEntityAttribute toCompare) {
+        if (original == null) {
             return true;
-        }
-        else {
+        } else {
             return original.getUId() == toCompare.getUId();
         }
     }
 
-    private static boolean isMatchingOrNotMatched(ProgramIndicator original, ProgramIndicator toCompare) {
-        if(original == null) {
+    private static boolean isMatchingOrNotMatched(ProgramIndicator original,
+                                                  ProgramIndicator toCompare) {
+        if (original == null) {
             return true;
-        }
-        else {
+        } else {
             return original.getUId() == toCompare.getUId();
         }
     }
 
     private static boolean isMatchingOrNotMatched(ProgramStage original, ProgramStage toCompare) {
-        if(original == null) {
+        if (original == null) {
             return true;
-        }
-        else {
+        } else {
             return original.getUId() == toCompare.getUId();
         }
     }

@@ -31,12 +31,14 @@ package org.hisp.dhis.client.sdk.rules;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,11 +51,24 @@ import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers
         .createSimpleProgramRuleShowError;
 
 public class RulesEngineTests {
+    private static List<Program> programs;
 
+    // executed only once (note, since list of programs is
+    // static, it means unit tests know will share state, so it means
+    // programs should not be modified during runtime)
+    @BeforeClass
+    public static void setUp() throws IOException {
+        ApiClient.init(
+                "https://play.dhis2.org/demo",
+                "android",
+                "Android123"
+        );
 
-    @Before
-    public void setUp() {
+        programs = ApiClient.getPrograms();
 
+        for (Program program : programs) {
+            System.out.println("Program: " + program.getDisplayName());
+        }
     }
 
     @Test

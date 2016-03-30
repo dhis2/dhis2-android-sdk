@@ -53,13 +53,13 @@ public final class TrackedEntityDataValueStore extends AbsStore<TrackedEntityDat
     public List<TrackedEntityDataValue> query(Event event) {
         isNull(event, "Event object must not be null");
 
-        List<TrackedEntityDataValueFlow> trackedEntityDataValueFlow = new Select()
+        List<TrackedEntityDataValueFlow> trackedEntityDataValueFlows = new Select()
                 .from(TrackedEntityDataValueFlow.class)
                 .where(TrackedEntityDataValueFlow_Table
                         .event.is(event.getUId()))
                 .queryList();
 
-        return getMapper().mapToModels(trackedEntityDataValueFlow);
+        return getMapper().mapToModels(trackedEntityDataValueFlows);
     }
 
     @Override

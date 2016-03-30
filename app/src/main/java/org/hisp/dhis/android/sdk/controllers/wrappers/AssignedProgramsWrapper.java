@@ -38,15 +38,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.Attribute;
+import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import retrofit.client.Response;
 import retrofit.converter.ConversionException;
@@ -113,6 +118,46 @@ public class AssignedProgramsWrapper extends JsonDeserializer<List<OrganisationU
                 operations.add(DbOperation.save(orgUnitProgram));
             }
             operations.add(DbOperation.save(organisationUnit));
+        }
+        return operations;
+    }
+
+    public static List<OrganisationUnitAttributeValue> deserializeAttributeValues(Response response,OrganisationUnit organisationUnit) throws ConversionException, IOException {
+        List<OrganisationUnitAttributeValue> organisationUnitsAttributeValues = new ArrayList<>();
+        String responseBodyString = new StringConverter().fromBody(response.getBody(), String.class);
+        JsonNode node = DhisController.getInstance().getObjectMapper().
+                readTree(responseBodyString);
+        JsonNode organisationUnitAttributessNode = node.get(ApiEndpointContainer.ATTRIBUTEVALUES);
+
+        if (organisationUnitAttributessNode == null) { /* in case there are no items */
+            return organisationUnitsAttributeValues;
+        } else {
+            Iterator<JsonNode> nodes = organisationUnitAttributessNode.elements();
+            while(nodes.hasNext()) {
+                JsonNode indexNode = nodes.next();
+                OrganisationUnitAttributeValue item = DhisController.getInstance().getObjectMapper().
+                        readValue(indexNode.toString(), OrganisationUnitAttributeValue.class);
+                item.setOrganisationUnit(organisationUnit.getId());
+                organisationUnitsAttributeValues.add(item);
+            }
+        }
+        return organisationUnitsAttributeValues;
+    }
+
+    public static List<DbOperation> saveOrganisationUnitAttributes(OrganisationUnit organisationUnit, List<OrganisationUnitAttributeValue> OrganisationUnitAttributeValues){
+        List<DbOperation> operations = new ArrayList<>();
+        if (OrganisationUnitAttributeValues!=null && !OrganisationUnitAttributeValues.isEmpty()) {
+            for (OrganisationUnitAttributeValue OrganisationUnitAttributeValue : OrganisationUnitAttributeValues) {
+                //Search for the attribute in the map, if not there, search for it in the DB, if not there create it
+                operations.add(DbOperation.save(OrganisationUnitAttributeValue));
+
+                Attribute attribute = OrganisationUnitAttributeValue.getAttributeObj();
+                if (attribute == null)
+                    attribute = OrganisationUnitAttributeValue.getAttributeObj();
+                if (attribute == null)
+                    attribute = OrganisationUnitAttributeValue.getAttribute();
+                operations.add(DbOperation.save(attribute));
+            }
         }
         return operations;
     }

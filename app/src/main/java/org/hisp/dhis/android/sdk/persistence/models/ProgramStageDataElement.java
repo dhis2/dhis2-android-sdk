@@ -95,7 +95,7 @@ public class ProgramStageDataElement extends BaseModel {
     @JsonProperty("dataElement")
     public void setDataElement(DataElement dataElement) {
         this.dataElement = dataElement.id;
-        dataElement.save();
+        dataElement.async().save();
         dataElementObj = dataElement;
     }
 

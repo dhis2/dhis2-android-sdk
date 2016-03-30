@@ -36,6 +36,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 import java.util.ArrayList;
@@ -64,6 +65,9 @@ public class OrganisationUnit extends BaseModel {
     @JsonProperty("parent")
     @Column(name = "parent")
     String parent;
+
+    @JsonProperty("attributeValues")
+    List<OrganisationUnitAttributeValue> attributeValues;
 
     List<String> programs;
 
@@ -118,5 +122,26 @@ public class OrganisationUnit extends BaseModel {
             tempPrograms.add((String) program.get("id"));
         }
         this.programs = tempPrograms;
+    }
+
+
+    public List<OrganisationUnitAttributeValue> getAttributeValues() {
+        if (attributeValues == null) {
+            attributeValues = MetaDataController.getOrganisationUnitAttributeValues(this);
+        }
+        return attributeValues;
+    }
+
+    public OrganisationUnitAttributeValue getAttributeValue(String attributeId){
+        if (getAttributeValues() == null) return null;
+        for (OrganisationUnitAttributeValue attributeValue: getAttributeValues()){
+            if (attributeValue.getAttribute().equals(attributeId))
+                return attributeValue;
+        }
+        return null;
+    }
+
+    public OrganisationUnitAttributeValue getAttributeValue(long id){
+        return MetaDataController.getOrganisationUnitAttributeValue(id);
     }
 }

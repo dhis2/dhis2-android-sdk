@@ -78,7 +78,27 @@ final class TrackerDataLoader extends ResourceController {
 
     public static final String CLASS_TAG = TrackerDataLoader.class.getSimpleName();
 
+    /**
+     * Max number of events to retrieve from server
+     */
+    private static int maxEvents = 200;
+
     private TrackerDataLoader() {}
+
+    /**
+     * Changes the max number of events to retreive from the server (by orgunit/program)
+     * @param max
+     */
+    public static void setMaxEvents(int max){
+        maxEvents=max;
+    }
+
+    /**
+     * Returns the max number of events to retreive from the server (by orgunit/program)
+     */
+    public static int getMaxEvents(){
+        return maxEvents;
+    }    
 
     /**
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
@@ -139,7 +159,7 @@ final class TrackerDataLoader extends ResourceController {
         if (lastUpdated != null) {
             map.put("lastUpdated", lastUpdated.toString());
         }
-        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 200,
+        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, maxEvents,
                 map);
         List<Event> events = EventsWrapper.getEvents(response);
         saveResourceDataFromServer(ResourceType.EVENTS,organisationUnitUid+programUid, dhisApi, events, null, serverDateTime);

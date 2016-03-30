@@ -37,9 +37,9 @@ import org.hisp.dhis.client.sdk.android.common.StateStore;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore2;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageStore2;
-import org.hisp.dhis.client.sdk.android.program.ProgramStore2;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramStore;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
@@ -72,9 +72,9 @@ public class PersistenceModule implements IPersistenceModule {
         transactionManager = new TransactionManager();
         stateStore = new StateStore(EventFlow.MAPPER);
 
-        programStore = new ProgramStore2(transactionManager);
-        programStageStore = new ProgramStageStore2(transactionManager);
-        programStageSectionStore = new ProgramStageSectionStore2();
+        programStore = new ProgramStore(transactionManager);
+        programStageStore = new ProgramStageStore(transactionManager);
+        programStageSectionStore = new ProgramStageSectionStore();
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
         trackedEntityDataValueStore = new TrackedEntityDataValueStore();

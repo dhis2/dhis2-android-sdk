@@ -50,6 +50,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
@@ -66,6 +67,7 @@ import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Simen Skogly Russnes on 23.02.15.
@@ -387,6 +389,17 @@ public final class TrackerController extends ResourceController {
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, false);
         TrackerDataSender.sendEnrollmentChanges(dhisApi, true);
         TrackerDataSender.sendEventChanges(dhisApi);
+    }
+
+    /**
+     * Tries to send locally stored events to the server
+     * @param dhisApi
+     * @return Map that contains the ImportSummary per each pushed event (key: event.localId)
+     * @throws APIException
+     */
+    public static Map<Long,ImportSummary> sendEventChanges(DhisApi dhisApi)throws APIException{
+        Log.d(CLASS_TAG, "sending local events");
+        return TrackerDataSender.sendEventChanges(dhisApi);
     }
 
     /**

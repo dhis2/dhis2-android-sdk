@@ -209,6 +209,9 @@ public interface DhisApi {
     @GET("/me/programs/")
     Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
 
+    @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS+"/{organisationUnitUid}")
+    Response getOrganisationUnit(@Path("organisationUnitUid") String organisationUnitUid, @QueryMap Map<String, String> queryMap);
+
     @GET("/" + ApiEndpointContainer.PROGRAMS + "/{programUid}")
     Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
 

@@ -14,7 +14,6 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 
 import java.util.Map;
 
-@Table(databaseName = Dhis2Database.NAME)
 public class AttributeValue extends BaseModel {
 
     public AttributeValue(){}
@@ -22,9 +21,6 @@ public class AttributeValue extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     long id;
-
-    @Column(name = "dataElement")
-    String dataElement;
 
     @Column(name = "attributeId")
     String attribute;
@@ -87,19 +83,6 @@ public class AttributeValue extends BaseModel {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    @JsonProperty("dataElement")
-    public void setDataElement(Map<String, Object> dataElement){
-        this.dataElement = (String) dataElement.get("id");
-    }
-
-    public DataElement getDataElement(){
-        return MetaDataController.getDataElement(dataElement);
-    }
-
-    public void setDataElement(String dataElement){
-        this.dataElement = dataElement;
     }
 
     public Attribute getAttributeObj(){

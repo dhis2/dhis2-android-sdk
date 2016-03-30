@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
@@ -57,9 +56,8 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     @JsonProperty("programStage")
     private ProgramStage programStage;
 
-
     @JsonIgnore
-    List<String> allValues;
+    private List<String> allValues;
 
     public DataElement getDataElement() {
         return dataElement;

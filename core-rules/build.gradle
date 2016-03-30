@@ -41,4 +41,10 @@ dependencies {
     // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+
+    // Square
+    testCompile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
+    testCompile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
+    testCompile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
+    testCompile "com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}"
 }

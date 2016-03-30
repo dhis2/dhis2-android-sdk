@@ -43,9 +43,12 @@ import org.hisp.dhis.android.sdk.job.JobExecutor;
 import org.hisp.dhis.android.sdk.job.NetworkJob;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.persistence.preferences.ResourceType;
+
+import java.util.Map;
 
 /**
  * @author Araz Abishov <araz.abishov.gsoc@gmail.com>.
@@ -169,11 +172,32 @@ public final class DhisService extends Service {
     }
 
     public static Job loadData(final Context context) {
-        Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,
-                null) {
+        Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,null) {
             @Override
             public Object execute() throws APIException {
                 DhisController.loadData(context);
+                return new Object();
+            }
+        });
+        return job;
+    }
+
+    public static Job loadMetaData(final Context context) {
+        Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,null) {
+            @Override
+            public Object execute() throws APIException {
+                DhisController.loadMetaData(context);
+                return new Object();
+            }
+        });
+        return job;
+    }
+
+    public static Job loadDataValues(final Context context) {
+        Job job=JobExecutor.enqueueJob(new NetworkJob<Object>(0,null) {
+            @Override
+            public Object execute() throws APIException {
+                DhisController.loadDataValues(context);
                 return new Object();
             }
         });
@@ -187,6 +211,17 @@ public final class DhisService extends Service {
             public Object execute() throws APIException {
                 DhisController.sendData();
                 return new Object();
+            }
+        });
+    }
+
+    public static void sendEventChanges() {
+        JobExecutor.enqueueJob(new NetworkJob<Map<Long,ImportSummary>>(0,
+                null) {
+            @Override
+            public Map<Long,ImportSummary> execute() throws APIException {
+                Map<Long,ImportSummary> importSummaryMap=DhisController.sendEventChanges();
+                return importSummaryMap;
             }
         });
     }

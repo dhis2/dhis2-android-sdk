@@ -47,8 +47,10 @@ import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute;
 import org.hisp.dhis.android.sdk.persistence.models.Attribute$Table;
-import org.hisp.dhis.android.sdk.persistence.models.AttributeValue;
-import org.hisp.dhis.android.sdk.persistence.models.AttributeValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.DataElementAttributeValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitAttributeValue;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Constant$Table;
 import org.hisp.dhis.android.sdk.persistence.models.DataElement;
@@ -211,40 +213,62 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
-     * Get every entry in AttributeValue table as a List of AttributeValue objects
+     * Get every entry in DataElementAttributeValue table as a List of AttributeValue objects
      *
-     * @return List of AttributeValue objects with all the AttributeValue content
+     * @return List of DataElementAttributeValue objects with all the AttributeValue content
      */
-    public static List<AttributeValue> getAttributeValues() {
-        return new Select().from(AttributeValue.class)
-                .orderBy(AttributeValue$Table.ID).queryList();
+    public static List<DataElementAttributeValue> getDataElementAttributeValues() {
+        return new Select().from(DataElementAttributeValue.class)
+                .orderBy(DataElementAttributeValue$Table.ID).queryList();
     }
 
     /**
-     * Get all the AttributeValues that belongs to a given DataElement
+     * Get all the DataElementAttributeValue that belongs to a given DataElement
      *
      * @param dataElement to get the Attributes from
-     * @return List of AttributeValue objects that belongs to the given DataElement
+     * @return List of DataElementAttributeValue objects that belongs to the given DataElement
      */
-    public static List<AttributeValue> getAttributeValues(DataElement dataElement){
+    public static List<DataElementAttributeValue> getDataElementAttributeValues(DataElement dataElement){
         if (dataElement == null) return null;
-        return new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.DATAELEMENT).is(dataElement.getUid()))
-                .orderBy(AttributeValue$Table.ID).queryList();
+        return new Select().from(DataElementAttributeValue.class)
+                .where(Condition.column(DataElementAttributeValue$Table.DATAELEMENT).is(dataElement.getUid()))
+                .orderBy(DataElementAttributeValue$Table.ID).queryList();
     }
 
     /**
-     * Get a concrete AttributeValue entry given its id
+     * Get all the OrganisationUnitAttributeValue that belongs to a given organistation unit
      *
-     * @param id PK of the AttributeValue table
-     * @return The AttributeValue object or null if not found
+     * @param organisationUnit to get the Attributes from
+     * @return List of OrganisationUnitAttributeValue objects that belongs to the given OrganisationUnit
      */
-    public static AttributeValue getAttributeValue(Long id){
-        if (id == null) return null;
-        return new Select().from(AttributeValue.class)
-                .where(Condition.column(AttributeValue$Table.ID).is(id)).querySingle();
+    public static List<OrganisationUnitAttributeValue> getOrganisationUnitAttributeValues(OrganisationUnit organisationUnit){
+        if (organisationUnit == null) return null;
+        return new Select().from(OrganisationUnitAttributeValue.class)
+                .where(Condition.column(OrganisationUnitAttributeValue$Table.ORGANISATIONUNIT).is(organisationUnit.getId()))
+                .orderBy(OrganisationUnitAttributeValue$Table.ID).queryList();
     }
-
+    /**
+     * Get a concrete DataElementAttributeValue entry given its id
+     *
+     * @param id PK of the DataElementAttributeValue table
+     * @return The DataElementAttributeValue object or null if not found
+     */
+    public static DataElementAttributeValue getDataElementAttributeValue(Long id){
+        if (id == null) return null;
+        return new Select().from(DataElementAttributeValue.class)
+                .where(Condition.column(DataElementAttributeValue$Table.ID).is(id)).querySingle();
+    }
+    /**
+     * Get a concrete OrganisationUnitAttributeValue entry given its id
+     *
+     * @param id PK of the OrganisationUnitAttributeValue table
+     * @return The OrganisationUnitAttributeValue object or null if not found
+     */
+    public static OrganisationUnitAttributeValue getOrganisationUnitAttributeValue(Long id){
+        if (id == null) return null;
+        return new Select().from(OrganisationUnitAttributeValue.class)
+                .where(Condition.column(OrganisationUnitAttributeValue$Table.ID).is(id)).querySingle();
+    }
     /**
      * Get a concrete Attribute entry given its string ID
      *
@@ -442,10 +466,9 @@ public final class MetaDataController extends ResourceController {
     }
 
     /**
-     * Returns a UserAccount object for the currently logged in user.
-     *
-     * @return
-     */
+    * Returns a UserAccount object for the currently logged in user.
+    * @return
+    */
     public static UserAccount getUserAccount() {
         return new Select().from(UserAccount.class).querySingle();
     }
@@ -548,7 +571,8 @@ public final class MetaDataController extends ResourceController {
                 ProgramRuleAction.class,
                 RelationshipType.class,
                 Attribute.class,
-                AttributeValue.class);
+                DataElementAttributeValue.class,
+                OrganisationUnitAttributeValue.class);
     }
 
     /**
@@ -636,7 +660,26 @@ public final class MetaDataController extends ResourceController {
             e.printStackTrace();
             return; //todo: handle
         }
-        List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnits);
+            List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnits);
+            for(OrganisationUnit organisationUnit:organisationUnits){
+                final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+                QUERY_MAP_FULL.put("fields","attributeValues[*,attribute[name,displayName,created,lastUpdated,access,id,valueType,code]]");
+                List<OrganisationUnitAttributeValue> organisationUnitAttributeValues = null;
+                try {
+                    organisationUnitAttributeValues=AssignedProgramsWrapper.deserializeAttributeValues(dhisApi.getOrganistationUnitAttributeValues(organisationUnit.getId(), QUERY_MAP_FULL), organisationUnit);
+
+                    for(OrganisationUnitAttributeValue organisationUnitAttributeValue:organisationUnitAttributeValues)
+                    {
+                        organisationUnitAttributeValue.setOrganisationUnit(organisationUnit.getId());
+                    }
+                    operations.addAll(AssignedProgramsWrapper.saveOrganisationUnitAttributes(organisationUnit, organisationUnitAttributeValues));
+                    operations.add(DbOperation.save(organisationUnit));
+                } catch(ConversionException e) {
+                    e.printStackTrace();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
         DbUtils.applyBatch(operations);
         DateTimeManager.getInstance()
@@ -657,11 +700,11 @@ public final class MetaDataController extends ResourceController {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         QUERY_MAP_FULL.put("fields",
-                "*,trackedEntity[*],programIndicators[*],programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
-                        "programStageSections[*,programStageDataElements[*,programStage[id]," +
-                        "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
-                        "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
-                        "[*,trackedEntityAttribute[*]],!organisationUnits)");
+                "*,programStages[*,!dataEntryForm,program[id],programIndicators[*]," +
+                "programStageSections[*,programStageDataElements[*,programStage[id]," +
+                "dataElement[*,id,attributeValues[*,attribute[*]],optionSet[id]]],programIndicators[*]],programStageDataElements" +
+                "[*,programStage[id],dataElement[*,optionSet[id]]]],programTrackedEntityAttributes" +
+                "[*,trackedEntityAttribute[*]],!organisationUnits)");
 
         if (lastUpdated != null) {
             QUERY_MAP_FULL.put("filter", "lastUpdated:gt:" + lastUpdated.toString());

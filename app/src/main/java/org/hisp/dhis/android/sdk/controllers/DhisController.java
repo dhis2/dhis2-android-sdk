@@ -41,12 +41,15 @@ import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.RepoManager;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
+import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
+
+import java.util.Map;
 
 public final class DhisController {
     private static final String CLASS_TAG = "Dhis2";
@@ -112,8 +115,21 @@ public final class DhisController {
         LoadingController.loadDataValues(context, getInstance().getDhisApi());
     }
 
+    static void loadMetaData(Context context) throws APIException, IllegalStateException {
+        LoadingController.loadMetaData(context, getInstance().getDhisApi());
+
+    }
+
+    static void loadDataValues(Context context) throws APIException, IllegalStateException {
+        LoadingController.loadDataValues(context, getInstance().getDhisApi());
+    }
+
     static void sendData() throws APIException, IllegalStateException {
         TrackerController.sendLocalData(getInstance().getDhisApi());
+    }
+
+    static Map<Long,ImportSummary> sendEventChanges()throws APIException, IllegalStateException{
+        return TrackerController.sendEventChanges(getInstance().getDhisApi());
     }
 
     static UserAccount logInUser(HttpUrl serverUrl, Credentials credentials) throws APIException {

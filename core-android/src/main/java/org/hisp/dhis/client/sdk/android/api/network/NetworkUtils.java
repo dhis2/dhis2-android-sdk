@@ -34,12 +34,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -53,61 +50,6 @@ public class NetworkUtils {
 
     private NetworkUtils() {
         // no instances
-    }
-
-    public static <T extends IModel> boolean handleApiException(
-            ApiException exception, T model, IStore<T> store) throws ApiException {
-
-        switch (exception.getKind()) {
-            case HTTP: {
-                switch (exception.getResponse().getStatus()) {
-                    case HttpURLConnection.HTTP_UNAUTHORIZED:
-                        // user credentials are not valid
-                    case HttpURLConnection.HTTP_FORBIDDEN: {
-                        // client does not have access to server
-                        // for example, oAuth2 token may expire
-                        throw exception;
-                    }
-
-                    // given resource was removed, react accordingly
-                    case HttpURLConnection.HTTP_NOT_FOUND: {
-                        if (store != null && model != null) {
-                            store.delete(model);
-                            return true;
-                        }
-                    }
-
-                    // return control to client code,
-                    // conflict should be resolved
-                    case HttpURLConnection.HTTP_CONFLICT: {
-                        return false;
-                    }
-
-                    case HttpURLConnection.HTTP_BAD_REQUEST:
-                    case HttpURLConnection.HTTP_INTERNAL_ERROR:
-                    case HttpURLConnection.HTTP_NOT_IMPLEMENTED: {
-                        // log error
-                        throw exception;
-                    }
-                    default: {
-                        throw exception;
-                    }
-                }
-            }
-            // if it is a network problem (like timeout or something else, do we really
-            // want to continue execution? or should we retry request once?
-            case NETWORK: {
-                throw exception;
-            }
-            case CONVERSION:
-            case UNEXPECTED: {
-                // These types of errors are considered to be unrecoverable,
-                throw exception;
-            }
-            default: {
-                throw exception;
-            }
-        }
     }
 
     @NonNull

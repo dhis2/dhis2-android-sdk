@@ -29,7 +29,9 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
@@ -47,11 +49,12 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 // TODO re-consider name methods in controllers (replace sync
 // TODO in meta-data controllers with something similar to pullModels()
-public final class EventController implements IEventController {
+public final class EventController extends AbsDataController<Event> implements IEventController {
 
     /* Controllers */
     private final ISystemInfoController systemInfoController;
@@ -73,7 +76,10 @@ public final class EventController implements IEventController {
                            IEventApiClient eventApiClient,
                            ILastUpdatedPreferences lastUpdatedPreferences,
                            IEventStore eventStore, IStateStore stateStore,
-                           ITransactionManager transactionManager) {
+                           ITransactionManager transactionManager,
+                           ILogger logger) {
+        super(logger, eventStore);
+
         this.systemInfoController = systemInfoController;
         this.eventApiClient = eventApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -142,33 +148,33 @@ public final class EventController implements IEventController {
 
         sendEvents(eventsToSend);
         deleteEvents(eventsToDelete);
-
-        // Memo: TrackedDataEntityValues exist only in scope of Events
-        // (no standalone data value resource in web API)
-
-        // 1) it is possible to POST events within bulk operation
-        //       - Yes
-
-        // 2) is it possible to UPDATE events in bulk operation (do I have to
-        //    send all related DataValues as well, or only those which were updated,
-        //    or not to send any events at all)
-        //       - Yes, you have to send all data values along events (no granular updates).
-        //         You have to use POST for both updates and creation of new events
-
-        // 3) Is is possible to send bulk DELETE operations?
-        //       - BAM (Better ask Morten)
     }
 
     private void sendEvents(List<Event> events) throws ApiException {
         try {
             ApiResponse apiResponse = eventApiClient.postEvents(events);
 
-            List<ImportSummary> importSummaries =
-                    apiResponse.getImportSummaries();
+            List<ImportSummary> importSummaries = apiResponse.getImportSummaries();
+            Map<String, Event> eventMap = ModelUtils.toMap(events);
+
+            // check if all items were synced successfully
+            for (ImportSummary importSummary : importSummaries) {
+                Event event = eventMap.get(importSummary.getReference());
+
+                if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                        ImportSummary.Status.OK.equals(importSummary.getStatus())) {
+                    stateStore.saveActionForModel(event, Action.SYNCED);
+                } else {
+                    // stateStore.saveActionForModel(event, Action.ERROR);
+                }
+            }
+
             // check what we have in import summaries
             // handle conflicts
         } catch (ApiException apiException) {
-
+            if (handleApiException(apiException, null)) {
+                // it means we have conflicts, which we have to resolve
+            }
         }
 
         // unpack import summary, find conflicts

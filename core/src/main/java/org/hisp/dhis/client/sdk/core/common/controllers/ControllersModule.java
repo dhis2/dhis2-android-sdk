@@ -118,7 +118,7 @@ public class ControllersModule implements IControllersModule {
 
         eventController = new EventController(systemInfoController,
                 networkModule.getEventApiClient(), preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getEventStore(), null,
+                persistenceModule.getEventStore(), persistenceModule.getStateStore(),
                 persistenceModule.getTransactionManager(), logger);
 
         dataElementController = new DataElementController(

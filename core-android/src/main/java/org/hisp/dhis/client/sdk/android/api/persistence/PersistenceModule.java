@@ -134,7 +134,14 @@ public class PersistenceModule implements IPersistenceModule {
 
     @Override
     public boolean deleteAllTables() {
-        return organisationUnitStore.deleteAll() &&
-                userAccountStore.deleteAll() && programStore.deleteAll();
+        return userAccountStore.deleteAll() &&
+                organisationUnitStore.deleteAll() &&
+                stateStore.deleteAll() &&
+                programStore.deleteAll() &&
+                programStageStore.deleteAll() &&
+                programStageSectionStore.deleteAll() &&
+                dataElementStore.deleteAll() &&
+                eventStore.deleteAll() &&
+                trackedEntityDataValueStore.deleteAll();
     }
 }

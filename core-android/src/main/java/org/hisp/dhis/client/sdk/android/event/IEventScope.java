@@ -28,15 +28,25 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
 public interface IEventScope {
+
+    Observable<List<Event>> sync();
+
+    Observable<List<Event>> sync(SyncStrategy strategy);
+
+    Observable<List<Event>> sync(Set<String> uids);
+
+    Observable<List<Event>> sync(SyncStrategy strategy, Set<String> uids);
 
     Observable<Boolean> save(Event event);
 
@@ -49,28 +59,4 @@ public interface IEventScope {
     Observable<List<Event>> list();
 
     Observable<List<Event>> list(OrganisationUnit organisationUnit, Program program);
-
-    /**
-     * Sends all local event changes to server
-     */
-    Observable<Void> send();
-
-    /**
-     * Loads a list of Events for the given Organisation Unit and Program, limited by limit.
-     * to load all set limit to 0.
-     *
-     * @param organisationUnit
-     * @param program
-     * @param limit
-     */
-    Observable<Void> update(OrganisationUnit organisationUnit, Program program, int limit);
-
-    /**
-     * Loads a list of Events for the given Organisation Unit and program that have been modified
-     * since the last call to update.
-     *
-     * @param organisationUnit
-     * @param program
-     */
-    Observable<Void> update(OrganisationUnit organisationUnit, Program program);
 }

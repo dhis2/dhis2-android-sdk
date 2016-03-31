@@ -163,7 +163,7 @@ public class VariableUtils {
                 !getEventsForEnrollment().contains(getCurrentEvent())) {
             getEventsForEnrollment().add(getCurrentEvent());
         }
-        Collections.sort(getEventsForEnrollment(), new Event.EventDateComparator());
+        Collections.sort(getEventsForEnrollment(), Event.DATE_COMPARATOR);
 
         //setting data elements map
         List<DataElement> dataElements = dataElementService.list();
@@ -391,14 +391,14 @@ public class VariableUtils {
             case DATAELEMENT_PREVIOUS_EVENT: {
                 if(getCurrentEvent() != null) {
                     TrackedEntityDataValue dataValue;
-                    Comparator<Event> comparator = new Event.EventDateComparator();
+                    // Comparator<Event> comparator = new Event.EventDateComparator();
                     //select a value from an event that precedes 'currentEvent'
                     for (Event event : getEventsForEnrollment()) {
                         if(event.getUId().equals(getCurrentEvent().getUId())) {
                             continue;
                         }
                         //if currentEvent is later than 'event'
-                        if (comparator.compare(getCurrentEvent(), event) > 0) {
+                        if (Event.DATE_COMPARATOR.compare(getCurrentEvent(), event) > 0) {
                             dataValue = getEventDataValueMaps().get(event).get(programRuleVariable.getDataElement());
                             if (dataValue != null) {
                                 if (value == null) {

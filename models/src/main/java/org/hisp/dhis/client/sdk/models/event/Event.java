@@ -43,6 +43,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class Event extends BaseModel implements IdentifiableObject {
+    public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
     @JsonProperty("event")
     private String uId;
@@ -222,7 +223,7 @@ public final class Event extends BaseModel implements IdentifiableObject {
      * Comparator that returns the Event with the latest EventDate
      * as the greater of the two given.
      */
-    public static class EventDateComparator implements Comparator<Event> {
+    private static class EventDateComparator implements Comparator<Event> {
 
         @Override
         public int compare(Event first, Event second) {

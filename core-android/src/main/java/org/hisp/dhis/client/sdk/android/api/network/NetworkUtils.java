@@ -31,14 +31,11 @@ package org.hisp.dhis.client.sdk.android.api.network;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
-import org.hisp.dhis.client.sdk.android.api.network.ResponseMapper;
 import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.Header;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.models.common.base.IModel;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -58,114 +55,65 @@ public class NetworkUtils {
         // no instances
     }
 
-    public static Header findLocationHeader(List<Header> headers) {
-        final String LOCATION = "location";
-        if (headers != null && !headers.isEmpty()) {
-            for (Header header : headers) {
-//                if (header.getName().equalsIgnoreCase(LOCATION)) {
-//                    return header;
-//                }
-            }
-        }
+    public static <T extends IModel> boolean handleApiException(
+            ApiException exception, T model, IStore<T> store) throws ApiException {
 
-        return null;
-    }
-
-    public static void handleApiException(ApiException apiException) throws ApiException {
-        handleApiException(apiException, null, null);
-    }
-
-    /**
-     * List of errors which this method should handle:
-     * <p/>
-     * 400 Bad Request
-     * 401 Unauthorized (user password has changed)
-     * 403 Forbidden (access denied)
-     * 404 Not found (object was already removed for example)
-     * 405 Method not allowed (wrong HTTP request method)
-     * 408 Request Time Out (too slow internet connection, long processing time, etc)
-     * 409 Conflict (you are trying to treat some resource as another.
-     * For example to create interpretation for map through chart URI)
-     * 500 Internal server error (for example NullPointerException)
-     * 501 Not implemented (no such method or resource)
-     * 502 Bad Gateway (can be retried later)
-     * 503 Service unavailable (can be temporary issue)
-     * 504 Gateway Timeout (we need to retry request later)
-     */
-    // TODO EW!
-    public static <T extends IdentifiableObject> void handleApiException(
-            ApiException apiException, T model, IIdentifiableObjectStore<T> store) throws
-            ApiException {
-
-        switch (apiException.getKind()) {
+        switch (exception.getKind()) {
             case HTTP: {
-                switch (apiException.getResponse().getStatus()) {
-                    case HttpURLConnection.HTTP_BAD_REQUEST: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_UNAUTHORIZED: {
-                        // if the user password has changed, none of other network
-                        // requests won't pass. So we need to stop synchronization.
-                        throw apiException;
-                    }
+                switch (exception.getResponse().getStatus()) {
+                    case HttpURLConnection.HTTP_UNAUTHORIZED:
+                        // user credentials are not valid
                     case HttpURLConnection.HTTP_FORBIDDEN: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        // User does not has access to given resource anymore.
-                        // We need to handle this in a special way
-                        break;
+                        // client does not have access to server
+                        // for example, oAuth2 token may expire
+                        throw exception;
                     }
+
+                    // given resource was removed, react accordingly
                     case HttpURLConnection.HTTP_NOT_FOUND: {
-                        // The given resource does not exist on the server anymore.
-                        // Remove it locally.
-                        if (model != null) {
+                        if (store != null && model != null) {
                             store.delete(model);
-                            // model.delete();
+                            return true;
                         }
-                        break;
                     }
+
+                    // return control to client code,
+                    // conflict should be resolved
                     case HttpURLConnection.HTTP_CONFLICT: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        // Trying to access wrong resource.
-                        break;
+                        return false;
                     }
-                    case HttpURLConnection.HTTP_INTERNAL_ERROR: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
-                    }
+
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                    case HttpURLConnection.HTTP_INTERNAL_ERROR:
                     case HttpURLConnection.HTTP_NOT_IMPLEMENTED: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
+                        // log error
+                        throw exception;
+                    }
+                    default: {
+                        throw exception;
                     }
                 }
-
-                break;
             }
+            // if it is a network problem (like timeout or something else, do we really
+            // want to continue execution? or should we retry request once?
             case NETWORK: {
-                // Retry later.
-                break;
+                throw exception;
             }
             case CONVERSION:
             case UNEXPECTED: {
-                // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
-                // implement possibility to show error status. In most cases, this types of errors
-                // won't be resolved automatically.
-
-                // for now, just rethrow exception.
-                throw apiException;
+                // These types of errors are considered to be unrecoverable,
+                throw exception;
+            }
+            default: {
+                throw exception;
             }
         }
     }
 
     @NonNull
-    public static <T> List<T> getCollection(@NonNull ApiResource<T> apiResource,
-                                            @NonNull Fields fields, @Nullable DateTime lastUpdated,
-                                            @Nullable String... uids) {
+    public static <T> List<T> getCollection(
+            @NonNull ApiResource<T> apiResource, @NonNull Fields fields,
+            @Nullable DateTime lastUpdated, @Nullable String... uids) {
 
         Map<String, String> queryMap = new HashMap<>();
         List<String> filters = new ArrayList<>();

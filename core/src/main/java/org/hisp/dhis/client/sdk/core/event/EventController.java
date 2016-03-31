@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+// TODO implement special logic to handle 409
 // TODO re-consider name methods in controllers (replace sync
 // TODO in meta-data controllers with something similar to pullModels()
 public final class EventController extends AbsDataController<Event> implements IEventController {
@@ -138,19 +139,18 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        // both posts and updates are done through POST verb: EWWWW!
-        List<Event> eventsToSend = stateStore.queryModelsWithActions(
-                Event.class, Action.TO_POST, Action.TO_UPDATE);
-
-        // removing events possibly will happen one-by-one
-        List<Event> eventsToDelete = stateStore.queryModelsWithActions(
-                Event.class, Action.TO_DELETE);
-
-        sendEvents(eventsToSend);
-        deleteEvents(eventsToDelete);
+        sendEvents();
+        deleteEvents();
     }
 
-    private void sendEvents(List<Event> events) throws ApiException {
+    private void sendEvents() throws ApiException {
+        List<Event> events = stateStore.queryModelsWithActions(
+                Event.class, Action.TO_POST, Action.TO_UPDATE);
+
+        if (events == null || events.isEmpty()) {
+            return;
+        }
+
         try {
             ApiResponse apiResponse = eventApiClient.postEvents(events);
 
@@ -160,30 +160,37 @@ public final class EventController extends AbsDataController<Event> implements I
             // check if all items were synced successfully
             for (ImportSummary importSummary : importSummaries) {
                 Event event = eventMap.get(importSummary.getReference());
-
                 if (ImportSummary.Status.SUCCESS.equals(importSummary.getStatus()) ||
                         ImportSummary.Status.OK.equals(importSummary.getStatus())) {
                     stateStore.saveActionForModel(event, Action.SYNCED);
                 } else {
-                    // stateStore.saveActionForModel(event, Action.ERROR);
+                    stateStore.saveActionForModel(event, Action.ERROR);
                 }
             }
-
-        // check what we have in import summaries handle conflicts
         } catch (ApiException apiException) {
             handleApiException(apiException, null);
         }
     }
 
-    private void deleteEvents(List<Event> events) throws ApiException {
-        if (events != null && !events.isEmpty()) {
-            for (Event event : events) {
-                try {
-                    ApiResponse apiResponse = eventApiClient.deleteEvent(event);
-                    // take action based on apiResponse
-                } catch (ApiException apiException) {
-                    handleApiException(apiException, event);
+    private void deleteEvents() throws ApiException {
+        List<Event> events = stateStore.queryModelsWithActions(
+                Event.class, Action.TO_DELETE);
+
+        if (events == null || events.isEmpty()) {
+            return;
+        }
+
+        for (Event event : events) {
+            try {
+                ApiResponse apiResponse = eventApiClient.deleteEvent(event);
+                if (ImportSummary.Status.SUCCESS.equals(apiResponse.getStatus()) ||
+                        ImportSummary.Status.OK.equals(apiResponse.getStatus())) {
+                    stateStore.saveActionForModel(event, Action.SYNCED);
+                } else {
+                    stateStore.saveActionForModel(event, Action.ERROR);
                 }
+            } catch (ApiException apiException) {
+                handleApiException(apiException, event);
             }
         }
     }

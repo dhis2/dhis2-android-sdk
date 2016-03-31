@@ -13,6 +13,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 
+import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class EventApiClient implements IEventApiClient {
@@ -56,11 +57,11 @@ public class EventApiClient implements IEventApiClient {
 
     @Override
     public ApiResponse postEvents(List<Event> events) throws ApiException {
-        return null;
+        return call(eventApiclientRetrofit.postEvents(events));
     }
 
     @Override
     public ApiResponse deleteEvent(Event event) throws ApiException {
-        return null;
+        return call(eventApiclientRetrofit.deleteEvent(event.getUId()));
     }
 }

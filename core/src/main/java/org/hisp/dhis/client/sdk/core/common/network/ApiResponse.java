@@ -33,19 +33,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportCount;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary.Status;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
-    public static final String RESPONSE_TYPE_IMPORT_SUMMARIES = "ImportSummaries";
-    public static final String RESPONSE_TYPE_IMPORT_SUMMARY = "ImportSummary";
 
     @JsonProperty("responseType")
     private String responseType;
 
     @JsonProperty("status")
-    private String status;
+    private Status status;
 
     @JsonProperty("importCount")
     private ImportCount importCount;
@@ -61,7 +60,7 @@ public class ApiResponse {
         return responseType;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 

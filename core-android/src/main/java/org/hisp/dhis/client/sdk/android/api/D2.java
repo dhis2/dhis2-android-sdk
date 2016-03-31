@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.api.utils.Logger;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
 import org.hisp.dhis.client.sdk.android.event.EventScope;
@@ -111,7 +112,7 @@ public class D2 {
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
         INetworkModule networkModule = new NetworkModule(preferencesModule);
         IControllersModule controllersModule = new ControllersModule(
-                networkModule, persistenceModule, preferencesModule);
+                networkModule, persistenceModule, preferencesModule, new Logger());
 
         IUserProgramScope userProgramScope = new UserProgramScope(
                 servicesModule.getProgramService(),

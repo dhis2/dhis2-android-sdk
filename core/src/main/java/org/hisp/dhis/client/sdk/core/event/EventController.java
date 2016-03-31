@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -161,9 +162,13 @@ public final class EventController implements IEventController {
     private void sendEvents(List<Event> events) throws ApiException {
         try {
             ApiResponse apiResponse = eventApiClient.postEvents(events);
+
+            List<ImportSummary> importSummaries =
+                    apiResponse.getImportSummaries();
+            // check what we have in import summaries
+            // handle conflicts
         } catch (ApiException apiException) {
-            // catch certain type of exceptions, handle them appropriately
-            // if something serious happened, throw ApiException and stop syncing process
+
         }
 
         // unpack import summary, find conflicts

@@ -256,4 +256,8 @@ public class D2 {
     public static IDataElementScope dataElements() {
         return configuredInstance().dataElementScope;
     }
+
+    public static IEventScope events() {
+        return configuredInstance().eventScope;
+    }
 }

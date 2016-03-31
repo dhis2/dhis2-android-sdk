@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
+import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
@@ -68,10 +69,11 @@ public class ControllersModule implements IControllersModule {
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
-                             IPreferencesModule preferencesModule) {
+                             IPreferencesModule preferencesModule, ILogger logger) {
         isNull(networkModule, "networkModule must not be null");
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
+        isNull(logger, "ILogger must not be null");
 
         systemInfoController = new SystemInfoController(
                 networkModule.getSystemInfoApiClient(),
@@ -114,42 +116,16 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
 
-//        eventController = new EventController(
-//                networkModule.getEventApiClient(),
-//                networkModule.getSystemInfoApiClient(),
-//                preferencesModule.getLastUpdatedPreferences(),
-//                persistenceModule.getTransactionManager(),
-//                null, //persistenceModule.getStateStore(),
-//                persistenceModule.getEventStore(),
-//                null, //persistenceModule.getTrackedEntityDataValueStore(),
-//                persistenceModule.getOrganisationUnitStore(),
-//                persistenceModule.getProgramStore(),
-//                null //persistenceModule.getFailedItemStore()
-//        );
-
         eventController = new EventController(systemInfoController,
                 networkModule.getEventApiClient(), preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getEventStore(), null,
-                persistenceModule.getTransactionManager());
+                persistenceModule.getTransactionManager(), logger);
 
         dataElementController = new DataElementController(
                 networkModule.getDataElementApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getDataElementStore(),
                 systemInfoController, persistenceModule.getTransactionManager());
-
-        /*
-
-        IEventApiClient eventApiClient,
-                   ISystemInfoApiClient systemInfoApiClient,
-                   ILastUpdatedPreferences lastUpdatedPreferences,
-                   ITransactionManager transactionManager,
-                   IStateStore stateStore, IEventStore eventStore,
-                   ITrackedEntityDataValueStore trackedEntityDataValueStore,
-                   IOrganisationUnitStore organisationUnitStore, IProgramStore programStore,
-                   IFailedItemStore failedItemStore)
-         */
-
     }
 
     @Override

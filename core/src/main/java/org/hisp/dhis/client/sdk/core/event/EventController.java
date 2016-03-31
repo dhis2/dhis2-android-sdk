@@ -169,17 +169,10 @@ public final class EventController extends AbsDataController<Event> implements I
                 }
             }
 
-            // check what we have in import summaries
-            // handle conflicts
+        // check what we have in import summaries handle conflicts
         } catch (ApiException apiException) {
-            if (handleApiException(apiException, null)) {
-                // it means we have conflicts, which we have to resolve
-            }
+            handleApiException(apiException, null);
         }
-
-        // unpack import summary, find conflicts
-        // take actions based on conflicts
-        // update time stamp of events, update flags
     }
 
     private void deleteEvents(List<Event> events) throws ApiException {
@@ -189,8 +182,7 @@ public final class EventController extends AbsDataController<Event> implements I
                     ApiResponse apiResponse = eventApiClient.deleteEvent(event);
                     // take action based on apiResponse
                 } catch (ApiException apiException) {
-                    // catch certain type of exceptions, handle them appropriately
-                    // if something serious happened, throw ApiException and stop syncing process
+                    handleApiException(apiException, event);
                 }
             }
         }

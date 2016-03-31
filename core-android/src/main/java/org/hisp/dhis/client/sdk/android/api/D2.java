@@ -272,6 +272,5 @@ public class D2 {
 
     public static IDataElementScope dataElements() {
         return configuredInstance().dataElementScope;
-
     }
 }

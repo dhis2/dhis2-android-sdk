@@ -28,46 +28,30 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
+import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface EventApiClientRetrofit {
 
-    @GET("/events?page=0")
-    Call<JsonNode> getEvents(@QueryMap Map<String, String> queryParams);
+    @DELETE("events/{uid}")
+    Call<ApiResponse> deleteEvent(@Path("uid") String eventUid);
 
-    @GET("/events?paging=false&ouMode=ACCESSIBLE")
-    Call<JsonNode> getEventsForEnrollment(@Query("program") String programUid,
-                                          @Query("programStatus") String programStatus,
-                                          @Query("trackedEntityInstance") String
-                                                  trackedEntityInstanceUid,
-                                          @QueryMap Map<String, String> queryParams);
-
-    @GET("/events/{eventUid}")
-    Call<Event> getEvent(@Path("eventUid") String eventUid, @QueryMap Map<String, String> queryMap);
-
-    @POST("/events/")
-    Call<Response> postEvent(@Body Event event);
-
-    @PUT("/events/{eventUid}")
-    Call<Response> putEvent(@Path("eventUid") String eventUid, @Body Event event);
-
+    @POST("events")
+    Call<ApiResponse> postEvents(@Body List<Event> events);
 
     @GET("events")
-    Call<Map<String, List<Event>>> getEvents(@QueryMap Map<String, String> queryMap,
-                                             @Query("filter") List<String> filters);
+    Call<Map<String, List<Event>>> getEvents(
+            @QueryMap Map<String, String> queryMap, @Query("filter") List<String> filters);
 }

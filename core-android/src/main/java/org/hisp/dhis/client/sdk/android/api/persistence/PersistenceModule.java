@@ -32,8 +32,10 @@ import android.content.Context;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
 
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
+import org.hisp.dhis.client.sdk.android.common.StateStore;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
-import org.hisp.dhis.client.sdk.android.event.EventStore2;
+import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
@@ -41,7 +43,9 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
@@ -53,40 +57,54 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
 public class PersistenceModule implements IPersistenceModule {
     private final ITransactionManager transactionManager;
+    private final IStateStore stateStore;
     private final IUserAccountStore userAccountStore;
     private final IProgramStore programStore;
     private final IProgramStageStore programStageStore;
     private final IProgramStageSectionStore programStageSectionStore;
+    private final IProgramStageDataElementStore programStageDataElementStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IEventStore eventStore;
-    private final IProgramStageDataElementStore programStageDataElementStore;
+    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
     private final IDataElementStore dataElementStore;
-    private final IOptionSetStore optionSetStore;
     private final IOptionStore optionStore;
+    private final IOptionSetStore optionSetStore;
 
     public PersistenceModule(Context context) {
         FlowManager.init(context);
 
         transactionManager = new TransactionManager();
+        stateStore = new StateStore(EventFlow.MAPPER);
+
         programStore = new ProgramStore(transactionManager);
         programStageStore = new ProgramStageStore(transactionManager);
         programStageSectionStore = new ProgramStageSectionStore(transactionManager);
-        programStageDataElementStore = new ProgramStageDataElementStore();
+        programStageDataElementStore = new ProgramStageDataElementStore(transactionManager);
+        dataElementStore = new DataElementStore();
+
         userAccountStore = new UserAccountStore();
         organisationUnitStore = new OrganisationUnitStore(transactionManager);
-        eventStore = new EventStore2(transactionManager);
-        dataElementStore = new DataElementStore();
-        optionSetStore = new OptionSetStore();
+
+        trackedEntityDataValueStore = new TrackedEntityDataValueStore();
+        eventStore = new EventStore(stateStore, trackedEntityDataValueStore, transactionManager);
+
         optionStore = new OptionStore();
+        optionSetStore = new OptionSetStore();
     }
 
     @Override
     public ITransactionManager getTransactionManager() {
         return transactionManager;
+    }
+
+    @Override
+    public IStateStore getStateStore() {
+        return stateStore;
     }
 
     @Override
@@ -125,6 +143,11 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
+    public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
+        return trackedEntityDataValueStore;
+    }
+
+    @Override
     public IDataElementStore getDataElementStore() {
         return dataElementStore;
     }
@@ -141,10 +164,14 @@ public class PersistenceModule implements IPersistenceModule {
 
     @Override
     public boolean deleteAllTables() {
-        return organisationUnitStore.deleteAll() &&
-                userAccountStore.deleteAll() && programStore.deleteAll()
-                && dataElementStore.deleteAll() && programStageStore.deleteAll()
-                && programStageDataElementStore.deleteAll() && programStageSectionStore.deleteAll()
-                && eventStore.deleteAll() && optionStore.deleteAll() && optionSetStore.deleteAll();
+        return userAccountStore.deleteAll() &&
+                organisationUnitStore.deleteAll() &&
+                stateStore.deleteAll() &&
+                programStore.deleteAll() &&
+                programStageStore.deleteAll() &&
+                programStageSectionStore.deleteAll() &&
+                dataElementStore.deleteAll() &&
+                eventStore.deleteAll() &&
+                trackedEntityDataValueStore.deleteAll();
     }
 }

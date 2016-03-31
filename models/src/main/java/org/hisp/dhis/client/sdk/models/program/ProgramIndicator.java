@@ -36,7 +36,6 @@ import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
 import java.util.regex.Pattern;
 
 public final class ProgramIndicator extends BaseNameableObject {
-
     public static final String SEPARATOR_ID = "\\.";
     public static final String KEY_DATAELEMENT = "#";
     public static final String KEY_ATTRIBUTE = "A";

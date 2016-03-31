@@ -33,8 +33,16 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IStateMapper;
+import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.state.State;
+import org.hisp.dhis.client.sdk.models.event.Event;
+
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 @Table(database = DbDhis.class,
         uniqueColumnGroups = {
@@ -44,18 +52,19 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
         }
 )
 public final class StateFlow extends BaseModelFlow {
+    public static final IStateMapper MAPPER = new StateMapper();
     static final int UNIQUE_GROUP_NUMBER = 1;
 
-    @Column
+    @Column(name = "itemId")
     @Unique(unique = false, uniqueGroups = {UNIQUE_GROUP_NUMBER})
     long itemId;
 
-    @Column
+    @Column(name = "itemType")
     @Unique(unique = false, uniqueGroups = {UNIQUE_GROUP_NUMBER})
     String itemType;
 
     // We need to specify FQCN in order to avoid collision with BaseMode.Action class.
-    @Column
+    @Column(name = "action")
     org.hisp.dhis.client.sdk.models.common.state.Action action;
 
     public StateFlow() {
@@ -84,5 +93,76 @@ public final class StateFlow extends BaseModelFlow {
 
     public void setAction(org.hisp.dhis.client.sdk.models.common.state.Action action) {
         this.action = action;
+    }
+
+    private static class StateMapper extends AbsMapper<State, StateFlow> implements IStateMapper {
+
+        @Override
+        public StateFlow mapToDatabaseEntity(State state) {
+            if (state == null) {
+                return null;
+            }
+
+            StateFlow stateFlow = new StateFlow();
+            stateFlow.setItemId(state.getItemId());
+            stateFlow.setItemType(getRelatedModelClass(state.getItemType()));
+            stateFlow.setAction(state.getAction());
+
+            return stateFlow;
+        }
+
+        @Override
+        public State mapToModel(StateFlow stateFlow) {
+            if (stateFlow == null) {
+                return null;
+            }
+
+            State state = new State();
+            state.setItemId(stateFlow.getItemId());
+            state.setItemType(getRelatedModelClass(stateFlow.getItemType()));
+            state.setAction(stateFlow.getAction());
+
+            return state;
+        }
+
+        @Override
+        public Class<State> getModelTypeClass() {
+            return State.class;
+        }
+
+        @Override
+        public Class<StateFlow> getDatabaseEntityTypeClass() {
+            return StateFlow.class;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Class<? extends IModel> getRelatedModelClass(String type) {
+            isNull(type, "type must not be null");
+
+            try {
+                return (Class<? extends IModel>) Class.forName(type);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getRelatedModelClass(Class<? extends IModel> clazz) {
+            isNull(clazz, "class object must not be null");
+            return clazz.getName();
+        }
+
+        @Override
+        public Class<? extends Model> getRelatedDatabaseEntityClass(
+                Class<? extends IModel> objectClass) {
+            isNull(objectClass, "Class object must not be null");
+
+            if (Event.class.equals(objectClass)) {
+                return EventFlow.class;
+            }
+
+            throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());
+        }
     }
 }

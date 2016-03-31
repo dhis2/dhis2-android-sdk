@@ -32,41 +32,45 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow_Table;
-import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.android.common.AbsStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-public final class TrackedEntityDataValueStore extends AbsDataStore<TrackedEntityDataValue,
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+
+public final class TrackedEntityDataValueStore extends AbsStore<TrackedEntityDataValue,
         TrackedEntityDataValueFlow> implements ITrackedEntityDataValueStore {
 
-    public TrackedEntityDataValueStore(IMapper<TrackedEntityDataValue,
-            TrackedEntityDataValueFlow> mapper, IStateStore stateStore) {
-        super(mapper, stateStore);
+    public TrackedEntityDataValueStore() {
+        super(TrackedEntityDataValueFlow.MAPPER);
     }
 
     @Override
-    public List<TrackedEntityDataValue> query(Event event) {
-        if (event == null) {
-            return null;
-        }
-        List<TrackedEntityDataValueFlow> trackedEntityDataValueFlow = new Select()
+    public List<TrackedEntityDataValue> query(Event... events) {
+        isNull(events, "List of events must not be null");
+
+        Set<String> eventUids = ModelUtils.toUidSet(Arrays.asList(events));
+        List<TrackedEntityDataValueFlow> trackedEntityDataValueFlows = new Select()
                 .from(TrackedEntityDataValueFlow.class)
-                .where(TrackedEntityDataValueFlow_Table.event.is(event.getUId()))
+                .where(TrackedEntityDataValueFlow_Table
+                        .event.in(eventUids))
                 .queryList();
-        return getMapper().mapToModels(trackedEntityDataValueFlow);
+
+        return getMapper().mapToModels(trackedEntityDataValueFlows);
     }
 
     @Override
-    public TrackedEntityDataValue query(DataElement dataElement, Event event) {
-        if (dataElement == null || event == null) {
-            return null;
-        }
+    public TrackedEntityDataValue query(Event event, DataElement dataElement) {
+        isNull(event, "Event object must ot be null");
+        isNull(dataElement, "DataElement object must not be null");
+
         return getMapper().mapToModel(new Select()
                 .from(TrackedEntityDataValueFlow.class)
                 .where(TrackedEntityDataValueFlow_Table

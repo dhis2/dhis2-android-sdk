@@ -26,29 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common.importsummary;
+package org.hisp.dhis.client.sdk.core.common.network;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Conflict {
+public class ApiMessage {
 
-    @JsonProperty("object")
-    private String object;
+    @JsonProperty("httpStatus")
+    private String httpStatus;
 
-    @JsonProperty("value")
-    private String value;
+    @JsonProperty("httpStatusCode")
+    private int httpStatusCode;
 
-    public Conflict() {
+    @JsonProperty("message")
+    private String message;
+
+    @JsonProperty("status")
+    private String status;
+
+    @JsonProperty("response")
+    private ApiResponse response;
+
+    public ApiMessage() {
         // explicit empty constructor
     }
 
-    public String getObject() {
-        return object;
+    public String getHttpStatus() {
+        return httpStatus;
     }
 
-    public String getValue() {
-        return value;
+    public int getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public ApiResponse getResponse() {
+        return response;
     }
 }

@@ -149,7 +149,7 @@ public class VariableUtils {
      * calculations
      * from {@link ExpressionFunctions},
      * {@link ProgramRuleUtils}, and {@link ProgramIndicatorUtils}
-     * <p>
+     * <p/>
      * Note that you may have to reset this singleton by calling {@link #reset()}
      *
      * @param enrollment   can be null
@@ -172,7 +172,7 @@ public class VariableUtils {
                 !getEventsForEnrollment().contains(getCurrentEvent())) {
             getEventsForEnrollment().add(getCurrentEvent());
         }
-        Collections.sort(getEventsForEnrollment(), new Event.EventDateComparator());
+        Collections.sort(getEventsForEnrollment(), Event.DATE_COMPARATOR);
 
         //setting data elements map
         List<DataElement> dataElements = dataElementService.list();
@@ -193,10 +193,10 @@ public class VariableUtils {
         setEventsForProgramStages(new HashMap<String, List<Event>>());
         for (Event event : getEventsForEnrollment()) {
             List<Event> eventsForProgramStage = getEventsForProgramStages().get(event
-                    .getProgramStageId());
+                    .getProgramStage());
             if (eventsForProgramStage == null) {
                 eventsForProgramStage = new ArrayList<>();
-                getEventsForProgramStages().put(event.getProgramStageId(), eventsForProgramStage);
+                getEventsForProgramStages().put(event.getProgramStage(), eventsForProgramStage);
             }
             eventsForProgramStage.add(event);
         }
@@ -205,7 +205,7 @@ public class VariableUtils {
         setEventDataValueMaps(new HashMap<Event, Map<String, TrackedEntityDataValue>>());
         for (Event event : getEventsForEnrollment()) {
             Map<String, TrackedEntityDataValue> dataValueMap = new HashMap<>();
-            for (TrackedEntityDataValue dataValue : event.getTrackedEntityDataValues()) {
+            for (TrackedEntityDataValue dataValue : event.getDataValues()) {
                 dataValueMap.put(dataValue.getDataElement(), dataValue);
             }
             getEventDataValueMaps().put(event, dataValueMap);
@@ -417,7 +417,7 @@ public class VariableUtils {
             case DATAELEMENT_PREVIOUS_EVENT: {
                 if (getCurrentEvent() != null) {
                     TrackedEntityDataValue dataValue;
-                    Comparator<Event> comparator = new Event.EventDateComparator();
+                    Comparator<Event> comparator = Event.DATE_COMPARATOR;
                     //select a value from an event that precedes 'currentEvent'
                     for (Event event : getEventsForEnrollment()) {
                         if (event.getUId().equals(getCurrentEvent().getUId())) {

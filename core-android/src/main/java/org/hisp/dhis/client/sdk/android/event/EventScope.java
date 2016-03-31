@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
@@ -36,191 +37,121 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class EventScope implements IEventScope {
-
-    private final IEventService mEventService;
+    private final IEventService eventService;
     private final IEventController eventController;
 
     public EventScope(IEventService eventService, IEventController eventController) {
-        this.mEventService = eventService;
+        this.eventService = eventService;
         this.eventController = eventController;
     }
 
     @Override
-    public Observable<Boolean> save(final Event event) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mEventService.save(event);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    public Observable<List<Event>> sync() {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
 
-                subscriber.onCompleted();
+            @Override
+            public List<Event> call() {
+                eventController.sync(SyncStrategy.DEFAULT);
+                return eventService.list();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Event>> sync(final SyncStrategy strategy) {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
+            @Override
+            public List<Event> call() {
+                eventController.sync(strategy);
+                return eventService.list();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Event>> sync(final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
+            @Override
+            public List<Event> call() {
+                eventController.sync(SyncStrategy.DEFAULT, uids);
+                return eventService.list(uids);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Event>> sync(final SyncStrategy strategy, final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
+            @Override
+            public List<Event> call() {
+                eventController.sync(strategy, uids);
+                return eventService.list(uids);
+            }
+        });
+    }
+
+    @Override
+    public Observable<Boolean> save(final Event event) {
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
+            @Override
+            public Boolean call() {
+                return eventService.save(event);
             }
         });
     }
 
     @Override
     public Observable<Boolean> remove(final Event event) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mEventService.remove(event);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return eventService.remove(event);
             }
         });
     }
 
     @Override
     public Observable<Event> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<Event>() {
+        return Observable.create(new DefaultOnSubscribe<Event>() {
             @Override
-            public void call(Subscriber<? super Event> subscriber) {
-                try {
-                    Event event = mEventService.get(id);
-                    subscriber.onNext(event);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Event call() {
+                return eventService.get(id);
             }
         });
     }
 
     @Override
     public Observable<Event> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<Event>() {
+        return Observable.create(new DefaultOnSubscribe<Event>() {
             @Override
-            public void call(Subscriber<? super Event> subscriber) {
-                try {
-                    Event event = mEventService.get(uid);
-                    subscriber.onNext(event);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Event> create(final String organisationUnitId, final String programId,
-                                    final String programStageId, final String status) {
-        return Observable.create(new Observable.OnSubscribe<Event>() {
-            @Override
-            public void call(Subscriber<? super Event> subscriber) {
-                try {
-                    Event event = mEventService.create(organisationUnitId, programId,
-                            programStageId, status);
-                    subscriber.onNext(event);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Event call() {
+                return eventService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<List<Event>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<Event>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
             @Override
-            public void call(Subscriber<? super List<Event>> subscriber) {
-                try {
-                    List<Event> events = mEventService.list();
-                    subscriber.onNext(events);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Event> call() {
+                return eventService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<Event>> list(final OrganisationUnit organisationUnit, final Program
-            program) {
-        return Observable.create(new Observable.OnSubscribe<List<Event>>() {
+    public Observable<List<Event>> list(final OrganisationUnit organisationUnit,
+                                        final Program program) {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
             @Override
-            public void call(Subscriber<? super List<Event>> subscriber) {
-                try {
-                    List<Event> events = mEventService.list(program, organisationUnit);
-                    subscriber.onNext(events);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Void> send() {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    // TODO revise SyncStrategy
-                    eventController.sync(SyncStrategy.DEFAULT);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program
-            program, final int limit) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-//                    eventController.sync(organisationUnit, program, limit);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Void> update(final OrganisationUnit organisationUnit, final Program program) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-//                    eventController.sync(organisationUnit, program);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Event> call() {
+                return eventService.list(organisationUnit, program);
             }
         });
     }

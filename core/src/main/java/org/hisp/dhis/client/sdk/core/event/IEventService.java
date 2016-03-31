@@ -28,34 +28,21 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.services.IAdd;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
-import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.joda.time.DateTime;
 
 import java.util.List;
 
-public interface IEventService extends IService, IAdd<Event>, ISave<Event>,
-        IUpdate<Event>, IRemove<Event>, IGet<Event>, IGetUid<Event>, IList<Event> {
-    Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment,
-                 OrganisationUnit organisationUnit, Program program, ProgramStage programStage,
-                 String status);
+public interface IEventService extends IService, ISave<Event>, IRemove<Event>, IGet<Event>,
+        IGetUid<Event>, IList<Event>, IListUids<Event> {
 
-    Event create(String organisationUnit, String programId, String programStageId, String status);
-
-    List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime startDate,
-                     DateTime endDate);
-
-    List<Event> list(Program program, OrganisationUnit organisationUnit);
+    List<Event> list(OrganisationUnit organisationUnit, Program program);
 }

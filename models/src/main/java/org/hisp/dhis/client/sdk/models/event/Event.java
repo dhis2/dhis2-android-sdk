@@ -28,67 +28,25 @@
 
 package org.hisp.dhis.client.sdk.models.event;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.CodeGenerator;
+import org.hisp.dhis.client.sdk.models.common.Coordinates;
+import org.hisp.dhis.client.sdk.models.common.base.BaseModel;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
-import java.io.Serializable;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public final class Event implements Serializable, IdentifiableObject {
-
-    public static final String STATUS_ACTIVE = "ACTIVE";
-    public static final String STATUS_COMPLETED = "COMPLETED";
-    public static final String STATUS_FUTURE_VISIT = "SCHEDULE";
-    public static final String STATUS_SKIPPED = "SKIPPED";
-
-    @JsonIgnore
-    private long id;
+public final class Event extends BaseModel implements IdentifiableObject {
+    public static final Comparator<Event> DATE_COMPARATOR = new EventDateComparator();
 
     @JsonProperty("event")
-    private String eventUid;
-
-    @JsonProperty("status")
-    private String status;
-
-    @JsonIgnore
-    private Double latitude;
-
-    @JsonIgnore
-    private Double longitude;
-
-    @JsonIgnore
-    private TrackedEntityInstance trackedEntityInstance;
-
-    @JsonIgnore
-    private Enrollment enrollment;
-
-    @JsonProperty("program")
-    private String programId;
-
-    @JsonProperty("programStage")
-    private String programStageId;
-
-    @JsonProperty("orgUnit")
-    private String organisationUnitId;
-
-    @JsonProperty("eventDate")
-    private DateTime eventDate;
-
-    @JsonProperty("dueDate")
-    private DateTime dueDate;
+    private String uId;
 
     @JsonProperty("name")
     private String name;
@@ -105,160 +63,132 @@ public final class Event implements Serializable, IdentifiableObject {
     @JsonProperty("access")
     private Access access;
 
+    @JsonProperty("status")
+    private EventStatus status;
+
+    @JsonProperty("coordinate")
+    private Coordinates coordinate;
+
+    @JsonProperty("program")
+    private String program;
+
+    @JsonProperty("programStage")
+    private String programStage;
+
+    @JsonProperty("orgUnit")
+    private String orgUnit;
+
+    @JsonProperty("eventDate")
+    private DateTime eventDate;
+
+    @JsonProperty("dueDate")
+    private DateTime dueDate;
+
     @JsonProperty("dataValues")
-    private List<TrackedEntityDataValue> trackedEntityDataValues;
+    private List<TrackedEntityDataValue> dataValues;
 
     public Event() {
-
-    }
-
-    public static Event create() {
-        Event event = new Event();
-        event.eventUid = CodeGenerator.generateCode();
-        return event;
-    }
-
-    public static Event create(String organisationUnitId, String programId, String
-            programStageId, String eventStatus) {
-        Event event = new Event();
-        event.setUId(CodeGenerator.generateCode());
-        event.setOrganisationUnitId(organisationUnitId);
-        event.setProgramId(programId);
-        event.setProgramStageId(programStageId);
-        event.setStatus(eventStatus);
-        return event;
-    }
-
-    public static Event create(String organisationUnitUId, String programUId, String enrollmentUId,
-                               String trackedEntityInstanceUId, String programStageUId,
-                               String eventStatus) {
-        Event event = new Event();
-        event.setUId(CodeGenerator.generateCode());
-        event.setOrganisationUnitId(organisationUnitUId);
-        event.setEnrollmentUid(enrollmentUId);
-        event.setTrackedEntityInstanceUid(trackedEntityInstanceUId);
-        event.setProgramId(programUId);
-        event.setProgramStageId(programStageUId);
-        event.setStatus(eventStatus);
-        return event;
-    }
-
-    @JsonProperty("coordinate")
-    public Map<String, Object> getCoordinate() {
-        Map<String, Object> coordinate = new HashMap<>();
-        coordinate.put("latitude", latitude);
-        coordinate.put("longitude", longitude);
-        return coordinate;
-    }
-
-    @JsonProperty("coordinate")
-    public void setCoordinate(Map<String, Object> coordinate) {
-        this.latitude = (double) coordinate.get("latitude");
-        this.longitude = (double) coordinate.get("longitude");
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    @JsonProperty("trackedEntityInstance")
-    public String getTrackedEntityInstanceUid() {
-        return trackedEntityInstance.getTrackedEntityInstanceUid();
-    }
-
-    @JsonProperty("trackedEntityInstance")
-    public void setTrackedEntityInstanceUid(String trackedEntityInstanceUid) {
-        this.trackedEntityInstance = new TrackedEntityInstance();
-        this.trackedEntityInstance.setTrackedEntityInstanceUid(trackedEntityInstanceUid);
-    }
-
-    @JsonProperty("enrollment")
-    public String getEnrollmentUid() {
-        return enrollment.getUId();
-    }
-
-    @JsonProperty("enrollment")
-    public void setEnrollmentUid(String enrollmentUid) {
-        this.enrollment = new Enrollment();
-        this.enrollment.setUId(enrollmentUid);
+        // explicit empty constructor
     }
 
     @Override
     public String getUId() {
-        return eventUid;
+        return uId;
     }
 
     @Override
     public void setUId(String uId) {
-        this.eventUid = uId;
+        this.uId = uId;
     }
 
-    public TrackedEntityInstance getTrackedEntityInstance() {
-        return trackedEntityInstance;
+    @Override
+    public String getName() {
+        return name;
     }
 
-    public void setTrackedEntityInstance(TrackedEntityInstance trackedEntityInstance) {
-        this.trackedEntityInstance = trackedEntityInstance;
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Enrollment getEnrollment() {
-        return enrollment;
+    @Override
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setEnrollment(Enrollment enrollment) {
-        this.enrollment = enrollment;
+    @Override
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    public String getProgramId() {
-        return programId;
+    @Override
+    public DateTime getCreated() {
+        return created;
     }
 
-    public void setProgramId(String programId) {
-        this.programId = programId;
+    @Override
+    public void setCreated(DateTime created) {
+        this.created = created;
     }
 
-    public String getProgramStageId() {
-        return programStageId;
+    @Override
+    public DateTime getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setProgramStageId(String programStageId) {
-        this.programStageId = programStageId;
+    @Override
+    public void setLastUpdated(DateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
-    public String getOrganisationUnitId() {
-        return organisationUnitId;
+    @Override
+    public Access getAccess() {
+        return access;
     }
 
-    public void setOrganisationUnitId(String organisationUnitId) {
-        this.organisationUnitId = organisationUnitId;
+    @Override
+    public void setAccess(Access access) {
+        this.access = access;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
+    public Coordinates getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinates coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public void setProgram(String program) {
+        this.program = program;
+    }
+
+    public String getProgramStage() {
+        return programStage;
+    }
+
+    public void setProgramStage(String programStage) {
+        this.programStage = programStage;
+    }
+
+    public String getOrgUnit() {
+        return orgUnit;
+    }
+
+    public void setOrgUnit(String orgUnit) {
+        this.orgUnit = orgUnit;
     }
 
     public DateTime getEventDate() {
@@ -277,58 +207,23 @@ public final class Event implements Serializable, IdentifiableObject {
         this.dueDate = dueDate;
     }
 
-    public List<TrackedEntityDataValue> getTrackedEntityDataValues() {
-        return trackedEntityDataValues;
+    public List<TrackedEntityDataValue> getDataValues() {
+        return dataValues;
     }
 
-    public void setTrackedEntityDataValues(List<TrackedEntityDataValue> trackedEntityDataValues) {
-        this.trackedEntityDataValues = trackedEntityDataValues;
+    public void setDataValues(List<TrackedEntityDataValue> dataValues) {
+        this.dataValues = dataValues;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public DateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(DateTime created) {
-        this.created = created;
-    }
-
-    public DateTime getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(DateTime lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Access getAccess() {
-        return access;
-    }
-
-    public void setAccess(Access access) {
-        this.access = access;
+    public enum EventStatus {
+        ACTIVE, COMPLETED, SCHEDULE, SKIPPED
     }
 
     /**
-     * Comparator that returns the Event with the latest EventDate as the greater of the two given.
+     * Comparator that returns the Event with the latest EventDate
+     * as the greater of the two given.
      */
-    public static class EventDateComparator implements Comparator<Event> {
+    private static class EventDateComparator implements Comparator<Event> {
 
         @Override
         public int compare(Event first, Event second) {

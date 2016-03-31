@@ -61,9 +61,9 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
     private final IOptionSetController optionSetController;
 
     public DataElementController(ISystemInfoController systemInfoController,
+                                 IOptionSetController optionSetController,
                                  IDataElementApiClient dataElementApiClient,
                                  IDataElementStore dataElementStore,
-                                 IOptionSetController optionSetController,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
                                  ITransactionManager transactionManager) {
         super(ResourceType.DATA_ELEMENTS, dataElementStore, lastUpdatedPreferences);

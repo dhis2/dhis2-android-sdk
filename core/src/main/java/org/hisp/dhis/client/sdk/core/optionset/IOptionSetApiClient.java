@@ -65,6 +65,6 @@ import java.util.Set;
 public interface IOptionSetApiClient {
     List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
                                   Set<String> uids) throws ApiException;
-    public List<OptionSet> getOptionSets(
-            Fields fields, Set<String> optionSetUids) throws ApiException;
+
+    List<OptionSet> getOptionSets(Fields fields, Set<String> optionSetUids) throws ApiException;
 }

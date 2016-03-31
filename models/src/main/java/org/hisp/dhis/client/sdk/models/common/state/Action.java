@@ -29,5 +29,5 @@
 package org.hisp.dhis.client.sdk.models.common.state;
 
 public enum Action {
-    SYNCED, TO_POST, TO_UPDATE, TO_DELETE,
+    SYNCED, ERROR, TO_POST, TO_UPDATE, TO_DELETE,
 }

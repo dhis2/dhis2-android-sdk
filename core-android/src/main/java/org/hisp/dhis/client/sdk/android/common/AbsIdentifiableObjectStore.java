@@ -57,6 +57,7 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
                 .where(Condition.column(new NameAlias(BaseModelFlow
                         .COLUMN_ID)).is(id))
                 .querySingle();
+
         return getMapper().mapToModel(databaseEntity);
     }
 

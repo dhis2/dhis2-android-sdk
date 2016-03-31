@@ -33,120 +33,24 @@ import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class TrackedEntityDataValueService implements ITrackedEntityDataValueService {
-    private ITrackedEntityDataValueStore trackedEntityDataValueStore;
-    private IStateStore stateStore;
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-    public TrackedEntityDataValueService(ITrackedEntityDataValueStore
-                                                 trackedEntityDataValueStore, IStateStore
-            stateStore) {
+public class TrackedEntityDataValueService implements ITrackedEntityDataValueService {
+    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final IStateStore stateStore;
+
+    public TrackedEntityDataValueService(
+            ITrackedEntityDataValueStore trackedEntityDataValueStore, IStateStore stateStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.stateStore = stateStore;
     }
 
     @Override
-    public TrackedEntityDataValue create(Event event, String dataElement, boolean
-            providedElsewhere, String storedBy, String value) {
-        Preconditions.isNull(event, "event argument must not be null");
-        Preconditions.isNull(dataElement, "dataElement argument must not be null");
-        Preconditions.isNull(providedElsewhere, "providedElsewhere argument must not be null");
-        Preconditions.isNull(storedBy, "storedBy argument must not be null");
-        Preconditions.isNull(value, "value argument must not be null");
-
-        TrackedEntityDataValue trackedEntityDataValue = new TrackedEntityDataValue();
-        trackedEntityDataValue.setEvent(event);
-        trackedEntityDataValue.setDataElement(dataElement);
-        trackedEntityDataValue.setProvidedElsewhere(providedElsewhere);
-        trackedEntityDataValue.setStoredBy(storedBy);
-        trackedEntityDataValue.setValue(value);
-
-        return trackedEntityDataValue;
-    }
-
-    @Override
-    public List<TrackedEntityDataValue> list(Event event) {
-        Preconditions.isNull(event, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(event);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityDataValueStore.query(event);
-        }
-
-        return null;
-    }
-
-    @Override
-    public TrackedEntityDataValue get(DataElement dataElement, Event event) {
-        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.query
-                (dataElement, event);
-
-        if (trackedEntityDataValue != null) {
-            Action action = stateStore.queryActionForModel(trackedEntityDataValue);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return trackedEntityDataValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public TrackedEntityDataValue get(long id) {
-        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.queryById(id);
-
-        if (trackedEntityDataValue != null) {
-            Action action = stateStore.queryActionForModel(trackedEntityDataValue);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return trackedEntityDataValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityDataValue> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityDataValue.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public boolean remove(TrackedEntityDataValue object) {
-        Preconditions.isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = trackedEntityDataValueStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
-    }
-
-    @Override
     public boolean save(TrackedEntityDataValue object) {
-        Preconditions.isNull(object, "Object must not be null");
+        isNull(object, "Object must not be null");
 
         Action action = stateStore.queryActionForModel(object);
         if (action == null) {
@@ -185,30 +89,78 @@ public class TrackedEntityDataValueService implements ITrackedEntityDataValueSer
     }
 
     @Override
-    public boolean add(TrackedEntityDataValue object) {
-        Preconditions.isNull(object, "TrackedEntityDataValue argument must not be null");
-
-        if (!trackedEntityDataValueStore.insert(object)) {
-            return false;
-        }
-        return stateStore.saveActionForModel(object, Action.TO_POST);
+    public List<TrackedEntityDataValue> list() {
+        return stateStore.queryModelsWithActions(TrackedEntityDataValue.class,
+                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
     }
 
     @Override
-    public boolean update(TrackedEntityDataValue object) {
-        Preconditions.isNull(object, "TrackedEntityDataValue argument must not be null");
+    public List<TrackedEntityDataValue> list(Event event) {
+        isNull(event, "Object must not be null");
+
+        Action action = stateStore.queryActionForModel(event);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return trackedEntityDataValueStore.query(event);
+        }
+
+        return null;
+    }
+
+    @Override
+    public TrackedEntityDataValue get(long id) {
+        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.queryById(id);
+
+        if (trackedEntityDataValue != null) {
+            Action action = stateStore.queryActionForModel(trackedEntityDataValue);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return trackedEntityDataValue;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public TrackedEntityDataValue get(Event event, DataElement dataElement) {
+        isNull(event, "Event object must not be null");
+        isNull(dataElement, "DataElement must not be null");
+
+        Action action = stateStore.queryActionForModel(event);
+
+        if (!Action.TO_DELETE.equals(action)) {
+            return trackedEntityDataValueStore.query(event, dataElement);
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean remove(TrackedEntityDataValue object) {
+        isNull(object, "Object must not be null");
 
         Action action = stateStore.queryActionForModel(object);
-        if (Action.TO_DELETE.equals(action)) {
-            throw new IllegalArgumentException("The object with Action." +
-                    "TO_DELETE cannot be updated");
+        if (action == null) {
+            return false;
         }
 
-        /* if object was not posted to the server before,
-        you don't have anything to update */
-        if (!Action.TO_POST.equals(action)) {
-            stateStore.saveActionForModel(object, Action.TO_UPDATE);
+        boolean status = false;
+        switch (action) {
+            case SYNCED:
+            case TO_UPDATE: {
+                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
+                break;
+            }
+            case TO_POST: {
+                status = trackedEntityDataValueStore.delete(object);
+                break;
+            }
+            case TO_DELETE: {
+                status = false;
+                break;
+            }
         }
-        return trackedEntityDataValueStore.update(object);
+
+        return status;
     }
 }

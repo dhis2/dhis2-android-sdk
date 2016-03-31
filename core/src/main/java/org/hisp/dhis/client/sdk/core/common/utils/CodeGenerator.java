@@ -32,24 +32,24 @@ import java.security.SecureRandom;
 import java.util.regex.Pattern;
 
 public class CodeGenerator {
-    public static final String letters = "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    public static final String allowedChars = "0123456789" + letters;
-
-    public static final int NUMBER_OF_CODEPOINTS = allowedChars.length();
-    public static final int CODESIZE = 11;
-
     private static final Pattern CODE_PATTERN = Pattern.compile("^[a-zA-Z]{1}[a-zA-Z0-9]{10}$");
 
+    private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
+            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    private static final String ALLOWED_CHARS = "0123456789" + LETTERS;
+    private static final int NUMBER_OF_CODE_POINTS = ALLOWED_CHARS.length();
+
+    private static final int CODE_SIZE = 11;
+
     /**
-     * Generates a pseudo random string using the allowed characters. Code is
-     * 11 characters long.
+     * Generates a pseudo random string using the allowed characters.
+     * Code is 11 characters long.
      *
      * @return the code.
      */
     public static String generateCode() {
-        return generateCode(CODESIZE);
+        return generateCode(CODE_SIZE);
     }
 
     /**
@@ -65,10 +65,10 @@ public class CodeGenerator {
         char[] randomChars = new char[codeSize];
 
         // first char should be a letter
-        randomChars[0] = letters.charAt(sr.nextInt(letters.length()));
+        randomChars[0] = LETTERS.charAt(sr.nextInt(LETTERS.length()));
 
         for (int i = 1; i < codeSize; ++i) {
-            randomChars[i] = allowedChars.charAt(sr.nextInt(NUMBER_OF_CODEPOINTS));
+            randomChars[i] = ALLOWED_CHARS.charAt(sr.nextInt(NUMBER_OF_CODE_POINTS));
         }
 
         return new String(randomChars);

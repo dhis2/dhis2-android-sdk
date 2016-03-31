@@ -26,8 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.network;
+package org.hisp.dhis.client.sdk.core.common;
 
-public interface ApiExceptionHandler {
-    void handleApiException(ApiException apiException);
+public interface ILogger {
+    void v(String tag, String message);
+
+    void v(String tag, String message, Throwable throwable);
+
+    void d(String tag, String message);
+
+    void d(String tag, String message, Throwable throwable);
+
+    void i(String tag, String message);
+
+    void i(String tag, String message, Throwable throwable);
+
+    void w(String tag, String message);
+
+    void w(String tag, String message, Throwable throwable);
+
+    void e(String tag, String message);
+
+    void e(String tag, String message, Throwable throwable);
 }

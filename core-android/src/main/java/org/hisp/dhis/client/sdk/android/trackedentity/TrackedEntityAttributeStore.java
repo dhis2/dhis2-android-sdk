@@ -38,8 +38,7 @@ public final class TrackedEntityAttributeStore extends
         AbsIdentifiableObjectStore<TrackedEntityAttribute, TrackedEntityAttributeFlow>
         implements ITrackedEntityAttributeStore {
 
-    public TrackedEntityAttributeStore(IMapper<TrackedEntityAttribute,
-            TrackedEntityAttributeFlow> mapper) {
-        super(mapper);
+    public TrackedEntityAttributeStore() {
+        super(TrackedEntityAttributeFlow.MAPPER);
     }
 }

@@ -63,7 +63,7 @@ public final class ProgramRuleVariableService implements IProgramRuleVariableSer
 
         List<ProgramRuleVariable> programRuleVariables = programRuleVariableStore.query(program);
         for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            if (programRuleVariable.getName().equals(programRuleVariableName)) {
+            if (programRuleVariableName.equals(programRuleVariable.getName())) {
                 return programRuleVariable;
             }
         }

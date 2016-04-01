@@ -28,13 +28,22 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IProgramRuleApiClient {
-    List<ProgramRule> getBasicProgramRules(DateTime lastUpdated);
+    List<ProgramRule> getProgramRules(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 
-    List<ProgramRule> getFullProgramRules(DateTime lastUpdated);
+    List<ProgramRule> getProgramRules(
+            Fields fields, Set<String> programRuleUids) throws ApiException;
+
+    List<ProgramRule> getProgramRules(
+            Fields fields, DateTime lastUpdated, List<Program> program) throws ApiException;
 }

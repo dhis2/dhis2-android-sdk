@@ -41,15 +41,25 @@ import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClient;
 import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.android.program.IProgramApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramIndicatorApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramRuleActionApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramRuleApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.program.IProgramRuleVariableApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient2;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.android.user.IUserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -62,10 +72,15 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 import java.io.IOException;
@@ -96,11 +111,16 @@ public class NetworkModule implements INetworkModule {
     private final IProgramApiClient programApiClient;
     private final IProgramStageApiClient programStageApiClient;
     private final IProgramStageSectionApiClient programStageSectionApiClient;
+    private final IProgramRuleApiClient programRuleApiClient;
+    private final IProgramRuleActionApiClient programRuleActionApiClient;
+    private final IProgramRuleVariableApiClient programRuleVariableApiClient;
+    private final IProgramIndicatorApiClient programIndicatorApiClient;
     private final IUserApiClient userApiClient;
     private final IEventApiClient eventApiClient;
     private final IDataElementApiClient dataElementApiClient;
     private final IProgramStageDataElementApiClient programStageDataElementApiClient;
     private final IOptionSetApiClient optionSetApiClient;
+    private final ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
 
     public NetworkModule(IPreferencesModule preferencesModule) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
@@ -146,6 +166,14 @@ public class NetworkModule implements INetworkModule {
                 IProgramStageApiClientRetrofit.class));
         programStageSectionApiClient = new ProgramStageSectionApiClient(
                 retrofit.create(IProgramStageSectionApiClientRetrofit.class));
+        programRuleApiClient = new ProgramRuleApiClient(retrofit.create(
+                IProgramRuleApiClientRetrofit.class));
+        programRuleActionApiClient = new ProgramRuleActionApiClient(
+                retrofit.create(IProgramRuleActionApiClientRetrofit.class));
+        programRuleVariableApiClient = new ProgramRuleVariableApiClient(retrofit.create(
+                IProgramRuleVariableApiClientRetrofit.class));
+        programIndicatorApiClient = new ProgramIndicatorApiClient(
+                retrofit.create(IProgramIndicatorApiClientRetrofit.class));
         systemInfoApiClient = new SystemInfoApiClient(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClient(retrofit.create(
@@ -160,6 +188,8 @@ public class NetworkModule implements INetworkModule {
                 IProgramStageDataElementApiClientRetrofit.class));
         optionSetApiClient = new OptionSetApiClient(retrofit.create(
                 IOptionSetApiClientRetrofit.class));
+        trackedEntityAttributeApiClient = new TrackedEntityAttributeApiClient(retrofit.create(
+                ITrackedEntityAttributeApiClientRetrofit.class));
     }
 
     @Override
@@ -210,6 +240,31 @@ public class NetworkModule implements INetworkModule {
     @Override
     public IOptionSetApiClient getOptionSetApiClient() {
         return optionSetApiClient;
+    }
+
+    @Override
+    public ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient() {
+        return trackedEntityAttributeApiClient;
+    }
+
+    @Override
+    public IProgramRuleApiClient getProgramRuleApiClient() {
+        return programRuleApiClient;
+    }
+
+    @Override
+    public IProgramRuleActionApiClient getProgramRuleActionApiClient() {
+        return programRuleActionApiClient;
+    }
+
+    @Override
+    public IProgramRuleVariableApiClient getProgramRuleVariableApiClient() {
+        return programRuleVariableApiClient;
+    }
+
+    @Override
+    public IProgramIndicatorApiClient getProgramIndicatorApiClient() {
+        return programIndicatorApiClient;
     }
 
     private static class AuthInterceptor implements Interceptor {

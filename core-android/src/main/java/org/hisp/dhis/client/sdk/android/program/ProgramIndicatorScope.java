@@ -29,6 +29,8 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
@@ -36,16 +38,19 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramIndicatorScope implements IProgramIndicatorScope {
 
-    private IProgramIndicatorService mProgramIndicatorService;
-
-    public ProgramIndicatorScope(IProgramIndicatorService mProgramIndicatorService) {
-        this.mProgramIndicatorService = mProgramIndicatorService;
+    private final IProgramIndicatorService programIndicatorService;
+    private final IProgramIndicatorController programIndicatorController;
+    public ProgramIndicatorScope(IProgramIndicatorService programIndicatorService,
+                                 IProgramIndicatorController programIndicatorController) {
+        this.programIndicatorService = programIndicatorService;
+        this.programIndicatorController = programIndicatorController;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super ProgramIndicator> subscriber) {
                 try {
-                    ProgramIndicator programIndicator = mProgramIndicatorService.get(uid);
+                    ProgramIndicator programIndicator = programIndicatorService.get(uid);
                     subscriber.onNext(programIndicator);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -71,7 +76,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super ProgramIndicator> subscriber) {
                 try {
-                    ProgramIndicator programIndicator = mProgramIndicatorService.get(id);
+                    ProgramIndicator programIndicator = programIndicatorService.get(id);
                     subscriber.onNext(programIndicator);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -88,7 +93,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list();
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -105,7 +110,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list
                             (program);
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
@@ -123,7 +128,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list
                             (programStage);
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
@@ -141,7 +146,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    List<ProgramIndicator> programIndicators = mProgramIndicatorService.list
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list
                             (programStageSection);
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
@@ -159,7 +164,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramIndicatorService.save(object);
+                    boolean status = programIndicatorService.save(object);
                     subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -176,8 +181,49 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramIndicatorService.remove(object);
+                    boolean status = programIndicatorService.remove(object);
                     subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> sync() {
+        return sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> sync(final SyncStrategy syncStrategy) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    programIndicatorController.sync(syncStrategy);
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
+                    subscriber.onNext(programIndicators);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramIndicator>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
+                try {
+                    programIndicatorController.sync(syncStrategy, uids);
+                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
+                    subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

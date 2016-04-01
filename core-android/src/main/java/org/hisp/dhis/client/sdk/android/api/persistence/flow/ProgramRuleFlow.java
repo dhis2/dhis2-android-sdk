@@ -35,11 +35,16 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
+    public static final IMapper<ProgramRule, ProgramRuleFlow> MAPPER = new Mapper();
+
 
     private static final String PROGRAM_STAGE_KEY = "programstage";
     private static final String PROGRAM_KEY = "program";
@@ -134,5 +139,68 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
 
     public void setProgramRuleActions(List<ProgramRuleActionFlow> programRuleActions) {
         this.programRuleActions = programRuleActions;
+    }
+
+    private static class Mapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
+
+        @Override
+        public ProgramRuleFlow mapToDatabaseEntity(ProgramRule programRule) {
+            if (programRule == null) {
+                return null;
+            }
+
+            ProgramRuleFlow programRuleFlow = new ProgramRuleFlow();
+            programRuleFlow.setId(programRule.getId());
+            programRuleFlow.setUId(programRule.getUId());
+            programRuleFlow.setCreated(programRule.getCreated());
+            programRuleFlow.setLastUpdated(programRule.getLastUpdated());
+            programRuleFlow.setName(programRule.getName());
+            programRuleFlow.setDisplayName(programRule.getDisplayName());
+            programRuleFlow.setAccess(programRule.getAccess());
+            programRuleFlow.setCondition(programRule.getCondition());
+            programRuleFlow.setDescription(programRule.getDescription());
+            programRuleFlow.setExternalAction(programRule.isExternalAction());
+            programRuleFlow.setPriority(programRule.getPriority());
+            programRuleFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(programRule.getProgramStage()));
+            programRuleFlow.setProgram(ProgramFlow.MAPPER
+                    .mapToDatabaseEntity(programRule.getProgram()));
+            return programRuleFlow;
+        }
+
+        @Override
+        public ProgramRule mapToModel(ProgramRuleFlow programRuleFlow) {
+            if (programRuleFlow == null) {
+                return null;
+            }
+
+            ProgramRule programRule = new ProgramRule();
+            programRule.setId(programRuleFlow.getId());
+            programRule.setUId(programRuleFlow.getUId());
+            programRule.setCreated(programRuleFlow.getCreated());
+            programRule.setLastUpdated(programRuleFlow.getLastUpdated());
+            programRule.setName(programRuleFlow.getName());
+            programRule.setDisplayName(programRuleFlow.getDisplayName());
+            programRule.setAccess(programRuleFlow.getAccess());
+            programRule.setCondition(programRuleFlow.getCondition());
+            programRule.setDescription(programRuleFlow.getDescription());
+            programRule.setExternalAction(programRuleFlow.isExternalAction());
+            programRule.setPriority(programRuleFlow.getPriority());
+            programRule.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programRuleFlow.getProgramStage()));
+            programRule.setProgram(ProgramFlow.MAPPER
+                    .mapToModel(programRuleFlow.getProgram()));
+            return programRule;
+        }
+
+        @Override
+        public Class<ProgramRule> getModelTypeClass() {
+            return ProgramRule.class;
+        }
+
+        @Override
+        public Class<ProgramRuleFlow> getDatabaseEntityTypeClass() {
+            return ProgramRuleFlow.class;
+        }
     }
 }

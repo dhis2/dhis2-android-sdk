@@ -33,10 +33,15 @@ import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleApiClient;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
 public interface INetworkModule {
@@ -59,4 +64,14 @@ public interface INetworkModule {
     IProgramStageDataElementApiClient getProgramStageDataElementApiClient();
 
     IOptionSetApiClient getOptionSetApiClient();
+
+    ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient();
+
+    IProgramRuleApiClient getProgramRuleApiClient();
+
+    IProgramRuleActionApiClient getProgramRuleActionApiClient();
+
+    IProgramRuleVariableApiClient getProgramRuleVariableApiClient();
+
+    IProgramIndicatorApiClient getProgramIndicatorApiClient();
 }

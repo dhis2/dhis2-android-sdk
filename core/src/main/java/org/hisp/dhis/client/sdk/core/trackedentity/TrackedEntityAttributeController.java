@@ -28,85 +28,95 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
-public final class TrackedEntityAttributeController implements
-        IIdentifiableController<TrackedEntityAttribute> {
+public final class TrackedEntityAttributeController extends AbsSyncStrategyController
+        <TrackedEntityAttribute> implements ITrackedEntityAttributeController {
     private final ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
+    private final ISystemInfoController systemInfoController;
+    private final IOptionSetController optionSetController;
 
     public TrackedEntityAttributeController(ITrackedEntityAttributeApiClient
                                                     trackedEntityAttributeApiClient,
                                             ITransactionManager transactionManager,
                                             ILastUpdatedPreferences lastUpdatedPreferences,
-                                            IIdentifiableObjectStore<TrackedEntityAttribute>
-                                                    trackedEntityAttributeStore,
-                                            ISystemInfoApiClient systemInfoApiClient) {
+                                            ITrackedEntityAttributeStore trackedEntityAttributeStore,
+                                            ISystemInfoController systemInfoController,
+                                            IOptionSetController optionSetController) {
+        super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, trackedEntityAttributeStore, lastUpdatedPreferences);
         this.trackedEntityAttributeApiClient = trackedEntityAttributeApiClient;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
-    }
-
-
-    private void getTrackedEntityAttributesFromServer() throws ApiException {
-        ResourceType resource = ResourceType.TRACKED_ENTITY_ATTRIBUTES;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-
-        // fetching id and name for all items on server. This is needed in case something is
-        // deleted on the server and we want to reflect that locally
-
-        List<TrackedEntityAttribute> allTrackedEntityAttributes
-                = trackedEntityAttributeApiClient.getBasicTrackedEntityAttributes(null);
-
-        //fetch all updated items
-        List<TrackedEntityAttribute> updatedTrackedEntityAttributes
-                = trackedEntityAttributeApiClient.getFullTrackedEntityAttributes(lastUpdated);
-
-        //merging updated items with persisted items, and removing ones not present in server.
-        List<TrackedEntityAttribute> existingPersistedAndUpdatedTrackedEntityAttributes =
-                ModelUtils.merge(allTrackedEntityAttributes, updatedTrackedEntityAttributes,
-                        trackedEntityAttributeStore.queryAll());
-
-        Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(DbUtils.createOperations(trackedEntityAttributeStore,
-                existingPersistedAndUpdatedTrackedEntityAttributes, trackedEntityAttributeStore
-                        .queryAll()));
-
-        transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
+        this.systemInfoController = systemInfoController;
+        this.optionSetController = optionSetController;
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        getTrackedEntityAttributesFromServer();
-    }
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.TRACKED_ENTITY_ATTRIBUTES, DateType.SERVER);
 
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+        List<TrackedEntityAttribute> persistedTrackedEntityAttributes =
+                identifiableObjectStore.queryAll();
 
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<TrackedEntityAttribute> allExistingTrackedEntityAttributes = trackedEntityAttributeApiClient
+                .getTrackedEntityAttributes(Fields.BASIC, null);
+
+        Set<String> uidSet = null;
+        if (uids != null) {
+            // here we want to get list of ids of program stage sections which are
+            // stored locally and list of program stage sections which we want to download
+            uidSet = ModelUtils.toUidSet(persistedTrackedEntityAttributes);
+            uidSet.addAll(uids);
+        }
+
+        List<TrackedEntityAttribute> updatedTrackedEntityAttributes = trackedEntityAttributeApiClient
+                .getTrackedEntityAttributes(Fields.ALL, lastUpdated, uidSet);
+
+        // Retrieving foreign key uids from trackedEntityAttributes
+        Set<String> optionSetUids = new HashSet<>();
+
+        List<TrackedEntityAttribute> trackedEntityAttributes = ModelUtils.merge(
+                allExistingTrackedEntityAttributes, updatedTrackedEntityAttributes,
+                persistedTrackedEntityAttributes);
+        for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            if(trackedEntityAttribute.getOptionSet() != null) {
+                optionSetUids.add(trackedEntityAttribute.getOptionSet().getUId());
+            }
+        }
+
+        // checking if option sets is synced
+        if(!optionSetUids.isEmpty()) {
+            optionSetController.sync(strategy, optionSetUids);
+        }
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(
+                allExistingTrackedEntityAttributes, updatedTrackedEntityAttributes,
+                persistedTrackedEntityAttributes, identifiableObjectStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.TRACKED_ENTITY_ATTRIBUTES,
+                DateType.SERVER, serverTime);
     }
 }

@@ -44,20 +44,23 @@ import java.util.List;
 public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<ProgramRuleVariable,
         ProgramRuleVariableFlow> implements IProgramRuleVariableStore {
 
-    public ProgramRuleVariableStore(IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> mapper) {
-        super(mapper);
+    public ProgramRuleVariableStore() {
+        super(ProgramRuleVariableFlow.MAPPER);
     }
 
     @Override
     public ProgramRuleVariable query(Program program, DataElement dataElement) {
-        ProgramRuleVariableFlow programRuleVariableFlow = new Select()
+        List<ProgramRuleVariableFlow> programRuleVariableFlow = new Select()
                 .from(ProgramRuleVariableFlow.class)
                 .where(ProgramRuleVariableFlow_Table
                         .program.is(program.getUId()))
                 .and(ProgramRuleVariableFlow_Table
                         .dataelement.is(dataElement.getUId()))
-                .querySingle();
-        return getMapper().mapToModel(programRuleVariableFlow);
+                .queryList();
+        if(programRuleVariableFlow != null && !programRuleVariableFlow.isEmpty()) {
+            return getMapper().mapToModel(programRuleVariableFlow.get(0));
+        }
+        else return null;
     }
 
     @Override

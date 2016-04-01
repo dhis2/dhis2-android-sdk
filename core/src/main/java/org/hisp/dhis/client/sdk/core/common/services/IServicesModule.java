@@ -31,10 +31,15 @@ package org.hisp.dhis.client.sdk.core.common.services;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 
 public interface IServicesModule {
@@ -53,4 +58,14 @@ public interface IServicesModule {
     IEventService getEventService();
 
     IDataElementService getDataElementService();
+
+    IProgramRuleService getProgramRuleService();
+
+    IProgramRuleActionService getProgramRuleActionService();
+
+    IProgramRuleVariableService getProgramRuleVariableService();
+
+    IProgramIndicatorService getProgramIndicatorService();
+
+    ITrackedEntityAttributeService getTrackedEntityAttributeService();
 }

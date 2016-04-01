@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -46,5 +48,11 @@ public interface ITrackedEntityAttributeScope {
     Observable<Boolean> remove(TrackedEntityAttribute object);
 
     Observable<Boolean> send();
+
+    Observable<List<TrackedEntityAttribute>> sync();
+
+    Observable<List<TrackedEntityAttribute>> sync(SyncStrategy syncStrategy);
+
+    Observable<List<TrackedEntityAttribute>> sync(SyncStrategy syncStrategy, Set<String> uids);
 
 }

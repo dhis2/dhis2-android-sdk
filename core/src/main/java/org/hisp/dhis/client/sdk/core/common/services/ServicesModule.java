@@ -35,14 +35,24 @@ import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 
@@ -57,6 +67,11 @@ public final class ServicesModule implements IServicesModule {
     private final IEventService eventService;
     private final IProgramStageDataElementService programStageDataElementService;
     private final IDataElementService dataElementService;
+    private final ITrackedEntityAttributeService trackedEntityAttributeService;
+    private final IProgramIndicatorService programIndicatorService;
+    private final IProgramRuleVariableService programRuleVariableService;
+    private final IProgramRuleService programRuleService;
+    private final IProgramRuleActionService programRuleActionService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -74,6 +89,18 @@ public final class ServicesModule implements IServicesModule {
         programStageSectionService = new ProgramStageSectionService(
                 persistenceModule.getProgramStageSectionStore());
 
+        programRuleService = new ProgramRuleService(
+                persistenceModule.getProgramRuleStore());
+
+        programRuleActionService = new ProgramRuleActionService(
+                persistenceModule.getProgramRuleActionStore());
+
+        programRuleVariableService = new ProgramRuleVariableService(
+                persistenceModule.getProgramRuleVariableStore());
+
+        programIndicatorService = new ProgramIndicatorService(
+                persistenceModule.getProgramIndicatorStore());
+
         organisationUnitService = new OrganisationUnitService(
                 persistenceModule.getOrganisationUnitStore());
 
@@ -82,6 +109,9 @@ public final class ServicesModule implements IServicesModule {
                 persistenceModule.getStateStore());
         dataElementService = new DataElementService(
                 persistenceModule.getDataElementStore());
+
+        trackedEntityAttributeService = new TrackedEntityAttributeService(
+                persistenceModule.getTrackedEntityAttributeStore());
     }
 
     @Override
@@ -121,5 +151,30 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public IDataElementService getDataElementService() {
         return dataElementService;
+    }
+
+    @Override
+    public IProgramRuleService getProgramRuleService() {
+        return programRuleService;
+    }
+
+    @Override
+    public IProgramRuleActionService getProgramRuleActionService() {
+        return programRuleActionService;
+    }
+
+    @Override
+    public IProgramRuleVariableService getProgramRuleVariableService() {
+        return programRuleVariableService;
+    }
+
+    @Override
+    public IProgramIndicatorService getProgramIndicatorService() {
+        return programIndicatorService;
+    }
+
+    @Override
+    public ITrackedEntityAttributeService getTrackedEntityAttributeService() {
+        return trackedEntityAttributeService;
     }
 }

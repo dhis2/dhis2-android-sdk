@@ -39,10 +39,15 @@ import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionStore;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleStore;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
 import org.hisp.dhis.client.sdk.android.program.ProgramStore;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
@@ -53,10 +58,15 @@ import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
@@ -67,6 +77,11 @@ public class PersistenceModule implements IPersistenceModule {
     private final IProgramStore programStore;
     private final IProgramStageStore programStageStore;
     private final IProgramStageSectionStore programStageSectionStore;
+    private final IProgramRuleStore programRuleStore;
+    private final IProgramRuleActionStore programRuleActionStore;
+    private final IProgramRuleVariableStore programRuleVariableStore;
+    private final IProgramIndicatorStore programIndicatorStore;
+    private final ITrackedEntityAttributeStore trackedEntityAttributeStore;
     private final IProgramStageDataElementStore programStageDataElementStore;
     private final IOrganisationUnitStore organisationUnitStore;
     private final IEventStore eventStore;
@@ -80,10 +95,14 @@ public class PersistenceModule implements IPersistenceModule {
 
         transactionManager = new TransactionManager();
         stateStore = new StateStore(EventFlow.MAPPER);
-
         programStore = new ProgramStore(transactionManager);
         programStageStore = new ProgramStageStore(transactionManager);
         programStageSectionStore = new ProgramStageSectionStore(transactionManager);
+        programRuleStore = new ProgramRuleStore(transactionManager);
+        programRuleActionStore = new ProgramRuleActionStore();
+        programRuleVariableStore = new ProgramRuleVariableStore();
+        programIndicatorStore = new ProgramIndicatorStore();
+        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
         programStageDataElementStore = new ProgramStageDataElementStore(transactionManager);
         dataElementStore = new DataElementStore();
 
@@ -130,6 +149,31 @@ public class PersistenceModule implements IPersistenceModule {
     @Override
     public IProgramStageDataElementStore getProgramStageDataElementStore() {
         return programStageDataElementStore;
+    }
+
+    @Override
+    public IProgramRuleStore getProgramRuleStore() {
+        return programRuleStore;
+    }
+
+    @Override
+    public IProgramRuleActionStore getProgramRuleActionStore() {
+        return programRuleActionStore;
+    }
+
+    @Override
+    public IProgramRuleVariableStore getProgramRuleVariableStore() {
+        return programRuleVariableStore;
+    }
+
+    @Override
+    public IProgramIndicatorStore getProgramIndicatorStore() {
+        return programIndicatorStore;
+    }
+
+    @Override
+    public ITrackedEntityAttributeStore getTrackedEntityAttributeStore() {
+        return trackedEntityAttributeStore;
     }
 
     @Override

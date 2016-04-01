@@ -41,15 +41,25 @@ import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -65,6 +75,10 @@ public class ControllersModule implements IControllersModule {
     private final IProgramController programController;
     private final IProgramStageController programStageController;
     private final IProgramStageSectionController programStageSectionController;
+    private final IProgramRuleController programRuleController;
+    private final IProgramRuleActionController programRuleActionController;
+    private final IProgramRuleVariableController programRuleVariableController;
+    private final IProgramIndicatorController programIndicatorController;
     private final IProgramStageDataElementController programStageDataElementController;
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
@@ -72,6 +86,7 @@ public class ControllersModule implements IControllersModule {
     private final IEventController eventController;
     private final IDataElementController dataElementController;
     private final IOptionSetController optionSetController;
+    private final ITrackedEntityAttributeController trackedEntityAttributeController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
@@ -130,6 +145,16 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
+        programRuleController = new ProgramRuleController(
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getProgramRuleStore(),
+                systemInfoController,
+                networkModule.getProgramRuleApiClient(),
+                programController,
+                programStageController);
+
+
         assignedProgramsController = new AssignedProgramsController(
                 programController, networkModule.getUserApiClient());
 
@@ -147,7 +172,51 @@ public class ControllersModule implements IControllersModule {
                 networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
 
+
+        trackedEntityAttributeController = new TrackedEntityAttributeController(
+                networkModule.getTrackedEntityAttributeApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTrackedEntityAttributeStore(),
+                systemInfoController,
+                optionSetController);
+
+        programIndicatorController = new ProgramIndicatorController(
+                persistenceModule.getProgramIndicatorStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                systemInfoController,
+                networkModule.getProgramIndicatorApiClient(),
+                persistenceModule.getTransactionManager(),
+                programController,
+                programStageController,
+                programStageSectionController);
+
+        programRuleVariableController = new ProgramRuleVariableController(
+                networkModule.getProgramRuleVariableApiClient(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences(),
+                systemInfoController,
+                persistenceModule.getProgramRuleVariableStore(),
+                programController,
+                programStageController,
+                dataElementController,
+                trackedEntityAttributeController);
+
+        programRuleActionController = new ProgramRuleActionController(
+                networkModule.getProgramRuleActionApiClient(),
+                persistenceModule.getTransactionManager(),
+                systemInfoController,
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getProgramRuleActionStore(),
+                programStageController,
+                programStageSectionController,
+                dataElementController,
+                trackedEntityAttributeController,
+                programRuleController,
+                programIndicatorController);
+
         eventController = new EventController(systemInfoController,
+
                 networkModule.getEventApiClient(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getEventStore(),
@@ -208,6 +277,31 @@ public class ControllersModule implements IControllersModule {
     @Override
     public IProgramStageDataElementController getProgramStageDataElementController() {
         return programStageDataElementController;
+    }
+
+    @Override
+    public IProgramRuleController getProgramRuleController() {
+        return programRuleController;
+    }
+
+    @Override
+    public IProgramRuleActionController getProgramRuleActionController() {
+        return programRuleActionController;
+    }
+
+    @Override
+    public IProgramRuleVariableController getProgramRuleVariableController() {
+        return programRuleVariableController;
+    }
+
+    @Override
+    public IProgramIndicatorController getProgramIndicatorController() {
+        return programIndicatorController;
+    }
+
+    @Override
+    public ITrackedEntityAttributeController getTrackedEntityAttributeController() {
+        return trackedEntityAttributeController;
     }
 
     @Override

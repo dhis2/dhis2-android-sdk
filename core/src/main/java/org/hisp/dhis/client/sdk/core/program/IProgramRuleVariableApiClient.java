@@ -54,13 +54,18 @@ package org.hisp.dhis.client.sdk.core.program;/*
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IProgramRuleVariableApiClient {
-    List<ProgramRuleVariable> getBasicProgramRuleVariables(DateTime lastUpdated);
+    List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 
-    List<ProgramRuleVariable> getFullProgramRuleVariables(DateTime lastUpdated);
+    List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, Set<String> programRuleVariableUids) throws ApiException;
 }

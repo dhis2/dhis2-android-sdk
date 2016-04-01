@@ -29,20 +29,26 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramRuleActionScope implements IProgramRuleActionScope {
-    private ProgramRuleActionService mProgramRuleActionService;
+    private final IProgramRuleActionService programRuleActionService;
+    private final IProgramRuleActionController programRuleActionController;
 
-    public ProgramRuleActionScope(ProgramRuleActionService programRuleActionService) {
-        this.mProgramRuleActionService = programRuleActionService;
+    public ProgramRuleActionScope(IProgramRuleActionService programRuleActionService,
+                                  IProgramRuleActionController programRuleActionController) {
+        this.programRuleActionService = programRuleActionService;
+        this.programRuleActionController = programRuleActionController;
     }
 
     @Override
@@ -51,7 +57,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super ProgramRuleAction> subscriber) {
                 try {
-                    ProgramRuleAction programRuleAction = mProgramRuleActionService.get(uid);
+                    ProgramRuleAction programRuleAction = programRuleActionService.get(uid);
                     subscriber.onNext(programRuleAction);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -68,7 +74,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super ProgramRuleAction> subscriber) {
                 try {
-                    ProgramRuleAction programRuleAction = mProgramRuleActionService.get(id);
+                    ProgramRuleAction programRuleAction = programRuleActionService.get(id);
                     subscriber.onNext(programRuleAction);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -85,7 +91,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
                 try {
-                    List<ProgramRuleAction> programRuleActions = mProgramRuleActionService.list();
+                    List<ProgramRuleAction> programRuleActions = programRuleActionService.list();
                     subscriber.onNext(programRuleActions);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -102,7 +108,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
                 try {
-                    List<ProgramRuleAction> programRuleActions = mProgramRuleActionService.list
+                    List<ProgramRuleAction> programRuleActions = programRuleActionService.list
                             (programRule);
                     subscriber.onNext(programRuleActions);
                 } catch (Throwable throwable) {
@@ -120,7 +126,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramRuleActionService.save(object);
+                    boolean status = programRuleActionService.save(object);
                     subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -137,8 +143,49 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    boolean status = mProgramRuleActionService.remove(object);
+                    boolean status = programRuleActionService.remove(object);
                     subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRuleAction>> sync() {
+        return sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<ProgramRuleAction>> sync(final SyncStrategy syncStrategy) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
+                try {
+                    programRuleActionController.sync(syncStrategy);
+                    List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
+                    subscriber.onNext(programRulesActions);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRuleAction>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
+                try {
+                    programRuleActionController.sync(syncStrategy, uids);
+                    List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
+                    subscriber.onNext(programRulesActions);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

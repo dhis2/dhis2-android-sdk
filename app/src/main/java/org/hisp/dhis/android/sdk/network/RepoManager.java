@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.network;
 
 import android.util.Log;
 
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
@@ -91,6 +92,7 @@ public final class RepoManager {
 
     public static OkHttpClient provideOkHttpClient(Credentials credentials) {
         OkHttpClient client = new OkHttpClient();
+        client.networkInterceptors().add(new StethoInterceptor());
         client.interceptors().add(provideInterceptor(credentials));
         client.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
         client.setReadTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);

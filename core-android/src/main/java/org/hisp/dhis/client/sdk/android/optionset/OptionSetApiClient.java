@@ -71,8 +71,7 @@ public class OptionSetApiClient implements IOptionSetApiClient {
         @Override
         public Call<Map<String, List<OptionSet>>> getEntities(
                 Map<String, String> queryMap, List<String> filters) throws ApiException {
-            return optionSetApiClientRetrofit
-                    .getOptionSets(queryMap, filters);
+            return optionSetApiClientRetrofit.getOptionSets(queryMap, filters);
         }
     };
 
@@ -85,7 +84,6 @@ public class OptionSetApiClient implements IOptionSetApiClient {
     @Override
     public List<OptionSet> getOptionSets(
             Fields fields, Set<String> optionSetUids) throws ApiException {
-        return getCollection(apiResource, "options.id",
-                fields, null, optionSetUids);
+        return getCollection(apiResource, "options.id", fields, null, optionSetUids);
     }
 }

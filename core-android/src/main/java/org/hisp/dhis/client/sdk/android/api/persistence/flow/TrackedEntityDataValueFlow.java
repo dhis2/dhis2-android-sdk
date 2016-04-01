@@ -38,6 +38,9 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
         @UniqueGroup(
@@ -45,25 +48,29 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class TrackedEntityDataValueFlow extends BaseModelFlow {
-    static final int UNIQUE_EVENT_DATAVALUE = 57;
-    static final String EVENT_KEY = "event";
+    public static final IMapper<TrackedEntityDataValue,
+            TrackedEntityDataValueFlow> MAPPER = new TrackedEntityDataValueMapper();
 
-    @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
+    static final int UNIQUE_EVENT_DATAVALUE = 1;
+
+    @Column()
+    @Unique(unique = true, uniqueGroups = {
+            UNIQUE_EVENT_DATAVALUE
+    })
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = EVENT_KEY,
-                            columnType = String.class, foreignKeyColumnName = "eventUid"),
+                    @ForeignKeyReference(
+                            columnName = "event", columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     EventFlow event;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {UNIQUE_EVENT_DATAVALUE})
+    @Unique(unique = true, uniqueGroups = {
+            UNIQUE_EVENT_DATAVALUE
+    })
     String dataElement;
-
-    @Column
-    boolean providedElsewhere;
 
     @Column
     String storedBy;
@@ -72,7 +79,7 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
     String value;
 
     public TrackedEntityDataValueFlow() {
-        // empty constructor
+        // explicit empty constructor
     }
 
     public EventFlow getEvent() {
@@ -91,14 +98,6 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
         this.dataElement = dataElement;
     }
 
-    public boolean isProvidedElsewhere() {
-        return providedElsewhere;
-    }
-
-    public void setProvidedElsewhere(boolean providedElsewhere) {
-        this.providedElsewhere = providedElsewhere;
-    }
-
     public String getStoredBy() {
         return storedBy;
     }
@@ -113,5 +112,49 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    private static class TrackedEntityDataValueMapper extends AbsMapper<TrackedEntityDataValue,
+            TrackedEntityDataValueFlow> {
+
+        @Override
+        public TrackedEntityDataValueFlow mapToDatabaseEntity(TrackedEntityDataValue model) {
+            if (model == null) {
+                return null;
+            }
+
+            TrackedEntityDataValueFlow flow = new TrackedEntityDataValueFlow();
+            flow.setId(model.getId());
+            flow.setEvent(EventFlow.MAPPER.mapToDatabaseEntity(model.getEvent()));
+            flow.setDataElement(model.getDataElement());
+            flow.setStoredBy(model.getStoredBy());
+            flow.setValue(model.getValue());
+            return flow;
+        }
+
+        @Override
+        public TrackedEntityDataValue mapToModel(TrackedEntityDataValueFlow flow) {
+            if (flow == null) {
+                return null;
+            }
+
+            TrackedEntityDataValue model = new TrackedEntityDataValue();
+            model.setId(flow.getId());
+            model.setEvent(EventFlow.MAPPER.mapToModel(flow.getEvent()));
+            model.setDataElement(flow.getDataElement());
+            model.setStoredBy(flow.getStoredBy());
+            model.setValue(flow.getValue());
+            return model;
+        }
+
+        @Override
+        public Class<TrackedEntityDataValue> getModelTypeClass() {
+            return TrackedEntityDataValue.class;
+        }
+
+        @Override
+        public Class<TrackedEntityDataValueFlow> getDatabaseEntityTypeClass() {
+            return TrackedEntityDataValueFlow.class;
+        }
     }
 }

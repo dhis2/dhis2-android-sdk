@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
+import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
@@ -78,31 +79,31 @@ public class ControllersModule implements IControllersModule {
     private final IProgramRuleActionController programRuleActionController;
     private final IProgramRuleVariableController programRuleVariableController;
     private final IProgramIndicatorController programIndicatorController;
+    private final IProgramStageDataElementController programStageDataElementController;
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
     private final IEventController eventController;
     private final IDataElementController dataElementController;
-    private final IProgramStageDataElementController programStageDataElementController;
     private final IOptionSetController optionSetController;
     private final ITrackedEntityAttributeController trackedEntityAttributeController;
 
     public ControllersModule(INetworkModule networkModule,
                              IPersistenceModule persistenceModule,
-                             IPreferencesModule preferencesModule) {
+                             IPreferencesModule preferencesModule, ILogger logger) {
         isNull(networkModule, "networkModule must not be null");
         isNull(persistenceModule, "persistenceModule must not be null");
         isNull(preferencesModule, "preferencesModule must not be null");
+        isNull(logger, "ILogger must not be null");
 
         systemInfoController = new SystemInfoController(
                 networkModule.getSystemInfoApiClient(),
                 preferencesModule.getSystemInfoPreferences(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        programController = new ProgramController(
-                systemInfoController, networkModule.getProgramApiClient(),
-                networkModule.getUserApiClient(),
-                persistenceModule.getProgramStore(),
+        programController = new ProgramController(systemInfoController,
+                networkModule.getProgramApiClient(),
+                networkModule.getUserApiClient(), persistenceModule.getProgramStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
@@ -113,28 +114,27 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
-        optionSetController = new OptionSetController(
-                networkModule.getOptionSetApiClient(),
-                persistenceModule.getOptionStore(),
-                persistenceModule.getOptionSetStore(),
-                systemInfoController,
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager());
-
-        dataElementController = new DataElementController(
-                systemInfoController,
-                networkModule.getDataElementApiClient(),
-                persistenceModule.getDataElementStore(),
-                optionSetController,
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager());
-
         programStageSectionController = new ProgramStageSectionController(
                 programStageController, systemInfoController,
                 networkModule.getProgramStageSectionApiClient(),
                 persistenceModule.getProgramStageSectionStore(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
+
+        optionSetController = new OptionSetController(
+                systemInfoController,
+                networkModule.getOptionSetApiClient(),
+                persistenceModule.getOptionStore(),
+                persistenceModule.getOptionSetStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
+
+        dataElementController = new DataElementController(
+                systemInfoController, optionSetController,
+                networkModule.getDataElementApiClient(),
+                persistenceModule.getDataElementStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
 
         programStageDataElementController = new ProgramStageDataElementController(
                 systemInfoController, programStageController,
@@ -160,7 +160,8 @@ public class ControllersModule implements IControllersModule {
 
         organisationUnitController = new OrganisationUnitController(
                 systemInfoController, networkModule.getOrganisationUnitApiClient(),
-                networkModule.getUserApiClient(), persistenceModule.getOrganisationUnitStore(),
+                networkModule.getUserApiClient(),
+                persistenceModule.getOrganisationUnitStore(),
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager());
 
@@ -170,6 +171,7 @@ public class ControllersModule implements IControllersModule {
         userAccountController = new UserAccountController(
                 networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
+
 
         trackedEntityAttributeController = new TrackedEntityAttributeController(
                 networkModule.getTrackedEntityAttributeApiClient(),
@@ -213,19 +215,13 @@ public class ControllersModule implements IControllersModule {
                 programRuleController,
                 programIndicatorController);
 
-        eventController = new EventController(
-                networkModule.getEventApiClient(),
-                networkModule.getSystemInfoApiClient(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager(),
-                null, //persistenceModule.getStateStore(),
-                persistenceModule.getEventStore(),
-                null, //persistenceModule.getTrackedEntityDataValueStore(),
-                persistenceModule.getOrganisationUnitStore(),
-                persistenceModule.getProgramStore(),
-                null //persistenceModule.getFailedItemStore()
-        );
+        eventController = new EventController(systemInfoController,
 
+                networkModule.getEventApiClient(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getEventStore(),
+                persistenceModule.getStateStore(),
+                persistenceModule.getTransactionManager(), logger);
     }
 
     @Override

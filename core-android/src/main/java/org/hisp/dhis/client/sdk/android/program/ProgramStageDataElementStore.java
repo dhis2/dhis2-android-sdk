@@ -33,6 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageDataElementFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -41,12 +42,13 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public final class ProgramStageDataElementStore extends
-        AbsIdentifiableObjectStore<ProgramStageDataElement,
+public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
         ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
+    private final ITransactionManager transactionManager;
 
-    public ProgramStageDataElementStore() {
+    public ProgramStageDataElementStore(ITransactionManager transactionManager) {
         super(ProgramStageDataElementFlow.MAPPER);
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -54,8 +56,7 @@ public final class ProgramStageDataElementStore extends
         List<ProgramStageDataElementFlow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
-                        .programstage.is(programStage.getUId()))
-                .queryList();
+                        .programstage.is(programStage.getUId())).queryList();
         return getMapper().mapToModels(programStageDataElementFlows);
     }
 
@@ -64,27 +65,18 @@ public final class ProgramStageDataElementStore extends
         List<ProgramStageDataElementFlow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
-                        .programstagesection.is(programStageSection.getUId()))
-                .queryList();
-
+                        .programstagesection.is(programStageSection.getUId())).queryList();
         return getMapper().mapToModels(programStageDataElementFlows);
     }
 
     @Override
     public ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement) {
-        List<ProgramStageDataElementFlow> programStageDataElementFlow = new Select()
+        ProgramStageDataElementFlow programStageDataElementFlow = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
                         .programstage.is(programStage.getUId()))
                 .and(ProgramStageDataElementFlow_Table
-                        .dataelement.is(dataElement.getUId()))
-                .queryList();
-
-        if (programStageDataElementFlow != null && !programStageDataElementFlow.isEmpty()) {
-            return getMapper().mapToModel(programStageDataElementFlow.get(0));
-        }
-
-        return null;
+                        .dataelement.is(dataElement.getUId())).querySingle();
+        return getMapper().mapToModel(programStageDataElementFlow);
     }
 }
-

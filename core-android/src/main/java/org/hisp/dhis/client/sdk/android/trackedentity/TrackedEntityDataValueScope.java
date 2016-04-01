@@ -28,17 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -125,61 +121,6 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     }
 
     @Override
-    public Observable<Boolean> add(final TrackedEntityDataValue object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityDataValueService.add(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> update(final TrackedEntityDataValue object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityDataValueService.update(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<TrackedEntityDataValue> create(final Event event, final String dataElement,
-                                                     final boolean providedElsewhere, final
-                                                     String storedBy, final String value) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
-            @Override
-            public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
-                try {
-                    TrackedEntityDataValue trackedEntityDataValue =
-                            mTrackedEntityDataValueService.create(event, dataElement,
-                                    providedElsewhere, storedBy, value);
-                    subscriber.onNext(trackedEntityDataValue);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
     public Observable<List<TrackedEntityDataValue>> list(final Event event) {
         return Observable.create(new Observable.OnSubscribe<List<TrackedEntityDataValue>>() {
             @Override
@@ -198,33 +139,15 @@ public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope
     }
 
     @Override
-    public Observable<TrackedEntityDataValue> get(final DataElement dataElement, final Event
-            event) {
+    public Observable<TrackedEntityDataValue> get(final Event event,
+                                                  final DataElement dataElement) {
         return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
             @Override
             public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
                 try {
                     TrackedEntityDataValue trackedEntityDataValue =
-                            mTrackedEntityDataValueService.get(dataElement, event);
+                            mTrackedEntityDataValueService.get(event, dataElement);
                     subscriber.onNext(trackedEntityDataValue);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Void> send(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    Set<String> uidSet = new HashSet<>(Arrays.asList(uid));
-                    mEventController.sync(SyncStrategy.DEFAULT, uidSet);
-//                    subscriber.onNext();
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

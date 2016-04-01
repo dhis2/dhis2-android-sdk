@@ -45,30 +45,29 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class OptionSetController extends AbsSyncStrategyController
-        <OptionSet> implements IOptionSetController {
+public final class OptionSetController extends AbsSyncStrategyController<OptionSet>
+        implements IOptionSetController {
     private final IOptionSetApiClient optionSetApiClient;
     private final ISystemInfoController systemInfoController;
     private final ITransactionManager transactionManager;
     private final IOptionStore optionStore;
     private final IOptionSetStore optionSetStore;
 
-    public OptionSetController(IOptionSetApiClient optionSetApiClient,
+    public OptionSetController(ISystemInfoController systemInfoController,
+                               IOptionSetApiClient optionSetApiClient,
                                IOptionStore optionStore,
                                IOptionSetStore optionSetStore,
-                               ISystemInfoController systemInfoController,
                                ILastUpdatedPreferences lastUpdatedPreferences,
                                ITransactionManager transactionManager) {
         super(ResourceType.OPTION_SETS, optionSetStore, lastUpdatedPreferences);
-        this.transactionManager = transactionManager;
+        this.systemInfoController = systemInfoController;
         this.optionSetApiClient = optionSetApiClient;
         this.optionStore = optionStore;
         this.optionSetStore = optionSetStore;
-        this.systemInfoController = systemInfoController;
+        this.transactionManager = transactionManager;
     }
 
 
@@ -99,7 +98,8 @@ public final class OptionSetController extends AbsSyncStrategyController
 //        ResourceType resource = ResourceType.OPTION_SETS;
 //        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
 //        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-//        List<OptionSet> allOptionSets = optionSetApiClient.getOptionSets(Fields.BASIC, lastUpdated, null);
+//        List<OptionSet> allOptionSets = optionSetApiClient.getOptionSets(Fields.BASIC,
+// lastUpdated, null);
 //        List<OptionSet> updatedOptionSets = optionSetApiClient.getOptionSets(lastUpdated);
 ////        linkOptionsWithOptionSets(updatedOptionSets);
 //        List<OptionSet> existingPersistedAndUpdatedOptionSets =
@@ -182,7 +182,6 @@ public final class OptionSetController extends AbsSyncStrategyController
                         persistedOptions, optionSet.getOptions()));
             }
         }
-
 
 
         // we will have to perform something similar to what happens in AbsController

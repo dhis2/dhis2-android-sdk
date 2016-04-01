@@ -105,7 +105,8 @@ public final class ServicesModule implements IServicesModule {
                 persistenceModule.getOrganisationUnitStore());
 
         eventService = new EventService(
-                persistenceModule.getEventStore());
+                persistenceModule.getEventStore(),
+                persistenceModule.getStateStore());
         dataElementService = new DataElementService(
                 persistenceModule.getDataElementStore());
 

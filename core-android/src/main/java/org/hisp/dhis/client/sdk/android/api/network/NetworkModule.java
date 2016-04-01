@@ -34,7 +34,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClient;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.event.EventApiClient2;
+import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.optionset.IOptionSetApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClient;
@@ -180,7 +180,7 @@ public class NetworkModule implements INetworkModule {
                 IUserApiClientRetrofit.class));
         organisationUnitApiClient = new OrganisationUnitApiClient(retrofit.create(
                 IOrganisationUnitApiClientRetrofit.class));
-        eventApiClient = new EventApiClient2(retrofit.create(
+        eventApiClient = new EventApiClient(retrofit.create(
                 EventApiClientRetrofit.class));
         dataElementApiClient = new DataElementApiClient(retrofit.create(
                 IDataElementApiClientRetrofit.class));

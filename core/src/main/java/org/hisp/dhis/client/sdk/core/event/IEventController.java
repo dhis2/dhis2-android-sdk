@@ -29,17 +29,14 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
+import java.util.Set;
+
 public interface IEventController extends IIdentifiableController<Event> {
-//    void sync() throws ApiException;
-//    void sync(Collection<String> uids) throws ApiException;
-//    void sync(OrganisationUnit organisationUnit, Program program, int limit, DateTime
-// serverDateTime) throws ApiException;
-//    void sync(OrganisationUnit organisationUnit, Program program, int limit) throws ApiException;
-//    void sync(OrganisationUnit organisationUnit, Program program) throws ApiException;
-//    void sync(Enrollment enrollment) throws ApiException;
-//    void sync(String uid);
-//    void getEventsDataFromServer(Enrollment enrollment) throws ApiException;
-//    void sendEventChanges(List<Event> events) throws ApiException;
+    void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
+
+    void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
 }

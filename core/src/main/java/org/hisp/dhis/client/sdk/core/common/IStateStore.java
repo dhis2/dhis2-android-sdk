@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.models.common.state.State;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IStateStore extends IStore<State> {
 
@@ -66,6 +67,13 @@ public interface IStateStore extends IStore<State> {
     <T extends IModel> boolean deleteActionForModel(T object);
 
     /**
+     * @param modelType the model class for which we want to remove all corresponding actions
+     * @param <T>       type of model class (must extend IModel interface)
+     * @return true if operation succeeded
+     */
+    <T extends IModel> boolean deleteActionsForModelType(Class<T> modelType);
+
+    /**
      * @param object IModel which state the method returns.
      * @return State of given object.
      */
@@ -95,4 +103,13 @@ public interface IStateStore extends IStore<State> {
      * @return List of Class typed instances which State contain given action.
      */
     <T extends IModel> List<T> queryModelsWithActions(Class<T> clazz, Action... actions);
+
+    /**
+     * @param clazz   Class, instances of which we want to retrieve from database.
+     * @param uids    Set of model uids
+     * @param actions Action(s) which we want to have in resulting payload from database.
+     * @return List of Class typed instances which State contain given action.
+     */
+    <T extends IModel> List<T> queryModelsWithActions(
+            Class<T> clazz, Set<String> uids, Action... actions);
 }

@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.client.sdk.models.common.importsummary;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ImportCount {
-
-    @JsonIgnore
-    private long id;
 
     @JsonProperty("imported")
     private int imported;
@@ -50,44 +46,23 @@ public class ImportCount {
     @JsonProperty("deleted")
     private int deleted;
 
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public ImportCount() {
+        // explicit empty constructor
     }
 
     public int getImported() {
         return imported;
     }
 
-    public void setImported(int imported) {
-        this.imported = imported;
-    }
-
     public int getUpdated() {
         return updated;
-    }
-
-    public void setUpdated(int updated) {
-        this.updated = updated;
     }
 
     public int getIgnored() {
         return ignored;
     }
 
-    public void setIgnored(int ignored) {
-        this.ignored = ignored;
-    }
-
     public int getDeleted() {
         return deleted;
-    }
-
-    public void setDeleted(int deleted) {
-        this.deleted = deleted;
     }
 }

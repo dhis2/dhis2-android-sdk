@@ -43,9 +43,9 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import java.util.List;
 import java.util.Set;
 
-public abstract class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
+public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject,
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsDataStore<ModelType,
-        DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
+                DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectDataStore(IMapper<ModelType, DatabaseEntityType> mapper,
                                           IStateStore stateStore) {
@@ -64,11 +64,17 @@ public abstract class AbsIdentifiableObjectDataStore<ModelType extends Identifia
 
     @Override
     public ModelType queryByUid(String uid) {
-        DatabaseEntityType databaseEntity = new Select()
+        List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
                 .where(Condition.column(new NameAlias(BaseIdentifiableObjectFlow
-                        .COLUMN_UID)).is(uid)).querySingle();
-        return getMapper().mapToModel(databaseEntity);
+                        .COLUMN_UID)).is(uid))
+                .queryList();
+
+        if (databaseEntities != null && !databaseEntities.isEmpty()) {
+            return getMapper().mapToModel(databaseEntities.get(0));
+        } else {
+            return null;
+        }
     }
 
     @Override

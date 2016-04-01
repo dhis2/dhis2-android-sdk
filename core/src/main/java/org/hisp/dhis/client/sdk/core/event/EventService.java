@@ -28,171 +28,145 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class EventService implements IEventService {
-
     private final IEventStore eventStore;
-//    private final IStateStore stateStore;
+    private final IStateStore stateStore;
 
-    public EventService(IEventStore eventStore) {
+    public EventService(IEventStore eventStore, IStateStore stateStore) {
         this.eventStore = eventStore;
-//        this.stateStore = stateStore;
+        this.stateStore = stateStore;
     }
 
     @Override
-    public Event get(String uid) {
-//        Event event = eventStore.queryByUid(uid);
-//        Action action = stateStore.queryActionForModel(event);
-//        if (!Action.TO_DELETE.equals(action)) {
-//            return event;
-//        }
-        return eventStore.queryByUid(uid);
-    }
+    public boolean save(Event event) {
+        isNull(event, "Event must not be null");
 
-    @Override
-    public Event create(TrackedEntityInstance trackedEntityInstance, Enrollment enrollment,
-                        OrganisationUnit organisationUnit, Program program, ProgramStage
-                                    programStage, String status) {
-        Preconditions.isNull(trackedEntityInstance, "trackedEntityInstance argument must not be " +
-                "null");
-        Preconditions.isNull(enrollment, "enrollment argument must not be null");
-        Preconditions.isNull(organisationUnit, "organisationUnit argument must not be null");
-        Preconditions.isNull(program, "program argument must not be null");
-        Preconditions.isNull(programStage, "programStage argument must not be null");
-        Preconditions.isNull(status, "status argument must not be null");
-
-        Event event = new Event();
-        event.setUId(CodeGenerator.generateCode());
-        event.setEnrollment(enrollment);
-        event.setOrganisationUnitId(organisationUnit.getUId());
-        event.setStatus(status);
-        event.setTrackedEntityInstance(trackedEntityInstance);
-        event.setProgramId(program.getUId());
-        event.setProgramStageId(programStage.getUId());
-        event.setTrackedEntityDataValues(new ArrayList<TrackedEntityDataValue>());
-
-        DateTime dueDate = enrollment.getDateOfEnrollment();
-        event.setDueDate(dueDate.plusDays(programStage.getMinDaysFromStart()));
-        return event;
-    }
-
-    @Override
-    public Event create(String organisationUnitId, String programId, String programStageId,
-                        String status) {
-        Preconditions.isNull(organisationUnitId, "program argument must not be null");
-        Preconditions.isNull(programId, "program argument must not be null");
-        Preconditions.isNull(programStageId, "programStage argument must not be null");
-        Preconditions.isNull(status, "status argument must not be null");
-
-        if (!Event.STATUS_ACTIVE.equals(status) && !Event.STATUS_COMPLETED.equals(status)) {
-            throw new IllegalArgumentException("event status must be either ACTIVE or COMPLETED");
+        Action action = stateStore.queryActionForModel(event);
+        if (action == null) {
+            return eventStore.save(event) &&
+                    stateStore.saveActionForModel(event, Action.TO_POST);
         }
 
-        Event event = new Event();
-        event.setUId(CodeGenerator.generateCode());
-        event.setStatus(status);
-        event.setOrganisationUnitId(organisationUnitId);
-        event.setProgramId(programId);
-        event.setProgramStageId(programStageId);
-        event.setTrackedEntityDataValues(new ArrayList<TrackedEntityDataValue>());
-        return event;
+        switch (action) {
+            case TO_POST:
+            case TO_UPDATE: {
+                return eventStore.save(event);
+            }
+            case SYNCED: {
+                return eventStore.save(event) &&
+                        stateStore.saveActionForModel(event, Action.TO_UPDATE);
+            }
+            // we cannot save what should be removed
+            case TO_DELETE: {
+                return false;
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported state action");
+            }
+        }
     }
 
     @Override
-    public List<Event> list(Program program, OrganisationUnit organisationUnit, DateTime
-            startDate, DateTime endDate) {
-        return eventStore.query(organisationUnit, program, startDate, endDate);
-    }
+    public boolean remove(Event event) {
+        isNull(event, "Event object must not be null");
 
-    @Override
-    public List<Event> list(Program program, OrganisationUnit organisationUnit) {
-        return eventStore.query(organisationUnit, program);
-    }
+        Action action = stateStore.queryActionForModel(event);
+        if (action == null) {
+            // if there is no action stored for given event,
+            // it means it was not saved before
+            return false;
+        }
 
-    @Override
-    public boolean add(Event object) {
-        Preconditions.isNull(object, "event argument must not be null");
-//
-//        if(!eventStore.insert(object)) {
-//            return false;
-//        }
-//        return stateStore.saveActionForModel(object, Action.TO_POST);
-        return eventStore.insert(object);
-    }
-
-    @Override
-    public Event get(long id) {
-//        Event event = eventStore.queryById(id);
-//        Action action = stateStore.queryActionForModel(event);
-//        if (!Action.TO_DELETE.equals(action)) {
-//            return event;
-//        }
-//        return null;
-        return eventStore.queryById(id);
+        switch (action) {
+            case SYNCED:
+            case TO_UPDATE: {
+                return stateStore.saveActionForModel(event, Action.TO_DELETE);
+            }
+            case TO_POST: {
+                return eventStore.delete(event);
+            }
+            case TO_DELETE: {
+                // if event is already marked as removed,
+                // we don't have to do anything
+                return false;
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported state action");
+            }
+        }
     }
 
     @Override
     public List<Event> list() {
-//        return stateStore.queryModelsWithActions(Event.class, Action.TO_POST, Action.SYNCED,
-// Action.TO_UPDATE);
-        return eventStore.queryAll();
+        return stateStore.queryModelsWithActions(Event.class,
+                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
     }
 
     @Override
-    public boolean remove(Event object) {
-        Preconditions.isNull(object, "event argument must not be null");
-
-//        if(!eventStore.delete(object)) {
-//            return false;
-//        }
-//        return stateStore.deleteActionForModel(object);
-        return eventStore.delete(object);
+    public List<Event> list(Set<String> uids) {
+        return stateStore.queryModelsWithActions(Event.class, uids,
+                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
     }
 
     @Override
-    public boolean save(Event object) {
-        Preconditions.isNull(object, "event argument must not be null");
+    public List<Event> list(OrganisationUnit organisationUnit, Program program) {
+        Map<Long, Action> actionMap = stateStore.queryActionsForModel(Event.class);
+        List<Event> events = eventStore.query(organisationUnit, program);
 
-//        if(!eventStore.save(object)) {
-//            return false;
-//        }
-//        Action action = stateStore.queryActionForModel(object);
-//        if (action == null || Action.TO_POST.equals(action)) {
-//            return stateStore.saveActionForModel(object, Action.TO_POST);
-//        } else {
-//            return stateStore.saveActionForModel(object, Action.TO_UPDATE);
-//        }
-        return eventStore.save(object);
+        if (events == null || events.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Event> filteredEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (!Action.TO_DELETE.equals(actionMap.get(event.getId()))) {
+                filteredEvents.add(event);
+            }
+        }
+
+        return filteredEvents;
     }
 
     @Override
-    public boolean update(Event object) {
-        Preconditions.isNull(object, "event argument must not be null");
+    public Event get(long id) {
+        Event event = eventStore.queryById(id);
 
-//        Action action = stateStore.queryActionForModel(object);
-//        if (Action.TO_DELETE.equals(action)) {
-//            throw new IllegalArgumentException("The object with Action." +
-//                    "TO_DELETE cannot be updated");
-//        }
-//
-//        /* if object was not posted to the server before,
-//        you don't have anything to update */
-//        if (!Action.TO_POST.equals(action)) {
-//            stateStore.saveActionForModel(object, Action.TO_UPDATE);
-//        }
-        return eventStore.update(object);
+        if (event != null) {
+            Action action = stateStore.queryActionForModel(event);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return event;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Event get(String uid) {
+        Event event = eventStore.queryByUid(uid);
+
+        if (event != null) {
+            Action action = stateStore.queryActionForModel(event);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return event;
+            }
+        }
+
+        return null;
     }
 }

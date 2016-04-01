@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
+import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
@@ -42,11 +43,14 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
 public interface IPersistenceModule {
 
     ITransactionManager getTransactionManager();
+
+    IStateStore getStateStore();
 
     IUserAccountStore getUserAccountStore();
 
@@ -71,6 +75,8 @@ public interface IPersistenceModule {
     IOrganisationUnitStore getOrganisationUnitStore();
 
     IEventStore getEventStore();
+
+    ITrackedEntityDataValueStore getTrackedEntityDataValueStore();
 
     IDataElementStore getDataElementStore();
 

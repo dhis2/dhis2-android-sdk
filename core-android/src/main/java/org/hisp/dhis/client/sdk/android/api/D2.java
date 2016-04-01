@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.api.utils.Logger;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
 import org.hisp.dhis.client.sdk.android.event.EventScope;
@@ -80,6 +81,8 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
+// TODO Managing logging properly
+// TODO Allow clients to set custom objects (like OkHttpClient)
 public class D2 {
     private static D2 d2;
 
@@ -136,7 +139,7 @@ public class D2 {
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
         INetworkModule networkModule = new NetworkModule(preferencesModule);
         IControllersModule controllersModule = new ControllersModule(
-                networkModule, persistenceModule, preferencesModule);
+                networkModule, persistenceModule, preferencesModule, new Logger());
 
         IUserProgramScope userProgramScope = new UserProgramScope(
                 servicesModule.getProgramService(),
@@ -224,7 +227,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -302,10 +305,6 @@ public class D2 {
         return configuredInstance().organisationUnitScope;
     }
 
-    public static IEventScope events() {
-        return configuredInstance().eventScope;
-    }
-
     public static IProgramStageDataElementScope programStageDataElements() {
         return configuredInstance().programStageDataElementScope;
     }
@@ -332,5 +331,10 @@ public class D2 {
 
     public static ITrackedEntityAttributeScope trackedEntityAttributes() {
         return configuredInstance().trackedEntityAttributeScope;
+    }
+
+    public static IEventScope events() {
+        return configuredInstance().eventScope;
+
     }
 }

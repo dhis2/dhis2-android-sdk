@@ -34,13 +34,9 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.Header;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,110 +52,6 @@ public class NetworkUtils {
         // no instances
     }
 
-    public static Header findLocationHeader(List<Header> headers) {
-        final String LOCATION = "location";
-        if (headers != null && !headers.isEmpty()) {
-            for (Header header : headers) {
-//                if (header.getName().equalsIgnoreCase(LOCATION)) {
-//                    return header;
-//                }
-            }
-        }
-
-        return null;
-    }
-
-    public static void handleApiException(ApiException apiException) throws ApiException {
-        handleApiException(apiException, null, null);
-    }
-
-    /**
-     * List of errors which this method should handle:
-     * <p/>
-     * 400 Bad Request
-     * 401 Unauthorized (user password has changed)
-     * 403 Forbidden (access denied)
-     * 404 Not found (object was already removed for example)
-     * 405 Method not allowed (wrong HTTP request method)
-     * 408 Request Time Out (too slow internet connection, long processing time, etc)
-     * 409 Conflict (you are trying to treat some resource as another.
-     * For example to create interpretation for map through chart URI)
-     * 500 Internal server error (for example NullPointerException)
-     * 501 Not implemented (no such method or resource)
-     * 502 Bad Gateway (can be retried later)
-     * 503 Service unavailable (can be temporary issue)
-     * 504 Gateway Timeout (we need to retry request later)
-     */
-    // TODO EW!
-    public static <T extends IdentifiableObject> void handleApiException(
-            ApiException apiException, T model, IIdentifiableObjectStore<T> store) throws
-            ApiException {
-
-        switch (apiException.getKind()) {
-            case HTTP: {
-                switch (apiException.getResponse().getStatus()) {
-                    case HttpURLConnection.HTTP_BAD_REQUEST: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_UNAUTHORIZED: {
-                        // if the user password has changed, none of other network
-                        // requests won't pass. So we need to stop synchronization.
-                        throw apiException;
-                    }
-                    case HttpURLConnection.HTTP_FORBIDDEN: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        // User does not has access to given resource anymore.
-                        // We need to handle this in a special way
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_NOT_FOUND: {
-                        // The given resource does not exist on the server anymore.
-                        // Remove it locally.
-                        if (model != null) {
-                            store.delete(model);
-                            // model.delete();
-                        }
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_CONFLICT: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        // Trying to access wrong resource.
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_INTERNAL_ERROR: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
-                    }
-                    case HttpURLConnection.HTTP_NOT_IMPLEMENTED: {
-                        // TODO Implement mechanism for handling HTTP errors (allow user to
-                        // resolve it).
-                        break;
-                    }
-                }
-
-                break;
-            }
-            case NETWORK: {
-                // Retry later.
-                break;
-            }
-            case CONVERSION:
-            case UNEXPECTED: {
-                // TODO Implement mechanism for handling HTTP errors (allow user to resolve it).
-                // implement possibility to show error status. In most cases, this types of errors
-                // won't be resolved automatically.
-
-                // for now, just rethrow exception.
-                throw apiException;
-            }
-        }
-    }
-
     @NonNull
     public static <T> List<T> getCollection(
             @NonNull ApiResource<T> apiResource, @NonNull Fields fields,
@@ -169,7 +61,7 @@ public class NetworkUtils {
 
     @NonNull
     public static <T> List<T> getCollection(
-            @NonNull ApiResource<T> apiResource, @NonNull String idProperty,
+            @NonNull ApiResource<T> apiResource, @NonNull String uidProperty,
             @NonNull Fields fields, @Nullable DateTime lastUpdated, @Nullable Set<String> uids) {
 
         Map<String, String> queryMap = new HashMap<>();
@@ -195,10 +87,10 @@ public class NetworkUtils {
         }
 
         List<T> allPrograms = new ArrayList<>();
-        if (uids != null && uids.size() > 0) {
+        if (uids != null && !uids.isEmpty()) {
 
             // splitting up request into chunks
-            List<String> idFilters = buildIdFilter(idProperty, uids);
+            List<String> idFilters = buildIdFilter(uidProperty, uids);
             for (String idFilter : idFilters) {
                 List<String> combinedFilters = new ArrayList<>(filters);
                 combinedFilters.add(idFilter);
@@ -216,14 +108,16 @@ public class NetworkUtils {
         return allPrograms;
     }
 
-    private static List<String> buildIdFilter(String idProperty, Set<String> ids) {
+    private static List<String> buildIdFilter(String uidProperty, Set<String> ids) {
         List<String> idFilters = new ArrayList<>();
 
-        if (ids != null && ids.size() > 0) {
+        if (ids != null && !ids.isEmpty()) {
             List<List<String>> splittedIds = CollectionUtils.slice(new ArrayList<>(ids), 64);
             for (List<String> listOfIds : splittedIds) {
                 StringBuilder builder = new StringBuilder();
-                idFilters.add(builder.append(idProperty).append(":in:[")
+                idFilters.add(builder
+                        .append(uidProperty)
+                        .append(":in:[")
                         .append(CollectionUtils.join(listOfIds, ","))
                         .append("]")
                         .toString());

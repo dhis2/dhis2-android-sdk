@@ -31,43 +31,44 @@ package org.hisp.dhis.client.sdk.core.common.network;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Map;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportCount;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
+import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary.Status;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ApiResponse {
-    public static final String RESPONSE_TYPE_IMPORT_SUMMARIES = "ImportSummaries";
-    public static final String RESPONSE_TYPE_IMPORT_SUMMARY = "ImportSummary";
 
-    @JsonProperty("imported")
-    private int imported;
+    @JsonProperty("responseType")
+    private String responseType;
 
-    @JsonProperty("ignored")
-    private int ignored;
+    @JsonProperty("status")
+    private Status status;
 
-    @JsonProperty("response")
-    private Map<String, Object> response;
+    @JsonProperty("importCount")
+    private ImportCount importCount;
 
-    public Map<String, Object> getResponse() {
-        return response;
+    @JsonProperty("importSummaries")
+    private List<ImportSummary> importSummaries;
+
+    public ApiResponse() {
+        // explicit empty constructor
     }
 
-    public void setResponse(Map<String, Object> response) {
-        this.response = response;
+    public String getResponseType() {
+        return responseType;
     }
 
-    public int getImported() {
-        return imported;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setImported(int imported) {
-        this.imported = imported;
+    public ImportCount getImportCount() {
+        return importCount;
     }
 
-    public int getIgnored() {
-        return ignored;
-    }
-
-    public void setIgnored(int ignored) {
-        this.ignored = ignored;
+    public List<ImportSummary> getImportSummaries() {
+        return importSummaries;
     }
 }

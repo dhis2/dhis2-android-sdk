@@ -61,6 +61,7 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
             return getMapper().mapToModel(databaseEntities.get(0));
         }
         return null;
+
     }
 
     @Override

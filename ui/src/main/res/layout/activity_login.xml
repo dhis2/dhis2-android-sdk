@@ -28,12 +28,12 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_primary_default"
-            android:fillViewport="true"
-            android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_primary_default"
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/layout_content"
@@ -51,9 +51,9 @@
             <org.hisp.dhis.client.sdk.ui.views.CircleView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:circle_radius="52dp"
+                app:circle_radius="50dp"
                 app:stroke_color="@android:color/white"
-                app:stroke_width="@dimen/progressbar_stroke_width"/>
+                app:stroke_width="@dimen/circle_stroke_width"/>
 
             <fr.castorflex.android.circularprogressbar.CircularProgressBar
                 android:id="@+id/progress_bar_circular"

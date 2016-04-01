@@ -28,7 +28,8 @@
   -->
 
 <resources>
-    <dimen name="progressbar_stroke_width">6dp</dimen>
+    <dimen name="circle_stroke_width">6dp</dimen>
+    <dimen name="progressbar_stroke_width">10dp</dimen>
 
     <dimen name="keyline_default">16dp</dimen>
 

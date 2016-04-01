@@ -28,21 +28,27 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramRuleScope implements IProgramRuleScope {
     private final IProgramRuleService programRuleService;
+    private final IProgramRuleController programRuleController;
 
-    public ProgramRuleScope(IProgramRuleService programRuleService) {
+    public ProgramRuleScope(IProgramRuleService programRuleService,
+                            IProgramRuleController programRuleController) {
         this.programRuleService = programRuleService;
+        this.programRuleController = programRuleController;
     }
 
     @Override
@@ -155,6 +161,65 @@ public class ProgramRuleScope implements IProgramRuleScope {
                 try {
                     boolean status = programRuleService.remove(object);
                     subscriber.onNext(status);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRule>> sync() {
+        return sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
+                try {
+                    programRuleController.sync(syncStrategy);
+                    List<ProgramRule> programRules = programRuleService.list();
+                    subscriber.onNext(programRules);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
+                try {
+                    programRuleController.sync(syncStrategy, uids);
+                    List<ProgramRule> programRules = programRuleService.list();
+                    subscriber.onNext(programRules);
+                } catch (Throwable throwable) {
+                    subscriber.onError(throwable);
+                }
+
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final List<Program> programs) {
+        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+            @Override
+            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
+                try {
+                    programRuleController.sync(syncStrategy, programs);
+                    List<ProgramRule> programRules = programRuleService.list();
+                    subscriber.onNext(programRules);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

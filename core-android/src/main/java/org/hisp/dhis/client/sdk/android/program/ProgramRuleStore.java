@@ -30,33 +30,95 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleActionFlow;
+import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRule,
         ProgramRuleFlow> implements IProgramRuleStore {
+    private final ITransactionManager transactionManager;
+    private static final String PROGRAMRULE_TO_PROGRAMRULEACTIONS =
+            "programRuleToProgramRuleActions";
+    public ProgramRuleStore(ITransactionManager transactionManager) {
+        super(ProgramRuleFlow.MAPPER);
+        this.transactionManager = transactionManager;
+    }
 
-    private final IProgramRuleActionStore programRuleActionStore;
-    private final IMapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
+    @Override
+    public boolean insert(ProgramRule object) {
+        boolean isSuccess = super.insert(object);
+        if(isSuccess) {
+            updateProgramStageRelationships(object);
+        }
 
-    public ProgramRuleStore(IMapper<ProgramRule, ProgramRuleFlow> mapper,
-                            IProgramRuleActionStore programRuleActionStore,
-                            IMapper<ProgramRuleAction, ProgramRuleActionFlow>
-                                    programRuleActionMapper) {
-        super(mapper);
-        this.programRuleActionStore = programRuleActionStore;
-        this.programRuleActionMapper = programRuleActionMapper;
+        return isSuccess;
+    }
+
+    @Override
+    public boolean update(ProgramRule object) {
+        boolean isSuccess = super.update(object);
+
+        if(isSuccess) {
+            updateProgramStageRelationships(object);
+        }
+
+        return isSuccess;
+    }
+
+    @Override
+    public boolean save(ProgramRule object) {
+        boolean isSuccess = super.save(object);
+
+        if(isSuccess) {
+            updateProgramStageRelationships(object);
+        }
+        return isSuccess;
+    }
+
+    @Override
+    public boolean delete(ProgramRule object) {
+        boolean isSuccess = super.delete(object);
+        if(isSuccess) {
+            ModelLinkFlow.deleteRelatedModels(object, PROGRAMRULE_TO_PROGRAMRULEACTIONS);
+        }
+        return isSuccess;
+    }
+
+    @Override
+    public boolean deleteAll() {
+        boolean isSucess = super.deleteAll();
+        if(isSucess) {
+            ModelLinkFlow.deleteModels(PROGRAMRULE_TO_PROGRAMRULEACTIONS);
+        }
+        return isSucess;
+    }
+
+    @Override
+    public ProgramRule queryById(long id) {
+        return queryProgramRuleRelationships(super.queryById(id));
+    }
+
+    @Override
+    public ProgramRule queryByUid(String uid) {
+        return queryProgramRuleRelationships(super.queryByUid(uid));
+    }
+
+    @Override
+    public List<ProgramRule> queryByUids(Set<String> uids) {
+        return queryProgramRuleRelationships(super.queryByUids(uids));
     }
 
     @Override
@@ -65,23 +127,51 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
                 .from(ProgramRuleFlow.class).where(ProgramRuleFlow_Table
                         .program.is(program.getUId()))
                 .queryList();
-        for (ProgramRuleFlow programRuleFlow : programRuleFlows) {
-            setProgramRuleActions(programRuleFlow);
-        }
+
         return getMapper().mapToModels(programRuleFlows);
     }
 
     @Override
     public List<ProgramRule> query(ProgramStage programStage) {
-        return null;
+        List<ProgramRuleFlow> programRuleFlows = new Select()
+                .from(ProgramRuleFlow.class).where(ProgramRuleFlow_Table
+                .programstage.is(programStage.getUId()))
+                .queryList();
+
+        return getMapper().mapToModels(programRuleFlows);
     }
 
-    private void setProgramRuleActions(ProgramRuleFlow programRuleFlow) {
-        if (programRuleFlow == null) {
-            return;
+    private void updateProgramStageRelationships(ProgramRule programRule) {
+        List<IDbOperation> dbOperations = new ArrayList<>();
+        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(programRule,
+                programRule.getProgramRuleActions(),
+                PROGRAMRULE_TO_PROGRAMRULEACTIONS));
+        transactionManager.transact(dbOperations);
+    }
+
+    private List<ProgramRule> queryProgramRuleRelationships(
+            List<ProgramRule> programRules) {
+        if (programRules != null) {
+            Map<String, List<ProgramRuleAction>> rulesToActions = ModelLinkFlow
+                    .queryLinksForModel(ProgramRuleAction.class,
+                            PROGRAMRULE_TO_PROGRAMRULEACTIONS);
+            for (ProgramRule programRule: programRules) {
+                programRule.setProgramRuleActions(rulesToActions.get
+                        (programRule.getUId()));
+            }
         }
-        programRuleFlow.setProgramRuleActions(programRuleActionMapper
-                .mapToDatabaseEntities(programRuleActionStore
-                        .query(getMapper().mapToModel(programRuleFlow))));
+
+        return programRules;
+    }
+
+    private ProgramRule queryProgramRuleRelationships(ProgramRule programRule) {
+        if (programRule != null) {
+            List<ProgramRuleAction> programRuleActions = ModelLinkFlow
+                    .queryLinksForModel(ProgramRuleAction.class,
+                            PROGRAMRULE_TO_PROGRAMRULEACTIONS, programRule.getUId());
+            programRule.setProgramRuleActions(programRuleActions);
+        }
+
+        return programRule;
     }
 }

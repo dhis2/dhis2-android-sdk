@@ -43,8 +43,8 @@ import java.util.List;
 public final class ProgramRuleActionStore extends AbsIdentifiableObjectStore<ProgramRuleAction,
         ProgramRuleActionFlow> implements IProgramRuleActionStore {
 
-    public ProgramRuleActionStore(IMapper<ProgramRuleAction, ProgramRuleActionFlow> mapper) {
-        super(mapper);
+    public ProgramRuleActionStore() {
+        super(ProgramRuleActionFlow.MAPPER);
     }
 
     @Override

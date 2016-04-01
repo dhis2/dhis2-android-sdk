@@ -33,10 +33,15 @@ import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
 public interface IPersistenceModule {
@@ -52,6 +57,16 @@ public interface IPersistenceModule {
     IProgramStageSectionStore getProgramStageSectionStore();
 
     IProgramStageDataElementStore getProgramStageDataElementStore();
+
+    IProgramRuleStore getProgramRuleStore();
+
+    IProgramRuleActionStore getProgramRuleActionStore();
+
+    IProgramRuleVariableStore getProgramRuleVariableStore();
+
+    IProgramIndicatorStore getProgramIndicatorStore();
+
+    ITrackedEntityAttributeStore getTrackedEntityAttributeStore();
 
     IOrganisationUnitStore getOrganisationUnitStore();
 

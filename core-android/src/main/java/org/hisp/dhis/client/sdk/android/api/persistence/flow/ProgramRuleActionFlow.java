@@ -35,10 +35,14 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
+    public static final IMapper<ProgramRuleAction, ProgramRuleActionFlow> MAPPER = new Mapper();
 
     private static final String PROGRAM_RULE_KEY = "programrule";
     private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";
@@ -195,5 +199,84 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    private static class Mapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
+
+        @Override
+        public ProgramRuleActionFlow mapToDatabaseEntity(
+                ProgramRuleAction programRuleAction) {
+            if (programRuleAction == null) {
+                return null;
+            }
+
+            ProgramRuleActionFlow programRuleActionFlow = new ProgramRuleActionFlow();
+            programRuleActionFlow.setId(programRuleAction.getId());
+            programRuleActionFlow.setUId(programRuleAction.getUId());
+            programRuleActionFlow.setCreated(programRuleAction.getCreated());
+            programRuleActionFlow.setLastUpdated(programRuleAction.getLastUpdated());
+            programRuleActionFlow.setName(programRuleAction.getName());
+            programRuleActionFlow.setDisplayName(programRuleAction.getDisplayName());
+            programRuleActionFlow.setAccess(programRuleAction.getAccess());
+            programRuleActionFlow.setData(programRuleAction.getData());
+            programRuleActionFlow.setContent(programRuleAction.getContent());
+            programRuleActionFlow.setLocation(programRuleAction.getLocation());
+            programRuleActionFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramStage()));
+            programRuleActionFlow.setProgramRule(ProgramRuleFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramRule()));
+            programRuleActionFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
+            programRuleActionFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getTrackedEntityAttribute()));
+            programRuleActionFlow.setDataElement(DataElementFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getDataElement()));
+            programRuleActionFlow.setProgramIndicator(ProgramIndicatorFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramIndicator()));
+
+            return programRuleActionFlow;
+        }
+
+        @Override
+        public ProgramRuleAction mapToModel(ProgramRuleActionFlow programRuleActionFlow) {
+            if (programRuleActionFlow == null) {
+                return null;
+            }
+
+            ProgramRuleAction programRuleAction = new ProgramRuleAction();
+            programRuleAction.setId(programRuleActionFlow.getId());
+            programRuleAction.setUId(programRuleActionFlow.getUId());
+            programRuleAction.setCreated(programRuleActionFlow.getCreated());
+            programRuleAction.setLastUpdated(programRuleActionFlow.getLastUpdated());
+            programRuleAction.setName(programRuleActionFlow.getName());
+            programRuleAction.setDisplayName(programRuleActionFlow.getDisplayName());
+            programRuleAction.setAccess(programRuleActionFlow.getAccess());
+            programRuleAction.setData(programRuleActionFlow.getData());
+            programRuleAction.setContent(programRuleActionFlow.getContent());
+            programRuleAction.setLocation(programRuleActionFlow.getLocation());
+            programRuleAction.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramStage()));
+            programRuleAction.setProgramRule(ProgramRuleFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramRule()));
+            programRuleAction.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramStageSection()));
+            programRuleAction.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getTrackedEntityAttribute()));
+            programRuleAction.setDataElement(DataElementFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getDataElement()));
+            programRuleAction.setProgramIndicator(ProgramIndicatorFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramIndicator()));
+            return programRuleAction;
+        }
+
+        @Override
+        public Class<ProgramRuleAction> getModelTypeClass() {
+            return ProgramRuleAction.class;
+        }
+
+        @Override
+        public Class<ProgramRuleActionFlow> getDatabaseEntityTypeClass() {
+            return ProgramRuleActionFlow.class;
+        }
     }
 }

@@ -45,9 +45,8 @@ import java.util.List;
 public final class ProgramIndicatorStore extends AbsIdentifiableObjectStore<ProgramIndicator,
         ProgramIndicatorFlow> implements IProgramIndicatorStore {
 
-
-    public ProgramIndicatorStore(IMapper<ProgramIndicator, ProgramIndicatorFlow> mapper) {
-        super(mapper);
+    public ProgramIndicatorStore() {
+        super(ProgramIndicatorFlow.MAPPER);
     }
 
     @Override

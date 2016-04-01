@@ -28,77 +28,163 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
-public final class ProgramRuleController implements IIdentifiableController<ProgramRule> {
+public final class ProgramRuleController extends AbsSyncStrategyController<ProgramRule>
+        implements IProgramRuleController {
     private final ITransactionManager transactionManager;
-    private final IIdentifiableObjectStore<ProgramRule> mProgramRuleStore;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final ISystemInfoController systemInfoController;
     private final IProgramRuleApiClient programRuleApiClient;
+    private final IProgramController programController;
+    private final IProgramStageController programStageController;
 
     public ProgramRuleController(ITransactionManager transactionManager,
                                  ILastUpdatedPreferences lastUpdatedPreferences,
-                                 IIdentifiableObjectStore<ProgramRule> mProgramRuleStore,
-                                 ISystemInfoApiClient systemInfoApiClient,
-                                 IProgramRuleApiClient programRuleApiClient) {
+                                 IProgramRuleStore programRuleStore,
+                                 ISystemInfoController systemInfoController,
+                                 IProgramRuleApiClient programRuleApiClient,
+                                 IProgramController programController,
+                                 IProgramStageController programStageController) {
+        super(ResourceType.PROGRAM_RULES, programRuleStore, lastUpdatedPreferences);
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.mProgramRuleStore = mProgramRuleStore;
-        this.systemInfoApiClient = systemInfoApiClient;
+        this.systemInfoController = systemInfoController;
         this.programRuleApiClient = programRuleApiClient;
-    }
-
-    private void getProgramRulesDataFromServer() throws ApiException {
-        ResourceType resource = ResourceType.PROGRAM_RULES;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-
-        // fetching id and name for all items on server. This is needed in case something is
-        // deleted on the server and we want to reflect that locally
-        List<ProgramRule> allProgramRules = programRuleApiClient.getBasicProgramRules(null);
-
-        // fetch all updated items
-        List<ProgramRule> updatedProgramRules = programRuleApiClient.getFullProgramRules
-                (lastUpdated);
-
-        // merging updated items with persisted items, and removing ones not present in server.
-        List<ProgramRule> existingPersistedAndUpdatedProgramRules = ModelUtils.merge(
-                allProgramRules, updatedProgramRules, mProgramRuleStore.queryAll());
-
-        Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(DbUtils.createOperations(mProgramRuleStore,
-                existingPersistedAndUpdatedProgramRules, mProgramRuleStore.queryAll()));
-
-        transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
+        this.programController = programController;
+        this.programStageController = programStageController;
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        getProgramRulesDataFromServer();
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_RULES, DateType.SERVER);
+
+        List<ProgramRule> persistedProgramRules =
+                identifiableObjectStore.queryAll();
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<ProgramRule> allExistingProgramRules = programRuleApiClient
+                .getProgramRules(Fields.BASIC, null);
+
+        Set<String> uidSet = null;
+        if (uids != null) {
+            // here we want to get list of ids of program stage sections which are
+            // stored locally and list of program stage sections which we want to download
+            uidSet = ModelUtils.toUidSet(persistedProgramRules);
+            uidSet.addAll(uids);
+        }
+
+        List<ProgramRule> updatedProgramRules = programRuleApiClient
+                .getProgramRules(Fields.ALL, lastUpdated, uidSet);
+
+        // Retrieving foreign key uids from programRules
+        Set<String> programStageUids = new HashSet<>();
+        Set<String> programUids = new HashSet<>();
+
+        List<ProgramRule> programRules = ModelUtils.merge(
+                allExistingProgramRules, updatedProgramRules,
+                persistedProgramRules);
+        for (ProgramRule programRule : programRules) {
+            if(programRule.getProgramStage() != null) {
+                programStageUids.add(programRule.getProgramStage().getUId());
+            }
+            if(programRule.getProgram() != null) {
+                programUids.add(programRule.getProgram().getUId());
+            }
+        }
+
+        // checking if programs is synced
+        if(!programUids.isEmpty()) {
+            programController.sync(strategy, programUids);
+        }
+        // checking if program stages is synced
+        if(!programStageUids.isEmpty()) {
+            programStageController.sync(strategy, programStageUids);
+        }
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(
+                allExistingProgramRules, updatedProgramRules,
+                persistedProgramRules, identifiableObjectStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_RULES,
+                DateType.SERVER, serverTime);
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy strategy, List<Program> programList) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_RULES, DateType.SERVER);
 
+        List<ProgramRule> persistedProgramRules =
+                identifiableObjectStore.queryAll();
+
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+
+        List<ProgramRule> allExistingProgramRules = programRuleApiClient
+                .getProgramRules(Fields.BASIC, null, programList);
+
+        Set<String> uidSet = null;
+//        if (uids != null) {
+            // here we want to get list of ids of program stage sections which are
+            // stored locally and list of program stage sections which we want to download
+            uidSet = ModelUtils.toUidSet(persistedProgramRules);
+//            uidSet.addAll(uids);
+//        }
+
+        List<ProgramRule> updatedProgramRules = programRuleApiClient
+                .getProgramRules(Fields.ALL, lastUpdated, uidSet);
+
+        // Retrieving foreign key uids from programRules
+        Set<String> programStageUids = new HashSet<>();
+//        Set<String> programUids = new HashSet<>();
+
+        List<ProgramRule> programRules = ModelUtils.merge(
+                allExistingProgramRules, updatedProgramRules,
+                persistedProgramRules);
+//        for (ProgramRule programRule : programRules) {
+//            programStageUids.add(programRule.getProgramStage().getUId());
+//            programUids.add(programRule.getProgram().getUId());
+//        }
+
+        // checking if programs is synced
+//        if(!programUids.isEmpty()) {
+//            programController.sync(strategy, programUids);
+//        }
+        // checking if program stages is synced
+//        if(!programStageUids.isEmpty()) {
+//            programStageController.sync(strategy, programStageUids);
+//        }
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(
+                allExistingProgramRules, updatedProgramRules,
+                persistedProgramRules, identifiableObjectStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_RULES,
+                DateType.SERVER, serverTime);
     }
 }

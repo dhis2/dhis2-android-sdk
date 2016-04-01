@@ -29,10 +29,12 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -48,4 +50,10 @@ public interface IProgramRuleActionScope {
     Observable<Boolean> save(ProgramRuleAction object);
 
     Observable<Boolean> remove(ProgramRuleAction object);
+
+    Observable<List<ProgramRuleAction>> sync();
+
+    Observable<List<ProgramRuleAction>> sync(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramRuleAction>> sync(SyncStrategy syncStrategy, Set<String> uids);
 }

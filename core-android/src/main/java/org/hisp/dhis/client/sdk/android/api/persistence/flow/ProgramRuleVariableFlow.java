@@ -35,14 +35,37 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
+    public static final IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> MAPPER = new Mapper();
+
     private static final String DATA_ELEMENT_KEY = "dataelement";
     private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";
     private static final String PROGRAM_KEY = "program";
     private static final String PROGRAM_STAGE_KEY = "programStage";
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_KEY,
+                            columnType = String.class, foreignKeyColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramFlow program;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
+                            columnType = String.class, foreignKeyColumnName = "uId"),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramStageFlow programStage;
 
     @Column
     @ForeignKey(
@@ -65,23 +88,7 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
     @Column
     ProgramRuleVariableSourceType sourceType;
 
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    ProgramFlow program;
 
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    ProgramStageFlow programStage;
 
     public ProgramRuleVariableFlow() {
         // empty constructor
@@ -125,5 +132,70 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
 
     public void setProgramStage(ProgramStageFlow programStage) {
         this.programStage = programStage;
+    }
+
+    private static class Mapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariableFlow> {
+
+        @Override
+        public ProgramRuleVariableFlow mapToDatabaseEntity(ProgramRuleVariable programRuleVariable) {
+            if (programRuleVariable == null) {
+                return null;
+            }
+
+            ProgramRuleVariableFlow programRuleVariableFlow = new ProgramRuleVariableFlow();
+            programRuleVariableFlow.setId(programRuleVariable.getId());
+            programRuleVariableFlow.setUId(programRuleVariable.getUId());
+            programRuleVariableFlow.setCreated(programRuleVariable.getCreated());
+            programRuleVariableFlow.setLastUpdated(programRuleVariable.getLastUpdated());
+            programRuleVariableFlow.setName(programRuleVariable.getName());
+            programRuleVariableFlow.setDisplayName(programRuleVariable.getDisplayName());
+            programRuleVariableFlow.setAccess(programRuleVariable.getAccess());
+            programRuleVariableFlow.setSourceType(programRuleVariable.getSourceType());
+            programRuleVariableFlow.setProgram(ProgramFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleVariable.getProgram()));
+            programRuleVariableFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleVariable.getProgramStage()));
+            programRuleVariableFlow.setDataElement(DataElementFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleVariable.getDataElement()));
+            programRuleVariableFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleVariable.getTrackedEntityAttribute()));
+            return programRuleVariableFlow;
+        }
+
+        @Override
+        public ProgramRuleVariable mapToModel(ProgramRuleVariableFlow programIndicatorFlow) {
+            if (programIndicatorFlow == null) {
+                return null;
+            }
+
+            ProgramRuleVariable programRuleVariable = new ProgramRuleVariable();
+            programRuleVariable.setId(programIndicatorFlow.getId());
+            programRuleVariable.setUId(programIndicatorFlow.getUId());
+            programRuleVariable.setCreated(programIndicatorFlow.getCreated());
+            programRuleVariable.setLastUpdated(programIndicatorFlow.getLastUpdated());
+            programRuleVariable.setName(programIndicatorFlow.getName());
+            programRuleVariable.setDisplayName(programIndicatorFlow.getDisplayName());
+            programRuleVariable.setAccess(programIndicatorFlow.getAccess());
+            programRuleVariable.setSourceType(programIndicatorFlow.getSourceType());
+            programRuleVariable.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programIndicatorFlow.getProgramStage()));
+            programRuleVariable.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programIndicatorFlow.getProgramStage()));
+            programRuleVariable.setDataElement(DataElementFlow.MAPPER
+                    .mapToModel(programIndicatorFlow.getDataElement()));
+            programRuleVariable.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToModel(programIndicatorFlow.getTrackedEntityAttribute()));
+            return programRuleVariable;
+        }
+
+        @Override
+        public Class<ProgramRuleVariable> getModelTypeClass() {
+            return ProgramRuleVariable.class;
+        }
+
+        @Override
+        public Class<ProgramRuleVariableFlow> getDatabaseEntityTypeClass() {
+            return ProgramRuleVariableFlow.class;
+        }
     }
 }

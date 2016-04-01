@@ -28,82 +28,122 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
 import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
-public final class ProgramRuleVariableController implements
-        IIdentifiableController<ProgramRuleVariable> {
-    private final IProgramRuleVariableApiClient programRuleActionApiClient;
+public final class ProgramRuleVariableController extends AbsSyncStrategyController
+        <ProgramRuleVariable> implements IProgramRuleVariableController {
+    private final IProgramRuleVariableApiClient programRuleVariableApiClient;
     private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IIdentifiableObjectStore<ProgramRuleVariable> mProgramRuleVariableStore;
+    private final ISystemInfoController systemInfoController;
+    private final IProgramController programController;
+    private final IProgramStageController programStageController;
+    private final IDataElementController dataElementController;
+    private final ITrackedEntityAttributeController trackedEntityAttributeController;
 
-    public ProgramRuleVariableController(IProgramRuleVariableApiClient programRuleActionApiClient,
+    public ProgramRuleVariableController(IProgramRuleVariableApiClient programRuleVariableApiClient,
                                          ITransactionManager transactionManager,
                                          ILastUpdatedPreferences lastUpdatedPreferences,
-                                         ISystemInfoApiClient systemInfoApiClient,
-                                         IIdentifiableObjectStore<ProgramRuleVariable>
-                                                 mProgramRuleVariableStore) {
-        this.programRuleActionApiClient = programRuleActionApiClient;
+                                         ISystemInfoController systemInfoController,
+                                         IProgramRuleVariableStore programRuleVariableStore,
+                                         IProgramController programController,
+                                         IProgramStageController programStageController,
+                                         IDataElementController dataElementController,
+                                         ITrackedEntityAttributeController trackedEntityAttributeController) {
+        super(ResourceType.PROGRAM_RULE_VARIABLES, programRuleVariableStore, lastUpdatedPreferences);
+        this.programRuleVariableApiClient = programRuleVariableApiClient;
         this.transactionManager = transactionManager;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.mProgramRuleVariableStore = mProgramRuleVariableStore;
-    }
-
-    private void getProgramRuleVariablesDataFromServer() throws ApiException {
-        ResourceType resource = ResourceType.PROGRAM_RULE_VARIABLES;
-        DateTime serverTime = systemInfoApiClient.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-
-        //fetching id and name for all items on server. This is needed in case something is
-        // deleted on the server and we want to reflect that locally
-        List<ProgramRuleVariable> allProgramRuleVariables = programRuleActionApiClient
-                .getBasicProgramRuleVariables(null);
-
-        //fetch all updated items
-        List<ProgramRuleVariable> updatedProgramRuleVariables = programRuleActionApiClient
-                .getFullProgramRuleVariables(lastUpdated);
-        //merging updated items with persisted items, and removing ones not present in server.
-        List<ProgramRuleVariable> existingPersistedAndUpdatedProgramRuleVariables = ModelUtils
-                .merge(allProgramRuleVariables, updatedProgramRuleVariables,
-                        mProgramRuleVariableStore.queryAll());
-
-        Queue<IDbOperation> operations = new LinkedList<>();
-        operations.addAll(DbUtils.createOperations(mProgramRuleVariableStore,
-                existingPersistedAndUpdatedProgramRuleVariables, mProgramRuleVariableStore
-                        .queryAll()));
-
-        transactionManager.transact(operations);
-        lastUpdatedPreferences.save(resource, DateType.SERVER, serverTime);
+        this.systemInfoController = systemInfoController;
+        this.programController = programController;
+        this.programStageController = programStageController;
+        this.dataElementController = dataElementController;
+        this.trackedEntityAttributeController = trackedEntityAttributeController;
 
     }
-
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
-        getProgramRuleVariablesDataFromServer();
-    }
+    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
+        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_RULE_VARIABLES, DateType.SERVER);
 
-    @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+        List<ProgramRuleVariable> persistedProgramRuleVariables =
+                identifiableObjectStore.queryAll();
 
+        // we have to download all ids from server in order to
+        // find out what was removed on the server side
+        List<ProgramRuleVariable> allExistingProgramRuleVariables = programRuleVariableApiClient
+                .getProgramRuleVariables(Fields.BASIC, null);
+
+        Set<String> uidSet = null;
+        if (uids != null) {
+            // here we want to get list of ids of program stage sections which are
+            // stored locally and list of program stage sections which we want to download
+            uidSet = ModelUtils.toUidSet(persistedProgramRuleVariables);
+            uidSet.addAll(uids);
+        }
+
+        List<ProgramRuleVariable> updatedProgramRuleVariables = programRuleVariableApiClient
+                .getProgramRuleVariables(Fields.ALL, lastUpdated, uidSet);
+
+        // Retrieving foreign key uids from programRuleVariables
+        Set<String> dataElementUids = new HashSet<>();
+        Set<String> trackedEntityAttributeUids = new HashSet<>();
+        Set<String> programStageUids = new HashSet<>();
+        Set<String> programUids = new HashSet<>();
+        List<ProgramRuleVariable> programRuleVariables = ModelUtils.merge(
+                allExistingProgramRuleVariables, updatedProgramRuleVariables,
+                persistedProgramRuleVariables);
+        for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
+            dataElementUids.add(programRuleVariable.getDataElement().getUId());
+            trackedEntityAttributeUids.add(programRuleVariable.getTrackedEntityAttribute().getUId());
+            programStageUids.add(programRuleVariable.getProgramStage().getUId());
+            programUids.add(programRuleVariable.getProgram().getUId());
+        }
+
+        // checking if programs is synced.
+        if(!programUids.isEmpty()) {
+            programController.sync(strategy, programUids);
+        }
+        // checking if program stages is synced
+        if(!programStageUids.isEmpty()) {
+            programStageController.sync(strategy, programStageUids);
+        }
+        // checking if data elements is synced
+        if(!dataElementUids.isEmpty()) {
+            dataElementController.sync(strategy, dataElementUids);
+        }
+        // checking if tracked entity attributes is synced
+        // trackedEntityAttributeUids will always be empty if user has access to programs without
+        // registration!
+        if(!trackedEntityAttributeUids.isEmpty()) {
+            trackedEntityAttributeController.sync(strategy, trackedEntityAttributeUids);
+        }
+
+
+        // we will have to perform something similar to what happens in AbsController
+        List<IDbOperation> dbOperations = DbUtils.createOperations(
+                allExistingProgramRuleVariables, updatedProgramRuleVariables,
+                persistedProgramRuleVariables, identifiableObjectStore);
+        transactionManager.transact(dbOperations);
+
+        lastUpdatedPreferences.save(ResourceType.PROGRAM_RULE_VARIABLES,
+                DateType.SERVER, serverTime);
     }
 }

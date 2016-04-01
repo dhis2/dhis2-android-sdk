@@ -28,13 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
+import org.hisp.dhis.client.sdk.core.common.Fields;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.joda.time.DateTime;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ITrackedEntityAttributeApiClient {
-    List<TrackedEntityAttribute> getBasicTrackedEntityAttributes(DateTime lastUpdated);
+    List<TrackedEntityAttribute> getTrackedEntityAttributes(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 
-    List<TrackedEntityAttribute> getFullTrackedEntityAttributes(DateTime lastUpdated);
+    List<TrackedEntityAttribute> getTrackedEntityAttributes(
+            Fields fields, Set<String> trackedEnityAttributeUids) throws ApiException;
 }

@@ -52,12 +52,15 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
 
     @Override
     public ModelType queryById(long id) {
-        DatabaseEntityType databaseEntity = new Select()
+        List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
                 .where(Condition.column(new NameAlias(BaseModelFlow
                         .COLUMN_ID)).is(id))
-                .querySingle();
-        return getMapper().mapToModel(databaseEntity);
+                .queryList();
+        if(databaseEntities != null && !databaseEntities.isEmpty()) {
+            return getMapper().mapToModel(databaseEntities.get(0));
+        }
+        return null;
     }
 
     @Override

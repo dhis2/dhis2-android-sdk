@@ -28,11 +28,13 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -50,4 +52,13 @@ public interface IProgramRuleScope {
     Observable<Boolean> save(ProgramRule object);
 
     Observable<Boolean> remove(ProgramRule object);
+
+    Observable<List<ProgramRule>> sync();
+
+    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy, Set<String> uids);
+
+    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy, List<Program> programs);
+
 }

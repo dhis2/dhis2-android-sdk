@@ -33,10 +33,15 @@ import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
+import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
@@ -63,6 +68,16 @@ public interface IControllersModule {
     IDataElementController getDataElementController();
 
     IProgramStageDataElementController getProgramStageDataElementController();
+
+    IProgramRuleController getProgramRuleController();
+
+    IProgramRuleActionController getProgramRuleActionController();
+
+    IProgramRuleVariableController getProgramRuleVariableController();
+
+    IProgramIndicatorController getProgramIndicatorController();
+
+    ITrackedEntityAttributeController getTrackedEntityAttributeController();
 
     IOptionSetController getOptionSetController();
 }

@@ -52,9 +52,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO implement special logic to handle 409
-// TODO re-consider name methods in controllers (replace sync
-// TODO in meta-data controllers with something similar to pullModels()
 public final class EventController extends AbsDataController<Event> implements IEventController {
 
     /* Controllers */
@@ -97,7 +94,7 @@ public final class EventController extends AbsDataController<Event> implements I
     @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
         /* first we need to get information about new events from server */
-        pullUpdates(strategy, uids);
+        // pullUpdates(strategy, uids);
 
         /* then we should try to push data to server */
         pushUpdates(strategy, uids);

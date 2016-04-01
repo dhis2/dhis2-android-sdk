@@ -46,6 +46,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
@@ -64,6 +65,7 @@ public class ControllersModule implements IControllersModule {
     private final IProgramController programController;
     private final IProgramStageController programStageController;
     private final IProgramStageSectionController programStageSectionController;
+    private final IProgramStageDataElementController programStageDataElementController;
     private final IOrganisationUnitController organisationUnitController;
     private final IAssignedProgramsController assignedProgramsController;
     private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
@@ -104,6 +106,30 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences());
 
+        optionSetController = new OptionSetController(
+                systemInfoController,
+                networkModule.getOptionSetApiClient(),
+                persistenceModule.getOptionStore(),
+                persistenceModule.getOptionSetStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
+
+        dataElementController = new DataElementController(
+                systemInfoController, optionSetController,
+                networkModule.getDataElementApiClient(),
+                persistenceModule.getDataElementStore(),
+                preferencesModule.getLastUpdatedPreferences(),
+                persistenceModule.getTransactionManager());
+
+        programStageDataElementController = new ProgramStageDataElementController(
+                systemInfoController, programStageController,
+                programStageSectionController, dataElementController,
+                networkModule.getProgramStageSectionApiClient(),
+                networkModule.getProgramStageDataElementApiClient(),
+                persistenceModule.getProgramStageDataElementStore(),
+                persistenceModule.getTransactionManager(),
+                preferencesModule.getLastUpdatedPreferences());
+
         assignedProgramsController = new AssignedProgramsController(
                 programController, networkModule.getUserApiClient());
 
@@ -127,21 +153,6 @@ public class ControllersModule implements IControllersModule {
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore(),
                 persistenceModule.getTransactionManager(), logger);
-
-        optionSetController = new OptionSetController(
-                systemInfoController,
-                networkModule.getOptionSetApiClient(),
-                persistenceModule.getOptionStore(),
-                persistenceModule.getOptionSetStore(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager());
-
-        dataElementController = new DataElementController(
-                systemInfoController, optionSetController,
-                networkModule.getDataElementApiClient(),
-                persistenceModule.getDataElementStore(),
-                preferencesModule.getLastUpdatedPreferences(),
-                persistenceModule.getTransactionManager());
     }
 
     @Override
@@ -196,11 +207,11 @@ public class ControllersModule implements IControllersModule {
 
     @Override
     public IProgramStageDataElementController getProgramStageDataElementController() {
-        return null;
+        return programStageDataElementController;
     }
 
     @Override
     public IOptionSetController getOptionSetController() {
-        return null;
+        return optionSetController;
     }
 }

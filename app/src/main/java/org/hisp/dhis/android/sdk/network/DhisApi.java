@@ -206,8 +206,12 @@ public interface DhisApi {
     // Methods for working with Meta data
     /////////////////////////////////////////////////////////////////////////
 
+    // SWAPPED FOR "/me/programs/
     @GET("/me/programs/")
     Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
+
+    @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]]")
+    UserAccount getUserAccount();
 
     @GET("/" + ApiEndpointContainer.PROGRAMS + "/{programUid}")
     Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);

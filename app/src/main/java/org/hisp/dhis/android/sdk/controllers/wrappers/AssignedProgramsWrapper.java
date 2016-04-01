@@ -40,6 +40,7 @@ import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnitProgramRelationship;
+import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.meta.DbOperation;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 
@@ -105,12 +106,13 @@ public class AssignedProgramsWrapper extends JsonDeserializer<List<OrganisationU
         }
 
         for (OrganisationUnit organisationUnit : organisationUnits) {
-            for (String programId : organisationUnit.getPrograms()) {
+            for (Program program : organisationUnit.getPrograms()) {
                 OrganisationUnitProgramRelationship orgUnitProgram =
                         new OrganisationUnitProgramRelationship();
                 orgUnitProgram.setOrganisationUnitId(organisationUnit.getId());
-                orgUnitProgram.setProgramId(programId);
+                orgUnitProgram.setProgramId(program.getUid());
                 operations.add(DbOperation.save(orgUnitProgram));
+                System.out.println("ORGUNITRELATIONSHIP: " + orgUnitProgram.getOrganisationUnitId());
             }
             operations.add(DbOperation.save(organisationUnit));
         }

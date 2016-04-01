@@ -43,6 +43,11 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import org.hisp.dhis.android.sdk.persistence.models.meta.State;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Table(databaseName = Dhis2Database.NAME)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class UserAccount extends BaseModel implements IdentifiableObject {
@@ -131,8 +136,35 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
     @Column(name = "phoneNumber")
     String phoneNumber;
 
+    /* This properties should not be directly
+    accessible through model accessors */
+    @JsonProperty("userCredentials")
+    UserCredentials userCredentials;
+
+    @JsonProperty("organisationUnits")
+    List<OrganisationUnit> organisationUnits;
+
     public UserAccount() {
         state = State.SYNCED;
+    }
+
+
+    /* Exposing getPrograms() instead of making UserCredentials model public */
+    public List<Program> getPrograms() {
+        Map<String, Program> programMap = new HashMap<>();
+        if (userCredentials != null && userCredentials.getUserRoles() != null) {
+
+            /* go through all UserRoles and extract assigned programs */
+            for (UserRole userRole : userCredentials.getUserRoles()) {
+                if (userRole.getPrograms() != null) {
+                    for (Program program : userRole.getPrograms()) {
+                        programMap.put(program.getUid(), program);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<>(programMap.values());
     }
 
     @JsonIgnore
@@ -169,6 +201,11 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
     @Override
     public void setId(long id) {
         throw new UnsupportedOperationException("You cannot set id on UserAccount");
+    }
+
+    @JsonIgnore
+    public List<OrganisationUnit> getOrganisationUnits() {
+        return organisationUnits;
     }
 
     @JsonIgnore

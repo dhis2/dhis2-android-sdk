@@ -85,11 +85,12 @@ public abstract class ResourceController {
      * or because it needs to be updated based on time.
      * @return
      */
-    public static boolean shouldLoad( DhisApi dhisApi, ResourceType resource, String salt ) {
+    public static boolean shouldLoad(DateTime serverTime, ResourceType resource, String salt ) {
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(resource, salt);
-        DateTime serverDateTime = dhisApi.getSystemInfo()
-                .getServerDate();
+        DateTime serverDateTime = serverTime;
+//        DateTime serverDateTime = dhisApi.getSystemInfo()
+//                .getServerDate();
         if( lastUpdated == null ) {
             return true;
         } else if ( lastUpdated.isBefore( serverDateTime ) ) {
@@ -103,8 +104,8 @@ public abstract class ResourceController {
      * or because it needs to be updated based on time.
      * @return
      */
-    public static boolean shouldLoad( DhisApi dhisApi, ResourceType resource ) {
-        return shouldLoad(dhisApi, resource, null);
+    public static boolean shouldLoad( DateTime serverDateTime, ResourceType resource ) {
+        return shouldLoad(serverDateTime, resource, null);
     }
 
     public static Map<String, String> getBasicQueryMap(DateTime lastUpdated) {

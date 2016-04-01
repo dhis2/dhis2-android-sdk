@@ -1,5 +1,4 @@
 # dhis2-android-sdk
-[![Build Status](https://travis-ci.org/dhis2/dhis2-android-sdk.svg?branch=master)](https://travis-ci.org/dhis2/dhis2-android-sdk)
 
 This project is in alpha mode. You are free to experiment with this project, but please give feedback through issues if things are not working properly. We are planning to have a stable beta version of this project by 1st June 2016 
 

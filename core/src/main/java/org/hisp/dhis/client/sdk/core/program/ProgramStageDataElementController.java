@@ -134,9 +134,9 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
             dataElementUids.add(programStageDataElement.getDataElement().getUId());
         }
 
-        stageController.sync(strategy, programStageUids);
-        dataElementController.sync(strategy, dataElementUids);
-        stageSectionController.sync(strategy, programStageSectionUids);
+        stageController.pullUpdates(strategy, programStageUids);
+        dataElementController.pullUpdates(strategy, dataElementUids);
+        stageSectionController.pullUpdates(strategy, programStageSectionUids);
 
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingStageDataElements,
                 updatedStageDataElements, programStageDataElements, identifiableObjectStore);

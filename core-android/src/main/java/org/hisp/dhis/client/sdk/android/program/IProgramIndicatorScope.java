@@ -32,7 +32,6 @@ package org.hisp.dhis.client.sdk.android.program;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
@@ -54,13 +53,9 @@ public interface IProgramIndicatorScope {
 
     Observable<List<ProgramIndicator>> list(ProgramStageSection programStageSection);
 
-    Observable<Boolean> save(ProgramIndicator object);
+    Observable<List<ProgramIndicator>> pullUpdates();
 
-    Observable<Boolean> remove(ProgramIndicator object);
+    Observable<List<ProgramIndicator>> pullUpdates(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramIndicator>> sync();
-
-    Observable<List<ProgramIndicator>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramIndicator>> sync(SyncStrategy syncStrategy, Set<String> uids);
+    Observable<List<ProgramIndicator>> pullUpdates(SyncStrategy syncStrategy, Set<String> uids);
 }

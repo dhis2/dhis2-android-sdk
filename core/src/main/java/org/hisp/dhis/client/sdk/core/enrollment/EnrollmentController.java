@@ -122,7 +122,7 @@ public final class EnrollmentController implements IEnrollmentController {
 //        Enrollment updatedEnrollment = enrollmentApiClient.getFullEnrollment(uid, lastUpdated);
 //        //todo: if the updatedEnrollment is deleted on the server, delete it also locally
 //        //todo: be sure to check if the enrollment has ever been on the server, or if it is still
-//        // pending first time registration sync
+//        // pending first time registration pullUpdates
 //
 //        Enrollment persistedEnrollment = enrollmentStore.queryByUid(uid);
 //        if (updatedEnrollment.getUId() == null) {

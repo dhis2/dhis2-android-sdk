@@ -88,19 +88,21 @@ public final class EventController extends AbsDataController<Event> implements I
         this.transactionManager = transactionManager;
     }
 
+
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void sync(SyncStrategy strategy) {
         // get list of local uids
         Set<String> uids = ModelUtils.toUidSet(
                 eventStore.queryAll());
 
         if (!uids.isEmpty()) {
-            sync(syncStrategy, uids);
+            pullUpdates(strategy, uids);
+            pushUpdates(uids);
         }
     }
 
     @Override
-    public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public void sync(SyncStrategy strategy, Set<String> uids) {
         isEmpty(uids, "Set of event uids must not be null");
 
         /* first we need to get information about new events from server */
@@ -108,6 +110,17 @@ public final class EventController extends AbsDataController<Event> implements I
 
         /* then we should try to push data to server */
         pushUpdates(uids);
+    }
+
+    @Override
+    public void pullUpdates(SyncStrategy strategy) throws ApiException {
+        // get list of local uids
+        Set<String> uids = ModelUtils.toUidSet(
+                eventStore.queryAll());
+
+        if (!uids.isEmpty()) {
+            pullUpdates(strategy, uids);
+        }
     }
 
     @Override

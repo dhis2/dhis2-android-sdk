@@ -137,51 +137,17 @@ public class ProgramRuleScope implements IProgramRuleScope {
     }
 
     @Override
-    public Observable<Boolean> save(final ProgramRule object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programRuleService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
+    public Observable<List<ProgramRule>> pullUpdates() {
+        return pullUpdates(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<Boolean> remove(final ProgramRule object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programRuleService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> sync() {
-        return sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramRule>> pullUpdates(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRule>> subscriber) {
                 try {
-                    programRuleController.sync(syncStrategy);
+                    programRuleController.pullUpdates(syncStrategy);
                     List<ProgramRule> programRules = programRuleService.list();
                     subscriber.onNext(programRules);
                 } catch (Throwable throwable) {
@@ -194,12 +160,13 @@ public class ProgramRuleScope implements IProgramRuleScope {
     }
 
     @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+    public Observable<List<ProgramRule>> pullUpdates(final SyncStrategy syncStrategy,
+                                                     final Set<String> uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRule>> subscriber) {
                 try {
-                    programRuleController.sync(syncStrategy, uids);
+                    programRuleController.pullUpdates(syncStrategy, uids);
                     List<ProgramRule> programRules = programRuleService.list();
                     subscriber.onNext(programRules);
                 } catch (Throwable throwable) {
@@ -212,12 +179,13 @@ public class ProgramRuleScope implements IProgramRuleScope {
     }
 
     @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final List<Program> programs) {
+    public Observable<List<ProgramRule>> pullUpdates(final SyncStrategy syncStrategy, final
+    List<Program> programs) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRule>> subscriber) {
                 try {
-                    programRuleController.sync(syncStrategy, programs);
+                    programRuleController.pullUpdates(syncStrategy, programs);
                     List<ProgramRule> programRules = programRuleService.list();
                     subscriber.onNext(programRules);
                 } catch (Throwable throwable) {

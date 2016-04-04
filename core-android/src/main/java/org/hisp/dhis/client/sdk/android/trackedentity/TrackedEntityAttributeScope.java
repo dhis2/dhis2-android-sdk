@@ -145,8 +145,8 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
-                    trackedEntityAttributeController.sync(SyncStrategy.DEFAULT);
-//                    boolean status = trackedEntityAttributeController.sync();
+                    trackedEntityAttributeController.pullUpdates(SyncStrategy.DEFAULT);
+//                    boolean status = trackedEntityAttributeController.pullUpdates();
 //                    subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -168,7 +168,7 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
                 try {
-                    trackedEntityAttributeController.sync(syncStrategy);
+                    trackedEntityAttributeController.pullUpdates(syncStrategy);
                     List<TrackedEntityAttribute> trackedEntityAttributes = trackedEntityAttributeService.list();
                     subscriber.onNext(trackedEntityAttributes);
                 } catch (Throwable throwable) {
@@ -186,7 +186,7 @@ public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope
             @Override
             public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
                 try {
-                    trackedEntityAttributeController.sync(syncStrategy, uids);
+                    trackedEntityAttributeController.pullUpdates(syncStrategy, uids);
                     List<TrackedEntityAttribute> trackedEntityAttributes = trackedEntityAttributeService.list();
                     subscriber.onNext(trackedEntityAttributes);
                 } catch (Throwable throwable) {

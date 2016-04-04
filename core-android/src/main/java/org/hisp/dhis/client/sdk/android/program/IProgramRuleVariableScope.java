@@ -15,13 +15,13 @@ public interface IProgramRuleVariableScope {
 
     Observable<ProgramRuleVariable> get(long id);
 
+    Observable<ProgramRuleVariable> get(Program program, String programRuleVariableName);
+
     Observable<List<ProgramRuleVariable>> list();
 
-    Observable<ProgramRuleVariable> getByName(Program program, String programRuleVariableName);
+    Observable<List<ProgramRuleVariable>> pullUpdates();
 
-    Observable<List<ProgramRuleVariable>> sync();
+    Observable<List<ProgramRuleVariable>> pullUpdates(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramRuleVariable>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramRuleVariable>> sync(SyncStrategy syncStrategy, Set<String> uids);
+    Observable<List<ProgramRuleVariable>> pullUpdates(SyncStrategy syncStrategy, Set<String> uids);
 }

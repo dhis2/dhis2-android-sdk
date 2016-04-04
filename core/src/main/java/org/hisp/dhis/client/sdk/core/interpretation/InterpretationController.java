@@ -566,13 +566,13 @@ public final class InterpretationController implements IIdentifiableController<I
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
         getInterpretationDataFromServer();
         sendLocalChanges();
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

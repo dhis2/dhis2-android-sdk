@@ -26,49 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.user;
+package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import java.util.List;
 import java.util.Set;
 
-public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
+public interface IIdentifiableDataController<T extends IdentifiableObject>
+        extends IIdentifiableController<T> {
 
-    // Api Clients
-    private final IUserApiClient userApiClient;
+    void sync(SyncStrategy strategy);
 
-    // Controllers
-    private final IOrganisationUnitController organisationUnitController;
+    void sync(SyncStrategy strategy, Set<String> uids);
 
-    public AssignedOrganisationUnitController(
-            IUserApiClient userApiClient, IOrganisationUnitController
-            organisationUnitController) {
-        this.userApiClient = userApiClient;
-        this.organisationUnitController = organisationUnitController;
-    }
-
-    @Override
-    public void sync() throws ApiException {
-        sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public void sync(SyncStrategy strategy) throws ApiException {
-        UserAccount userAccount = userApiClient.getUserAccount();
-
-        /* get list of assigned organisation units */
-        List<OrganisationUnit> assignedOrganisationUnits = userAccount.getOrganisationUnits();
-
-        /* convert them to set of ids */
-        Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
-
-        /* get them through program controller */
-        organisationUnitController.pullUpdates(strategy, ids);
-    }
+    void pushUpdates(Set<String> uids) throws ApiException;
 }

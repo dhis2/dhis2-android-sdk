@@ -60,36 +60,36 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> sync() {
-        return sync(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStageDataElement>> pullUpdates() {
+        return pullUpdates(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> sync(String... uids) {
-        return sync(SyncStrategy.DEFAULT, uids);
+    public Observable<List<ProgramStageDataElement>> pullUpdates(String... uids) {
+        return pullUpdates(SyncStrategy.DEFAULT, uids);
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> sync(
+    public Observable<List<ProgramStageDataElement>> pullUpdates(
             final SyncStrategy syncStrategy, final String... uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
 
             @Override
             public List<ProgramStageDataElement> call() {
                 Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageDataElementController.sync(syncStrategy, uidSet);
+                programStageDataElementController.pullUpdates(syncStrategy, uidSet);
                 return programStageDataElementService.list(uidSet);
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStageDataElement>> pullUpdates(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
 
             @Override
             public List<ProgramStageDataElement> call() {
-                programStageDataElementController.sync(syncStrategy);
+                programStageDataElementController.pullUpdates(syncStrategy);
                 return programStageDataElementService.list();
             }
         });
@@ -179,40 +179,6 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
                             programStageDataElementService.list(programStageSection);
 
                     subscriber.onNext(programStageDataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> save(final ProgramStageDataElement object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programStageDataElementService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final ProgramStageDataElement object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programStageDataElementService.remove(object);
-                    subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

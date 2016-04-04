@@ -38,14 +38,6 @@ import java.util.List;
 import rx.Observable;
 
 public interface IProgramStageSectionScope {
-    Observable<List<ProgramStageSection>> sync();
-
-    Observable<List<ProgramStageSection>> sync(String... uids);
-
-    Observable<List<ProgramStageSection>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramStageSection>> sync(SyncStrategy syncStrategy, String... uids);
-
     Observable<ProgramStageSection> get(String uid);
 
     Observable<ProgramStageSection> get(long id);
@@ -53,4 +45,12 @@ public interface IProgramStageSectionScope {
     Observable<List<ProgramStageSection>> list();
 
     Observable<List<ProgramStageSection>> list(ProgramStage programStage);
+
+    Observable<List<ProgramStageSection>> pullUpdates();
+
+    Observable<List<ProgramStageSection>> pullUpdates(String... uids);
+
+    Observable<List<ProgramStageSection>> pullUpdates(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramStageSection>> pullUpdates(SyncStrategy syncStrategy, String... uids);
 }

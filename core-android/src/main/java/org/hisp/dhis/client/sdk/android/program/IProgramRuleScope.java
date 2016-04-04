@@ -49,16 +49,12 @@ public interface IProgramRuleScope {
 
     Observable<List<ProgramRule>> list(Program program);
 
-    Observable<Boolean> save(ProgramRule object);
+    Observable<List<ProgramRule>> pullUpdates();
 
-    Observable<Boolean> remove(ProgramRule object);
+    Observable<List<ProgramRule>> pullUpdates(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramRule>> sync();
+    Observable<List<ProgramRule>> pullUpdates(SyncStrategy syncStrategy, Set<String> uids);
 
-    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy, Set<String> uids);
-
-    Observable<List<ProgramRule>> sync(SyncStrategy syncStrategy, List<Program> programs);
+    Observable<List<ProgramRule>> pullUpdates(SyncStrategy syncStrategy, List<Program> programs);
 
 }

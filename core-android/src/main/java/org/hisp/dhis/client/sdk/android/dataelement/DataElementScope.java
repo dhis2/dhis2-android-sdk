@@ -140,7 +140,7 @@ public class DataElementScope implements IDataElementScope {
             @Override
             public void call(Subscriber<? super List<DataElement>> subscriber) {
                 try {
-                    dataElementController.sync(SyncStrategy.DEFAULT);
+                    dataElementController.pullUpdates(SyncStrategy.DEFAULT);
                     List<DataElement> dataElements = dataElementService.list();
                     subscriber.onNext(dataElements);
                 } catch (Throwable throwable) {

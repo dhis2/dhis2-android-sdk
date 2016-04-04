@@ -41,14 +41,6 @@ import rx.Observable;
 
 public interface IProgramStageDataElementScope {
 
-    Observable<List<ProgramStageDataElement>> sync();
-
-    Observable<List<ProgramStageDataElement>> sync(String... uids);
-
-    Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramStageDataElement>> sync(SyncStrategy syncStrategy, String... uids);
-
     Observable<ProgramStageDataElement> get(long id);
 
     Observable<List<ProgramStageDataElement>> list();
@@ -59,8 +51,11 @@ public interface IProgramStageDataElementScope {
 
     Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
 
-    Observable<Boolean> save(ProgramStageDataElement object);
+    Observable<List<ProgramStageDataElement>> pullUpdates();
 
-    Observable<Boolean> remove(ProgramStageDataElement object);
+    Observable<List<ProgramStageDataElement>> pullUpdates(String... uids);
 
+    Observable<List<ProgramStageDataElement>> pullUpdates(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramStageDataElement>> pullUpdates(SyncStrategy syncStrategy, String... uids);
 }

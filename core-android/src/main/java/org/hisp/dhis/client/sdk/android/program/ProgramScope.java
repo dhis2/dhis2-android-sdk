@@ -128,7 +128,7 @@ public class ProgramScope implements IProgramScope {
             @Override
             public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
-                    programController.sync(syncStrategy);
+                    programController.pullUpdates(syncStrategy);
                     subscriber.onNext(programService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

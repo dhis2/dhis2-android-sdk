@@ -54,36 +54,36 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync() {
-        return sync(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStageSection>> pullUpdates() {
+        return pullUpdates(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(String... uids) {
-        return sync(SyncStrategy.DEFAULT, uids);
+    public Observable<List<ProgramStageSection>> pullUpdates(String... uids) {
+        return pullUpdates(SyncStrategy.DEFAULT, uids);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStageSection>> pullUpdates(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public List<ProgramStageSection> call() {
-                programStageSectionController.sync(syncStrategy);
+                programStageSectionController.pullUpdates(syncStrategy);
                 return programStageSectionService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy,
-                                                      final String... uids) {
+    public Observable<List<ProgramStageSection>> pullUpdates(final SyncStrategy syncStrategy,
+                                                             final String... uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public List<ProgramStageSection> call() {
                 Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageSectionController.sync(syncStrategy, uidSet);
+                programStageSectionController.pullUpdates(syncStrategy, uidSet);
                 return programStageSectionService.list(uidSet);
             }
         });

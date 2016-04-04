@@ -110,19 +110,19 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
 
         /* now we can try to send changes made locally to server */
         // sendLocalChanges();
 
-        /* sync content */
+        /* pullUpdates content */
         // syncDashboardContent();
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 
@@ -633,7 +633,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
                 dashboardElementStore.delete(element);
 
                 // removal of elements changes
-                // dashboard's timestamp on server. In order to stay in sync,
+                // dashboard's timestamp on server. In order to stay in pullUpdates,
                 // we need to get dashboard from server.
                 updateDashboardTimeStamp(item.getDashboard());
             } catch (ApiException apiException) {

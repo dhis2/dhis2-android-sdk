@@ -110,7 +110,7 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
 
         // Syncing option sets before saving data elements(since
         // data elements are referencing them directly)
-        optionSetController.sync(strategy, optionSetUids);
+        optionSetController.pullUpdates(strategy, optionSetUids);
 
 
         // we will have to perform something similar to what happens in AbsController

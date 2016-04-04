@@ -106,7 +106,7 @@ public class OrganisationUnitScope implements IOrganisationUnitScope {
             @Override
             public void call(Subscriber<? super List<OrganisationUnit>> subscriber) {
                 try {
-                    organisationUnitController.sync(syncStrategy);
+                    organisationUnitController.pullUpdates(syncStrategy);
                     subscriber.onNext(null);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

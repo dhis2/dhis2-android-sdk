@@ -114,11 +114,11 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
 
         // checking if programs is synced
         if(!programUids.isEmpty()) {
-            programController.sync(strategy, programUids);
+            programController.pullUpdates(strategy, programUids);
         }
         // checking if program stages is synced
         if(!programStageUids.isEmpty()) {
-            programStageController.sync(strategy, programStageUids);
+            programStageController.pullUpdates(strategy, programStageUids);
         }
 
         // we will have to perform something similar to what happens in AbsController
@@ -132,7 +132,7 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
     }
 
     @Override
-    public void sync(SyncStrategy strategy, List<Program> programList) {
+    public void pullUpdates(SyncStrategy strategy, List<Program> programList) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_RULES, DateType.SERVER);
@@ -171,11 +171,11 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
 
         // checking if programs is synced
 //        if(!programUids.isEmpty()) {
-//            programController.sync(strategy, programUids);
+//            programController.pullUpdates(strategy, programUids);
 //        }
         // checking if program stages is synced
 //        if(!programStageUids.isEmpty()) {
-//            programStageController.sync(strategy, programStageUids);
+//            programStageController.pullUpdates(strategy, programStageUids);
 //        }
 
         // we will have to perform something similar to what happens in AbsController

@@ -119,21 +119,21 @@ public final class ProgramRuleVariableController extends AbsSyncStrategyControll
 
         // checking if programs is synced.
         if(!programUids.isEmpty()) {
-            programController.sync(strategy, programUids);
+            programController.pullUpdates(strategy, programUids);
         }
         // checking if program stages is synced
         if(!programStageUids.isEmpty()) {
-            programStageController.sync(strategy, programStageUids);
+            programStageController.pullUpdates(strategy, programStageUids);
         }
         // checking if data elements is synced
         if(!dataElementUids.isEmpty()) {
-            dataElementController.sync(strategy, dataElementUids);
+            dataElementController.pullUpdates(strategy, dataElementUids);
         }
         // checking if tracked entity attributes is synced
         // trackedEntityAttributeUids will always be empty if user has access to programs without
         // registration!
         if(!trackedEntityAttributeUids.isEmpty()) {
-            trackedEntityAttributeController.sync(strategy, trackedEntityAttributeUids);
+            trackedEntityAttributeController.pullUpdates(strategy, trackedEntityAttributeUids);
         }
 
 

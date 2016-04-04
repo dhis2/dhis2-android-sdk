@@ -54,23 +54,23 @@ public class ProgramStageScope implements IProgramStageScope {
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync() {
-        return sync(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStage>> pullUpdates() {
+        return pullUpdates(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync(String... programStageIds) {
-        return sync(SyncStrategy.DEFAULT, programStageIds);
+    public Observable<List<ProgramStage>> pullUpdates(String... programStageIds) {
+        return pullUpdates(SyncStrategy.DEFAULT, programStageIds);
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStage>> pullUpdates(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
-                    programStageController.sync(syncStrategy);
+                    programStageController.pullUpdates(syncStrategy);
                     subscriber.onNext(programStageService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -82,15 +82,15 @@ public class ProgramStageScope implements IProgramStageScope {
     }
 
     @Override
-    public Observable<List<ProgramStage>> sync(final SyncStrategy syncStrategy,
-                                               final String... programStageIds) {
+    public Observable<List<ProgramStage>> pullUpdates(final SyncStrategy syncStrategy,
+                                                      final String... programStageIds) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramStage>>() {
 
             @Override
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
                     Set<String> uids = new HashSet<>(ModelUtils.asList(programStageIds));
-                    programStageController.sync(syncStrategy, uids);
+                    programStageController.pullUpdates(syncStrategy, uids);
                     subscriber.onNext(programStageService.list(uids));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

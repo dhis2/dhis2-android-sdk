@@ -240,7 +240,7 @@ public class EnrollmentScope implements IEnrollmentScope {
             public void call(Subscriber<? super Boolean> subscriber) {
                 try {
                     mEnrollmentController.sync();
-//                    bool status = mEnrollmentController.sync() subscriber.onNext(status);
+//                    bool status = mEnrollmentController.pullUpdates() subscriber.onNext(status);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
                 }

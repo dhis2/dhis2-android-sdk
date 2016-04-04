@@ -71,6 +71,6 @@ public class AssignedProgramsController implements IAssignedProgramsController {
         Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
 
         /* get them through program controller */
-        programController.sync(strategy, ids);
+        programController.pullUpdates(strategy, ids);
     }
 }

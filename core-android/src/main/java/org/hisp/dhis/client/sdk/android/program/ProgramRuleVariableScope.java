@@ -74,7 +74,8 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
     }
 
     @Override
-    public Observable<ProgramRuleVariable> getByName(final Program program, final String programRuleVariableName) {
+    public Observable<ProgramRuleVariable> get(final Program program, final String
+            programRuleVariableName) {
         return Observable.create(new Observable.OnSubscribe<ProgramRuleVariable>() {
             @Override
             public void call(Subscriber<? super ProgramRuleVariable> subscriber) {
@@ -91,17 +92,17 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> sync() {
-        return sync(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramRuleVariable>> pullUpdates() {
+        return pullUpdates(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramRuleVariable>> pullUpdates(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRuleVariable>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRuleVariable>> subscriber) {
                 try {
-                    programRuleVariableController.sync(syncStrategy);
+                    programRuleVariableController.pullUpdates(syncStrategy);
                     List<ProgramRuleVariable> programRuleVariables = programRuleVariableService.list();
                     subscriber.onNext(programRuleVariables);
                 } catch (Throwable throwable) {
@@ -114,12 +115,13 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+    public Observable<List<ProgramRuleVariable>> pullUpdates(final SyncStrategy syncStrategy,
+                                                             final Set<String> uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramRuleVariable>>() {
             @Override
             public void call(Subscriber<? super List<ProgramRuleVariable>> subscriber) {
                 try {
-                    programRuleVariableController.sync(syncStrategy, uids);
+                    programRuleVariableController.pullUpdates(syncStrategy, uids);
                     List<ProgramRuleVariable> programRuleVariables = programRuleVariableService.list();
                     subscriber.onNext(programRuleVariables);
                 } catch (Throwable throwable) {

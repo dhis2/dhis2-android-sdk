@@ -53,10 +53,11 @@ public interface IProgramRuleScope {
 
     Observable<List<ProgramRule>> pull(Set<String> uids);
 
+    Observable<List<ProgramRule>> pull(List<Program> programs);
+
     Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy);
 
     Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, Set<String> uids);
 
     Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, List<Program> programs);
-
 }

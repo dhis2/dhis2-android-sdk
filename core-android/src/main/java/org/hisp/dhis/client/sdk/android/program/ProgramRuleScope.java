@@ -112,6 +112,11 @@ public class ProgramRuleScope implements IProgramRuleScope {
     }
 
     @Override
+    public Observable<List<ProgramRule>> pull(List<Program> programs) {
+        return pull(SyncStrategy.DEFAULT, programs);
+    }
+
+    @Override
     public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override

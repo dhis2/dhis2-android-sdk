@@ -88,8 +88,10 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        isEmpty(uids);
+
         /* first we need to get information about new events from server */
-        // pullUpdates(strategy, uids);
+        pullUpdates(strategy, uids);
 
         /* then we should try to push data to server */
         pushUpdates(strategy, uids);
@@ -97,17 +99,25 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        isEmpty(uids);
+
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
 
         // we need models which we got from server (not those which we created locally)
+
+        // TODO  get only items which are specified with uids
         List<Event> persistedEvents = stateStore.queryModelsWithActions(Event.class,
                 Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
+
+        // TODO fot events endpoint we cannot do this!
+        // TODO Change to check based on uids
         List<Event> allExistingEvents = eventApiClient.getEvents(Fields.BASIC, null, null);
 
+        // TODO we always will be providing uids! otherwise fail
         Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of events which are
@@ -116,6 +126,7 @@ public final class EventController extends AbsDataController<Event> implements I
             uidSet.addAll(uids);
         }
 
+        // TODO this is okay
         List<Event> updatedEvents = eventApiClient.getEvents(
                 Fields.ALL, lastUpdated, uidSet);
 
@@ -129,6 +140,8 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
+        isEmpty(uids);
+
         sendEvents(strategy, uids);
         deleteEvents(strategy, uids);
     }
@@ -182,6 +195,12 @@ public final class EventController extends AbsDataController<Event> implements I
             } catch (ApiException apiException) {
                 handleApiException(apiException, event);
             }
+        }
+    }
+
+    private void isEmpty(Set<String> uids) {
+        if (uids == null || uids.isEmpty()) {
+            throw new IllegalArgumentException("Set of event uids must not be null");
         }
     }
 }

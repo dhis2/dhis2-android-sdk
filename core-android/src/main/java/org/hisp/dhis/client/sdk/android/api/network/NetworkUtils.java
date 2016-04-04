@@ -31,9 +31,9 @@ package org.hisp.dhis.client.sdk.android.api.network;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;

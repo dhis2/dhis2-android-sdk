@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class StateStore extends AbsStore<State, StateFlow> implements IStateStore {
@@ -190,6 +191,8 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     @Override
     public <T extends IModel> List<T> queryModelsWithActions(
             Class<T> clazz, Set<String> uids, Action... actions) {
+        isEmpty(uids, "Set of uids must not be null");
+
         return getObjectsByAction(clazz, uids, true, actions);
     }
 

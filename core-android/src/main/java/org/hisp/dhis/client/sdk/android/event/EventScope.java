@@ -51,29 +51,6 @@ public class EventScope implements IEventScope {
     }
 
     @Override
-    public Observable<List<Event>> sync() {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-
-            @Override
-            public List<Event> call() {
-                eventController.sync(SyncStrategy.DEFAULT);
-                return eventService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Event>> sync(final SyncStrategy strategy) {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                eventController.sync(strategy);
-                return eventService.list();
-            }
-        });
-    }
-
-    @Override
     public Observable<List<Event>> sync(final Set<String> uids) {
         return Observable.create(new DefaultOnSubscribe<List<Event>>() {
             @Override

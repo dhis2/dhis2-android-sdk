@@ -40,10 +40,6 @@ import rx.Observable;
 
 public interface IEventScope {
 
-    Observable<List<Event>> sync();
-
-    Observable<List<Event>> sync(SyncStrategy strategy);
-
     Observable<List<Event>> sync(Set<String> uids);
 
     Observable<List<Event>> sync(SyncStrategy strategy, Set<String> uids);

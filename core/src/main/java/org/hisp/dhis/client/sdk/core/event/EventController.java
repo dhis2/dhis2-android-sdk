@@ -52,6 +52,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty;
+
 public final class EventController extends AbsDataController<Event> implements IEventController {
 
     /* Controllers */
@@ -88,7 +90,7 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        isEmpty(uids);
+        isEmpty(uids, "Set of event uids must not be null");
 
         /* first we need to get information about new events from server */
         pullUpdates(strategy, uids);
@@ -99,7 +101,7 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        isEmpty(uids);
+        isEmpty(uids, "Set of event uids must not be null");
 
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
@@ -107,7 +109,7 @@ public final class EventController extends AbsDataController<Event> implements I
         // we need models which we got from server (not those which we created locally)
 
         // TODO  get only items which are specified with uids
-        List<Event> persistedEvents = stateStore.queryModelsWithActions(Event.class,
+        List<Event> persistedEvents = stateStore.queryModelsWithActions(Event.class, uids,
                 Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
 
         // we have to download all ids from server in order to
@@ -140,7 +142,7 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        isEmpty(uids);
+        isEmpty(uids, "Set of event uids must not be null");
 
         sendEvents(strategy, uids);
         deleteEvents(strategy, uids);
@@ -195,12 +197,6 @@ public final class EventController extends AbsDataController<Event> implements I
             } catch (ApiException apiException) {
                 handleApiException(apiException, event);
             }
-        }
-    }
-
-    private void isEmpty(Set<String> uids) {
-        if (uids == null || uids.isEmpty()) {
-            throw new IllegalArgumentException("Set of event uids must not be null");
         }
     }
 }

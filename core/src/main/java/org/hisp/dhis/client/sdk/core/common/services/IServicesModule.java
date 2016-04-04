@@ -40,6 +40,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 
 public interface IServicesModule {
@@ -68,4 +69,6 @@ public interface IServicesModule {
     IProgramIndicatorService getProgramIndicatorService();
 
     ITrackedEntityAttributeService getTrackedEntityAttributeService();
+
+    ITrackedEntityDataValueService getTrackedEntityDataValueService();
 }

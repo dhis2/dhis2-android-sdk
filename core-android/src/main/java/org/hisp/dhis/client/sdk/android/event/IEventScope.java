@@ -40,14 +40,6 @@ import rx.Observable;
 
 public interface IEventScope {
 
-    Observable<List<Event>> sync();
-
-    Observable<List<Event>> sync(SyncStrategy strategy);
-
-    Observable<List<Event>> sync(Set<String> uids);
-
-    Observable<List<Event>> sync(SyncStrategy strategy, Set<String> uids);
-
     Observable<Boolean> save(Event event);
 
     Observable<Boolean> remove(Event event);
@@ -59,4 +51,14 @@ public interface IEventScope {
     Observable<List<Event>> list();
 
     Observable<List<Event>> list(OrganisationUnit organisationUnit, Program program);
+
+    Observable<List<Event>> pull(Set<String> uids);
+
+    Observable<List<Event>> pull(SyncStrategy strategy, Set<String> uids);
+
+    Observable<List<Event>> push(Set<String> uids);
+
+    Observable<List<Event>> sync(Set<String> uids);
+
+    Observable<List<Event>> sync(SyncStrategy strategy, Set<String> uids);
 }

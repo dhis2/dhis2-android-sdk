@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
@@ -55,15 +54,13 @@ public final class EnrollmentController implements IEnrollmentController {
     private final IEnrollmentStore enrollmentStore;
     private final IEventStore eventStore;
     private final IStateStore stateStore;
-    private final IFailedItemStore failedItemStore;
 
     public EnrollmentController(IEnrollmentApiClient apiClient,
                                 ISystemInfoApiClient systemInfoApiClient,
                                 ILastUpdatedPreferences preferences,
                                 ITransactionManager transactionManager,
                                 IEventController eventController, IEnrollmentStore enrollmentStore,
-                                IEventStore eventStore, IStateStore stateStore,
-                                IFailedItemStore failedItemStore) {
+                                IEventStore eventStore, IStateStore stateStore) {
         this.enrollmentApiClient = apiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = preferences;
@@ -72,7 +69,6 @@ public final class EnrollmentController implements IEnrollmentController {
         this.enrollmentStore = enrollmentStore;
         this.eventStore = eventStore;
         this.stateStore = stateStore;
-        this.failedItemStore = failedItemStore;
     }
 
     private List<Enrollment> getEnrollmentsDataFromServer(TrackedEntityInstance
@@ -122,7 +118,7 @@ public final class EnrollmentController implements IEnrollmentController {
 //        Enrollment updatedEnrollment = enrollmentApiClient.getFullEnrollment(uid, lastUpdated);
 //        //todo: if the updatedEnrollment is deleted on the server, delete it also locally
 //        //todo: be sure to check if the enrollment has ever been on the server, or if it is still
-//        // pending first time registration sync
+//        // pending first time registration pull
 //
 //        Enrollment persistedEnrollment = enrollmentStore.queryByUid(uid);
 //        if (updatedEnrollment.getUId() == null) {

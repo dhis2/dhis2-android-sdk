@@ -91,10 +91,16 @@ public class D2 {
     private final Context applicationContext;
     private final boolean isD2Configured;
 
+    //-----------------------------------------------------------------------------------------
+    // Modules
+    //-----------------------------------------------------------------------------------------
 
     private final IPersistenceModule persistenceModule;
     private final IPreferencesModule preferencesModule;
 
+    //-----------------------------------------------------------------------------------------
+    // Scopes
+    //-----------------------------------------------------------------------------------------
 
     private final IUserAccountScope userAccountScope;
     private final IOrganisationUnitScope organisationUnitScope;

@@ -32,7 +32,8 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IDashboardItemContentStore extends IIdentifiableObjectStore<DashboardContent> {
-    List<DashboardContent> queryByTypes(List<String> type);
+    List<DashboardContent> queryByTypes(Set<String> type);
 }

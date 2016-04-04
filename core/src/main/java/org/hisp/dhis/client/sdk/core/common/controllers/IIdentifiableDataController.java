@@ -26,16 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common;
+package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItem;
-import org.hisp.dhis.client.sdk.models.common.faileditem.FailedItemType;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import java.util.List;
+import java.util.Set;
 
-public interface IFailedItemStore extends IStore<FailedItem> {
-    List<FailedItem> query(FailedItemType type);
+public interface IIdentifiableDataController<T extends IdentifiableObject>
+        extends IIdentifiableController<T> {
 
-    FailedItem query(FailedItemType type, long itemId);
+    void sync(SyncStrategy strategy);
+
+    void sync(SyncStrategy strategy, Set<String> uids);
+
+    void push(Set<String> uids) throws ApiException;
 }

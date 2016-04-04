@@ -62,7 +62,7 @@ public final class ProgramService implements IProgramService {
     }
 
     @Override
-    public List<Program> list(OrganisationUnit... organisationUnits) {
+    public List<Program> list(List<OrganisationUnit> organisationUnits) {
         return programStore.query(organisationUnits);
     }
 

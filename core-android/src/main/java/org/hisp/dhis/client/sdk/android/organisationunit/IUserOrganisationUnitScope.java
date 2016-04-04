@@ -37,9 +37,9 @@ import java.util.List;
 import rx.Observable;
 
 public interface IUserOrganisationUnitScope {
-    Observable<List<OrganisationUnit>> sync() throws ApiException;
+    Observable<List<OrganisationUnit>> pull() throws ApiException;
 
-    Observable<List<OrganisationUnit>> sync(SyncStrategy strategy) throws ApiException;
+    Observable<List<OrganisationUnit>> pull(SyncStrategy strategy) throws ApiException;
 
     Observable<List<OrganisationUnit>> list();
 }

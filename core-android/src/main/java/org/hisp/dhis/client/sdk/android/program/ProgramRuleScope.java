@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class ProgramRuleScope implements IProgramRuleScope {
     private final IProgramRuleService programRuleService;
@@ -53,181 +53,96 @@ public class ProgramRuleScope implements IProgramRuleScope {
 
     @Override
     public Observable<ProgramRule> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<ProgramRule>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramRule>() {
             @Override
-            public void call(Subscriber<? super ProgramRule> subscriber) {
-                try {
-                    ProgramRule programRule = programRuleService.get(uid);
-                    subscriber.onNext(programRule);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramRule call() {
+                return programRuleService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<ProgramRule> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<ProgramRule>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramRule>() {
             @Override
-            public void call(Subscriber<? super ProgramRule> subscriber) {
-                try {
-                    ProgramRule programRule = programRuleService.get(id);
-                    subscriber.onNext(programRule);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramRule call() {
+                return programRuleService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<ProgramRule>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    List<ProgramRule> programRules = programRuleService.list();
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRule> call() {
+                return programRuleService.list();
             }
         });
     }
 
     @Override
     public Observable<List<ProgramRule>> list(final ProgramStage programStage) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    List<ProgramRule> programRules = programRuleService.list(programStage);
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRule> call() {
+                return programRuleService.list(programStage);
             }
         });
     }
 
     @Override
     public Observable<List<ProgramRule>> list(final Program program) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    List<ProgramRule> programRules = programRuleService.list(program);
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRule> call() {
+                return programRuleService.list(program);
             }
         });
     }
 
     @Override
-    public Observable<Boolean> save(final ProgramRule object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programRuleService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    public Observable<List<ProgramRule>> pull() {
+        return pull(SyncStrategy.DEFAULT);
+    }
 
-                subscriber.onCompleted();
+    @Override
+    public Observable<List<ProgramRule>> pull(final Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
+    }
+
+    @Override
+    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
+            @Override
+            public List<ProgramRule> call() {
+                programRuleController.pull(syncStrategy);
+                return programRuleService.list();
             }
         });
     }
 
     @Override
-    public Observable<Boolean> remove(final ProgramRule object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy,
+                                              final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programRuleService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRule> call() {
+                programRuleController.pull(syncStrategy, uids);
+                return programRuleService.list(uids);
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramRule>> sync() {
-        return sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
+    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy,
+                                              final List<Program> programs) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    programRuleController.sync(syncStrategy);
-                    List<ProgramRule> programRules = programRuleService.list();
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRule> call() {
+                programRuleController.pullUpdates(syncStrategy, programs);
+                return programRuleService.list(programs);
             }
         });
     }
-
-    @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    programRuleController.sync(syncStrategy, uids);
-                    List<ProgramRule> programRules = programRuleService.list();
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> sync(final SyncStrategy syncStrategy, final List<Program> programs) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRule>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramRule>> subscriber) {
-                try {
-                    programRuleController.sync(syncStrategy, programs);
-                    List<ProgramRule> programRules = programRuleService.list();
-                    subscriber.onNext(programRules);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-
 }

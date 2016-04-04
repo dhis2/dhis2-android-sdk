@@ -50,7 +50,7 @@ public class UserOrganisationUnitScope implements IUserOrganisationUnitScope {
     }
 
     @Override
-    public Observable<List<OrganisationUnit>> sync() throws ApiException {
+    public Observable<List<OrganisationUnit>> pull() throws ApiException {
         return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
 
             @Override
@@ -62,13 +62,12 @@ public class UserOrganisationUnitScope implements IUserOrganisationUnitScope {
     }
 
     @Override
-    public Observable<List<OrganisationUnit>> sync(final SyncStrategy strategy)
-            throws ApiException {
+    public Observable<List<OrganisationUnit>> pull(final SyncStrategy strat) throws ApiException {
         return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
 
             @Override
             public List<OrganisationUnit> call() {
-                unitsController.sync(strategy);
+                unitsController.sync(strat);
                 return organisationUnitService.list(true);
             }
         });

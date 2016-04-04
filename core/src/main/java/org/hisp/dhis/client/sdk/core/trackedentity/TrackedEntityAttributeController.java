@@ -107,7 +107,7 @@ public final class TrackedEntityAttributeController extends AbsSyncStrategyContr
 
         // checking if option sets is synced
         if(!optionSetUids.isEmpty()) {
-            optionSetController.sync(strategy, optionSetUids);
+            optionSetController.pull(strategy, optionSetUids);
         }
 
         // we will have to perform something similar to what happens in AbsController

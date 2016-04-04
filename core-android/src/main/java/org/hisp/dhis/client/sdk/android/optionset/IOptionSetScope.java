@@ -44,8 +44,4 @@ public interface IOptionSetScope {
     Observable<List<OptionSet>> list();
 
     Observable<List<Option>> list(OptionSet optionSet);
-
-    Observable<Boolean> save(OptionSet object);
-
-    Observable<Boolean> remove(OptionSet object);
 }

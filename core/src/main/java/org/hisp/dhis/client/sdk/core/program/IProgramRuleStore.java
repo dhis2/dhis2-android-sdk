@@ -38,5 +38,7 @@ import java.util.List;
 public interface IProgramRuleStore extends IIdentifiableObjectStore<ProgramRule> {
     List<ProgramRule> query(Program program);
 
+    List<ProgramRule> query(List<Program> programs);
+
     List<ProgramRule> query(ProgramStage programStage);
 }

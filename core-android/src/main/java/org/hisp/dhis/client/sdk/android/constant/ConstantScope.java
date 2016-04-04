@@ -29,106 +29,48 @@
 package org.hisp.dhis.client.sdk.android.constant;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.constant.IConstantService;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class ConstantScope implements IConstantScope {
-
-    private IConstantService mConstantService;
+    private final IConstantService constantService;
 
     public ConstantScope(IConstantService constantService) {
-        this.mConstantService = constantService;
+        this.constantService = constantService;
     }
 
     @Override
     public Observable<Constant> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<Constant>() {
+        return Observable.create(new DefaultOnSubscribe<Constant>() {
             @Override
-            public void call(Subscriber subscriber) {
-                try {
-                    Constant constant = mConstantService.get(uid);
-                    subscriber.onNext(constant);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Constant call() {
+                return constantService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<Constant> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<Constant>() {
+        return Observable.create(new DefaultOnSubscribe<Constant>() {
             @Override
-            public void call(Subscriber subscriber) {
-                try {
-                    Constant constant = mConstantService.get(id);
-                    subscriber.onNext(constant);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Constant call() {
+                return constantService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<Constant>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<Constant>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Constant>>() {
             @Override
-            public void call(Subscriber<? super List<Constant>> subscriber) {
-                try {
-                    List<Constant> constants = mConstantService.list();
-                    subscriber.onNext(constants);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Constant> call() {
+                return constantService.list();
             }
         });
     }
-
-    @Override
-    public Observable<Boolean> save(final Constant object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mConstantService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final Constant object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mConstantService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-
 }

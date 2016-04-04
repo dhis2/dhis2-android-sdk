@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 import org.hisp.dhis.client.sdk.core.common.services.IGet;
 import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
 import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
 import org.hisp.dhis.client.sdk.core.common.services.IRemove;
 import org.hisp.dhis.client.sdk.core.common.services.ISave;
 import org.hisp.dhis.client.sdk.core.common.services.IService;
@@ -38,7 +39,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 
 public interface ITrackedEntityAttributeService extends IService, ISave<TrackedEntityAttribute>,
-        IRemove<TrackedEntityAttribute>,
-        IGet<TrackedEntityAttribute>, IGetUid<TrackedEntityAttribute>,
-        IList<TrackedEntityAttribute> {
+        IRemove<TrackedEntityAttribute>, IGet<TrackedEntityAttribute>,
+        IGetUid<TrackedEntityAttribute>, IList<TrackedEntityAttribute> ,
+        IListUids<TrackedEntityAttribute> {
 }

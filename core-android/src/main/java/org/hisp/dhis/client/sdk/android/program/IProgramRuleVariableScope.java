@@ -1,8 +1,6 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
@@ -17,11 +15,11 @@ public interface IProgramRuleVariableScope {
 
     Observable<List<ProgramRuleVariable>> list();
 
-    Observable<ProgramRuleVariable> getByName(Program program, String programRuleVariableName);
+    Observable<List<ProgramRuleVariable>> pull();
 
-    Observable<List<ProgramRuleVariable>> sync();
+    Observable<List<ProgramRuleVariable>> pull(Set<String> uids);
 
-    Observable<List<ProgramRuleVariable>> sync(SyncStrategy syncStrategy);
+    Observable<List<ProgramRuleVariable>> pull(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramRuleVariable>> sync(SyncStrategy syncStrategy, Set<String> uids);
+    Observable<List<ProgramRuleVariable>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

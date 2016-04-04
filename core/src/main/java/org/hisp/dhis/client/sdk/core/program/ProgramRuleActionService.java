@@ -33,10 +33,10 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
 
 public class ProgramRuleActionService implements IProgramRuleActionService {
-
-    private IProgramRuleActionStore programRuleActionStore;
+    private final IProgramRuleActionStore programRuleActionStore;
 
     public ProgramRuleActionService(IProgramRuleActionStore programRuleActionStore) {
         this.programRuleActionStore = programRuleActionStore;
@@ -73,5 +73,10 @@ public class ProgramRuleActionService implements IProgramRuleActionService {
     public boolean save(ProgramRuleAction object) {
         Preconditions.isNull(object, "Object must not be null");
         return programRuleActionStore.save(object);
+    }
+
+    @Override
+    public List<ProgramRuleAction> list(Set<String> uids) {
+        return programRuleActionStore.queryByUids(uids);
     }
 }

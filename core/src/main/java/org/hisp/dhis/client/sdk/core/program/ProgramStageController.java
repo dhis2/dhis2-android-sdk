@@ -106,7 +106,7 @@ public class ProgramStageController extends AbsSyncStrategyController<ProgramSta
 
         // Syncing programs before saving program stages (since
         // program stages are referencing them directly)
-        programController.sync(strategy, programUids);
+        programController.pull(strategy, programUids);
 
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingProgramStages,

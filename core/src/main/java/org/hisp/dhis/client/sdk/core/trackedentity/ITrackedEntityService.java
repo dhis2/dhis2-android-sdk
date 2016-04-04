@@ -37,6 +37,6 @@ import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 public interface ITrackedEntityService extends IService, ISave<TrackedEntity>,
-        IRemove<TrackedEntity>,
-        IGet<TrackedEntity>, IGetUid<TrackedEntity>, IList<TrackedEntity> {
+        IRemove<TrackedEntity>, IGet<TrackedEntity>, IGetUid<TrackedEntity>,
+        IList<TrackedEntity> {
 }

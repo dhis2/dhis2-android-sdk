@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
 public class DashboardContentService implements IDashboardContentService {
     private final IDashboardItemContentStore mDashboardItemContentStore;
@@ -55,7 +56,7 @@ public class DashboardContentService implements IDashboardContentService {
     }
 
     @Override
-    public List<DashboardContent> list(List<String> types) {
+    public List<DashboardContent> list(Set<String> types) {
         return mDashboardItemContentStore.queryByTypes(types);
     }
 }

@@ -35,9 +35,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,37 +52,36 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync() {
-        return sync(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStageSection>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(String... uids) {
-        return sync(SyncStrategy.DEFAULT, uids);
+    public Observable<List<ProgramStageSection>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public List<ProgramStageSection> call() {
-                programStageSectionController.sync(syncStrategy);
+                programStageSectionController.pull(syncStrategy);
                 return programStageSectionService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> sync(final SyncStrategy syncStrategy,
-                                                      final String... uids) {
+    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy,
+                                                      final Set<String> uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public List<ProgramStageSection> call() {
-                Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageSectionController.sync(syncStrategy, uidSet);
-                return programStageSectionService.list(uidSet);
+                programStageSectionController.pull(syncStrategy, uids);
+                return programStageSectionService.list(uids);
             }
         });
     }

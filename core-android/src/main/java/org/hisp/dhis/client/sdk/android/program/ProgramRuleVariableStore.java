@@ -33,7 +33,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -57,10 +56,10 @@ public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<P
                 .and(ProgramRuleVariableFlow_Table
                         .dataelement.is(dataElement.getUId()))
                 .queryList();
-        if(programRuleVariableFlow != null && !programRuleVariableFlow.isEmpty()) {
+
+        if (programRuleVariableFlow != null && !programRuleVariableFlow.isEmpty()) {
             return getMapper().mapToModel(programRuleVariableFlow.get(0));
-        }
-        else return null;
+        } else return null;
     }
 
     @Override

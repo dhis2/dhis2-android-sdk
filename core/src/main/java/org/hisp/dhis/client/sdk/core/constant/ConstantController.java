@@ -92,12 +92,12 @@ public final class ConstantController implements IIdentifiableController<Constan
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         getConstantsDataFromServer();
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

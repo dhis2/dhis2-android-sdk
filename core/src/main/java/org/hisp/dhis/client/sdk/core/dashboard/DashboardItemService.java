@@ -106,7 +106,7 @@ public class DashboardItemService implements IDashboardItemService {
     public List<DashboardItem> list(Dashboard dashboard) {
         Preconditions.isNull(dashboard, "Dashboard object must not be null");
 
-        List<DashboardItem> allDashboardItems = dashboardItemStore.queryByDashboard(dashboard);
+        List<DashboardItem> allDashboardItems = dashboardItemStore.query(dashboard);
         Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardItem.class);
 
         List<DashboardItem> dashboardItems = new ArrayList<>();

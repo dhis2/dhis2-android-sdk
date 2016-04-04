@@ -37,6 +37,7 @@ import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IOrganisationUnitService extends IService, IGet<OrganisationUnit>,
@@ -44,7 +45,7 @@ public interface IOrganisationUnitService extends IService, IGet<OrganisationUni
 
     List<OrganisationUnit> list(boolean assignedToCurrentUser);
 
-    List<OrganisationUnit> list(Program... programs);
+    List<OrganisationUnit> listByPrograms(List<Program> programs);
 
-    List<OrganisationUnit> list(DataSet... dataSets);
+    List<OrganisationUnit> listByDataSets(List<DataSet> dataSets);
 }

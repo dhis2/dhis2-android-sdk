@@ -36,5 +36,5 @@ import java.util.List;
 
 public interface IInterpretationElementStore extends
         IIdentifiableObjectStore<InterpretationElement> {
-    List<InterpretationElement> list(Interpretation interpretation);
+    List<InterpretationElement> query(Interpretation interpretation);
 }

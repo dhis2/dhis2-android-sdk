@@ -43,16 +43,11 @@ public interface ITrackedEntityAttributeScope {
 
     Observable<List<TrackedEntityAttribute>> list();
 
-    Observable<Boolean> save(TrackedEntityAttribute object);
+    Observable<List<TrackedEntityAttribute>> pull();
 
-    Observable<Boolean> remove(TrackedEntityAttribute object);
+    Observable<List<TrackedEntityAttribute>> pull(Set<String> uids);
 
-    Observable<Boolean> send();
+    Observable<List<TrackedEntityAttribute>> pull(SyncStrategy syncStrategy);
 
-    Observable<List<TrackedEntityAttribute>> sync();
-
-    Observable<List<TrackedEntityAttribute>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<TrackedEntityAttribute>> sync(SyncStrategy syncStrategy, Set<String> uids);
-
+    Observable<List<TrackedEntityAttribute>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

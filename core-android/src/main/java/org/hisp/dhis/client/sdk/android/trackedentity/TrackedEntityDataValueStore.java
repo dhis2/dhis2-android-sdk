@@ -53,10 +53,15 @@ public final class TrackedEntityDataValueStore extends AbsStore<TrackedEntityDat
     }
 
     @Override
-    public List<TrackedEntityDataValue> query(Event... events) {
+    public List<TrackedEntityDataValue> query(Event event) {
+        return query(Arrays.asList(event));
+    }
+
+    @Override
+    public List<TrackedEntityDataValue> query(List<Event> events) {
         isNull(events, "List of events must not be null");
 
-        Set<String> eventUids = ModelUtils.toUidSet(Arrays.asList(events));
+        Set<String> eventUids = ModelUtils.toUidSet(events);
         List<TrackedEntityDataValueFlow> trackedEntityDataValueFlows = new Select()
                 .from(TrackedEntityDataValueFlow.class)
                 .where(TrackedEntityDataValueFlow_Table

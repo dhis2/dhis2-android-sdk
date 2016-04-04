@@ -47,13 +47,11 @@ public interface IProgramRuleActionScope {
 
     Observable<List<ProgramRuleAction>> list(ProgramRule programRule);
 
-    Observable<Boolean> save(ProgramRuleAction object);
+    Observable<List<ProgramRuleAction>> pull();
 
-    Observable<Boolean> remove(ProgramRuleAction object);
+    Observable<List<ProgramRuleAction>> pull(Set<String> uids);
 
-    Observable<List<ProgramRuleAction>> sync();
+    Observable<List<ProgramRuleAction>> pull(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramRuleAction>> sync(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramRuleAction>> sync(SyncStrategy syncStrategy, Set<String> uids);
+    Observable<List<ProgramRuleAction>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

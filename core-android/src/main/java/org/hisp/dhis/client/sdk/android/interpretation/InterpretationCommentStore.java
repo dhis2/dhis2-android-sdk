@@ -115,7 +115,7 @@ public class InterpretationCommentStore implements IInterpretationCommentStore {
     }
 
     @Override
-    public List<InterpretationComment> queryByInterpretation(Interpretation interpretation) {
+    public List<InterpretationComment> query(Interpretation interpretation) {
         return null;
     }
 

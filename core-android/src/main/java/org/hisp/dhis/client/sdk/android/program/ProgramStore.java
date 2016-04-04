@@ -42,7 +42,6 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +77,9 @@ public class ProgramStore extends AbsIdentifiableObjectStore<Program, ProgramFlo
     }
 
     @Override
-    public List<Program> query(OrganisationUnit... organisationUnits) {
+    public List<Program> query(List<OrganisationUnit> organisationUnits) {
         List<ProgramFlow> programFlows = ModelLinkFlow.queryRelatedModels(ProgramFlow.class,
-                PROGRAM_TO_ORGANISATION_UNITS, Arrays.asList(organisationUnits));
+                PROGRAM_TO_ORGANISATION_UNITS, organisationUnits);
 
         System.out.println("*** PROGRAM_FLOWS *** " + programFlows);
         List<Program> programs = getMapper().mapToModels(programFlows);

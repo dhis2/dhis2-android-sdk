@@ -26,14 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.api.utils;
-
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+package org.hisp.dhis.client.sdk.core.common.utils;
 
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,8 +41,7 @@ public class CollectionUtils {
         // no instances
     }
 
-    @NonNull
-    public static String join(@Nullable List<String> strings, @NonNull String delimiter) {
+    public static String join(List<String> strings, String delimiter) {
         Preconditions.isNull(delimiter, "String delimiter must not be null");
 
         StringBuilder buffer = new StringBuilder();
@@ -64,8 +61,7 @@ public class CollectionUtils {
         return buffer.toString();
     }
 
-    @NonNull
-    public static List<List<String>> slice(@Nullable List<String> stringList, int subListSize) {
+    public static List<List<String>> slice(List<String> stringList, int subListSize) {
         List<List<String>> listOfSubLists = new ArrayList<>();
 
         if (stringList != null) {
@@ -84,5 +80,13 @@ public class CollectionUtils {
         }
 
         return listOfSubLists;
+    }
+
+    public static <T> Collection<T> isEmpty(Collection<T> collection, String messgae) {
+        if (collection == null || collection.isEmpty()) {
+            throw new IllegalArgumentException(messgae);
+        }
+
+        return collection;
     }
 }

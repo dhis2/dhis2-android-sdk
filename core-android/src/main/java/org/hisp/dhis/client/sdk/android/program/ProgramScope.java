@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramController;
 import org.hisp.dhis.client.sdk.core.program.IProgramService;
@@ -36,9 +37,9 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class ProgramScope implements IProgramScope {
     private final IProgramService programService;
@@ -51,98 +52,73 @@ public class ProgramScope implements IProgramScope {
 
     @Override
     public Observable<Program> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<Program>() {
-
+        return Observable.create(new DefaultOnSubscribe<Program>() {
             @Override
-            public void call(Subscriber<? super Program> subscriber) {
-                try {
-                    Program program = programService.get(id);
-                    subscriber.onNext(program);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Program call() {
+                return programService.get(id);
             }
         });
     }
 
     @Override
     public Observable<Program> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<Program>() {
-
+        return Observable.create(new DefaultOnSubscribe<Program>() {
             @Override
-            public void call(Subscriber<? super Program> subscriber) {
-                try {
-                    Program program = programService.get(uid);
-                    subscriber.onNext(program);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Program call() {
+                return programService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<List<Program>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
-
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    List<Program> programs = programService.list();
-                    subscriber.onNext(programs);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Program> call() {
+                return programService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<Program>> list(final OrganisationUnit... organisationUnits) {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
-
+    public Observable<List<Program>> list(final List<OrganisationUnit> organisationUnits) {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    List<Program> programs = programService.list(organisationUnits);
-                    subscriber.onNext(programs);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Program> call() {
+                return programService.list(organisationUnits);
             }
         });
     }
 
     @Override
-    public Observable<List<Program>> sync(final SyncStrategy syncStrategy) {
-        return Observable.create(new Observable.OnSubscribe<List<Program>>() {
+    public Observable<List<Program>> pull() {
+        return pull(SyncStrategy.DEFAULT);
+    }
 
+    @Override
+    public Observable<List<Program>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
+    }
+
+    @Override
+    public Observable<List<Program>> pull(final SyncStrategy syncStrategy) {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
             @Override
-            public void call(Subscriber<? super List<Program>> subscriber) {
-                try {
-                    programController.sync(syncStrategy);
-                    subscriber.onNext(programService.list());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Program> call() {
+                programController.pull(syncStrategy);
+                return programService.list();
             }
         });
     }
 
-    // TODO think about adding method to service layer
-    // which will get list of uids in and return set of models back
     @Override
-    public Observable<List<Program>> sync(SyncStrategy syncStrategy, final String... uids) {
-        throw new UnsupportedOperationException("This method is not implemented at the moment");
+    public Observable<List<Program>> pull(final SyncStrategy syncStrategy, final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
+            @Override
+            public List<Program> call() {
+                programController.pull(syncStrategy, uids);
+                return programService.list(uids);
+            }
+        });
     }
 }

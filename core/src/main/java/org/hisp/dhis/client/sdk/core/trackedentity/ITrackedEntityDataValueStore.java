@@ -33,10 +33,13 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ITrackedEntityDataValueStore extends IStore<TrackedEntityDataValue> {
-    List<TrackedEntityDataValue> query(Event... events);
-
     TrackedEntityDataValue query(Event event, DataElement dataElement);
+
+    List<TrackedEntityDataValue> query(Event event);
+
+    List<TrackedEntityDataValue> query(List<Event> events);
 }

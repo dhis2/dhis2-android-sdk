@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
@@ -47,6 +48,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
 
     private final IProgramIndicatorService programIndicatorService;
     private final IProgramIndicatorController programIndicatorController;
+
     public ProgramIndicatorScope(IProgramIndicatorService programIndicatorService,
                                  IProgramIndicatorController programIndicatorController) {
         this.programIndicatorService = programIndicatorService;
@@ -159,51 +161,17 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
     }
 
     @Override
-    public Observable<Boolean> save(final ProgramIndicator object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programIndicatorService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
+    public Observable<List<ProgramIndicator>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<Boolean> remove(final ProgramIndicator object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = programIndicatorService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> sync() {
-        return sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> sync(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    programIndicatorController.sync(syncStrategy);
+                    programIndicatorController.pull(syncStrategy);
                     List<ProgramIndicator> programIndicators = programIndicatorService.list();
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
@@ -216,12 +184,13 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
     }
 
     @Override
-    public Observable<List<ProgramIndicator>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
+    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy,
+                                                   final Set<String> uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    programIndicatorController.sync(syncStrategy, uids);
+                    programIndicatorController.pull(syncStrategy, uids);
                     List<ProgramIndicator> programIndicators = programIndicatorService.list();
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {

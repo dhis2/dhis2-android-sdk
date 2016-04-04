@@ -56,16 +56,16 @@ public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
     }
 
     @Override
-    public final void sync(SyncStrategy strategy) throws ApiException {
-        sync(strategy, null);
+    public final void pull(SyncStrategy strategy) throws ApiException {
+        pull(strategy, null);
     }
 
     @Override
-    public final void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public final void pull(SyncStrategy strategy, Set<String> uids) throws ApiException {
         DateTime currentDate = DateTime.now();
 
         /* if we don't have objects with given uids in place, we have
-        to force a sync even if strategy is set to be DEFAULT */
+        to force a pull even if strategy is set to be DEFAULT */
         if (SyncStrategy.FORCE_UPDATE.equals(strategy) ||
                 !identifiableObjectStore.areStored(uids)) {
             synchronize(strategy, uids);

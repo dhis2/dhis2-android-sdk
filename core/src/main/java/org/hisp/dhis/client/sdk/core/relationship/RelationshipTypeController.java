@@ -97,12 +97,12 @@ public final class RelationshipTypeController implements IIdentifiableController
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         getRelationshipTypesDataFromServer();
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

@@ -32,8 +32,9 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IDataSetStore extends IIdentifiableObjectStore<DataSet> {
-    List<OrganisationUnit> query(DataSet dataSet);
+    List<OrganisationUnit> query(Collection<DataSet> dataSets);
 }

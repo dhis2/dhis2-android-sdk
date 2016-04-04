@@ -28,17 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
+
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class TrackedEntityAttributeService implements ITrackedEntityAttributeService {
-    private ITrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ITrackedEntityAttributeStore trackedEntityAttributeStore;
 
-    public TrackedEntityAttributeService(ITrackedEntityAttributeStore trackedEntityAttributeStore) {
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
+    public TrackedEntityAttributeService(ITrackedEntityAttributeStore entityAttributeStore) {
+        this.trackedEntityAttributeStore = entityAttributeStore;
     }
 
     @Override
@@ -59,13 +60,18 @@ public class TrackedEntityAttributeService implements ITrackedEntityAttributeSer
 
     @Override
     public boolean remove(TrackedEntityAttribute object) {
-        Preconditions.isNull(object, "Object must not be null");
+        isNull(object, "Object must not be null");
         return trackedEntityAttributeStore.delete(object);
     }
 
     @Override
     public boolean save(TrackedEntityAttribute object) {
-        Preconditions.isNull(object, "Object must not be null");
+        isNull(object, "Object must not be null");
         return trackedEntityAttributeStore.save(object);
+    }
+
+    @Override
+    public List<TrackedEntityAttribute> list(Set<String> uids) {
+        return trackedEntityAttributeStore.queryByUids(uids);
     }
 }

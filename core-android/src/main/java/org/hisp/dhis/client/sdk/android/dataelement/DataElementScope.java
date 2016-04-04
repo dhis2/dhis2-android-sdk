@@ -82,24 +82,12 @@ public class DataElementScope implements IDataElementScope {
 
     @Override
     public Observable<List<DataElement>> pull() {
-        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
-            @Override
-            public List<DataElement> call() {
-                dataElementController.pull(SyncStrategy.DEFAULT);
-                return dataElementService.list();
-            }
-        });
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
     public Observable<List<DataElement>> pull(final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
-            @Override
-            public List<DataElement> call() {
-                dataElementController.pull(SyncStrategy.DEFAULT, uids);
-                return dataElementService.list();
-            }
-        });
+        return pull(SyncStrategy.DEFAULT, uids);
     }
 
     @Override

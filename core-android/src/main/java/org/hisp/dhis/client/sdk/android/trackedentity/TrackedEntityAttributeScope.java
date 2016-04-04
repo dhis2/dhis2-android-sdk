@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
@@ -38,162 +39,77 @@ import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope {
-    private ITrackedEntityAttributeService trackedEntityAttributeService;
-    private ITrackedEntityAttributeController trackedEntityAttributeController;
+    private final ITrackedEntityAttributeService trackedEntityAttributeService;
+    private final ITrackedEntityAttributeController trackedEntityAttributeController;
 
-    public TrackedEntityAttributeScope(ITrackedEntityAttributeService trackedEntityAttributeService,
-                                       ITrackedEntityAttributeController
-                                               trackedEntityAttributeController) {
-        this.trackedEntityAttributeService = trackedEntityAttributeService;
-        this.trackedEntityAttributeController = trackedEntityAttributeController;
+    public TrackedEntityAttributeScope(ITrackedEntityAttributeService entityAttributeService,
+                                       ITrackedEntityAttributeController controller) {
+        this.trackedEntityAttributeService = entityAttributeService;
+        this.trackedEntityAttributeController = controller;
     }
 
     @Override
     public Observable<TrackedEntityAttribute> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntityAttribute>() {
+        return Observable.create(new DefaultOnSubscribe<TrackedEntityAttribute>() {
             @Override
-            public void call(Subscriber<? super TrackedEntityAttribute> subscriber) {
-                try {
-                    TrackedEntityAttribute trackedEntityAttribute =
-                            trackedEntityAttributeService.get(id);
-                    subscriber.onNext(trackedEntityAttribute);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public TrackedEntityAttribute call() {
+                return trackedEntityAttributeService.get(id);
             }
         });
     }
 
     @Override
     public Observable<TrackedEntityAttribute> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntityAttribute>() {
+        return Observable.create(new DefaultOnSubscribe<TrackedEntityAttribute>() {
             @Override
-            public void call(Subscriber<? super TrackedEntityAttribute> subscriber) {
-                try {
-                    TrackedEntityAttribute trackedEntityAttribute =
-                            trackedEntityAttributeService.get(uid);
-                    subscriber.onNext(trackedEntityAttribute);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public TrackedEntityAttribute call() {
+                return trackedEntityAttributeService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<List<TrackedEntityAttribute>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntityAttribute>>() {
+        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
             @Override
-            public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
-                try {
-                    List<TrackedEntityAttribute> trackedEntityAttributes =
-                            trackedEntityAttributeService.list();
-                    subscriber.onNext(trackedEntityAttributes);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<TrackedEntityAttribute> call() {
+                return trackedEntityAttributeService.list();
             }
         });
     }
 
     @Override
-    public Observable<Boolean> save(final TrackedEntityAttribute object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = trackedEntityAttributeService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    public Observable<List<TrackedEntityAttribute>> pull() {
+        return pull(SyncStrategy.DEFAULT);
+    }
 
-                subscriber.onCompleted();
+    @Override
+    public Observable<List<TrackedEntityAttribute>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
+    }
+
+    @Override
+    public Observable<List<TrackedEntityAttribute>> pull(final SyncStrategy syncStrategy) {
+        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
+            @Override
+            public List<TrackedEntityAttribute> call() {
+                trackedEntityAttributeController.pull(syncStrategy);
+                return trackedEntityAttributeService.list();
             }
         });
     }
 
     @Override
-    public Observable<Boolean> remove(final TrackedEntityAttribute object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+    public Observable<List<TrackedEntityAttribute>> pull(final SyncStrategy syncStrategy,
+                                                         final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = trackedEntityAttributeService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<TrackedEntityAttribute> call() {
+                trackedEntityAttributeController.pull(syncStrategy, uids);
+                return trackedEntityAttributeService.list(uids);
             }
         });
     }
-
-    @Override
-    public Observable<Boolean> send() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    trackedEntityAttributeController.pull(SyncStrategy.DEFAULT);
-//                    boolean status = trackedEntityAttributeController.pull();
-//                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<TrackedEntityAttribute>> sync() {
-        return sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public Observable<List<TrackedEntityAttribute>> sync(final SyncStrategy syncStrategy) {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntityAttribute>>() {
-            @Override
-            public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
-                try {
-                    trackedEntityAttributeController.pull(syncStrategy);
-                    List<TrackedEntityAttribute> trackedEntityAttributes = trackedEntityAttributeService.list();
-                    subscriber.onNext(trackedEntityAttributes);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<TrackedEntityAttribute>> sync(final SyncStrategy syncStrategy, final Set<String> uids) {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntityAttribute>>() {
-            @Override
-            public void call(Subscriber<? super List<TrackedEntityAttribute>> subscriber) {
-                try {
-                    trackedEntityAttributeController.pull(syncStrategy, uids);
-                    List<TrackedEntityAttribute> trackedEntityAttributes = trackedEntityAttributeService.list();
-                    subscriber.onNext(trackedEntityAttributes);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });    }
 }

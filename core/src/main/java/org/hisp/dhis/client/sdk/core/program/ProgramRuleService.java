@@ -33,9 +33,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Set;
 
 public final class ProgramRuleService implements IProgramRuleService {
-
     private final IProgramRuleStore programRuleStore;
 
     public ProgramRuleService(IProgramRuleStore programRuleStore) {
@@ -50,6 +50,11 @@ public final class ProgramRuleService implements IProgramRuleService {
     @Override
     public List<ProgramRule> list(Program program) {
         return programRuleStore.query(program);
+    }
+
+    @Override
+    public List<ProgramRule> list(List<Program> programs) {
+        return null;
     }
 
     @Override
@@ -75,5 +80,10 @@ public final class ProgramRuleService implements IProgramRuleService {
     @Override
     public boolean remove(ProgramRule object) {
         return programRuleStore.delete(object);
+    }
+
+    @Override
+    public List<ProgramRule> list(Set<String> uids) {
+        return programRuleStore.queryByUids(uids);
     }
 }

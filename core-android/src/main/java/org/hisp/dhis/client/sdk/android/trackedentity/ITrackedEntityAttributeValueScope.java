@@ -40,8 +40,8 @@ import rx.Observable;
 public interface ITrackedEntityAttributeValueScope {
     Observable<TrackedEntityAttributeValue> get(long id);
 
-    Observable<TrackedEntityAttributeValue> get(TrackedEntityInstance trackedEntityInstance,
-                                                TrackedEntityAttribute trackedEntityAttribute);
+    Observable<TrackedEntityAttributeValue> get(TrackedEntityInstance entityInstance,
+                                                TrackedEntityAttribute entityAttribute);
 
     Observable<List<TrackedEntityAttributeValue>> list();
 

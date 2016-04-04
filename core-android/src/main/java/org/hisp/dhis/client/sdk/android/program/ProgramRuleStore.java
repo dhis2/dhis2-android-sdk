@@ -41,6 +41,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,9 +50,10 @@ import java.util.Set;
 
 public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRule,
         ProgramRuleFlow> implements IProgramRuleStore {
-    private final ITransactionManager transactionManager;
     private static final String PROGRAMRULE_TO_PROGRAMRULEACTIONS =
             "programRuleToProgramRuleActions";
+    private final ITransactionManager transactionManager;
+
     public ProgramRuleStore(ITransactionManager transactionManager) {
         super(ProgramRuleFlow.MAPPER);
         this.transactionManager = transactionManager;
@@ -60,7 +62,8 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     @Override
     public boolean insert(ProgramRule object) {
         boolean isSuccess = super.insert(object);
-        if(isSuccess) {
+
+        if (isSuccess) {
             updateProgramStageRelationships(object);
         }
 
@@ -71,7 +74,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     public boolean update(ProgramRule object) {
         boolean isSuccess = super.update(object);
 
-        if(isSuccess) {
+        if (isSuccess) {
             updateProgramStageRelationships(object);
         }
 
@@ -82,7 +85,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     public boolean save(ProgramRule object) {
         boolean isSuccess = super.save(object);
 
-        if(isSuccess) {
+        if (isSuccess) {
             updateProgramStageRelationships(object);
         }
         return isSuccess;
@@ -91,7 +94,8 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     @Override
     public boolean delete(ProgramRule object) {
         boolean isSuccess = super.delete(object);
-        if(isSuccess) {
+
+        if (isSuccess) {
             ModelLinkFlow.deleteRelatedModels(object, PROGRAMRULE_TO_PROGRAMRULEACTIONS);
         }
         return isSuccess;
@@ -99,11 +103,12 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
 
     @Override
     public boolean deleteAll() {
-        boolean isSucess = super.deleteAll();
-        if(isSucess) {
+        boolean isSuccess = super.deleteAll();
+
+        if (isSuccess) {
             ModelLinkFlow.deleteModels(PROGRAMRULE_TO_PROGRAMRULEACTIONS);
         }
-        return isSucess;
+        return isSuccess;
     }
 
     @Override
@@ -124,8 +129,20 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     @Override
     public List<ProgramRule> query(Program program) {
         List<ProgramRuleFlow> programRuleFlows = new Select()
-                .from(ProgramRuleFlow.class).where(ProgramRuleFlow_Table
+                .from(ProgramRuleFlow.class)
+                .where(ProgramRuleFlow_Table
                         .program.is(program.getUId()))
+                .queryList();
+
+        return getMapper().mapToModels(programRuleFlows);
+    }
+
+    @Override
+    public List<ProgramRule> query(List<Program> programs) {
+        List<ProgramRuleFlow> programRuleFlows = new Select()
+                .from(ProgramRuleFlow.class)
+                .where(ProgramRuleFlow_Table
+                        .program.in(ModelUtils.toUidSet(programs)))
                 .queryList();
 
         return getMapper().mapToModels(programRuleFlows);
@@ -134,8 +151,9 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     @Override
     public List<ProgramRule> query(ProgramStage programStage) {
         List<ProgramRuleFlow> programRuleFlows = new Select()
-                .from(ProgramRuleFlow.class).where(ProgramRuleFlow_Table
-                .programstage.is(programStage.getUId()))
+                .from(ProgramRuleFlow.class)
+                .where(ProgramRuleFlow_Table
+                        .programstage.is(programStage.getUId()))
                 .queryList();
 
         return getMapper().mapToModels(programRuleFlows);
@@ -155,7 +173,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
             Map<String, List<ProgramRuleAction>> rulesToActions = ModelLinkFlow
                     .queryLinksForModel(ProgramRuleAction.class,
                             PROGRAMRULE_TO_PROGRAMRULEACTIONS);
-            for (ProgramRule programRule: programRules) {
+            for (ProgramRule programRule : programRules) {
                 programRule.setProgramRuleActions(rulesToActions.get
                         (programRule.getUId()));
             }

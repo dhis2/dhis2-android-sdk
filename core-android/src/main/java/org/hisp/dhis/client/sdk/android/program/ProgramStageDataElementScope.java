@@ -37,16 +37,12 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
-// TODO replace OnSubscribe callbacks with DefaultOnSubscribe
 public class ProgramStageDataElementScope implements IProgramStageDataElementScope {
     private final IProgramStageDataElementService programStageDataElementService;
     private final IProgramStageDataElementController programStageDataElementController;
@@ -60,31 +56,30 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> pullUpdates() {
-        return pullUpdates(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStageDataElement>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> pullUpdates(String... uids) {
-        return pullUpdates(SyncStrategy.DEFAULT, uids);
+    public Observable<List<ProgramStageDataElement>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> pullUpdates(
-            final SyncStrategy syncStrategy, final String... uids) {
+    public Observable<List<ProgramStageDataElement>> pull(final SyncStrategy syncStrategy,
+                                                          final Set<String> uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
 
             @Override
             public List<ProgramStageDataElement> call() {
-                Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageDataElementController.pull(syncStrategy, uidSet);
-                return programStageDataElementService.list(uidSet);
+                programStageDataElementController.pull(syncStrategy, uids);
+                return programStageDataElementService.list(uids);
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramStageDataElement>> pullUpdates(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStageDataElement>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
 
             @Override
@@ -97,54 +92,30 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
 
     @Override
     public Observable<ProgramStageDataElement> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<ProgramStageDataElement>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramStageDataElement>() {
             @Override
-            public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
-                try {
-                    ProgramStageDataElement programStageDataElement =
-                            programStageDataElementService.get(id);
-                    subscriber.onNext(programStageDataElement);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramStageDataElement call() {
+                return programStageDataElementService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<ProgramStageDataElement>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
-                try {
-                    List<ProgramStageDataElement> programStageDataElements =
-                            programStageDataElementService.list();
-                    subscriber.onNext(programStageDataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramStageDataElement> call() {
+                return programStageDataElementService.list();
             }
         });
     }
 
     @Override
     public Observable<List<ProgramStageDataElement>> list(final ProgramStage programStage) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
-                try {
-                    List<ProgramStageDataElement> programStageDataElements =
-                            programStageDataElementService.list(programStage);
-                    subscriber.onNext(programStageDataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramStageDataElement> call() {
+                return programStageDataElementService.list(programStage);
             }
         });
     }
@@ -152,18 +123,10 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     @Override
     public Observable<ProgramStageDataElement> list(final ProgramStage programStage,
                                                     final DataElement dataElement) {
-        return Observable.create(new Observable.OnSubscribe<ProgramStageDataElement>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramStageDataElement>() {
             @Override
-            public void call(Subscriber<? super ProgramStageDataElement> subscriber) {
-                try {
-                    ProgramStageDataElement programStageDataElement =
-                            programStageDataElementService.query(programStage, dataElement);
-                    subscriber.onNext(programStageDataElement);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramStageDataElement call() {
+                return programStageDataElementService.query(programStage, dataElement);
             }
         });
     }
@@ -171,19 +134,10 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
     @Override
     public Observable<List<ProgramStageDataElement>> list(
             final ProgramStageSection programStageSection) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramStageDataElement>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramStageDataElement>> subscriber) {
-                try {
-                    List<ProgramStageDataElement> programStageDataElements =
-                            programStageDataElementService.list(programStageSection);
-
-                    subscriber.onNext(programStageDataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramStageDataElement> call() {
+                return programStageDataElementService.list(programStageSection);
             }
         });
     }

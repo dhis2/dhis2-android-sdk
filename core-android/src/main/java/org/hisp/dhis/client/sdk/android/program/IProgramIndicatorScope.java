@@ -53,9 +53,9 @@ public interface IProgramIndicatorScope {
 
     Observable<List<ProgramIndicator>> list(ProgramStageSection programStageSection);
 
-    Observable<List<ProgramIndicator>> pullUpdates();
+    Observable<List<ProgramIndicator>> pull();
 
-    Observable<List<ProgramIndicator>> pullUpdates(SyncStrategy syncStrategy);
+    Observable<List<ProgramIndicator>> pull(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramIndicator>> pullUpdates(SyncStrategy syncStrategy, Set<String> uids);
+    Observable<List<ProgramIndicator>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

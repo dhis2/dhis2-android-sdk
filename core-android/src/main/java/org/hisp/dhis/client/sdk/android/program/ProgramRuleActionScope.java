@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class ProgramRuleActionScope implements IProgramRuleActionScope {
     private final IProgramRuleActionService programRuleActionService;
@@ -53,111 +53,73 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
 
     @Override
     public Observable<ProgramRuleAction> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<ProgramRuleAction>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramRuleAction>() {
             @Override
-            public void call(Subscriber<? super ProgramRuleAction> subscriber) {
-                try {
-                    ProgramRuleAction programRuleAction = programRuleActionService.get(uid);
-                    subscriber.onNext(programRuleAction);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramRuleAction call() {
+                return programRuleActionService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<ProgramRuleAction> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<ProgramRuleAction>() {
+        return Observable.create(new DefaultOnSubscribe<ProgramRuleAction>() {
             @Override
-            public void call(Subscriber<? super ProgramRuleAction> subscriber) {
-                try {
-                    ProgramRuleAction programRuleAction = programRuleActionService.get(id);
-                    subscriber.onNext(programRuleAction);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public ProgramRuleAction call() {
+                return programRuleActionService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<ProgramRuleAction>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
-                try {
-                    List<ProgramRuleAction> programRuleActions = programRuleActionService.list();
-                    subscriber.onNext(programRuleActions);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRuleAction> call() {
+                return programRuleActionService.list();
             }
         });
     }
 
     @Override
     public Observable<List<ProgramRuleAction>> list(final ProgramRule programRule) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
-                try {
-                    List<ProgramRuleAction> programRuleActions = programRuleActionService.list
-                            (programRule);
-                    subscriber.onNext(programRuleActions);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRuleAction> call() {
+                return programRuleActionService.list(programRule);
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramRuleAction>> pullUpdates() {
-        return pullUpdates(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramRuleAction>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramRuleAction>> pullUpdates(final SyncStrategy syncStrategy) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
-                try {
-                    programRuleActionController.pull(syncStrategy);
-                    List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
-                    subscriber.onNext(programRulesActions);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    public Observable<List<ProgramRuleAction>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
+    }
 
-                subscriber.onCompleted();
+    @Override
+    public Observable<List<ProgramRuleAction>> pull(final SyncStrategy syncStrategy) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
+            @Override
+            public List<ProgramRuleAction> call() {
+                programRuleActionController.pull(syncStrategy);
+                return programRuleActionService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<ProgramRuleAction>> pullUpdates(final SyncStrategy syncStrategy, final
-    Set<String> uids) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramRuleAction>>() {
+    public Observable<List<ProgramRuleAction>> pull(final SyncStrategy syncStrategy,
+                                                    final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
             @Override
-            public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
-                try {
-                    programRuleActionController.pull(syncStrategy, uids);
-                    List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
-                    subscriber.onNext(programRulesActions);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<ProgramRuleAction> call() {
+                programRuleActionController.pull(syncStrategy, uids);
+                return programRuleActionService.list(uids);
             }
         });
     }

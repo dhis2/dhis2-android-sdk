@@ -30,12 +30,11 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
+import java.util.Set;
 
 public final class ProgramRuleVariableService implements IProgramRuleVariableService {
-
     private final IProgramRuleVariableStore programRuleVariableStore;
 
     public ProgramRuleVariableService(IProgramRuleVariableStore programRuleVariableStore) {
@@ -58,15 +57,7 @@ public final class ProgramRuleVariableService implements IProgramRuleVariableSer
     }
 
     @Override
-    public ProgramRuleVariable get(Program program, String programRuleVariableName) {
-        Preconditions.isNull(programRuleVariableName, "programRuleVariableName cannot be null!");
-
-        List<ProgramRuleVariable> programRuleVariables = programRuleVariableStore.query(program);
-        for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            if (programRuleVariableName.equals(programRuleVariable.getName())) {
-                return programRuleVariable;
-            }
-        }
-        return null;
+    public List<ProgramRuleVariable> list(Set<String> uids) {
+        return programRuleVariableStore.queryByUids(uids);
     }
 }

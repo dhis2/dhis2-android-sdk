@@ -51,7 +51,7 @@ public class UserProgramScope implements IUserProgramScope {
     }
 
     @Override
-    public Observable<List<Program>> sync() {
+    public Observable<List<Program>> pull() {
         return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override
@@ -63,7 +63,7 @@ public class UserProgramScope implements IUserProgramScope {
     }
 
     @Override
-    public Observable<List<Program>> sync(final SyncStrategy strategy) throws ApiException {
+    public Observable<List<Program>> pull(final SyncStrategy strategy) throws ApiException {
         return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override

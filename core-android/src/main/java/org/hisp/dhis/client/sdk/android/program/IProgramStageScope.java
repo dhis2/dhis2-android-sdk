@@ -33,19 +33,11 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
 public interface IProgramStageScope {
-    Observable<List<ProgramStage>> pullUpdates();
-
-    Observable<List<ProgramStage>> pullUpdates(String... programStageIds);
-
-    Observable<List<ProgramStage>> pullUpdates(SyncStrategy syncStrategy);
-
-    Observable<List<ProgramStage>> pullUpdates(SyncStrategy syncStrategy,
-                                               String... programStageIds);
-
     Observable<ProgramStage> get(String uid);
 
     Observable<ProgramStage> get(long id);
@@ -53,4 +45,12 @@ public interface IProgramStageScope {
     Observable<List<ProgramStage>> list();
 
     Observable<List<ProgramStage>> list(Program program);
+
+    Observable<List<ProgramStage>> pull();
+
+    Observable<List<ProgramStage>> pull(Set<String> programStageIds);
+
+    Observable<List<ProgramStage>> pull(SyncStrategy syncStrategy);
+
+    Observable<List<ProgramStage>> pull(SyncStrategy syncStrategy, Set<String> programStageIds);
 }

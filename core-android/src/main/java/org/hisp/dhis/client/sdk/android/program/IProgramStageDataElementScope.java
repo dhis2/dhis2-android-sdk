@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -51,11 +52,11 @@ public interface IProgramStageDataElementScope {
 
     Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
 
-    Observable<List<ProgramStageDataElement>> pullUpdates();
+    Observable<List<ProgramStageDataElement>> pull();
 
-    Observable<List<ProgramStageDataElement>> pullUpdates(String... uids);
+    Observable<List<ProgramStageDataElement>> pull(Set<String> uids);
 
-    Observable<List<ProgramStageDataElement>> pullUpdates(SyncStrategy syncStrategy);
+    Observable<List<ProgramStageDataElement>> pull(SyncStrategy syncStrategy);
 
-    Observable<List<ProgramStageDataElement>> pullUpdates(SyncStrategy syncStrategy, String... uids);
+    Observable<List<ProgramStageDataElement>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

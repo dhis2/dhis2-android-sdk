@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
@@ -160,12 +161,12 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
     }
 
     @Override
-    public Observable<List<ProgramIndicator>> pullUpdates() {
-        return pullUpdates(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramIndicator>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramIndicator>> pullUpdates(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
@@ -183,8 +184,8 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
     }
 
     @Override
-    public Observable<List<ProgramIndicator>> pullUpdates(final SyncStrategy syncStrategy, final
-    Set<String> uids) {
+    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy,
+                                                   final Set<String> uids) {
         return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {

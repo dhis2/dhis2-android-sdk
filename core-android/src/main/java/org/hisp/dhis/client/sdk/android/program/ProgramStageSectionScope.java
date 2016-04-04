@@ -35,9 +35,7 @@ import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,17 +52,17 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> pullUpdates() {
-        return pullUpdates(SyncStrategy.DEFAULT);
+    public Observable<List<ProgramStageSection>> pull() {
+        return pull(SyncStrategy.DEFAULT);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> pullUpdates(String... uids) {
-        return pullUpdates(SyncStrategy.DEFAULT, uids);
+    public Observable<List<ProgramStageSection>> pull(Set<String> uids) {
+        return pull(SyncStrategy.DEFAULT, uids);
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> pullUpdates(final SyncStrategy syncStrategy) {
+    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
@@ -76,15 +74,14 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
     }
 
     @Override
-    public Observable<List<ProgramStageSection>> pullUpdates(final SyncStrategy syncStrategy,
-                                                             final String... uids) {
+    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy,
+                                                      final Set<String> uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
 
             @Override
             public List<ProgramStageSection> call() {
-                Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageSectionController.pull(syncStrategy, uidSet);
-                return programStageSectionService.list(uidSet);
+                programStageSectionController.pull(syncStrategy, uids);
+                return programStageSectionService.list(uids);
             }
         });
     }

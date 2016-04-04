@@ -38,9 +38,9 @@ import java.util.List;
 import rx.Observable;
 
 public interface IUserProgramScope {
-    Observable<List<Program>> sync() throws ApiException;
+    Observable<List<Program>> pull() throws ApiException;
 
-    Observable<List<Program>> sync(SyncStrategy strategy) throws ApiException;
+    Observable<List<Program>> pull(SyncStrategy strategy) throws ApiException;
 
     Observable<List<Program>> list();
 

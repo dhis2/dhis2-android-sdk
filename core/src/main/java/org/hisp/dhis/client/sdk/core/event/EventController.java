@@ -107,28 +107,16 @@ public final class EventController extends AbsDataController<Event> implements I
         DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.EVENTS, DateType.SERVER);
 
         // we need models which we got from server (not those which we created locally)
-
-        // TODO  get only items which are specified with uids
         List<Event> persistedEvents = stateStore.queryModelsWithActions(Event.class, uids,
                 Action.SYNCED, Action.TO_UPDATE, Action.TO_DELETE);
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
+        List<Event> allExistingEvents = eventApiClient.getEvents(Fields.BASIC, null, uids);
 
-        // TODO fot events endpoint we cannot do this!
-        // TODO Change to check based on uids
-        List<Event> allExistingEvents = eventApiClient.getEvents(Fields.BASIC, null, null);
+        Set<String> uidSet = ModelUtils.toUidSet(persistedEvents);
+        uidSet.addAll(uids);
 
-        // TODO we always will be providing uids! otherwise fail
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of events which are
-            // stored locally and list of events which we want to download
-            uidSet = ModelUtils.toUidSet(persistedEvents);
-            uidSet.addAll(uids);
-        }
-
-        // TODO this is okay
         List<Event> updatedEvents = eventApiClient.getEvents(
                 Fields.ALL, lastUpdated, uidSet);
 

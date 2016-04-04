@@ -87,11 +87,6 @@ public final class EventController extends AbsDataController<Event> implements I
     }
 
     @Override
-    public void sync(SyncStrategy strategy) throws ApiException {
-        sync(strategy, null);
-    }
-
-    @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
         /* first we need to get information about new events from server */
         // pullUpdates(strategy, uids);
@@ -134,11 +129,11 @@ public final class EventController extends AbsDataController<Event> implements I
 
     @Override
     public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
-        sendEvents();
-        deleteEvents();
+        sendEvents(strategy, uids);
+        deleteEvents(strategy, uids);
     }
 
-    private void sendEvents() throws ApiException {
+    private void sendEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
         List<Event> events = stateStore.queryModelsWithActions(
                 Event.class, Action.TO_POST, Action.TO_UPDATE);
 
@@ -167,7 +162,7 @@ public final class EventController extends AbsDataController<Event> implements I
         }
     }
 
-    private void deleteEvents() throws ApiException {
+    private void deleteEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
         List<Event> events = stateStore.queryModelsWithActions(
                 Event.class, Action.TO_DELETE);
 

@@ -170,7 +170,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    programIndicatorController.pullUpdates(syncStrategy);
+                    programIndicatorController.pull(syncStrategy);
                     List<ProgramIndicator> programIndicators = programIndicatorService.list();
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {
@@ -189,7 +189,7 @@ public class ProgramIndicatorScope implements IProgramIndicatorScope {
             @Override
             public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
                 try {
-                    programIndicatorController.pullUpdates(syncStrategy, uids);
+                    programIndicatorController.pull(syncStrategy, uids);
                     List<ProgramIndicator> programIndicators = programIndicatorService.list();
                     subscriber.onNext(programIndicators);
                 } catch (Throwable throwable) {

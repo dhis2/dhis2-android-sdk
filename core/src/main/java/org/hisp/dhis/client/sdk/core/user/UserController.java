@@ -38,12 +38,12 @@ import java.util.Set;
 public class UserController implements IIdentifiableController<UserAccount> {
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
 
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

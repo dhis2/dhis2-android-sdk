@@ -104,7 +104,7 @@ public class ProgramScope implements IProgramScope {
     }
 
     @Override
-    public Observable<List<Program>> list(final OrganisationUnit... organisationUnits) {
+    public Observable<List<Program>> list(final List<OrganisationUnit> organisationUnits) {
         return Observable.create(new Observable.OnSubscribe<List<Program>>() {
 
             @Override
@@ -128,7 +128,7 @@ public class ProgramScope implements IProgramScope {
             @Override
             public void call(Subscriber<? super List<Program>> subscriber) {
                 try {
-                    programController.pullUpdates(syncStrategy);
+                    programController.pull(syncStrategy);
                     subscriber.onNext(programService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

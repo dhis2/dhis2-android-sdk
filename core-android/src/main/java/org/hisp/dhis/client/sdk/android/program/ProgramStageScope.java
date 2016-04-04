@@ -70,7 +70,7 @@ public class ProgramStageScope implements IProgramStageScope {
             @Override
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
-                    programStageController.pullUpdates(syncStrategy);
+                    programStageController.pull(syncStrategy);
                     subscriber.onNext(programStageService.list());
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -90,7 +90,7 @@ public class ProgramStageScope implements IProgramStageScope {
             public void call(Subscriber<? super List<ProgramStage>> subscriber) {
                 try {
                     Set<String> uids = new HashSet<>(ModelUtils.asList(programStageIds));
-                    programStageController.pullUpdates(syncStrategy, uids);
+                    programStageController.pull(syncStrategy, uids);
                     subscriber.onNext(programStageService.list(uids));
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);

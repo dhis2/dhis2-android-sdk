@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemContentStore;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
 public final class DashboardContentStore extends AbsIdentifiableObjectStore<DashboardContent,
         DashboardContentFlow> implements IDashboardItemContentStore {
@@ -44,7 +45,7 @@ public final class DashboardContentStore extends AbsIdentifiableObjectStore<Dash
     }
 
     @Override
-    public List<DashboardContent> queryByTypes(List<String> types) {
+    public List<DashboardContent> queryByTypes(Set<String> types) {
 //        CombinedCondition generalCondition = CombinedCondition.begin(
 //                Condition.column(DashboardContent_Flow_Table.TYPE).isNotNull());
 //        CombinedCondition columnConditions = null;

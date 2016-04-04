@@ -40,5 +40,5 @@ public interface IIdentifiableDataController<T extends IdentifiableObject>
 
     void sync(SyncStrategy strategy, Set<String> uids);
 
-    void pushUpdates(Set<String> uids) throws ApiException;
+    void push(Set<String> uids) throws ApiException;
 }

@@ -37,6 +37,6 @@ import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 public interface IRelationshipTypeService extends IService, ISave<RelationshipType>,
-        IRemove<RelationshipType>,
-        IGet<RelationshipType>, IGetUid<RelationshipType>, IList<RelationshipType> {
+        IRemove<RelationshipType>, IGet<RelationshipType>, IGetUid<RelationshipType>,
+        IList<RelationshipType> {
 }

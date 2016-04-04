@@ -97,12 +97,12 @@ public final class TrackedEntityController implements IIdentifiableController<Tr
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         getTrackedEntityAttributesFromServer();
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

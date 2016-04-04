@@ -96,8 +96,8 @@ public final class EventController extends AbsDataController<Event> implements I
                 eventStore.queryAll());
 
         if (!uids.isEmpty()) {
-            pullUpdates(strategy, uids);
-            pushUpdates(uids);
+            pull(strategy, uids);
+            push(uids);
         }
     }
 
@@ -106,25 +106,25 @@ public final class EventController extends AbsDataController<Event> implements I
         isEmpty(uids, "Set of event uids must not be null");
 
         /* first we need to get information about new events from server */
-        pullUpdates(strategy, uids);
+        pull(strategy, uids);
 
         /* then we should try to push data to server */
-        pushUpdates(uids);
+        push(uids);
     }
 
     @Override
-    public void pullUpdates(SyncStrategy strategy) throws ApiException {
+    public void pull(SyncStrategy strategy) throws ApiException {
         // get list of local uids
         Set<String> uids = ModelUtils.toUidSet(
                 eventStore.queryAll());
 
         if (!uids.isEmpty()) {
-            pullUpdates(strategy, uids);
+            pull(strategy, uids);
         }
     }
 
     @Override
-    public void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy strategy, Set<String> uids) throws ApiException {
         isEmpty(uids, "Set of event uids must not be null");
 
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
@@ -153,7 +153,7 @@ public final class EventController extends AbsDataController<Event> implements I
     }
 
     @Override
-    public void pushUpdates(Set<String> uids) throws ApiException {
+    public void push(Set<String> uids) throws ApiException {
         isEmpty(uids, "Set of event uids must not be null");
 
         sendEvents(uids);

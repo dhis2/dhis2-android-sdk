@@ -36,5 +36,5 @@ import java.util.List;
 
 public interface IInterpretationCommentStore extends
         IIdentifiableObjectStore<InterpretationComment> {
-    List<InterpretationComment> queryByInterpretation(Interpretation interpretation);
+    List<InterpretationComment> query(Interpretation interpretation);
 }

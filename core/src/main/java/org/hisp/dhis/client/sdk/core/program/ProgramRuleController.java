@@ -43,7 +43,6 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,11 +113,11 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
 
         // checking if programs is synced
         if(!programUids.isEmpty()) {
-            programController.pullUpdates(strategy, programUids);
+            programController.pull(strategy, programUids);
         }
         // checking if program stages is synced
         if(!programStageUids.isEmpty()) {
-            programStageController.pullUpdates(strategy, programStageUids);
+            programStageController.pull(strategy, programStageUids);
         }
 
         // we will have to perform something similar to what happens in AbsController
@@ -171,11 +170,11 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
 
         // checking if programs is synced
 //        if(!programUids.isEmpty()) {
-//            programController.pullUpdates(strategy, programUids);
+//            programController.pull(strategy, programUids);
 //        }
         // checking if program stages is synced
 //        if(!programStageUids.isEmpty()) {
-//            programStageController.pullUpdates(strategy, programStageUids);
+//            programStageController.pull(strategy, programStageUids);
 //        }
 
         // we will have to perform something similar to what happens in AbsController

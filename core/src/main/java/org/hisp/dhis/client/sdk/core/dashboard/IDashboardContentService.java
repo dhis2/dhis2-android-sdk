@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.services.IService;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
 public interface IDashboardContentService extends IService, IGet<DashboardContent>,
         IGetUid<DashboardContent>, IList<DashboardContent> {
@@ -42,5 +43,5 @@ public interface IDashboardContentService extends IService, IGet<DashboardConten
     /**
      * {@inheritDoc}
      */
-    List<DashboardContent> list(List<String> types);
+    List<DashboardContent> list(Set<String> types);
 }

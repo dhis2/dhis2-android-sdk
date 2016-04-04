@@ -37,5 +37,5 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 public interface IProgramRuleVariableService extends IService, IGet<ProgramRuleVariable>,
         IGetUid<ProgramRuleVariable>, IList<ProgramRuleVariable> {
-    ProgramRuleVariable getByName(Program program, String programRuleVariableName);
+    ProgramRuleVariable get(Program program, String programRuleVariableName);
 }

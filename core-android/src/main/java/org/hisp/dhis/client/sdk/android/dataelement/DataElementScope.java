@@ -29,15 +29,16 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class DataElementScope implements IDataElementScope {
     private final IDataElementService dataElementService;
@@ -51,103 +52,75 @@ public class DataElementScope implements IDataElementScope {
 
     @Override
     public Observable<DataElement> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<DataElement>() {
+        return Observable.create(new DefaultOnSubscribe<DataElement>() {
             @Override
-            public void call(Subscriber subscriber) {
-                try {
-                    DataElement dataElement = dataElementService.get(uid);
-                    subscriber.onNext(dataElement);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public DataElement call() {
+                return dataElementService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<DataElement> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<DataElement>() {
+        return Observable.create(new DefaultOnSubscribe<DataElement>() {
             @Override
-            public void call(Subscriber subscriber) {
-                try {
-                    DataElement dataElement = dataElementService.get(id);
-                    subscriber.onNext(dataElement);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public DataElement call() {
+                return dataElementService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<DataElement>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<DataElement>>() {
+        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
             @Override
-            public void call(Subscriber<? super List<DataElement>> subscriber) {
-                try {
-                    List<DataElement> dataElements = dataElementService.list();
-                    subscriber.onNext(dataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<DataElement> call() {
+                return dataElementService.list();
             }
         });
     }
 
     @Override
-    public Observable<Boolean> save(final DataElement object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+    public Observable<List<DataElement>> pull() {
+        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = dataElementService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<DataElement> call() {
+                dataElementController.pull(SyncStrategy.DEFAULT);
+                return dataElementService.list();
             }
         });
     }
 
     @Override
-    public Observable<Boolean> remove(final DataElement object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+    public Observable<List<DataElement>> pull(final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = dataElementService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<DataElement> call() {
+                dataElementController.pull(SyncStrategy.DEFAULT, uids);
+                return dataElementService.list();
             }
         });
     }
 
     @Override
-    public Observable<List<DataElement>> sync() {
-        return Observable.create(new Observable.OnSubscribe<List<DataElement>>() {
+    public Observable<List<DataElement>> pull(final SyncStrategy strategy) {
+        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
             @Override
-            public void call(Subscriber<? super List<DataElement>> subscriber) {
-                try {
-                    dataElementController.pullUpdates(SyncStrategy.DEFAULT);
-                    List<DataElement> dataElements = dataElementService.list();
-                    subscriber.onNext(dataElements);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+            public List<DataElement> call() {
+                dataElementController.pull(strategy);
+                return dataElementService.list();
+            }
+        });
+    }
 
-                subscriber.onCompleted();
+    @Override
+    public Observable<List<DataElement>> pull(final SyncStrategy strategy,
+                                              final Set<String> uids) {
+        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
+            @Override
+            public List<DataElement> call() {
+                dataElementController.pull(strategy, uids);
+                return dataElementService.list();
             }
         });
     }

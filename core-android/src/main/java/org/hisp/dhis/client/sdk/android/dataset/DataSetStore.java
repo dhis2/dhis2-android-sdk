@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.core.dataset.IDataSetStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
+import java.util.Collection;
 import java.util.List;
 
 public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSetFlow>
@@ -50,7 +51,7 @@ public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, Data
     }
 
     @Override
-    public List<OrganisationUnit> query(DataSet dataSet) {
+    public List<OrganisationUnit> query(Collection<DataSet> dataSets) {
 //        List<UnitToDataSetRelationShip_Flow> relationShipFlows = new Select()
 //                .from(UnitToDataSetRelationShip_Flow.class)
 //                .where(Condition.column(UnitToDataSetRelationShip_Flow_Table

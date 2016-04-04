@@ -86,7 +86,7 @@ public class UserProgramScope implements IUserProgramScope {
     }
 
     @Override
-    public Observable<List<Program>> list(final OrganisationUnit... organisationUnits) {
+    public Observable<List<Program>> list(final List<OrganisationUnit> organisationUnits) {
         return Observable.create(new DefaultOnSubscribe<List<Program>>() {
 
             @Override

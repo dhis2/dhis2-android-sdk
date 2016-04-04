@@ -35,5 +35,5 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import java.util.List;
 
 public interface IDashboardItemStore extends IIdentifiableObjectStore<DashboardItem> {
-    List<DashboardItem> queryByDashboard(Dashboard dashboard);
+    List<DashboardItem> query(Dashboard dashboard);
 }

@@ -63,13 +63,13 @@ public class OrganisationUnitService implements IOrganisationUnitService {
     }
 
     @Override
-    public List<OrganisationUnit> list(Program... programs) {
-        return organisationUnitStore.query(programs);
+    public List<OrganisationUnit> listByPrograms(List<Program> programs) {
+        return organisationUnitStore.queryByPrograms(programs);
     }
 
     @Override
-    public List<OrganisationUnit> list(DataSet... dataSets) {
-        return organisationUnitStore.query(dataSets);
+    public List<OrganisationUnit> listByDataSets(List<DataSet> dataSets) {
+        return organisationUnitStore.queryByDataSets(dataSets);
     }
 
     @Override

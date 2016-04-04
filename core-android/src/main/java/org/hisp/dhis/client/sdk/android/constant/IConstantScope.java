@@ -42,8 +42,4 @@ public interface IConstantScope {
     Observable<Constant> get(long id);
 
     Observable<List<Constant>> list();
-
-    Observable<Boolean> save(Constant object);
-
-    Observable<Boolean> remove(Constant object);
 }

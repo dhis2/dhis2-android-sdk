@@ -38,8 +38,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 public interface IDashboardService extends IService, ISave<Dashboard>, IRemove<Dashboard>,
-        IGet<Dashboard>,
-        IGetUid<Dashboard>, IList<Dashboard> {
+        IGet<Dashboard>, IGetUid<Dashboard>, IList<Dashboard> {
 
     Dashboard create(String name);
 

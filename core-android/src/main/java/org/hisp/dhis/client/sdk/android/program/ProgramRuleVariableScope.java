@@ -80,7 +80,7 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
             @Override
             public void call(Subscriber<? super ProgramRuleVariable> subscriber) {
                 try {
-                    ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName(program, programRuleVariableName);
+                    ProgramRuleVariable programRuleVariable = programRuleVariableService.get(program, programRuleVariableName);
                     subscriber.onNext(programRuleVariable);
                 } catch (Throwable throwable) {
                     subscriber.onError(throwable);
@@ -102,7 +102,7 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleVariable>> subscriber) {
                 try {
-                    programRuleVariableController.pullUpdates(syncStrategy);
+                    programRuleVariableController.pull(syncStrategy);
                     List<ProgramRuleVariable> programRuleVariables = programRuleVariableService.list();
                     subscriber.onNext(programRuleVariables);
                 } catch (Throwable throwable) {
@@ -121,7 +121,7 @@ public class ProgramRuleVariableScope implements IProgramRuleVariableScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleVariable>> subscriber) {
                 try {
-                    programRuleVariableController.pullUpdates(syncStrategy, uids);
+                    programRuleVariableController.pull(syncStrategy, uids);
                     List<ProgramRuleVariable> programRuleVariables = programRuleVariableService.list();
                     subscriber.onNext(programRuleVariables);
                 } catch (Throwable throwable) {

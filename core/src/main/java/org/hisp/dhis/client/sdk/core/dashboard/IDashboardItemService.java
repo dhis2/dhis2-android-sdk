@@ -39,8 +39,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import java.util.List;
 
 public interface IDashboardItemService extends IService, IRemove<DashboardItem>,
-        IList<DashboardItem>,
-        IGet<DashboardItem>, IGetUid<DashboardItem> {
+        IList<DashboardItem>, IGet<DashboardItem>, IGetUid<DashboardItem> {
 
     DashboardItem create(Dashboard dashboard, String type);
 

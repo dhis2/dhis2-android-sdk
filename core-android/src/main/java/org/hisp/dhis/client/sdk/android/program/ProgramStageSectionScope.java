@@ -69,7 +69,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
 
             @Override
             public List<ProgramStageSection> call() {
-                programStageSectionController.pullUpdates(syncStrategy);
+                programStageSectionController.pull(syncStrategy);
                 return programStageSectionService.list();
             }
         });
@@ -83,7 +83,7 @@ public class ProgramStageSectionScope implements IProgramStageSectionScope {
             @Override
             public List<ProgramStageSection> call() {
                 Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageSectionController.pullUpdates(syncStrategy, uidSet);
+                programStageSectionController.pull(syncStrategy, uidSet);
                 return programStageSectionService.list(uidSet);
             }
         });

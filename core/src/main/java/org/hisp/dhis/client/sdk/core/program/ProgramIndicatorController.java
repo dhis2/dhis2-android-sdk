@@ -86,15 +86,15 @@ public class ProgramIndicatorController extends AbsSyncStrategyController
 
         // checking if progams is synced
         if(!programUids.isEmpty()) {
-            programController.pullUpdates(strategy, programUids);
+            programController.pull(strategy, programUids);
         }
         // checking if program stages is synced
         if(!programStageUids.isEmpty()) {
-            programStageController.pullUpdates(strategy, programStageUids);
+            programStageController.pull(strategy, programStageUids);
         }
         // checking if program stage sections is synced
         if(!programStageSectionUids.isEmpty()) {
-            programStageSectionController.pullUpdates(strategy, programStageSectionUids);
+            programStageSectionController.pull(strategy, programStageSectionUids);
         }
         // we will have to perform something similar to what happens in AbsController
         List<IDbOperation> dbOperations = DbUtils.createOperations(

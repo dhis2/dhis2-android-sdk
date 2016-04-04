@@ -58,7 +58,7 @@ public final class ProgramRuleVariableService implements IProgramRuleVariableSer
     }
 
     @Override
-    public ProgramRuleVariable getByName(Program program, String programRuleVariableName) {
+    public ProgramRuleVariable get(Program program, String programRuleVariableName) {
         Preconditions.isNull(programRuleVariableName, "programRuleVariableName cannot be null!");
 
         List<ProgramRuleVariable> programRuleVariables = programRuleVariableStore.query(program);

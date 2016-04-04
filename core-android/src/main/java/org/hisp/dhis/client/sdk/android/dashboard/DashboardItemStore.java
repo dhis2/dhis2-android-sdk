@@ -48,7 +48,7 @@ public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem
     }
 
     @Override
-    public List<DashboardItem> queryByDashboard(Dashboard dashboard) {
+    public List<DashboardItem> query(Dashboard dashboard) {
         isNull(dashboard, "Dashboard must not be null");
 
 //        List<DashboardItem_Flow> dashboardItemFlows = new Select()

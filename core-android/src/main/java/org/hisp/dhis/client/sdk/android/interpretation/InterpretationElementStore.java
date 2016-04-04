@@ -116,7 +116,7 @@ public class InterpretationElementStore implements IInterpretationElementStore {
     }
 
     @Override
-    public List<InterpretationElement> list(Interpretation interpretation) {
+    public List<InterpretationElement> query(Interpretation interpretation) {
         InterpretationFlow interpretationFlow = null;//Interpretation_Flow.fromModel
         // (interpretation);
         List<InterpretationElementFlow> elementFlow = new Select()

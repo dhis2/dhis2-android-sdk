@@ -101,7 +101,7 @@ public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
     public List<Event> queryByUids(Set<String> uids) {
         List<Event> events = super.queryByUids(uids);
         return mapEventsToDataValues(events, dataValueStore
-                .query(events.toArray(new Event[events.size()])));
+                .query(events));
     }
 
     @Override

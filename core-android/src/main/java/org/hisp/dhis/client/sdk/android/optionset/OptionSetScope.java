@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
@@ -35,114 +36,50 @@ import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class OptionSetScope implements IOptionSetScope {
-
-    private IOptionSetService mOptionSetService;
+    private final IOptionSetService optionSetService;
 
     public OptionSetScope(IOptionSetService optionSetService) {
-        this.mOptionSetService = optionSetService;
+        this.optionSetService = optionSetService;
     }
 
     @Override
     public Observable<OptionSet> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<OptionSet>() {
+        return Observable.create(new DefaultOnSubscribe<OptionSet>() {
             @Override
-            public void call(Subscriber<? super OptionSet> subscriber) {
-                try {
-                    OptionSet optionSet = mOptionSetService.get(uid);
-                    subscriber.onNext(optionSet);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public OptionSet call() {
+                return optionSetService.get(uid);
             }
         });
     }
 
     @Override
     public Observable<OptionSet> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<OptionSet>() {
+        return Observable.create(new DefaultOnSubscribe<OptionSet>() {
             @Override
-            public void call(Subscriber<? super OptionSet> subscriber) {
-                try {
-                    OptionSet optionSet = mOptionSetService.get(id);
-                    subscriber.onNext(optionSet);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public OptionSet call() {
+                return optionSetService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<OptionSet>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<OptionSet>>() {
+        return Observable.create(new DefaultOnSubscribe<List<OptionSet>>() {
             @Override
-            public void call(Subscriber<? super List<OptionSet>> subscriber) {
-                try {
-                    List<OptionSet> optionSets = mOptionSetService.list();
-                    subscriber.onNext(optionSets);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<OptionSet> call() {
+                return optionSetService.list();
             }
         });
     }
 
     @Override
     public Observable<List<Option>> list(final OptionSet optionSet) {
-        return Observable.create(new Observable.OnSubscribe<List<Option>>() {
+        return Observable.create(new DefaultOnSubscribe<List<Option>>() {
             @Override
-            public void call(Subscriber<? super List<Option>> subscriber) {
-                try {
-                    List<Option> options = mOptionSetService.list(optionSet);
-                    subscriber.onNext(options);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> save(final OptionSet optionSet) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mOptionSetService.save(optionSet);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final OptionSet optionSet) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mOptionSetService.remove(optionSet);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<Option> call() {
+                return optionSetService.list(optionSet);
             }
         });
     }

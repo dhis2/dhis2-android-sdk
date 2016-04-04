@@ -146,7 +146,7 @@ public class ProgramRuleUtils {
 
         while (matcher.find()) {
             String variableName = matcher.group(2);
-            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName
+            ProgramRuleVariable programRuleVariable = programRuleVariableService.get
                     (programRule.getProgram(), variableName);
             if (programRuleVariable != null && programRuleVariable.getDataElement() != null) {
                 dataElementsInRule.add(programRuleVariable.getDataElement().getUId());
@@ -191,7 +191,7 @@ public class ProgramRuleUtils {
 
         while (matcher.find()) {
             String variableName = matcher.group(2);
-            ProgramRuleVariable programRuleVariable = programRuleVariableService.getByName
+            ProgramRuleVariable programRuleVariable = programRuleVariableService.get
                     (programRule.getProgram(), variableName);
             if (programRuleVariable != null && programRuleVariable.getTrackedEntityAttribute() !=
                     null) {

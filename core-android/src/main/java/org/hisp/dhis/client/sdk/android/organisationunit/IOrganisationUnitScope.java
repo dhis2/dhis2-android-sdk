@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -52,8 +53,11 @@ public interface IOrganisationUnitScope {
     ///////////////////////////////////////////////////////////////////////////////////////////
     // Controller methods
     ///////////////////////////////////////////////////////////////////////////////////////////
+    Observable<List<OrganisationUnit>> pull();
 
-    Observable<List<OrganisationUnit>> sync(SyncStrategy syncStrategy);
+    Observable<List<OrganisationUnit>> pull(Set<String> uids);
 
-    Observable<List<OrganisationUnit>> sync(SyncStrategy syncStrategy, String... uids);
+    Observable<List<OrganisationUnit>> pull(SyncStrategy syncStrategy);
+
+    Observable<List<OrganisationUnit>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

@@ -37,12 +37,12 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import java.util.List;
 
 public interface IEnrollmentStore extends IIdentifiableObjectStore<Enrollment> {
-    List<Enrollment> query(Program program, TrackedEntityInstance trackedEntityInstance);
+    List<Enrollment> query(Program program, TrackedEntityInstance instance);
 
-    Enrollment queryActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
-                                     OrganisationUnit organisationUnit, Program program);
+    Enrollment queryActiveEnrollment(
+            TrackedEntityInstance instance, OrganisationUnit unit, Program program);
 
-    List<Enrollment> query(TrackedEntityInstance trackedEntityInstance);
+    List<Enrollment> query(TrackedEntityInstance instance);
 
     List<Enrollment> query(Program program, OrganisationUnit organisationUnit);
 }

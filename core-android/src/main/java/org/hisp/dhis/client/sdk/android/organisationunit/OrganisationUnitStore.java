@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -77,16 +78,16 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
     }
 
     @Override
-    public List<OrganisationUnit> query(Program... programs) {
+    public List<OrganisationUnit> queryByPrograms(List<Program> programs) {
         List<OrganisationUnitFlow> orgUnitFlows = ModelLinkFlow.queryRelatedModels(
-                OrganisationUnitFlow.class, UNITS_TO_PROGRAMS, Arrays.asList(programs));
+                OrganisationUnitFlow.class, UNITS_TO_PROGRAMS, programs);
 
         List<OrganisationUnit> organisationUnits = getMapper().mapToModels(orgUnitFlows);
         return queryUnitRelationships(organisationUnits);
     }
 
     @Override
-    public List<OrganisationUnit> query(DataSet... dataSets) {
+    public List<OrganisationUnit> queryByDataSets(List<DataSet> dataSets) {
         throw new RuntimeException("Unimplemented method");
     }
 

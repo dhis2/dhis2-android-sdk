@@ -131,7 +131,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
                 try {
-                    programRuleActionController.pullUpdates(syncStrategy);
+                    programRuleActionController.pull(syncStrategy);
                     List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
                     subscriber.onNext(programRulesActions);
                 } catch (Throwable throwable) {
@@ -150,7 +150,7 @@ public class ProgramRuleActionScope implements IProgramRuleActionScope {
             @Override
             public void call(Subscriber<? super List<ProgramRuleAction>> subscriber) {
                 try {
-                    programRuleActionController.pullUpdates(syncStrategy, uids);
+                    programRuleActionController.pull(syncStrategy, uids);
                     List<ProgramRuleAction> programRulesActions = programRuleActionService.list();
                     subscriber.onNext(programRulesActions);
                 } catch (Throwable throwable) {

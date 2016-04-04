@@ -142,29 +142,29 @@ public final class ProgramRuleActionController extends AbsSyncStrategyController
 
         // checking if program stages is synced
         if(!programStageUids.isEmpty()) {
-            programStageController.pullUpdates(strategy, programStageUids);
+            programStageController.pull(strategy, programStageUids);
         }
         // checking if program stage sections is synced
         if(!programStageSectionUids.isEmpty()) {
-            programStageSectionController.pullUpdates(strategy, programStageSectionUids);
+            programStageSectionController.pull(strategy, programStageSectionUids);
         }
         // checking if data elements is synced
         if(!dataElementUids.isEmpty()) {
-            dataElementController.pullUpdates(strategy, dataElementUids);
+            dataElementController.pull(strategy, dataElementUids);
         }
         // checking if tracked entity attributes is synced
         // trackedEntityAttributeUids will always be empty if user has access to programs without
         // registration!
         if(!trackedEntityAttributeUids.isEmpty()) {
-            trackedEntityAttributeController.pullUpdates(strategy, trackedEntityAttributeUids);
+            trackedEntityAttributeController.pull(strategy, trackedEntityAttributeUids);
         }
         // checking if program rules is synced
         if(!programRuleUids.isEmpty()) {
-            programRuleController.pullUpdates(strategy, programRuleUids);
+            programRuleController.pull(strategy, programRuleUids);
         }
         // checking if program indicators is synced
         if(!programIndicatorUids.isEmpty()) {
-            programIndicatorController.pullUpdates(strategy, programIndicatorUids);
+            programIndicatorController.pull(strategy, programIndicatorUids);
         }
 
 

@@ -69,6 +69,6 @@ public class AssignedOrganisationUnitController implements IAssignedOrganisation
         Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
 
         /* get them through program controller */
-        organisationUnitController.pullUpdates(strategy, ids);
+        organisationUnitController.pull(strategy, ids);
     }
 }

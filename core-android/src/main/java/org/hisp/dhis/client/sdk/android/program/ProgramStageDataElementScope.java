@@ -77,7 +77,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
             @Override
             public List<ProgramStageDataElement> call() {
                 Set<String> uidSet = new HashSet<>(ModelUtils.asList(uids));
-                programStageDataElementController.pullUpdates(syncStrategy, uidSet);
+                programStageDataElementController.pull(syncStrategy, uidSet);
                 return programStageDataElementService.list(uidSet);
             }
         });
@@ -89,7 +89,7 @@ public class ProgramStageDataElementScope implements IProgramStageDataElementSco
 
             @Override
             public List<ProgramStageDataElement> call() {
-                programStageDataElementController.pullUpdates(syncStrategy);
+                programStageDataElementController.pull(syncStrategy);
                 return programStageDataElementService.list();
             }
         });

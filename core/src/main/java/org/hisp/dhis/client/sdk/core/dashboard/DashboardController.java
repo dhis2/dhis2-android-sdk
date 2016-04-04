@@ -52,6 +52,7 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -110,19 +111,19 @@ public final class DashboardController implements IIdentifiableController<Dashbo
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         /* first we need to fetch all changes from server and apply them to local database */
         getDashboardDataFromServer();
 
         /* now we can try to send changes made locally to server */
         // sendLocalChanges();
 
-        /* pullUpdates content */
+        /* pull content */
         // syncDashboardContent();
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 
@@ -633,7 +634,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
                 dashboardElementStore.delete(element);
 
                 // removal of elements changes
-                // dashboard's timestamp on server. In order to stay in pullUpdates,
+                // dashboard's timestamp on server. In order to stay in pull,
                 // we need to get dashboard from server.
                 updateDashboardTimeStamp(item.getDashboard());
             } catch (ApiException apiException) {
@@ -718,15 +719,18 @@ public final class DashboardController implements IIdentifiableController<Dashbo
             }
         }
 
+        Set<String> uids = new HashSet<>();
+        uids.add(type);
 
         List<DashboardContent> persistedItems =
-                dashboardItemContentStore.queryByTypes(Arrays.asList(type));
+                dashboardItemContentStore.queryByTypes(uids);
 
         return ModelUtils.merge(actualItems, updatedItems, persistedItems);
     }
 
-    private List<DashboardContent> getApiResourceByType(String type,
-                                                        Map<String, String> queryParams) {
+    private List<DashboardContent> getApiResourceByType(
+            String type, Map<String, String> queryParams) {
+
         switch (type) {
             case DashboardContent.TYPE_CHART:
                 return dashboardApiClient.getBaseCharts();

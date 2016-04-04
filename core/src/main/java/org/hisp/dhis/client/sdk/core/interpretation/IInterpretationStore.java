@@ -32,5 +32,4 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
 public interface IInterpretationStore extends IIdentifiableObjectStore<Interpretation> {
-
 }

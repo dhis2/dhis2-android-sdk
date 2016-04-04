@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IFailedItemStore;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
@@ -63,7 +62,6 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
 
     private final IEnrollmentController enrollmentController;
     private final IStateStore stateStore;
-    private final IFailedItemStore failedItemStore;
     private final IRelationshipStore relationshipStore;
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final IEnrollmentStore enrollmentStore;
@@ -75,7 +73,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
                                            ILastUpdatedPreferences lastUpdatedPreferences,
                                            ITransactionManager transactionManager,
                                            IEnrollmentController enrollmentController,
-                                           IStateStore stateStore, IFailedItemStore failedItemStore,
+                                           IStateStore stateStore,
                                            IRelationshipStore relationshipStore,
                                            ITrackedEntityAttributeValueStore
                                                    trackedEntityAttributeValueStore,
@@ -87,7 +85,6 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
         this.transactionManager = transactionManager;
         this.enrollmentController = enrollmentController;
         this.stateStore = stateStore;
-        this.failedItemStore = failedItemStore;
         this.relationshipStore = relationshipStore;
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.enrollmentStore = enrollmentStore;

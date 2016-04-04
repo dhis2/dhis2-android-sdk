@@ -181,7 +181,7 @@ public final class InterpretationController implements IIdentifiableController<I
 
     private void sendInterpretationCommentChanges() {
         List<InterpretationComment> comments = null;
-        // mInterpretationCommentStore.queryByInterpretation(Action.SYNCED);
+        // mInterpretationCommentStore.query(Action.SYNCED);
 
         if (comments == null || comments.isEmpty()) {
             return;
@@ -365,7 +365,7 @@ public final class InterpretationController implements IIdentifiableController<I
         /* operations.addAll(createOperations(
                 mInterpretationStore.filter(Action.TO_POST), interpretations)); */
         /* operations.addAll(DbUtils.createOperations(
-                mInterpretationCommentStore, mInterpretationCommentStore.queryByInterpretation
+                mInterpretationCommentStore, mInterpretationCommentStore.query
                 (Action.TO_POST), comments)); */
 
         /* DbUtils.applyBatch(operations);
@@ -460,11 +460,11 @@ public final class InterpretationController implements IIdentifiableController<I
                 && !persistedInterpretations.isEmpty()) {
             for (Interpretation interpretation : persistedInterpretations) {
                 List<InterpretationElement> elements =
-                        mInterpretationElementStore.list(interpretation);
+                        mInterpretationElementStore.query(interpretation);
                 // mInterpretationService.setInterpretationElements(interpretation, elements);
 
                 List<InterpretationComment> comments = null;
-                // mInterpretationCommentStore.queryByInterpretation(interpretation, Action
+                // mInterpretationCommentStore.query(interpretation, Action
                 // .TO_POST);
                 interpretation.setComments(comments);
             }
@@ -566,13 +566,13 @@ public final class InterpretationController implements IIdentifiableController<I
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         getInterpretationDataFromServer();
         sendLocalChanges();
     }
 
     @Override
-    public void pullUpdates(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

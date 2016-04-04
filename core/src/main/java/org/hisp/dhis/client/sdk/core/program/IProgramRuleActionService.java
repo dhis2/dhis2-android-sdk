@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import java.util.List;
 
 public interface IProgramRuleActionService extends IService, ISave<ProgramRuleAction>,
-        IRemove<ProgramRuleAction>,
-        IGet<ProgramRuleAction>, IGetUid<ProgramRuleAction>, IList<ProgramRuleAction> {
+        IRemove<ProgramRuleAction>, IGet<ProgramRuleAction>, IGetUid<ProgramRuleAction>,
+        IList<ProgramRuleAction> {
 
     List<ProgramRuleAction> list(ProgramRule programRule);
 }

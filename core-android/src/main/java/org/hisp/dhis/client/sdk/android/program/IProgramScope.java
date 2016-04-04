@@ -44,7 +44,7 @@ public interface IProgramScope {
 
     Observable<List<Program>> list();
 
-    Observable<List<Program>> list(OrganisationUnit... organisationUnits);
+    Observable<List<Program>> list(List<OrganisationUnit> organisationUnits);
 
     Observable<List<Program>> sync(SyncStrategy syncStrategy);
 

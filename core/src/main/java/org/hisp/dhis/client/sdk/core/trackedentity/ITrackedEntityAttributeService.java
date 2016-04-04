@@ -38,7 +38,6 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 
 public interface ITrackedEntityAttributeService extends IService, ISave<TrackedEntityAttribute>,
-        IRemove<TrackedEntityAttribute>,
-        IGet<TrackedEntityAttribute>, IGetUid<TrackedEntityAttribute>,
-        IList<TrackedEntityAttribute> {
+        IRemove<TrackedEntityAttribute>, IGet<TrackedEntityAttribute>,
+        IGetUid<TrackedEntityAttribute>, IList<TrackedEntityAttribute> {
 }

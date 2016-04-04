@@ -29,9 +29,11 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import java.util.List;
+import java.util.Set;
 
 import rx.Observable;
 
@@ -43,9 +45,11 @@ public interface IDataElementScope {
 
     Observable<List<DataElement>> list();
 
-    Observable<Boolean> save(DataElement object);
+    Observable<List<DataElement>> pull();
 
-    Observable<Boolean> remove(DataElement object);
+    Observable<List<DataElement>> pull(Set<String> uids);
 
-    Observable<List<DataElement>> sync();
+    Observable<List<DataElement>> pull(SyncStrategy strategy);
+
+    Observable<List<DataElement>> pull(SyncStrategy strategy, Set<String> uids);
 }

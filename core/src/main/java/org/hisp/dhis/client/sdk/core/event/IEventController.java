@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
+import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.Set;
 
-public interface IEventController {
-    void sync(SyncStrategy strategy, Set<String> uids) throws ApiException;
-
+public interface IEventController extends IIdentifiableController<Event> {
     void pullUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
 
-    void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException;
+    void pushUpdates(Set<String> uids) throws ApiException;
 }

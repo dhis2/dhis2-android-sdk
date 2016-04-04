@@ -89,6 +89,17 @@ public final class EventController extends AbsDataController<Event> implements I
     }
 
     @Override
+    public void sync(SyncStrategy syncStrategy) throws ApiException {
+        // get list of local uids
+        Set<String> uids = ModelUtils.toUidSet(
+                eventStore.queryAll());
+
+        if (!uids.isEmpty()) {
+            sync(syncStrategy, uids);
+        }
+    }
+
+    @Override
     public void sync(SyncStrategy strategy, Set<String> uids) throws ApiException {
         isEmpty(uids, "Set of event uids must not be null");
 
@@ -96,7 +107,7 @@ public final class EventController extends AbsDataController<Event> implements I
         pullUpdates(strategy, uids);
 
         /* then we should try to push data to server */
-        pushUpdates(strategy, uids);
+        pushUpdates(uids);
     }
 
     @Override
@@ -129,16 +140,16 @@ public final class EventController extends AbsDataController<Event> implements I
     }
 
     @Override
-    public void pushUpdates(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    public void pushUpdates(Set<String> uids) throws ApiException {
         isEmpty(uids, "Set of event uids must not be null");
 
-        sendEvents(strategy, uids);
-        deleteEvents(strategy, uids);
+        sendEvents(uids);
+        deleteEvents(uids);
     }
 
-    private void sendEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    private void sendEvents(Set<String> uids) throws ApiException {
         List<Event> events = stateStore.queryModelsWithActions(
-                Event.class, Action.TO_POST, Action.TO_UPDATE);
+                Event.class, uids, Action.TO_POST, Action.TO_UPDATE);
 
         if (events == null || events.isEmpty()) {
             return;
@@ -165,9 +176,9 @@ public final class EventController extends AbsDataController<Event> implements I
         }
     }
 
-    private void deleteEvents(SyncStrategy strategy, Set<String> uids) throws ApiException {
+    private void deleteEvents(Set<String> uids) throws ApiException {
         List<Event> events = stateStore.queryModelsWithActions(
-                Event.class, Action.TO_DELETE);
+                Event.class, uids, Action.TO_DELETE);
 
         if (events == null || events.isEmpty()) {
             return;

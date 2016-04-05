@@ -49,7 +49,7 @@ public interface EventApiClientRetrofit {
     Call<ApiResponse> deleteEvent(@Path("uid") String eventUid);
 
     @POST("events")
-    Call<ApiResponse> postEvents(@Body List<Event> events);
+    Call<ApiResponse> postEvents(@Body Map<String, List<Event>> events);
 
     @GET("events")
     Call<Map<String, List<Event>>> getEvents(@QueryMap Map<String, String> queryMap);

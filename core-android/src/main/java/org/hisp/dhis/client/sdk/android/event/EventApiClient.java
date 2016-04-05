@@ -75,7 +75,10 @@ public class EventApiClient implements IEventApiClient {
 
     @Override
     public ApiResponse postEvents(List<Event> events) throws ApiException {
-        return call(eventApiclientRetrofit.postEvents(events));
+        Map<String, List<Event>> eventMap = new HashMap<>();
+        eventMap.put("events", events);
+
+        return call(eventApiclientRetrofit.postEvents(eventMap));
     }
 
     @Override

@@ -29,13 +29,16 @@
 package org.hisp.dhis.client.sdk.ui.activities;
 
 import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -50,6 +53,10 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 
 import static android.text.TextUtils.isEmpty;
 
+
+// TODO add custom animation between activities (the whole screen lifts up)
+// TODO implement better feedback to users (show clean and understandable messages)
+// TODO logger injection
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String IS_LOADING = "state:isLoading";
 
@@ -57,11 +64,19 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     private CircularProgressBar progressBar;
 
     // Fields and corresponding container.
+    private ViewGroup loginLayoutContent;
     private View loginViewsContainer;
     private EditText serverUrl;
     private EditText username;
     private EditText password;
     private Button logInButton;
+
+    // LayoutTransition
+    private LayoutTransition layoutTransition;
+
+    // Action which should be executed after
+    // animation is finished
+    private OnPostAnimationRunnable onPostAnimationAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +95,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                 .sweepSpeed(1f)
                 .build());
 
-        /* adding transition animations to root layout */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            RelativeLayout layoutContent = (RelativeLayout) findViewById(R.id.layout_content);
-            LayoutTransition layoutTransition = new LayoutTransition();
-            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-            layoutContent.setLayoutTransition(layoutTransition);
-        }
-
+        loginLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
         loginViewsContainer = findViewById(R.id.layout_login_views);
         logInButton = (Button) findViewById(R.id.button_log_in);
 
@@ -100,6 +108,37 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         username.addTextChangedListener(watcher);
         password.addTextChangedListener(watcher);
 
+        /* adding transition animations to root layout */
+        if (isGreaterThanOrJellyBean()) {
+            TransitionListener layoutTransitionListener = new TransitionListener() {
+
+                @Override
+                public void startTransition(LayoutTransition transition,
+                                            ViewGroup container, View view, int type) {
+                    // stub implementation
+                }
+
+                @Override
+                public void endTransition(LayoutTransition transition,
+                                          ViewGroup container, View view, int type) {
+                    if (LayoutTransition.CHANGE_APPEARING == type ||
+                            LayoutTransition.CHANGE_DISAPPEARING == type) {
+
+                        if (onPostAnimationAction != null) {
+                            onPostAnimationAction.run();
+                            onPostAnimationAction = null;
+                        }
+                    }
+                }
+            };
+
+            layoutTransition = new LayoutTransition();
+            layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+            layoutTransition.addTransitionListener(layoutTransitionListener);
+
+            loginLayoutContent.setLayoutTransition(layoutTransition);
+        }
+
         hideProgress();
         onTextChanged();
 
@@ -107,15 +146,40 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                onLogInButtonClicked(serverUrl.getText(), username.getText(),
-                        password.getText());
+                onStartLoading();
+
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onFinishLoading();
+                    }
+                }, 4000);
+
+//                onLogInButtonClicked(serverUrl.getText(), username.getText(),
+//                        password.getText());
             }
         });
     }
 
     @Override
+    protected void onPause() {
+        if (onPostAnimationAction != null) {
+            onPostAnimationAction.run();
+            onPostAnimationAction = null;
+        }
+
+        super.onPause();
+    }
+
+    @Override
     protected final void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(IS_LOADING, progressBar.isShown());
+        if (onPostAnimationAction != null) {
+            outState.putBoolean(IS_LOADING,
+                    onPostAnimationAction.isProgressBarWillBeShown());
+        } else {
+            outState.putBoolean(IS_LOADING, progressBar.isShown());
+        }
+
         super.onSaveInstanceState(outState);
     }
 
@@ -132,7 +196,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     }
 
     private void showProgress() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+        if (!isGreaterThanOrJellyBean()) {
             Animation loginViewsAnimation = AnimationUtils.loadAnimation(this, R.anim.out_down);
             loginViewsContainer.startAnimation(loginViewsAnimation);
         }
@@ -142,9 +206,9 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     }
 
     private void hideProgress() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            Animation anim = AnimationUtils.loadAnimation(this, R.anim.in_up);
-            loginViewsContainer.startAnimation(anim);
+        if (!isGreaterThanOrJellyBean()) {
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_up);
+            loginViewsContainer.startAnimation(animation);
         }
 
         loginViewsContainer.setVisibility(View.VISIBLE);
@@ -159,18 +223,38 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         );
     }
 
+    private boolean isAnimationInProgress() {
+        return layoutTransition != null && layoutTransition.isRunning();
+    }
+
+    private static boolean isGreaterThanOrJellyBean() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
+
     /**
      * Should be called in order to show progressbar.
      */
     protected final void onStartLoading() {
-        showProgress();
+        if (isAnimationInProgress()) {
+            onPostAnimationAction = new OnPostAnimationRunnable(null, this, true);
+        } else {
+            showProgress();
+        }
+    }
+
+    protected final void onFinishLoading() {
+        onFinishLoading(null);
     }
 
     /**
      * Should be called after the loading is complete.
      */
-    protected final void onFinishLoading() {
-        hideProgress();
+    protected final void onFinishLoading(OnAnimationFinishedListener listener) {
+        if (isAnimationInProgress()) {
+            onPostAnimationAction = new OnPostAnimationRunnable(listener, this, false);
+        } else {
+            hideProgress();
+        }
     }
 
     protected EditText getServerUrl() {
@@ -189,14 +273,52 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         return logInButton;
     }
 
-    protected abstract void onLogInButtonClicked(Editable serverUrl, Editable username,
-                                                 Editable password);
+    protected abstract void onLogInButtonClicked(
+            Editable serverUrl, Editable username, Editable password);
+
+    protected interface OnAnimationFinishedListener {
+        void onFinish();
+    }
 
     private class FieldTextWatcher extends AbsTextWatcher {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             AbsLoginActivity.this.onTextChanged();
+        }
+    }
+
+    /* since this runnable is intended to be executed on UI (not main) thread, we should
+    be careful and not keep any implicit references to activities*/
+    private static class OnPostAnimationRunnable implements Runnable {
+        private final OnAnimationFinishedListener listener;
+        private final AbsLoginActivity loginActivity;
+        private final boolean showProgress;
+
+        public OnPostAnimationRunnable(OnAnimationFinishedListener listener,
+                                       AbsLoginActivity loginActivity, boolean showProgress) {
+            this.listener = listener;
+            this.loginActivity = loginActivity;
+            this.showProgress = showProgress;
+        }
+
+        @Override
+        public void run() {
+            if (loginActivity != null) {
+                if (showProgress) {
+                    loginActivity.showProgress();
+                } else {
+                    loginActivity.hideProgress();
+                }
+            }
+
+            if (listener != null) {
+                listener.onFinish();
+            }
+        }
+
+        public boolean isProgressBarWillBeShown() {
+            return showProgress;
         }
     }
 }

@@ -59,7 +59,6 @@ import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 
-// TODO Support for user confirmation
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
     private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
@@ -82,8 +81,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
 
-    private Button logInButton;
-    private Button clearButton;
+    private Button loginButton;
+    private Button logoutButton;
 
 
     //--------------------------------------------------------------------------------------
@@ -155,8 +154,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                 .build());
 
         loginViewsContainer = (CardView) findViewById(R.id.layout_login_views);
-        logInButton = (Button) findViewById(R.id.button_log_in);
-        clearButton = (Button) findViewById(R.id.button_clear);
+        loginButton = (Button) findViewById(R.id.button_log_in);
+        logoutButton = (Button) findViewById(R.id.button_log_out);
 
         serverUrl = (EditText) findViewById(R.id.edittext_server_url);
         username = (EditText) findViewById(R.id.edittext_username);
@@ -166,7 +165,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         serverUrl.addTextChangedListener(watcher);
         username.addTextChangedListener(watcher);
         password.addTextChangedListener(watcher);
-        clearButton.setVisibility(View.GONE);
+        logoutButton.setVisibility(View.GONE);
 
         if (getIntent().getExtras() != null) {
             String launchMode = getIntent().getExtras().getString(
@@ -182,8 +181,15 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                 username.setText(predefinedUsername);
                 username.setEnabled(false);
 
-                logInButton.setText(R.string.confirm_user);
-                clearButton.setVisibility(View.VISIBLE);
+                loginButton.setText(R.string.confirm_user);
+                logoutButton.setVisibility(View.VISIBLE);
+                logoutButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        onLogoutButtonClicked();
+                    }
+                });
             }
         }
 
@@ -208,11 +214,11 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         hideProgress();
         onTextChanged();
 
-        logInButton.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                onLogInButtonClicked(serverUrl.getText(), username.getText(),
+                onLoginButtonClicked(serverUrl.getText(), username.getText(),
                         password.getText());
             }
         });
@@ -284,7 +290,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     }
 
     private void onTextChanged() {
-        logInButton.setEnabled(
+        loginButton.setEnabled(
                 !isEmpty(serverUrl.getText()) &&
                         !isEmpty(username.getText()) &&
                         !isEmpty(password.getText()));
@@ -350,11 +356,19 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     }
 
     protected Button getLoginButton() {
-        return logInButton;
+        return loginButton;
     }
 
-    protected abstract void onLogInButtonClicked(
+    protected Button getLogoutButton() {
+        return logoutButton;
+    }
+
+    protected abstract void onLoginButtonClicked(
             Editable serverUrl, Editable username, Editable password);
+
+    protected void onLogoutButtonClicked() {
+        // empty implementation for subclasses to override
+    }
 
     protected interface OnAnimationFinishListener {
         void onFinish();

@@ -260,6 +260,9 @@ public interface DhisApi {
     @POST("/"+ApiEndpointContainer.EVENTS+"/")
     Response postEvent(@Body Event event);
 
+    @POST("/"+ApiEndpointContainer.EVENTS+"/")
+    Response postEvents(@Body Map<String, List<Event>> events);
+
     @PUT("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
     Response putEvent(@Path("eventUid") String eventUid, @Body Event event);
 

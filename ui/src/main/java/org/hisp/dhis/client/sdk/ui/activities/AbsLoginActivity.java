@@ -60,6 +60,9 @@ import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 
+// TODO show snackbars for errors (not dialogs)
+// TODO when serverUrl, username or password are
+// TODO invalid highlight corresponding fields
 public abstract class AbsLoginActivity extends AppCompatActivity {
     private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
     private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
@@ -264,11 +267,10 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         isNull(activityClass, "Target activity must not be null");
 
         Intent intent = new Intent(this, activityClass);
+        ActivityCompat.startActivity(this, intent, null);
         overridePendingTransition(
                 R.anim.activity_open_enter,
                 R.anim.activity_open_exit);
-
-        ActivityCompat.startActivity(this, intent, null);
         finish();
     }
 

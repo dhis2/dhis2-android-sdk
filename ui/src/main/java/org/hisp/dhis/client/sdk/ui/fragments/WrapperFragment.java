@@ -47,7 +47,7 @@ import java.io.Serializable;
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 
-public class WrapperFragment extends BaseFragment2 implements View.OnClickListener {
+public class WrapperFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_TITLE = "arg:title";
     private static final String ARG_NESTED_FRAGMENT = "arg:nestedFragment";
 

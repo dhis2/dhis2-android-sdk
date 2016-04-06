@@ -37,7 +37,7 @@ import android.view.MenuItem;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.activities.INavigationCallback;
 
-public class BaseFragment2 extends Fragment implements Toolbar.OnMenuItemClickListener {
+public class BaseFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
     private INavigationCallback navigationCallback;
 
     @Override
@@ -88,9 +88,9 @@ public class BaseFragment2 extends Fragment implements Toolbar.OnMenuItemClickLi
     }
 
     public void showRefreshButton() {
-        Toolbar t = getParentToolbar();
-        if (t != null) {
-            t.inflateMenu(R.menu.menu_main);
+        Toolbar toolbar = getParentToolbar();
+        if (toolbar != null) {
+            toolbar.inflateMenu(R.menu.menu_main);
         }
     }
 }

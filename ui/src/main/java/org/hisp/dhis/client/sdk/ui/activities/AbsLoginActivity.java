@@ -264,14 +264,11 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         isNull(activityClass, "Target activity must not be null");
 
         Intent intent = new Intent(this, activityClass);
-        startActivity(intent);
         overridePendingTransition(
                 R.anim.activity_open_enter,
                 R.anim.activity_open_exit);
 
         ActivityCompat.startActivity(this, intent, null);
-
-        // kill activity and remove it from back-stack in order to avoid strange issues
         finish();
     }
 

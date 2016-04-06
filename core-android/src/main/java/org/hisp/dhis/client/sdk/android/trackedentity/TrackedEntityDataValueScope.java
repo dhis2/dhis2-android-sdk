@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.event.IEventController;
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -37,122 +37,71 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope {
     private final ITrackedEntityDataValueService mTrackedEntityDataValueService;
-    private final IEventController mEventController;
 
-    public TrackedEntityDataValueScope(ITrackedEntityDataValueService
-                                               trackedEntityDataValueService, IEventController
-                                               eventController) {
-        this.mTrackedEntityDataValueService = trackedEntityDataValueService;
-        this.mEventController = eventController;
+    public TrackedEntityDataValueScope(ITrackedEntityDataValueService entityDataValueService) {
+        this.mTrackedEntityDataValueService = entityDataValueService;
     }
 
     @Override
     public Observable<TrackedEntityDataValue> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
+        return Observable.create(new DefaultOnSubscribe<TrackedEntityDataValue>() {
             @Override
-            public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
-                try {
-                    TrackedEntityDataValue trackedEntityDataValue =
-                            mTrackedEntityDataValueService.get(id);
-                    subscriber.onNext(trackedEntityDataValue);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public TrackedEntityDataValue call() {
+                return mTrackedEntityDataValueService.get(id);
             }
         });
     }
 
     @Override
     public Observable<List<TrackedEntityDataValue>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntityDataValue>>() {
+        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityDataValue>>() {
             @Override
-            public void call(Subscriber<? super List<TrackedEntityDataValue>> subscriber) {
-                try {
-                    List<TrackedEntityDataValue> trackedEntityDataValues =
-                            mTrackedEntityDataValueService.list();
-                    subscriber.onNext(trackedEntityDataValues);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<TrackedEntityDataValue> call() {
+                return mTrackedEntityDataValueService.list();
             }
         });
     }
 
     @Override
     public Observable<Boolean> save(final TrackedEntityDataValue object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityDataValueService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return mTrackedEntityDataValueService.save(object);
             }
         });
     }
 
     @Override
     public Observable<Boolean> remove(final TrackedEntityDataValue object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityDataValueService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return mTrackedEntityDataValueService.remove(object);
             }
         });
     }
 
     @Override
     public Observable<List<TrackedEntityDataValue>> list(final Event event) {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntityDataValue>>() {
+        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityDataValue>>() {
             @Override
-            public void call(Subscriber<? super List<TrackedEntityDataValue>> subscriber) {
-                try {
-                    List<TrackedEntityDataValue> trackedEntityDataValues =
-                            mTrackedEntityDataValueService.list(event);
-                    subscriber.onNext(trackedEntityDataValues);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public List<TrackedEntityDataValue> call() {
+                return mTrackedEntityDataValueService.list(event);
             }
         });
     }
 
     @Override
-    public Observable<TrackedEntityDataValue> get(final Event event,
-                                                  final DataElement dataElement) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntityDataValue>() {
+    public Observable<TrackedEntityDataValue> get(
+            final Event event, final DataElement dataElement) {
+        return Observable.create(new DefaultOnSubscribe<TrackedEntityDataValue>() {
             @Override
-            public void call(Subscriber<? super TrackedEntityDataValue> subscriber) {
-                try {
-                    TrackedEntityDataValue trackedEntityDataValue =
-                            mTrackedEntityDataValueService.get(event, dataElement);
-                    subscriber.onNext(trackedEntityDataValue);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public TrackedEntityDataValue call() {
+                return mTrackedEntityDataValueService.get(event, dataElement);
             }
         });
     }

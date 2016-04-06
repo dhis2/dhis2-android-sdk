@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -125,7 +126,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         intent.putExtra(ARG_LOGIN_ACTIVITY_LAUNCH_MODE, ARG_LAUNCH_MODE_CONFIRM_USER);
         intent.putExtra(ARG_SERVER_URL, serverUrl);
         intent.putExtra(ARG_USERNAME, username);
-        currentActivity.startActivity(intent);
+
+        ActivityCompat.startActivity(currentActivity, intent, null);
     }
 
 
@@ -266,6 +268,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         overridePendingTransition(
                 R.anim.activity_open_enter,
                 R.anim.activity_open_exit);
+
+        ActivityCompat.startActivity(this, intent, null);
 
         // kill activity and remove it from back-stack in order to avoid strange issues
         finish();

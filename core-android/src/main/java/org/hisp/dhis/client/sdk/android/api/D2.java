@@ -208,8 +208,7 @@ public class D2 {
                 controllersModule.getTrackedEntityAttributeController());
 
         trackedEntityDataValueScope = new TrackedEntityDataValueScope(
-                servicesModule.getTrackedEntityDataValueService(),
-                controllersModule.getEventController());
+                servicesModule.getTrackedEntityDataValueService());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),
@@ -241,7 +240,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p/>
+     * <p>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.

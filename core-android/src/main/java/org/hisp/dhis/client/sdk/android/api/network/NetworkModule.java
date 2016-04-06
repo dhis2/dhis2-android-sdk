@@ -122,14 +122,14 @@ public class NetworkModule implements INetworkModule {
     private final IOptionSetApiClient optionSetApiClient;
     private final ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
 
-    public NetworkModule(IPreferencesModule preferencesModule) {
+    public NetworkModule(IPreferencesModule preferencesModule, OkHttpClient okClient) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
                 preferencesModule.getUserPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(authInterceptor) // TODO Consider replacing with Authenticator
+        OkHttpClient okHttpClient = okClient.newBuilder()
+                .addInterceptor(authInterceptor)
                 .addInterceptor(loggingInterceptor)
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)

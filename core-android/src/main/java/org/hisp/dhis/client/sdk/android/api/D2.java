@@ -68,6 +68,7 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScop
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
+import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.IControllersModule;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -77,6 +78,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 
+import okhttp3.OkHttpClient;
 import rx.Observable;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -118,12 +120,12 @@ public class D2 {
     private final IDataElementScope dataElementScope;
 
 
-    private D2(Context context) {
+    private D2(Context context, Flavor flavor) {
         applicationContext = context;
 
         // Modules which preserve state
-        persistenceModule = new PersistenceModule(context);
-        preferencesModule = new PreferencesModule(context);
+        persistenceModule = new PersistenceModule(applicationContext);
+        preferencesModule = new PreferencesModule(applicationContext);
 
         isD2Configured = !isEmpty(preferencesModule
                 .getConfigurationPreferences().get().getServerUrl());
@@ -147,7 +149,8 @@ public class D2 {
         }
 
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
-        INetworkModule networkModule = new NetworkModule(preferencesModule);
+        INetworkModule networkModule = new NetworkModule(
+                preferencesModule, flavor.getOkHttpClient());
         IControllersModule controllersModule = new ControllersModule(
                 networkModule, persistenceModule, preferencesModule, new Logger());
 
@@ -215,7 +218,6 @@ public class D2 {
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
                 userProgramScope, userOrganisationUnitScope);
-
     }
 
     // utility method which performs check if D2 is initialised
@@ -248,9 +250,14 @@ public class D2 {
      * @param context Application context.
      */
     public static void init(@NonNull Context context) {
-        isNull(context, "Context object must not be null");
+        init(context, new Builder().build());
+    }
 
-        d2 = new D2(context);
+    public static void init(@NonNull Context context, @NonNull Flavor flavor) {
+        isNull(context, "Context object must not be null");
+        isNull(flavor, "Flavor must not be null");
+
+        d2 = new D2(context, flavor);
     }
 
     /**
@@ -355,5 +362,54 @@ public class D2 {
 
     public static ITrackedEntityDataValueScope trackedEntityDataValues() {
         return configuredInstance().trackedEntityDataValueScope;
+    }
+
+    public static final class Flavor {
+        private final OkHttpClient okHttpClient;
+        private final ILogger logger;
+
+        public Flavor(OkHttpClient okHttpClient, ILogger logger) {
+            this.okHttpClient = okHttpClient;
+            this.logger = logger;
+        }
+
+        public OkHttpClient getOkHttpClient() {
+            return okHttpClient;
+        }
+
+        public ILogger getLogger() {
+            return logger;
+        }
+    }
+
+    public static final class Builder {
+        private OkHttpClient okHttpClient;
+        private ILogger logger;
+
+        public Builder() {
+            // explicit empty constructor
+        }
+
+        public Builder okHttp(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        public Builder logger(ILogger logger) {
+            this.logger = logger;
+            return this;
+        }
+
+        public Flavor build() {
+            if (okHttpClient == null) {
+                okHttpClient = new OkHttpClient();
+            }
+
+            if (logger == null) {
+                logger = new Logger();
+            }
+
+            return new Flavor(okHttpClient, logger);
+        }
     }
 }

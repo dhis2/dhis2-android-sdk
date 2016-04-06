@@ -52,7 +52,9 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService2;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 
@@ -72,6 +74,7 @@ public final class ServicesModule implements IServicesModule {
     private final IProgramRuleVariableService programRuleVariableService;
     private final IProgramRuleService programRuleService;
     private final IProgramRuleActionService programRuleActionService;
+    private final ITrackedEntityDataValueService trackedEntityDataValueService;
 
     public ServicesModule(IPersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -112,6 +115,11 @@ public final class ServicesModule implements IServicesModule {
 
         trackedEntityAttributeService = new TrackedEntityAttributeService(
                 persistenceModule.getTrackedEntityAttributeStore());
+
+        trackedEntityDataValueService = new TrackedEntityDataValueService2(
+                persistenceModule.getTrackedEntityDataValueStore(),
+                persistenceModule.getEventStore(),
+                persistenceModule.getStateStore());
     }
 
     @Override
@@ -176,5 +184,10 @@ public final class ServicesModule implements IServicesModule {
     @Override
     public ITrackedEntityAttributeService getTrackedEntityAttributeService() {
         return trackedEntityAttributeService;
+    }
+
+    @Override
+    public ITrackedEntityDataValueService getTrackedEntityDataValueService() {
+        return null;
     }
 }

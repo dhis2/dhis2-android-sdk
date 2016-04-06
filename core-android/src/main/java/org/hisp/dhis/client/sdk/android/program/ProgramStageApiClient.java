@@ -68,6 +68,11 @@ public class ProgramStageApiClient implements IProgramStageApiClient {
             @Override
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
+                        "dataEntryType,blockEntryForm,reportDateDescription,displayGenerateEventBox," +
+                        "description,externalAccess,openAfterEnrollment,captureCoordinates," +
+                        "defaultTemplateMessage,remindCompleted,validCompleteOnly,sortOrder," +
+                        "generatedByEnrollmentDate,preGenerateUID,autoGenerateEvent," +
+                        "allowGenerateNextVisit,repeatable,minDaysFromStart," +
                         "program[id],programStageSections[id],programStageDataElements[id]";
             }
 

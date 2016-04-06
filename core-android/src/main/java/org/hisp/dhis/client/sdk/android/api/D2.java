@@ -63,7 +63,9 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.ITrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScope;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -110,6 +112,7 @@ public class D2 {
     private final IProgramRuleVariableScope programRuleVariableScope;
     private final IProgramIndicatorScope programIndicatorScope;
     private final ITrackedEntityAttributeScope trackedEntityAttributeScope;
+    private final ITrackedEntityDataValueScope trackedEntityDataValueScope;
     private final IEventScope eventScope;
     private final IProgramStageDataElementScope programStageDataElementScope;
     private final IDataElementScope dataElementScope;
@@ -139,6 +142,7 @@ public class D2 {
             programRuleVariableScope = null;
             programIndicatorScope = null;
             trackedEntityAttributeScope = null;
+            trackedEntityDataValueScope = null;
             return;
         }
 
@@ -202,6 +206,10 @@ public class D2 {
         trackedEntityAttributeScope = new TrackedEntityAttributeScope(
                 servicesModule.getTrackedEntityAttributeService(),
                 controllersModule.getTrackedEntityAttributeController());
+
+        trackedEntityDataValueScope = new TrackedEntityDataValueScope(
+                servicesModule.getTrackedEntityDataValueService(),
+                controllersModule.getEventController());
 
         userAccountScope = new UserAccountScope(
                 preferencesModule.getUserPreferences(),
@@ -344,6 +352,9 @@ public class D2 {
 
     public static IEventScope events() {
         return configuredInstance().eventScope;
+    }
 
+    public static ITrackedEntityDataValueScope trackedEntityDataValues() {
+        return configuredInstance().trackedEntityDataValueScope;
     }
 }

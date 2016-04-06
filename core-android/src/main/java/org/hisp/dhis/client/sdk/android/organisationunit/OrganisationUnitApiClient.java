@@ -64,7 +64,7 @@ public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
 
             @Override
             public String getBasicProperties() {
-                return "id,displayName";
+                return "id";
             }
 
             @Override

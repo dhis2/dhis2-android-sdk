@@ -34,7 +34,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,6 +41,7 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -58,9 +58,11 @@ import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
-public abstract class AbsLoginActivity extends AppCompatActivity {
-    private static final String IS_LOADING = "state:isLoading";
 
+// TODO Support for user confirmation
+public abstract class AbsLoginActivity extends AppCompatActivity {
+    private static final String ARG_SERVER_URL = "arg:serverUrl";
+    private static final String IS_LOADING = "state:isLoading";
 
     //--------------------------------------------------------------------------------------
     // Views
@@ -96,10 +98,41 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     private OnPostAnimationListener onPostAnimationListener;
 
 
+    //--------------------------------------------------------------------------------------
+    // Factory methods
+    //--------------------------------------------------------------------------------------
+
+    /**
+     * Creates intent for AbsLoginActivity to be launched in "User confirmation" mode.
+     *
+     * @param currentActivity Activity from which we want to fire AbsLoginActivity
+     * @param target          Implementation of AbsLoginActivity
+     * @param serverUrl       ServerUrl which will be set to serverUrl address and locked
+     */
+    public static void navigateTo(
+            Activity currentActivity, Class<? extends Activity> target, String serverUrl) {
+
+        isNull(currentActivity, "Activity must not be null");
+        isNull(target, "Target activity class must not be null");
+        isNull(serverUrl, "ServerUrl must not be null");
+
+        Intent intent = new Intent(currentActivity, target);
+        intent.putExtra(ARG_SERVER_URL, serverUrl);
+        currentActivity.startActivity(intent);
+    }
+
+
+    //--------------------------------------------------------------------------------------
+    // Activity life-cycle callbacks
+    //--------------------------------------------------------------------------------------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // hide keyboard
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         // Configuring progress bar (setting width of 6dp)
         float progressBarStrokeWidth = getResources()
@@ -126,6 +159,12 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         username.addTextChangedListener(watcher);
         password.addTextChangedListener(watcher);
 
+        if (getIntent().getExtras() != null) {
+            String predefinedServerUrl = getIntent().getExtras().getString(ARG_SERVER_URL);
+            serverUrl.setText(predefinedServerUrl);
+            serverUrl.setEnabled(false);
+        }
+
         onPostAnimationListener = new OnPostAnimationListener();
 
         /* adding transition animations to root layout */
@@ -150,16 +189,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                onStartLoading();
-
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onFinishLoading();
-                    }
-                }, 3000);
-//                onLogInButtonClicked(serverUrl.getText(), username.getText(),
-//                        password.getText());
+                onLogInButtonClicked(serverUrl.getText(), username.getText(),
+                        password.getText());
             }
         });
     }
@@ -205,17 +236,15 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(
                 R.anim.activity_open_enter,
-                R.anim.activity_open_exit
-        );
+                R.anim.activity_open_exit);
+
+        // kill activity and remove it from back-stack in order to avoid strange issues
+        finish();
     }
 
     private void showProgress() {
         if (layoutTransitionSlideOut != null) {
-            System.out.println("### STARTED: " + layoutTransitionSlideOut.hasStarted() +
-                    " ###ENDED: " + layoutTransitionSlideOut.hasEnded());
             loginViewsContainer.startAnimation(layoutTransitionSlideOut);
-            System.out.println("**** STARTED: " + layoutTransitionSlideOut.hasStarted() +
-                    " **** ENDED: " + layoutTransitionSlideOut.hasEnded());
         }
 
         loginViewsContainer.setVisibility(View.GONE);
@@ -246,7 +275,8 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         boolean layoutTransitionAnimationSlideOutInProgress = layoutTransitionSlideOut != null &&
                 layoutTransitionSlideOut.hasStarted() && !layoutTransitionSlideOut.hasEnded();
 
-        return layoutTransitionAnimationsInProgress || layoutTransitionAnimationSlideUpInProgress ||
+        return layoutTransitionAnimationsInProgress ||
+                layoutTransitionAnimationSlideUpInProgress ||
                 layoutTransitionAnimationSlideOutInProgress;
     }
 

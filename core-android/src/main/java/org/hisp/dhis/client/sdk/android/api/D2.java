@@ -286,6 +286,11 @@ public class D2 {
         return instance().isD2Configured;
     }
 
+    public static Configuration configuration() {
+        return configuredInstance().preferencesModule
+                .getConfigurationPreferences().get();
+    }
+
     /**
      * Provides current user aware APIs.
      *

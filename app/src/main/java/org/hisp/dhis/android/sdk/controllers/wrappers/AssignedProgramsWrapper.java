@@ -112,7 +112,6 @@ public class AssignedProgramsWrapper extends JsonDeserializer<List<OrganisationU
                 orgUnitProgram.setOrganisationUnitId(organisationUnit.getId());
                 orgUnitProgram.setProgramId(program.getUid());
                 operations.add(DbOperation.save(orgUnitProgram));
-                System.out.println("ORGUNITRELATIONSHIP: " + orgUnitProgram.getOrganisationUnitId());
             }
             operations.add(DbOperation.save(organisationUnit));
         }

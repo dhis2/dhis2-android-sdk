@@ -54,7 +54,7 @@ public final class ProgramRuleService implements IProgramRuleService {
 
     @Override
     public List<ProgramRule> list(List<Program> programs) {
-        return null;
+        return programRuleStore.query(programs);
     }
 
     @Override

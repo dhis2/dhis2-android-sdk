@@ -61,7 +61,12 @@ import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 // TODO Support for user confirmation
 public abstract class AbsLoginActivity extends AppCompatActivity {
+    private static final String ARG_LOGIN_ACTIVITY_LAUNCH_MODE = "arg:launchMode";
+    private static final String ARG_LAUNCH_MODE_LOGIN_USER = "mode:loginUser";
+    private static final String ARG_LAUNCH_MODE_CONFIRM_USER = "mode:confirmUser";
+
     private static final String ARG_SERVER_URL = "arg:serverUrl";
+    private static final String ARG_USERNAME = "arg:username";
     private static final String IS_LOADING = "state:isLoading";
 
     //--------------------------------------------------------------------------------------
@@ -72,12 +77,13 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
     private CircularProgressBar progressBar;
 
     // Fields and corresponding container.
-    private ViewGroup loginLayoutContent;
     private ViewGroup loginViewsContainer;
     private EditText serverUrl;
     private EditText username;
     private EditText password;
+
     private Button logInButton;
+    private Button clearButton;
 
 
     //--------------------------------------------------------------------------------------
@@ -109,15 +115,17 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
      * @param target          Implementation of AbsLoginActivity
      * @param serverUrl       ServerUrl which will be set to serverUrl address and locked
      */
-    public static void navigateTo(
-            Activity currentActivity, Class<? extends Activity> target, String serverUrl) {
-
+    public static void navigateTo(Activity currentActivity, Class<? extends Activity> target,
+                                  String serverUrl, String username) {
         isNull(currentActivity, "Activity must not be null");
         isNull(target, "Target activity class must not be null");
         isNull(serverUrl, "ServerUrl must not be null");
+        isNull(username, "Username must not be null");
 
         Intent intent = new Intent(currentActivity, target);
+        intent.putExtra(ARG_LOGIN_ACTIVITY_LAUNCH_MODE, ARG_LAUNCH_MODE_CONFIRM_USER);
         intent.putExtra(ARG_SERVER_URL, serverUrl);
+        intent.putExtra(ARG_USERNAME, username);
         currentActivity.startActivity(intent);
     }
 
@@ -146,9 +154,9 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
                 .sweepSpeed(1f)
                 .build());
 
-        loginLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
         loginViewsContainer = (CardView) findViewById(R.id.layout_login_views);
         logInButton = (Button) findViewById(R.id.button_log_in);
+        clearButton = (Button) findViewById(R.id.button_clear);
 
         serverUrl = (EditText) findViewById(R.id.edittext_server_url);
         username = (EditText) findViewById(R.id.edittext_username);
@@ -158,11 +166,25 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
         serverUrl.addTextChangedListener(watcher);
         username.addTextChangedListener(watcher);
         password.addTextChangedListener(watcher);
+        clearButton.setVisibility(View.GONE);
 
         if (getIntent().getExtras() != null) {
-            String predefinedServerUrl = getIntent().getExtras().getString(ARG_SERVER_URL);
-            serverUrl.setText(predefinedServerUrl);
-            serverUrl.setEnabled(false);
+            String launchMode = getIntent().getExtras().getString(
+                    ARG_LOGIN_ACTIVITY_LAUNCH_MODE, ARG_LAUNCH_MODE_LOGIN_USER);
+
+            if (ARG_LAUNCH_MODE_CONFIRM_USER.equals(launchMode)) {
+                String predefinedServerUrl = getIntent().getExtras().getString(ARG_SERVER_URL);
+                String predefinedUsername = getIntent().getExtras().getString(ARG_USERNAME);
+
+                serverUrl.setText(predefinedServerUrl);
+                serverUrl.setEnabled(false);
+
+                username.setText(predefinedUsername);
+                username.setEnabled(false);
+
+                logInButton.setText(R.string.confirm_user);
+                clearButton.setVisibility(View.VISIBLE);
+            }
         }
 
         onPostAnimationListener = new OnPostAnimationListener();
@@ -173,6 +195,7 @@ public abstract class AbsLoginActivity extends AppCompatActivity {
             layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
             layoutTransition.addTransitionListener(onPostAnimationListener);
 
+            RelativeLayout loginLayoutContent = (RelativeLayout) findViewById(R.id.layout_content);
             loginLayoutContent.setLayoutTransition(layoutTransition);
         } else {
             layoutTransitionSlideIn = AnimationUtils.loadAnimation(this, R.anim.in_up);

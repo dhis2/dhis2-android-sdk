@@ -34,6 +34,7 @@ import android.support.annotation.NonNull;
 import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
 import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.api.utils.Logger;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
 import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
@@ -75,7 +76,6 @@ import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 
 import rx.Observable;
-import rx.Subscriber;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
@@ -254,27 +254,30 @@ public class D2 {
     public static Observable<Void> configure(@NonNull final Configuration configuration) {
         isNull(configuration, "Configuration must not be null");
 
-        return Observable.create(new Observable.OnSubscribe<Void>() {
+        return Observable.create(new DefaultOnSubscribe<Void>() {
+            @Override
+            public Void call() {
+                instance().preferencesModule.clearAllPreferences();
+                instance().persistenceModule.deleteAllTables();
+
+                // save new configuration object
+                instance().preferencesModule.getConfigurationPreferences()
+                        .save(configuration);
+
+                // re-initialising the whole object graph
+                init(instance().applicationContext);
+                return null;
+            }
+        });
+    }
+
+    public static Observable<Configuration> configuration() {
+        return Observable.create(new DefaultOnSubscribe<Configuration>() {
 
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
-                try {
-                    // erase all existing content
-                    instance().preferencesModule.clearAllPreferences();
-                    instance().persistenceModule.deleteAllTables();
-
-                    // save new configuration object
-                    instance().preferencesModule.getConfigurationPreferences()
-                            .save(configuration);
-
-                    // re-initialising the whole object graph
-                    init(instance().applicationContext);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Configuration call() {
+                return configuredInstance().preferencesModule
+                        .getConfigurationPreferences().get();
             }
         });
     }
@@ -284,11 +287,6 @@ public class D2 {
      */
     public static boolean isConfigured() {
         return instance().isD2Configured;
-    }
-
-    public static Configuration configuration() {
-        return configuredInstance().preferencesModule
-                .getConfigurationPreferences().get();
     }
 
     /**

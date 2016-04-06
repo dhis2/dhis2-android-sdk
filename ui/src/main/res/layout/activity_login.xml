@@ -39,6 +39,8 @@
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center"
         android:padding="8dp">
 
@@ -141,15 +143,28 @@
 
                 <org.hisp.dhis.client.sdk.ui.views.FontButton
                     android:id="@+id/button_log_in"
-                    android:layout_width="180dp"
+                    android:layout_width="196dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_selector"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_selector_accent"
                     android:text="@string/log_in"
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
-                    app:font="@string/font_name_bold"/>
+                    app:font="@string/font_name_medium"/>
+
+                <org.hisp.dhis.client.sdk.ui.views.FontButton
+                    android:id="@+id/button_clear"
+                    android:layout_width="196dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_selector_red"
+                    android:text="@string/clear_and_logout"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"
+                    app:font="@string/font_name_medium"/>
 
             </LinearLayout>
 

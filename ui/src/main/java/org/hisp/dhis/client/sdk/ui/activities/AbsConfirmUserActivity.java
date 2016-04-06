@@ -87,7 +87,7 @@ public abstract class AbsConfirmUserActivity extends AppCompatActivity implement
         mClearAndLogoutButton.setOnClickListener(this);
 
         setSupportActionBar(mToolbar);
-        setTitle(R.string.activity_confirm_user);
+        setTitle(R.string.confirm_user);
 
         hideProgressBar(false);
         checkEditTextFields();

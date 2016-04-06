@@ -59,7 +59,7 @@ public class RulesEngineTests {
     @BeforeClass
     public static void setUp() throws IOException {
         ApiClient.init(
-                "https://play.dhis2.org/demo",
+                "https://play.dhis2.org/dev",
                 "android",
                 "Android123"
         );

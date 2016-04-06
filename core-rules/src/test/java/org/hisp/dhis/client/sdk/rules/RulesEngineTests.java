@@ -129,16 +129,64 @@ public class RulesEngineTests {
 
         //Payload
         ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
-        TrackedEntityDataValue falseDataValue = new TrackedEntityDataValue();
-        falseDataValue.setDataElement(d1.getUId());
-        falseDataValue.setValue("true");
-        dataValues.add(falseDataValue);
+        TrackedEntityDataValue trueDataValue = new TrackedEntityDataValue();
+        trueDataValue.setDataElement(d1.getUId());
+        trueDataValue.setValue("true");
+        dataValues.add(trueDataValue);
 
         Event simpleEvent = new Event();
         simpleEvent.setTrackedEntityDataValues(dataValues);
 
         List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
 
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteRuleWithTwoVariables() {
+        //Metadata
+        String errorMessage = "this error will occur if both simpleBoolean1 and 2 is true";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean1} && #{simpleBoolean2}", errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement 1", ValueType.BOOLEAN);
+        dataElements.add(d1);
+        DataElement d2 = createDataElement("d2", "Boolean DataElement 2", ValueType.BOOLEAN);
+        dataElements.add(d2);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleBoolean1", d1));
+        variables.add(createProgramRuleVariableCurrentEvent("simpleBoolean2", d2));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
+        TrackedEntityDataValue boolean1DataValue = new TrackedEntityDataValue();
+        boolean1DataValue.setDataElement(d1.getUId());
+        boolean1DataValue.setValue("false");
+        dataValues.add(boolean1DataValue);
+
+        TrackedEntityDataValue boolean2DataValue = new TrackedEntityDataValue();
+        boolean2DataValue.setDataElement(d2.getUId());
+        boolean2DataValue.setValue("true");
+        dataValues.add(boolean2DataValue);
+
+        Event simpleEvent = new Event();
+        simpleEvent.setTrackedEntityDataValues(dataValues);
+
+        //Execute with one false and one true - expecting no effect:
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        //Change the last variable to true - expecting the error message effect:
+        boolean1DataValue.setValue("true");
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
 }

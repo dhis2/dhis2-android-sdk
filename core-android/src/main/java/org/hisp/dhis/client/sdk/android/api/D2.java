@@ -85,8 +85,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-// TODO Managing logging properly
-// TODO Allow clients to set custom objects (like OkHttpClient)
 public class D2 {
     private static D2 d2;
 
@@ -119,6 +117,12 @@ public class D2 {
     private final IProgramStageDataElementScope programStageDataElementScope;
     private final IDataElementScope dataElementScope;
 
+    //-----------------------------------------------------------------------------------------
+    // Utilities
+    //-----------------------------------------------------------------------------------------
+
+    private final ILogger logger;
+
 
     private D2(Context context, Flavor flavor) {
         applicationContext = context;
@@ -145,6 +149,7 @@ public class D2 {
             programIndicatorScope = null;
             trackedEntityAttributeScope = null;
             trackedEntityDataValueScope = null;
+            logger = null;
             return;
         }
 
@@ -218,6 +223,8 @@ public class D2 {
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
                 userProgramScope, userOrganisationUnitScope);
+
+        logger = flavor.getLogger();
     }
 
     // utility method which performs check if D2 is initialised
@@ -362,6 +369,10 @@ public class D2 {
 
     public static ITrackedEntityDataValueScope trackedEntityDataValues() {
         return configuredInstance().trackedEntityDataValueScope;
+    }
+
+    public static ILogger logger() {
+        return instance().logger;
     }
 
     public static final class Flavor {

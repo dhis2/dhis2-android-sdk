@@ -34,7 +34,9 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,13 +44,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.assertErrorRuleInEffect;
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.assertErrorRuleNotInEffect;
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.createDataElement;
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers
-        .createProgramRuleVariableCurrentEvent;
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers
-        .createSimpleProgramRuleShowError;
+import jdk.nashorn.internal.ir.LiteralNode;
+
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.*;
 
 public class RulesEngineTests {
     private static List<Program> programs;
@@ -188,5 +186,57 @@ public class RulesEngineTests {
         boolean1DataValue.setValue("true");
         effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
         assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteRuleWithNewestEventSourceType() {
+        //Metadata
+        String errorMessage = "this error will occur if both simpleBoolean1 and 2 is true";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean1}", errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement 1", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariable("simpleBoolean1", d1, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
+        TrackedEntityDataValue boolean1DataValue = new TrackedEntityDataValue();
+        boolean1DataValue.setDataElement(d1.getUId());
+        boolean1DataValue.setValue("true");
+        dataValues.add(boolean1DataValue);
+
+        Event olderEvent = new Event();
+        olderEvent.setEventDate(DateTime.now().minusDays(10));
+        olderEvent.setTrackedEntityDataValues(dataValues);
+
+        Event currentEvent = new Event();
+        currentEvent.setEventDate(DateTime.now());
+
+        ArrayList<Event> allEvents = new ArrayList<>();
+        allEvents.add(currentEvent);
+        allEvents.add(olderEvent);
+
+        //Execute with an older value that is true, and a current event that is not filled
+        //Expecting to get an effect, as there exists a true value
+        List<RuleEffect> effects = ruleEngine.execute(currentEvent, allEvents);
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+        //Insert a false value in between the old true value and the current blank value
+        //The false should stop the effect form happening:
+        Event middleEvent = new Event();
+        middleEvent.setEventDate(DateTime.now().minusDays(2));
+        allEvents.add(middleEvent);
+        effects = ruleEngine.execute(currentEvent, allEvents);
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
     }
 }

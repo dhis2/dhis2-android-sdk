@@ -79,6 +79,15 @@ public class RulesEngineTestHelpers {
         return prv;
     }
 
+    public static ProgramRuleVariable createProgramRuleVariable(
+            String variableName, DataElement dataElement, ProgramRuleVariableSourceType sourceType) {
+        ProgramRuleVariable prv = new ProgramRuleVariable();
+        prv.setDataElement(dataElement);
+        prv.setDisplayName(variableName);
+        prv.setSourceType(sourceType);
+        return prv;
+    }
+
     public static DataElement createDataElement(String identifier,
                                                 String name, ValueType valueType) {
         DataElement dataElement = new DataElement();

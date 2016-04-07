@@ -144,6 +144,9 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
     @JsonProperty("organisationUnits")
     List<OrganisationUnit> organisationUnits;
 
+    @JsonProperty("teiSearchOrganisationUnits")
+    List<OrganisationUnit> teiSearchOrganisationUnits;
+
     public UserAccount() {
         state = State.SYNCED;
     }
@@ -408,5 +411,13 @@ public final class UserAccount extends BaseModel implements IdentifiableObject {
     @JsonIgnore
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<OrganisationUnit> getTeiSearchOrganisationUnits() {
+        return teiSearchOrganisationUnits;
+    }
+
+    public void setTeiSearchOrganisationUnits(List<OrganisationUnit> teiSearchOrganisationUnits) {
+        this.teiSearchOrganisationUnits = teiSearchOrganisationUnits;
     }
 }

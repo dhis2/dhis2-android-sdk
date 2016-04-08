@@ -37,7 +37,6 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -48,17 +47,20 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlow {
-    static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
-    static final String PROGRAM_STAGE_KEY = "programstage";
-    static final String DATA_ELEMENT_KEY = "dataelement";
-    static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
     public static Mapper<ProgramStageDataElement, ProgramStageDataElementFlow>
             MAPPER = new ProgramStageDataElementMapper();
+
+    static final int UNIQUE_PROGRAM_DATA_ELEMENT_GROUP = 1;
+    static final String PROGRAM_STAGE_KEY = "programStage";
+    static final String DATA_ELEMENT_KEY = "dataElement";
+    static final String PROGRAM_STAGE_SECTION_KEY = "programStageSection";
+
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageFlow programStage;
@@ -66,8 +68,9 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageSectionFlow programStageSection;
@@ -75,8 +78,9 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = DATA_ELEMENT_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DataElementFlow dataElement;
@@ -185,8 +189,8 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
                     .mapToDatabaseEntity(model.getProgramStageSection()));
             flow.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToDatabaseEntity(model.getProgramStage()));
-            flow.setDataElement(MapperModuleProvider.getInstance()
-                    .getDataElementMapper().mapToDatabaseEntity(model.getDataElement()));
+            flow.setDataElement(DataElementFlow.MAPPER
+                    .mapToDatabaseEntity(model.getDataElement()));
             flow.setAllowFutureDate(model.isAllowFutureDate());
             flow.setSortOrder(model.getSortOrder());
             flow.setDisplayInReports(model.isDisplayInReports());
@@ -211,8 +215,8 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             model.setAccess(flow.getAccess());
             model.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToModel(flow.getProgramStage()));
-            model.setDataElement(MapperModuleProvider.getInstance()
-                    .getDataElementMapper().mapToModel(flow.getDataElement()));
+            model.setDataElement(DataElementFlow.MAPPER
+                    .mapToModel(flow.getDataElement()));
             model.setAllowFutureDate(flow.isAllowFutureDate());
             model.setSortOrder(flow.getSortOrder());
             model.setDisplayInReports(flow.isDisplayInReports());

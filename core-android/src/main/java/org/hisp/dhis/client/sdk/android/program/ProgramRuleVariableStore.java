@@ -54,12 +54,14 @@ public final class ProgramRuleVariableStore extends AbsIdentifiableObjectStore<P
                 .where(ProgramRuleVariableFlow_Table
                         .program.is(program.getUId()))
                 .and(ProgramRuleVariableFlow_Table
-                        .dataelement.is(dataElement.getUId()))
+                        .dataElement.is(dataElement.getUId()))
                 .queryList();
 
         if (programRuleVariableFlow != null && !programRuleVariableFlow.isEmpty()) {
             return getMapper().mapToModel(programRuleVariableFlow.get(0));
-        } else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override

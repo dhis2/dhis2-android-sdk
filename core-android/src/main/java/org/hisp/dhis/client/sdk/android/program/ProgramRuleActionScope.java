@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
@@ -41,86 +38,20 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class ProgramRuleActionScope implements IProgramRuleActionScope {
-    private final IProgramRuleActionService programRuleActionService;
-    private final IProgramRuleActionController programRuleActionController;
+public interface ProgramRuleActionScope {
+    Observable<ProgramRuleAction> get(String uid);
 
-    public ProgramRuleActionScope(IProgramRuleActionService programRuleActionService,
-                                  IProgramRuleActionController programRuleActionController) {
-        this.programRuleActionService = programRuleActionService;
-        this.programRuleActionController = programRuleActionController;
-    }
+    Observable<ProgramRuleAction> get(long id);
 
-    @Override
-    public Observable<ProgramRuleAction> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<ProgramRuleAction>() {
-            @Override
-            public ProgramRuleAction call() {
-                return programRuleActionService.get(uid);
-            }
-        });
-    }
+    Observable<List<ProgramRuleAction>> list();
 
-    @Override
-    public Observable<ProgramRuleAction> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<ProgramRuleAction>() {
-            @Override
-            public ProgramRuleAction call() {
-                return programRuleActionService.get(id);
-            }
-        });
-    }
+    Observable<List<ProgramRuleAction>> list(ProgramRule programRule);
 
-    @Override
-    public Observable<List<ProgramRuleAction>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
-            @Override
-            public List<ProgramRuleAction> call() {
-                return programRuleActionService.list();
-            }
-        });
-    }
+    Observable<List<ProgramRuleAction>> pull();
 
-    @Override
-    public Observable<List<ProgramRuleAction>> list(final ProgramRule programRule) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
-            @Override
-            public List<ProgramRuleAction> call() {
-                return programRuleActionService.list(programRule);
-            }
-        });
-    }
+    Observable<List<ProgramRuleAction>> pull(Set<String> uids);
 
-    @Override
-    public Observable<List<ProgramRuleAction>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<ProgramRuleAction>> pull(SyncStrategy syncStrategy);
 
-    @Override
-    public Observable<List<ProgramRuleAction>> pull(Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
-
-    @Override
-    public Observable<List<ProgramRuleAction>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
-            @Override
-            public List<ProgramRuleAction> call() {
-                programRuleActionController.pull(syncStrategy);
-                return programRuleActionService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramRuleAction>> pull(final SyncStrategy syncStrategy,
-                                                    final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleAction>>() {
-            @Override
-            public List<ProgramRuleAction> call() {
-                programRuleActionController.pull(syncStrategy, uids);
-                return programRuleActionService.list(uids);
-            }
-        });
-    }
+    Observable<List<ProgramRuleAction>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

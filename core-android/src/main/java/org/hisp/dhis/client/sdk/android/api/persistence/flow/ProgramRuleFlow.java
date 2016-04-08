@@ -36,14 +36,15 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
-    public static final org.hisp.dhis.client.sdk.android.common.Mapper<ProgramRule, ProgramRuleFlow> MAPPER = new Mapper();
-
+    public static final Mapper<ProgramRule, ProgramRuleFlow>
+            MAPPER = new RuleMapper();
 
     private static final String PROGRAM_STAGE_KEY = "programstage";
     private static final String PROGRAM_KEY = "program";
@@ -51,8 +52,9 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramStageFlow programStage;
@@ -60,8 +62,9 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramFlow program;
@@ -140,7 +143,7 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
         this.programRuleActions = programRuleActions;
     }
 
-    private static class Mapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
+    private static class RuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {
 
         @Override
         public ProgramRuleFlow mapToDatabaseEntity(ProgramRule programRule) {

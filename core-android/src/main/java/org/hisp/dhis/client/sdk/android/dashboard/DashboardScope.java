@@ -29,9 +29,6 @@
 package org.hisp.dhis.client.sdk.android.dashboard;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardController;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardService;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
@@ -39,84 +36,19 @@ import java.util.List;
 
 import rx.Observable;
 
-public class DashboardScope implements IDashboardScope {
-    private final IDashboardService dashboardService;
-    private final IDashboardController dashboardController;
+public interface DashboardScope {
 
-    public DashboardScope(IDashboardService dashboardService,
-                          IDashboardController dashboardController) {
-        this.dashboardService = dashboardService;
-        this.dashboardController = dashboardController;
-    }
+    Observable<Boolean> save(Dashboard dashboard);
 
-    @Override
-    public Observable<Boolean> save(final Dashboard dashboard) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return dashboardService.save(dashboard);
-            }
-        });
-    }
+    Observable<Boolean> remove(Dashboard dashboard);
 
-    @Override
-    public Observable<Boolean> remove(final Dashboard dashboard) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return dashboardService.remove(dashboard);
-            }
-        });
-    }
+    Observable<Dashboard> get(long id);
 
-    @Override
-    public Observable<Dashboard> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<Dashboard>() {
-            @Override
-            public Dashboard call() {
-                return dashboardService.get(id);
-            }
-        });
-    }
+    Observable<Dashboard> get(String uid);
 
-    @Override
-    public Observable<Dashboard> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<Dashboard>() {
-            @Override
-            public Dashboard call() {
-                return dashboardService.get(uid);
-            }
-        });
-    }
+    Observable<List<Dashboard>> list();
 
-    @Override
-    public Observable<List<Dashboard>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<Dashboard>>() {
-            @Override
-            public List<Dashboard> call() {
-                return dashboardService.list();
-            }
-        });
-    }
+    Observable<Integer> countItems(Dashboard dashboard);
 
-    @Override
-    public Observable<Integer> countItems(final Dashboard dashboard) {
-        return Observable.create(new DefaultOnSubscribe<Integer>() {
-            @Override
-            public Integer call() {
-                return dashboardService.countItems(dashboard);
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> addContent(final Dashboard dashboard,
-                                          final DashboardContent content) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return dashboardService.addContent(dashboard, content);
-            }
-        });
-    }
+    Observable<Boolean> addContent(Dashboard dashboard, DashboardContent content);
 }

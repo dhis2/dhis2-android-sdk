@@ -32,9 +32,14 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 @Table(database = DbDhis.class)
 public final class RelationshipTypeFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<RelationshipType, RelationshipTypeFlow>
+            MAPPER = new RelationshipTypeMapper();
 
     @Column
     String aIsToB;
@@ -60,5 +65,57 @@ public final class RelationshipTypeFlow extends BaseIdentifiableObjectFlow {
 
     public void setbIsToA(String bIsToA) {
         this.bIsToA = bIsToA;
+    }
+
+    private static class RelationshipTypeMapper
+            extends AbsMapper<RelationshipType, RelationshipTypeFlow> {
+
+        @Override
+        public RelationshipTypeFlow mapToDatabaseEntity(RelationshipType relationshipType) {
+            if (relationshipType == null) {
+                return null;
+            }
+
+            RelationshipTypeFlow relationshipTypeFlow = new RelationshipTypeFlow();
+            relationshipTypeFlow.setId(relationshipType.getId());
+            relationshipTypeFlow.setUId(relationshipType.getUId());
+            relationshipTypeFlow.setCreated(relationshipType.getCreated());
+            relationshipTypeFlow.setLastUpdated(relationshipType.getLastUpdated());
+            relationshipTypeFlow.setName(relationshipType.getName());
+            relationshipTypeFlow.setDisplayName(relationshipType.getDisplayName());
+            relationshipTypeFlow.setAccess(relationshipType.getAccess());
+            relationshipTypeFlow.setaIsToB(relationshipType.getaIsToB());
+            relationshipTypeFlow.setbIsToA(relationshipType.getbIsToA());
+            return relationshipTypeFlow;
+        }
+
+        @Override
+        public RelationshipType mapToModel(RelationshipTypeFlow relationshipTypeFlow) {
+            if (relationshipTypeFlow == null) {
+                return null;
+            }
+
+            RelationshipType relationshipType = new RelationshipType();
+            relationshipType.setId(relationshipTypeFlow.getId());
+            relationshipType.setUId(relationshipTypeFlow.getUId());
+            relationshipType.setCreated(relationshipTypeFlow.getCreated());
+            relationshipType.setLastUpdated(relationshipTypeFlow.getLastUpdated());
+            relationshipType.setName(relationshipTypeFlow.getName());
+            relationshipType.setDisplayName(relationshipTypeFlow.getDisplayName());
+            relationshipType.setAccess(relationshipTypeFlow.getAccess());
+            relationshipType.setaIsToB(relationshipTypeFlow.getaIsToB());
+            relationshipType.setbIsToA(relationshipTypeFlow.getbIsToA());
+            return relationshipType;
+        }
+
+        @Override
+        public Class<RelationshipType> getModelTypeClass() {
+            return RelationshipType.class;
+        }
+
+        @Override
+        public Class<RelationshipTypeFlow> getDatabaseEntityTypeClass() {
+            return RelationshipTypeFlow.class;
+        }
     }
 }

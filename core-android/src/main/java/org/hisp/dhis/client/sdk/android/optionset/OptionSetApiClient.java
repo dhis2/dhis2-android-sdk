@@ -44,9 +44,9 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class OptionSetApiClient implements IOptionSetApiClient {
-    private final IOptionSetApiClientRetrofit optionSetApiClientRetrofit;
+    private final OptionSetApiClientRetrofit optionSetApiClientRetrofit;
 
-    public OptionSetApiClient(IOptionSetApiClientRetrofit optionSetApiClientRetrofit) {
+    public OptionSetApiClient(OptionSetApiClientRetrofit optionSetApiClientRetrofit) {
         this.optionSetApiClientRetrofit = optionSetApiClientRetrofit;
     }
 

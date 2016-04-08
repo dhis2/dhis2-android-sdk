@@ -36,17 +36,24 @@ import com.raizlabs.android.dbflow.annotation.NotNull;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 
 @Table(database = DbDhis.class)
 public final class DashboardElementFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<DashboardElement, DashboardElementFlow>
+            MAPPER = new ElementMapper();
+
     static final String DASHBOARD_ITEM_KEY = "dashboardItem";
 
     @Column
     @NotNull
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = DASHBOARD_ITEM_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId")
+                    @ForeignKeyReference(
+                            columnName = DASHBOARD_ITEM_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID)
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     DashboardItemFlow dashboardItem;
@@ -60,5 +67,56 @@ public final class DashboardElementFlow extends BaseIdentifiableObjectFlow {
 
     public void setDashboardItem(DashboardItemFlow dashboardItem) {
         this.dashboardItem = dashboardItem;
+    }
+
+    private static class ElementMapper extends AbsMapper<DashboardElement, DashboardElementFlow> {
+
+        @Override
+        public DashboardElementFlow mapToDatabaseEntity(DashboardElement dashboardElement) {
+            if (dashboardElement == null) {
+                return null;
+            }
+
+            DashboardElementFlow dashboardElementFlow = new DashboardElementFlow();
+            dashboardElementFlow.setId(dashboardElement.getId());
+            dashboardElementFlow.setUId(dashboardElement.getUId());
+            dashboardElementFlow.setCreated(dashboardElement.getCreated());
+            dashboardElementFlow.setLastUpdated(dashboardElement.getLastUpdated());
+            dashboardElementFlow.setAccess(dashboardElement.getAccess());
+            dashboardElementFlow.setName(dashboardElement.getName());
+            dashboardElementFlow.setDisplayName(dashboardElement.getDisplayName());
+            dashboardElementFlow.setDashboardItem(DashboardItemFlow.MAPPER
+                    .mapToDatabaseEntity(dashboardElement.getDashboardItem()));
+            return dashboardElementFlow;
+        }
+
+        @Override
+        public DashboardElement mapToModel(DashboardElementFlow dashboardElementFlow) {
+            if (dashboardElementFlow == null) {
+                return null;
+            }
+
+            DashboardElement dashboardElement = new DashboardElement();
+            dashboardElement.setId(dashboardElementFlow.getId());
+            dashboardElement.setUId(dashboardElementFlow.getUId());
+            dashboardElement.setCreated(dashboardElementFlow.getCreated());
+            dashboardElement.setLastUpdated(dashboardElementFlow.getLastUpdated());
+            dashboardElement.setAccess(dashboardElementFlow.getAccess());
+            dashboardElement.setName(dashboardElementFlow.getName());
+            dashboardElement.setDisplayName(dashboardElementFlow.getDisplayName());
+            dashboardElement.setDashboardItem(DashboardItemFlow.MAPPER
+                    .mapToModel(dashboardElementFlow.getDashboardItem()));
+            return dashboardElement;
+        }
+
+        @Override
+        public Class<DashboardElement> getModelTypeClass() {
+            return DashboardElement.class;
+        }
+
+        @Override
+        public Class<DashboardElementFlow> getDatabaseEntityTypeClass() {
+            return DashboardElementFlow.class;
+        }
     }
 }

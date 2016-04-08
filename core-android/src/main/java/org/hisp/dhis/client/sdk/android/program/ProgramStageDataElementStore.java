@@ -42,13 +42,12 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public final class ProgramStageDataElementStore extends AbsIdentifiableObjectStore<ProgramStageDataElement,
-        ProgramStageDataElementFlow> implements IProgramStageDataElementStore {
-    private final ITransactionManager transactionManager;
+public final class ProgramStageDataElementStore
+        extends AbsIdentifiableObjectStore<ProgramStageDataElement, ProgramStageDataElementFlow>
+        implements IProgramStageDataElementStore {
 
-    public ProgramStageDataElementStore(ITransactionManager transactionManager) {
+    public ProgramStageDataElementStore() {
         super(ProgramStageDataElementFlow.MAPPER);
-        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -56,7 +55,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         List<ProgramStageDataElementFlow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
-                        .programstage.is(programStage.getUId())).queryList();
+                        .programStage.is(programStage.getUId())).queryList();
         return getMapper().mapToModels(programStageDataElementFlows);
     }
 
@@ -65,7 +64,7 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         List<ProgramStageDataElementFlow> programStageDataElementFlows = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
-                        .programstagesection.is(programStageSection.getUId())).queryList();
+                        .programStageSection.is(programStageSection.getUId())).queryList();
         return getMapper().mapToModels(programStageDataElementFlows);
     }
 
@@ -74,9 +73,9 @@ public final class ProgramStageDataElementStore extends AbsIdentifiableObjectSto
         ProgramStageDataElementFlow programStageDataElementFlow = new Select()
                 .from(ProgramStageDataElementFlow.class)
                 .where(ProgramStageDataElementFlow_Table
-                        .programstage.is(programStage.getUId()))
+                        .programStage.is(programStage.getUId()))
                 .and(ProgramStageDataElementFlow_Table
-                        .dataelement.is(dataElement.getUId())).querySingle();
+                        .dataElement.is(dataElement.getUId())).querySingle();
         return getMapper().mapToModel(programStageDataElementFlow);
     }
 }

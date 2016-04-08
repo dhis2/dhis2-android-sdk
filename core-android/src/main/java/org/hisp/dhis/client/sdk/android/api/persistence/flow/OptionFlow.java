@@ -35,15 +35,15 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.android.optionset.OptionMapper;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 
 @Table(database = DbDhis.class)
 public final class OptionFlow extends BaseIdentifiableObjectFlow {
     public static Mapper<Option, OptionFlow> MAPPER = new OptionMapper();
 
-    static final String OPTION_SET_KEY = "optionset";
+    static final String OPTION_SET_KEY = "optionSet";
 
     @Column
     int sortOrder;
@@ -51,8 +51,9 @@ public final class OptionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class,
-                            foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = OPTION_SET_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     OptionSetFlow optionSet;
@@ -86,5 +87,60 @@ public final class OptionFlow extends BaseIdentifiableObjectFlow {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    private static class OptionMapper extends AbsMapper<Option, OptionFlow> {
+
+        @Override
+        public OptionFlow mapToDatabaseEntity(Option option) {
+            if (option == null) {
+                return null;
+            }
+
+            OptionFlow optionFlow = new OptionFlow();
+            optionFlow.setId(option.getId());
+            optionFlow.setUId(option.getUId());
+            optionFlow.setCreated(option.getCreated());
+            optionFlow.setLastUpdated(option.getLastUpdated());
+            optionFlow.setName(option.getName());
+            optionFlow.setDisplayName(option.getDisplayName());
+            optionFlow.setAccess(option.getAccess());
+            optionFlow.setSortOrder(option.getSortOrder());
+            optionFlow.setOptionSet(OptionSetFlow.MAPPER
+                    .mapToDatabaseEntity(option.getOptionSet()));
+            optionFlow.setCode(option.getCode());
+            return optionFlow;
+        }
+
+        @Override
+        public Option mapToModel(OptionFlow optionFlow) {
+            if (optionFlow == null) {
+                return null;
+            }
+
+            Option option = new Option();
+            option.setId(optionFlow.getId());
+            option.setUId(optionFlow.getUId());
+            option.setCreated(optionFlow.getCreated());
+            option.setLastUpdated(optionFlow.getLastUpdated());
+            option.setName(optionFlow.getName());
+            option.setDisplayName(optionFlow.getDisplayName());
+            option.setAccess(optionFlow.getAccess());
+            option.setSortOrder(optionFlow.getSortOrder());
+            option.setOptionSet(OptionSetFlow.MAPPER
+                    .mapToModel(optionFlow.getOptionSet()));
+            option.setCode(optionFlow.getCode());
+            return option;
+        }
+
+        @Override
+        public Class<Option> getModelTypeClass() {
+            return Option.class;
+        }
+
+        @Override
+        public Class<OptionFlow> getDatabaseEntityTypeClass() {
+            return OptionFlow.class;
+        }
     }
 }

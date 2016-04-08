@@ -35,15 +35,17 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 @Table(database = DbDhis.class)
 public final class DataElementFlow extends BaseIdentifiableObjectFlow {
-    final static String OPTION_SET_KEY = "optionset";
     public static Mapper<DataElement, DataElementFlow> MAPPER = new DataElementMapper();
+
+    private final static String OPTION_SET_KEY = "optionset";
+
     @Column
     ValueType valueType;
 
@@ -152,5 +154,72 @@ public final class DataElementFlow extends BaseIdentifiableObjectFlow {
 
     public void setOptionSet(OptionSetFlow optionSet) {
         this.optionSet = optionSet;
+    }
+
+    private static class DataElementMapper extends AbsMapper<DataElement, DataElementFlow> {
+
+        @Override
+        public DataElementFlow mapToDatabaseEntity(DataElement dataElement) {
+            if (dataElement == null) {
+                return null;
+            }
+
+            DataElementFlow dataElementFlow = new DataElementFlow();
+            dataElementFlow.setId(dataElement.getId());
+            dataElementFlow.setUId(dataElement.getUId());
+            dataElementFlow.setCreated(dataElement.getCreated());
+            dataElementFlow.setLastUpdated(dataElement.getLastUpdated());
+            dataElementFlow.setName(dataElement.getName());
+            dataElementFlow.setDisplayName(dataElement.getDisplayName());
+            dataElementFlow.setAccess(dataElement.getAccess());
+            dataElementFlow.setValueType(dataElement.getValueType());
+            dataElementFlow.setZeroIsSignificant(dataElement.isZeroIsSignificant());
+            dataElementFlow.setAggregationOperator(dataElement.getAggregationOperator());
+            dataElementFlow.setFormName(dataElement.getFormName());
+            dataElementFlow.setNumberType(dataElement.getNumberType());
+            dataElementFlow.setDomainType(dataElement.getDomainType());
+            dataElementFlow.setDimension(dataElement.getDimension());
+            dataElementFlow.setDisplayFormName(dataElement.getDisplayFormName());
+            dataElementFlow.setOptionSet(OptionSetFlow.MAPPER
+                    .mapToDatabaseEntity(dataElement.getOptionSet()));
+            return dataElementFlow;
+        }
+
+        @Override
+        public DataElement mapToModel(DataElementFlow dataElementFlow) {
+            if (dataElementFlow == null) {
+                return null;
+            }
+
+            DataElement dataElement = new DataElement();
+            dataElement.setId(dataElementFlow.getId());
+            dataElement.setUId(dataElementFlow.getUId());
+            dataElement.setCreated(dataElementFlow.getCreated());
+            dataElement.setLastUpdated(dataElementFlow.getLastUpdated());
+            dataElement.setName(dataElementFlow.getName());
+            dataElement.setDisplayName(dataElementFlow.getDisplayName());
+            dataElement.setAccess(dataElementFlow.getAccess());
+            dataElement.setValueType(dataElementFlow.getValueType());
+            dataElement.setZeroIsSignificant(dataElementFlow.isZeroIsSignificant());
+            dataElement.setAggregationOperator(dataElementFlow.getAggregationOperator());
+            dataElement.setFormName(dataElementFlow.getFormName());
+            dataElement.setNumberType(dataElementFlow.getNumberType());
+            dataElement.setDomainType(dataElementFlow.getDomainType());
+            dataElement.setDimension(dataElementFlow.getDimension());
+            dataElement.setDisplayFormName(dataElementFlow.getDisplayFormName());
+            dataElement.setOptionSet(OptionSetFlow.MAPPER
+                    .mapToModel(dataElementFlow.getOptionSet()));
+            return dataElement;
+        }
+
+        @Override
+        public Class<DataElement> getModelTypeClass() {
+            return DataElement.class;
+        }
+
+        @Override
+        public Class<DataElementFlow> getDatabaseEntityTypeClass() {
+            return DataElementFlow.class;
+        }
     }
 }

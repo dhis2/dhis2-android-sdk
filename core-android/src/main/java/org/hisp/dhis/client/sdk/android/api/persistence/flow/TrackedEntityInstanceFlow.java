@@ -32,12 +32,17 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class TrackedEntityInstanceFlow extends BaseModelFlow {
+    public static final Mapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
+            MAPPER = new InstanceMapper();
 
     @Column
     String trackedEntityInstanceUid;
@@ -116,5 +121,52 @@ public final class TrackedEntityInstanceFlow extends BaseModelFlow {
 
     public void setLastUpdated(DateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    private static class InstanceMapper
+            extends AbsMapper<TrackedEntityInstance, TrackedEntityInstanceFlow> {
+
+        @Override
+        public TrackedEntityInstanceFlow mapToDatabaseEntity(TrackedEntityInstance entityInstance) {
+            if (entityInstance == null) {
+                return null;
+            }
+
+            TrackedEntityInstanceFlow trackedEntityInstanceFlow = new TrackedEntityInstanceFlow();
+            trackedEntityInstanceFlow.setId(entityInstance.getId());
+            trackedEntityInstanceFlow.setTrackedEntityInstanceUid(
+                    entityInstance.getTrackedEntityInstanceUid());
+            trackedEntityInstanceFlow.setTrackedEntity(entityInstance.getTrackedEntity());
+            trackedEntityInstanceFlow.setOrgUnit(entityInstance.getOrgUnit());
+            trackedEntityInstanceFlow.setCreated(entityInstance.getCreated());
+            trackedEntityInstanceFlow.setLastUpdated(entityInstance.getLastUpdated());
+            return trackedEntityInstanceFlow;
+        }
+
+        @Override
+        public TrackedEntityInstance mapToModel(TrackedEntityInstanceFlow instanceFlow) {
+            if (instanceFlow == null) {
+                return null;
+            }
+
+            TrackedEntityInstance entityInstance = new TrackedEntityInstance();
+            entityInstance.setId(instanceFlow.getId());
+            entityInstance.setTrackedEntityInstanceUid(instanceFlow.getTrackedEntityInstanceUid());
+            entityInstance.setTrackedEntity(instanceFlow.getTrackedEntity());
+            entityInstance.setOrgUnit(instanceFlow.getOrgUnit());
+            entityInstance.setCreated(instanceFlow.getCreated());
+            entityInstance.setLastUpdated(instanceFlow.getLastUpdated());
+            return entityInstance;
+        }
+
+        @Override
+        public Class<TrackedEntityInstance> getModelTypeClass() {
+            return TrackedEntityInstance.class;
+        }
+
+        @Override
+        public Class<TrackedEntityInstanceFlow> getDatabaseEntityTypeClass() {
+            return TrackedEntityInstanceFlow.class;
+        }
     }
 }

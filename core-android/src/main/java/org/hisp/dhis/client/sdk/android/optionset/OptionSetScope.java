@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
+
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
@@ -37,50 +36,12 @@ import java.util.List;
 
 import rx.Observable;
 
-public class OptionSetScope implements IOptionSetScope {
-    private final IOptionSetService optionSetService;
+public interface OptionSetScope {
+    Observable<OptionSet> get(String uid);
 
-    public OptionSetScope(IOptionSetService optionSetService) {
-        this.optionSetService = optionSetService;
-    }
+    Observable<OptionSet> get(long id);
 
-    @Override
-    public Observable<OptionSet> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<OptionSet>() {
-            @Override
-            public OptionSet call() {
-                return optionSetService.get(uid);
-            }
-        });
-    }
+    Observable<List<OptionSet>> list();
 
-    @Override
-    public Observable<OptionSet> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<OptionSet>() {
-            @Override
-            public OptionSet call() {
-                return optionSetService.get(id);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<OptionSet>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<OptionSet>>() {
-            @Override
-            public List<OptionSet> call() {
-                return optionSetService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Option>> list(final OptionSet optionSet) {
-        return Observable.create(new DefaultOnSubscribe<List<Option>>() {
-            @Override
-            public List<Option> call() {
-                return optionSetService.list(optionSet);
-            }
-        });
-    }
+    Observable<List<Option>> list(OptionSet optionSet);
 }

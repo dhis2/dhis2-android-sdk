@@ -31,12 +31,66 @@ package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.user.User;
 
 @Table(database = DbDhis.class)
 public final class UserFlow extends BaseIdentifiableObjectFlow {
-    // no additional fields
+    public static final Mapper<User, UserFlow> MAPPER = new UserMapper();
 
     public UserFlow() {
         // empty constructor
+    }
+
+    private static class UserMapper extends AbsMapper<User, UserFlow> {
+
+        public UserMapper() {
+            // empty constructor
+        }
+
+        @Override
+        public UserFlow mapToDatabaseEntity(User user) {
+            if (user == null) {
+                return null;
+            }
+
+            UserFlow userFlow = new UserFlow();
+            userFlow.setId(user.getId());
+            userFlow.setUId(user.getUId());
+            userFlow.setCreated(user.getCreated());
+            userFlow.setLastUpdated(user.getLastUpdated());
+            userFlow.setName(user.getName());
+            userFlow.setDisplayName(user.getDisplayName());
+            userFlow.setAccess(user.getAccess());
+            return userFlow;
+        }
+
+        @Override
+        public User mapToModel(UserFlow userFlow) {
+            if (userFlow == null) {
+                return null;
+            }
+
+            User user = new User();
+            user.setId(userFlow.getId());
+            user.setUId(userFlow.getUId());
+            user.setCreated(userFlow.getCreated());
+            user.setLastUpdated(userFlow.getLastUpdated());
+            user.setName(userFlow.getName());
+            user.setDisplayName(userFlow.getDisplayName());
+            user.setAccess(userFlow.getAccess());
+            return user;
+        }
+
+        @Override
+        public Class<User> getModelTypeClass() {
+            return User.class;
+        }
+
+        @Override
+        public Class<UserFlow> getDatabaseEntityTypeClass() {
+            return UserFlow.class;
+        }
     }
 }

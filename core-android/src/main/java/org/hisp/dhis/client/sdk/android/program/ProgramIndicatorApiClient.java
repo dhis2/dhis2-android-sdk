@@ -16,46 +16,48 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramIndicatorApiClient implements IProgramIndicatorApiClient {
-    private IProgramIndicatorApiClientRetrofit programIndicatorApiClientRetrofit;
+    private ProgramIndicatorApiClientRetrofit programIndicatorApiClientRetrofit;
 
-    public ProgramIndicatorApiClient(IProgramIndicatorApiClientRetrofit programIndicatorApiClientRetrofit) {
+    public ProgramIndicatorApiClient(ProgramIndicatorApiClientRetrofit
+                                             programIndicatorApiClientRetrofit) {
         this.programIndicatorApiClientRetrofit = programIndicatorApiClientRetrofit;
     }
 
     @Override
-    public List<ProgramIndicator> getProgramIndicators(Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+    public List<ProgramIndicator> getProgramIndicators(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
 
     @Override
-    public List<ProgramIndicator> getProgramIndicators(Fields fields, Set<String> programIndicatorUids) throws ApiException {
+    public List<ProgramIndicator> getProgramIndicators(
+            Fields fields, Set<String> programIndicatorUids) throws ApiException {
         return getCollection(apiResource, fields, null, programIndicatorUids);
     }
 
-    private final ApiResource<ProgramIndicator> apiResource =
-            new ApiResource<ProgramIndicator>() {
+    private final ApiResource<ProgramIndicator> apiResource = new ApiResource<ProgramIndicator>() {
 
-                @Override
-                public String getResourceName() {
-                    return "programIndicators";
-                }
+        @Override
+        public String getResourceName() {
+            return "programIndicators";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id,displayName";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id,displayName";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,name,displayName,created,lastUpdated,access," +
-                            "code,expression,displayDescription," +
-                            "rootDate,externalAccess,valueType,displayShortName,program[id]";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "code,expression,displayDescription," +
+                    "rootDate,externalAccess,valueType,displayShortName,program[id]";
+        }
 
-                public Call<Map<String, List<ProgramIndicator>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return programIndicatorApiClientRetrofit
-                            .getProgramIndicators(queryMap, filters);
-                }
-            };
+        public Call<Map<String, List<ProgramIndicator>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return programIndicatorApiClientRetrofit
+                    .getProgramIndicators(queryMap, filters);
+        }
+    };
 }

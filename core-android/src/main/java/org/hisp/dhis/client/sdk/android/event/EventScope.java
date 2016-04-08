@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.event.IEventController;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -41,116 +38,27 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class EventScope implements IEventScope {
-    private final IEventService eventService;
-    private final IEventController eventController;
+public interface EventScope {
 
-    public EventScope(IEventService eventService, IEventController eventController) {
-        this.eventService = eventService;
-        this.eventController = eventController;
-    }
+    Observable<Boolean> save(Event event);
 
-    @Override
-    public Observable<List<Event>> sync(final Set<String> uids) {
-        return sync(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<Boolean> remove(Event event);
 
-    @Override
-    public Observable<List<Event>> sync(final SyncStrategy strategy, final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                eventController.sync(strategy, uids);
-                return eventService.list(uids);
-            }
-        });
-    }
+    Observable<Event> get(long id);
 
-    @Override
-    public Observable<List<Event>> pull(Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<Event> get(String uid);
 
-    @Override
-    public Observable<List<Event>> pull(final SyncStrategy strategy, final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                eventController.pull(strategy, uids);
-                return eventService.list(uids);
-            }
-        });
-    }
+    Observable<List<Event>> list();
 
-    @Override
-    public Observable<List<Event>> push(final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                eventController.push(uids);
-                return eventService.list(uids);
-            }
-        });
-    }
+    Observable<List<Event>> list(OrganisationUnit organisationUnit, Program program);
 
-    @Override
-    public Observable<Boolean> save(final Event event) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return eventService.save(event);
-            }
-        });
-    }
+    Observable<List<Event>> pull(Set<String> uids);
 
-    @Override
-    public Observable<Boolean> remove(final Event event) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return eventService.remove(event);
-            }
-        });
-    }
+    Observable<List<Event>> pull(SyncStrategy strategy, Set<String> uids);
 
-    @Override
-    public Observable<Event> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<Event>() {
-            @Override
-            public Event call() {
-                return eventService.get(id);
-            }
-        });
-    }
+    Observable<List<Event>> push(Set<String> uids);
 
-    @Override
-    public Observable<Event> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<Event>() {
-            @Override
-            public Event call() {
-                return eventService.get(uid);
-            }
-        });
-    }
+    Observable<List<Event>> sync(Set<String> uids);
 
-    @Override
-    public Observable<List<Event>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                return eventService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Event>> list(final OrganisationUnit organisationUnit,
-                                        final Program program) {
-        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
-            @Override
-            public List<Event> call() {
-                return eventService.list(organisationUnit, program);
-            }
-        });
-    }
+    Observable<List<Event>> sync(SyncStrategy strategy, Set<String> uids);
 }

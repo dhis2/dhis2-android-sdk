@@ -16,10 +16,10 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramRuleActionApiClient implements IProgramRuleActionApiClient {
-    private final IProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit;
+    private final ProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit;
 
     public ProgramRuleActionApiClient(
-            IProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit) {
+            ProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit) {
         this.programRuleActionApiClientRetrofit = programRuleActionApiClientRetrofit;
     }
 

@@ -16,9 +16,9 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramRuleVariableApiClient implements IProgramRuleVariableApiClient {
-    private final IProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit;
+    private final ProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit;
 
-    public ProgramRuleVariableApiClient(IProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit) {
+    public ProgramRuleVariableApiClient(ProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit) {
         this.programRuleVariableApiClientRetrofit = programRuleVariableApiClientRetrofit;
     }
 

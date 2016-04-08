@@ -103,7 +103,7 @@ public class PersistenceModule implements IPersistenceModule {
         programRuleVariableStore = new ProgramRuleVariableStore();
         programIndicatorStore = new ProgramIndicatorStore();
         trackedEntityAttributeStore = new TrackedEntityAttributeStore();
-        programStageDataElementStore = new ProgramStageDataElementStore(transactionManager);
+        programStageDataElementStore = new ProgramStageDataElementStore();
         dataElementStore = new DataElementStore();
 
         userAccountStore = new UserAccountStore();

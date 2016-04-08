@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -41,113 +38,26 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class ProgramRuleScope implements IProgramRuleScope {
-    private final IProgramRuleService programRuleService;
-    private final IProgramRuleController programRuleController;
+public interface ProgramRuleScope {
+    Observable<ProgramRule> get(String uid);
 
-    public ProgramRuleScope(IProgramRuleService programRuleService,
-                            IProgramRuleController programRuleController) {
-        this.programRuleService = programRuleService;
-        this.programRuleController = programRuleController;
-    }
+    Observable<ProgramRule> get(long id);
 
-    @Override
-    public Observable<ProgramRule> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<ProgramRule>() {
-            @Override
-            public ProgramRule call() {
-                return programRuleService.get(uid);
-            }
-        });
-    }
+    Observable<List<ProgramRule>> list();
 
-    @Override
-    public Observable<ProgramRule> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<ProgramRule>() {
-            @Override
-            public ProgramRule call() {
-                return programRuleService.get(id);
-            }
-        });
-    }
+    Observable<List<ProgramRule>> list(ProgramStage programStage);
 
-    @Override
-    public Observable<List<ProgramRule>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                return programRuleService.list();
-            }
-        });
-    }
+    Observable<List<ProgramRule>> list(Program program);
 
-    @Override
-    public Observable<List<ProgramRule>> list(final ProgramStage programStage) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                return programRuleService.list(programStage);
-            }
-        });
-    }
+    Observable<List<ProgramRule>> pull();
 
-    @Override
-    public Observable<List<ProgramRule>> list(final Program program) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                return programRuleService.list(program);
-            }
-        });
-    }
+    Observable<List<ProgramRule>> pull(Set<String> uids);
 
-    @Override
-    public Observable<List<ProgramRule>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<ProgramRule>> pull(List<Program> programs);
 
-    @Override
-    public Observable<List<ProgramRule>> pull(final Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy);
 
-    @Override
-    public Observable<List<ProgramRule>> pull(List<Program> programs) {
-        return pull(SyncStrategy.DEFAULT, programs);
-    }
+    Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, Set<String> uids);
 
-    @Override
-    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                programRuleController.pull(syncStrategy);
-                return programRuleService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy,
-                                              final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                programRuleController.pull(syncStrategy, uids);
-                return programRuleService.list(uids);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramRule>> pull(final SyncStrategy syncStrategy,
-                                              final List<Program> programs) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
-            @Override
-            public List<ProgramRule> call() {
-                programRuleController.pullUpdates(syncStrategy, programs);
-                return programRuleService.list(programs);
-            }
-        });
-    }
+    Observable<List<ProgramRule>> pull(SyncStrategy syncStrategy, List<Program> programs);
 }

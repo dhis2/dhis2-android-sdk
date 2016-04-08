@@ -28,103 +28,20 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
-public class TrackedEntityScope implements ITrackedEntityScope {
-    private ITrackedEntityService mTrackedEntityService;
+public interface TrackedEntityScope {
+    Observable<TrackedEntity> get(long id);
 
-    public TrackedEntityScope(ITrackedEntityService trackedEntityService) {
-        this.mTrackedEntityService = trackedEntityService;
-    }
+    Observable<TrackedEntity> get(String uid);
 
-    @Override
-    public Observable<TrackedEntity> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntity>() {
-            @Override
-            public void call(Subscriber<? super TrackedEntity> subscriber) {
-                try {
-                    TrackedEntity trackedEntity = mTrackedEntityService.get(id);
-                    subscriber.onNext(trackedEntity);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<TrackedEntity>> list();
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<Boolean> save(TrackedEntity object);
 
-    @Override
-    public Observable<TrackedEntity> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<TrackedEntity>() {
-            @Override
-            public void call(Subscriber<? super TrackedEntity> subscriber) {
-                try {
-                    TrackedEntity trackedEntity = mTrackedEntityService.get(uid);
-                    subscriber.onNext(trackedEntity);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<TrackedEntity>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<TrackedEntity>>() {
-            @Override
-            public void call(Subscriber<? super List<TrackedEntity>> subscriber) {
-                try {
-                    List<TrackedEntity> trackedEntities = mTrackedEntityService.list();
-                    subscriber.onNext(trackedEntities);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> save(final TrackedEntity object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityService.save(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> remove(final TrackedEntity object) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mTrackedEntityService.remove(object);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<Boolean> remove(TrackedEntity object);
 }

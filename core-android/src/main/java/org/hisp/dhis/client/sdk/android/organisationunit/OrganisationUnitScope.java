@@ -28,11 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
@@ -40,88 +36,28 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class OrganisationUnitScope implements IOrganisationUnitScope {
-    private final IOrganisationUnitService organisationUnitService;
-    private final IOrganisationUnitController organisationUnitController;
+public interface OrganisationUnitScope {
 
-    public OrganisationUnitScope(IOrganisationUnitService organisationUnitService,
-                                 IOrganisationUnitController organisationUnitController) {
-        this.organisationUnitService = organisationUnitService;
-        this.organisationUnitController = organisationUnitController;
-    }
 
-    @Override
-    public Observable<OrganisationUnit> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<OrganisationUnit>() {
-            @Override
-            public OrganisationUnit call() {
-                return organisationUnitService.get(id);
-            }
-        });
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // Service methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
 
-    @Override
-    public Observable<OrganisationUnit> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<OrganisationUnit>() {
-            @Override
-            public OrganisationUnit call() {
-                return organisationUnitService.get(uid);
-            }
-        });
-    }
+    Observable<OrganisationUnit> get(long id);
 
-    @Override
-    public Observable<List<OrganisationUnit>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() {
-                return organisationUnitService.list();
-            }
-        });
-    }
+    Observable<OrganisationUnit> get(String uid);
 
-    @Override
-    public Observable<List<OrganisationUnit>> pull() {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() {
-                organisationUnitController.pull(SyncStrategy.DEFAULT);
-                return organisationUnitService.list();
-            }
-        });
-    }
+    Observable<List<OrganisationUnit>> list();
 
-    @Override
-    public Observable<List<OrganisationUnit>> pull(final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() {
-                organisationUnitController.pull(SyncStrategy.DEFAULT, uids);
-                return organisationUnitService.list(uids);
-            }
-        });
-    }
 
-    @Override
-    public Observable<List<OrganisationUnit>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() {
-                organisationUnitController.pull(syncStrategy);
-                return organisationUnitService.list();
-            }
-        });
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    // Controller methods
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    Observable<List<OrganisationUnit>> pull();
 
-    @Override
-    public Observable<List<OrganisationUnit>> pull(final SyncStrategy syncStrategy,
-                                                   final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-            @Override
-            public List<OrganisationUnit> call() {
-                organisationUnitController.pull(syncStrategy, uids);
-                return organisationUnitService.list(uids);
-            }
-        });
-    }
+    Observable<List<OrganisationUnit>> pull(Set<String> uids);
+
+    Observable<List<OrganisationUnit>> pull(SyncStrategy syncStrategy);
+
+    Observable<List<OrganisationUnit>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

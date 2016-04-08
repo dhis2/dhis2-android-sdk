@@ -44,10 +44,10 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramStageDataElementApiClient implements IProgramStageDataElementApiClient {
-    private final IProgramStageDataElementApiClientRetrofit apiClientRetrofit;
+    private final ProgramStageDataElementApiClientRetrofit apiClientRetrofit;
 
     public ProgramStageDataElementApiClient(
-            IProgramStageDataElementApiClientRetrofit retrofitClient) {
+            ProgramStageDataElementApiClientRetrofit retrofitClient) {
         this.apiClientRetrofit = retrofitClient;
     }
 

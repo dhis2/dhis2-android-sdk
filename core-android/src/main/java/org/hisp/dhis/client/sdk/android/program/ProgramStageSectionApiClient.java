@@ -44,9 +44,9 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class ProgramStageSectionApiClient implements IProgramStageSectionApiClient {
-    private final IProgramStageSectionApiClientRetrofit programStageSectionApiClientRetrofit;
+    private final ProgramStageSectionApiClientRetrofit programStageSectionApiClientRetrofit;
 
-    public ProgramStageSectionApiClient(IProgramStageSectionApiClientRetrofit retrofitClient) {
+    public ProgramStageSectionApiClient(ProgramStageSectionApiClientRetrofit retrofitClient) {
         this.programStageSectionApiClientRetrofit = retrofitClient;
     }
 

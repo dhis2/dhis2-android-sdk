@@ -29,48 +29,17 @@
 package org.hisp.dhis.client.sdk.android.constant;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 import java.util.List;
 
 import rx.Observable;
 
-public class ConstantScope implements IConstantScope {
-    private final IConstantService constantService;
+public interface ConstantScope {
 
-    public ConstantScope(IConstantService constantService) {
-        this.constantService = constantService;
-    }
+    Observable<Constant> get(String uid);
 
-    @Override
-    public Observable<Constant> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<Constant>() {
-            @Override
-            public Constant call() {
-                return constantService.get(uid);
-            }
-        });
-    }
+    Observable<Constant> get(long id);
 
-    @Override
-    public Observable<Constant> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<Constant>() {
-            @Override
-            public Constant call() {
-                return constantService.get(id);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Constant>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<Constant>>() {
-            @Override
-            public List<Constant> call() {
-                return constantService.list();
-            }
-        });
-    }
+    Observable<List<Constant>> list();
 }

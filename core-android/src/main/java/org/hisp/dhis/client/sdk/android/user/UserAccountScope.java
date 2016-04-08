@@ -29,161 +29,33 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 
-import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
+import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import rx.Observable;
-import rx.Subscriber;
 
-public class UserAccountScope implements IUserAccountScope {
-    // preferences
-    private final IUserPreferences userPreferences;
+public interface UserAccountScope {
 
-    // services
-    private final IUserAccountService userAccountService;
+    // User session methods
+    Observable<UserAccount> signIn(String username, String password);
 
-    // controllers
-    private final IUserAccountController userAccountController;
+    Observable<Boolean> isSignedIn();
 
-    // scopes
-    private final IUserProgramScope userProgramScope;
-    private final IUserOrganisationUnitScope organisationUnitScope;
+    Observable<Boolean> signOut();
 
-    public UserAccountScope(IUserPreferences userPreferences,
-                            IUserAccountService userAccountService,
-                            IUserAccountController userAccountController,
-                            IUserProgramScope userProgramScope,
-                            IUserOrganisationUnitScope organisationUnitScope) {
-        this.userPreferences = userPreferences;
-        this.userAccountService = userAccountService;
-        this.userAccountController = userAccountController;
-        this.userProgramScope = userProgramScope;
-        this.organisationUnitScope = organisationUnitScope;
-    }
 
-    @Override
-    public Observable<UserAccount> signIn(final String username, final String password) {
-        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
+    // UserAccount related methods
+    Observable<UserAccount> account();
 
-            @Override
-            public void call(Subscriber<? super UserAccount> subscriber) {
-                try {
-                    if (userPreferences.isUserConfirmed()) {
-                        throw new IllegalArgumentException("User is already signed in");
-                    }
+    Observable<UserCredentials> userCredentials();
 
-                    UserCredentials userCredentials = new UserCredentials(username, password);
-                    userPreferences.save(userCredentials);
+    Observable<Boolean> save(UserAccount userAccount);
 
-                    UserAccount userAccount = userAccountController.updateAccount();
-                    subscriber.onNext(userAccount);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    // Other resources
+    UserProgramScope programs();
 
-    @Override
-    public Observable<Boolean> isSignedIn() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    if (userPreferences.isUserConfirmed()) {
-                        subscriber.onNext(true);
-                    }
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> signOut() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    subscriber.onNext(userPreferences.clear());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<UserAccount> account() {
-        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
-
-            @Override
-            public void call(Subscriber<? super UserAccount> subscriber) {
-                try {
-                    subscriber.onNext(userAccountService.getCurrentUserAccount());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<UserCredentials> userCredentials() {
-        return Observable.create(new Observable.OnSubscribe<UserCredentials>() {
-            @Override
-            public void call(Subscriber<? super UserCredentials> subscriber) {
-                try {
-                    subscriber.onNext(userPreferences.get());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> save(final UserAccount userAccount) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    subscriber.onNext(userAccountService.save(userAccount));
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public IUserProgramScope programs() {
-        return userProgramScope;
-    }
-
-    @Override
-    public IUserOrganisationUnitScope organisationUnits() {
-        return organisationUnitScope;
-    }
+    UserOrganisationUnitScope organisationUnits();
 }

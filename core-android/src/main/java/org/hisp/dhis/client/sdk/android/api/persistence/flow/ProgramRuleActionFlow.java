@@ -36,19 +36,21 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
-    public static final org.hisp.dhis.client.sdk.android.common.Mapper<ProgramRuleAction, ProgramRuleActionFlow> MAPPER = new Mapper();
+    public static final Mapper<ProgramRuleAction, ProgramRuleActionFlow>
+            MAPPER = new ActionMapper();
 
-    private static final String PROGRAM_RULE_KEY = "programrule";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";
-    private static final String DATA_ELEMENT_KEY = "dataelement";
-    private static final String PROGRAM_INDICATOR_KEY = "programindicator";
-    private static final String PROGRAM_STAGE_KEY = "programstage";
-    private static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
+    private static final String PROGRAM_RULE_KEY = "programRule";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
+    private static final String DATA_ELEMENT_KEY = "dataElement";
+    private static final String PROGRAM_INDICATOR_KEY = "programIndicator";
+    private static final String PROGRAM_STAGE_KEY = "programStage";
+    private static final String PROGRAM_STAGE_SECTION_KEY = "programStageSection";
 
     @Column
     @ForeignKey(
@@ -62,8 +64,9 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntityAttributeFlow trackedEntityAttribute;
@@ -71,8 +74,9 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = DATA_ELEMENT_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     DataElementFlow dataElement;
@@ -80,8 +84,9 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_INDICATOR_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_INDICATOR_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramIndicatorFlow programIndicator;
@@ -89,8 +94,9 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramStageFlow programStage;
@@ -98,8 +104,9 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_SECTION_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_SECTION_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramStageSectionFlow programStageSection;
@@ -200,7 +207,7 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
         this.data = data;
     }
 
-    private static class Mapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
+    private static class ActionMapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
 
         @Override
         public ProgramRuleActionFlow mapToDatabaseEntity(

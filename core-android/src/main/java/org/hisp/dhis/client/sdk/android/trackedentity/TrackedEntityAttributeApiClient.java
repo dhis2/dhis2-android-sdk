@@ -16,9 +16,9 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class TrackedEntityAttributeApiClient implements ITrackedEntityAttributeApiClient {
-    private final ITrackedEntityAttributeApiClientRetrofit trackedEntityAttributeApiClientRetrofit;
+    private final TrackedEntityAttributeApiClientRetrofit trackedEntityAttributeApiClientRetrofit;
 
-    public TrackedEntityAttributeApiClient(ITrackedEntityAttributeApiClientRetrofit trackedEntityAttributeApiClientRetrofit) {
+    public TrackedEntityAttributeApiClient(TrackedEntityAttributeApiClientRetrofit trackedEntityAttributeApiClientRetrofit) {
         this.trackedEntityAttributeApiClientRetrofit = trackedEntityAttributeApiClientRetrofit;
     }
 

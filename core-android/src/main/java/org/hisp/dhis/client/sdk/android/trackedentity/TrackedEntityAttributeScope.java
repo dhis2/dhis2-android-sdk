@@ -28,11 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
@@ -40,76 +36,18 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class TrackedEntityAttributeScope implements ITrackedEntityAttributeScope {
-    private final ITrackedEntityAttributeService trackedEntityAttributeService;
-    private final ITrackedEntityAttributeController trackedEntityAttributeController;
+public interface TrackedEntityAttributeScope {
+    Observable<TrackedEntityAttribute> get(long id);
 
-    public TrackedEntityAttributeScope(ITrackedEntityAttributeService entityAttributeService,
-                                       ITrackedEntityAttributeController controller) {
-        this.trackedEntityAttributeService = entityAttributeService;
-        this.trackedEntityAttributeController = controller;
-    }
+    Observable<TrackedEntityAttribute> get(String uid);
 
-    @Override
-    public Observable<TrackedEntityAttribute> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<TrackedEntityAttribute>() {
-            @Override
-            public TrackedEntityAttribute call() {
-                return trackedEntityAttributeService.get(id);
-            }
-        });
-    }
+    Observable<List<TrackedEntityAttribute>> list();
 
-    @Override
-    public Observable<TrackedEntityAttribute> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<TrackedEntityAttribute>() {
-            @Override
-            public TrackedEntityAttribute call() {
-                return trackedEntityAttributeService.get(uid);
-            }
-        });
-    }
+    Observable<List<TrackedEntityAttribute>> pull();
 
-    @Override
-    public Observable<List<TrackedEntityAttribute>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
-            @Override
-            public List<TrackedEntityAttribute> call() {
-                return trackedEntityAttributeService.list();
-            }
-        });
-    }
+    Observable<List<TrackedEntityAttribute>> pull(Set<String> uids);
 
-    @Override
-    public Observable<List<TrackedEntityAttribute>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<TrackedEntityAttribute>> pull(SyncStrategy syncStrategy);
 
-    @Override
-    public Observable<List<TrackedEntityAttribute>> pull(Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
-
-    @Override
-    public Observable<List<TrackedEntityAttribute>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
-            @Override
-            public List<TrackedEntityAttribute> call() {
-                trackedEntityAttributeController.pull(syncStrategy);
-                return trackedEntityAttributeService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<TrackedEntityAttribute>> pull(final SyncStrategy syncStrategy,
-                                                         final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityAttribute>>() {
-            @Override
-            public List<TrackedEntityAttribute> call() {
-                trackedEntityAttributeController.pull(syncStrategy, uids);
-                return trackedEntityAttributeService.list(uids);
-            }
-        });
-    }
+    Observable<List<TrackedEntityAttribute>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

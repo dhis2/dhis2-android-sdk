@@ -39,8 +39,8 @@ import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
-public final class OptionStore extends AbsIdentifiableObjectStore<Option, OptionFlow> implements
-        IOptionStore {
+public final class OptionStore extends AbsIdentifiableObjectStore<Option, OptionFlow>
+        implements IOptionStore {
 
     public OptionStore() {
         super(OptionFlow.MAPPER);
@@ -50,7 +50,8 @@ public final class OptionStore extends AbsIdentifiableObjectStore<Option, Option
     public List<Option> query(OptionSet optionSet) {
         List<OptionFlow> optionFlows = new Select()
                 .from(OptionFlow.class)
-                .where(OptionFlow_Table.optionset.is(optionSet.getUId()))
+                .where(OptionFlow_Table
+                        .optionSet.is(optionSet.getUId()))
                 .queryList();
         return getMapper().mapToModels(optionFlows);
     }

@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.program.IProgramService;
-import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -40,59 +37,12 @@ import java.util.List;
 
 import rx.Observable;
 
-public class UserProgramScope implements IUserProgramScope {
-    private final IProgramService programService;
-    private final IAssignedProgramsController assignedProgramsController;
+public interface UserProgramScope {
+    Observable<List<Program>> pull() throws ApiException;
 
-    public UserProgramScope(IProgramService programService,
-                            IAssignedProgramsController assignedProgramsController) {
-        this.programService = programService;
-        this.assignedProgramsController = assignedProgramsController;
-    }
+    Observable<List<Program>> pull(SyncStrategy strategy) throws ApiException;
 
-    @Override
-    public Observable<List<Program>> pull() {
-        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
+    Observable<List<Program>> list();
 
-            @Override
-            public List<Program> call() {
-                assignedProgramsController.sync();
-                return programService.list(true);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Program>> pull(final SyncStrategy strategy) throws ApiException {
-        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
-
-            @Override
-            public List<Program> call() {
-                assignedProgramsController.sync(strategy);
-                return programService.list(true);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Program>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
-
-            @Override
-            public List<Program> call() {
-                return programService.list(true);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Program>> list(final List<OrganisationUnit> organisationUnits) {
-        return Observable.create(new DefaultOnSubscribe<List<Program>>() {
-
-            @Override
-            public List<Program> call() {
-                return programService.list(organisationUnits);
-            }
-        });
-    }
+    Observable<List<Program>> list(List<OrganisationUnit> organisationUnits);
 }

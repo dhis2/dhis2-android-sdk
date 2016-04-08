@@ -37,6 +37,9 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
         @UniqueGroup(
@@ -44,6 +47,9 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
+            MAPPER = new AttributeMapper();
+
     static final int UNIQUE_TRACKED_ENTITY_PROGRAM = 1;
     static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
     static final String PROGRAM_KEY = "program";
@@ -51,8 +57,9 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntityAttributeFlow trackedEntityAttribute;
@@ -60,8 +67,9 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramFlow program;
@@ -128,5 +136,73 @@ public final class ProgramTrackedEntityAttributeFlow extends BaseIdentifiableObj
 
     public void setMandatory(boolean mandatory) {
         this.mandatory = mandatory;
+    }
+
+    private static class AttributeMapper
+            extends AbsMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow> {
+
+        @Override
+        public ProgramTrackedEntityAttributeFlow mapToDatabaseEntity(
+                ProgramTrackedEntityAttribute attribute) {
+            if (attribute == null) {
+                return null;
+            }
+
+            ProgramTrackedEntityAttributeFlow attributeFlow =
+                    new ProgramTrackedEntityAttributeFlow();
+            attributeFlow.setId(attribute.getId());
+            attributeFlow.setUId(attribute.getUId());
+            attributeFlow.setCreated(attribute.getCreated());
+            attributeFlow.setLastUpdated(attribute.getLastUpdated());
+            attributeFlow.setName(attribute.getName());
+            attributeFlow.setDisplayName(attribute.getDisplayName());
+            attributeFlow.setAccess(attribute.getAccess());
+            attributeFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToDatabaseEntity(attribute.getTrackedEntityAttribute()));
+            attributeFlow.setProgram(ProgramFlow.MAPPER
+                    .mapToDatabaseEntity(attribute.getProgram()));
+            attributeFlow.setSortOrder(attribute.getSortOrder());
+            attributeFlow.setAllowFutureDate(attribute.isAllowFutureDate());
+            attributeFlow.setDisplayInList(attribute.isDisplayInList());
+            attributeFlow.setMandatory(attribute.isMandatory());
+            return attributeFlow;
+        }
+
+        @Override
+        public ProgramTrackedEntityAttribute mapToModel(
+                ProgramTrackedEntityAttributeFlow attributeFlow) {
+
+            if (attributeFlow == null) {
+                return null;
+            }
+
+            ProgramTrackedEntityAttribute attribute = new ProgramTrackedEntityAttribute();
+            attribute.setId(attributeFlow.getId());
+            attribute.setUId(attributeFlow.getUId());
+            attribute.setCreated(attributeFlow.getCreated());
+            attribute.setLastUpdated(attributeFlow.getLastUpdated());
+            attribute.setName(attributeFlow.getName());
+            attribute.setDisplayName(attributeFlow.getDisplayName());
+            attribute.setAccess(attributeFlow.getAccess());
+            attribute.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToModel(attributeFlow.getTrackedEntityAttribute()));
+            attribute.setProgram(ProgramFlow.MAPPER
+                    .mapToModel(attributeFlow.getProgram()));
+            attribute.setSortOrder(attributeFlow.getSortOrder());
+            attribute.setAllowFutureDate(attributeFlow.isAllowFutureDate());
+            attribute.setDisplayInList(attributeFlow.isDisplayInList());
+            attribute.setMandatory(attributeFlow.isMandatory());
+            return attribute;
+        }
+
+        @Override
+        public Class<ProgramTrackedEntityAttribute> getModelTypeClass() {
+            return ProgramTrackedEntityAttribute.class;
+        }
+
+        @Override
+        public Class<ProgramTrackedEntityAttributeFlow> getDatabaseEntityTypeClass() {
+            return ProgramTrackedEntityAttributeFlow.class;
+        }
     }
 }

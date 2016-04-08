@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.android.dataelement;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import java.util.List;
@@ -40,76 +37,19 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class DataElementScope implements IDataElementScope {
-    private final IDataElementService dataElementService;
-    private final IIdentifiableController<DataElement> dataElementController;
+public interface DataElementScope {
 
-    public DataElementScope(IDataElementService dataElementService,
-                            IIdentifiableController<DataElement> dataElementController) {
-        this.dataElementService = dataElementService;
-        this.dataElementController = dataElementController;
-    }
+    Observable<DataElement> get(String uid);
 
-    @Override
-    public Observable<DataElement> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<DataElement>() {
-            @Override
-            public DataElement call() {
-                return dataElementService.get(uid);
-            }
-        });
-    }
+    Observable<DataElement> get(long id);
 
-    @Override
-    public Observable<DataElement> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<DataElement>() {
-            @Override
-            public DataElement call() {
-                return dataElementService.get(id);
-            }
-        });
-    }
+    Observable<List<DataElement>> list();
 
-    @Override
-    public Observable<List<DataElement>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
-            @Override
-            public List<DataElement> call() {
-                return dataElementService.list();
-            }
-        });
-    }
+    Observable<List<DataElement>> pull();
 
-    @Override
-    public Observable<List<DataElement>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<DataElement>> pull(Set<String> uids);
 
-    @Override
-    public Observable<List<DataElement>> pull(final Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<List<DataElement>> pull(SyncStrategy strategy);
 
-    @Override
-    public Observable<List<DataElement>> pull(final SyncStrategy strategy) {
-        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
-            @Override
-            public List<DataElement> call() {
-                dataElementController.pull(strategy);
-                return dataElementService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<DataElement>> pull(final SyncStrategy strategy,
-                                              final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<DataElement>>() {
-            @Override
-            public List<DataElement> call() {
-                dataElementController.pull(strategy, uids);
-                return dataElementService.list();
-            }
-        });
-    }
+    Observable<List<DataElement>> pull(SyncStrategy strategy, Set<String> uids);
 }

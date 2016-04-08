@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
@@ -41,90 +38,20 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class ProgramStageSectionScope implements IProgramStageSectionScope {
-    private final IProgramStageSectionController programStageSectionController;
-    private final IProgramStageSectionService programStageSectionService;
+public interface ProgramStageSectionScope {
+    Observable<ProgramStageSection> get(String uid);
 
-    public ProgramStageSectionScope(IProgramStageSectionController programStageSectionController,
-                                    IProgramStageSectionService programStageSectionService) {
-        this.programStageSectionController = programStageSectionController;
-        this.programStageSectionService = programStageSectionService;
-    }
+    Observable<ProgramStageSection> get(long id);
 
-    @Override
-    public Observable<List<ProgramStageSection>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<ProgramStageSection>> list();
 
-    @Override
-    public Observable<List<ProgramStageSection>> pull(Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<List<ProgramStageSection>> list(ProgramStage programStage);
 
-    @Override
-    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
+    Observable<List<ProgramStageSection>> pull();
 
-            @Override
-            public List<ProgramStageSection> call() {
-                programStageSectionController.pull(syncStrategy);
-                return programStageSectionService.list();
-            }
-        });
-    }
+    Observable<List<ProgramStageSection>> pull(Set<String> uids);
 
-    @Override
-    public Observable<List<ProgramStageSection>> pull(final SyncStrategy syncStrategy,
-                                                      final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
+    Observable<List<ProgramStageSection>> pull(SyncStrategy syncStrategy);
 
-            @Override
-            public List<ProgramStageSection> call() {
-                programStageSectionController.pull(syncStrategy, uids);
-                return programStageSectionService.list(uids);
-            }
-        });
-    }
-
-    @Override
-    public Observable<ProgramStageSection> get(final String uid) {
-        return Observable.create(new DefaultOnSubscribe<ProgramStageSection>() {
-            @Override
-            public ProgramStageSection call() {
-                return programStageSectionService.get(uid);
-            }
-        });
-    }
-
-    @Override
-    public Observable<ProgramStageSection> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<ProgramStageSection>() {
-
-            @Override
-            public ProgramStageSection call() {
-                return programStageSectionService.get(id);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramStageSection>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
-
-            @Override
-            public List<ProgramStageSection> call() {
-                return programStageSectionService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramStageSection>> list(final ProgramStage programStage) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageSection>>() {
-            @Override
-            public List<ProgramStageSection> call() {
-                return programStageSectionService.list(programStage);
-            }
-        });
-    }
+    Observable<List<ProgramStageSection>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

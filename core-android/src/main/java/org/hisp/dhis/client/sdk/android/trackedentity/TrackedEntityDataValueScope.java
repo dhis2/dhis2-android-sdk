@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
@@ -38,71 +36,16 @@ import java.util.List;
 
 import rx.Observable;
 
-public class TrackedEntityDataValueScope implements ITrackedEntityDataValueScope {
-    private final ITrackedEntityDataValueService mTrackedEntityDataValueService;
+public interface TrackedEntityDataValueScope {
+    Observable<Boolean> save(TrackedEntityDataValue object);
 
-    public TrackedEntityDataValueScope(ITrackedEntityDataValueService entityDataValueService) {
-        this.mTrackedEntityDataValueService = entityDataValueService;
-    }
+    Observable<Boolean> remove(TrackedEntityDataValue object);
 
-    @Override
-    public Observable<TrackedEntityDataValue> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<TrackedEntityDataValue>() {
-            @Override
-            public TrackedEntityDataValue call() {
-                return mTrackedEntityDataValueService.get(id);
-            }
-        });
-    }
+    Observable<List<TrackedEntityDataValue>> list();
 
-    @Override
-    public Observable<List<TrackedEntityDataValue>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityDataValue>>() {
-            @Override
-            public List<TrackedEntityDataValue> call() {
-                return mTrackedEntityDataValueService.list();
-            }
-        });
-    }
+    Observable<List<TrackedEntityDataValue>> list(Event event);
 
-    @Override
-    public Observable<Boolean> save(final TrackedEntityDataValue object) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mTrackedEntityDataValueService.save(object);
-            }
-        });
-    }
+    Observable<TrackedEntityDataValue> get(long id);
 
-    @Override
-    public Observable<Boolean> remove(final TrackedEntityDataValue object) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return mTrackedEntityDataValueService.remove(object);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<TrackedEntityDataValue>> list(final Event event) {
-        return Observable.create(new DefaultOnSubscribe<List<TrackedEntityDataValue>>() {
-            @Override
-            public List<TrackedEntityDataValue> call() {
-                return mTrackedEntityDataValueService.list(event);
-            }
-        });
-    }
-
-    @Override
-    public Observable<TrackedEntityDataValue> get(
-            final Event event, final DataElement dataElement) {
-        return Observable.create(new DefaultOnSubscribe<TrackedEntityDataValue>() {
-            @Override
-            public TrackedEntityDataValue call() {
-                return mTrackedEntityDataValueService.get(event, dataElement);
-            }
-        });
-    }
+    Observable<TrackedEntityDataValue> get(Event event, DataElement dataElement);
 }

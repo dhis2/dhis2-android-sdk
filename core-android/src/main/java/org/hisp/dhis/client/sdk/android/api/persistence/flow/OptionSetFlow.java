@@ -32,8 +32,8 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.android.optionset.OptionSetMapper;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
@@ -65,5 +65,54 @@ public final class OptionSetFlow extends BaseIdentifiableObjectFlow {
 
     public void setOptions(List<OptionFlow> options) {
         this.options = options;
+    }
+
+    private static class OptionSetMapper extends AbsMapper<OptionSet, OptionSetFlow> {
+
+        @Override
+        public OptionSetFlow mapToDatabaseEntity(OptionSet optionSet) {
+            if (optionSet == null) {
+                return null;
+            }
+
+            OptionSetFlow optionSetFlow = new OptionSetFlow();
+            optionSetFlow.setId(optionSet.getId());
+            optionSetFlow.setUId(optionSet.getUId());
+            optionSetFlow.setCreated(optionSet.getCreated());
+            optionSetFlow.setLastUpdated(optionSet.getLastUpdated());
+            optionSetFlow.setName(optionSet.getName());
+            optionSetFlow.setDisplayName(optionSet.getDisplayName());
+            optionSetFlow.setAccess(optionSet.getAccess());
+            optionSetFlow.setVersion(optionSet.getVersion());
+            return optionSetFlow;
+        }
+
+        @Override
+        public OptionSet mapToModel(OptionSetFlow optionSetFlow) {
+            if (optionSetFlow == null) {
+                return null;
+            }
+
+            OptionSet optionSet = new OptionSet();
+            optionSet.setId(optionSetFlow.getId());
+            optionSet.setUId(optionSetFlow.getUId());
+            optionSet.setCreated(optionSetFlow.getCreated());
+            optionSet.setLastUpdated(optionSetFlow.getLastUpdated());
+            optionSet.setName(optionSetFlow.getName());
+            optionSet.setDisplayName(optionSetFlow.getDisplayName());
+            optionSet.setAccess(optionSetFlow.getAccess());
+            optionSet.setVersion(optionSetFlow.getVersion());
+            return optionSet;
+        }
+
+        @Override
+        public Class<OptionSet> getModelTypeClass() {
+            return OptionSet.class;
+        }
+
+        @Override
+        public Class<OptionSetFlow> getDatabaseEntityTypeClass() {
+            return OptionSetFlow.class;
+        }
     }
 }

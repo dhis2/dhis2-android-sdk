@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -42,163 +39,23 @@ import java.util.List;
 import java.util.Set;
 
 import rx.Observable;
-import rx.Subscriber;
 
-public class ProgramIndicatorScope implements IProgramIndicatorScope {
+public interface ProgramIndicatorScope {
+    Observable<ProgramIndicator> get(String uid);
 
-    private final IProgramIndicatorService programIndicatorService;
-    private final IProgramIndicatorController programIndicatorController;
+    Observable<ProgramIndicator> get(long id);
 
-    public ProgramIndicatorScope(IProgramIndicatorService programIndicatorService,
-                                 IProgramIndicatorController programIndicatorController) {
-        this.programIndicatorService = programIndicatorService;
-        this.programIndicatorController = programIndicatorController;
-    }
+    Observable<List<ProgramIndicator>> list();
 
-    @Override
-    public Observable<ProgramIndicator> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<ProgramIndicator>() {
-            @Override
-            public void call(Subscriber<? super ProgramIndicator> subscriber) {
-                try {
-                    ProgramIndicator programIndicator = programIndicatorService.get(uid);
-                    subscriber.onNext(programIndicator);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<ProgramIndicator>> list(Program program);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<List<ProgramIndicator>> list(ProgramStage programStage);
 
-    @Override
-    public Observable<ProgramIndicator> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<ProgramIndicator>() {
-            @Override
-            public void call(Subscriber<? super ProgramIndicator> subscriber) {
-                try {
-                    ProgramIndicator programIndicator = programIndicatorService.get(id);
-                    subscriber.onNext(programIndicator);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<ProgramIndicator>> list(ProgramStageSection programStageSection);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<List<ProgramIndicator>> pull();
 
-    @Override
-    public Observable<List<ProgramIndicator>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<ProgramIndicator>> pull(SyncStrategy syncStrategy);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> list(final Program program) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list
-                            (program);
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> list(final ProgramStage programStage) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list
-                            (programStage);
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> list(final ProgramStageSection programStageSection) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list
-                            (programStageSection);
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    programIndicatorController.pull(syncStrategy);
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramIndicator>> pull(final SyncStrategy syncStrategy,
-                                                   final Set<String> uids) {
-        return Observable.create(new Observable.OnSubscribe<List<ProgramIndicator>>() {
-            @Override
-            public void call(Subscriber<? super List<ProgramIndicator>> subscriber) {
-                try {
-                    programIndicatorController.pull(syncStrategy, uids);
-                    List<ProgramIndicator> programIndicators = programIndicatorService.list();
-                    subscriber.onNext(programIndicators);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<List<ProgramIndicator>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

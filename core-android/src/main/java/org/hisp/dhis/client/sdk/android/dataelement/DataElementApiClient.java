@@ -44,9 +44,9 @@ import retrofit2.Call;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getCollection;
 
 public class DataElementApiClient implements IDataElementApiClient {
-    private final IDataElementApiClientRetrofit dataElementApiClientRetrofit;
+    private final DataElementApiClientRetrofit dataElementApiClientRetrofit;
 
-    public DataElementApiClient(IDataElementApiClientRetrofit dataElementApiClientRetrofit) {
+    public DataElementApiClient(DataElementApiClientRetrofit dataElementApiClientRetrofit) {
         this.dataElementApiClientRetrofit = dataElementApiClientRetrofit;
     }
 

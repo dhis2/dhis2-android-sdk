@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.enrollment;
 
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentService;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -39,215 +37,39 @@ import org.joda.time.DateTime;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscriber;
 
-public class EnrollmentScope implements IEnrollmentScope {
-    private final IEnrollmentService mEnrollmentService;
-    private final IEnrollmentController mEnrollmentController;
+public interface EnrollmentScope {
+    Observable<Boolean> save(Enrollment enrollment);
 
-    public EnrollmentScope(IEnrollmentService enrollmentService, IEnrollmentController
-            enrollmentController) {
-        this.mEnrollmentService = enrollmentService;
-        this.mEnrollmentController = enrollmentController;
-    }
+    Observable<Boolean> remove(Enrollment enrollment);
 
-    @Override
-    public Observable<Boolean> save(final Enrollment enrollment) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mEnrollmentService.save(enrollment);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<Enrollment> create(OrganisationUnit organisationUnit,
+                                  TrackedEntityInstance trackedEntityInstance,
+                                  Program program, boolean followUp, DateTime dateOfEnrollment,
+                                  DateTime dateOfIncident);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<Enrollment> get(long id);
 
-    @Override
-    public Observable<Boolean> remove(final Enrollment enrollment) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    boolean status = mEnrollmentService.remove(enrollment);
-                    subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<Enrollment> get(String uid);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
 
-    @Override
-    public Observable<Enrollment> create(final OrganisationUnit organisationUnit, final
-    TrackedEntityInstance trackedEntityInstance, final Program program, final boolean followUp,
-                                         final DateTime dateOfEnrollment, final DateTime
-                                                     dateOfIncident) {
-        return Observable.create(new Observable.OnSubscribe<Enrollment>() {
-            @Override
-            public void call(Subscriber<? super Enrollment> subscriber) {
-                try {
-                    Enrollment enrollment = mEnrollmentService.create(organisationUnit,
-                            trackedEntityInstance, program, followUp, dateOfEnrollment,
-                            dateOfIncident);
-                    subscriber.onNext(enrollment);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<Enrollment>> list();
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<List<Enrollment>> list(Program program, TrackedEntityInstance trackedEntityInstance);
 
-    @Override
-    public Observable<Enrollment> get(final long id) {
-        return Observable.create(new Observable.OnSubscribe<Enrollment>() {
-            @Override
-            public void call(Subscriber<? super Enrollment> subscriber) {
-                try {
-                    Enrollment enrollment = mEnrollmentService.get(id);
-                    subscriber.onNext(enrollment);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
+    Observable<List<Enrollment>> list(TrackedEntityInstance trackedEntityInstance);
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<List<Enrollment>> list(Program program, OrganisationUnit organisationUnit);
 
-    @Override
-    public Observable<Enrollment> get(final String uid) {
-        return Observable.create(new Observable.OnSubscribe<Enrollment>() {
-            @Override
-            public void call(Subscriber<? super Enrollment> subscriber) {
-                try {
-                    Enrollment enrollment = mEnrollmentService.get(uid);
-                    subscriber.onNext(enrollment);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    Observable<Enrollment> getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
+                                               OrganisationUnit organisationUnit, Program program);
 
-    @Override
-    public Observable<List<Enrollment>> list() {
-        return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
-            @Override
-            public void call(Subscriber<? super List<Enrollment>> subscriber) {
-                try {
-                    List<Enrollment> enrollments = mEnrollmentService.list();
-                    subscriber.onNext(enrollments);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
 
-                subscriber.onCompleted();
-            }
-        });
-    }
+    /**
+     * Sends all local enrollment changes to server
+     */
+    Observable<Boolean> send();
 
-    @Override
-    public Observable<List<Enrollment>> list(final Program program, final TrackedEntityInstance
-            trackedEntityInstance) {
-        return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
-            @Override
-            public void call(Subscriber<? super List<Enrollment>> subscriber) {
-                try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(program,
-                            trackedEntityInstance);
-                    subscriber.onNext(enrollments);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Enrollment>> list(final TrackedEntityInstance trackedEntityInstance) {
-        return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
-            @Override
-            public void call(Subscriber<? super List<Enrollment>> subscriber) {
-                try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(trackedEntityInstance);
-                    subscriber.onNext(enrollments);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<Enrollment>> list(final Program program, final OrganisationUnit
-            organisationUnit) {
-        return Observable.create(new Observable.OnSubscribe<List<Enrollment>>() {
-            @Override
-            public void call(Subscriber<? super List<Enrollment>> subscriber) {
-                try {
-                    List<Enrollment> enrollments = mEnrollmentService.list(program,
-                            organisationUnit);
-                    subscriber.onNext(enrollments);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Enrollment> getActiveEnrollment(final TrackedEntityInstance
-                                                                  trackedEntityInstance, final
-    OrganisationUnit organisationUnit, final Program program) {
-        return Observable.create(new Observable.OnSubscribe<Enrollment>() {
-            @Override
-            public void call(Subscriber<? super Enrollment> subscriber) {
-                try {
-                    Enrollment enrollment = mEnrollmentService.getActiveEnrollment
-                            (trackedEntityInstance, organisationUnit, program);
-                    subscriber.onNext(enrollment);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
-
-    @Override
-    public Observable<Boolean> send() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-            @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    mEnrollmentController.sync();
-//                    bool status = mEnrollmentController.pull() subscriber.onNext(status);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
-            }
-        });
-    }
 
 }

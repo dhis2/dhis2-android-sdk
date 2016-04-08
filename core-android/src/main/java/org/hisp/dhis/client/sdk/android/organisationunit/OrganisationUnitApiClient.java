@@ -45,9 +45,9 @@ import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getColle
 
 // TODO add parent organisation unit support
 public class OrganisationUnitApiClient implements IOrganisationUnitApiClient {
-    private final IOrganisationUnitApiClientRetrofit unitApiClientRetrofit;
+    private final OrganisationUnitApiClientRetrofit unitApiClientRetrofit;
 
-    public OrganisationUnitApiClient(IOrganisationUnitApiClientRetrofit unitApiClientRetrofit) {
+    public OrganisationUnitApiClient(OrganisationUnitApiClientRetrofit unitApiClientRetrofit) {
         this.unitApiClientRetrofit = unitApiClientRetrofit;
     }
 

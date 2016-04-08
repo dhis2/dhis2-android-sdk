@@ -28,59 +28,18 @@
 
 package org.hisp.dhis.client.sdk.android.organisationunit;
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
-import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
 import rx.Observable;
 
-public class UserOrganisationUnitScope implements IUserOrganisationUnitScope {
-    private final IOrganisationUnitService organisationUnitService;
-    private final IAssignedOrganisationUnitsController unitsController;
+public interface UserOrganisationUnitScope {
+    Observable<List<OrganisationUnit>> pull() throws ApiException;
 
-    public UserOrganisationUnitScope(IOrganisationUnitService organisationUnitService,
-                                     IAssignedOrganisationUnitsController unitsController) {
-        this.organisationUnitService = organisationUnitService;
-        this.unitsController = unitsController;
-    }
+    Observable<List<OrganisationUnit>> pull(SyncStrategy strategy) throws ApiException;
 
-    @Override
-    public Observable<List<OrganisationUnit>> pull() throws ApiException {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-
-            @Override
-            public List<OrganisationUnit> call() {
-                unitsController.sync();
-                return organisationUnitService.list(true);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<OrganisationUnit>> pull(final SyncStrategy strat) throws ApiException {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-
-            @Override
-            public List<OrganisationUnit> call() {
-                unitsController.sync(strat);
-                return organisationUnitService.list(true);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<OrganisationUnit>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<OrganisationUnit>>() {
-
-            @Override
-            public List<OrganisationUnit> call() {
-                return organisationUnitService.list(true);
-            }
-        });
-    }
+    Observable<List<OrganisationUnit>> list();
 }

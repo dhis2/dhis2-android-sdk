@@ -29,10 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -43,102 +40,23 @@ import java.util.Set;
 
 import rx.Observable;
 
-public class ProgramStageDataElementScope implements IProgramStageDataElementScope {
-    private final IProgramStageDataElementService programStageDataElementService;
-    private final IProgramStageDataElementController programStageDataElementController;
+public interface ProgramStageDataElementScope {
 
-    public ProgramStageDataElementScope(
-            IProgramStageDataElementService programStageDataElementService,
-            IProgramStageDataElementController programStageDataElementController) {
-        this.programStageDataElementService = programStageDataElementService;
-        this.programStageDataElementController = programStageDataElementController;
+    Observable<ProgramStageDataElement> get(long id);
 
-    }
+    Observable<List<ProgramStageDataElement>> list();
 
-    @Override
-    public Observable<List<ProgramStageDataElement>> pull() {
-        return pull(SyncStrategy.DEFAULT);
-    }
+    Observable<List<ProgramStageDataElement>> list(ProgramStage programStage);
 
-    @Override
-    public Observable<List<ProgramStageDataElement>> pull(Set<String> uids) {
-        return pull(SyncStrategy.DEFAULT, uids);
-    }
+    Observable<List<ProgramStageDataElement>> list(ProgramStageSection programStageSection);
 
-    @Override
-    public Observable<List<ProgramStageDataElement>> pull(final SyncStrategy syncStrategy,
-                                                          final Set<String> uids) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
+    Observable<ProgramStageDataElement> list(ProgramStage programStage, DataElement dataElement);
 
-            @Override
-            public List<ProgramStageDataElement> call() {
-                programStageDataElementController.pull(syncStrategy, uids);
-                return programStageDataElementService.list(uids);
-            }
-        });
-    }
+    Observable<List<ProgramStageDataElement>> pull();
 
-    @Override
-    public Observable<List<ProgramStageDataElement>> pull(final SyncStrategy syncStrategy) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
+    Observable<List<ProgramStageDataElement>> pull(Set<String> uids);
 
-            @Override
-            public List<ProgramStageDataElement> call() {
-                programStageDataElementController.pull(syncStrategy);
-                return programStageDataElementService.list();
-            }
-        });
-    }
+    Observable<List<ProgramStageDataElement>> pull(SyncStrategy syncStrategy);
 
-    @Override
-    public Observable<ProgramStageDataElement> get(final long id) {
-        return Observable.create(new DefaultOnSubscribe<ProgramStageDataElement>() {
-            @Override
-            public ProgramStageDataElement call() {
-                return programStageDataElementService.get(id);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramStageDataElement>> list() {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
-            @Override
-            public List<ProgramStageDataElement> call() {
-                return programStageDataElementService.list();
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramStageDataElement>> list(final ProgramStage programStage) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
-            @Override
-            public List<ProgramStageDataElement> call() {
-                return programStageDataElementService.list(programStage);
-            }
-        });
-    }
-
-    @Override
-    public Observable<ProgramStageDataElement> list(final ProgramStage programStage,
-                                                    final DataElement dataElement) {
-        return Observable.create(new DefaultOnSubscribe<ProgramStageDataElement>() {
-            @Override
-            public ProgramStageDataElement call() {
-                return programStageDataElementService.query(programStage, dataElement);
-            }
-        });
-    }
-
-    @Override
-    public Observable<List<ProgramStageDataElement>> list(
-            final ProgramStageSection programStageSection) {
-        return Observable.create(new DefaultOnSubscribe<List<ProgramStageDataElement>>() {
-            @Override
-            public List<ProgramStageDataElement> call() {
-                return programStageDataElementService.list(programStageSection);
-            }
-        });
-    }
+    Observable<List<ProgramStageDataElement>> pull(SyncStrategy syncStrategy, Set<String> uids);
 }

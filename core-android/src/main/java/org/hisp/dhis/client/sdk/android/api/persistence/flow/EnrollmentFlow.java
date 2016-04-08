@@ -36,14 +36,19 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.common.Access;
+import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.joda.time.DateTime;
 
 import java.util.List;
 
 @Table(database = DbDhis.class)
 public final class EnrollmentFlow extends BaseModelFlow {
-    final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
+    public static final Mapper<Enrollment, EnrollmentFlow> MAPPER = new EnrollmentMapper();
+
+    private final static String TRACKED_ENTITY_INSTANCE_KEY = "tei";
 
     @Column
     @Unique
@@ -219,5 +224,68 @@ public final class EnrollmentFlow extends BaseModelFlow {
     public void setTrackedEntityAttributeValues(
             List<TrackedEntityAttributeValueFlow> trackedEntityAttributeValues) {
         this.trackedEntityAttributeValues = trackedEntityAttributeValues;
+    }
+
+    private static class EnrollmentMapper extends AbsMapper<Enrollment, EnrollmentFlow> {
+
+        @Override
+        public EnrollmentFlow mapToDatabaseEntity(Enrollment enrollment) {
+            if (enrollment == null) {
+                return null;
+            }
+
+            EnrollmentFlow enrollmentFlow = new EnrollmentFlow();
+            enrollmentFlow.setId(enrollment.getId());
+            enrollmentFlow.setEnrollmentUid(enrollment.getUId());
+            enrollmentFlow.setOrgUnit(enrollment.getOrgUnit());
+            enrollmentFlow.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
+                    .mapToDatabaseEntity(enrollment.getTrackedEntityInstance()));
+            enrollmentFlow.setProgram(enrollment.getProgram());
+            enrollmentFlow.setDateOfEnrollment(enrollment.getDateOfEnrollment());
+            enrollmentFlow.setDateOfIncident(enrollment.getDateOfIncident());
+            enrollmentFlow.setFollowup(enrollment.isFollowup());
+            enrollmentFlow.setStatus(enrollment.getStatus());
+            enrollmentFlow.setName(enrollment.getName());
+            enrollmentFlow.setDisplayName(enrollment.getDisplayName());
+            enrollmentFlow.setCreated(enrollment.getCreated());
+            enrollmentFlow.setLastUpdated(enrollment.getLastUpdated());
+            enrollmentFlow.setAccess(enrollment.getAccess());
+            return enrollmentFlow;
+        }
+
+        @Override
+        public Enrollment mapToModel(EnrollmentFlow enrollmentFlow) {
+            if (enrollmentFlow == null) {
+                return null;
+            }
+
+            Enrollment enrollment = new Enrollment();
+            enrollment.setId(enrollmentFlow.getId());
+            enrollment.setUId(enrollmentFlow.getEnrollmentUid());
+            enrollment.setOrgUnit(enrollmentFlow.getOrgUnit());
+            enrollment.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
+                    .mapToModel(enrollmentFlow.getTrackedEntityInstance()));
+            enrollment.setProgram(enrollmentFlow.getProgram());
+            enrollment.setDateOfEnrollment(enrollmentFlow.getDateOfEnrollment());
+            enrollment.setDateOfIncident(enrollmentFlow.getDateOfIncident());
+            enrollment.setFollowup(enrollmentFlow.isFollowup());
+            enrollment.setStatus(enrollmentFlow.getStatus());
+            enrollment.setName(enrollmentFlow.getName());
+            enrollment.setDisplayName(enrollmentFlow.getDisplayName());
+            enrollment.setCreated(enrollmentFlow.getCreated());
+            enrollment.setLastUpdated(enrollmentFlow.getLastUpdated());
+            enrollment.setAccess(enrollmentFlow.getAccess());
+            return enrollment;
+        }
+
+        @Override
+        public Class<Enrollment> getModelTypeClass() {
+            return Enrollment.class;
+        }
+
+        @Override
+        public Class<EnrollmentFlow> getDatabaseEntityTypeClass() {
+            return EnrollmentFlow.class;
+        }
     }
 }

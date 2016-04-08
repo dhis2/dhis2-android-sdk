@@ -28,51 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
+import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
+public interface UserAccountService extends Service, IUpdate<UserAccount>, ISave<UserAccount> {
+    UserAccount getCurrentUserAccount();
 
-public class UserAccountService implements IUserAccountService {
-    private final UserAccountStore userAccountStore;
-
-    public UserAccountService(UserAccountStore userAccountStore) {
-        this.userAccountStore = userAccountStore;
-    }
-
-    @Override
-    public UserAccount getCurrentUserAccount() {
-        List<UserAccount> userAccounts = userAccountStore.queryAll();
-
-        if (userAccounts != null && !userAccounts.isEmpty()) {
-            return userAccounts.get(0);
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean save(UserAccount object) {
-        return userAccountStore.save(object);
-    }
-
-    @Override
-    public boolean update(UserAccount object) {
-        return userAccountStore.update(object);
-    }
-
-    @Override
-    public User toUser(UserAccount userAccount) {
-        Preconditions.isNull(userAccount, "userAccount must not be null");
-
-        User user = new User();
-        user.setUId(userAccount.getUId());
-        user.setAccess(userAccount.getAccess());
-        user.setCreated(userAccount.getCreated());
-        user.setLastUpdated(userAccount.getLastUpdated());
-        user.setName(userAccount.getName());
-        user.setDisplayName(userAccount.getDisplayName());
-        return user;
-    }
+    User toUser(UserAccount userAccount);
 }

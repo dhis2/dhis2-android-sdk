@@ -42,7 +42,7 @@ import java.util.Map;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class TrackedEntityDataValueService2 implements ITrackedEntityDataValueService {
+public class TrackedEntityDataValueService2 implements TrackedEntityDataValueService {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final EventStore eventStore;
     private final StateStore stateStore;

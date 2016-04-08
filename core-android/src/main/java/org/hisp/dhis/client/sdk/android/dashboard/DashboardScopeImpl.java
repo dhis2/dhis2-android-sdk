@@ -30,8 +30,8 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardController;
-import org.hisp.dhis.client.sdk.core.dashboard.IDashboardService;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardController;
+import org.hisp.dhis.client.sdk.core.dashboard.DashboardService;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
@@ -40,11 +40,11 @@ import java.util.List;
 import rx.Observable;
 
 public class DashboardScopeImpl implements DashboardScope {
-    private final IDashboardService dashboardService;
-    private final IDashboardController dashboardController;
+    private final DashboardService dashboardService;
+    private final DashboardController dashboardController;
 
-    public DashboardScopeImpl(IDashboardService dashboardService,
-                              IDashboardController dashboardController) {
+    public DashboardScopeImpl(DashboardService dashboardService,
+                              DashboardController dashboardController) {
         this.dashboardService = dashboardService;
         this.dashboardController = dashboardController;
     }

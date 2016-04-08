@@ -28,53 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-public class InterpretationElementService implements IInterpretationElementService {
-
-    public InterpretationElementService() {
-        // empty constructor
-    }
-
-    /**
-     * Factory method which allows to create InterpretationElement
-     * by using DashboardElement as main source of data.
-     *
-     * @param interpretation   Interpretation to which we will assign interpretation element
-     * @param dashboardElement DashboardElement from which we want to create interpretation element.
-     * @return new InterpretationElement
-     */
-    @Override
-    public InterpretationElement create(Interpretation interpretation, DashboardElement
-            dashboardElement,
-                                        String mimeType) {
-        Preconditions.isNull(interpretation, "interpretation must not be null");
-        Preconditions.isNull(dashboardElement, "dashboardElement must not be null");
-        Preconditions.isNull(mimeType, "mimeType must not be null");
-
-        switch (mimeType) {
-            case DashboardContent.TYPE_CHART:
-            case DashboardContent.TYPE_MAP:
-            case DashboardContent.TYPE_REPORT_TABLE:
-                break;
-            default:
-                throw new IllegalArgumentException(mimeType + " is unsupported by interpretations" +
-                        ".");
-        }
-
-        InterpretationElement interpretationElement = new InterpretationElement();
-        interpretationElement.setUId(dashboardElement.getUId());
-        interpretationElement.setName(dashboardElement.getName());
-        interpretationElement.setDisplayName(dashboardElement.getDisplayName());
-        interpretationElement.setCreated(dashboardElement.getCreated());
-        interpretationElement.setLastUpdated(dashboardElement.getLastUpdated());
-        interpretationElement.setAccess(dashboardElement.getAccess());
-        interpretationElement.setType(mimeType);
-        interpretationElement.setInterpretation(interpretation);
-        return interpretationElement;
-    }
+public interface InterpretationElementService extends Service {
+    InterpretationElement create(Interpretation interpretation, DashboardElement
+            dashboardElement, String mimeType);
 }

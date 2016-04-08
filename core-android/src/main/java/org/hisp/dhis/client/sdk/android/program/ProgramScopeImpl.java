@@ -31,8 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramController;
-import org.hisp.dhis.client.sdk.core.program.IProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -42,10 +42,10 @@ import java.util.Set;
 import rx.Observable;
 
 public class ProgramScopeImpl implements ProgramScope {
-    private final IProgramService programService;
-    private final IProgramController programController;
+    private final ProgramService programService;
+    private final ProgramController programController;
 
-    public ProgramScopeImpl(IProgramService programService, IProgramController programController) {
+    public ProgramScopeImpl(ProgramService programService, ProgramController programController) {
         this.programService = programService;
         this.programController = programController;
     }

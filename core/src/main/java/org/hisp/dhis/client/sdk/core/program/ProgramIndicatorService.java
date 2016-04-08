@@ -28,64 +28,26 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class ProgramIndicatorService implements IProgramIndicatorService {
-    private ProgramIndicatorStore programIndicatorStore;
+public interface ProgramIndicatorService extends Service, ISave<ProgramIndicator>,
+        IRemove<ProgramIndicator>,
+        IGet<ProgramIndicator>, IGetUid<ProgramIndicator>, IList<ProgramIndicator> {
 
-    public ProgramIndicatorService(ProgramIndicatorStore programIndicatorStore) {
-        this.programIndicatorStore = programIndicatorStore;
-    }
+    List<ProgramIndicator> list(Program program);
 
-    @Override
-    public ProgramIndicator get(long id) {
-        return programIndicatorStore.queryById(id);
-    }
+    List<ProgramIndicator> list(ProgramStage programStage);
 
-    @Override
-    public ProgramIndicator get(String uid) {
-        return programIndicatorStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramIndicator> list() {
-        return programIndicatorStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(ProgramIndicator object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programIndicatorStore.delete(object);
-    }
-
-    @Override
-    public boolean save(ProgramIndicator object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programIndicatorStore.save(object);
-    }
-
-    @Override
-    public List<ProgramIndicator> list(Program program) {
-        Preconditions.isNull(program, "Object must not be null");
-        return programIndicatorStore.query(program);
-    }
-
-    @Override
-    public List<ProgramIndicator> list(ProgramStage programStage) {
-        Preconditions.isNull(programStage, "Object must not be null");
-        return programIndicatorStore.query(programStage);
-    }
-
-    @Override
-    public List<ProgramIndicator> list(ProgramStageSection programStageSection) {
-        Preconditions.isNull(programStageSection, "Object must not be null");
-        return programIndicatorStore.query(programStageSection);
-    }
+    List<ProgramIndicator> list(ProgramStageSection programStageSection);
 }

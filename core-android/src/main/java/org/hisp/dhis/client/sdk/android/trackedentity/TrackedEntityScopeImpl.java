@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityService;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 import java.util.List;
@@ -37,9 +37,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class TrackedEntityScopeImpl implements TrackedEntityScope {
-    private ITrackedEntityService mTrackedEntityService;
+    private TrackedEntityService mTrackedEntityService;
 
-    public TrackedEntityScopeImpl(ITrackedEntityService trackedEntityService) {
+    public TrackedEntityScopeImpl(TrackedEntityService trackedEntityService) {
         this.mTrackedEntityService = trackedEntityService;
     }
 

@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -49,17 +49,17 @@ import java.util.Queue;
 import java.util.Set;
 
 public final class TrackedEntityController implements IdentifiableController<TrackedEntity> {
-    private final ITrackedEntityApiClient trackedEntityApiClient;
+    private final TrackedEntityApiClient trackedEntityApiClient;
     private final TransactionManager transactionManager;
     private final LastUpdatedPreferences lastUpdatedPreferences;
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final SystemInfoApiClient systemInfoApiClient;
     private final IdentifiableObjectStore<TrackedEntity> trackedEntityStore;
 
-    public TrackedEntityController(ITrackedEntityApiClient trackedEntityApiClient,
+    public TrackedEntityController(TrackedEntityApiClient trackedEntityApiClient,
                                    TransactionManager transactionManager,
                                    LastUpdatedPreferences lastUpdatedPreferences,
                                    IdentifiableObjectStore<TrackedEntity> trackedEntityStore,
-                                   ISystemInfoApiClient systemInfoApiClient) {
+                                   SystemInfoApiClient systemInfoApiClient) {
         this.trackedEntityApiClient = trackedEntityApiClient;
         this.transactionManager = transactionManager;
         this.lastUpdatedPreferences = lastUpdatedPreferences;

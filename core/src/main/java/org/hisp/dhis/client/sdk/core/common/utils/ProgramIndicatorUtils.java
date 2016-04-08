@@ -31,12 +31,12 @@ package org.hisp.dhis.client.sdk.core.common.utils;
 import org.apache.commons.jexl2.JexlException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Precision;
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.constant.ConstantService;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
@@ -67,20 +67,20 @@ import java.util.regex.Matcher;
 public class ProgramIndicatorUtils {
     private static final String NULL_REPLACEMENT = "null";
 
-    private final IConstantService constantService;
-    private final IDataElementService dataElementService;
-    private final ITrackedEntityAttributeService trackedEntityAttributeService;
-    private final IProgramService programService;
-    private final IProgramStageService programStageService;
-    private final IProgramStageDataElementService programStageDataElementService;
+    private final ConstantService constantService;
+    private final DataElementService dataElementService;
+    private final TrackedEntityAttributeService trackedEntityAttributeService;
+    private final ProgramService programService;
+    private final ProgramStageService programStageService;
+    private final ProgramStageDataElementService programStageDataElementService;
     private final ExpressionUtils expressionUtils;
 
-    public ProgramIndicatorUtils(IConstantService constantService, IDataElementService
+    public ProgramIndicatorUtils(ConstantService constantService, DataElementService
             dataElementService,
-                                 ITrackedEntityAttributeService trackedEntityAttributeService,
-                                 IProgramService programService, IProgramStageService
+                                 TrackedEntityAttributeService trackedEntityAttributeService,
+                                 ProgramService programService, ProgramStageService
                                          programStageService,
-                                 IProgramStageDataElementService programStageDataElementService,
+                                 ProgramStageDataElementService programStageDataElementService,
                                  ExpressionUtils expressionUtils) {
         this.constantService = constantService;
         this.dataElementService = dataElementService;

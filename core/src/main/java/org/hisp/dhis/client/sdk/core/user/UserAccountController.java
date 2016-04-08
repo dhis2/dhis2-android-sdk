@@ -32,10 +32,10 @@ import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public final class UserAccountController implements IUserAccountController {
-    private final IUserApiClient userApiClient;
+    private final UserApiClient userApiClient;
     private final UserAccountStore userAccountStore;
 
-    public UserAccountController(IUserApiClient userApiClient, UserAccountStore
+    public UserAccountController(UserApiClient userApiClient, UserAccountStore
             userAccountStore) {
         this.userApiClient = userApiClient;
         this.userAccountStore = userAccountStore;

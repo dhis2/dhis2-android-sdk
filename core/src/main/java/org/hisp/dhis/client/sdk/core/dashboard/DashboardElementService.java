@@ -28,106 +28,23 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class DashboardElementService implements IDashboardElementService {
-    private final StateStore stateStore;
-    private final DashboardElementStore dashboardElementStore;
-    private final IDashboardItemService dashboardItemService;
+public interface DashboardElementService extends Service, IRemove<DashboardElement>,
+        IList<DashboardElement> {
 
-    public DashboardElementService(StateStore stateStore, DashboardElementStore elementStore,
-                                   IDashboardItemService dashboardItemService) {
-        this.stateStore = stateStore;
-        this.dashboardElementStore = elementStore;
-        this.dashboardItemService = dashboardItemService;
-    }
+    DashboardElement create(DashboardItem dashboardItem, DashboardContent dashboardContent);
 
-    @Override
-    public DashboardElement create(DashboardItem dashboardItem, DashboardContent dashboardContent) {
-        Preconditions.isNull(dashboardItem, "DashboardItem object must not be null");
-        Preconditions.isNull(dashboardContent, "DashboardContent object must not be null");
-
-        String uid = CodeGenerator.generateCode();
-        Access access = Access.createDefaultAccess();
-
-        DashboardElement dashboardElement = new DashboardElement();
-        dashboardElement.setUId(uid);
-        dashboardElement.setName(dashboardContent.getName());
-        dashboardElement.setDisplayName(dashboardContent.getDisplayName());
-        dashboardElement.setCreated(dashboardContent.getCreated());
-        dashboardElement.setLastUpdated(dashboardContent.getLastUpdated());
-        dashboardElement.setAccess(access);
-        dashboardElement.setDashboardItem(dashboardItem);
-
-        return dashboardElement;
-    }
-
-    @Override
-    public boolean remove(DashboardElement object) {
-        Preconditions.isNull(object, "DashboardElement object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        boolean isRemoved = false;
-        if (action != null) {
-            switch (action) {
-                case SYNCED:
-                case TO_UPDATE: {
-                    /* for SYNCED and TO_UPDATE states we need only to mark model as removed */
-                    isRemoved = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                    break;
-                }
-                case TO_POST: {
-                    isRemoved = dashboardElementStore.delete(object);
-                    break;
-                }
-                case TO_DELETE: {
-                    isRemoved = false;
-                    break;
-                }
-            }
-        }
-
-        if (isRemoved && !(dashboardItemService.countElements(object.getDashboardItem()) > 1)) {
-            isRemoved = dashboardItemService.remove(object.getDashboardItem());
-        }
-
-        return isRemoved;
-    }
-
-    @Override
-    public List<DashboardElement> list() {
-        return stateStore.queryModelsWithActions(DashboardElement.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public List<DashboardElement> list(DashboardItem dashboardItem) {
-        Preconditions.isNull(dashboardItem, "DashboardItem object must not be null");
-
-        List<DashboardElement> allDashboardElements = dashboardElementStore.query
-                (dashboardItem);
-        Map<Long, Action> actionMap = stateStore.queryActionsForModel(DashboardElement.class);
-
-        List<DashboardElement> dashboardElements = new ArrayList<>();
-        for (DashboardElement dashboardElement : allDashboardElements) {
-            Action action = actionMap.get(dashboardElement.getId());
-
-            if (!Action.TO_DELETE.equals(action)) {
-                dashboardElements.add(dashboardElement);
-            }
-        }
-
-        return dashboardElements;
-    }
+    /**
+     * {@inheritDoc}
+     */
+    List<DashboardElement> list(DashboardItem dashboardItem);
 }

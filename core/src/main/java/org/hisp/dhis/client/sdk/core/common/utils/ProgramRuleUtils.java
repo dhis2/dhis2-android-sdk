@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common.utils;
 
 import org.apache.commons.jexl2.JexlException;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
@@ -46,11 +46,11 @@ public class ProgramRuleUtils {
 
     private static final Pattern CONDITION_PATTERN = Pattern.compile("([#AV])\\{(.+?)\\}");
 
-    private final IProgramRuleVariableService programRuleVariableService;
+    private final ProgramRuleVariableService programRuleVariableService;
     private final VariableUtils variableUtils;
     private final ExpressionUtils expressionUtils;
 
-    public ProgramRuleUtils(IProgramRuleVariableService programRuleVariableService, VariableUtils
+    public ProgramRuleUtils(ProgramRuleVariableService programRuleVariableService, VariableUtils
             variableUtils, ExpressionUtils expressionUtils) {
         this.programRuleVariableService = programRuleVariableService;
         this.variableUtils = variableUtils;

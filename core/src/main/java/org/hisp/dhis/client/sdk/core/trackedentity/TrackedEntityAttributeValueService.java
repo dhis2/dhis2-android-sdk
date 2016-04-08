@@ -28,160 +28,27 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class TrackedEntityAttributeValueService implements ITrackedEntityAttributeValueService {
+public interface TrackedEntityAttributeValueService extends Service,
+        ISave<TrackedEntityAttributeValue>, IRemove<TrackedEntityAttributeValue>,
+        IGet<TrackedEntityAttributeValue>, IList<TrackedEntityAttributeValue> {
 
-    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-    private StateStore stateStore;
+    TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance,
+                                    TrackedEntityAttribute trackedEntityAttribute);
 
-    public TrackedEntityAttributeValueService(TrackedEntityAttributeValueStore
-                                                      trackedEntityAttributeValueStore,
-                                              StateStore stateStore) {
-        this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
-        this.stateStore = stateStore;
-    }
+    List<TrackedEntityAttributeValue> list(TrackedEntityInstance trackedEntityInstance);
 
-    @Override
-    public TrackedEntityAttributeValue get(TrackedEntityInstance trackedEntityInstance,
-                                           TrackedEntityAttribute trackedEntityAttribute) {
-        Preconditions.isNull(trackedEntityInstance, "Object must not be null");
-        Preconditions.isNull(trackedEntityAttribute, "Object must not be null");
+    List<TrackedEntityAttributeValue> list(Enrollment enrollment);
 
-        Action action = stateStore.queryActionForModel(trackedEntityInstance);
-        Action actionForTrackedEntityAttribute = stateStore.queryActionForModel
-                (trackedEntityAttribute);
-
-        if (!Action.TO_DELETE.equals(action) || !Action.TO_DELETE.equals
-                (actionForTrackedEntityAttribute)) {
-            return trackedEntityAttributeValueStore.query(trackedEntityInstance,
-                    trackedEntityAttribute);
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityAttributeValue> list(TrackedEntityInstance trackedEntityInstance) {
-        Preconditions.isNull(trackedEntityInstance, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(trackedEntityInstance);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityAttributeValueStore.query(trackedEntityInstance);
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityAttributeValue> list(Enrollment enrollment) {
-        Preconditions.isNull(enrollment, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(enrollment);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityAttributeValueStore.query(enrollment);
-        }
-
-        return null;
-    }
-
-    @Override
-    public TrackedEntityAttributeValue get(long id) {
-        TrackedEntityAttributeValue trackedEntityAttributeValue =
-                trackedEntityAttributeValueStore.queryById(id);
-
-        if (trackedEntityAttributeValue != null) {
-            Action action = stateStore.queryActionForModel(trackedEntityAttributeValue);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return trackedEntityAttributeValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityAttributeValue> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityAttributeValue.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public boolean remove(TrackedEntityAttributeValue object) {
-        Preconditions.isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = trackedEntityAttributeValueStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
-    }
-
-    @Override
-    public boolean save(TrackedEntityAttributeValue object) {
-        Preconditions.isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            boolean status = trackedEntityAttributeValueStore.save(object);
-
-            if (status) {
-                status = stateStore.saveActionForModel(object, Action.TO_POST);
-            }
-
-            return status;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case TO_POST:
-            case TO_UPDATE: {
-                status = trackedEntityAttributeValueStore.save(object);
-                break;
-            }
-            case SYNCED: {
-                status = trackedEntityAttributeValueStore.save(object);
-
-                if (status) {
-                    status = stateStore.saveActionForModel(object, Action.TO_UPDATE);
-                }
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-
-        }
-
-        return status;
-    }
 }

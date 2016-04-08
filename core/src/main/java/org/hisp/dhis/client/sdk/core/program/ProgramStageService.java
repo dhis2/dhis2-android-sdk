@@ -28,44 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
-import java.util.Set;
 
-public class ProgramStageService implements IProgramStageService {
-    private final ProgramStageStore programStageStore;
+public interface ProgramStageService extends Service, IGet<ProgramStage>, IGetUid<ProgramStage>,
+        IList<ProgramStage>, IListUids<ProgramStage> {
 
-    public ProgramStageService(ProgramStageStore programStageStore) {
-        this.programStageStore = programStageStore;
-    }
-
-    @Override
-    public List<ProgramStage> list(Program program) {
-        Preconditions.isNull(program, "Object must not be null");
-
-        return programStageStore.query(program);
-    }
-
-    @Override
-    public ProgramStage get(long id) {
-        return programStageStore.queryById(id);
-    }
-
-    @Override
-    public ProgramStage get(String uid) {
-        return programStageStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramStage> list() {
-        return programStageStore.queryAll();
-    }
-
-    @Override
-    public List<ProgramStage> list(Set<String> uids) {
-        return programStageStore.queryByUids(uids);
-    }
+    List<ProgramStage> list(Program program);
 }

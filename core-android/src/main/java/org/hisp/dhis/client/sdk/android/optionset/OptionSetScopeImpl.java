@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.optionset;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetService;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
@@ -38,9 +38,9 @@ import java.util.List;
 import rx.Observable;
 
 public class OptionSetScopeImpl implements OptionSetScope {
-    private final IOptionSetService optionSetService;
+    private final OptionSetService optionSetService;
 
-    public OptionSetScopeImpl(IOptionSetService optionSetService) {
+    public OptionSetScopeImpl(OptionSetService optionSetService) {
         this.optionSetService = optionSetService;
     }
 

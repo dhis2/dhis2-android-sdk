@@ -30,8 +30,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorController;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -45,11 +45,11 @@ import rx.Subscriber;
 
 public class ProgramIndicatorScopeImpl implements ProgramIndicatorScope {
 
-    private final IProgramIndicatorService programIndicatorService;
-    private final IProgramIndicatorController programIndicatorController;
+    private final ProgramIndicatorService programIndicatorService;
+    private final ProgramIndicatorController programIndicatorController;
 
-    public ProgramIndicatorScopeImpl(IProgramIndicatorService programIndicatorService,
-                                     IProgramIndicatorController programIndicatorController) {
+    public ProgramIndicatorScopeImpl(ProgramIndicatorService programIndicatorService,
+                                     ProgramIndicatorController programIndicatorController) {
         this.programIndicatorService = programIndicatorService;
         this.programIndicatorController = programIndicatorController;
     }

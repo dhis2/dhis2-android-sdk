@@ -28,50 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
-import java.util.List;
-import java.util.Set;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
-
-public class TrackedEntityAttributeService implements ITrackedEntityAttributeService {
-    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
-
-    public TrackedEntityAttributeService(TrackedEntityAttributeStore entityAttributeStore) {
-        this.trackedEntityAttributeStore = entityAttributeStore;
-    }
-
-    @Override
-    public TrackedEntityAttribute get(long id) {
-        return trackedEntityAttributeStore.queryById(id);
-    }
-
-    @Override
-    public TrackedEntityAttribute get(String uid) {
-        return trackedEntityAttributeStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<TrackedEntityAttribute> list() {
-        return trackedEntityAttributeStore.queryAll();
-
-    }
-
-    @Override
-    public boolean remove(TrackedEntityAttribute object) {
-        isNull(object, "Object must not be null");
-        return trackedEntityAttributeStore.delete(object);
-    }
-
-    @Override
-    public boolean save(TrackedEntityAttribute object) {
-        isNull(object, "Object must not be null");
-        return trackedEntityAttributeStore.save(object);
-    }
-
-    @Override
-    public List<TrackedEntityAttribute> list(Set<String> uids) {
-        return trackedEntityAttributeStore.queryByUids(uids);
-    }
+public interface TrackedEntityAttributeService extends Service, ISave<TrackedEntityAttribute>,
+        IRemove<TrackedEntityAttribute>, IGet<TrackedEntityAttribute>,
+        IGetUid<TrackedEntityAttribute>, IList<TrackedEntityAttribute> ,
+        IListUids<TrackedEntityAttribute> {
 }

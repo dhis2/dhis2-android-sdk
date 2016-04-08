@@ -32,7 +32,7 @@ package org.hisp.dhis.client.sdk.android.dataelement;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 import java.util.List;
@@ -41,10 +41,10 @@ import java.util.Set;
 import rx.Observable;
 
 public class DataElementScopeImpl implements DataElementScope {
-    private final IDataElementService dataElementService;
+    private final DataElementService dataElementService;
     private final IdentifiableController<DataElement> dataElementController;
 
-    public DataElementScopeImpl(IDataElementService dataElementService,
+    public DataElementScopeImpl(DataElementService dataElementService,
                                 IdentifiableController<DataElement> dataElementController) {
         this.dataElementService = dataElementService;
         this.dataElementController = dataElementController;

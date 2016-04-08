@@ -36,9 +36,9 @@ import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentStore;
-import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
+import org.hisp.dhis.client.sdk.core.enrollment.EnrollmentController;
 import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
@@ -54,25 +54,25 @@ import java.util.List;
 import java.util.Map;
 
 public class TrackedEntityInstanceController implements ITrackedEntityInstanceController {
-    private final ITrackedEntityInstanceApiClient trackedEntityInstanceApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final TrackedEntityInstanceApiClient trackedEntityInstanceApiClient;
+    private final SystemInfoApiClient systemInfoApiClient;
     private final TrackedEntityInstanceStore trackedEntityInstanceStore;
     private final LastUpdatedPreferences lastUpdatedPreferences;
     private final TransactionManager transactionManager;
 
-    private final IEnrollmentController enrollmentController;
+    private final EnrollmentController enrollmentController;
     private final StateStore stateStore;
     private final RelationshipStore relationshipStore;
     private final TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final EnrollmentStore enrollmentStore;
 
-    public TrackedEntityInstanceController(ITrackedEntityInstanceApiClient
+    public TrackedEntityInstanceController(TrackedEntityInstanceApiClient
                                                    trackedEntityInstanceApiClient,
-                                           ISystemInfoApiClient systemInfoApiClient,
+                                           SystemInfoApiClient systemInfoApiClient,
                                            TrackedEntityInstanceStore trackedEntityInstanceStore,
                                            LastUpdatedPreferences lastUpdatedPreferences,
                                            TransactionManager transactionManager,
-                                           IEnrollmentController enrollmentController,
+                                           EnrollmentController enrollmentController,
                                            StateStore stateStore,
                                            RelationshipStore relationshipStore,
                                            TrackedEntityAttributeValueStore

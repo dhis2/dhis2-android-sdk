@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.utils;
 
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.constant.ConstantService;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
@@ -61,10 +61,10 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
  */
 public class VariableUtils {
 
-    private final IDataElementService dataElementService;
-    private final ITrackedEntityAttributeService trackedEntityAttributeService;
-    private final IConstantService constantService;
-    private final IProgramRuleVariableService programRuleVariableService;
+    private final DataElementService dataElementService;
+    private final TrackedEntityAttributeService trackedEntityAttributeService;
+    private final ConstantService constantService;
+    private final ProgramRuleVariableService programRuleVariableService;
 
     /**
      * Map of all {@link ProgramRuleVariable}s generated in {@link #initialize(Enrollment, Event)}
@@ -122,9 +122,9 @@ public class VariableUtils {
      */
     private Map<Event, Map<String, TrackedEntityDataValue>> eventDataValueMaps;
 
-    public VariableUtils(IDataElementService dataElementService, ITrackedEntityAttributeService
-            trackedEntityAttributeService, IConstantService constantService,
-                         IProgramRuleVariableService programRuleVariableService) {
+    public VariableUtils(DataElementService dataElementService, TrackedEntityAttributeService
+            trackedEntityAttributeService, ConstantService constantService,
+                         ProgramRuleVariableService programRuleVariableService) {
         this.dataElementService = dataElementService;
         this.trackedEntityAttributeService = trackedEntityAttributeService;
         this.constantService = constantService;

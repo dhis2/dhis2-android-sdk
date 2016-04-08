@@ -30,8 +30,8 @@ package org.hisp.dhis.client.sdk.android.event;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.event.IEventController;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
+import org.hisp.dhis.client.sdk.core.event.EventController;
+import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -42,10 +42,10 @@ import java.util.Set;
 import rx.Observable;
 
 public class EventScopeImpl implements EventScope {
-    private final IEventService eventService;
-    private final IEventController eventController;
+    private final EventService eventService;
+    private final EventController eventController;
 
-    public EventScopeImpl(IEventService eventService, IEventController eventController) {
+    public EventScopeImpl(EventService eventService, EventController eventController) {
         this.eventService = eventService;
         this.eventController = eventController;
     }

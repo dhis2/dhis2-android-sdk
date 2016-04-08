@@ -28,62 +28,25 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
-import java.util.Set;
 
-public final class ProgramRuleService implements IProgramRuleService {
-    private final ProgramRuleStore programRuleStore;
+public interface ProgramRuleService extends Service, IGet<ProgramRule>, IGetUid<ProgramRule>,
+        IList<ProgramRule>, IListUids<ProgramRule>, ISave<ProgramRule>, IRemove<ProgramRule> {
 
-    public ProgramRuleService(ProgramRuleStore programRuleStore) {
-        this.programRuleStore = programRuleStore;
-    }
+    List<ProgramRule> list(ProgramStage programStage);
 
-    @Override
-    public List<ProgramRule> list(ProgramStage programStage) {
-        return programRuleStore.query(programStage);
-    }
+    List<ProgramRule> list(Program program);
 
-    @Override
-    public List<ProgramRule> list(Program program) {
-        return programRuleStore.query(program);
-    }
-
-    @Override
-    public List<ProgramRule> list(List<Program> programs) {
-        return programRuleStore.query(programs);
-    }
-
-    @Override
-    public ProgramRule get(long id) {
-        return programRuleStore.queryById(id);
-    }
-
-    @Override
-    public ProgramRule get(String uid) {
-        return programRuleStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramRule> list() {
-        return programRuleStore.queryAll();
-    }
-
-    @Override
-    public boolean save(ProgramRule programRule) {
-        return programRuleStore.save(programRule);
-    }
-
-    @Override
-    public boolean remove(ProgramRule object) {
-        return programRuleStore.delete(object);
-    }
-
-    @Override
-    public List<ProgramRule> list(Set<String> uids) {
-        return programRuleStore.queryByUids(uids);
-    }
+    List<ProgramRule> list(List<Program> programs);
 }

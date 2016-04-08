@@ -31,8 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -44,12 +44,12 @@ import java.util.Set;
 import rx.Observable;
 
 public class ProgramStageDataElementScopeImpl implements ProgramStageDataElementScope {
-    private final IProgramStageDataElementService programStageDataElementService;
-    private final IProgramStageDataElementController programStageDataElementController;
+    private final ProgramStageDataElementService programStageDataElementService;
+    private final ProgramStageDataElementController programStageDataElementController;
 
     public ProgramStageDataElementScopeImpl(
-            IProgramStageDataElementService programStageDataElementService,
-            IProgramStageDataElementController programStageDataElementController) {
+            ProgramStageDataElementService programStageDataElementService,
+            ProgramStageDataElementController programStageDataElementController) {
         this.programStageDataElementService = programStageDataElementService;
         this.programStageDataElementController = programStageDataElementController;
 

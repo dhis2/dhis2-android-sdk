@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.program;
 
 
-import org.hisp.dhis.client.sdk.core.program.IProgramTrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.program.ProgramTrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 
@@ -39,9 +39,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class ProgramTrackedEntityAttributeScopeImpl implements ProgramTrackedEntityAttributeScope {
-    private IProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService;
+    private ProgramTrackedEntityAttributeService mProgramTrackedEntityAttributeService;
 
-    public ProgramTrackedEntityAttributeScopeImpl(IProgramTrackedEntityAttributeService
+    public ProgramTrackedEntityAttributeScopeImpl(ProgramTrackedEntityAttributeService
                                                       programTrackedEntityAttributeService) {
         mProgramTrackedEntityAttributeService = programTrackedEntityAttributeService;
     }

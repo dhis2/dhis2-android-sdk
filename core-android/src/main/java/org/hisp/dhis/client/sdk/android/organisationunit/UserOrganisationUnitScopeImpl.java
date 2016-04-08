@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.organisationunit;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
@@ -40,10 +40,10 @@ import java.util.List;
 import rx.Observable;
 
 public class UserOrganisationUnitScopeImpl implements UserOrganisationUnitScope {
-    private final IOrganisationUnitService organisationUnitService;
+    private final OrganisationUnitService organisationUnitService;
     private final IAssignedOrganisationUnitsController unitsController;
 
-    public UserOrganisationUnitScopeImpl(IOrganisationUnitService organisationUnitService,
+    public UserOrganisationUnitScopeImpl(OrganisationUnitService organisationUnitService,
                                          IAssignedOrganisationUnitsController unitsController) {
         this.organisationUnitService = organisationUnitService;
         this.unitsController = unitsController;

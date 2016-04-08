@@ -28,46 +28,20 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
-import java.util.Set;
 
-public final class ProgramService implements IProgramService {
-    private final ProgramStore programStore;
+public interface ProgramService extends Service, IGet<Program>, IGetUid<Program>,
+        IList<Program>, IListUids<Program> {
 
-    public ProgramService(ProgramStore programStore) {
-        this.programStore = programStore;
-    }
+    List<Program> list(boolean assignedToCurrentUser);
 
-    @Override
-    public Program get(long id) {
-        return programStore.queryById(id);
-    }
-
-    @Override
-    public Program get(String uid) {
-        return programStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<Program> list() {
-        return programStore.queryAll();
-    }
-
-    @Override
-    public List<Program> list(boolean assignedToCurrentUser) {
-        return programStore.query(assignedToCurrentUser);
-    }
-
-    @Override
-    public List<Program> list(List<OrganisationUnit> organisationUnits) {
-        return programStore.query(organisationUnits);
-    }
-
-    @Override
-    public List<Program> list(Set<String> uids) {
-        return programStore.queryByUids(uids);
-    }
+    List<Program> list(List<OrganisationUnit> organisationUnits);
 }

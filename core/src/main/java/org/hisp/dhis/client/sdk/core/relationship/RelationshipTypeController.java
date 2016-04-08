@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -51,16 +51,16 @@ import java.util.Set;
 public final class RelationshipTypeController implements IdentifiableController<RelationshipType> {
     private final TransactionManager transactionManager;
     private final LastUpdatedPreferences lastUpdatedPreferences;
-    private final IRelationshipTypeApiClient relationshipTypeApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final RelationshipTypeApiClient relationshipTypeApiClient;
+    private final SystemInfoApiClient systemInfoApiClient;
     private final IdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
 
-    public RelationshipTypeController(IRelationshipTypeApiClient relationshipApiClient,
+    public RelationshipTypeController(RelationshipTypeApiClient relationshipApiClient,
                                       TransactionManager transactionManager,
                                       IdentifiableObjectStore<RelationshipType>
                                               mRelationshipTypeStore,
                                       LastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient) {
+                                      SystemInfoApiClient systemInfoApiClient) {
         this.relationshipTypeApiClient = relationshipApiClient;
         this.transactionManager = transactionManager;
         this.mRelationshipTypeStore = mRelationshipTypeStore;

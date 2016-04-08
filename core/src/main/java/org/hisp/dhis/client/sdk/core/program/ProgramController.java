@@ -28,86 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
-import org.joda.time.DateTime;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-public class ProgramController extends AbsSyncStrategyController<Program>
-        implements IProgramController {
-
-    /* Controllers */
-    private final ISystemInfoController systemInfoController;
-
-    /* Api clients */
-    private final IProgramApiClient programApiClient;
-    private final IUserApiClient userApiClient;
-
-    /* Utilities */
-    private final TransactionManager transactionManager;
-
-    public ProgramController(ISystemInfoController systemInfoController,
-                             IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             ProgramStore programStore, TransactionManager transactionManager,
-                             LastUpdatedPreferences lastUpdatedPreferences) {
-        super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
-
-        this.systemInfoController = systemInfoController;
-        this.programApiClient = programApiClient;
-        this.userApiClient = userApiClient;
-        this.transactionManager = transactionManager;
-    }
-
-    @Override
-    protected void synchronize(SyncStrategy syncStrategy, Set<String> uids) {
-        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType.PROGRAMS, DateType.SERVER);
-
-        List<Program> persistedPrograms = identifiableObjectStore.queryAll();
-
-        // we have to download all ids from server in order to
-        // find out what was removed on the server side
-        List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null, null);
-
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of programs which are
-            // stored locally and list of programs which we want to download
-            uidSet = ModelUtils.toUidSet(persistedPrograms);
-            uidSet.addAll(uids);
-        }
-
-        List<Program> updatedPrograms = programApiClient.getPrograms(
-                Fields.ALL, lastUpdated, uidSet);
-
-        // we need to mark assigned programs as "assigned" before storing them
-        Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient
-                .getUserAccount().getPrograms());
-
-        for (Program updatedProgram : updatedPrograms) {
-            Program assignedProgram = assignedPrograms.get(updatedProgram.getUId());
-            updatedProgram.setIsAssignedToUser(assignedProgram != null);
-        }
-
-        // we will have to perform something similar to what happens in AbsController
-        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
-                updatedPrograms, persistedPrograms, identifiableObjectStore);
-        transactionManager.transact(dbOperations);
-
-        lastUpdatedPreferences.save(ResourceType.PROGRAMS, DateType.SERVER, serverTime);
-    }
+public interface ProgramController extends IdentifiableController<Program> {
 }

@@ -28,35 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
-import java.util.List;
-import java.util.Set;
-
-public final class ProgramRuleVariableService implements IProgramRuleVariableService {
-    private final ProgramRuleVariableStore programRuleVariableStore;
-
-    public ProgramRuleVariableService(ProgramRuleVariableStore programRuleVariableStore) {
-        this.programRuleVariableStore = programRuleVariableStore;
-    }
-
-    @Override
-    public ProgramRuleVariable get(long id) {
-        return programRuleVariableStore.queryById(id);
-    }
-
-    @Override
-    public ProgramRuleVariable get(String uid) {
-        return programRuleVariableStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramRuleVariable> list() {
-        return programRuleVariableStore.queryAll();
-    }
-
-    @Override
-    public List<ProgramRuleVariable> list(Set<String> uids) {
-        return programRuleVariableStore.queryByUids(uids);
-    }
+public interface ProgramRuleVariableService extends Service, IGet<ProgramRuleVariable>,
+        IGetUid<ProgramRuleVariable>, IList<ProgramRuleVariable>, IListUids<ProgramRuleVariable> {
 }

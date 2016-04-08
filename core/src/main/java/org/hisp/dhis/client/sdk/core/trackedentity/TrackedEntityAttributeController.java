@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -49,18 +49,18 @@ import java.util.Set;
 
 public final class TrackedEntityAttributeController extends AbsSyncStrategyController
         <TrackedEntityAttribute> implements ITrackedEntityAttributeController {
-    private final ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
+    private final TrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
     private final TransactionManager transactionManager;
     private final ISystemInfoController systemInfoController;
-    private final IOptionSetController optionSetController;
+    private final OptionSetController optionSetController;
 
-    public TrackedEntityAttributeController(ITrackedEntityAttributeApiClient
+    public TrackedEntityAttributeController(TrackedEntityAttributeApiClient
                                                     trackedEntityAttributeApiClient,
                                             TransactionManager transactionManager,
                                             LastUpdatedPreferences lastUpdatedPreferences,
                                             TrackedEntityAttributeStore trackedEntityAttributeStore,
                                             ISystemInfoController systemInfoController,
-                                            IOptionSetController optionSetController) {
+                                            OptionSetController optionSetController) {
         super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, trackedEntityAttributeStore, lastUpdatedPreferences);
         this.trackedEntityAttributeApiClient = trackedEntityAttributeApiClient;
         this.transactionManager = transactionManager;

@@ -41,13 +41,13 @@ public class SystemInfoController implements ISystemInfoController {
     private static final int EXPIRATION_THRESHOLD = 128;
 
     /* API clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
+    private final SystemInfoApiClient systemInfoApiClient;
 
     /* Stores and preferences */
     private final ISystemInfoPreferences systemInfoPreferences;
     private final LastUpdatedPreferences lastUpdatedPreferences;
 
-    public SystemInfoController(ISystemInfoApiClient systemInfoApiClient,
+    public SystemInfoController(SystemInfoApiClient systemInfoApiClient,
                                 ISystemInfoPreferences systemInfoPreferences,
                                 LastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;

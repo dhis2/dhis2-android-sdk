@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.program.IProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramController;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -44,13 +44,13 @@ import java.util.Set;
 public class AssignedProgramsController implements IAssignedProgramsController {
 
     /* Program controller */
-    private final IProgramController programController;
+    private final ProgramController programController;
 
     /* Api clients */
-    private final IUserApiClient userApiClient;
+    private final UserApiClient userApiClient;
 
-    public AssignedProgramsController(IProgramController programController,
-                                      IUserApiClient userApiClient) {
+    public AssignedProgramsController(ProgramController programController,
+                                      UserApiClient userApiClient) {
         this.userApiClient = userApiClient;
         this.programController = programController;
     }

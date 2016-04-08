@@ -28,142 +28,38 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
+public interface TrackedEntityInstanceService extends Service, ISave<TrackedEntityInstance>,
+        IRemove<TrackedEntityInstance>, IGet<TrackedEntityInstance>, IList<TrackedEntityInstance> {
+    TrackedEntityInstance get(String uid);
 
-public final class TrackedEntityInstanceService implements ITrackedEntityInstanceService {
+    TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit);
 
-    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final RelationshipStore relationshipStore;
-    private final StateStore stateStore;
+    /**
+     * Creates and adds a relationship for the given parameters.
+     *
+     * @param trackedEntityInstanceA
+     * @param trackedEntityInstanceB
+     * @param relationshipType
+     */
+    boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA, TrackedEntityInstance
+            trackedEntityInstanceB, RelationshipType relationshipType);
 
-    public TrackedEntityInstanceService(TrackedEntityInstanceStore trackedEntityInstanceStore,
-                                        RelationshipStore relationshipStore, StateStore
-                                                stateStore) {
-        this.trackedEntityInstanceStore = trackedEntityInstanceStore;
-        this.relationshipStore = relationshipStore;
-        this.stateStore = stateStore;
-    }
-
-    @Override
-    public TrackedEntityInstance get(String uid) {
-        TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceStore.queryByUid(uid);
-        Action action = stateStore.queryActionForModel(trackedEntityInstance);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityInstance;
-        }
-
-        return null;
-    }
-
-    @Override
-    public TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit
-            organisationUnit) {
-        Preconditions.isNull(trackedEntity, "Tracked entity must not be null");
-        Preconditions.isNull(organisationUnit, "Organisation unit must not be null");
-
-        TrackedEntityInstance trackedEntityInstance = new TrackedEntityInstance();
-        trackedEntityInstance.setOrgUnit(organisationUnit.getUId());
-        trackedEntityInstance.setTrackedEntity(trackedEntity.getUId());
-        trackedEntityInstance.setTrackedEntityInstanceUid(CodeGenerator.generateCode());
-        save(trackedEntityInstance);
-
-        return trackedEntityInstance;
-    }
-
-    @Override
-    public boolean addRelationship(TrackedEntityInstance trackedEntityInstanceA,
-                                   TrackedEntityInstance trackedEntityInstanceB, RelationshipType
-                                               relationshipType) {
-        Preconditions.isNull(trackedEntityInstanceA, "Tracked entity instance A must not be null");
-        Preconditions.isNull(trackedEntityInstanceB, "Tracked entity instance B must not be null");
-        Preconditions.isNull(relationshipType, "Relationship type must not be null");
-
-        List<Relationship> existingRelationships = trackedEntityInstanceA.getRelationships();
-        for (Relationship existingRelationship : existingRelationships) {
-            if (existingRelationship.getTrackedEntityInstanceB().getTrackedEntityInstanceUid()
-                    .equals(trackedEntityInstanceB.getTrackedEntityInstanceUid()) &&
-                    relationshipType.getUId().equals(existingRelationship.getRelationship())) {
-                return false;
-            }
-        }
-        Relationship relationship = new Relationship();
-        relationship.setTrackedEntityInstanceA(trackedEntityInstanceA);
-        relationship.setTrackedEntityInstanceB(trackedEntityInstanceB);
-        relationship.setRelationship(relationship.getRelationship());
-        relationshipStore.insert(relationship);
-        trackedEntityInstanceA.getRelationships().add(relationship);
-        trackedEntityInstanceB.getRelationships().add(relationship);
-        save(trackedEntityInstanceA);
-        save(trackedEntityInstanceB);
-        return true;
-    }
-
-    @Override
-    public boolean removeRelationship(Relationship relationship) {
-        Preconditions.isNull(relationship, "Relationship must not be null");
-        relationshipStore.delete(relationship);
-        relationship.getTrackedEntityInstanceA().getRelationships().remove(relationship);
-        relationship.getTrackedEntityInstanceB().getRelationships().remove(relationship);
-        save(relationship.getTrackedEntityInstanceA());
-        save(relationship.getTrackedEntityInstanceB());
-        return true;
-    }
-
-    @Override
-    public TrackedEntityInstance get(long id) {
-        TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceStore.queryById(id);
-        Action action = stateStore.queryActionForModel(trackedEntityInstance);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityInstance;
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<TrackedEntityInstance> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityInstance.class, Action.SYNCED,
-                Action.TO_UPDATE, Action.TO_POST);
-    }
-
-    @Override
-    public boolean remove(TrackedEntityInstance object) {
-        Preconditions.isNull(object, "trackedEntityInstance argument must not be null");
-        if (!trackedEntityInstanceStore.delete(object)) {
-            return false;
-        }
-        return stateStore.deleteActionForModel(object);
-    }
-
-    @Override
-    public boolean save(TrackedEntityInstance object) {
-        Preconditions.isNull(object, "Tracked entity instance must not be null");
-
-        if (!trackedEntityInstanceStore.save(object)) {
-            return false;
-        }
-
-        // TODO check if object was created earlier (then set correct flag)
-        Action action = stateStore.queryActionForModel(object);
-
-        if (action == null || Action.TO_POST.equals(action)) {
-            return stateStore.saveActionForModel(object, Action.TO_POST);
-        } else {
-            return stateStore.saveActionForModel(object, Action.TO_UPDATE);
-        }
-
-    }
+    /**
+     * Removes a given relationship, both locally and on the server
+     *
+     * @param relationship
+     * @return
+     */
+    boolean removeRelationship(Relationship relationship);
 }

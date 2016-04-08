@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.android.constant;
 
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.constant.IConstantService;
+import org.hisp.dhis.client.sdk.core.constant.ConstantService;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 import java.util.List;
@@ -38,9 +38,9 @@ import java.util.List;
 import rx.Observable;
 
 public class ConstantScopeImpl implements ConstantScope {
-    private final IConstantService constantService;
+    private final ConstantService constantService;
 
-    public ConstantScopeImpl(IConstantService constantService) {
+    public ConstantScopeImpl(ConstantService constantService) {
         this.constantService = constantService;
     }
 

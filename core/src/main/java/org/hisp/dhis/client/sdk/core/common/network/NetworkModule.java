@@ -28,50 +28,50 @@
 
 package org.hisp.dhis.client.sdk.core.common.network;
 
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementApiClient;
-import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementApiClient;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionApiClient;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
-import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementApiClient;
+import org.hisp.dhis.client.sdk.core.event.EventApiClient;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetApiClient;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementApiClient;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeApiClient;
+import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 
 public interface NetworkModule {
-    ISystemInfoApiClient getSystemInfoApiClient();
+    SystemInfoApiClient getSystemInfoApiClient();
 
-    IUserApiClient getUserApiClient();
+    UserApiClient getUserApiClient();
 
-    IOrganisationUnitApiClient getOrganisationUnitApiClient();
+    OrganisationUnitApiClient getOrganisationUnitApiClient();
 
-    IProgramApiClient getProgramApiClient();
+    ProgramApiClient getProgramApiClient();
 
-    IProgramStageApiClient getProgramStageApiClient();
+    ProgramStageApiClient getProgramStageApiClient();
 
-    IProgramStageSectionApiClient getProgramStageSectionApiClient();
+    ProgramStageSectionApiClient getProgramStageSectionApiClient();
 
-    IEventApiClient getEventApiClient();
+    EventApiClient getEventApiClient();
 
-    IDataElementApiClient getDataElementApiClient();
+    DataElementApiClient getDataElementApiClient();
 
-    IProgramStageDataElementApiClient getProgramStageDataElementApiClient();
+    ProgramStageDataElementApiClient getProgramStageDataElementApiClient();
 
-    IOptionSetApiClient getOptionSetApiClient();
+    OptionSetApiClient getOptionSetApiClient();
 
-    ITrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient();
+    TrackedEntityAttributeApiClient getTrackedEntityAttributeApiClient();
 
-    IProgramRuleApiClient getProgramRuleApiClient();
+    ProgramRuleApiClient getProgramRuleApiClient();
 
-    IProgramRuleActionApiClient getProgramRuleActionApiClient();
+    ProgramRuleActionApiClient getProgramRuleActionApiClient();
 
-    IProgramRuleVariableApiClient getProgramRuleVariableApiClient();
+    ProgramRuleVariableApiClient getProgramRuleVariableApiClient();
 
-    IProgramIndicatorApiClient getProgramIndicatorApiClient();
+    ProgramIndicatorApiClient getProgramIndicatorApiClient();
 }

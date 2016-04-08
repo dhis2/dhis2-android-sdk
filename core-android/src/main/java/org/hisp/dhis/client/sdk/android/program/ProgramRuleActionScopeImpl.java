@@ -31,8 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
@@ -42,11 +42,11 @@ import java.util.Set;
 import rx.Observable;
 
 public class ProgramRuleActionScopeImpl implements ProgramRuleActionScope {
-    private final IProgramRuleActionService programRuleActionService;
-    private final IProgramRuleActionController programRuleActionController;
+    private final ProgramRuleActionService programRuleActionService;
+    private final ProgramRuleActionController programRuleActionController;
 
-    public ProgramRuleActionScopeImpl(IProgramRuleActionService programRuleActionService,
-                                      IProgramRuleActionController programRuleActionController) {
+    public ProgramRuleActionScopeImpl(ProgramRuleActionService programRuleActionService,
+                                      ProgramRuleActionController programRuleActionController) {
         this.programRuleActionService = programRuleActionService;
         this.programRuleActionController = programRuleActionController;
     }

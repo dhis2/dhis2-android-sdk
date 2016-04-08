@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.android.trackedentity;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
@@ -39,9 +39,9 @@ import java.util.List;
 import rx.Observable;
 
 public class TrackedEntityDataValueScopeImpl implements TrackedEntityDataValueScope {
-    private final ITrackedEntityDataValueService mTrackedEntityDataValueService;
+    private final TrackedEntityDataValueService mTrackedEntityDataValueService;
 
-    public TrackedEntityDataValueScopeImpl(ITrackedEntityDataValueService entityDataValueService) {
+    public TrackedEntityDataValueScopeImpl(TrackedEntityDataValueService entityDataValueService) {
         this.mTrackedEntityDataValueService = entityDataValueService;
     }
 

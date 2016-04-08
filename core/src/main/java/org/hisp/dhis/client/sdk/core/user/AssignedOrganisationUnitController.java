@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -41,13 +41,13 @@ import java.util.Set;
 public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
 
     // Api Clients
-    private final IUserApiClient userApiClient;
+    private final UserApiClient userApiClient;
 
     // Controllers
-    private final IOrganisationUnitController organisationUnitController;
+    private final OrganisationUnitController organisationUnitController;
 
     public AssignedOrganisationUnitController(
-            IUserApiClient userApiClient, IOrganisationUnitController
+            UserApiClient userApiClient, OrganisationUnitController
             organisationUnitController) {
         this.userApiClient = userApiClient;
         this.organisationUnitController = organisationUnitController;

@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
-import org.hisp.dhis.client.sdk.core.event.IEventController;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitController;
-import org.hisp.dhis.client.sdk.core.program.IProgramController;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleController;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionController;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
+import org.hisp.dhis.client.sdk.core.event.EventController;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleController;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
@@ -51,33 +51,33 @@ public interface ControllersModule {
 
     IUserAccountController getUserAccountController();
 
-    IProgramController getProgramController();
+    ProgramController getProgramController();
 
-    IProgramStageController getProgramStageController();
+    ProgramStageController getProgramStageController();
 
-    IProgramStageSectionController getProgramStageSectionController();
+    ProgramStageSectionController getProgramStageSectionController();
 
-    IOrganisationUnitController getOrganisationUnitController();
+    OrganisationUnitController getOrganisationUnitController();
 
     IAssignedProgramsController getAssignedProgramsController();
 
     IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
 
-    IEventController getEventController();
+    EventController getEventController();
 
-    IDataElementController getDataElementController();
+    DataElementController getDataElementController();
 
-    IProgramStageDataElementController getProgramStageDataElementController();
+    ProgramStageDataElementController getProgramStageDataElementController();
 
-    IProgramRuleController getProgramRuleController();
+    ProgramRuleController getProgramRuleController();
 
-    IProgramRuleActionController getProgramRuleActionController();
+    ProgramRuleActionController getProgramRuleActionController();
 
-    IProgramRuleVariableController getProgramRuleVariableController();
+    ProgramRuleVariableController getProgramRuleVariableController();
 
-    IProgramIndicatorController getProgramIndicatorController();
+    ProgramIndicatorController getProgramIndicatorController();
 
     ITrackedEntityAttributeController getTrackedEntityAttributeController();
 
-    IOptionSetController getOptionSetController();
+    OptionSetController getOptionSetController();
 }

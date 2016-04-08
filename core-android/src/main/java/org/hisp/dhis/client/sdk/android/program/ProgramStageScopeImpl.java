@@ -31,8 +31,8 @@ package org.hisp.dhis.client.sdk.android.program;
 
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageController;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
@@ -42,11 +42,11 @@ import java.util.Set;
 import rx.Observable;
 
 public class ProgramStageScopeImpl implements ProgramStageScope {
-    private final IProgramStageService programStageService;
-    private final IProgramStageController programStageController;
+    private final ProgramStageService programStageService;
+    private final ProgramStageController programStageController;
 
-    public ProgramStageScopeImpl(IProgramStageService programStageService,
-                                 IProgramStageController programStageController) {
+    public ProgramStageScopeImpl(ProgramStageService programStageService,
+                                 ProgramStageController programStageController) {
         this.programStageService = programStageService;
         this.programStageController = programStageController;
     }

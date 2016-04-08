@@ -28,47 +28,47 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitService;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorService;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionService;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleService;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableService;
-import org.hisp.dhis.client.sdk.core.program.IProgramService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionService;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueService;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
+import org.hisp.dhis.client.sdk.core.event.EventService;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
+import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 
 public interface IServicesModule {
-    IUserAccountService getUserAccountService();
+    UserAccountService getUserAccountService();
 
-    IProgramService getProgramService();
+    ProgramService getProgramService();
 
-    IProgramStageService getProgramStageService();
+    ProgramStageService getProgramStageService();
 
-    IProgramStageDataElementService getProgramStageDataElementService();
+    ProgramStageDataElementService getProgramStageDataElementService();
 
-    IProgramStageSectionService getProgramStageSectionService();
+    ProgramStageSectionService getProgramStageSectionService();
 
-    IOrganisationUnitService getOrganisationUnitService();
+    OrganisationUnitService getOrganisationUnitService();
 
-    IEventService getEventService();
+    EventService getEventService();
 
-    IDataElementService getDataElementService();
+    DataElementService getDataElementService();
 
-    IProgramRuleService getProgramRuleService();
+    ProgramRuleService getProgramRuleService();
 
-    IProgramRuleActionService getProgramRuleActionService();
+    ProgramRuleActionService getProgramRuleActionService();
 
-    IProgramRuleVariableService getProgramRuleVariableService();
+    ProgramRuleVariableService getProgramRuleVariableService();
 
-    IProgramIndicatorService getProgramIndicatorService();
+    ProgramIndicatorService getProgramIndicatorService();
 
-    ITrackedEntityAttributeService getTrackedEntityAttributeService();
+    TrackedEntityAttributeService getTrackedEntityAttributeService();
 
-    ITrackedEntityDataValueService getTrackedEntityDataValueService();
+    TrackedEntityDataValueService getTrackedEntityDataValueService();
 }

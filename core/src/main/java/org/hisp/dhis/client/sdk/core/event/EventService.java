@@ -28,145 +28,21 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+public interface EventService extends Service, ISave<Event>, IRemove<Event>, IGet<Event>,
+        IGetUid<Event>, IList<Event>, IListUids<Event> {
 
-public class EventService implements IEventService {
-    private final EventStore eventStore;
-    private final StateStore stateStore;
-
-    public EventService(EventStore eventStore, StateStore stateStore) {
-        this.eventStore = eventStore;
-        this.stateStore = stateStore;
-    }
-
-    @Override
-    public boolean save(Event event) {
-        isNull(event, "Event must not be null");
-
-        Action action = stateStore.queryActionForModel(event);
-        if (action == null) {
-            return eventStore.save(event) &&
-                    stateStore.saveActionForModel(event, Action.TO_POST);
-        }
-
-        switch (action) {
-            case TO_POST:
-            case TO_UPDATE: {
-                return eventStore.save(event);
-            }
-            case SYNCED: {
-                return eventStore.save(event) &&
-                        stateStore.saveActionForModel(event, Action.TO_UPDATE);
-            }
-            // we cannot save what should be removed
-            case TO_DELETE: {
-                return false;
-            }
-            default: {
-                throw new IllegalArgumentException("Unsupported state action");
-            }
-        }
-    }
-
-    @Override
-    public boolean remove(Event event) {
-        isNull(event, "Event object must not be null");
-
-        Action action = stateStore.queryActionForModel(event);
-        if (action == null) {
-            // if there is no action stored for given event,
-            // it means it was not saved before
-            return false;
-        }
-
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                return stateStore.saveActionForModel(event, Action.TO_DELETE);
-            }
-            case TO_POST: {
-                return eventStore.delete(event);
-            }
-            case TO_DELETE: {
-                // if event is already marked as removed,
-                // we don't have to do anything
-                return false;
-            }
-            default: {
-                throw new IllegalArgumentException("Unsupported state action");
-            }
-        }
-    }
-
-    @Override
-    public List<Event> list() {
-        return stateStore.queryModelsWithActions(Event.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public List<Event> list(Set<String> uids) {
-        return stateStore.queryModelsWithActions(Event.class, uids,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public List<Event> list(OrganisationUnit organisationUnit, Program program) {
-        Map<Long, Action> actionMap = stateStore.queryActionsForModel(Event.class);
-        List<Event> events = eventStore.query(organisationUnit, program);
-
-        if (events == null || events.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        List<Event> filteredEvents = new ArrayList<>();
-        for (Event event : events) {
-            if (!Action.TO_DELETE.equals(actionMap.get(event.getId()))) {
-                filteredEvents.add(event);
-            }
-        }
-
-        return filteredEvents;
-    }
-
-    @Override
-    public Event get(long id) {
-        Event event = eventStore.queryById(id);
-
-        if (event != null) {
-            Action action = stateStore.queryActionForModel(event);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return event;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public Event get(String uid) {
-        Event event = eventStore.queryByUid(uid);
-
-        if (event != null) {
-            Action action = stateStore.queryActionForModel(event);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return event;
-            }
-        }
-
-        return null;
-    }
+    List<Event> list(OrganisationUnit organisationUnit, Program program);
 }

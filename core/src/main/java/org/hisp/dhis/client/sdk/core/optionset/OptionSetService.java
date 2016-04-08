@@ -28,50 +28,19 @@
 
 package org.hisp.dhis.client.sdk.core.optionset;
 
+import org.hisp.dhis.client.sdk.core.common.services.IGet;
+import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
+import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.IRemove;
+import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class OptionSetService implements IOptionSetService {
-    private final OptionSetStore optionSetStore;
-    private final OptionStore optionStore;
+public interface OptionSetService extends Service, ISave<OptionSet>, IRemove<OptionSet>,
+        IGet<OptionSet>, IGetUid<OptionSet>, IList<OptionSet> {
 
-    public OptionSetService(OptionSetStore optionSetStore, OptionStore optionStore) {
-        this.optionSetStore = optionSetStore;
-        this.optionStore = optionStore;
-    }
-
-    @Override
-    public OptionSet get(long id) {
-        return optionSetStore.queryById(id);
-    }
-
-    @Override
-    public OptionSet get(String uid) {
-        return optionSetStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<OptionSet> list() {
-        return optionSetStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(OptionSet object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return optionSetStore.delete(object);
-    }
-
-    @Override
-    public boolean save(OptionSet object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return optionSetStore.save(object);
-    }
-
-    @Override
-    public List<Option> list(OptionSet object) {
-        return optionStore.query(object);
-    }
+    List<Option> list(OptionSet object);
 }

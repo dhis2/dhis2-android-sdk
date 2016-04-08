@@ -33,7 +33,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramIndicatorFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;

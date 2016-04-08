@@ -50,7 +50,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttrib
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserFlow;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.android.constant.ConstantMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardContentMapper;
 import org.hisp.dhis.client.sdk.android.dashboard.DashboardElementMapper;
@@ -97,35 +97,35 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.client.sdk.models.user.User;
 
 public class MapperModule {
-    private final IMapper<Dashboard, DashboardFlow> dashboardMapper;
-    private final IMapper<DashboardItem, DashboardItemFlow> dashboardItemMapper;
-    private final IMapper<DashboardElement, DashboardElementFlow> dashboardElementMapper;
-    private final IMapper<DashboardContent, DashboardContentFlow> dashboardContentMapper;
+    private final Mapper<Dashboard, DashboardFlow> dashboardMapper;
+    private final Mapper<DashboardItem, DashboardItemFlow> dashboardItemMapper;
+    private final Mapper<DashboardElement, DashboardElementFlow> dashboardElementMapper;
+    private final Mapper<DashboardContent, DashboardContentFlow> dashboardContentMapper;
 
-    private final IMapper<Enrollment, EnrollmentFlow> enrollmentMapper;
-    private final IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
+    private final Mapper<Enrollment, EnrollmentFlow> enrollmentMapper;
+    private final Mapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
             trackedEntityInstanceMapper;
-    private final IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
+    private final Mapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
             trackedEntityAttributeValueMapper;
-    private final IMapper<Relationship, RelationshipFlow> relationshipMapper;
+    private final Mapper<Relationship, RelationshipFlow> relationshipMapper;
 
-    private final IMapper<Constant, ConstantFlow> constantMapper;
-    private final IMapper<DataElement, DataElementFlow> dataElementMapper;
-    private final IMapper<Option, OptionFlow> optionMapper;
-    private final IMapper<OptionSet, OptionSetFlow> optionSetMapper;
-    private final IMapper<TrackedEntity, TrackedEntityFlow> trackedEntityMapper;
-    private final IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
+    private final Mapper<Constant, ConstantFlow> constantMapper;
+    private final Mapper<DataElement, DataElementFlow> dataElementMapper;
+    private final Mapper<Option, OptionFlow> optionMapper;
+    private final Mapper<OptionSet, OptionSetFlow> optionSetMapper;
+    private final Mapper<TrackedEntity, TrackedEntityFlow> trackedEntityMapper;
+    private final Mapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
             trackedEntityAttributeMapper;
-    private final IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
+    private final Mapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
             programTrackedEntityAttributeMapper;
-    private final IMapper<ProgramIndicator, ProgramIndicatorFlow> programIndicatorMapper;
-    private final IMapper<ProgramRule, ProgramRuleFlow> programRuleMapper;
-    private final IMapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
-    private final IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> programRuleVariableMapper;
-    private final IMapper<RelationshipType, RelationshipTypeFlow> relationshipTypeMapper;
-    private final IMapper<DataSet, DataSetFlow> dataSetMapper;
+    private final Mapper<ProgramIndicator, ProgramIndicatorFlow> programIndicatorMapper;
+    private final Mapper<ProgramRule, ProgramRuleFlow> programRuleMapper;
+    private final Mapper<ProgramRuleAction, ProgramRuleActionFlow> programRuleActionMapper;
+    private final Mapper<ProgramRuleVariable, ProgramRuleVariableFlow> programRuleVariableMapper;
+    private final Mapper<RelationshipType, RelationshipTypeFlow> relationshipTypeMapper;
+    private final Mapper<DataSet, DataSetFlow> dataSetMapper;
 
-    private final IMapper<User, UserFlow> userMapper;
+    private final Mapper<User, UserFlow> userMapper;
 
     public MapperModule() {
         dashboardMapper = new DashboardMapper();
@@ -155,95 +155,95 @@ public class MapperModule {
         userMapper = new UserMapper();
     }
 
-    public IMapper<Dashboard, DashboardFlow> getDashboardMapper() {
+    public Mapper<Dashboard, DashboardFlow> getDashboardMapper() {
         return dashboardMapper;
     }
 
-    public IMapper<DashboardItem, DashboardItemFlow> getDashboardItemMapper() {
+    public Mapper<DashboardItem, DashboardItemFlow> getDashboardItemMapper() {
         return dashboardItemMapper;
     }
 
-    public IMapper<DashboardElement, DashboardElementFlow> getDashboardElementMapper() {
+    public Mapper<DashboardElement, DashboardElementFlow> getDashboardElementMapper() {
         return dashboardElementMapper;
     }
 
-    public IMapper<DashboardContent, DashboardContentFlow> getDashboardContentMapper() {
+    public Mapper<DashboardContent, DashboardContentFlow> getDashboardContentMapper() {
         return dashboardContentMapper;
     }
 
-    public IMapper<Enrollment, EnrollmentFlow> getEnrollmentMapper() {
+    public Mapper<Enrollment, EnrollmentFlow> getEnrollmentMapper() {
         return enrollmentMapper;
     }
 
-    public IMapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
+    public Mapper<TrackedEntityInstance, TrackedEntityInstanceFlow>
     getTrackedEntityInstanceMapper() {
         return trackedEntityInstanceMapper;
     }
 
-    public IMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
+    public Mapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
     getTrackedEntityAttributeValueMapper() {
         return trackedEntityAttributeValueMapper;
     }
 
-    public IMapper<Relationship, RelationshipFlow> getRelationshipMapper() {
+    public Mapper<Relationship, RelationshipFlow> getRelationshipMapper() {
         return relationshipMapper;
     }
 
-    public IMapper<Constant, ConstantFlow> getConstantMapper() {
+    public Mapper<Constant, ConstantFlow> getConstantMapper() {
         return constantMapper;
     }
 
-    public IMapper<DataElement, DataElementFlow> getDataElementMapper() {
+    public Mapper<DataElement, DataElementFlow> getDataElementMapper() {
         return dataElementMapper;
     }
 
-    public IMapper<Option, OptionFlow> getOptionMapper() {
+    public Mapper<Option, OptionFlow> getOptionMapper() {
         return optionMapper;
     }
 
-    public IMapper<OptionSet, OptionSetFlow> getOptionSetMapper() {
+    public Mapper<OptionSet, OptionSetFlow> getOptionSetMapper() {
         return optionSetMapper;
     }
 
-    public IMapper<TrackedEntity, TrackedEntityFlow> getTrackedEntityMapper() {
+    public Mapper<TrackedEntity, TrackedEntityFlow> getTrackedEntityMapper() {
         return trackedEntityMapper;
     }
 
-    public IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
+    public Mapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
     getTrackedEntityAttributeMapper() {
         return trackedEntityAttributeMapper;
     }
 
-    public IMapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
+    public Mapper<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeFlow>
     getProgramTrackedEntityAttributeMapper() {
         return programTrackedEntityAttributeMapper;
     }
 
-    public IMapper<ProgramIndicator, ProgramIndicatorFlow> getProgramIndicatorMapper() {
+    public Mapper<ProgramIndicator, ProgramIndicatorFlow> getProgramIndicatorMapper() {
         return programIndicatorMapper;
     }
 
-    public IMapper<ProgramRule, ProgramRuleFlow> getProgramRuleMapper() {
+    public Mapper<ProgramRule, ProgramRuleFlow> getProgramRuleMapper() {
         return programRuleMapper;
     }
 
-    public IMapper<ProgramRuleAction, ProgramRuleActionFlow> getProgramRuleActionMapper() {
+    public Mapper<ProgramRuleAction, ProgramRuleActionFlow> getProgramRuleActionMapper() {
         return programRuleActionMapper;
     }
 
-    public IMapper<ProgramRuleVariable, ProgramRuleVariableFlow> getProgramRuleVariableMapper() {
+    public Mapper<ProgramRuleVariable, ProgramRuleVariableFlow> getProgramRuleVariableMapper() {
         return programRuleVariableMapper;
     }
 
-    public IMapper<RelationshipType, RelationshipTypeFlow> getRelationshipTypeMapper() {
+    public Mapper<RelationshipType, RelationshipTypeFlow> getRelationshipTypeMapper() {
         return relationshipTypeMapper;
     }
 
-    public IMapper<User, UserFlow> getUserMapper() {
+    public Mapper<User, UserFlow> getUserMapper() {
         return userMapper;
     }
 
-    public IMapper<DataSet, DataSetFlow> getDataSetMapper() {
+    public Mapper<DataSet, DataSetFlow> getDataSetMapper() {
         return dataSetMapper;
     }
 }

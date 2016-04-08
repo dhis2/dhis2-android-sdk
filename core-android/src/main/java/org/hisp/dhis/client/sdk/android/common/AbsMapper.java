@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbsMapper<ModelType extends Model, DatabaseEntityType
-        extends Model & com.raizlabs.android.dbflow.structure.Model> implements IMapper<ModelType, DatabaseEntityType> {
+        extends Model & com.raizlabs.android.dbflow.structure.Model> implements Mapper<ModelType, DatabaseEntityType> {
 
     @Override
     @NonNull

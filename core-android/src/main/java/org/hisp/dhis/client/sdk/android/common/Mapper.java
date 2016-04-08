@@ -32,7 +32,7 @@ import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
 
-public interface IMapper<ModelType extends Model, DatabaseEntityType extends com.raizlabs.android
+public interface Mapper<ModelType extends Model, DatabaseEntityType extends com.raizlabs.android
         .dbflow.structure.Model & Model> {
     DatabaseEntityType mapToDatabaseEntity(ModelType model);
 

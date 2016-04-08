@@ -36,15 +36,13 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 @Table(database = DbDhis.class)
 public final class TrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow {
 
-    public static final IMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> MAPPER = new Mapper();
+    public static final org.hisp.dhis.client.sdk.android.common.Mapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> MAPPER = new Mapper();
 
     final static String OPTION_SET_KEY = "optionset";
 

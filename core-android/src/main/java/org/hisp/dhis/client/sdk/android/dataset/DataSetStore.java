@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.dataset;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DataSetFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.dataset.IDataSetStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -42,10 +42,10 @@ import java.util.List;
 public final class DataSetStore extends AbsIdentifiableObjectStore<DataSet, DataSetFlow>
         implements IDataSetStore {
 
-    private final IMapper<OrganisationUnit, OrganisationUnitFlow> organisationUnitMapper;
+    private final Mapper<OrganisationUnit, OrganisationUnitFlow> organisationUnitMapper;
 
-    public DataSetStore(IMapper<DataSet, DataSetFlow> mapper, IMapper<OrganisationUnit,
-            OrganisationUnitFlow> organisationUnitMapper) {
+    public DataSetStore(Mapper<DataSet, DataSetFlow> mapper, Mapper<OrganisationUnit,
+                OrganisationUnitFlow> organisationUnitMapper) {
         super(mapper);
         this.organisationUnitMapper = organisationUnitMapper;
     }

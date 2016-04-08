@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueStore;
@@ -53,8 +53,8 @@ public final class TrackedEntityAttributeValueStore extends
 
     private final IIdentifiableObjectStore<Program> programStore;
 
-    public TrackedEntityAttributeValueStore(IMapper<TrackedEntityAttributeValue,
-            TrackedEntityAttributeValueFlow> mapper, IStateStore stateStore,
+    public TrackedEntityAttributeValueStore(Mapper<TrackedEntityAttributeValue,
+                TrackedEntityAttributeValueFlow> mapper, IStateStore stateStore,
                                             IIdentifiableObjectStore<Program> programStore) {
         super(mapper, stateStore);
         this.programStore = programStore;

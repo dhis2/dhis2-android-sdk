@@ -37,14 +37,14 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 @Table(database = DbDhis.class)
 public final class ProgramFlow extends BaseIdentifiableObjectFlow {
     private static final String TRACKED_ENTITY_KEY = "trackedEntity";
-    public static IMapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
+    public static Mapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
     @Column
     @ForeignKey(
             references = {

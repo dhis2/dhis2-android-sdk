@@ -46,7 +46,7 @@ public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableO
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsStore<ModelType,
         DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
 
-    public AbsIdentifiableObjectStore(IMapper<ModelType, DatabaseEntityType> mapper) {
+    public AbsIdentifiableObjectStore(Mapper<ModelType, DatabaseEntityType> mapper) {
         super(mapper);
     }
 

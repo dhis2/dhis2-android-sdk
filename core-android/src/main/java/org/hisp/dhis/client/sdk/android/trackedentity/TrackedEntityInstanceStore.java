@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityInstanceFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityInstanceStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 public final class TrackedEntityInstanceStore extends AbsDataStore<TrackedEntityInstance,
         TrackedEntityInstanceFlow> implements ITrackedEntityInstanceStore {
 
-    public TrackedEntityInstanceStore(IMapper<TrackedEntityInstance,
-            TrackedEntityInstanceFlow> mapper, IStateStore stateStore) {
+    public TrackedEntityInstanceStore(Mapper<TrackedEntityInstance,
+                TrackedEntityInstanceFlow> mapper, IStateStore stateStore) {
         super(mapper, stateStore);
     }
 

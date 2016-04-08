@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardItemFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardItemStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
@@ -43,7 +43,7 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 public class DashboardItemStore extends AbsIdentifiableObjectStore<DashboardItem,
         DashboardItemFlow> implements IDashboardItemStore {
 
-    public DashboardItemStore(IMapper<DashboardItem, DashboardItemFlow> dashboardItemMapper) {
+    public DashboardItemStore(Mapper<DashboardItem, DashboardItemFlow> dashboardItemMapper) {
         super(dashboardItemMapper);
     }
 

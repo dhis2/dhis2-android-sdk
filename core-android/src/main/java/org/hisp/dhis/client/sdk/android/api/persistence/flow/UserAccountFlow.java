@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
@@ -45,7 +45,7 @@ import org.joda.time.DateTime;
 public final class UserAccountFlow extends BaseModel implements IdentifiableObject {
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;
-    public static IMapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
+    public static Mapper<UserAccount, UserAccountFlow> MAPPER = new UserAccountMapper();
     @Column(name = "id")
     @PrimaryKey(autoincrement = false)
     long id = LOCAL_ID;

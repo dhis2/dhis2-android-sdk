@@ -44,9 +44,9 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public abstract class AbsStore<ModelType extends Model,
         DatabaseEntityType extends com.raizlabs.android.dbflow.structure.Model & Model> implements IStore<ModelType> {
-    private final IMapper<ModelType, DatabaseEntityType> mapper;
+    private final Mapper<ModelType, DatabaseEntityType> mapper;
 
-    public AbsStore(IMapper<ModelType, DatabaseEntityType> mapper) {
+    public AbsStore(Mapper<ModelType, DatabaseEntityType> mapper) {
         this.mapper = isNull(mapper, "mapper object must not be null");
     }
 
@@ -131,7 +131,7 @@ public abstract class AbsStore<ModelType extends Model,
         return true;
     }
 
-    protected IMapper<ModelType, DatabaseEntityType> getMapper() {
+    protected Mapper<ModelType, DatabaseEntityType> getMapper() {
         return mapper;
     }
 }

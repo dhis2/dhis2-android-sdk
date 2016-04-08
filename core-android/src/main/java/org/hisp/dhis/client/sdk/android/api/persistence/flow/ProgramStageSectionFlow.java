@@ -36,12 +36,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 @Table(database = DbDhis.class)
 public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<ProgramStageSection, ProgramStageSectionFlow> MAPPER = new Mapper();
+    public static final org.hisp.dhis.client.sdk.android.common.Mapper<ProgramStageSection, ProgramStageSectionFlow> MAPPER = new Mapper();
     private static final String PROGRAM_STAGE_KEY = "programstage";
 
     @Column

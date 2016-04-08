@@ -64,7 +64,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
-public interface IDhisApi {
+public interface DhisApi {
 
     /////////////////////////////////////////////////////////////////////////
     // Strings for referencing endpoints in the DHIS 2 Web API

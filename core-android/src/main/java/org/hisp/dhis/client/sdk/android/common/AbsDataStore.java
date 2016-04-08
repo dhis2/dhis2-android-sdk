@@ -38,7 +38,7 @@ public class AbsDataStore<ModelType extends Model, DataBaseEntityType extends Mo
 
     private final IStateStore stateStore;
 
-    public AbsDataStore(IMapper<ModelType, DataBaseEntityType> mapper,
+    public AbsDataStore(Mapper<ModelType, DataBaseEntityType> mapper,
                         IStateStore stateStore) {
         super(mapper);
         this.stateStore = stateStore;

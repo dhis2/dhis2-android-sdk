@@ -39,7 +39,7 @@ import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
@@ -52,7 +52,7 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
     static final String PROGRAM_STAGE_KEY = "programstage";
     static final String DATA_ELEMENT_KEY = "dataelement";
     static final String PROGRAM_STAGE_SECTION_KEY = "programstagesection";
-    public static IMapper<ProgramStageDataElement, ProgramStageDataElementFlow>
+    public static Mapper<ProgramStageDataElement, ProgramStageDataElementFlow>
             MAPPER = new ProgramStageDataElementMapper();
     @Column
     @ForeignKey(

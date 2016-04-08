@@ -36,7 +36,6 @@ import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IStateMapper;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -51,7 +50,7 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
         }
 )
 public final class StateFlow extends BaseModelFlow {
-    public static final IStateMapper MAPPER = new StateMapper();
+    public static final org.hisp.dhis.client.sdk.android.common.StateMapper MAPPER = new StateMapper();
     static final int UNIQUE_GROUP_NUMBER = 1;
 
     @Column(name = "itemId")
@@ -94,7 +93,7 @@ public final class StateFlow extends BaseModelFlow {
         this.action = action;
     }
 
-    private static class StateMapper extends AbsMapper<State, StateFlow> implements IStateMapper {
+    private static class StateMapper extends AbsMapper<State, StateFlow> implements org.hisp.dhis.client.sdk.android.common.StateMapper {
 
         @Override
         public StateFlow mapToDatabaseEntity(State state) {

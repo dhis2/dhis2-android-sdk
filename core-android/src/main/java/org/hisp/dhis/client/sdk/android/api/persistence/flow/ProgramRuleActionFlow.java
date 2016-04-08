@@ -36,13 +36,12 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<ProgramRuleAction, ProgramRuleActionFlow> MAPPER = new Mapper();
+    public static final org.hisp.dhis.client.sdk.android.common.Mapper<ProgramRuleAction, ProgramRuleActionFlow> MAPPER = new Mapper();
 
     private static final String PROGRAM_RULE_KEY = "programrule";
     private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";

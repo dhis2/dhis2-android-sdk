@@ -58,9 +58,9 @@ import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class StateStore extends AbsStore<State, StateFlow> implements IStateStore {
-    private final IMapper<Event, EventFlow> eventMapper;
+    private final Mapper<Event, EventFlow> eventMapper;
 
-    public StateStore(IMapper<Event, EventFlow> eventMapper) {
+    public StateStore(Mapper<Event, EventFlow> eventMapper) {
         super(StateFlow.MAPPER);
         this.eventMapper = eventMapper;
     }
@@ -248,7 +248,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
         return list;
     }
 
-    private IStateMapper getStateMapper() {
-        return (IStateMapper) getMapper();
+    private StateMapper getStateMapper() {
+        return (StateMapper) getMapper();
     }
 }

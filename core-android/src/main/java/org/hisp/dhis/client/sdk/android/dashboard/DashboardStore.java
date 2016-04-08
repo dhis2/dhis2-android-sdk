@@ -30,14 +30,14 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.DashboardFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
 public class DashboardStore extends AbsIdentifiableObjectStore<Dashboard, DashboardFlow>
         implements IDashboardStore {
 
-    public DashboardStore(IMapper<Dashboard, DashboardFlow> mapper) {
+    public DashboardStore(Mapper<Dashboard, DashboardFlow> mapper) {
         super(mapper);
     }
 }

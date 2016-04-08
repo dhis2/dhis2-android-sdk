@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.dashboard;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.network.IDhisApi;
+import org.hisp.dhis.client.sdk.android.api.network.DhisApi;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.dashboard.IDashboardApiClient;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
@@ -65,7 +65,7 @@ public class DashboardApiClient implements IDashboardApiClient {
             QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        return unwrap(call(dhisApi.getDashboards(QUERY_MAP_BASIC)), IDhisApi.DASHBOARDS);
+        return unwrap(call(dhisApi.getDashboards(QUERY_MAP_BASIC)), DhisApi.DASHBOARDS);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DashboardApiClient implements IDashboardApiClient {
         }
 
         List<Dashboard> dashboards = unwrap(call(dhisApi.getDashboards(QUERY_MAP_FULL)),
-                IDhisApi.DASHBOARDS);
+                DhisApi.DASHBOARDS);
 
         // Building dashboard item to dashboard relationship.
         for (Dashboard dashboard : dashboards) {
@@ -116,7 +116,7 @@ public class DashboardApiClient implements IDashboardApiClient {
             QUERY_MAP_BASIC.put("filter", "lastUpdated:gt:" + lastUpdated.toString());
         }
 
-        return unwrap(call(dhisApi.getDashboardItems(QUERY_MAP_BASIC)), IDhisApi.DASHBOARD_ITEMS);
+        return unwrap(call(dhisApi.getDashboardItems(QUERY_MAP_BASIC)), DhisApi.DASHBOARD_ITEMS);
     }
 
     @Override

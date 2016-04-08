@@ -32,7 +32,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 
-public interface IStateMapper extends IMapper<State, StateFlow> {
+public interface StateMapper extends Mapper<State, StateFlow> {
     Class<? extends Model> getRelatedModelClass(String type);
 
     String getRelatedModelClass(Class<? extends Model> clazz);

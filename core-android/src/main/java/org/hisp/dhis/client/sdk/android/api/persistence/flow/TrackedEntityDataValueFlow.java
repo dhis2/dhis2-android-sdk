@@ -39,7 +39,7 @@ import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
@@ -48,8 +48,8 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class TrackedEntityDataValueFlow extends BaseModelFlow {
-    public static final IMapper<TrackedEntityDataValue,
-            TrackedEntityDataValueFlow> MAPPER = new TrackedEntityDataValueMapper();
+    public static final Mapper<TrackedEntityDataValue,
+                TrackedEntityDataValueFlow> MAPPER = new TrackedEntityDataValueMapper();
 
     static final int UNIQUE_EVENT_DATAVALUE = 1;
 

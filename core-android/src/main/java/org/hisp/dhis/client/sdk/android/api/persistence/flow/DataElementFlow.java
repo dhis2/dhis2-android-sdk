@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementMapper;
 import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
@@ -43,7 +43,7 @@ import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 @Table(database = DbDhis.class)
 public final class DataElementFlow extends BaseIdentifiableObjectFlow {
     final static String OPTION_SET_KEY = "optionset";
-    public static IMapper<DataElement, DataElementFlow> MAPPER = new DataElementMapper();
+    public static Mapper<DataElement, DataElementFlow> MAPPER = new DataElementMapper();
     @Column
     ValueType valueType;
 

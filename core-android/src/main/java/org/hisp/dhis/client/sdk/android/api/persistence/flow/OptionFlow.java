@@ -35,13 +35,13 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.android.optionset.OptionMapper;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 
 @Table(database = DbDhis.class)
 public final class OptionFlow extends BaseIdentifiableObjectFlow {
-    public static IMapper<Option, OptionFlow> MAPPER = new OptionMapper();
+    public static Mapper<Option, OptionFlow> MAPPER = new OptionMapper();
 
     static final String OPTION_SET_KEY = "optionset";
 

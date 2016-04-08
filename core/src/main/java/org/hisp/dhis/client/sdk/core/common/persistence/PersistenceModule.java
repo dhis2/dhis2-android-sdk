@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
@@ -46,11 +46,11 @@ import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
-public interface IPersistenceModule {
+public interface PersistenceModule {
 
-    ITransactionManager getTransactionManager();
+    TransactionManager getTransactionManager();
 
-    IStateStore getStateStore();
+    StateStore getStateStore();
 
     IUserAccountStore getUserAccountStore();
 

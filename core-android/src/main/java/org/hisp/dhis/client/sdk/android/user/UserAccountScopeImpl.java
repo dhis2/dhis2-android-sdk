@@ -32,7 +32,7 @@ package org.hisp.dhis.client.sdk.android.user;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
@@ -42,7 +42,7 @@ import rx.Subscriber;
 
 public class UserAccountScopeImpl implements UserAccountScope {
     // preferences
-    private final IUserPreferences userPreferences;
+    private final UserPreferences userPreferences;
 
     // services
     private final IUserAccountService userAccountService;
@@ -54,7 +54,7 @@ public class UserAccountScopeImpl implements UserAccountScope {
     private final UserProgramScope userProgramScope;
     private final UserOrganisationUnitScope organisationUnitScope;
 
-    public UserAccountScopeImpl(IUserPreferences userPreferences,
+    public UserAccountScopeImpl(UserPreferences userPreferences,
                                 IUserAccountService userAccountService,
                                 IUserAccountController userAccountController,
                                 UserProgramScope userProgramScope,

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.core.event.IEventService;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
@@ -47,10 +47,10 @@ import java.util.List;
 public class EnrollmentService implements IEnrollmentService {
 
     private final IEnrollmentStore enrollmentStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
     private final IEventService eventService;
 
-    public EnrollmentService(IEnrollmentStore enrollmentStore, IStateStore stateStore,
+    public EnrollmentService(IEnrollmentStore enrollmentStore, StateStore stateStore,
                              IEventService eventService) {
         this.enrollmentStore = enrollmentStore;
         this.stateStore = stateStore;

@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 public interface ITrackedEntityAttributeStore extends
-        IIdentifiableObjectStore<TrackedEntityAttribute> {
+        IdentifiableObjectStore<TrackedEntityAttribute> {
 }

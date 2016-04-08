@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
@@ -46,12 +46,12 @@ public class DashboardService implements IDashboardService {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
 
     public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
-                            IDashboardElementStore dashboardElementStore, IStateStore stateStore,
+                            IDashboardElementStore dashboardElementStore, StateStore stateStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService) {
         this.dashboardStore = dashboardStore;

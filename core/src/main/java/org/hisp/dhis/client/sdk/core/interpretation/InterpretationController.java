@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
 import org.hisp.dhis.client.sdk.core.user.IUserStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
@@ -50,11 +50,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class InterpretationController implements IIdentifiableController<Interpretation> {
+public final class InterpretationController implements IdentifiableController<Interpretation> {
     private final IInterpretationService mInterpretationService;
     private final IUserAccountService mUserAccountService;
 
-    private final IIdentifiableObjectStore<Interpretation> mInterpretationStore;
+    private final IdentifiableObjectStore<Interpretation> mInterpretationStore;
     private final IInterpretationElementStore mInterpretationElementStore;
     private final IInterpretationCommentStore mInterpretationCommentStore;
 
@@ -62,7 +62,7 @@ public final class InterpretationController implements IIdentifiableController<I
 
     public InterpretationController(IInterpretationService interpretationsService,
                                     IUserAccountService userAccountService,
-                                    IIdentifiableObjectStore<Interpretation> mInterpretationStore,
+                                    IdentifiableObjectStore<Interpretation> mInterpretationStore,
                                     IInterpretationElementStore mInterpretationElementStore,
                                     IInterpretationCommentStore mInterpretationCommentStore,
                                     IUserStore mUserStore) {
@@ -359,7 +359,7 @@ public final class InterpretationController implements IIdentifiableController<I
         List<InterpretationComment> comments = updateInterpretationComments(interpretations);
         List<User> users = updateInterpretationUsers(interpretations, comments);
 
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(
                 mUserStore, mUserStore.queryAll(), users));
         /* operations.addAll(createOperations(
@@ -525,9 +525,9 @@ public final class InterpretationController implements IIdentifiableController<I
         return new ArrayList<>(users.values());
     }
 
-    private List<DbOperation> createOperations(List<Interpretation> oldModels,
-                                               List<Interpretation> newModels) {
-        List<DbOperation> ops = new ArrayList<>();
+    private List<DbOperationImpl> createOperations(List<Interpretation> oldModels,
+                                                   List<Interpretation> newModels) {
+        List<DbOperationImpl> ops = new ArrayList<>();
 
         Map<String, Interpretation> newModelsMap = ModelUtils.toMap(newModels);
         Map<String, Interpretation> oldModelsMap = ModelUtils.toMap(oldModels);
@@ -537,13 +537,13 @@ public final class InterpretationController implements IIdentifiableController<I
             Interpretation oldModel = oldModelsMap.get(oldModelKey);
 
             if (newModel == null) {
-                ops.add(DbOperation.with(mInterpretationStore).delete(oldModel));
+                ops.add(DbOperationImpl.with(mInterpretationStore).delete(oldModel));
                 continue;
             }
 
             if (newModel.getLastUpdated().isAfter(oldModel.getLastUpdated())) {
                 newModel.setId(oldModel.getId());
-                ops.add(DbOperation.with(mInterpretationStore).update(newModel));
+                ops.add(DbOperationImpl.with(mInterpretationStore).update(newModel));
             }
 
             newModelsMap.remove(oldModelKey);
@@ -553,12 +553,12 @@ public final class InterpretationController implements IIdentifiableController<I
             Interpretation item = newModelsMap.get(newModelKey);
 
             // we also have to insert interpretation elements here
-            ops.add(DbOperation.with(mInterpretationStore).insert(item));
+            ops.add(DbOperationImpl.with(mInterpretationStore).insert(item));
 
             List<InterpretationElement> elements = new ArrayList<>();
             // = mInterpretationService.getInterpretationElements(item);
             for (InterpretationElement element : elements) {
-                ops.add(DbOperation.with(mInterpretationElementStore).insert(element));
+                ops.add(DbOperationImpl.with(mInterpretationElementStore).insert(element));
             }
         }
 

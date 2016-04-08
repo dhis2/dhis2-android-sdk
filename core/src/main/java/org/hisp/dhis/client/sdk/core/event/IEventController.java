@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableDataController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableDataController;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
-public interface IEventController extends IIdentifiableDataController<Event> {
+public interface IEventController extends IdentifiableDataController<Event> {
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
@@ -45,10 +45,10 @@ public final class TrackedEntityInstanceService implements ITrackedEntityInstanc
 
     private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
     private final IRelationshipStore relationshipStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
     public TrackedEntityInstanceService(ITrackedEntityInstanceStore trackedEntityInstanceStore,
-                                        IRelationshipStore relationshipStore, IStateStore
+                                        IRelationshipStore relationshipStore, StateStore
                                                 stateStore) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;

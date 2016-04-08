@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface IProgramIndicatorStore extends IIdentifiableObjectStore<ProgramIndicator> {
+public interface IProgramIndicatorStore extends IdentifiableObjectStore<ProgramIndicator> {
     List<ProgramIndicator> query(Program program);
 
     List<ProgramIndicator> query(ProgramStage programStage);

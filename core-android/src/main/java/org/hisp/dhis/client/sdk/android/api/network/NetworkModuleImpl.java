@@ -36,37 +36,37 @@ import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClient;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.event.EventApiClient;
 import org.hisp.dhis.client.sdk.android.event.EventApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClient;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClient;
-import org.hisp.dhis.client.sdk.android.program.ProgramApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClient;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClient;
-import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClient;
+import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
-import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
+import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementApiClient;
 import org.hisp.dhis.client.sdk.core.event.IEventApiClient;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetApiClient;
@@ -101,7 +101,7 @@ import static okhttp3.Credentials.basic;
 
 
 // Find a way to organize session
-public class NetworkModule implements INetworkModule {
+public class NetworkModuleImpl implements NetworkModule {
     private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s
     private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000;      // 20s
     private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
@@ -122,7 +122,7 @@ public class NetworkModule implements INetworkModule {
     private final IOptionSetApiClient optionSetApiClient;
     private final ITrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
 
-    public NetworkModule(IPreferencesModule preferencesModule, OkHttpClient okClient) {
+    public NetworkModuleImpl(PreferencesModule preferencesModule, OkHttpClient okClient) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
                 preferencesModule.getUserPreferences());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -268,9 +268,9 @@ public class NetworkModule implements INetworkModule {
     }
 
     private static class AuthInterceptor implements Interceptor {
-        private final IUserPreferences mUserPreferences;
+        private final UserPreferences mUserPreferences;
 
-        public AuthInterceptor(IUserPreferences preferences) {
+        public AuthInterceptor(UserPreferences preferences) {
             mUserPreferences = preferences;
         }
 

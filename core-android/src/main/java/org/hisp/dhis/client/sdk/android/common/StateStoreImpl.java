@@ -43,7 +43,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow_Table;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
@@ -57,10 +57,10 @@ import java.util.Set;
 import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public class StateStore extends AbsStore<State, StateFlow> implements IStateStore {
+public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateStore {
     private final Mapper<Event, EventFlow> eventMapper;
 
-    public StateStore(Mapper<Event, EventFlow> eventMapper) {
+    public StateStoreImpl(Mapper<Event, EventFlow> eventMapper) {
         super(StateFlow.MAPPER);
         this.eventMapper = eventMapper;
     }

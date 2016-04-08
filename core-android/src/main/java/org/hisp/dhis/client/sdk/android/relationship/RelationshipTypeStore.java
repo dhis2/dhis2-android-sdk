@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.android.relationship;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipTypeFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 
 public final class RelationshipTypeStore extends AbsIdentifiableObjectStore<RelationshipType,
-        RelationshipTypeFlow> implements IIdentifiableObjectStore<RelationshipType> {
+        RelationshipTypeFlow> implements IdentifiableObjectStore<RelationshipType> {
 
     public RelationshipTypeStore(Mapper<RelationshipType, RelationshipTypeFlow> mapper) {
         super(mapper);

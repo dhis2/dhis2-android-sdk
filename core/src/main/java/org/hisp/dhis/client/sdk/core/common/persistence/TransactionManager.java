@@ -26,22 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
+package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
+import java.util.Collection;
 
-public interface IUserPreferences {
-    boolean save(UserCredentials credentials);
-
-    boolean confirmUser();
-
-    boolean isUserConfirmed();
-
-    boolean invalidateUser();
-
-    boolean isUserInvalidated();
-
-    boolean clear();
-
-    UserCredentials get();
+public interface TransactionManager {
+    void transact(Collection<DbOperation> operations);
 }

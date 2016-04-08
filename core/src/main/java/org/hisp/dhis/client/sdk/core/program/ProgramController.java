@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
@@ -58,12 +58,12 @@ public class ProgramController extends AbsSyncStrategyController<Program>
     private final IUserApiClient userApiClient;
 
     /* Utilities */
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
     public ProgramController(ISystemInfoController systemInfoController,
                              IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, ITransactionManager transactionManager,
-                             ILastUpdatedPreferences lastUpdatedPreferences) {
+                             IProgramStore programStore, TransactionManager transactionManager,
+                             LastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 
         this.systemInfoController = systemInfoController;
@@ -104,7 +104,7 @@ public class ProgramController extends AbsSyncStrategyController<Program>
         }
 
         // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
+        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingPrograms,
                 updatedPrograms, persistedPrograms, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 

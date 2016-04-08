@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
@@ -38,9 +38,9 @@ import java.util.List;
 
 public class RelationshipService implements IRelationshipService {
     private IRelationshipStore relationshipStore;
-    private IStateStore stateStore;
+    private StateStore stateStore;
 
-    public RelationshipService(IRelationshipStore relationshipStore, IStateStore stateStore) {
+    public RelationshipService(IRelationshipStore relationshipStore, StateStore stateStore) {
         this.relationshipStore = relationshipStore;
         this.stateStore = stateStore;
     }

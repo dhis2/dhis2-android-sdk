@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -43,9 +43,9 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class EventService implements IEventService {
     private final IEventStore eventStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
-    public EventService(IEventStore eventStore, IStateStore stateStore) {
+    public EventService(IEventStore eventStore, StateStore stateStore) {
         this.eventStore = eventStore;
         this.stateStore = stateStore;
     }

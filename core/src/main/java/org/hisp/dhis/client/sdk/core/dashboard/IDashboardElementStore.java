@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 
 import java.util.List;
 
-public interface IDashboardElementStore extends IIdentifiableObjectStore<DashboardElement> {
+public interface IDashboardElementStore extends IdentifiableObjectStore<DashboardElement> {
     List<DashboardElement> query(DashboardItem dashboardItem);
 }

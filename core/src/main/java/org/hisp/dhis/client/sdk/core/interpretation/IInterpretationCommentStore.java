@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 
 import java.util.List;
 
 public interface IInterpretationCommentStore extends
-        IIdentifiableObjectStore<InterpretationComment> {
+        IdentifiableObjectStore<InterpretationComment> {
     List<InterpretationComment> query(Interpretation interpretation);
 }

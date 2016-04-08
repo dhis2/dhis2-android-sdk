@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.constant;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
 
-public interface IConstantStore extends IIdentifiableObjectStore<Constant> {
+public interface IConstantStore extends IdentifiableObjectStore<Constant> {
 }

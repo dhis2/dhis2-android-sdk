@@ -31,37 +31,37 @@ package org.hisp.dhis.client.sdk.android.api.preferences;
 import android.content.Context;
 
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.ConfigurationPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
 
-public class PreferencesModule implements IPreferencesModule {
-    private final IConfigurationPreferences configurationPreferences;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IUserPreferences userPreferences;
+public class PreferencesModuleImpl implements PreferencesModule {
+    private final ConfigurationPreferences configurationPreferences;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final UserPreferences userPreferences;
     private final ISystemInfoPreferences systemInfoPreferences;
 
-    public PreferencesModule(Context context) {
-        configurationPreferences = new ConfigurationPreferences(context);
-        lastUpdatedPreferences = new LastUpdatedPreferences(context);
-        userPreferences = new UserPreferences(context);
+    public PreferencesModuleImpl(Context context) {
+        configurationPreferences = new ConfigurationPreferencesImpl(context);
+        lastUpdatedPreferences = new LastUpdatedPreferencesImpl(context);
+        userPreferences = new UserPreferencesImpl(context);
         systemInfoPreferences = new SystemInfoPreferences(context);
     }
 
     @Override
-    public IConfigurationPreferences getConfigurationPreferences() {
+    public ConfigurationPreferences getConfigurationPreferences() {
         return configurationPreferences;
     }
 
     @Override
-    public ILastUpdatedPreferences getLastUpdatedPreferences() {
+    public LastUpdatedPreferences getLastUpdatedPreferences() {
         return lastUpdatedPreferences;
     }
 
     @Override
-    public IUserPreferences getUserPreferences() {
+    public UserPreferences getUserPreferences() {
         return userPreferences;
     }
 

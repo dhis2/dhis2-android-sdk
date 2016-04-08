@@ -29,17 +29,17 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.ILogger;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.Logger;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
@@ -63,21 +63,21 @@ public final class EventController extends AbsDataController<Event> implements I
     private final IEventApiClient eventApiClient;
 
     /* Preferences */
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
 
     /* Persistence */
     private final IEventStore eventStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
     /* Utilities */
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
     public EventController(ISystemInfoController systemInfoController,
                            IEventApiClient eventApiClient,
-                           ILastUpdatedPreferences lastUpdatedPreferences,
-                           IEventStore eventStore, IStateStore stateStore,
-                           ITransactionManager transactionManager,
-                           ILogger logger) {
+                           LastUpdatedPreferences lastUpdatedPreferences,
+                           IEventStore eventStore, StateStore stateStore,
+                           TransactionManager transactionManager,
+                           Logger logger) {
         super(logger, eventStore);
 
         this.systemInfoController = systemInfoController;
@@ -145,7 +145,7 @@ public final class EventController extends AbsDataController<Event> implements I
                 Fields.ALL, lastUpdated, uidSet);
 
         // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingEvents,
+        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingEvents,
                 updatedEvents, persistedEvents, eventStore);
         transactionManager.transact(dbOperations);
 

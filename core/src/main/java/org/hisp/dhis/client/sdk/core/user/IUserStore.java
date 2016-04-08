@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-public interface IUserStore extends IIdentifiableObjectStore<User> {
+public interface IUserStore extends IdentifiableObjectStore<User> {
     User queryByUid(String uid);
 }

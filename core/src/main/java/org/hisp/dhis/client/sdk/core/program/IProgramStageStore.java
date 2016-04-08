@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public interface IProgramStageStore extends IIdentifiableObjectStore<ProgramStage> {
+public interface IProgramStageStore extends IdentifiableObjectStore<ProgramStage> {
     List<ProgramStage> query(Program program);
 }

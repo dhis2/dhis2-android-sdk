@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-public interface IDataElementStore extends IIdentifiableObjectStore<DataElement> {
+public interface IDataElementStore extends IdentifiableObjectStore<DataElement> {
 }

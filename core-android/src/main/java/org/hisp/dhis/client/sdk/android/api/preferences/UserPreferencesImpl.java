@@ -32,12 +32,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
-import org.hisp.dhis.client.sdk.core.common.preferences.IUserPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 
 import static android.text.TextUtils.isEmpty;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public class UserPreferences implements IUserPreferences {
+public class UserPreferencesImpl implements UserPreferences {
     private static final String USER_CREDENTIALS = "preferences:userCredentials";
     private static final String USERNAME = "key:username";
     private static final String PASSWORD = "key:password";
@@ -45,7 +45,7 @@ public class UserPreferences implements IUserPreferences {
 
     private final SharedPreferences mPrefs;
 
-    public UserPreferences(Context context) {
+    public UserPreferencesImpl(Context context) {
         mPrefs = context.getSharedPreferences(USER_CREDENTIALS, Context.MODE_PRIVATE);
     }
 

@@ -26,14 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.preferences;
+package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.core.common.network.Configuration;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public interface IConfigurationPreferences {
-    boolean save(Configuration configuration);
+import java.util.List;
 
-    Configuration get();
+public interface Store<T extends Model> {
 
-    boolean clear();
+    boolean insert(T object);
+
+    boolean update(T object);
+
+    boolean save(T object);
+
+    boolean delete(T object);
+
+    boolean deleteAll();
+
+    T queryById(long id);
+
+    List<T> queryAll();
 }

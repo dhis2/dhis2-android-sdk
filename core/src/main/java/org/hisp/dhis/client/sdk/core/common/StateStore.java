@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface IStateStore extends IStore<State> {
+public interface StateStore extends Store<State> {
 
     //////////////////////////////////////////////////////////////////////////////////////////
     // Helper methods for work with models and actions directly (by bypassing State model)

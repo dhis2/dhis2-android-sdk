@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
-public interface IDashboardController extends IIdentifiableController<Dashboard> {
+public interface IDashboardController extends IdentifiableController<Dashboard> {
 }

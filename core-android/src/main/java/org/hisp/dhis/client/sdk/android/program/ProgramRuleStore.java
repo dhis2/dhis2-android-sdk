@@ -34,8 +34,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
@@ -52,9 +52,9 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
         ProgramRuleFlow> implements IProgramRuleStore {
     private static final String PROGRAMRULE_TO_PROGRAMRULEACTIONS =
             "programRuleToProgramRuleActions";
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
-    public ProgramRuleStore(ITransactionManager transactionManager) {
+    public ProgramRuleStore(TransactionManager transactionManager) {
         super(ProgramRuleFlow.MAPPER);
         this.transactionManager = transactionManager;
     }
@@ -160,7 +160,7 @@ public final class ProgramRuleStore extends AbsIdentifiableObjectStore<ProgramRu
     }
 
     private void updateProgramStageRelationships(ProgramRule programRule) {
-        List<IDbOperation> dbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
         dbOperations.addAll(ModelLinkFlow.updateLinksToModel(programRule,
                 programRule.getProgramRuleActions(),
                 PROGRAMRULE_TO_PROGRAMRULEACTIONS));

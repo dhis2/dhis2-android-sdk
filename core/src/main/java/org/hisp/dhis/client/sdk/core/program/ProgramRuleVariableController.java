@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
@@ -51,7 +51,7 @@ import java.util.Set;
 public final class ProgramRuleVariableController extends AbsSyncStrategyController
         <ProgramRuleVariable> implements IProgramRuleVariableController {
     private final IProgramRuleVariableApiClient programRuleVariableApiClient;
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
     private final ISystemInfoController systemInfoController;
     private final IProgramController programController;
     private final IProgramStageController programStageController;
@@ -59,8 +59,8 @@ public final class ProgramRuleVariableController extends AbsSyncStrategyControll
     private final ITrackedEntityAttributeController trackedEntityAttributeController;
 
     public ProgramRuleVariableController(IProgramRuleVariableApiClient programRuleVariableApiClient,
-                                         ITransactionManager transactionManager,
-                                         ILastUpdatedPreferences lastUpdatedPreferences,
+                                         TransactionManager transactionManager,
+                                         LastUpdatedPreferences lastUpdatedPreferences,
                                          ISystemInfoController systemInfoController,
                                          IProgramRuleVariableStore programRuleVariableStore,
                                          IProgramController programController,
@@ -138,7 +138,7 @@ public final class ProgramRuleVariableController extends AbsSyncStrategyControll
 
 
         // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(
+        List<DbOperation> dbOperations = DbUtils.createOperations(
                 allExistingProgramRuleVariables, updatedProgramRuleVariables,
                 persistedProgramRuleVariables, identifiableObjectStore);
         transactionManager.transact(dbOperations);

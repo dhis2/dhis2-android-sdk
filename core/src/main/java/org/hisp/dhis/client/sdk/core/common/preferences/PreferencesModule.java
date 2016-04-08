@@ -26,17 +26,18 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.persistence;
+package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
 
-import java.util.List;
-import java.util.Set;
+public interface PreferencesModule {
+    ConfigurationPreferences getConfigurationPreferences();
 
-public interface IIdentifiableObjectStore<T extends IdentifiableObject> extends IStore<T> {
-    T queryByUid(String uid);
+    LastUpdatedPreferences getLastUpdatedPreferences();
 
-    List<T> queryByUids(Set<String> uids);
+    UserPreferences getUserPreferences();
 
-    boolean areStored(Set<String> uids);
+    ISystemInfoPreferences getSystemInfoPreferences();
+
+    boolean clearAllPreferences();
 }

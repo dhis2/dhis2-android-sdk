@@ -34,7 +34,7 @@ import com.raizlabs.android.dbflow.sql.language.NameAlias;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseModelFlow;
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
@@ -43,7 +43,7 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
 public abstract class AbsStore<ModelType extends Model,
-        DatabaseEntityType extends com.raizlabs.android.dbflow.structure.Model & Model> implements IStore<ModelType> {
+        DatabaseEntityType extends com.raizlabs.android.dbflow.structure.Model & Model> implements Store<ModelType> {
     private final Mapper<ModelType, DatabaseEntityType> mapper;
 
     public AbsStore(Mapper<ModelType, DatabaseEntityType> mapper) {

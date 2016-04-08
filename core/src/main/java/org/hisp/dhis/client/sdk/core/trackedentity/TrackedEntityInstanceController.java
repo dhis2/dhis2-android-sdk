@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentController;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
@@ -57,11 +57,11 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
     private final ITrackedEntityInstanceApiClient trackedEntityInstanceApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
     private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ITransactionManager transactionManager;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final TransactionManager transactionManager;
 
     private final IEnrollmentController enrollmentController;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
     private final IRelationshipStore relationshipStore;
     private final ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private final IEnrollmentStore enrollmentStore;
@@ -70,10 +70,10 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
                                                    trackedEntityInstanceApiClient,
                                            ISystemInfoApiClient systemInfoApiClient,
                                            ITrackedEntityInstanceStore trackedEntityInstanceStore,
-                                           ILastUpdatedPreferences lastUpdatedPreferences,
-                                           ITransactionManager transactionManager,
+                                           LastUpdatedPreferences lastUpdatedPreferences,
+                                           TransactionManager transactionManager,
                                            IEnrollmentController enrollmentController,
-                                           IStateStore stateStore,
+                                           StateStore stateStore,
                                            IRelationshipStore relationshipStore,
                                            ITrackedEntityAttributeValueStore
                                                    trackedEntityAttributeValueStore,
@@ -193,20 +193,20 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
             updatedTrackedEntityInstance.setId(persistedTrackedEntityInstance.getId());
             if (updatedTrackedEntityInstance.getLastUpdated().isAfter
                     (persistedTrackedEntityInstance.getLastUpdated())) {
-                DbOperation.with(trackedEntityInstanceStore).update(updatedTrackedEntityInstance)
+                DbOperationImpl.with(trackedEntityInstanceStore).update(updatedTrackedEntityInstance)
                         .execute();
             }
         } else {
-            DbOperation.with(trackedEntityInstanceStore).insert(updatedTrackedEntityInstance)
+            DbOperationImpl.with(trackedEntityInstanceStore).insert(updatedTrackedEntityInstance)
                     .execute();
         }
 
-        List<IDbOperation> operations = new ArrayList<>();
+        List<DbOperation> operations = new ArrayList<>();
         if (updatedTrackedEntityInstance.getAttributes() != null) {
             for (TrackedEntityAttributeValue value : updatedTrackedEntityInstance.getAttributes()) {
                 if (value != null) {
                     value.setTrackedEntityInstance(updatedTrackedEntityInstance);
-                    operations.add(DbOperation.with(trackedEntityAttributeValueStore).save(value));
+                    operations.add(DbOperationImpl.with(trackedEntityAttributeValueStore).save(value));
                 }
             }
         }
@@ -234,10 +234,10 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
      * @param oldModels List of models from local storage.
      * @param newModels List of models of distance instance of DHIS.
      */
-    private List<DbOperation> createOperations(IStore<Relationship> modelStore,
-                                               List<Relationship> oldModels,
-                                               List<Relationship> newModels) {
-        List<DbOperation> ops = new ArrayList<>();
+    private List<DbOperationImpl> createOperations(Store<Relationship> modelStore,
+                                                   List<Relationship> oldModels,
+                                                   List<Relationship> newModels) {
+        List<DbOperationImpl> ops = new ArrayList<>();
 
         Map<String, Relationship> newModelsMap = toMap(newModels);
         Map<String, Relationship> oldModelsMap = toMap(oldModels);
@@ -256,7 +256,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
             if (newModel == null) {
                 Action action = stateStore.queryActionForModel(oldModel);
                 if (!Action.TO_UPDATE.equals(action) && !Action.TO_POST.equals(action)) {
-                    ops.add(DbOperation.with(modelStore)
+                    ops.add(DbOperationImpl.with(modelStore)
                             .delete(oldModel));
                 }
 
@@ -266,7 +266,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
             }
 
             newModel.setId(oldModel.getId());
-            ops.add(DbOperation.with(modelStore)
+            ops.add(DbOperationImpl.with(modelStore)
                     .update(newModel));
 
             // as we have processed given old (persisted) model,
@@ -277,7 +277,7 @@ public class TrackedEntityInstanceController implements ITrackedEntityInstanceCo
         // Inserting new items.
         for (String newModelKey : newModelsMap.keySet()) {
             Relationship item = newModelsMap.get(newModelKey);
-            ops.add(DbOperation.with(modelStore)
+            ops.add(DbOperationImpl.with(modelStore)
                     .insert(item));
         }
 

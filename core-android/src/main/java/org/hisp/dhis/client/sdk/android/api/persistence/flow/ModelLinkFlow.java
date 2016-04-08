@@ -44,7 +44,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbFlowOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
@@ -81,7 +81,7 @@ public class ModelLinkFlow extends BaseModelFlow {
     }
 
     @NonNull
-    public static List<IDbOperation> createOperations(
+    public static List<DbOperation> createOperations(
             List<ModelLinkFlow> persistedLinks, List<ModelLinkFlow> updatedLinks) {
 
         // avoiding null checks in order to make code less verbose
@@ -95,7 +95,7 @@ public class ModelLinkFlow extends BaseModelFlow {
             linkKeySet.add(linkModel.getKeyOne() + linkModel.getKeyTwo());
         }
 
-        List<IDbOperation> dbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
         for (ModelLinkFlow linkModel : updatedLinks) {
             String key = linkModel.getKeyOne() + linkModel.getKeyTwo();
             if (!linkKeySet.contains(key)) {
@@ -162,7 +162,7 @@ public class ModelLinkFlow extends BaseModelFlow {
     }
 
     @NonNull
-    public static <T extends IdentifiableObject> List<IDbOperation> updateLinksToModel(
+    public static <T extends IdentifiableObject> List<DbOperation> updateLinksToModel(
             @NonNull T model, @Nullable List<? extends IdentifiableObject> referencedModels,
             @NonNull String linkMimeType) {
 

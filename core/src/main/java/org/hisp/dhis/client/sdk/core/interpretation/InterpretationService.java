@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
@@ -41,11 +41,11 @@ import org.joda.time.DateTime;
 
 public class InterpretationService implements IInterpretationService {
     private final IInterpretationStore interpretationStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
     private final IInterpretationElementService interpretationElementService;
 
     public InterpretationService(IInterpretationStore interpretationStore,
-                                 IStateStore stateStore, IInterpretationElementService
+                                 StateStore stateStore, IInterpretationElementService
                                          interpretationElementService) {
         this.interpretationStore = interpretationStore;
         this.stateStore = stateStore;

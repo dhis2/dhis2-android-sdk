@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.core.systeminfo;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 import org.joda.time.DateTime;
@@ -45,11 +45,11 @@ public class SystemInfoController implements ISystemInfoController {
 
     /* Stores and preferences */
     private final ISystemInfoPreferences systemInfoPreferences;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
 
     public SystemInfoController(ISystemInfoApiClient systemInfoApiClient,
                                 ISystemInfoPreferences systemInfoPreferences,
-                                ILastUpdatedPreferences lastUpdatedPreferences) {
+                                LastUpdatedPreferences lastUpdatedPreferences) {
         this.systemInfoApiClient = systemInfoApiClient;
         this.systemInfoPreferences = systemInfoPreferences;
         this.lastUpdatedPreferences = lastUpdatedPreferences;

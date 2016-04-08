@@ -28,21 +28,15 @@
 
 package org.hisp.dhis.client.sdk.android.optionset;
 
-import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OptionSetFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, OptionSetFlow>
         implements IOptionSetStore {
 //    private static final String OPTIONSET_TO_OPTIONS = "optionsetToOptions";
-//    private final ITransactionManager transactionManager;
+//    private final TransactionManager transactionManager;
 
     public OptionSetStore() {
         super(OptionSetFlow.MAPPER);
@@ -96,7 +90,7 @@ public final class OptionSetStore extends AbsIdentifiableObjectStore<OptionSet, 
 //    }
 
 //    private void updateOptionSetRelationships(OptionSet optionSet) {
-//        List<IDbOperation> dbOperations = new ArrayList<>();
+//        List<DbOperation> dbOperations = new ArrayList<>();
 //        dbOperations.addAll(ModelLinkFlow.updateLinksToModel(optionSet,
 //                optionSet.getOptions(), OPTIONSET_TO_OPTIONS));
 //        transactionManager.transact(dbOperations);

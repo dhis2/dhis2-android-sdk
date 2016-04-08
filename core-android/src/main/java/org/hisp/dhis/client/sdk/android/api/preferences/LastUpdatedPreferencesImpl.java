@@ -32,7 +32,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.joda.time.DateTime;
 
@@ -43,11 +43,11 @@ import java.util.Map;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-public class LastUpdatedPreferences implements ILastUpdatedPreferences {
+public class LastUpdatedPreferencesImpl implements LastUpdatedPreferences {
     private static final String PREFERENCES = "preferences:lastUpdated";
     private final SharedPreferences preferences;
 
-    public LastUpdatedPreferences(Context context) {
+    public LastUpdatedPreferencesImpl(Context context) {
         isNull(context, "Context object must not be null");
         preferences = context.getSharedPreferences(PREFERENCES,
                 Context.MODE_PRIVATE);

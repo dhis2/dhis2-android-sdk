@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
-public interface IOrganisationUnitController extends IIdentifiableController<OrganisationUnit> {
+public interface IOrganisationUnitController extends IdentifiableController<OrganisationUnit> {
 }

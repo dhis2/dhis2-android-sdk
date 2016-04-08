@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
-public interface IDashboardStore extends IIdentifiableObjectStore<Dashboard> {
+public interface IDashboardStore extends IdentifiableObjectStore<Dashboard> {
 }

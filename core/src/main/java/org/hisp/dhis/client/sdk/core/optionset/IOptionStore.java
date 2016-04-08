@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.optionset;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
-public interface IOptionStore extends IIdentifiableObjectStore<Option> {
+public interface IOptionStore extends IdentifiableObjectStore<Option> {
     List<Option> query(OptionSet optionSet);
 }

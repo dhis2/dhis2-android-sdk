@@ -34,8 +34,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttrib
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityAttributeValueFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeValueStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -51,11 +51,11 @@ public final class TrackedEntityAttributeValueStore extends
         AbsDataStore<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
         implements ITrackedEntityAttributeValueStore {
 
-    private final IIdentifiableObjectStore<Program> programStore;
+    private final IdentifiableObjectStore<Program> programStore;
 
     public TrackedEntityAttributeValueStore(Mapper<TrackedEntityAttributeValue,
-                TrackedEntityAttributeValueFlow> mapper, IStateStore stateStore,
-                                            IIdentifiableObjectStore<Program> programStore) {
+                TrackedEntityAttributeValueFlow> mapper, StateStore stateStore,
+                                            IdentifiableObjectStore<Program> programStore) {
         super(mapper, stateStore);
         this.programStore = programStore;
     }

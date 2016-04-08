@@ -29,9 +29,9 @@
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.joda.time.DateTime;
@@ -40,16 +40,16 @@ import org.joda.time.Seconds;
 import java.util.Set;
 
 public abstract class AbsSyncStrategyController<T extends IdentifiableObject>
-        implements IIdentifiableController<T> {
+        implements IdentifiableController<T> {
     private static final int EXPIRATION_THRESHOLD = 64;
 
     protected final ResourceType resourceType;
-    protected final IIdentifiableObjectStore<T> identifiableObjectStore;
-    protected final ILastUpdatedPreferences lastUpdatedPreferences;
+    protected final IdentifiableObjectStore<T> identifiableObjectStore;
+    protected final LastUpdatedPreferences lastUpdatedPreferences;
 
     protected AbsSyncStrategyController(ResourceType resourceType,
-                                        IIdentifiableObjectStore<T> identifiableObjectStore,
-                                        ILastUpdatedPreferences lastUpdatedPreferences) {
+                                        IdentifiableObjectStore<T> identifiableObjectStore,
+                                        LastUpdatedPreferences lastUpdatedPreferences) {
         this.resourceType = resourceType;
         this.identifiableObjectStore = identifiableObjectStore;
         this.lastUpdatedPreferences = lastUpdatedPreferences;

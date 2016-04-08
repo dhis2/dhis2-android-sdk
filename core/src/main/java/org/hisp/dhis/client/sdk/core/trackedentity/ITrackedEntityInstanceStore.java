@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-public interface ITrackedEntityInstanceStore extends IStore<TrackedEntityInstance> {
+public interface ITrackedEntityInstanceStore extends Store<TrackedEntityInstance> {
 
     TrackedEntityInstance queryByUid(String uid);
 }

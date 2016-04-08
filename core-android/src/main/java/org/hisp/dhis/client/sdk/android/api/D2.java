@@ -31,50 +31,50 @@ package org.hisp.dhis.client.sdk.android.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
-import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
-import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
+import org.hisp.dhis.client.sdk.android.api.network.NetworkModuleImpl;
+import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModuleImpl;
+import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
-import org.hisp.dhis.client.sdk.android.api.utils.Logger;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementScopeImpl;
+import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
-import org.hisp.dhis.client.sdk.android.event.EventScopeImpl;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementScopeImpl;
 import org.hisp.dhis.client.sdk.android.event.EventScope;
+import org.hisp.dhis.client.sdk.android.event.EventScopeImpl;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScopeImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScopeImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
-import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScopeImpl;
+import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScopeImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScope;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScopeImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScopeImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
 import org.hisp.dhis.client.sdk.android.user.UserAccountScopeImpl;
-import org.hisp.dhis.client.sdk.core.common.ILogger;
+import org.hisp.dhis.client.sdk.core.common.Logger;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
-import org.hisp.dhis.client.sdk.core.common.controllers.IControllersModule;
+import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
-import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
-import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
-import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
+import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
+import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 
@@ -95,8 +95,8 @@ public class D2 {
     // Modules
     //-----------------------------------------------------------------------------------------
 
-    private final IPersistenceModule persistenceModule;
-    private final IPreferencesModule preferencesModule;
+    private final PersistenceModule persistenceModule;
+    private final PreferencesModule preferencesModule;
 
     //-----------------------------------------------------------------------------------------
     // Scopes
@@ -121,15 +121,15 @@ public class D2 {
     // Utilities
     //-----------------------------------------------------------------------------------------
 
-    private final ILogger logger;
+    private final Logger logger;
 
 
     private D2(Context context, Flavor flavor) {
         applicationContext = context;
 
         // Modules which preserve state
-        persistenceModule = new PersistenceModule(applicationContext);
-        preferencesModule = new PreferencesModule(applicationContext);
+        persistenceModule = new PersistenceModuleImpl(applicationContext);
+        preferencesModule = new PreferencesModuleImpl(applicationContext);
 
         isD2Configured = !isEmpty(preferencesModule
                 .getConfigurationPreferences().get().getServerUrl());
@@ -154,10 +154,10 @@ public class D2 {
         }
 
         IServicesModule servicesModule = new ServicesModule(persistenceModule);
-        INetworkModule networkModule = new NetworkModule(
+        NetworkModule networkModule = new NetworkModuleImpl(
                 preferencesModule, flavor.getOkHttpClient());
-        IControllersModule controllersModule = new ControllersModule(
-                networkModule, persistenceModule, preferencesModule, new Logger());
+        ControllersModule controllersModule = new ControllersModuleImpl(
+                networkModule, persistenceModule, preferencesModule, new LoggerImpl());
 
         UserProgramScope userProgramScope = new UserProgramScopeImpl(
                 servicesModule.getProgramService(),
@@ -371,15 +371,15 @@ public class D2 {
         return configuredInstance().trackedEntityDataValueScope;
     }
 
-    public static ILogger logger() {
+    public static Logger logger() {
         return instance().logger;
     }
 
     public static final class Flavor {
         private final OkHttpClient okHttpClient;
-        private final ILogger logger;
+        private final Logger logger;
 
-        public Flavor(OkHttpClient okHttpClient, ILogger logger) {
+        public Flavor(OkHttpClient okHttpClient, Logger logger) {
             this.okHttpClient = okHttpClient;
             this.logger = logger;
         }
@@ -388,14 +388,14 @@ public class D2 {
             return okHttpClient;
         }
 
-        public ILogger getLogger() {
+        public Logger getLogger() {
             return logger;
         }
     }
 
     public static final class Builder {
         private OkHttpClient okHttpClient;
-        private ILogger logger;
+        private Logger logger;
 
         public Builder() {
             // explicit empty constructor
@@ -406,7 +406,7 @@ public class D2 {
             return this;
         }
 
-        public Builder logger(ILogger logger) {
+        public Builder logger(Logger logger) {
             this.logger = logger;
             return this;
         }
@@ -417,7 +417,7 @@ public class D2 {
             }
 
             if (logger == null) {
-                logger = new Logger();
+                logger = new LoggerImpl();
             }
 
             return new Flavor(okHttpClient, logger);

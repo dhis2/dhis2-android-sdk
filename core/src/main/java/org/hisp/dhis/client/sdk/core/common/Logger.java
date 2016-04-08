@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common;
 
-public interface ILogger {
+public interface Logger {
     void v(String tag, String message);
 
     void v(String tag, String message, Throwable throwable);

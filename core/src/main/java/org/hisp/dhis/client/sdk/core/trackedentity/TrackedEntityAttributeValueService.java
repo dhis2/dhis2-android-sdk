@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
@@ -41,11 +41,11 @@ import java.util.List;
 public class TrackedEntityAttributeValueService implements ITrackedEntityAttributeValueService {
 
     private ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-    private IStateStore stateStore;
+    private StateStore stateStore;
 
     public TrackedEntityAttributeValueService(ITrackedEntityAttributeValueStore
                                                       trackedEntityAttributeValueStore,
-                                              IStateStore stateStore) {
+                                              StateStore stateStore) {
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;
         this.stateStore = stateStore;
     }

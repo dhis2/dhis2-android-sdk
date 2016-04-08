@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 import java.util.List;
 
-public interface IProgramRuleActionStore extends IIdentifiableObjectStore<ProgramRuleAction> {
+public interface IProgramRuleActionStore extends IdentifiableObjectStore<ProgramRuleAction> {
     List<ProgramRuleAction> query(ProgramRule programRule);
 }

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
-public interface IProgramTrackedEntityAttributeStore extends IStore<ProgramTrackedEntityAttribute> {
+public interface IProgramTrackedEntityAttributeStore extends Store<ProgramTrackedEntityAttribute> {
     List<ProgramTrackedEntityAttribute> query(Program program);
 
     ProgramTrackedEntityAttribute query(

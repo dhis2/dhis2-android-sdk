@@ -30,16 +30,16 @@ package org.hisp.dhis.client.sdk.android.api.utils;
 
 import android.util.Log;
 
-import org.hisp.dhis.client.sdk.core.common.ILogger;
+import org.hisp.dhis.client.sdk.core.common.Logger;
 
-public class Logger implements ILogger {
-    private final ILogger customLogger;
+public class LoggerImpl implements Logger {
+    private final Logger customLogger;
 
-    public Logger() {
+    public LoggerImpl() {
         this(null);
     }
 
-    public Logger(ILogger customLogger) {
+    public LoggerImpl(Logger customLogger) {
         this.customLogger = customLogger;
     }
 

@@ -28,15 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface ITrackedEntityDataValueStore extends IStore<TrackedEntityDataValue> {
+public interface ITrackedEntityDataValueStore extends Store<TrackedEntityDataValue> {
     TrackedEntityDataValue query(Event event, DataElement dataElement);
 
     List<TrackedEntityDataValue> query(Event event);

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementService;
 import org.hisp.dhis.client.sdk.core.event.EventService;
@@ -76,7 +76,7 @@ public final class ServicesModule implements IServicesModule {
     private final IProgramRuleActionService programRuleActionService;
     private final ITrackedEntityDataValueService trackedEntityDataValueService;
 
-    public ServicesModule(IPersistenceModule persistenceModule) {
+    public ServicesModule(PersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
 
         userAccountService = new UserAccountService(

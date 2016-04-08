@@ -32,11 +32,11 @@ package org.hisp.dhis.client.sdk.core.optionset;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
@@ -52,7 +52,7 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
         implements IOptionSetController {
     private final IOptionSetApiClient optionSetApiClient;
     private final ISystemInfoController systemInfoController;
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
     private final IOptionStore optionStore;
     private final IOptionSetStore optionSetStore;
 
@@ -60,8 +60,8 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
                                IOptionSetApiClient optionSetApiClient,
                                IOptionStore optionStore,
                                IOptionSetStore optionSetStore,
-                               ILastUpdatedPreferences lastUpdatedPreferences,
-                               ITransactionManager transactionManager) {
+                               LastUpdatedPreferences lastUpdatedPreferences,
+                               TransactionManager transactionManager) {
         super(ResourceType.OPTION_SETS, optionSetStore, lastUpdatedPreferences);
         this.systemInfoController = systemInfoController;
         this.optionSetApiClient = optionSetApiClient;
@@ -105,7 +105,7 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
 //        List<OptionSet> existingPersistedAndUpdatedOptionSets =
 //                ModelUtils.merge(allOptionSets, updatedOptionSets, optionSetStore.queryAll());
 //
-//        List<IDbOperation> operations = new ArrayList<>();
+//        List<DbOperation> operations = new ArrayList<>();
 //        List<OptionSet> persistedOptionSets = optionSetStore.queryAll();
 //        if (existingPersistedAndUpdatedOptionSets != null &&
 //                !existingPersistedAndUpdatedOptionSets.isEmpty()) {
@@ -163,7 +163,7 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
                 persistedOptionSets);
 
 
-        List<IDbOperation> optionDbOperations = new ArrayList<>();
+        List<DbOperation> optionDbOperations = new ArrayList<>();
 
         if (mergedOptionSets != null &&
                 !mergedOptionSets.isEmpty()) {
@@ -186,7 +186,7 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
 
         // we will have to perform something similar to what happens in AbsController
 
-        List<IDbOperation> dbOperations = DbUtils.createOperations(
+        List<DbOperation> dbOperations = DbUtils.createOperations(
                 allExistingOptionSets, updatedOptionSets,
                 persistedOptionSets, identifiableObjectStore);
         transactionManager.transact(optionDbOperations);

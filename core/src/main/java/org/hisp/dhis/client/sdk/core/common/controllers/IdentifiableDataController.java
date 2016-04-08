@@ -26,12 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.persistence;
+package org.hisp.dhis.client.sdk.core.common.controllers;
 
-public interface IDbOperation<T> {
-    T getModel();
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-    DbAction getAction();
+import java.util.Set;
 
-    void execute();
+public interface IdentifiableDataController<T extends IdentifiableObject>
+        extends IdentifiableController<T> {
+
+    void sync(SyncStrategy strategy);
+
+    void sync(SyncStrategy strategy, Set<String> uids);
+
+    void push(Set<String> uids) throws ApiException;
 }

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
 public class TrackedEntityService implements ITrackedEntityService {
-    private IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
+    private IdentifiableObjectStore<TrackedEntity> trackedEntityStore;
 
-    public TrackedEntityService(IIdentifiableObjectStore<TrackedEntity> trackedEntityStore) {
+    public TrackedEntityService(IdentifiableObjectStore<TrackedEntity> trackedEntityStore) {
         this.trackedEntityStore = trackedEntityStore;
     }
 

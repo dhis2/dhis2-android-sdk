@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.optionset;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
-public interface IOptionSetStore extends IIdentifiableObjectStore<OptionSet> {
+public interface IOptionSetStore extends IdentifiableObjectStore<OptionSet> {
 }

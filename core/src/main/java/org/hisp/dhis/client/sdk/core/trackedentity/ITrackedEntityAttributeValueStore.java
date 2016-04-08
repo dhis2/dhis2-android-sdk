@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface ITrackedEntityAttributeValueStore extends IStore<TrackedEntityAttributeValue> {
+public interface ITrackedEntityAttributeValueStore extends Store<TrackedEntityAttributeValue> {
     TrackedEntityAttributeValue query(TrackedEntityInstance trackedEntityInstance,
                                       TrackedEntityAttribute trackedEntityAttribute);
 

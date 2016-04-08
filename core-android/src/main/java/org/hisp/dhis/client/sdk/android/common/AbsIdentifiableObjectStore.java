@@ -35,7 +35,7 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseModelFlow;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
@@ -44,7 +44,7 @@ import java.util.Set;
 
 public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableObject,
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsStore<ModelType,
-        DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
+        DatabaseEntityType> implements IdentifiableObjectStore<ModelType> {
 
     public AbsIdentifiableObjectStore(Mapper<ModelType, DatabaseEntityType> mapper) {
         super(mapper);

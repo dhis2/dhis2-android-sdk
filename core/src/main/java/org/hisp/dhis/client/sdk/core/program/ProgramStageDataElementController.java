@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.core.program;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
@@ -63,7 +63,7 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
     private final IProgramStageDataElementApiClient stageDataElementApiClient;
 
     /* Utilities */
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
     public ProgramStageDataElementController(ISystemInfoController systemInfoController,
                                              IProgramStageController stageController,
@@ -72,8 +72,8 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
                                              IProgramStageSectionApiClient stageSectionApiClient,
                                              IProgramStageDataElementApiClient elementApiClient,
                                              IProgramStageDataElementStore stageDataElementStore,
-                                             ITransactionManager transactionManager,
-                                             ILastUpdatedPreferences preferences) {
+                                             TransactionManager transactionManager,
+                                             LastUpdatedPreferences preferences) {
         super(ResourceType.PROGRAM_STAGE_DATA_ELEMENTS, stageDataElementStore, preferences);
 
         this.systemInfoController = systemInfoController;
@@ -138,7 +138,7 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
         dataElementController.pull(strategy, dataElementUids);
         stageSectionController.pull(strategy, programStageSectionUids);
 
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingStageDataElements,
+        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingStageDataElements,
                 updatedStageDataElements, programStageDataElements, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 

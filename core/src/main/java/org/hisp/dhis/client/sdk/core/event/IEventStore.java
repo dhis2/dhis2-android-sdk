@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
-public interface IEventStore extends IIdentifiableObjectStore<Event> {
+public interface IEventStore extends IdentifiableObjectStore<Event> {
     List<Event> query(OrganisationUnit organisationUnit, Program program);
 }

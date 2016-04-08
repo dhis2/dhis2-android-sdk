@@ -32,13 +32,13 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.InterpretationFlow_Table;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 
 import java.util.List;
 import java.util.Set;
 
-public final class InterpretationStore implements IIdentifiableObjectStore<Interpretation> {
+public final class InterpretationStore implements IdentifiableObjectStore<Interpretation> {
 
     public InterpretationStore() {
         // empty constructor

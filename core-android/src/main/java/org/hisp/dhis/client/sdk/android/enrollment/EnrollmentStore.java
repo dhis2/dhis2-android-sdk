@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.enrollment;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EnrollmentFlow;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.enrollment.IEnrollmentStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -44,7 +44,7 @@ import java.util.Set;
 public final class EnrollmentStore extends AbsDataStore<Enrollment, EnrollmentFlow> implements
         IEnrollmentStore {
 
-    public EnrollmentStore(IStateStore stateStore, Mapper<Enrollment, EnrollmentFlow> mapper) {
+    public EnrollmentStore(StateStore stateStore, Mapper<Enrollment, EnrollmentFlow> mapper) {
         super(mapper, stateStore);
     }
 

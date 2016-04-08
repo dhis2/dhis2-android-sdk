@@ -26,25 +26,38 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.persistence;
+package org.hisp.dhis.client.sdk.android.api.persistence;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface IStore<T extends Model> {
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-    boolean insert(T object);
 
-    boolean update(T object);
+public class TransactionManagerImpl implements TransactionManager {
 
-    boolean save(T object);
+    public TransactionManagerImpl() {
+        // empty constructor
+    }
 
-    boolean delete(T object);
+    @Override
+    public void transact(final Collection<DbOperation> operations) {
+        isNull(operations, "List<DbOperationImpl> object must not be null");
 
-    boolean deleteAll();
+        if (operations.isEmpty()) {
+            return;
+        }
 
-    T queryById(long id);
-
-    List<T> queryAll();
+        com.raizlabs.android.dbflow.runtime.TransactionManager
+                .transact(DbDhis.NAME, new Runnable() {
+                    @Override
+                    public void run() {
+                        for (DbOperation operation : operations) {
+                            operation.execute();
+                        }
+                    }
+                });
+    }
 }

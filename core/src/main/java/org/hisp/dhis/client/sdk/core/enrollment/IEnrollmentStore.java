@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface IEnrollmentStore extends IIdentifiableObjectStore<Enrollment> {
+public interface IEnrollmentStore extends IdentifiableObjectStore<Enrollment> {
     List<Enrollment> query(Program program, TrackedEntityInstance instance);
 
     Enrollment queryActiveEnrollment(

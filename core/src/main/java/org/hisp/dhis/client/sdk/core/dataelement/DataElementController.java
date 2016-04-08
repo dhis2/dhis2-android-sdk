@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.core.dataelement;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
@@ -57,15 +57,15 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
     private final IDataElementApiClient dataElementApiClient;
 
     /* Utilities */
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
     private final IOptionSetController optionSetController;
 
     public DataElementController(ISystemInfoController systemInfoController,
                                  IOptionSetController optionSetController,
                                  IDataElementApiClient dataElementApiClient,
                                  IDataElementStore dataElementStore,
-                                 ILastUpdatedPreferences lastUpdatedPreferences,
-                                 ITransactionManager transactionManager) {
+                                 LastUpdatedPreferences lastUpdatedPreferences,
+                                 TransactionManager transactionManager) {
         super(ResourceType.DATA_ELEMENTS, dataElementStore, lastUpdatedPreferences);
         this.systemInfoController = systemInfoController;
         this.optionSetController = optionSetController;
@@ -119,7 +119,7 @@ public final class DataElementController extends AbsSyncStrategyController<DataE
         System.out.println("updatedDataElements: " + updatedDataElements);
         System.out.println("DataElements in store: " + persistedDataElements);
 
-        List<IDbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
+        List<DbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
                 updatedDataElements, persistedDataElements, identifiableObjectStore);
         transactionManager.transact(dbOperations);
         lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, DateType.SERVER, serverTime);

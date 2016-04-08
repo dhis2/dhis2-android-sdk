@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -40,10 +40,10 @@ import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class TrackedEntityDataValueService implements ITrackedEntityDataValueService {
     private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
     public TrackedEntityDataValueService(
-            ITrackedEntityDataValueStore trackedEntityDataValueStore, IStateStore stateStore) {
+            ITrackedEntityDataValueStore trackedEntityDataValueStore, StateStore stateStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.stateStore = stateStore;
     }

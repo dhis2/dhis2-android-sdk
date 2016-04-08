@@ -26,19 +26,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.controllers;
+package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.joda.time.DateTime;
 
-import java.util.Set;
+import java.util.List;
 
-public interface IIdentifiableDataController<T extends IdentifiableObject>
-        extends IIdentifiableController<T> {
+public interface LastUpdatedPreferences {
+    boolean save(ResourceType resourceType, DateType dateType, DateTime dateTime);
 
-    void sync(SyncStrategy strategy);
+    DateTime get(ResourceType resourceType, DateType dateType);
 
-    void sync(SyncStrategy strategy, Set<String> uids);
+    boolean delete(ResourceType resourceType, DateType dateType);
 
-    void push(Set<String> uids) throws ApiException;
+    List<DateTime> list();
+
+    boolean clear();
 }

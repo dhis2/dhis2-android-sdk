@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
@@ -47,20 +47,20 @@ public final class EnrollmentController implements IEnrollmentController {
     private final IEnrollmentApiClient enrollmentApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
 
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final ITransactionManager transactionManager;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final TransactionManager transactionManager;
 
     private final IEventController eventController;
     private final IEnrollmentStore enrollmentStore;
     private final IEventStore eventStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
     public EnrollmentController(IEnrollmentApiClient apiClient,
                                 ISystemInfoApiClient systemInfoApiClient,
-                                ILastUpdatedPreferences preferences,
-                                ITransactionManager transactionManager,
+                                LastUpdatedPreferences preferences,
+                                TransactionManager transactionManager,
                                 IEventController eventController, IEnrollmentStore enrollmentStore,
-                                IEventStore eventStore, IStateStore stateStore) {
+                                IEventStore eventStore, StateStore stateStore) {
         this.enrollmentApiClient = apiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = preferences;
@@ -130,10 +130,10 @@ public final class EnrollmentController implements IEnrollmentController {
 //            updatedEnrollment.setId(persistedEnrollment.getId());
 //            if (updatedEnrollment.getLastUpdated().isAfter(persistedEnrollment.getLastUpdated()
 // )) {
-//                DbOperation.with(enrollmentStore).update(updatedEnrollment).execute();
+//                DbOperationImpl.with(enrollmentStore).update(updatedEnrollment).execute();
 //            }
 //        } else {
-//            DbOperation.with(enrollmentStore).insert(updatedEnrollment).execute();
+//            DbOperationImpl.with(enrollmentStore).insert(updatedEnrollment).execute();
 //        }
 //        lastUpdatedPreferences.save(ResourceType.ENROLLMENT, serverDateTime, uid);
 //        if (getEvents) {
@@ -184,11 +184,11 @@ public final class EnrollmentController implements IEnrollmentController {
     }
 
     private void saveResourceDataFromServer(ResourceType resourceType, String extraIdentifier,
-                                            IIdentifiableObjectStore<Enrollment> store,
+                                            IdentifiableObjectStore<Enrollment> store,
                                             List<Enrollment> updatedItems,
                                             List<Enrollment> persistedItems, DateTime
                                                     serverDateTime) {
-//        Queue<IDbOperation> operations = new LinkedList<>();
+//        Queue<DbOperation> operations = new LinkedList<>();
 //        operations.addAll(DbUtils.createOperations(store, persistedItems, updatedItems));
 //        transactionManager.transact(operations);
 //        lastUpdatedPreferences.save(resourceType, serverDateTime, extraIdentifier);

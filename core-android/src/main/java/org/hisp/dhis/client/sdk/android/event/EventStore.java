@@ -5,10 +5,10 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -30,10 +30,10 @@ public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
         implements IEventStore {
 
     private final ITrackedEntityDataValueStore dataValueStore;
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
-    public EventStore(IStateStore stateStore, ITrackedEntityDataValueStore dataValueStore,
-                      ITransactionManager transactionManager) {
+    public EventStore(StateStore stateStore, ITrackedEntityDataValueStore dataValueStore,
+                      TransactionManager transactionManager) {
         super(EventFlow.MAPPER, stateStore);
 
         this.dataValueStore = dataValueStore;
@@ -133,7 +133,7 @@ public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
         Map<String, TrackedEntityDataValue> updatedDataValuesMap = toMap(dataValues);
         Map<String, TrackedEntityDataValue> persistedDataValueMap = toMap(persistedDataValues);
 
-        List<IDbOperation> dbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
         for (String dataElementUid : updatedDataValuesMap.keySet()) {
             TrackedEntityDataValue updatedDataValue =
                     updatedDataValuesMap.get(dataElementUid);
@@ -141,12 +141,12 @@ public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
                     persistedDataValueMap.get(dataElementUid);
 
             if (persistedDataValue == null) {
-                dbOperations.add(DbOperation.with(dataValueStore)
+                dbOperations.add(DbOperationImpl.with(dataValueStore)
                         .insert(updatedDataValue));
                 continue;
             }
 
-            dbOperations.add(DbOperation.with(dataValueStore)
+            dbOperations.add(DbOperationImpl.with(dataValueStore)
                     .update(updatedDataValue));
             persistedDataValueMap.remove(dataElementUid);
         }
@@ -154,7 +154,7 @@ public class EventStore extends AbsIdentifiableObjectDataStore<Event, EventFlow>
         for (String dataElementUid : persistedDataValueMap.keySet()) {
             TrackedEntityDataValue dataValue =
                     persistedDataValueMap.get(dataElementUid);
-            dbOperations.add(DbOperation.with(dataValueStore).delete(dataValue));
+            dbOperations.add(DbOperationImpl.with(dataValueStore).delete(dataValue));
         }
 
         transactionManager.transact(dbOperations);

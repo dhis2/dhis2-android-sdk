@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.constant;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
@@ -48,18 +48,18 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public final class ConstantController implements IIdentifiableController<Constant> {
+public final class ConstantController implements IdentifiableController<Constant> {
     private final IConstantApiClient constantApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IIdentifiableObjectStore<Constant> constantStore;
-    private final ITransactionManager transactionManager;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final IdentifiableObjectStore<Constant> constantStore;
+    private final TransactionManager transactionManager;
 
     public ConstantController(IConstantApiClient constantApiClient,
                               ISystemInfoApiClient systemInfoApiClient,
-                              ILastUpdatedPreferences lastUpdatedPreferences,
-                              IIdentifiableObjectStore<Constant> constantStore,
-                              ITransactionManager transactionManager) {
+                              LastUpdatedPreferences lastUpdatedPreferences,
+                              IdentifiableObjectStore<Constant> constantStore,
+                              TransactionManager transactionManager) {
         this.constantApiClient = constantApiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = lastUpdatedPreferences;
@@ -83,7 +83,7 @@ public final class ConstantController implements IIdentifiableController<Constan
         List<Constant> existingPersistedAndUpdatedConstants =
                 ModelUtils.merge(allConstants, updatedConstants, constantStore.queryAll());
 
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(constantStore,
                 existingPersistedAndUpdatedConstants, constantStore.queryAll()));
 

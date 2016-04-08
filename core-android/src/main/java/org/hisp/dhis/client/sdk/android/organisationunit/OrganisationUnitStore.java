@@ -36,15 +36,13 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.OrganisationUnitFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -52,9 +50,9 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
         OrganisationUnitFlow> implements IOrganisationUnitStore {
 
     private static final String UNITS_TO_PROGRAMS = "organisationUnitsToPrograms";
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
-    public OrganisationUnitStore(ITransactionManager transactionManager) {
+    public OrganisationUnitStore(TransactionManager transactionManager) {
         super(OrganisationUnitFlow.MAPPER);
 
         this.transactionManager = transactionManager;
@@ -157,7 +155,7 @@ public final class OrganisationUnitStore extends AbsIdentifiableObjectStore<Orga
     }
 
     private void updateOrganisationUnitRelationships(OrganisationUnit organisationUnit) {
-        List<IDbOperation> dbOperations = ModelLinkFlow.updateLinksToModel(organisationUnit,
+        List<DbOperation> dbOperations = ModelLinkFlow.updateLinksToModel(organisationUnit,
                 organisationUnit.getPrograms(), UNITS_TO_PROGRAMS);
         transactionManager.transact(dbOperations);
     }

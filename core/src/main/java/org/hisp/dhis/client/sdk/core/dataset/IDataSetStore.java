@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.dataset;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface IDataSetStore extends IIdentifiableObjectStore<DataSet> {
+public interface IDataSetStore extends IdentifiableObjectStore<DataSet> {
     List<OrganisationUnit> query(Collection<DataSet> dataSets);
 }

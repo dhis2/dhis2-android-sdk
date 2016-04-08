@@ -34,7 +34,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.RelationshipFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsDataStore;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
@@ -45,7 +45,7 @@ public final class RelationshipStore extends AbsDataStore<Relationship,
         RelationshipFlow> implements IRelationshipStore {
 
     public RelationshipStore(Mapper<Relationship, RelationshipFlow> mapper,
-                             IStateStore stateStore) {
+                             StateStore stateStore) {
         super(mapper, stateStore);
     }
 

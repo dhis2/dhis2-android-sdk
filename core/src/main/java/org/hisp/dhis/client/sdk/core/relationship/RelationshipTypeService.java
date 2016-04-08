@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
 public class RelationshipTypeService implements IRelationshipTypeService {
-    private IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
+    private IdentifiableObjectStore<RelationshipType> relationshipTypeStore;
 
-    public RelationshipTypeService(IIdentifiableObjectStore<RelationshipType>
+    public RelationshipTypeService(IdentifiableObjectStore<RelationshipType>
                                            relationshipTypeStore) {
         this.relationshipTypeStore = relationshipTypeStore;
     }

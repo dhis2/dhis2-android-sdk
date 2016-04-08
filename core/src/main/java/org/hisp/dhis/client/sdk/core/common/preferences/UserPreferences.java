@@ -28,16 +28,20 @@
 
 package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
+import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 
-public interface IPreferencesModule {
-    IConfigurationPreferences getConfigurationPreferences();
+public interface UserPreferences {
+    boolean save(UserCredentials credentials);
 
-    ILastUpdatedPreferences getLastUpdatedPreferences();
+    boolean confirmUser();
 
-    IUserPreferences getUserPreferences();
+    boolean isUserConfirmed();
 
-    ISystemInfoPreferences getSystemInfoPreferences();
+    boolean invalidateUser();
 
-    boolean clearAllPreferences();
+    boolean isUserInvalidated();
+
+    boolean clear();
+
+    UserCredentials get();
 }

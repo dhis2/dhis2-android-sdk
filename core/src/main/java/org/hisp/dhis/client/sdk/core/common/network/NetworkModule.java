@@ -44,7 +44,7 @@ import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeApiClient;
 import org.hisp.dhis.client.sdk.core.user.IUserApiClient;
 
-public interface INetworkModule {
+public interface NetworkModule {
     ISystemInfoApiClient getSystemInfoApiClient();
 
     IUserApiClient getUserApiClient();

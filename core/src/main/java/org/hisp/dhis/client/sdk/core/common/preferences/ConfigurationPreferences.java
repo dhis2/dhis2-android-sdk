@@ -26,38 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.api.persistence;
+package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 
-import java.util.Collection;
+public interface ConfigurationPreferences {
+    boolean save(Configuration configuration);
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+    Configuration get();
 
-
-public class TransactionManager implements ITransactionManager {
-
-    public TransactionManager() {
-        // empty constructor
-    }
-
-    @Override
-    public void transact(final Collection<IDbOperation> operations) {
-        isNull(operations, "List<DbOperation> object must not be null");
-
-        if (operations.isEmpty()) {
-            return;
-        }
-
-        com.raizlabs.android.dbflow.runtime.TransactionManager
-                .transact(DbDhis.NAME, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (IDbOperation operation : operations) {
-                            operation.execute();
-                        }
-                    }
-                });
-    }
+    boolean clear();
 }

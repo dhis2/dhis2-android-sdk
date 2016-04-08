@@ -33,7 +33,7 @@ import android.content.Context;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
-import org.hisp.dhis.client.sdk.android.common.StateStore;
+import org.hisp.dhis.client.sdk.android.common.StateStoreImpl;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
 import org.hisp.dhis.client.sdk.android.event.EventStore;
 import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
@@ -50,9 +50,9 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStore;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
 import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
@@ -70,9 +70,9 @@ import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
 import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
 
-public class PersistenceModule implements IPersistenceModule {
-    private final ITransactionManager transactionManager;
-    private final IStateStore stateStore;
+public class PersistenceModuleImpl implements PersistenceModule {
+    private final TransactionManager transactionManager;
+    private final StateStore stateStore;
     private final IUserAccountStore userAccountStore;
     private final IProgramStore programStore;
     private final IProgramStageStore programStageStore;
@@ -90,11 +90,11 @@ public class PersistenceModule implements IPersistenceModule {
     private final IOptionStore optionStore;
     private final IOptionSetStore optionSetStore;
 
-    public PersistenceModule(Context context) {
+    public PersistenceModuleImpl(Context context) {
         FlowManager.init(context);
 
-        transactionManager = new TransactionManager();
-        stateStore = new StateStore(EventFlow.MAPPER);
+        transactionManager = new TransactionManagerImpl();
+        stateStore = new StateStoreImpl(EventFlow.MAPPER);
         programStore = new ProgramStore(transactionManager);
         programStageStore = new ProgramStageStore(transactionManager);
         programStageSectionStore = new ProgramStageSectionStore(transactionManager);
@@ -117,12 +117,12 @@ public class PersistenceModule implements IPersistenceModule {
     }
 
     @Override
-    public ITransactionManager getTransactionManager() {
+    public TransactionManager getTransactionManager() {
         return transactionManager;
     }
 
     @Override
-    public IStateStore getStateStore() {
+    public StateStore getStateStore() {
         return stateStore;
     }
 

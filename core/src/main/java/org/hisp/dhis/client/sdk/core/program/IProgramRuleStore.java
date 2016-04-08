@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public interface IProgramRuleStore extends IIdentifiableObjectStore<ProgramRule> {
+public interface IProgramRuleStore extends IdentifiableObjectStore<ProgramRule> {
     List<ProgramRule> query(Program program);
 
     List<ProgramRule> query(List<Program> programs);

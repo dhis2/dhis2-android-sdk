@@ -26,16 +26,50 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.controllers;
+package org.hisp.dhis.client.sdk.android.api.preferences;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import org.hisp.dhis.client.sdk.core.common.network.Configuration;
+import org.hisp.dhis.client.sdk.core.common.preferences.ConfigurationPreferences;
+
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+public class ConfigurationPreferencesImpl implements ConfigurationPreferences {
+    private static final String CONFIGURATION_PREFERENCES = "preferences:configuration";
+    private static final String SERVER_URL_KEY = "key:serverUrl";
 
-import java.util.Set;
+    private final SharedPreferences mPrefs;
 
-public interface IIdentifiableController<T extends IdentifiableObject> {
-    void pull(SyncStrategy syncStrategy) throws ApiException;
+    public ConfigurationPreferencesImpl(Context context) {
+        mPrefs = context.getSharedPreferences(CONFIGURATION_PREFERENCES, Context.MODE_PRIVATE);
+    }
 
-    void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException;
+    @Override
+    public boolean save(Configuration configuration) {
+        isNull(configuration, "configuration must not be null");
+
+        return putString(SERVER_URL_KEY, configuration.getServerUrl());
+    }
+
+    @Override
+    public Configuration get() {
+        String serverUrl = getString(SERVER_URL_KEY);
+        return new Configuration(serverUrl);
+    }
+
+    @Override
+    public boolean clear() {
+        return mPrefs.edit().clear().commit();
+    }
+
+    private boolean putString(String key, String value) {
+        return mPrefs.edit().putString(key, value).commit();
+    }
+
+    private String getString(String key) {
+        return mPrefs.getString(key, null);
+    }
 }

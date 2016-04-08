@@ -26,50 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.android.api.preferences;
+package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-import org.hisp.dhis.client.sdk.core.common.network.Configuration;
-import org.hisp.dhis.client.sdk.core.common.preferences.IConfigurationPreferences;
+import java.util.List;
+import java.util.Set;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+public interface IdentifiableObjectStore<T extends IdentifiableObject> extends Store<T> {
+    T queryByUid(String uid);
 
+    List<T> queryByUids(Set<String> uids);
 
-public class ConfigurationPreferences implements IConfigurationPreferences {
-    private static final String CONFIGURATION_PREFERENCES = "preferences:configuration";
-    private static final String SERVER_URL_KEY = "key:serverUrl";
-
-    private final SharedPreferences mPrefs;
-
-    public ConfigurationPreferences(Context context) {
-        mPrefs = context.getSharedPreferences(CONFIGURATION_PREFERENCES, Context.MODE_PRIVATE);
-    }
-
-    @Override
-    public boolean save(Configuration configuration) {
-        isNull(configuration, "configuration must not be null");
-
-        return putString(SERVER_URL_KEY, configuration.getServerUrl());
-    }
-
-    @Override
-    public Configuration get() {
-        String serverUrl = getString(SERVER_URL_KEY);
-        return new Configuration(serverUrl);
-    }
-
-    @Override
-    public boolean clear() {
-        return mPrefs.edit().clear().commit();
-    }
-
-    private boolean putString(String key, String value) {
-        return mPrefs.edit().putString(key, value).commit();
-    }
-
-    private String getString(String key) {
-        return mPrefs.getString(key, null);
-    }
+    boolean areStored(Set<String> uids);
 }

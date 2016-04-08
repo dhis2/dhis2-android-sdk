@@ -34,8 +34,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramStageSectionFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
@@ -50,9 +50,9 @@ public class ProgramStageSectionStore extends AbsIdentifiableObjectStore<Program
         ProgramStageSectionFlow> implements IProgramStageSectionStore {
     private static final String PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS =
             "programStageSectionToProgramStageDataElements";
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
-    public ProgramStageSectionStore(ITransactionManager transactionManager) {
+    public ProgramStageSectionStore(TransactionManager transactionManager) {
         super(ProgramStageSectionFlow.MAPPER);
         this.transactionManager = transactionManager;
     }
@@ -144,7 +144,7 @@ public class ProgramStageSectionStore extends AbsIdentifiableObjectStore<Program
     }
 
     private void updateProgramStageRelationships(ProgramStageSection programStageSection) {
-        List<IDbOperation> dbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
         dbOperations.addAll(ModelLinkFlow.updateLinksToModel(programStageSection,
                 programStageSection.getProgramStageDataElements(),
                 PROGRAMSTAGESECTION_TO_PROGRAMSTAGEDATAELEMENTS));

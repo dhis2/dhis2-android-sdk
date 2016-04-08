@@ -34,8 +34,8 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ModelLinkFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.program.IProgramStore;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -51,9 +51,9 @@ public class ProgramStore extends AbsIdentifiableObjectStore<Program, ProgramFlo
     /* Relationship type between programs and organisation units */
     private static final String PROGRAM_TO_ORGANISATION_UNITS = "programToOrganisationUnits";
     private static final String PROGRAM_TO_PROGRAM_STAGES = "programToProgramStages";
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
-    public ProgramStore(ITransactionManager transactionManager) {
+    public ProgramStore(TransactionManager transactionManager) {
         super(ProgramFlow.MAPPER);
 
         this.transactionManager = transactionManager;
@@ -153,7 +153,7 @@ public class ProgramStore extends AbsIdentifiableObjectStore<Program, ProgramFlo
     }
 
     private void updateProgramRelationships(Program program) {
-        List<IDbOperation> dbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
         dbOperations.addAll(ModelLinkFlow.updateLinksToModel(program,
                 program.getOrganisationUnits(), PROGRAM_TO_ORGANISATION_UNITS));
         dbOperations.addAll(ModelLinkFlow.updateLinksToModel(program,

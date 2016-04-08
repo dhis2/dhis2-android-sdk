@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public interface IUserAccountStore extends IIdentifiableObjectStore<UserAccount> {
+public interface IUserAccountStore extends IdentifiableObjectStore<UserAccount> {
 }

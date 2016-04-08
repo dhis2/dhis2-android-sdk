@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import java.util.Set;
 
-public class UserController implements IIdentifiableController<UserAccount> {
+public class UserController implements IdentifiableController<UserAccount> {
 
     @Override
     public void pull(SyncStrategy syncStrategy) throws ApiException {

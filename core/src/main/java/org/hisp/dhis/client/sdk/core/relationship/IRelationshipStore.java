@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface IRelationshipStore extends IStore<Relationship> {
+public interface IRelationshipStore extends Store<Relationship> {
     List<Relationship> query(TrackedEntityInstance trackedEntityInstance);
 }

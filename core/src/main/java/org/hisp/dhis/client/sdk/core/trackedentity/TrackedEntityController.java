@@ -28,15 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
@@ -48,17 +48,17 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public final class TrackedEntityController implements IIdentifiableController<TrackedEntity> {
+public final class TrackedEntityController implements IdentifiableController<TrackedEntity> {
     private final ITrackedEntityApiClient trackedEntityApiClient;
-    private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final TransactionManager transactionManager;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
     private final ISystemInfoApiClient systemInfoApiClient;
-    private final IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
+    private final IdentifiableObjectStore<TrackedEntity> trackedEntityStore;
 
     public TrackedEntityController(ITrackedEntityApiClient trackedEntityApiClient,
-                                   ITransactionManager transactionManager,
-                                   ILastUpdatedPreferences lastUpdatedPreferences,
-                                   IIdentifiableObjectStore<TrackedEntity> trackedEntityStore,
+                                   TransactionManager transactionManager,
+                                   LastUpdatedPreferences lastUpdatedPreferences,
+                                   IdentifiableObjectStore<TrackedEntity> trackedEntityStore,
                                    ISystemInfoApiClient systemInfoApiClient) {
         this.trackedEntityApiClient = trackedEntityApiClient;
         this.transactionManager = transactionManager;
@@ -88,7 +88,7 @@ public final class TrackedEntityController implements IIdentifiableController<Tr
                 ModelUtils.merge(allTrackedEntities, updatedTrackedEntities,
                         trackedEntityStore.queryAll());
 
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(trackedEntityStore,
                 existingPersistedAndUpdatedTrackedEntities, trackedEntityStore.queryAll()));
 

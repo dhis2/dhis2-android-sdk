@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
@@ -50,7 +50,6 @@ import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -59,32 +58,32 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-public final class DashboardController implements IIdentifiableController<Dashboard> {
+public final class DashboardController implements IdentifiableController<Dashboard> {
     private final IDashboardStore dashboardStore;
     private final IDashboardItemStore dashboardItemStore;
     private final IDashboardElementStore dashboardElementStore;
     private final IDashboardItemContentStore dashboardItemContentStore;
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
     /* dashboard client */
     private final IDashboardApiClient dashboardApiClient;
     private final ISystemInfoApiClient systemInfoApiClient;
 
     /* last updated preferences */
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
 
     /* database transaction manager */
-    private final ITransactionManager transactionManager;
+    private final TransactionManager transactionManager;
 
     public DashboardController(IDashboardStore dashboardStore,
                                IDashboardItemStore dashboardItemStore,
                                IDashboardElementStore dashboardElementStore,
                                IDashboardItemContentStore dashboardItemContentStore,
-                               IStateStore stateStore,
+                               StateStore stateStore,
                                IDashboardApiClient dashboardApiClient,
                                ISystemInfoApiClient systemInfoApiClient,
-                               ILastUpdatedPreferences lastUpdatedPreferences,
-                               ITransactionManager transactionManager) {
+                               LastUpdatedPreferences lastUpdatedPreferences,
+                               TransactionManager transactionManager) {
         this.dashboardStore = dashboardStore;
         this.dashboardItemStore = dashboardItemStore;
         this.dashboardElementStore = dashboardElementStore;
@@ -134,7 +133,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         List<Dashboard> dashboards = updateDashboards(lastUpdated);
         List<DashboardItem> dashboardItems = updateDashboardItems(dashboards, lastUpdated);
 
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
 
         operations.addAll(DbUtils.createOperations(dashboardStore,
                 stateStore.queryModelsWithActions(Dashboard.class, Action.SYNCED, Action
@@ -228,8 +227,8 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         return actualItems;
     }
 
-    private List<DbOperation> createOperations(List<DashboardItem> refreshedItems) {
-        List<DbOperation> dbOperations = new ArrayList<>();
+    private List<DbOperationImpl> createOperations(List<DashboardItem> refreshedItems) {
+        List<DbOperationImpl> dbOperations = new ArrayList<>();
 
         Map<Long, List<DashboardElement>> dashboardElementMap = getDashboardElementMap(false);
         for (DashboardItem refreshedItem : refreshedItems) {
@@ -256,7 +255,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
             for (String elementToDelete : itemIdsToDelete) {
                 int index = persistedElementIds.indexOf(elementToDelete);
                 DashboardElement element = persistedElementList.get(index);
-                dbOperations.add(DbOperation
+                dbOperations.add(DbOperationImpl
                         .with(dashboardElementStore)
                         .delete(element));
 
@@ -267,7 +266,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
             for (String elementToInsert : itemIdsToInsert) {
                 int index = refreshedElementIds.indexOf(elementToInsert);
                 DashboardElement dashboardElement = refreshedElementList.get(index);
-                dbOperations.add(DbOperation
+                dbOperations.add(DbOperationImpl
                         .with(dashboardElementStore)
                         .insert(dashboardElement));
 
@@ -668,7 +667,7 @@ public final class DashboardController implements IIdentifiableController<Dashbo
         and dashboard items */
         /* List<DashboardContent> dashboardContent =
                 updateApiResources(lastUpdated);
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(dashboardItemContentStore,
                 dashboardItemContentStore.queryAll(), dashboardContent));
         DbUtils.applyBatch(operations);

@@ -32,7 +32,7 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.ProgramService;
-import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
+import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
@@ -42,10 +42,10 @@ import rx.Observable;
 
 public class UserProgramScopeImpl implements UserProgramScope {
     private final ProgramService programService;
-    private final IAssignedProgramsController assignedProgramsController;
+    private final AssignedProgramsController assignedProgramsController;
 
     public UserProgramScopeImpl(ProgramService programService,
-                                IAssignedProgramsController assignedProgramsController) {
+                                AssignedProgramsController assignedProgramsController) {
         this.programService = programService;
         this.assignedProgramsController = assignedProgramsController;
     }

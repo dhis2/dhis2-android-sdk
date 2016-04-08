@@ -38,10 +38,10 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 
-public class CheckBoxRowView implements IRowView {
+public class CheckBoxRowView implements RowView {
     private static final String TRUE = "true";
     private static final String EMPTY_FIELD = "";
 
@@ -52,7 +52,7 @@ public class CheckBoxRowView implements IRowView {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntity.Type type) {
+                                                      DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(CheckBoxRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -62,9 +62,9 @@ public class CheckBoxRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         CheckBoxRowViewHolder viewHolder = (CheckBoxRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
+        DataEntityText entity = (DataEntityText) dataEntity;
         viewHolder.update(entity);
     }
 
@@ -87,7 +87,7 @@ public class CheckBoxRowView implements IRowView {
             itemView.setOnClickListener(rowClickListener);
         }
 
-        public void update(DataEntity dataEntity) {
+        public void update(DataEntityText dataEntity) {
             textViewLabel.setText(dataEntity.getLabel());
             onCheckBoxListener.setDataEntity(dataEntity);
 
@@ -114,9 +114,9 @@ public class CheckBoxRowView implements IRowView {
 
     private static class OnCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
 
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 

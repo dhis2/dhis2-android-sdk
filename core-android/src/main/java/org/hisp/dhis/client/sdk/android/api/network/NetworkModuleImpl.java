@@ -56,7 +56,6 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
-import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
@@ -174,7 +173,7 @@ public class NetworkModuleImpl implements NetworkModule {
                 ProgramRuleVariableApiClientRetrofit.class));
         programIndicatorApiClient = new ProgramIndicatorApiClientImpl(
                 retrofit.create(ProgramIndicatorApiClientRetrofit.class));
-        systemInfoApiClient = new SystemInfoApiClientImpl(retrofit.create(
+        systemInfoApiClient = new org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClientImpl(retrofit.create(
                 UserApiClientRetrofit.class));

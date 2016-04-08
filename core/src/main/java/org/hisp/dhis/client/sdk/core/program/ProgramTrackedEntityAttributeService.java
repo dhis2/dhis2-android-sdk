@@ -29,10 +29,10 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramTrackedEntityAttribute;
@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import java.util.List;
 
 public interface ProgramTrackedEntityAttributeService extends Service,
-        ISave<ProgramTrackedEntityAttribute>, IRemove<ProgramTrackedEntityAttribute>,
-        IGet<ProgramTrackedEntityAttribute>, IList<ProgramTrackedEntityAttribute> {
+        Save<ProgramTrackedEntityAttribute>, Remove<ProgramTrackedEntityAttribute>,
+        Get<ProgramTrackedEntityAttribute>, ListAll<ProgramTrackedEntityAttribute> {
     List<ProgramTrackedEntityAttribute> list(Program program);
 
     ProgramTrackedEntityAttribute list(Program program, TrackedEntityAttribute

@@ -28,17 +28,17 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
 import java.util.Set;
 
-public interface DashboardContentService extends Service, IGet<DashboardContent>,
-        IGetUid<DashboardContent>, IList<DashboardContent> {
+public interface DashboardContentService extends Service, Get<DashboardContent>,
+        GetUid<DashboardContent>, ListAll<DashboardContent> {
 
     /**
      * {@inheritDoc}

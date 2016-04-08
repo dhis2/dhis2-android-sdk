@@ -38,8 +38,8 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -52,21 +52,21 @@ public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyCont
         <ProgramRuleVariable> implements ProgramRuleVariableController {
     private final ProgramRuleVariableApiClient programRuleVariableApiClient;
     private final TransactionManager transactionManager;
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
     private final ProgramController programController;
     private final ProgramStageController programStageController;
     private final DataElementController dataElementController;
-    private final ITrackedEntityAttributeController trackedEntityAttributeController;
+    private final TrackedEntityAttributeController trackedEntityAttributeController;
 
     public ProgramRuleVariableControllerImpl(ProgramRuleVariableApiClient programRuleVariableApiClient,
                                              TransactionManager transactionManager,
                                              LastUpdatedPreferences lastUpdatedPreferences,
-                                             ISystemInfoController systemInfoController,
+                                             SystemInfoController systemInfoController,
                                              ProgramRuleVariableStore programRuleVariableStore,
                                              ProgramController programController,
                                              ProgramStageController programStageController,
                                              DataElementController dataElementController,
-                                             ITrackedEntityAttributeController trackedEntityAttributeController) {
+                                             TrackedEntityAttributeController trackedEntityAttributeController) {
         super(ResourceType.PROGRAM_RULE_VARIABLES, programRuleVariableStore, lastUpdatedPreferences);
         this.programRuleVariableApiClient = programRuleVariableApiClient;
         this.transactionManager = transactionManager;

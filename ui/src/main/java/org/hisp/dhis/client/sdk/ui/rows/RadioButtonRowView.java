@@ -38,11 +38,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 
 
-public class RadioButtonRowView implements IRowView {
+public class RadioButtonRowView implements RowView {
     private static final String EMPTY_FIELD = "";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
@@ -50,7 +50,7 @@ public class RadioButtonRowView implements IRowView {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntity.Type type) {
+                                                      DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(RadioButtonRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -60,9 +60,9 @@ public class RadioButtonRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         RadioButtonRowViewHolder radioButtonRowViewHolder = (RadioButtonRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
+        DataEntityText entity = (DataEntityText) dataEntity;
         radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(entity);
         radioButtonRowViewHolder.labelTextView.setText(entity.getLabel());
         if (TRUE.equals(dataEntity.getValue())) {
@@ -101,9 +101,9 @@ public class RadioButtonRowView implements IRowView {
     }
 
     private static class OnCheckedChangedListener implements RadioGroup.OnCheckedChangeListener {
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 

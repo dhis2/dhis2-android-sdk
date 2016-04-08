@@ -28,130 +28,26 @@
 
 package org.hisp.dhis.client.sdk.ui.models;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+public interface DataEntity<T> {
+    Type getType();
 
-public class DataEntity implements IDataEntity<CharSequence> {
-    private final Type type;
-    private final CharSequence label;
-    private CharSequence value;
+    T getValue();
 
-    private OnValueChangeListener<Pair<CharSequence, CharSequence>> onValueChangeListener;
-    private List<IValueValidator<CharSequence>> dataEntityValueValidators;
+    CharSequence getLabel();
 
-//    for simplicity, let's ignore these properties from beginning
+    OnValueChangeListener<T> getOnValueChangedListener();
 
-//    private final String description;
-//    private final String error;
-//    private final String warning;
-//    private final boolean isMandatory;
-//    private final boolean isEditable;
+    List<ValueValidator<CharSequence>> getDataEntityValueValidators();
 
-    private DataEntity(String label, String value, Type type) {
-        isNull(label, "label must not be null");
-        isNull(type, "type must not be null");
+    boolean updateValue(T value);
 
-        this.label = label;
-        this.value = value;
-        this.type = type;
+    boolean clearValue();
 
-        this.dataEntityValueValidators = new ArrayList<>();
-    }
+    boolean validateValue(T value);
 
-    private DataEntity(String label, String value, Type type,
-                       OnValueChangeListener<Pair<CharSequence, CharSequence>>
-                               onValueChangeListener) {
-        isNull(label, "label must not be null");
-        isNull(type, "type must not be null");
-
-        this.label = label;
-        this.value = value;
-        this.type = type;
-        this.onValueChangeListener = onValueChangeListener;
-        this.dataEntityValueValidators = new ArrayList<>();
-    }
-
-    public static DataEntity create(@NonNull String label, @NonNull Type type) {
-        return new DataEntity(label, "", type);
-    }
-
-    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type
-            type) {
-        return new DataEntity(label, value, type);
-    }
-
-    public static DataEntity create(@NonNull String label, @NonNull String value, @NonNull Type
-            type,
-                                    OnValueChangeListener<Pair<CharSequence, CharSequence>>
-                                            onValueChangeListener) {
-        return new DataEntity(label, value, type, onValueChangeListener);
-    }
-
-    @NonNull
-    public CharSequence getLabel() {
-        return label;
-    }
-
-    @Override
-    public OnValueChangeListener<CharSequence> getOnValueChangedListener() {
-        return null;
-    }
-
-    public void setOnValueChangedListener(OnValueChangeListener<Pair<CharSequence, CharSequence>>
-                                                  onValueChangedListener) {
-        this.onValueChangeListener = onValueChangedListener;
-    }
-
-    @Override
-    public List<IValueValidator<CharSequence>> getDataEntityValueValidators() {
-        return dataEntityValueValidators;
-    }
-
-    @Override
-    @NonNull
-    public CharSequence getValue() {
-        return value;
-    }
-
-    @Override
-    @NonNull
-    public Type getType() {
-        return type;
-    }
-
-    @Override
-    public boolean updateValue(@NonNull CharSequence value) {
-        if (validateValue(value) && (!value.equals(this.value))) {
-            this.value = value;
-            this.onValueChangeListener.onValueChanged(new Pair<>(this.label, value));
-
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean clearValue() {
-        return false;
-    }
-
-    @Override
-    public boolean validateValue(CharSequence newValue) {
-        for (IValueValidator<CharSequence> valueValidator : dataEntityValueValidators) {
-            if (!valueValidator.validate(newValue)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public enum Type {
+    enum Type {
         TEXT, DATE, TRUE_ONLY, AUTO_COMPLETE, COORDINATES, BOOLEAN, INTEGER, NUMBER,
         LONG_TEXT, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE,
         INTEGER_POSITIVE, GENDER, INDICATOR, EVENT_DATE,

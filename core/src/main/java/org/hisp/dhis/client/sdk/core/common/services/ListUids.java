@@ -28,19 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-public interface IRemove<T extends Model> {
+import java.util.List;
+import java.util.Set;
 
-    /**
-     * Removes a single instance of the specified element from this collection.
-     * More formally, removes an model object such that (o == null ? e == null : o.equals(e)),
-     * if this collection contains one or more such elements. Returns true if this collection
-     * contained the specified element (or equivalently, if this collection
-     * changed as a result of the call).
-     *
-     * @param object o - element to be removed from this collection, if present
-     * @return true if an element was removed as a result of this call
-     */
-    boolean remove(T object);
+public interface ListUids<T extends IdentifiableObject> {
+    List<T> list(Set<String> uids);
 }

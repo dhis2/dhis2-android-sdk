@@ -57,7 +57,7 @@ import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
 
 public abstract class AbsHomeActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener, DrawerListener, INavigationCallback {
+        implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
 
     private static final String APPS_DASHBOARD_PACKAGE = "org.hisp.dhis.android.dashboard";
     private static final String APPS_DATA_CAPTURE_PACKAGE = "org.dhis2.mobile";

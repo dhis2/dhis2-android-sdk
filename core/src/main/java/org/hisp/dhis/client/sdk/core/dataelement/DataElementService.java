@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
-public interface DataElementService extends Service, ISave<DataElement>, IRemove<DataElement>,
-        IGet<DataElement>, IGetUid<DataElement>, IList<DataElement> {
+public interface DataElementService extends Service, Save<DataElement>, Remove<DataElement>,
+        Get<DataElement>, GetUid<DataElement>, ListAll<DataElement> {
 }

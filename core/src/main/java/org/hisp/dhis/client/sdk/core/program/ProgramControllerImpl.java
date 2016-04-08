@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -51,7 +51,7 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
         implements ProgramController {
 
     /* Controllers */
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
 
     /* Api clients */
     private final ProgramApiClient programApiClient;
@@ -60,7 +60,7 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
     /* Utilities */
     private final TransactionManager transactionManager;
 
-    public ProgramControllerImpl(ISystemInfoController systemInfoController,
+    public ProgramControllerImpl(SystemInfoController systemInfoController,
                                  ProgramApiClient programApiClient, UserApiClient userApiClient,
                                  ProgramStore programStore, TransactionManager transactionManager,
                                  LastUpdatedPreferences lastUpdatedPreferences) {

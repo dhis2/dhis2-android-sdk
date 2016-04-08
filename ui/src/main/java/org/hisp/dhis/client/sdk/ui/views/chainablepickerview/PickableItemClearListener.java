@@ -26,8 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.models;
+package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
-public interface IValueValidator<T> {
-    boolean validate(T value);
+/**
+ * Interface callback for picker state change.
+ * Called when pickedItem is cleared.
+ */
+public interface PickableItemClearListener {
+    void clearedCallback();
 }

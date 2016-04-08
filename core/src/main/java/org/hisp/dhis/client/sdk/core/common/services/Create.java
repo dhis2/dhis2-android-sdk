@@ -30,6 +30,9 @@ package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public interface ISave<T extends Model> {
-    boolean save(T object);
+/**
+ * This method
+ */
+public interface Create<T extends Model> {
+    T create();
 }

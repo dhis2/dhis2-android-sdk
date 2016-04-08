@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.client.sdk.core.optionset;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 
 import java.util.List;
 
-public interface OptionSetService extends Service, ISave<OptionSet>, IRemove<OptionSet>,
-        IGet<OptionSet>, IGetUid<OptionSet>, IList<OptionSet> {
+public interface OptionSetService extends Service, Save<OptionSet>, Remove<OptionSet>,
+        Get<OptionSet>, GetUid<OptionSet>, ListAll<OptionSet> {
 
     List<Option> list(OptionSet object);
 }

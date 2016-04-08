@@ -26,13 +26,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.user;
+package org.hisp.dhis.client.sdk.ui.rows;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
-public interface IAssignedOrganisationUnitsController {
-    void sync() throws ApiException;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
+import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 
-    void sync(SyncStrategy strategy) throws ApiException;
+public interface RowView {
+    ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater,
+                                  ViewGroup parent, DataEntityText.Type type);
+
+    void onBindViewHolder(ViewHolder holder, DataEntity dataEntity);
 }

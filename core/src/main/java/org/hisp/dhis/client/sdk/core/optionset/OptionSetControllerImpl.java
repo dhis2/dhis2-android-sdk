@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -51,12 +51,12 @@ import java.util.Set;
 public final class OptionSetControllerImpl extends AbsSyncStrategyController<OptionSet>
         implements OptionSetController {
     private final OptionSetApiClient optionSetApiClient;
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
     private final TransactionManager transactionManager;
     private final OptionStore optionStore;
     private final OptionSetStore optionSetStore;
 
-    public OptionSetControllerImpl(ISystemInfoController systemInfoController,
+    public OptionSetControllerImpl(SystemInfoController systemInfoController,
                                    OptionSetApiClient optionSetApiClient,
                                    OptionStore optionStore,
                                    OptionSetStore optionSetStore,

@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.program;
+package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
@@ -37,8 +37,9 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
-import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
@@ -46,78 +47,76 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramStageSectionControllerImpl extends AbsSyncStrategyController<ProgramStageSection>
-        implements ProgramStageSectionController {
-
-    /* Controllers */
-    private final SystemInfoController systemInfoController;
-    private final ProgramStageController programStageController;
-
-    /* Api clients */
-    private final ProgramStageSectionApiClient programStageSectionApiClient;
-
-    /* Utilities */
+public final class TrackedEntityAttributeControllerImpl extends AbsSyncStrategyController
+        <TrackedEntityAttribute> implements TrackedEntityAttributeController {
+    private final TrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
     private final TransactionManager transactionManager;
+    private final SystemInfoController systemInfoController;
+    private final OptionSetController optionSetController;
 
-    public ProgramStageSectionControllerImpl(ProgramStageController programStageController,
-                                             SystemInfoController systemInfoController,
-                                             ProgramStageSectionApiClient programStageSectionApiClient,
-                                             ProgramStageSectionStore sectionStore,
-                                             TransactionManager transactionManager,
-                                             LastUpdatedPreferences lastUpdatedPreferences) {
-        super(ResourceType.PROGRAM_STAGE_SECTIONS, sectionStore, lastUpdatedPreferences);
-
-        this.programStageSectionApiClient = programStageSectionApiClient;
-        this.systemInfoController = systemInfoController;
-        this.programStageController = programStageController;
+    public TrackedEntityAttributeControllerImpl(TrackedEntityAttributeApiClient
+                                                    trackedEntityAttributeApiClient,
+                                                TransactionManager transactionManager,
+                                                LastUpdatedPreferences lastUpdatedPreferences,
+                                                TrackedEntityAttributeStore trackedEntityAttributeStore,
+                                                SystemInfoController systemInfoController,
+                                                OptionSetController optionSetController) {
+        super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, trackedEntityAttributeStore, lastUpdatedPreferences);
+        this.trackedEntityAttributeApiClient = trackedEntityAttributeApiClient;
         this.transactionManager = transactionManager;
+        this.systemInfoController = systemInfoController;
+        this.optionSetController = optionSetController;
     }
 
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
         DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.PROGRAM_STAGE_SECTIONS, DateType.SERVER);
+                ResourceType.TRACKED_ENTITY_ATTRIBUTES, DateType.SERVER);
 
-        List<ProgramStageSection> persistedProgramStageSections =
+        List<TrackedEntityAttribute> persistedTrackedEntityAttributes =
                 identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<ProgramStageSection> allExistingProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.BASIC, null);
+        List<TrackedEntityAttribute> allExistingTrackedEntityAttributes = trackedEntityAttributeApiClient
+                .getTrackedEntityAttributes(Fields.BASIC, null);
 
         Set<String> uidSet = null;
         if (uids != null) {
             // here we want to get list of ids of program stage sections which are
             // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramStageSections);
+            uidSet = ModelUtils.toUidSet(persistedTrackedEntityAttributes);
             uidSet.addAll(uids);
         }
 
-        List<ProgramStageSection> updatedProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.ALL, lastUpdated, uidSet);
+        List<TrackedEntityAttribute> updatedTrackedEntityAttributes = trackedEntityAttributeApiClient
+                .getTrackedEntityAttributes(Fields.ALL, lastUpdated, uidSet);
 
-        // Retrieving program stage uids from program stages sections
-        Set<String> programStageSectionUids = new HashSet<>();
-        List<ProgramStageSection> mergedProgramStageSections = ModelUtils.merge(
-                allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections);
-        for (ProgramStageSection programStageSection : mergedProgramStageSections) {
-            programStageSectionUids.add(programStageSection.getProgramStage().getUId());
+        // Retrieving foreign key uids from trackedEntityAttributes
+        Set<String> optionSetUids = new HashSet<>();
+
+        List<TrackedEntityAttribute> trackedEntityAttributes = ModelUtils.merge(
+                allExistingTrackedEntityAttributes, updatedTrackedEntityAttributes,
+                persistedTrackedEntityAttributes);
+        for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            if(trackedEntityAttribute.getOptionSet() != null) {
+                optionSetUids.add(trackedEntityAttribute.getOptionSet().getUId());
+            }
         }
 
-        // Syncing programs before saving program stages (since
-        // program stages are referencing them directly)
-        programStageController.pull(strategy, programStageSectionUids);
+        // checking if option sets is synced
+        if(!optionSetUids.isEmpty()) {
+            optionSetController.pull(strategy, optionSetUids);
+        }
 
         // we will have to perform something similar to what happens in AbsController
         List<DbOperation> dbOperations = DbUtils.createOperations(
-                allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections, identifiableObjectStore);
+                allExistingTrackedEntityAttributes, updatedTrackedEntityAttributes,
+                persistedTrackedEntityAttributes, identifiableObjectStore);
         transactionManager.transact(dbOperations);
 
-        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_SECTIONS,
+        lastUpdatedPreferences.save(ResourceType.TRACKED_ENTITY_ATTRIBUTES,
                 DateType.SERVER, serverTime);
     }
 }

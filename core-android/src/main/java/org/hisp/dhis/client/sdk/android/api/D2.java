@@ -75,8 +75,8 @@ import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
-import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
+import org.hisp.dhis.client.sdk.core.common.services.ServicesModuleImpl;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
@@ -153,7 +153,7 @@ public class D2 {
             return;
         }
 
-        IServicesModule servicesModule = new ServicesModule(persistenceModule);
+        ServicesModule servicesModule = new ServicesModuleImpl(persistenceModule);
         NetworkModule networkModule = new NetworkModuleImpl(
                 preferencesModule, flavor.getOkHttpClient());
         ControllersModule controllersModule = new ControllersModuleImpl(

@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -51,7 +51,7 @@ public class ProgramStageControllerImpl extends AbsSyncStrategyController<Progra
 
     /* Controllers */
     private final ProgramController programController;
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
 
     /* Api clients */
     private final ProgramStageApiClient programStageApiClient;
@@ -60,7 +60,7 @@ public class ProgramStageControllerImpl extends AbsSyncStrategyController<Progra
     private final TransactionManager transactionManager;
 
     public ProgramStageControllerImpl(ProgramController programController,
-                                      ISystemInfoController systemInfoController,
+                                      SystemInfoController systemInfoController,
                                       ProgramStageApiClient programStageApiClient,
                                       ProgramStageStore programStageStore,
                                       TransactionManager transactionManager,

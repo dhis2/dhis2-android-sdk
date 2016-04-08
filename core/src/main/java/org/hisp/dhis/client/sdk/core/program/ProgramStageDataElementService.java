@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
@@ -41,9 +41,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 import java.util.List;
 
-public interface ProgramStageDataElementService extends Service, ISave<ProgramStageDataElement>,
-        IRemove<ProgramStageDataElement>, IGet<ProgramStageDataElement>,
-        IList<ProgramStageDataElement>, IListUids<ProgramStageDataElement> {
+public interface ProgramStageDataElementService extends Service, Save<ProgramStageDataElement>,
+        Remove<ProgramStageDataElement>, Get<ProgramStageDataElement>,
+        ListAll<ProgramStageDataElement>, ListUids<ProgramStageDataElement> {
 
     List<ProgramStageDataElement> list(ProgramStage programStage);
 

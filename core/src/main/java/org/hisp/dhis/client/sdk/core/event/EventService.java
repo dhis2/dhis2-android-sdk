@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.event;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
-public interface EventService extends Service, ISave<Event>, IRemove<Event>, IGet<Event>,
-        IGetUid<Event>, IList<Event>, IListUids<Event> {
+public interface EventService extends Service, Save<Event>, Remove<Event>, Get<Event>,
+        GetUid<Event>, ListAll<Event>, ListUids<Event> {
 
     List<Event> list(OrganisationUnit organisationUnit, Program program);
 }

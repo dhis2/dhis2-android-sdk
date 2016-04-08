@@ -31,7 +31,7 @@ package org.hisp.dhis.client.sdk.android.systeminfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoPreferences;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 import org.joda.time.DateTime;
 
@@ -39,7 +39,7 @@ import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
-public class SystemInfoPreferences implements ISystemInfoPreferences {
+public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
     private static final String PREFERENCES = "preferences:systemInfo";
     private static final String KEY_BUILD_TIME = "key:buildTime";
     private static final String KEY_SERVER_DATE = "key:serverDate";
@@ -52,7 +52,7 @@ public class SystemInfoPreferences implements ISystemInfoPreferences {
 
     private final SharedPreferences preferences;
 
-    public SystemInfoPreferences(Context context) {
+    public SystemInfoPreferencesImpl(Context context) {
         isNull(context, "Context object must not be null");
         preferences = context.getSharedPreferences(PREFERENCES,
                 Context.MODE_PRIVATE);

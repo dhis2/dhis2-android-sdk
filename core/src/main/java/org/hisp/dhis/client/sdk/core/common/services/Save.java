@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-import java.util.List;
-import java.util.Set;
-
-public interface IListUids<T extends IdentifiableObject> {
-    List<T> list(Set<String> uids);
+public interface Save<T extends Model> {
+    boolean save(T object);
 }

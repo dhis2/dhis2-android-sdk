@@ -55,19 +55,19 @@ public class Picker implements Parcelable {
         }
     };
     private Picker nextLinkedSibling;
-    private List<IPickable> pickableItems;
+    private List<Pickable> pickableItems;
     private AdapterView.OnItemClickListener listener;
     private View.OnClickListener onClickListener;
     private View.OnFocusChangeListener onFocusChangeListener;
     private List<Picker> parentList;
     private RecyclerView parentView;
-    private IPickable pickedItem;
+    private Pickable pickedItem;
     private String hint;
     private String mimeType;
     private boolean added;
-    private IPickableItemClearListener pickedItemClearListener;
+    private PickableItemClearListener pickedItemClearListener;
 
-    public Picker(final List<IPickable> pickableItems, String hint, String mimeType) {
+    public Picker(final List<Pickable> pickableItems, String hint, String mimeType) {
         this.pickableItems = pickableItems;
         this.hint = hint;
         this.mimeType = mimeType;
@@ -78,8 +78,8 @@ public class Picker implements Parcelable {
     }
 
     protected Picker(Parcel in) {
-        pickedItem = in.readParcelable(IPickable.class.getClassLoader());
-        pickableItems = in.readArrayList(IPickable.class.getClassLoader());
+        pickedItem = in.readParcelable(Pickable.class.getClassLoader());
+        pickableItems = in.readArrayList(Pickable.class.getClassLoader());
         String[] data = new String[2];
         in.readStringArray(data);
         hint = data[0];
@@ -92,7 +92,7 @@ public class Picker implements Parcelable {
         this.added = booleanValues[0];
     }
 
-    public void registerPickedItemClearListener(IPickableItemClearListener listener) {
+    public void registerPickedItemClearListener(PickableItemClearListener listener) {
         this.pickedItemClearListener = listener;
     }
 
@@ -143,11 +143,11 @@ public class Picker implements Parcelable {
         this.nextLinkedSibling = picker;
     }
 
-    public IPickable getPickedItem() {
+    public Pickable getPickedItem() {
         return pickedItem;
     }
 
-    public void setPickedItem(IPickable pickable) {
+    public void setPickedItem(Pickable pickable) {
         this.pickedItem = pickable;
 
         if (pickedItem == null && pickedItemClearListener != null) {
@@ -156,11 +156,11 @@ public class Picker implements Parcelable {
         parentView.getAdapter().notifyDataSetChanged();
     }
 
-    public List<IPickable> getPickableItems() {
+    public List<Pickable> getPickableItems() {
         return pickableItems;
     }
 
-    public void setPickableItems(List<IPickable> pickableItems) {
+    public void setPickableItems(List<Pickable> pickableItems) {
         this.pickableItems = pickableItems;
         if (parentView != null) {
             parentView.getAdapter().notifyDataSetChanged();
@@ -224,7 +224,7 @@ public class Picker implements Parcelable {
         dest.writeString(hint);
         dest.writeString(mimeType);
         dest.writeParcelable(pickedItem, flags);
-        IPickable[] pickers = new IPickable[pickableItems.size()];
+        Pickable[] pickers = new Pickable[pickableItems.size()];
         dest.writeParcelableArray(pickableItems.toArray(pickers), flags);
         boolean[] booleanValues = new boolean[1];
         booleanValues[0] = added;
@@ -254,7 +254,7 @@ public class Picker implements Parcelable {
     /**
      * Triggers to show drop down if the current view has focus.
      * If the current view does not have focus, then the content of the {@link AutoCompleteTextView}
-     * will be matched with the available {@link IPickable}s and either cleared, or set to the
+     * will be matched with the available {@link Pickable}s and either cleared, or set to the
      * previous selection.
      */
     public class AutoCompleteOnFocusChangeListener implements View.OnFocusChangeListener {
@@ -279,7 +279,7 @@ public class Picker implements Parcelable {
                     return;
                 }
             }
-            for (IPickable pickable : picker.getPickableItems()) {
+            for (Pickable pickable : picker.getPickableItems()) {
                 if (pickable.toString().equals(autoCompleteTextView.getText().toString())) {
                     return;
                 }

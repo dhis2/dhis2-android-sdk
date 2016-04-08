@@ -26,14 +26,51 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.systeminfo;
+package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.common.SystemInfo;
+import org.hisp.dhis.client.sdk.core.program.ProgramController;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-public interface ISystemInfoController {
-    SystemInfo getSystemInfo() throws ApiException;
+import java.util.List;
+import java.util.Set;
 
-    SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException;
+/**
+ * This class is intended to build relationships between organisation units and programs.
+ */
+public class AssignedProgramsControllerImpl implements AssignedProgramsController {
+
+    /* Program controller */
+    private final ProgramController programController;
+
+    /* Api clients */
+    private final UserApiClient userApiClient;
+
+    public AssignedProgramsControllerImpl(ProgramController programController,
+                                          UserApiClient userApiClient) {
+        this.userApiClient = userApiClient;
+        this.programController = programController;
+    }
+
+    @Override
+    public void sync() throws ApiException {
+        sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public void sync(SyncStrategy strategy) throws ApiException {
+        UserAccount userAccount = userApiClient.getUserAccount();
+
+        /* get list of assigned programs */
+        List<Program> assignedPrograms = userAccount.getPrograms();
+
+        /* convert them to set of ids */
+        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
+
+        /* get them through program controller */
+        programController.pull(strategy, ids);
+    }
 }

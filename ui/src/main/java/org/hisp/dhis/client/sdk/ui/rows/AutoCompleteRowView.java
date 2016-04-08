@@ -41,23 +41,23 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.dialogs.AutoCompleteDialogFragment;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.DefaultPickable;
-import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.IPickable;
+import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.Pickable;
 
 import java.util.ArrayList;
 
 import static android.text.TextUtils.isEmpty;
 
-public class AutoCompleteRowView implements IRowView {
-    private ArrayList<IPickable> options;
+public class AutoCompleteRowView implements RowView {
+    private ArrayList<Pickable> options;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntity.Type type) {
+                                                      DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(AutoCompleteRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -66,9 +66,9 @@ public class AutoCompleteRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         AutoCompleteRowViewHolder autoCompleteRowViewHolder = (AutoCompleteRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
+        DataEntityText entity = (DataEntityText) dataEntity;
         autoCompleteRowViewHolder.textViewLabel.setText(entity.getLabel());
         autoCompleteRowViewHolder.optionText.setText(entity.getValue());
         autoCompleteRowViewHolder.onClearListener.setDataEntity(entity);
@@ -78,7 +78,7 @@ public class AutoCompleteRowView implements IRowView {
         autoCompleteRowViewHolder.setOnOptionSelectedListener();
     }
 
-    public void setOptions(ArrayList<IPickable> options) {
+    public void setOptions(ArrayList<Pickable> options) {
         this.options = options;
     }
 
@@ -94,7 +94,7 @@ public class AutoCompleteRowView implements IRowView {
         public final OnEditTextClickedListener onEditTextClickedListener;
         public OnOptionSelectedListener onOptionSelectedListener;
 
-        public AutoCompleteRowViewHolder(View itemView, DataEntity.Type type,
+        public AutoCompleteRowViewHolder(View itemView, DataEntityText.Type type,
                                          FragmentManager fragmentManager) {
             super(itemView);
 
@@ -129,9 +129,9 @@ public class AutoCompleteRowView implements IRowView {
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -173,18 +173,18 @@ public class AutoCompleteRowView implements IRowView {
     public static class OnOptionSelectedListener implements AutoCompleteDialogFragment
             .OnOptionSelectedListener {
         private final TextView valueTextView;
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
         public OnOptionSelectedListener(TextView valueTextView) {
             this.valueTextView = valueTextView;
         }
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
         @Override
-        public void onOptionSelected(IPickable pickable) {
+        public void onOptionSelected(Pickable pickable) {
             valueTextView.setText(pickable.toString());
             dataEntity.updateValue(pickable.toString());
         }
@@ -193,13 +193,13 @@ public class AutoCompleteRowView implements IRowView {
     private static class OnClearListener implements View.OnClickListener {
         private static final String EMPTY_FIELD = "";
         private final EditText editText;
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
         public OnClearListener(EditText editText) {
             this.editText = editText;
         }
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -213,7 +213,7 @@ public class AutoCompleteRowView implements IRowView {
     private static class OnEditTextClickedListener implements View.OnClickListener {
         AutoCompleteDialogFragment mOptionDialogFragment;
         private FragmentManager fragmentManager;
-        private ArrayList<IPickable> options;
+        private ArrayList<Pickable> options;
         private OnOptionSelectedListener onOptionSelectedListener;
 
         public OnEditTextClickedListener(FragmentManager fragmentManager,
@@ -239,7 +239,7 @@ public class AutoCompleteRowView implements IRowView {
             mOptionDialogFragment.show(fragmentManager, "tag");
         }
 
-        public void setOptions(ArrayList<IPickable> options) {
+        public void setOptions(ArrayList<Pickable> options) {
             this.options = options;
         }
 

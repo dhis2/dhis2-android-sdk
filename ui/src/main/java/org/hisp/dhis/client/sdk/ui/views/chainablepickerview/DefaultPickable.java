@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
 import android.os.Parcel;
 
-public class DefaultPickable implements IPickable {
+public class DefaultPickable implements Pickable {
 
     public static final Creator<DefaultPickable> CREATOR = new Creator<DefaultPickable>() {
         @Override

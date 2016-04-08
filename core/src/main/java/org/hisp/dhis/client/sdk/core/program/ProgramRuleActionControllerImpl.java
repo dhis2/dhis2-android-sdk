@@ -38,8 +38,8 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -52,23 +52,23 @@ public final class ProgramRuleActionControllerImpl extends AbsSyncStrategyContro
         <ProgramRuleAction> implements ProgramRuleActionController {
     private final ProgramRuleActionApiClient programRuleActionApiClient;
     private final TransactionManager transactionManager;
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
     private final ProgramStageController programStageController;
     private final ProgramStageSectionController programStageSectionController;
     private final DataElementController dataElementController;
-    private final ITrackedEntityAttributeController trackedEntityAttributeController;
+    private final TrackedEntityAttributeController trackedEntityAttributeController;
     private final ProgramRuleController programRuleController;
     private final ProgramIndicatorController programIndicatorController;
 
     public ProgramRuleActionControllerImpl(ProgramRuleActionApiClient programRuleActionApiClient,
                                            TransactionManager transactionManager,
-                                           ISystemInfoController systemInfoController,
+                                           SystemInfoController systemInfoController,
                                            LastUpdatedPreferences lastUpdatedPreferences,
                                            ProgramRuleActionStore programRuleActionStore,
                                            ProgramStageController programStageController,
                                            ProgramStageSectionController programStageSectionController,
                                            DataElementController dataElementController,
-                                           ITrackedEntityAttributeController trackedEntityAttributeController,
+                                           TrackedEntityAttributeController trackedEntityAttributeController,
                                            ProgramRuleController programRuleController,
                                            ProgramIndicatorController programIndicatorController) {
         super(ResourceType.PROGRAM_RULE_ACTIONS, programRuleActionStore, lastUpdatedPreferences);

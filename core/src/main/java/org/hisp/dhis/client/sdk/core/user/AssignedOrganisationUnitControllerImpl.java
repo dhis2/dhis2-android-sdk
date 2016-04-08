@@ -30,9 +30,45 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
+import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-public interface IAssignedProgramsController {
-    void sync() throws ApiException;
+import java.util.List;
+import java.util.Set;
 
-    void sync(SyncStrategy strategy) throws ApiException;
+public class AssignedOrganisationUnitControllerImpl implements AssignedOrganisationUnitsController {
+
+    // Api Clients
+    private final UserApiClient userApiClient;
+
+    // Controllers
+    private final OrganisationUnitController organisationUnitController;
+
+    public AssignedOrganisationUnitControllerImpl(
+            UserApiClient userApiClient, OrganisationUnitController
+            organisationUnitController) {
+        this.userApiClient = userApiClient;
+        this.organisationUnitController = organisationUnitController;
+    }
+
+    @Override
+    public void sync() throws ApiException {
+        sync(SyncStrategy.DEFAULT);
+    }
+
+    @Override
+    public void sync(SyncStrategy strategy) throws ApiException {
+        UserAccount userAccount = userApiClient.getUserAccount();
+
+        /* get list of assigned organisation units */
+        List<OrganisationUnit> assignedOrganisationUnits = userAccount.getOrganisationUnits();
+
+        /* convert them to set of ids */
+        Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
+
+        /* get them through program controller */
+        organisationUnitController.pull(strategy, ids);
+    }
 }

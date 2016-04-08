@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -51,7 +51,7 @@ public class OrganisationUnitControllerImpl extends AbsSyncStrategyController<Or
         implements OrganisationUnitController {
 
     /* Controllers */
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
 
     /* Api clients */
     private final OrganisationUnitApiClient organisationUnitApiClient;
@@ -60,7 +60,7 @@ public class OrganisationUnitControllerImpl extends AbsSyncStrategyController<Or
     /* Utilities */
     private final TransactionManager transactionManager;
 
-    public OrganisationUnitControllerImpl(ISystemInfoController systemInfoController,
+    public OrganisationUnitControllerImpl(SystemInfoController systemInfoController,
                                           OrganisationUnitApiClient organisationUnitApiClient,
                                           UserApiClient userApiClient,
                                           OrganisationUnitStore organisationUnitStore,

@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
@@ -53,7 +53,7 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
         <ProgramStageDataElement> implements ProgramStageDataElementController {
 
     /* Controllers */
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
     private final ProgramStageController stageController;
     private final ProgramStageSectionController stageSectionController;
     private final DataElementController dataElementController;
@@ -65,7 +65,7 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
     /* Utilities */
     private final TransactionManager transactionManager;
 
-    public ProgramStageDataElementControllerImpl(ISystemInfoController systemInfoController,
+    public ProgramStageDataElementControllerImpl(SystemInfoController systemInfoController,
                                                  ProgramStageController stageController,
                                                  ProgramStageSectionController stageSectionController,
                                                  DataElementController dataElementController,

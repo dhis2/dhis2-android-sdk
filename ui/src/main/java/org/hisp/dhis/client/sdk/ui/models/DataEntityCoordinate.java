@@ -36,17 +36,17 @@ import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
 
-public class DataEntityCoordinate implements IDataEntity<Map<String, Object>> {
+public class DataEntityCoordinate implements DataEntity<Map<String, Object>> {
     private final String LATITUDE = "latitude";
     private final String LONGITUDE = "longitude";
-    private final DataEntity.Type type;
+    private final DataEntityText.Type type;
     private final CharSequence label;
     private Map<String, Object> coordinateMap;
 
     private OnValueChangeListener<Map<String, Object>> onValueChangeListener;
-    private List<IValueValidator<CharSequence>> dataEntityValueValidators;
+    private List<ValueValidator<CharSequence>> dataEntityValueValidators;
 
-    public DataEntityCoordinate(String label, Map<String, Object> coordinateMap, DataEntity.Type
+    public DataEntityCoordinate(String label, Map<String, Object> coordinateMap, DataEntityText.Type
             type) {
         isNull(label, "label must not be null");
         isNull(type, "type must not be null");
@@ -57,7 +57,7 @@ public class DataEntityCoordinate implements IDataEntity<Map<String, Object>> {
 
     }
 
-    private DataEntityCoordinate(String label, Map<String, Object> coordinateMap, DataEntity.Type
+    private DataEntityCoordinate(String label, Map<String, Object> coordinateMap, DataEntityText.Type
             type,
                                  OnValueChangeListener<Map<String, Object>> onValueChangeListener) {
         isNull(label, "label must not be null");
@@ -70,7 +70,7 @@ public class DataEntityCoordinate implements IDataEntity<Map<String, Object>> {
         this.dataEntityValueValidators = new ArrayList<>();
     }
 
-    public static DataEntityCoordinate create(@NonNull String label, @NonNull DataEntity.Type
+    public static DataEntityCoordinate create(@NonNull String label, @NonNull DataEntityText.Type
             type) {
 
         return new DataEntityCoordinate(label, null, type);
@@ -78,20 +78,20 @@ public class DataEntityCoordinate implements IDataEntity<Map<String, Object>> {
 
     public static DataEntityCoordinate create(@NonNull String label,
                                               @NonNull Map<String, Object> value,
-                                              @NonNull DataEntity.Type type) {
+                                              @NonNull DataEntityText.Type type) {
         return new DataEntityCoordinate(label, value, type);
     }
 
     public static DataEntityCoordinate create(
             @NonNull String label,
             @NonNull Map<String, Object> value,
-            @NonNull DataEntity.Type type,
+            @NonNull DataEntityText.Type type,
             OnValueChangeListener<Map<String, Object>> onValueChangeListener) {
         return new DataEntityCoordinate(label, value, type, onValueChangeListener);
     }
 
     @Override
-    public DataEntity.Type getType() {
+    public DataEntityText.Type getType() {
         return type;
     }
 
@@ -112,7 +112,7 @@ public class DataEntityCoordinate implements IDataEntity<Map<String, Object>> {
     }
 
     @Override
-    public List<IValueValidator<CharSequence>> getDataEntityValueValidators() {
+    public List<ValueValidator<CharSequence>> getDataEntityValueValidators() {
         return dataEntityValueValidators;
     }
 

@@ -33,7 +33,7 @@ import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitSco
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
+import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
@@ -48,7 +48,7 @@ public class UserAccountScopeImpl implements UserAccountScope {
     private final UserAccountService userAccountService;
 
     // controllers
-    private final IUserAccountController userAccountController;
+    private final UserAccountController userAccountController;
 
     // scopes
     private final UserProgramScope userProgramScope;
@@ -56,7 +56,7 @@ public class UserAccountScopeImpl implements UserAccountScope {
 
     public UserAccountScopeImpl(UserPreferences userPreferences,
                                 UserAccountService userAccountService,
-                                IUserAccountController userAccountController,
+                                UserAccountController userAccountController,
                                 UserProgramScope userProgramScope,
                                 UserOrganisationUnitScope organisationUnitScope) {
         this.userPreferences = userPreferences;

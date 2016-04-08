@@ -39,10 +39,10 @@ import org.hisp.dhis.client.sdk.ui.R;
 import java.util.List;
 
 public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<IItemListRow> itemListRows;
+    private List<ItemListRow> itemListRows;
 
 
-    public ItemListRowAdapter(List<IItemListRow> itemListRows) {
+    public ItemListRowAdapter(List<ItemListRow> itemListRows) {
         this.itemListRows = itemListRows;
     }
 
@@ -57,7 +57,7 @@ public class ItemListRowAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemListRowViewHolder) {
             ItemListRowViewHolder itemListRowViewHolder = (ItemListRowViewHolder) holder;
-            IItemListRow itemListRow = itemListRows.get(position);
+            ItemListRow itemListRow = itemListRows.get(position);
 
             List<Pair<String, Integer>> valuesPosition = itemListRow.getValuesPosition();
 

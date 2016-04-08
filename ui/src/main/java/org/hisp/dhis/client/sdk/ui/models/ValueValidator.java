@@ -26,10 +26,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.services;
+package org.hisp.dhis.client.sdk.ui.models;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
-
-public interface IGet<T extends Model> {
-    T get(long id);
+public interface ValueValidator<T> {
+    boolean validate(T value);
 }

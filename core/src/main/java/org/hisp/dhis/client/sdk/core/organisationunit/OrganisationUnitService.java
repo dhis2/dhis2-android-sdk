@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -39,8 +39,8 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
 
-public interface OrganisationUnitService extends Service, IGet<OrganisationUnit>,
-        IGetUid<OrganisationUnit>, IList<OrganisationUnit>, IListUids<OrganisationUnit> {
+public interface OrganisationUnitService extends Service, Get<OrganisationUnit>,
+        GetUid<OrganisationUnit>, ListAll<OrganisationUnit>, ListUids<OrganisationUnit> {
 
     List<OrganisationUnit> list(boolean assignedToCurrentUser);
 

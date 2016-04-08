@@ -47,7 +47,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
-import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.IPickable;
+import org.hisp.dhis.client.sdk.ui.views.chainablepickerview.Pickable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = AutoCompleteDialogFragment.class.getSimpleName();
     private static final String ARGS_OPTIONS = "extra:Options";
     private static final String ARGS_TITLE = "extra:Title";
-    private ArrayList<IPickable> options;
+    private ArrayList<Pickable> options;
     private String title;
     private TextInputLayout textInputLayout;
     private EditText editText;
@@ -69,7 +69,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         //empty constructor
     }
 
-    public static AutoCompleteDialogFragment newInstance(String title, List<IPickable> options,
+    public static AutoCompleteDialogFragment newInstance(String title, List<Pickable> options,
                                                          OnOptionSelectedListener
                                                                  onOptionSelectedListener) {
         AutoCompleteDialogFragment autoCompleteDialogFragment = new AutoCompleteDialogFragment();
@@ -134,12 +134,12 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         return optionDialogAdapter;
     }
 
-    public void setOptions(ArrayList<IPickable> options) {
+    public void setOptions(ArrayList<Pickable> options) {
         this.options = options;
     }
 
     public interface OnOptionSelectedListener {
-        void onOptionSelected(IPickable pickable);
+        void onOptionSelected(Pickable pickable);
     }
 
     private static class OptionDialogFilterTextWatcher extends AbsTextWatcher {
@@ -157,12 +157,12 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
     }
 
     public static class OptionDialogAdapter extends RecyclerView.Adapter implements Filterable {
-        private ArrayList<IPickable> options;
+        private ArrayList<Pickable> options;
         private OnOptionSelectedListener onOptionSelectedListener;
         private Dialog dialog;
         private OptionDialogViewHolder mOptionDialogViewHolder;
 
-        public OptionDialogAdapter(Dialog dialog, ArrayList<IPickable> options,
+        public OptionDialogAdapter(Dialog dialog, ArrayList<Pickable> options,
                                    OnOptionSelectedListener onOptionSelectedListener) {
             this.dialog = dialog;
             this.options = options;
@@ -199,7 +199,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
             return new AutoCompleteRowFilter(this, options);
         }
 
-        public void setOptions(ArrayList<IPickable> filteredOptions) {
+        public void setOptions(ArrayList<Pickable> filteredOptions) {
             this.options = filteredOptions;
         }
 
@@ -213,12 +213,12 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
     }
 
     private static class AutoCompleteRowFilter extends Filter {
-        private ArrayList<IPickable> options;
-        private ArrayList<IPickable> filteredOptions;
+        private ArrayList<Pickable> options;
+        private ArrayList<Pickable> filteredOptions;
         private OptionDialogAdapter optionDialogAdapter;
 
         public AutoCompleteRowFilter(OptionDialogAdapter optionDialogAdapter,
-                                     ArrayList<IPickable> options) {
+                                     ArrayList<Pickable> options) {
             this.optionDialogAdapter = optionDialogAdapter;
             this.options = new ArrayList<>(options);
             this.filteredOptions = new ArrayList<>();
@@ -233,7 +233,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
                 filteredOptions.addAll(options);
             } else {
                 final String filterString = constraint.toString().toLowerCase().trim();
-                for (IPickable option : options) {
+                for (Pickable option : options) {
                     if (option.toString().toLowerCase().trim().contains(filterString)) {
                         filteredOptions.add(option);
                     }
@@ -248,7 +248,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
 
-            optionDialogAdapter.setOptions((ArrayList<IPickable>) results.values);
+            optionDialogAdapter.setOptions((ArrayList<Pickable>) results.values);
             optionDialogAdapter.notifyDataSetChanged();
         }
     }
@@ -293,7 +293,7 @@ public class AutoCompleteDialogFragment extends AppCompatDialogFragment {
         @Override
         public void onClick(View v) {
             if (onOptionItemSelectedListener != null) {
-                onOptionItemSelectedListener.onOptionSelected((IPickable) textView.getTag());
+                onOptionItemSelectedListener.onOptionSelected((Pickable) textView.getTag());
             }
             parentDialog.dismiss();
         }

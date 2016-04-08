@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
-import org.hisp.dhis.client.sdk.core.common.services.IUpdate;
+import org.hisp.dhis.client.sdk.core.common.services.Update;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public interface UserAccountService extends Service, IUpdate<UserAccount>, ISave<UserAccount> {
+public interface UserAccountService extends Service, Update<UserAccount>, Save<UserAccount> {
     UserAccount getCurrentUserAccount();
 
     User toUser(UserAccount userAccount);

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -41,8 +41,8 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-public interface EnrollmentService extends Service, ISave<Enrollment>,
-        IRemove<Enrollment>, IGet<Enrollment>, IList<Enrollment> {
+public interface EnrollmentService extends Service, Save<Enrollment>,
+        Remove<Enrollment>, Get<Enrollment>, ListAll<Enrollment> {
     Enrollment get(String uid);
 
     Enrollment create(OrganisationUnit organisationUnit,

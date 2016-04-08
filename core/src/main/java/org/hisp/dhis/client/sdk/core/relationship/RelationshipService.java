@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
 import java.util.List;
 
-public interface RelationshipService extends Service, ISave<Relationship>, IRemove<Relationship>,
-        IGet<Relationship>, IList<Relationship> {
+public interface RelationshipService extends Service, Save<Relationship>, Remove<Relationship>,
+        Get<Relationship>, ListAll<Relationship> {
     List<Relationship> list(TrackedEntityInstance trackedEntityInstance);
 
 }

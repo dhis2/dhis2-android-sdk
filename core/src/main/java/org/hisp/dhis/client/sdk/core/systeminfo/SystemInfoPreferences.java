@@ -26,30 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.services;
+package org.hisp.dhis.client.sdk.core.systeminfo;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.models.common.SystemInfo;
 
-public interface IAdd<T extends Model> {
+public interface SystemInfoPreferences {
+    boolean save(SystemInfo systemInfo);
 
-    /**
-     * Returns true if this collection changed as a result of the call. (Returns false if this
-     * collection does not permit duplicates and already contains the specified element.)
-     * Collections that support this operation may place limitations on what elements may be
-     * added to this
-     * collection. In particular, some collections will refuse to add null elements, and others will
-     * impose restrictions on the type of elements that may be added. Collection classes should
-     * clearly
-     * specify in their documentation any restrictions on what elements may be added.
-     * <p>
-     * <p>
-     * If a collection refuses to add a particular element for any reason other than that it already
-     * contains the element, it must throw an exception (rather than returning false). This
-     * preserves
-     * the invariant that a collection always contains the specified element after this call
-     * returns.
-     *
-     * @param object element whose presence in this collection is to be ensured.
-     */
-    boolean add(T object);
+    SystemInfo get();
+
+    boolean isEmpty();
+
+    boolean clear();
 }

@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
@@ -39,8 +39,8 @@ import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
-public interface TrackedEntityInstanceService extends Service, ISave<TrackedEntityInstance>,
-        IRemove<TrackedEntityInstance>, IGet<TrackedEntityInstance>, IList<TrackedEntityInstance> {
+public interface TrackedEntityInstanceService extends Service, Save<TrackedEntityInstance>,
+        Remove<TrackedEntityInstance>, Get<TrackedEntityInstance>, ListAll<TrackedEntityInstance> {
     TrackedEntityInstance get(String uid);
 
     TrackedEntityInstance create(TrackedEntity trackedEntity, OrganisationUnit organisationUnit);

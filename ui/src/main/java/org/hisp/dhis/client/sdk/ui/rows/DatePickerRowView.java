@@ -47,8 +47,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.RaisedButton;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
@@ -58,13 +58,13 @@ import java.util.Locale;
 
 import static android.text.TextUtils.isEmpty;
 
-public class DatePickerRowView implements IRowView {
+public class DatePickerRowView implements RowView {
     private static final String TAG = DatePickerRowView.class.getSimpleName();
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntity.Type type) {
+                                                      DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(DatePickerRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -74,9 +74,9 @@ public class DatePickerRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         DatePickerRowViewHolder datePickerRowViewHolder = (DatePickerRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
+        DataEntityText entity = (DataEntityText) dataEntity;
         datePickerRowViewHolder.update(entity);
     }
 
@@ -95,7 +95,7 @@ public class DatePickerRowView implements IRowView {
 
         public final OnButtonClickListener onButtonClickListener;
 
-        public DatePickerRowViewHolder(View itemView, DataEntity.Type type,
+        public DatePickerRowViewHolder(View itemView, DataEntityText.Type type,
                                        FragmentManager fragmentManager) {
             super(itemView);
 
@@ -134,7 +134,7 @@ public class DatePickerRowView implements IRowView {
             displayValueEditText.setOnClickListener(onButtonClickListener);
         }
 
-        public void update(DataEntity dataEntity) {
+        public void update(DataEntityText dataEntity) {
             CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
                     onFocusChangeListener.getHint();
 
@@ -146,7 +146,7 @@ public class DatePickerRowView implements IRowView {
             displayValueEditText.setText(dataEntity.getValue());
         }
 
-        private boolean configureViews(DataEntity.Type entityType) {
+        private boolean configureViews(DataEntityText.Type entityType) {
             switch (entityType) {
                 case DATE:
                     return configure(entityType);
@@ -161,7 +161,7 @@ public class DatePickerRowView implements IRowView {
             }
         }
 
-        private boolean configure(DataEntity.Type type) {
+        private boolean configure(DataEntityText.Type type) {
             textInputLayout.setHint(displayValueEditText.getContext()
                     .getString(R.string.enter_date));
             displayValueEditText.setInputType(InputType.TYPE_CLASS_DATETIME);
@@ -170,9 +170,9 @@ public class DatePickerRowView implements IRowView {
         }
 
         private static class OnValueChangedListener extends AbsTextWatcher {
-            private DataEntity dataEntity;
+            private DataEntityText dataEntity;
 
-            public void setDataEntity(DataEntity dataEntity) {
+            public void setDataEntity(DataEntityText dataEntity) {
                 this.dataEntity = dataEntity;
             }
 

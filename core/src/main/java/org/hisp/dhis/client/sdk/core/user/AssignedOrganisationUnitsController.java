@@ -26,25 +26,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.models;
+package org.hisp.dhis.client.sdk.core.user;
 
-import java.util.List;
+import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
-public interface IDataEntity<T> {
-    DataEntity.Type getType();
+public interface AssignedOrganisationUnitsController {
+    void sync() throws ApiException;
 
-    T getValue();
-
-    CharSequence getLabel();
-
-    OnValueChangeListener<T> getOnValueChangedListener();
-
-    List<IValueValidator<CharSequence>> getDataEntityValueValidators();
-
-    boolean updateValue(T value);
-
-    boolean clearValue();
-
-    boolean validateValue(T value);
-
+    void sync(SyncStrategy strategy) throws ApiException;
 }

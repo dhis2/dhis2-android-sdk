@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.preferences;
 
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoPreferences;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoPreferences;
 
 public interface PreferencesModule {
     ConfigurationPreferences getConfigurationPreferences();
@@ -37,7 +37,7 @@ public interface PreferencesModule {
 
     UserPreferences getUserPreferences();
 
-    ISystemInfoPreferences getSystemInfoPreferences();
+    SystemInfoPreferences getSystemInfoPreferences();
 
     boolean clearAllPreferences();
 }

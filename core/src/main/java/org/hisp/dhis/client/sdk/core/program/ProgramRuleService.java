@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
@@ -41,8 +41,8 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public interface ProgramRuleService extends Service, IGet<ProgramRule>, IGetUid<ProgramRule>,
-        IList<ProgramRule>, IListUids<ProgramRule>, ISave<ProgramRule>, IRemove<ProgramRule> {
+public interface ProgramRuleService extends Service, Get<ProgramRule>, GetUid<ProgramRule>,
+        ListAll<ProgramRule>, ListUids<ProgramRule>, Save<ProgramRule>, Remove<ProgramRule> {
 
     List<ProgramRule> list(ProgramStage programStage);
 

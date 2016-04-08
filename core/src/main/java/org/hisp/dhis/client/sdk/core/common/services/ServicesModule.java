@@ -28,13 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
-import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
-import org.hisp.dhis.client.sdk.core.event.EventServiceImpl;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitServiceImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
@@ -43,151 +39,36 @@ import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
-import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionServiceImpl;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeServiceImpl;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService2;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
-import org.hisp.dhis.client.sdk.core.user.UserAccountServiceImpl;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+public interface ServicesModule {
+    UserAccountService getUserAccountService();
 
-public final class ServicesModule implements IServicesModule {
-    private final UserAccountService userAccountService;
-    private final ProgramService programService;
-    private final ProgramStageService programStageService;
-    private final ProgramStageSectionService programStageSectionService;
-    private final OrganisationUnitService organisationUnitService;
-    private final EventService eventService;
-    private final ProgramStageDataElementService programStageDataElementService;
-    private final DataElementService dataElementService;
-    private final TrackedEntityAttributeService trackedEntityAttributeService;
-    private final ProgramIndicatorService programIndicatorService;
-    private final ProgramRuleVariableService programRuleVariableService;
-    private final ProgramRuleService programRuleService;
-    private final ProgramRuleActionService programRuleActionService;
-    private final TrackedEntityDataValueService trackedEntityDataValueService;
+    ProgramService getProgramService();
 
-    public ServicesModule(PersistenceModule persistenceModule) {
-        isNull(persistenceModule, "persistenceModule must not be null");
+    ProgramStageService getProgramStageService();
 
-        userAccountService = new UserAccountServiceImpl(
-                persistenceModule.getUserAccountStore());
-        programService = new ProgramServiceImpl(
-                persistenceModule.getProgramStore());
-        programStageService = new ProgramStageServiceImpl(
-                persistenceModule.getProgramStageStore());
+    ProgramStageDataElementService getProgramStageDataElementService();
 
-        programStageDataElementService = new ProgramStageDataElementServiceImpl(
-                persistenceModule.getProgramStageDataElementStore());
+    ProgramStageSectionService getProgramStageSectionService();
 
-        programStageSectionService = new ProgramStageSectionServiceImpl(
-                persistenceModule.getProgramStageSectionStore());
+    OrganisationUnitService getOrganisationUnitService();
 
-        programRuleService = new ProgramRuleServiceImpl(
-                persistenceModule.getProgramRuleStore());
+    EventService getEventService();
 
-        programRuleActionService = new ProgramRuleActionServiceImpl(
-                persistenceModule.getProgramRuleActionStore());
+    DataElementService getDataElementService();
 
-        programRuleVariableService = new ProgramRuleVariableServiceImpl(
-                persistenceModule.getProgramRuleVariableStore());
+    ProgramRuleService getProgramRuleService();
 
-        programIndicatorService = new ProgramIndicatorServiceImpl(
-                persistenceModule.getProgramIndicatorStore());
+    ProgramRuleActionService getProgramRuleActionService();
 
-        organisationUnitService = new OrganisationUnitServiceImpl(
-                persistenceModule.getOrganisationUnitStore());
+    ProgramRuleVariableService getProgramRuleVariableService();
 
-        eventService = new EventServiceImpl(
-                persistenceModule.getEventStore(),
-                persistenceModule.getStateStore());
-        dataElementService = new DataElementServiceImpl(
-                persistenceModule.getDataElementStore());
+    ProgramIndicatorService getProgramIndicatorService();
 
-        trackedEntityAttributeService = new TrackedEntityAttributeServiceImpl(
-                persistenceModule.getTrackedEntityAttributeStore());
+    TrackedEntityAttributeService getTrackedEntityAttributeService();
 
-        trackedEntityDataValueService = new TrackedEntityDataValueService2(
-                persistenceModule.getTrackedEntityDataValueStore(),
-                persistenceModule.getEventStore(),
-                persistenceModule.getStateStore());
-    }
-
-    @Override
-    public UserAccountService getUserAccountService() {
-        return userAccountService;
-    }
-
-    @Override
-    public ProgramService getProgramService() {
-        return programService;
-    }
-
-    @Override
-    public OrganisationUnitService getOrganisationUnitService() {
-        return organisationUnitService;
-    }
-
-    @Override
-    public ProgramStageService getProgramStageService() {
-        return programStageService;
-    }
-
-    @Override
-    public ProgramStageDataElementService getProgramStageDataElementService() {
-        return programStageDataElementService;
-    }
-
-    public ProgramStageSectionService getProgramStageSectionService() {
-        return programStageSectionService;
-    }
-
-    @Override
-    public EventService getEventService() {
-        return eventService;
-    }
-
-    @Override
-    public DataElementService getDataElementService() {
-        return dataElementService;
-    }
-
-    @Override
-    public ProgramRuleService getProgramRuleService() {
-        return programRuleService;
-    }
-
-    @Override
-    public ProgramRuleActionService getProgramRuleActionService() {
-        return programRuleActionService;
-    }
-
-    @Override
-    public ProgramRuleVariableService getProgramRuleVariableService() {
-        return programRuleVariableService;
-    }
-
-    @Override
-    public ProgramIndicatorService getProgramIndicatorService() {
-        return programIndicatorService;
-    }
-
-    @Override
-    public TrackedEntityAttributeService getTrackedEntityAttributeService() {
-        return trackedEntityAttributeService;
-    }
-
-    @Override
-    public TrackedEntityDataValueService getTrackedEntityDataValueService() {
-        return null;
-    }
+    TrackedEntityDataValueService getTrackedEntityDataValueService();
 }

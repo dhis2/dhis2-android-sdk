@@ -40,16 +40,16 @@ import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementController;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
-import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
-import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitsController;
+import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
+import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 
 public interface ControllersModule {
-    ISystemInfoController getSystemInfoController();
+    SystemInfoController getSystemInfoController();
 
-    IUserAccountController getUserAccountController();
+    UserAccountController getUserAccountController();
 
     ProgramController getProgramController();
 
@@ -59,9 +59,9 @@ public interface ControllersModule {
 
     OrganisationUnitController getOrganisationUnitController();
 
-    IAssignedProgramsController getAssignedProgramsController();
+    AssignedProgramsController getAssignedProgramsController();
 
-    IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
+    AssignedOrganisationUnitsController getAssignedOrganisationUnitsController();
 
     EventController getEventController();
 
@@ -77,7 +77,7 @@ public interface ControllersModule {
 
     ProgramIndicatorController getProgramIndicatorController();
 
-    ITrackedEntityAttributeController getTrackedEntityAttributeController();
+    TrackedEntityAttributeController getTrackedEntityAttributeController();
 
     OptionSetController getOptionSetController();
 }

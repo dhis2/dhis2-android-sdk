@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
 
-/**
- * This method
- */
-public interface ICreate<T extends Model> {
-    T create();
+public interface GetUid<T extends IdentifiableObject> {
+    T get(String uid);
 }

@@ -26,12 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
+package org.hisp.dhis.client.sdk.core.common.services;
 
-/**
- * Interface callback for picker state change.
- * Called when pickedItem is cleared.
- */
-public interface IPickableItemClearListener {
-    void clearedCallback();
+import org.hisp.dhis.client.sdk.models.common.base.Model;
+
+public interface Update<T extends Model> {
+    boolean update(T object);
 }

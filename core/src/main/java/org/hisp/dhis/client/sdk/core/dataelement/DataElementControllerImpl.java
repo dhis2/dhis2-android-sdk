@@ -38,7 +38,7 @@ import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetController;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -51,7 +51,7 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
         implements DataElementController {
 
     /* Controllers */
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
 
     /* Api clients */
     private final DataElementApiClient dataElementApiClient;
@@ -60,7 +60,7 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
     private final TransactionManager transactionManager;
     private final OptionSetController optionSetController;
 
-    public DataElementControllerImpl(ISystemInfoController systemInfoController,
+    public DataElementControllerImpl(SystemInfoController systemInfoController,
                                      OptionSetController optionSetController,
                                      DataElementApiClient dataElementApiClient,
                                      DataElementStore dataElementStore,

@@ -9,7 +9,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class ProgramIndicatorControllerImpl extends AbsSyncStrategyController
         <ProgramIndicator> implements ProgramIndicatorController {
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
     private final ProgramIndicatorApiClient programindicatorApiClient;
     private final TransactionManager transactionManager;
     private final ProgramController programController;
@@ -29,7 +29,7 @@ public class ProgramIndicatorControllerImpl extends AbsSyncStrategyController
 
     public ProgramIndicatorControllerImpl(ProgramIndicatorStore programIndicatorStore,
                                           LastUpdatedPreferences lastUpdatedPreferences,
-                                          ISystemInfoController systemInfoController,
+                                          SystemInfoController systemInfoController,
                                           ProgramIndicatorApiClient programIndicatorApiClient,
                                           TransactionManager transactionManager,
                                           ProgramController programController,

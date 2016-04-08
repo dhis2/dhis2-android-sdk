@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 
 class RowViewTypeMatcher {
 
@@ -36,7 +36,7 @@ class RowViewTypeMatcher {
         // private constructor
     }
 
-    public static Class<?> matchToRowView(DataEntity.Type type) {
+    public static Class<?> matchToRowView(DataEntityText.Type type) {
         switch (type) {
             case BOOLEAN:
             case GENDER:

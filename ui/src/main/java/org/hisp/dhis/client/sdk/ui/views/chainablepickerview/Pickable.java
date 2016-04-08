@@ -26,12 +26,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.services;
+package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import android.os.Parcelable;
 
-import java.util.List;
-
-public interface IList<T extends Model> {
-    List<T> list();
+/**
+ * Common interface for items that can be represented in {@link SelectorListAdapter}
+ */
+public interface Pickable extends Parcelable {
+    @Override
+    String toString();
 }

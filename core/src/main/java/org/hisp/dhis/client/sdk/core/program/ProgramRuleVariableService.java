@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
-public interface ProgramRuleVariableService extends Service, IGet<ProgramRuleVariable>,
-        IGetUid<ProgramRuleVariable>, IList<ProgramRuleVariable>, IListUids<ProgramRuleVariable> {
+public interface ProgramRuleVariableService extends Service, Get<ProgramRuleVariable>,
+        GetUid<ProgramRuleVariable>, ListAll<ProgramRuleVariable>, ListUids<ProgramRuleVariable> {
 }

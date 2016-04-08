@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.interpretation;
 
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.user.User;
 
-public interface InterpretationService extends Service, IRemove<Interpretation>,
-        ISave<Interpretation> {
+public interface InterpretationService extends Service, Remove<Interpretation>,
+        Save<Interpretation> {
     Interpretation create(DashboardItem item, User user, String text);
 }

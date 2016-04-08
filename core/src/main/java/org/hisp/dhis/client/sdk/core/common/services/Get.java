@@ -26,23 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.trackedentity;
+package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-import java.util.List;
-
-public interface ITrackedEntityInstanceController {
-    void sync();
-
-    TrackedEntityInstance sync(String uid, boolean getEnrollments);
-
-    void sync(List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments);
-
-    List<TrackedEntityInstance> queryServerTrackedEntityInstances(String organisationUnitUid,
-                                                                  String programUid,
-                                                                  String queryString,
-                                                                  TrackedEntityAttributeValue...
-                                                                          params);
+public interface Get<T extends Model> {
+    T get(long id);
 }

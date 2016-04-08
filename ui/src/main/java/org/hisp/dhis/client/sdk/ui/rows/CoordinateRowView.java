@@ -40,21 +40,21 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntityCoordinate;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 
-public class CoordinateRowView implements IRowView {
+public class CoordinateRowView implements RowView {
     private static final String TAG = CoordinateRowView.class.getSimpleName();
     private OnCoordinatesCaptured onCoordinatesCaptured;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
                                                       LayoutInflater inflater,
-                                                      ViewGroup parent, DataEntity.Type type) {
+                                                      ViewGroup parent, DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(CoordinateRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -64,7 +64,7 @@ public class CoordinateRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
         CoordinateRowViewHolder coordinateRowViewHolder = (CoordinateRowViewHolder) holder;
         DataEntityCoordinate coordinateDataEntity = (DataEntityCoordinate) dataEntity;
         coordinateRowViewHolder.update(coordinateDataEntity);
@@ -93,7 +93,7 @@ public class CoordinateRowView implements IRowView {
         public final OnValueChangedListener onValueChangedListener;
         public final TextView textViewLabel;
 
-        public CoordinateRowViewHolder(View itemView, DataEntity.Type type,
+        public CoordinateRowViewHolder(View itemView, DataEntityText.Type type,
                                        OnCoordinatesCaptured onCoordinatesCaptured) {
             super(itemView);
 

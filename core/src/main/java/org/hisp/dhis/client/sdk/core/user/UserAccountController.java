@@ -28,25 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public final class UserAccountController implements IUserAccountController {
-    private final UserApiClient userApiClient;
-    private final UserAccountStore userAccountStore;
-
-    public UserAccountController(UserApiClient userApiClient, UserAccountStore
-            userAccountStore) {
-        this.userApiClient = userApiClient;
-        this.userAccountStore = userAccountStore;
-    }
-
-    @Override
-    public UserAccount updateAccount() throws ApiException {
-        UserAccount userAccount = userApiClient.getUserAccount();
-
-        // update userAccount in database
-        userAccountStore.save(userAccount);
-        return userAccount;
-    }
+public interface UserAccountController {
+    UserAccount updateAccount();
 }

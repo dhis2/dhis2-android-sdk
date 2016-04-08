@@ -64,7 +64,7 @@ public class SelectorAdapter extends RecyclerView.Adapter<SelectorViewHolder> {
         holder.autoCompleteTextView.setOnItemClickListener(picker.getListener());
         holder.autoCompleteTextView.setHint(picker.getHint());
 
-        IPickable pickedItem = picker.getPickedItem();
+        Pickable pickedItem = picker.getPickedItem();
         if (pickedItem != null) {
             holder.autoCompleteTextView.setText(pickedItem.toString());
         } else {

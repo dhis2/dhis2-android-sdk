@@ -56,22 +56,22 @@ import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableControllerImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageControllerImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementControllerImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionControllerImpl;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoControllerImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
-import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitController;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeControllerImpl;
+import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitControllerImpl;
+import org.hisp.dhis.client.sdk.core.user.AssignedProgramsControllerImpl;
+import org.hisp.dhis.client.sdk.core.user.AssignedOrganisationUnitsController;
 import org.hisp.dhis.client.sdk.core.user.AssignedProgramsController;
-import org.hisp.dhis.client.sdk.core.user.IAssignedOrganisationUnitsController;
-import org.hisp.dhis.client.sdk.core.user.IAssignedProgramsController;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
+import org.hisp.dhis.client.sdk.core.user.UserAccountControllerImpl;
 
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class ControllersModuleImpl implements ControllersModule {
-    private final ISystemInfoController systemInfoController;
-    private final IUserAccountController userAccountController;
+    private final SystemInfoController systemInfoController;
+    private final UserAccountController userAccountController;
     private final ProgramController programController;
     private final ProgramStageController programStageController;
     private final ProgramStageSectionController programStageSectionController;
@@ -81,12 +81,12 @@ public class ControllersModuleImpl implements ControllersModule {
     private final ProgramIndicatorController programIndicatorController;
     private final ProgramStageDataElementController programStageDataElementController;
     private final OrganisationUnitController organisationUnitController;
-    private final IAssignedProgramsController assignedProgramsController;
-    private final IAssignedOrganisationUnitsController assignedOrganisationUnitsController;
+    private final AssignedProgramsController assignedProgramsController;
+    private final AssignedOrganisationUnitsController assignedOrganisationUnitsController;
     private final EventController eventController;
     private final DataElementController dataElementController;
     private final OptionSetController optionSetController;
-    private final ITrackedEntityAttributeController trackedEntityAttributeController;
+    private final TrackedEntityAttributeController trackedEntityAttributeController;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,
@@ -96,7 +96,7 @@ public class ControllersModuleImpl implements ControllersModule {
         isNull(preferencesModule, "preferencesModule must not be null");
         isNull(logger, "Logger must not be null");
 
-        systemInfoController = new SystemInfoController(
+        systemInfoController = new SystemInfoControllerImpl(
                 networkModule.getSystemInfoApiClient(),
                 preferencesModule.getSystemInfoPreferences(),
                 preferencesModule.getLastUpdatedPreferences());
@@ -155,7 +155,7 @@ public class ControllersModuleImpl implements ControllersModule {
                 programStageController);
 
 
-        assignedProgramsController = new AssignedProgramsController(
+        assignedProgramsController = new AssignedProgramsControllerImpl(
                 programController, networkModule.getUserApiClient());
 
         organisationUnitController = new OrganisationUnitControllerImpl(
@@ -165,15 +165,15 @@ public class ControllersModuleImpl implements ControllersModule {
                 preferencesModule.getLastUpdatedPreferences(),
                 persistenceModule.getTransactionManager());
 
-        assignedOrganisationUnitsController = new AssignedOrganisationUnitController(
+        assignedOrganisationUnitsController = new AssignedOrganisationUnitControllerImpl(
                 networkModule.getUserApiClient(), organisationUnitController);
 
-        userAccountController = new UserAccountController(
+        userAccountController = new UserAccountControllerImpl(
                 networkModule.getUserApiClient(),
                 persistenceModule.getUserAccountStore());
 
 
-        trackedEntityAttributeController = new TrackedEntityAttributeController(
+        trackedEntityAttributeController = new TrackedEntityAttributeControllerImpl(
                 networkModule.getTrackedEntityAttributeApiClient(),
                 persistenceModule.getTransactionManager(),
                 preferencesModule.getLastUpdatedPreferences(),
@@ -225,12 +225,12 @@ public class ControllersModuleImpl implements ControllersModule {
     }
 
     @Override
-    public ISystemInfoController getSystemInfoController() {
+    public SystemInfoController getSystemInfoController() {
         return systemInfoController;
     }
 
     @Override
-    public IUserAccountController getUserAccountController() {
+    public UserAccountController getUserAccountController() {
         return userAccountController;
     }
 
@@ -255,12 +255,12 @@ public class ControllersModuleImpl implements ControllersModule {
     }
 
     @Override
-    public IAssignedProgramsController getAssignedProgramsController() {
+    public AssignedProgramsController getAssignedProgramsController() {
         return assignedProgramsController;
     }
 
     @Override
-    public IAssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
+    public AssignedOrganisationUnitsController getAssignedOrganisationUnitsController() {
         return assignedOrganisationUnitsController;
     }
 
@@ -300,7 +300,7 @@ public class ControllersModuleImpl implements ControllersModule {
     }
 
     @Override
-    public ITrackedEntityAttributeController getTrackedEntityAttributeController() {
+    public TrackedEntityAttributeController getTrackedEntityAttributeController() {
         return trackedEntityAttributeController;
     }
 

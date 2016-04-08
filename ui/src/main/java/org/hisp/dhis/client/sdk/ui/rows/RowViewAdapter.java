@@ -35,14 +35,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
-    private final List<IDataEntity> dataEntities;
-    private final List<IRowView> rowViews;
+    private final List<DataEntity> dataEntities;
+    private final List<RowView> rowViews;
     private final FragmentManager fragmentManager;
 
     public RowViewAdapter(FragmentManager childFragmentManager) {
@@ -92,11 +92,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         return getItem(position) != null ? getItem(position).getType().ordinal() : -1;
     }
 
-    private IDataEntity getItem(int position) {
+    private DataEntity getItem(int position) {
         return dataEntities.size() > position ? dataEntities.get(position) : null;
     }
 
-    public void swap(List<IDataEntity> dataEntities) {
+    public void swap(List<DataEntity> dataEntities) {
         this.dataEntities.clear();
 
         if (dataEntities != null) {

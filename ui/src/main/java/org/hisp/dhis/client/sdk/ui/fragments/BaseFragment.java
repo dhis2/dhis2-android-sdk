@@ -35,17 +35,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.activities.INavigationCallback;
+import org.hisp.dhis.client.sdk.ui.activities.NavigationCallback;
 
 public class BaseFragment extends Fragment implements Toolbar.OnMenuItemClickListener {
-    private INavigationCallback navigationCallback;
+    private NavigationCallback navigationCallback;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof INavigationCallback) {
-            navigationCallback = (INavigationCallback) context;
+        if (context instanceof NavigationCallback) {
+            navigationCallback = (NavigationCallback) context;
         }
     }
 

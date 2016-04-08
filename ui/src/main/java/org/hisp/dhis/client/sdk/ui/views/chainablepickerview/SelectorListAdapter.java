@@ -42,14 +42,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Adapter for filtered items in a AutoCompleteTextView, using {@link IPickable}
+ * Adapter for filtered items in a AutoCompleteTextView, using {@link Pickable}
  */
 public class SelectorListAdapter extends BaseAdapter implements Filterable {
 
-    private List<IPickable> allItems;
-    private List<IPickable> filteredItems;
+    private List<Pickable> allItems;
+    private List<Pickable> filteredItems;
 
-    public void swapData(List<IPickable> items) {
+    public void swapData(List<Pickable> items) {
         boolean notifyAdapter = items != allItems;
         allItems = items;
         filteredItems = allItems;
@@ -59,7 +59,7 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    private void swapFilteredData(List<IPickable> items) {
+    private void swapFilteredData(List<Pickable> items) {
         boolean notifyAdapter = items != filteredItems;
         filteredItems = items;
 
@@ -74,7 +74,7 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
     }
 
     @Override
-    public IPickable getItem(int position) {
+    public Pickable getItem(int position) {
         return filteredItems.get(position);
     }
 
@@ -111,11 +111,11 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
-            ArrayList<IPickable> values = new ArrayList<>();
+            ArrayList<Pickable> values = new ArrayList<>();
             if (constraint != null && constraint.toString().length() > 0) {
                 String filter = constraint.toString().toLowerCase();
                 for (int i = 0; i < allItems.size(); i++) {
-                    IPickable item = allItems.get(i);
+                    Pickable item = allItems.get(i);
                     String itemValue = item.toString().toLowerCase();
                     if (itemValue.contains(filter)) {
                         values.add(item);
@@ -136,9 +136,9 @@ public class SelectorListAdapter extends BaseAdapter implements Filterable {
             if (constraint == null || constraint.equals("")) {
                 swapFilteredData(allItems);
             } else if (results.count == 0) {
-                swapFilteredData(new ArrayList<IPickable>());
+                swapFilteredData(new ArrayList<Pickable>());
             } else {
-                filteredItems = (ArrayList<IPickable>) results.values;
+                filteredItems = (ArrayList<Pickable>) results.values;
                 swapFilteredData(filteredItems);
             }
             notifyDataSetChanged();

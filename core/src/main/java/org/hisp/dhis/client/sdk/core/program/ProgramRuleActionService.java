@@ -29,21 +29,21 @@
 package org.hisp.dhis.client.sdk.core.program;
 
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IGetUid;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IListUids;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 
 import java.util.List;
 
-public interface ProgramRuleActionService extends Service, ISave<ProgramRuleAction>,
-        IRemove<ProgramRuleAction>, IGet<ProgramRuleAction>, IGetUid<ProgramRuleAction>,
-        IList<ProgramRuleAction>, IListUids<ProgramRuleAction> {
+public interface ProgramRuleActionService extends Service, Save<ProgramRuleAction>,
+        Remove<ProgramRuleAction>, Get<ProgramRuleAction>, GetUid<ProgramRuleAction>,
+        ListAll<ProgramRuleAction>, ListUids<ProgramRuleAction> {
 
     List<ProgramRuleAction> list(ProgramRule programRule);
 }

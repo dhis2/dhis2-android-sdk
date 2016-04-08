@@ -28,47 +28,25 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitController;
-import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.List;
-import java.util.Set;
-
-public class AssignedOrganisationUnitController implements IAssignedOrganisationUnitsController {
-
-    // Api Clients
+public final class UserAccountControllerImpl implements UserAccountController {
     private final UserApiClient userApiClient;
+    private final UserAccountStore userAccountStore;
 
-    // Controllers
-    private final OrganisationUnitController organisationUnitController;
-
-    public AssignedOrganisationUnitController(
-            UserApiClient userApiClient, OrganisationUnitController
-            organisationUnitController) {
+    public UserAccountControllerImpl(UserApiClient userApiClient, UserAccountStore
+            userAccountStore) {
         this.userApiClient = userApiClient;
-        this.organisationUnitController = organisationUnitController;
+        this.userAccountStore = userAccountStore;
     }
 
     @Override
-    public void sync() throws ApiException {
-        sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public void sync(SyncStrategy strategy) throws ApiException {
+    public UserAccount updateAccount() throws ApiException {
         UserAccount userAccount = userApiClient.getUserAccount();
 
-        /* get list of assigned organisation units */
-        List<OrganisationUnit> assignedOrganisationUnits = userAccount.getOrganisationUnits();
-
-        /* convert them to set of ids */
-        Set<String> ids = ModelUtils.toUidSet(assignedOrganisationUnits);
-
-        /* get them through program controller */
-        organisationUnitController.pull(strategy, ids);
+        // update userAccount in database
+        userAccountStore.save(userAccount);
+        return userAccount;
     }
 }

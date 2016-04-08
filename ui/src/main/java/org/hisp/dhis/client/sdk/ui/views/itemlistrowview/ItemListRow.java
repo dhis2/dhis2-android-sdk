@@ -26,10 +26,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.common.services;
+package org.hisp.dhis.client.sdk.ui.views.itemlistrowview;
 
-import org.hisp.dhis.client.sdk.models.common.base.Model;
+import android.support.v4.util.Pair;
+import android.view.View;
 
-public interface IUpdate<T extends Model> {
-    boolean update(T object);
+import java.util.List;
+
+public interface ItemListRow {
+    String getStatus();
+
+    void setStatus(String status);
+
+    List<Pair<String, Integer>> getValuesPosition();
+
+    void setValuesPosition(List<Pair<String, Integer>> valuesPosition);
+
+    View.OnClickListener getOnRowClickListener();
+
+    void setOnRowClickListener(View.OnClickListener onRowClickListener);
+
+    View.OnClickListener getOnStatusClickListener();
+
+    void setOnStatusClickListener(View.OnClickListener onStatusClickListener);
+
+    View.OnLongClickListener getOnLongClickListener();
+
+    void setOnLongClickListener(View.OnLongClickListener onLongClickListener);
 }

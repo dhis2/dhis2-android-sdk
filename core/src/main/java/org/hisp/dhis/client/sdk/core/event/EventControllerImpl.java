@@ -41,7 +41,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.common.importsummary.ImportSummary;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -57,7 +57,7 @@ import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty
 public final class EventControllerImpl extends AbsDataController<Event> implements EventController {
 
     /* Controllers */
-    private final ISystemInfoController systemInfoController;
+    private final SystemInfoController systemInfoController;
 
     /* Api clients */
     private final EventApiClient eventApiClient;
@@ -72,7 +72,7 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
     /* Utilities */
     private final TransactionManager transactionManager;
 
-    public EventControllerImpl(ISystemInfoController systemInfoController,
+    public EventControllerImpl(SystemInfoController systemInfoController,
                                EventApiClient eventApiClient,
                                LastUpdatedPreferences lastUpdatedPreferences,
                                EventStore eventStore, StateStore stateStore,

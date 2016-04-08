@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.services.IGet;
-import org.hisp.dhis.client.sdk.core.common.services.IList;
-import org.hisp.dhis.client.sdk.core.common.services.IRemove;
-import org.hisp.dhis.client.sdk.core.common.services.ISave;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -39,9 +39,9 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
-public interface TrackedEntityDataValueService extends Service, ISave<TrackedEntityDataValue>,
-        IRemove<TrackedEntityDataValue>, IGet<TrackedEntityDataValue>,
-        IList<TrackedEntityDataValue> {
+public interface TrackedEntityDataValueService extends Service, Save<TrackedEntityDataValue>,
+        Remove<TrackedEntityDataValue>, Get<TrackedEntityDataValue>,
+        ListAll<TrackedEntityDataValue> {
 
     List<TrackedEntityDataValue> list(Event event);
 

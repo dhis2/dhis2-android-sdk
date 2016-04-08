@@ -26,16 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.core.systeminfo;
+package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.SystemInfo;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public interface ISystemInfoPreferences {
-    boolean save(SystemInfo systemInfo);
+import java.util.List;
 
-    SystemInfo get();
-
-    boolean isEmpty();
-
-    boolean clear();
+public interface ListAll<T extends Model> {
+    List<T> list();
 }

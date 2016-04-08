@@ -44,13 +44,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
 import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 
-public final class EditTextRowView implements IRowView {
+public final class EditTextRowView implements RowView {
 
     public EditTextRowView() {
         // explicit empty constructor
@@ -58,7 +58,7 @@ public final class EditTextRowView implements IRowView {
 
     @Override
     public ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater,
-                                         ViewGroup parent, DataEntity.Type type) {
+                                         ViewGroup parent, DataEntityText.Type type) {
         if (!RowViewTypeMatcher.matchToRowView(type).equals(EditTextRowView.class)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
@@ -68,9 +68,9 @@ public final class EditTextRowView implements IRowView {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, IDataEntity dataEntity) {
+    public void onBindViewHolder(ViewHolder holder, DataEntity dataEntity) {
         EditTextRowViewHolder editTextRowViewHolder = (EditTextRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
+        DataEntityText entity = (DataEntityText) dataEntity;
         ((EditTextRowViewHolder) holder).update(entity);
 
     }
@@ -85,7 +85,7 @@ public final class EditTextRowView implements IRowView {
         public final OnFocusChangeListener focusChangeListener;
         public final OnValueChangedListener onValueChangedListener;
 
-        public EditTextRowViewHolder(View itemView, DataEntity.Type type) {
+        public EditTextRowViewHolder(View itemView, DataEntityText.Type type) {
             super(itemView);
 
             textViewLabel = (TextView) itemView
@@ -106,7 +106,7 @@ public final class EditTextRowView implements IRowView {
             editText.addTextChangedListener(onValueChangedListener);
         }
 
-        public void update(DataEntity entity) {
+        public void update(DataEntityText entity) {
             onValueChangedListener.setDataEntity(entity);
             textViewLabel.setText(entity.getLabel());
             editText.setText(entity.getValue());
@@ -115,7 +115,7 @@ public final class EditTextRowView implements IRowView {
             textInputLayout.setHint(hint);
         }
 
-        private boolean configureViews(DataEntity.Type entityType) {
+        private boolean configureViews(DataEntityText.Type entityType) {
             switch (entityType) {
                 case TEXT:
                     return configure(entityType, R.string.enter_text,
@@ -147,7 +147,7 @@ public final class EditTextRowView implements IRowView {
             }
         }
 
-        private boolean configure(DataEntity.Type type, @StringRes int hint, int inputType,
+        private boolean configure(DataEntityText.Type type, @StringRes int hint, int inputType,
                                   boolean singleLine) {
             textInputLayout.setHint(editText.getContext().getString(hint));
             editText.setInputType(inputType);
@@ -165,9 +165,9 @@ public final class EditTextRowView implements IRowView {
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntity dataEntity;
+        private DataEntityText dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(DataEntityText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -207,9 +207,9 @@ public final class EditTextRowView implements IRowView {
     }
 
     private static class ValueFilter implements InputFilter {
-        private final DataEntity.Type type;
+        private final DataEntityText.Type type;
 
-        public ValueFilter(DataEntity.Type type) {
+        public ValueFilter(DataEntityText.Type type) {
             this.type = type;
         }
 

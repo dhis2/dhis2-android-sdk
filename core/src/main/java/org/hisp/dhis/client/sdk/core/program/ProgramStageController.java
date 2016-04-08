@@ -62,7 +62,7 @@ public class ProgramStageController extends AbsSyncStrategyController<ProgramSta
     public ProgramStageController(IProgramController programController,
                                   ISystemInfoController systemInfoController,
                                   IProgramStageApiClient programStageApiClient,
-                                  IProgramStageStore programStageStore,
+                                  ProgramStageStore programStageStore,
                                   TransactionManager transactionManager,
                                   LastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAM_STAGES, programStageStore, lastUpdatedPreferences);

@@ -35,9 +35,9 @@ import java.util.List;
 
 public class DataElementService implements IDataElementService {
 
-    private final IDataElementStore dataElementStore;
+    private final DataElementStore dataElementStore;
 
-    public DataElementService(IDataElementStore dataElementStore) {
+    public DataElementService(DataElementStore dataElementStore) {
         this.dataElementStore = dataElementStore;
     }
 

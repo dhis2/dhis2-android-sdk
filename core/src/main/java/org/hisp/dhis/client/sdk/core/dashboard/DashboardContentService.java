@@ -34,9 +34,9 @@ import java.util.List;
 import java.util.Set;
 
 public class DashboardContentService implements IDashboardContentService {
-    private final IDashboardItemContentStore mDashboardItemContentStore;
+    private final DashboardItemContentStore mDashboardItemContentStore;
 
-    public DashboardContentService(IDashboardItemContentStore mDashboardItemContentStore) {
+    public DashboardContentService(DashboardItemContentStore mDashboardItemContentStore) {
         this.mDashboardItemContentStore = mDashboardItemContentStore;
     }
 

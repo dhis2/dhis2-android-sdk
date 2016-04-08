@@ -58,7 +58,7 @@ public final class TrackedEntityAttributeController extends AbsSyncStrategyContr
                                                     trackedEntityAttributeApiClient,
                                             TransactionManager transactionManager,
                                             LastUpdatedPreferences lastUpdatedPreferences,
-                                            ITrackedEntityAttributeStore trackedEntityAttributeStore,
+                                            TrackedEntityAttributeStore trackedEntityAttributeStore,
                                             ISystemInfoController systemInfoController,
                                             IOptionSetController optionSetController) {
         super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, trackedEntityAttributeStore, lastUpdatedPreferences);

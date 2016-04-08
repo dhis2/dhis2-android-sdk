@@ -40,11 +40,11 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.joda.time.DateTime;
 
 public class InterpretationService implements IInterpretationService {
-    private final IInterpretationStore interpretationStore;
+    private final InterpretationStore interpretationStore;
     private final StateStore stateStore;
     private final IInterpretationElementService interpretationElementService;
 
-    public InterpretationService(IInterpretationStore interpretationStore,
+    public InterpretationService(InterpretationStore interpretationStore,
                                  StateStore stateStore, IInterpretationElementService
                                          interpretationElementService) {
         this.interpretationStore = interpretationStore;

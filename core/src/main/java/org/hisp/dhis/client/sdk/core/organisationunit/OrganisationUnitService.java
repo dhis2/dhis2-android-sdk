@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Set;
 
 public class OrganisationUnitService implements IOrganisationUnitService {
-    private final IOrganisationUnitStore organisationUnitStore;
+    private final OrganisationUnitStore organisationUnitStore;
 
-    public OrganisationUnitService(IOrganisationUnitStore organisationUnitStore) {
+    public OrganisationUnitService(OrganisationUnitStore organisationUnitStore) {
         this.organisationUnitStore = organisationUnitStore;
     }
 

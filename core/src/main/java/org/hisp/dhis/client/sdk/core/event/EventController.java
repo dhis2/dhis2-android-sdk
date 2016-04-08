@@ -66,7 +66,7 @@ public final class EventController extends AbsDataController<Event> implements I
     private final LastUpdatedPreferences lastUpdatedPreferences;
 
     /* Persistence */
-    private final IEventStore eventStore;
+    private final EventStore eventStore;
     private final StateStore stateStore;
 
     /* Utilities */
@@ -75,7 +75,7 @@ public final class EventController extends AbsDataController<Event> implements I
     public EventController(ISystemInfoController systemInfoController,
                            IEventApiClient eventApiClient,
                            LastUpdatedPreferences lastUpdatedPreferences,
-                           IEventStore eventStore, StateStore stateStore,
+                           EventStore eventStore, StateStore stateStore,
                            TransactionManager transactionManager,
                            Logger logger) {
         super(logger, eventStore);

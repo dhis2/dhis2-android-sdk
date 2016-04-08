@@ -64,7 +64,7 @@ public final class ProgramRuleActionController extends AbsSyncStrategyController
                                        TransactionManager transactionManager,
                                        ISystemInfoController systemInfoController,
                                        LastUpdatedPreferences lastUpdatedPreferences,
-                                       IProgramRuleActionStore programRuleActionStore,
+                                       ProgramRuleActionStore programRuleActionStore,
                                        IProgramStageController programStageController,
                                        IProgramStageSectionController programStageSectionController,
                                        IDataElementController dataElementController,

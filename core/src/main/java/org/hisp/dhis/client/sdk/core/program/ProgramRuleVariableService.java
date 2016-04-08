@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
 import java.util.Set;
 
 public final class ProgramRuleVariableService implements IProgramRuleVariableService {
-    private final IProgramRuleVariableStore programRuleVariableStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
 
-    public ProgramRuleVariableService(IProgramRuleVariableStore programRuleVariableStore) {
+    public ProgramRuleVariableService(ProgramRuleVariableStore programRuleVariableStore) {
         this.programRuleVariableStore = programRuleVariableStore;
     }
 

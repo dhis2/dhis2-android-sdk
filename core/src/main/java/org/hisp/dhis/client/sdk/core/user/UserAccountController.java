@@ -33,9 +33,9 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public final class UserAccountController implements IUserAccountController {
     private final IUserApiClient userApiClient;
-    private final IUserAccountStore userAccountStore;
+    private final UserAccountStore userAccountStore;
 
-    public UserAccountController(IUserApiClient userApiClient, IUserAccountStore
+    public UserAccountController(IUserApiClient userApiClient, UserAccountStore
             userAccountStore) {
         this.userApiClient = userApiClient;
         this.userAccountStore = userAccountStore;

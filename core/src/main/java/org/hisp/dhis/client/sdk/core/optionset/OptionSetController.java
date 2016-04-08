@@ -53,13 +53,13 @@ public final class OptionSetController extends AbsSyncStrategyController<OptionS
     private final IOptionSetApiClient optionSetApiClient;
     private final ISystemInfoController systemInfoController;
     private final TransactionManager transactionManager;
-    private final IOptionStore optionStore;
-    private final IOptionSetStore optionSetStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
 
     public OptionSetController(ISystemInfoController systemInfoController,
                                IOptionSetApiClient optionSetApiClient,
-                               IOptionStore optionStore,
-                               IOptionSetStore optionSetStore,
+                               OptionStore optionStore,
+                               OptionSetStore optionSetStore,
                                LastUpdatedPreferences lastUpdatedPreferences,
                                TransactionManager transactionManager) {
         super(ResourceType.OPTION_SETS, optionSetStore, lastUpdatedPreferences);

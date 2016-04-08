@@ -39,11 +39,11 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class TrackedEntityDataValueService implements ITrackedEntityDataValueService {
-    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
     private final StateStore stateStore;
 
     public TrackedEntityDataValueService(
-            ITrackedEntityDataValueStore trackedEntityDataValueStore, StateStore stateStore) {
+            TrackedEntityDataValueStore trackedEntityDataValueStore, StateStore stateStore) {
         this.trackedEntityDataValueStore = trackedEntityDataValueStore;
         this.stateStore = stateStore;
     }

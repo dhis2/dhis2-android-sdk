@@ -34,8 +34,8 @@ import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.core.event.IEventController;
-import org.hisp.dhis.client.sdk.core.event.IEventStore;
 import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
@@ -51,16 +51,16 @@ public final class EnrollmentController implements IEnrollmentController {
     private final TransactionManager transactionManager;
 
     private final IEventController eventController;
-    private final IEnrollmentStore enrollmentStore;
-    private final IEventStore eventStore;
+    private final EnrollmentStore enrollmentStore;
+    private final EventStore eventStore;
     private final StateStore stateStore;
 
     public EnrollmentController(IEnrollmentApiClient apiClient,
                                 ISystemInfoApiClient systemInfoApiClient,
                                 LastUpdatedPreferences preferences,
                                 TransactionManager transactionManager,
-                                IEventController eventController, IEnrollmentStore enrollmentStore,
-                                IEventStore eventStore, StateStore stateStore) {
+                                IEventController eventController, EnrollmentStore enrollmentStore,
+                                EventStore eventStore, StateStore stateStore) {
         this.enrollmentApiClient = apiClient;
         this.systemInfoApiClient = systemInfoApiClient;
         this.lastUpdatedPreferences = preferences;

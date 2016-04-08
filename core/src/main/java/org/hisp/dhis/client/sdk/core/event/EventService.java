@@ -42,10 +42,10 @@ import java.util.Set;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class EventService implements IEventService {
-    private final IEventStore eventStore;
+    private final EventStore eventStore;
     private final StateStore stateStore;
 
-    public EventService(IEventStore eventStore, StateStore stateStore) {
+    public EventService(EventStore eventStore, StateStore stateStore) {
         this.eventStore = eventStore;
         this.stateStore = stateStore;
     }

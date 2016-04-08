@@ -63,7 +63,7 @@ public class OrganisationUnitController extends AbsSyncStrategyController<Organi
     public OrganisationUnitController(ISystemInfoController systemInfoController,
                                       IOrganisationUnitApiClient organisationUnitApiClient,
                                       IUserApiClient userApiClient,
-                                      IOrganisationUnitStore organisationUnitStore,
+                                      OrganisationUnitStore organisationUnitStore,
                                       LastUpdatedPreferences lastUpdatedPreferences,
                                       TransactionManager transactionManager) {
         super(ResourceType.ORGANISATION_UNITS, organisationUnitStore, lastUpdatedPreferences);

@@ -43,15 +43,15 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class DashboardService implements IDashboardService {
-    private final IDashboardStore dashboardStore;
-    private final IDashboardItemStore dashboardItemStore;
-    private final IDashboardElementStore dashboardElementStore;
+    private final DashboardStore dashboardStore;
+    private final DashboardItemStore dashboardItemStore;
+    private final DashboardElementStore dashboardElementStore;
     private final StateStore stateStore;
     private final IDashboardItemService dashboardItemService;
     private final IDashboardElementService dashboardElementService;
 
-    public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
-                            IDashboardElementStore dashboardElementStore, StateStore stateStore,
+    public DashboardService(DashboardStore dashboardStore, DashboardItemStore dashboardItemStore,
+                            DashboardElementStore dashboardElementStore, StateStore stateStore,
                             IDashboardItemService dashboardItemService,
                             IDashboardElementService dashboardElementService) {
         this.dashboardStore = dashboardStore;

@@ -46,11 +46,11 @@ import java.util.List;
 
 public class EnrollmentService implements IEnrollmentService {
 
-    private final IEnrollmentStore enrollmentStore;
+    private final EnrollmentStore enrollmentStore;
     private final StateStore stateStore;
     private final IEventService eventService;
 
-    public EnrollmentService(IEnrollmentStore enrollmentStore, StateStore stateStore,
+    public EnrollmentService(EnrollmentStore enrollmentStore, StateStore stateStore,
                              IEventService eventService) {
         this.enrollmentStore = enrollmentStore;
         this.stateStore = stateStore;

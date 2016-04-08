@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.network.Response;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperationImpl;
 import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.user.IUserAccountService;
-import org.hisp.dhis.client.sdk.core.user.IUserStore;
+import org.hisp.dhis.client.sdk.core.user.UserStore;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationComment;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
@@ -55,17 +55,17 @@ public final class InterpretationController implements IdentifiableController<In
     private final IUserAccountService mUserAccountService;
 
     private final IdentifiableObjectStore<Interpretation> mInterpretationStore;
-    private final IInterpretationElementStore mInterpretationElementStore;
-    private final IInterpretationCommentStore mInterpretationCommentStore;
+    private final InterpretationElementStore mInterpretationElementStore;
+    private final InterpretationCommentStore mInterpretationCommentStore;
 
-    private final IUserStore mUserStore;
+    private final UserStore mUserStore;
 
     public InterpretationController(IInterpretationService interpretationsService,
                                     IUserAccountService userAccountService,
                                     IdentifiableObjectStore<Interpretation> mInterpretationStore,
-                                    IInterpretationElementStore mInterpretationElementStore,
-                                    IInterpretationCommentStore mInterpretationCommentStore,
-                                    IUserStore mUserStore) {
+                                    InterpretationElementStore mInterpretationElementStore,
+                                    InterpretationCommentStore mInterpretationCommentStore,
+                                    UserStore mUserStore) {
         this.mInterpretationService = interpretationsService;
         this.mUserAccountService = userAccountService;
         this.mInterpretationStore = mInterpretationStore;

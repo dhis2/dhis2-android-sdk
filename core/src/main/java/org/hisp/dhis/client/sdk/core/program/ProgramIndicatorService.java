@@ -38,9 +38,9 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import java.util.List;
 
 public class ProgramIndicatorService implements IProgramIndicatorService {
-    private IProgramIndicatorStore programIndicatorStore;
+    private ProgramIndicatorStore programIndicatorStore;
 
-    public ProgramIndicatorService(IProgramIndicatorStore programIndicatorStore) {
+    public ProgramIndicatorService(ProgramIndicatorStore programIndicatorStore) {
         this.programIndicatorStore = programIndicatorStore;
     }
 

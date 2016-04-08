@@ -59,10 +59,10 @@ import java.util.Queue;
 import java.util.Set;
 
 public final class DashboardController implements IdentifiableController<Dashboard> {
-    private final IDashboardStore dashboardStore;
-    private final IDashboardItemStore dashboardItemStore;
-    private final IDashboardElementStore dashboardElementStore;
-    private final IDashboardItemContentStore dashboardItemContentStore;
+    private final DashboardStore dashboardStore;
+    private final DashboardItemStore dashboardItemStore;
+    private final DashboardElementStore dashboardElementStore;
+    private final DashboardItemContentStore dashboardItemContentStore;
     private final StateStore stateStore;
 
     /* dashboard client */
@@ -75,10 +75,10 @@ public final class DashboardController implements IdentifiableController<Dashboa
     /* database transaction manager */
     private final TransactionManager transactionManager;
 
-    public DashboardController(IDashboardStore dashboardStore,
-                               IDashboardItemStore dashboardItemStore,
-                               IDashboardElementStore dashboardElementStore,
-                               IDashboardItemContentStore dashboardItemContentStore,
+    public DashboardController(DashboardStore dashboardStore,
+                               DashboardItemStore dashboardItemStore,
+                               DashboardElementStore dashboardElementStore,
+                               DashboardItemContentStore dashboardItemContentStore,
                                StateStore stateStore,
                                IDashboardApiClient dashboardApiClient,
                                ISystemInfoApiClient systemInfoApiClient,

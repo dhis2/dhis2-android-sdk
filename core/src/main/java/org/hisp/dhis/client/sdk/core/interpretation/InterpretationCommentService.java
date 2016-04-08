@@ -39,10 +39,10 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.joda.time.DateTime;
 
 public class InterpretationCommentService implements IInterpretationCommentService {
-    private final IInterpretationCommentStore interpretationCommentStore;
+    private final InterpretationCommentStore interpretationCommentStore;
     private final StateStore stateStore;
 
-    public InterpretationCommentService(IInterpretationCommentStore interpretationCommentStore,
+    public InterpretationCommentService(InterpretationCommentStore interpretationCommentStore,
                                         StateStore stateStore) {
         this.interpretationCommentStore = interpretationCommentStore;
         this.stateStore = stateStore;

@@ -35,9 +35,9 @@ import java.util.List;
 
 
 public class ConstantService implements IConstantService {
-    private final IConstantStore constantStore;
+    private final ConstantStore constantStore;
 
-    public ConstantService(IConstantStore constantStore) {
+    public ConstantService(ConstantStore constantStore) {
         this.constantStore = constantStore;
     }
 

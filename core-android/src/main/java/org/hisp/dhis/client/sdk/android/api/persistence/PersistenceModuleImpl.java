@@ -34,86 +34,86 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
 import org.hisp.dhis.client.sdk.android.common.StateStoreImpl;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementStore;
-import org.hisp.dhis.client.sdk.android.event.EventStore;
-import org.hisp.dhis.client.sdk.android.optionset.OptionSetStore;
-import org.hisp.dhis.client.sdk.android.optionset.OptionStore;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageStore;
-import org.hisp.dhis.client.sdk.android.program.ProgramStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.android.user.UserAccountStore;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementStoreImpl;
+import org.hisp.dhis.client.sdk.android.event.EventStoreImpl;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetStoreImpl;
+import org.hisp.dhis.client.sdk.android.optionset.OptionStoreImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageStoreImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeStoreImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueStoreImpl;
+import org.hisp.dhis.client.sdk.android.user.UserAccountStoreImpl;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
-import org.hisp.dhis.client.sdk.core.event.IEventStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
+import org.hisp.dhis.client.sdk.core.optionset.OptionStore;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public class PersistenceModuleImpl implements PersistenceModule {
     private final TransactionManager transactionManager;
     private final StateStore stateStore;
-    private final IUserAccountStore userAccountStore;
-    private final IProgramStore programStore;
-    private final IProgramStageStore programStageStore;
-    private final IProgramStageSectionStore programStageSectionStore;
-    private final IProgramRuleStore programRuleStore;
-    private final IProgramRuleActionStore programRuleActionStore;
-    private final IProgramRuleVariableStore programRuleVariableStore;
-    private final IProgramIndicatorStore programIndicatorStore;
-    private final ITrackedEntityAttributeStore trackedEntityAttributeStore;
-    private final IProgramStageDataElementStore programStageDataElementStore;
-    private final IOrganisationUnitStore organisationUnitStore;
-    private final IEventStore eventStore;
-    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
-    private final IDataElementStore dataElementStore;
-    private final IOptionStore optionStore;
-    private final IOptionSetStore optionSetStore;
+    private final UserAccountStore userAccountStore;
+    private final ProgramStore programStore;
+    private final ProgramStageStore programStageStore;
+    private final ProgramStageSectionStore programStageSectionStore;
+    private final ProgramRuleStore programRuleStore;
+    private final ProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleVariableStore programRuleVariableStore;
+    private final ProgramIndicatorStore programIndicatorStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
+    private final OrganisationUnitStore organisationUnitStore;
+    private final EventStore eventStore;
+    private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final DataElementStore dataElementStore;
+    private final OptionStore optionStore;
+    private final OptionSetStore optionSetStore;
 
     public PersistenceModuleImpl(Context context) {
         FlowManager.init(context);
 
         transactionManager = new TransactionManagerImpl();
         stateStore = new StateStoreImpl(EventFlow.MAPPER);
-        programStore = new ProgramStore(transactionManager);
-        programStageStore = new ProgramStageStore(transactionManager);
-        programStageSectionStore = new ProgramStageSectionStore(transactionManager);
-        programRuleStore = new ProgramRuleStore(transactionManager);
-        programRuleActionStore = new ProgramRuleActionStore();
-        programRuleVariableStore = new ProgramRuleVariableStore();
-        programIndicatorStore = new ProgramIndicatorStore();
-        trackedEntityAttributeStore = new TrackedEntityAttributeStore();
-        programStageDataElementStore = new ProgramStageDataElementStore();
-        dataElementStore = new DataElementStore();
+        programStore = new ProgramStoreImpl(transactionManager);
+        programStageStore = new ProgramStageStoreImpl(transactionManager);
+        programStageSectionStore = new ProgramStageSectionStoreImpl(transactionManager);
+        programRuleStore = new ProgramRuleStoreImpl(transactionManager);
+        programRuleActionStore = new ProgramRuleActionStoreImpl();
+        programRuleVariableStore = new ProgramRuleVariableStoreImpl();
+        programIndicatorStore = new ProgramIndicatorStoreImpl();
+        trackedEntityAttributeStore = new TrackedEntityAttributeStoreImpl();
+        programStageDataElementStore = new ProgramStageDataElementStoreImpl();
+        dataElementStore = new DataElementStoreImpl();
 
-        userAccountStore = new UserAccountStore();
-        organisationUnitStore = new OrganisationUnitStore(transactionManager);
+        userAccountStore = new UserAccountStoreImpl();
+        organisationUnitStore = new OrganisationUnitStoreImpl(transactionManager);
 
-        trackedEntityDataValueStore = new TrackedEntityDataValueStore();
-        eventStore = new EventStore(stateStore, trackedEntityDataValueStore, transactionManager);
+        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();
+        eventStore = new EventStoreImpl(stateStore, trackedEntityDataValueStore, transactionManager);
 
-        optionStore = new OptionStore();
-        optionSetStore = new OptionSetStore();
+        optionStore = new OptionStoreImpl();
+        optionSetStore = new OptionSetStoreImpl();
     }
 
     @Override
@@ -127,82 +127,82 @@ public class PersistenceModuleImpl implements PersistenceModule {
     }
 
     @Override
-    public IUserAccountStore getUserAccountStore() {
+    public UserAccountStore getUserAccountStore() {
         return userAccountStore;
     }
 
     @Override
-    public IProgramStore getProgramStore() {
+    public ProgramStore getProgramStore() {
         return programStore;
     }
 
     @Override
-    public IProgramStageStore getProgramStageStore() {
+    public ProgramStageStore getProgramStageStore() {
         return programStageStore;
     }
 
     @Override
-    public IProgramStageSectionStore getProgramStageSectionStore() {
+    public ProgramStageSectionStore getProgramStageSectionStore() {
         return programStageSectionStore;
     }
 
     @Override
-    public IProgramStageDataElementStore getProgramStageDataElementStore() {
+    public ProgramStageDataElementStore getProgramStageDataElementStore() {
         return programStageDataElementStore;
     }
 
     @Override
-    public IProgramRuleStore getProgramRuleStore() {
+    public ProgramRuleStore getProgramRuleStore() {
         return programRuleStore;
     }
 
     @Override
-    public IProgramRuleActionStore getProgramRuleActionStore() {
+    public ProgramRuleActionStore getProgramRuleActionStore() {
         return programRuleActionStore;
     }
 
     @Override
-    public IProgramRuleVariableStore getProgramRuleVariableStore() {
+    public ProgramRuleVariableStore getProgramRuleVariableStore() {
         return programRuleVariableStore;
     }
 
     @Override
-    public IProgramIndicatorStore getProgramIndicatorStore() {
+    public ProgramIndicatorStore getProgramIndicatorStore() {
         return programIndicatorStore;
     }
 
     @Override
-    public ITrackedEntityAttributeStore getTrackedEntityAttributeStore() {
+    public TrackedEntityAttributeStore getTrackedEntityAttributeStore() {
         return trackedEntityAttributeStore;
     }
 
     @Override
-    public IOrganisationUnitStore getOrganisationUnitStore() {
+    public OrganisationUnitStore getOrganisationUnitStore() {
         return organisationUnitStore;
     }
 
     @Override
-    public IEventStore getEventStore() {
+    public EventStore getEventStore() {
         return eventStore;
     }
 
     @Override
-    public ITrackedEntityDataValueStore getTrackedEntityDataValueStore() {
+    public TrackedEntityDataValueStore getTrackedEntityDataValueStore() {
         return trackedEntityDataValueStore;
     }
 
     @Override
-    public IDataElementStore getDataElementStore() {
+    public DataElementStore getDataElementStore() {
         return dataElementStore;
     }
 
     @Override
-    public IOptionSetStore getOptionSetStore() {
+    public OptionSetStore getOptionSetStore() {
         return optionSetStore;
     }
 
     @Override
-    public IOptionStore getOptionStore() {
+    public OptionStore getOptionStore() {
         return optionStore;
     }
 

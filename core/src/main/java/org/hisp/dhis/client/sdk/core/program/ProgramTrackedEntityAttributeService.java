@@ -37,9 +37,9 @@ import java.util.List;
 
 
 public class ProgramTrackedEntityAttributeService implements IProgramTrackedEntityAttributeService {
-    private IProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
+    private ProgramTrackedEntityAttributeStore programTrackedEntityAttributeStore;
 
-    public ProgramTrackedEntityAttributeService(IProgramTrackedEntityAttributeStore
+    public ProgramTrackedEntityAttributeService(ProgramTrackedEntityAttributeStore
                                                         programTrackedEntityAttributeStore) {
         this.programTrackedEntityAttributeStore = programTrackedEntityAttributeStore;
     }

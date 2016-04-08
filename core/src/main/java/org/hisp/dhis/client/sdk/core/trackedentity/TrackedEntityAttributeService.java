@@ -36,9 +36,9 @@ import java.util.Set;
 import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
 
 public class TrackedEntityAttributeService implements ITrackedEntityAttributeService {
-    private final ITrackedEntityAttributeStore trackedEntityAttributeStore;
+    private final TrackedEntityAttributeStore trackedEntityAttributeStore;
 
-    public TrackedEntityAttributeService(ITrackedEntityAttributeStore entityAttributeStore) {
+    public TrackedEntityAttributeService(TrackedEntityAttributeStore entityAttributeStore) {
         this.trackedEntityAttributeStore = entityAttributeStore;
     }
 

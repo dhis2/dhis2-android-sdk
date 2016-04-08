@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ProgramRuleActionService implements IProgramRuleActionService {
-    private final IProgramRuleActionStore programRuleActionStore;
+    private final ProgramRuleActionStore programRuleActionStore;
 
-    public ProgramRuleActionService(IProgramRuleActionStore programRuleActionStore) {
+    public ProgramRuleActionService(ProgramRuleActionStore programRuleActionStore) {
         this.programRuleActionStore = programRuleActionStore;
     }
 

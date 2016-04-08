@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ProgramStageService implements IProgramStageService {
-    private final IProgramStageStore programStageStore;
+    private final ProgramStageStore programStageStore;
 
-    public ProgramStageService(IProgramStageStore programStageStore) {
+    public ProgramStageService(ProgramStageStore programStageStore) {
         this.programStageStore = programStageStore;
     }
 

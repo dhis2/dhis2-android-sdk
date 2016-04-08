@@ -44,11 +44,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DashboardItemService implements IDashboardItemService {
-    private final IDashboardItemStore dashboardItemStore;
+    private final DashboardItemStore dashboardItemStore;
     private final StateStore stateStore;
     private final IDashboardElementService dashboardElementService;
 
-    public DashboardItemService(IDashboardItemStore dashboardItemStore, StateStore stateStore,
+    public DashboardItemService(DashboardItemStore dashboardItemStore, StateStore stateStore,
                                 IDashboardElementService dashboardElementService) {
         this.dashboardItemStore = dashboardItemStore;
         this.stateStore = stateStore;

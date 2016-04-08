@@ -35,10 +35,10 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import java.util.List;
 
 public class OptionSetService implements IOptionSetService {
-    private final IOptionSetStore optionSetStore;
-    private final IOptionStore optionStore;
+    private final OptionSetStore optionSetStore;
+    private final OptionStore optionStore;
 
-    public OptionSetService(IOptionSetStore optionSetStore, IOptionStore optionStore) {
+    public OptionSetService(OptionSetStore optionSetStore, OptionStore optionStore) {
         this.optionSetStore = optionSetStore;
         this.optionStore = optionStore;
     }

@@ -43,10 +43,10 @@ import java.util.Map;
 
 public class DashboardElementService implements IDashboardElementService {
     private final StateStore stateStore;
-    private final IDashboardElementStore dashboardElementStore;
+    private final DashboardElementStore dashboardElementStore;
     private final IDashboardItemService dashboardItemService;
 
-    public DashboardElementService(StateStore stateStore, IDashboardElementStore elementStore,
+    public DashboardElementService(StateStore stateStore, DashboardElementStore elementStore,
                                    IDashboardItemService dashboardItemService) {
         this.stateStore = stateStore;
         this.dashboardElementStore = elementStore;

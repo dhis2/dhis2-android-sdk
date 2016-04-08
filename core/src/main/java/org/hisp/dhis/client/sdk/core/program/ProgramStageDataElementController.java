@@ -71,7 +71,7 @@ public class ProgramStageDataElementController extends AbsSyncStrategyController
                                              IDataElementController dataElementController,
                                              IProgramStageSectionApiClient stageSectionApiClient,
                                              IProgramStageDataElementApiClient elementApiClient,
-                                             IProgramStageDataElementStore stageDataElementStore,
+                                             ProgramStageDataElementStore stageDataElementStore,
                                              TransactionManager transactionManager,
                                              LastUpdatedPreferences preferences) {
         super(ResourceType.PROGRAM_STAGE_DATA_ELEMENTS, stageDataElementStore, preferences);

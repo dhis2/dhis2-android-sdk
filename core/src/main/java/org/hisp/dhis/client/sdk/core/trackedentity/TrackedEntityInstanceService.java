@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.core.relationship.IRelationshipStore;
+import org.hisp.dhis.client.sdk.core.relationship.RelationshipStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
@@ -43,12 +43,12 @@ import java.util.List;
 
 public final class TrackedEntityInstanceService implements ITrackedEntityInstanceService {
 
-    private final ITrackedEntityInstanceStore trackedEntityInstanceStore;
-    private final IRelationshipStore relationshipStore;
+    private final TrackedEntityInstanceStore trackedEntityInstanceStore;
+    private final RelationshipStore relationshipStore;
     private final StateStore stateStore;
 
-    public TrackedEntityInstanceService(ITrackedEntityInstanceStore trackedEntityInstanceStore,
-                                        IRelationshipStore relationshipStore, StateStore
+    public TrackedEntityInstanceService(TrackedEntityInstanceStore trackedEntityInstanceStore,
+                                        RelationshipStore relationshipStore, StateStore
                                                 stateStore) {
         this.trackedEntityInstanceStore = trackedEntityInstanceStore;
         this.relationshipStore = relationshipStore;

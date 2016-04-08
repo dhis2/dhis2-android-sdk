@@ -35,9 +35,9 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import java.util.List;
 
 public class UserAccountService implements IUserAccountService {
-    private final IUserAccountStore userAccountStore;
+    private final UserAccountStore userAccountStore;
 
-    public UserAccountService(IUserAccountStore userAccountStore) {
+    public UserAccountService(UserAccountStore userAccountStore) {
         this.userAccountStore = userAccountStore;
     }
 

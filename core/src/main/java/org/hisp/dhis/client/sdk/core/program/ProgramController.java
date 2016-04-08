@@ -62,7 +62,7 @@ public class ProgramController extends AbsSyncStrategyController<Program>
 
     public ProgramController(ISystemInfoController systemInfoController,
                              IProgramApiClient programApiClient, IUserApiClient userApiClient,
-                             IProgramStore programStore, TransactionManager transactionManager,
+                             ProgramStore programStore, TransactionManager transactionManager,
                              LastUpdatedPreferences lastUpdatedPreferences) {
         super(ResourceType.PROGRAMS, programStore, lastUpdatedPreferences);
 

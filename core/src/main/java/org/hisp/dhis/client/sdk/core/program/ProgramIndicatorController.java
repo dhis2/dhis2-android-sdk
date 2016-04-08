@@ -27,7 +27,7 @@ public class ProgramIndicatorController extends AbsSyncStrategyController
     private final IProgramStageController programStageController;
     private final IProgramStageSectionController programStageSectionController;
 
-    public ProgramIndicatorController(IProgramIndicatorStore programIndicatorStore,
+    public ProgramIndicatorController(ProgramIndicatorStore programIndicatorStore,
                                       LastUpdatedPreferences lastUpdatedPreferences,
                                       ISystemInfoController systemInfoController,
                                       IProgramIndicatorApiClient programIndicatorApiClient,

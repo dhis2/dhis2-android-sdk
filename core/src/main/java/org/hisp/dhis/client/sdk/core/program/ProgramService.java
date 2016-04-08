@@ -35,9 +35,9 @@ import java.util.List;
 import java.util.Set;
 
 public final class ProgramService implements IProgramService {
-    private final IProgramStore programStore;
+    private final ProgramStore programStore;
 
-    public ProgramService(IProgramStore programStore) {
+    public ProgramService(ProgramStore programStore) {
         this.programStore = programStore;
     }
 

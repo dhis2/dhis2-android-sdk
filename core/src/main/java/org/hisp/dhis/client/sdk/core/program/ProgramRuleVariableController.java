@@ -62,7 +62,7 @@ public final class ProgramRuleVariableController extends AbsSyncStrategyControll
                                          TransactionManager transactionManager,
                                          LastUpdatedPreferences lastUpdatedPreferences,
                                          ISystemInfoController systemInfoController,
-                                         IProgramRuleVariableStore programRuleVariableStore,
+                                         ProgramRuleVariableStore programRuleVariableStore,
                                          IProgramController programController,
                                          IProgramStageController programStageController,
                                          IDataElementController dataElementController,

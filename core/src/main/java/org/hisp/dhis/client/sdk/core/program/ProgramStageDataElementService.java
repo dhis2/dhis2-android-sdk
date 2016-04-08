@@ -38,10 +38,10 @@ import java.util.List;
 import java.util.Set;
 
 public class ProgramStageDataElementService implements IProgramStageDataElementService {
-    private final IProgramStageDataElementStore programStageDataElementStore;
+    private final ProgramStageDataElementStore programStageDataElementStore;
 
     public ProgramStageDataElementService(
-            IProgramStageDataElementStore programStageDataElementStore) {
+            ProgramStageDataElementStore programStageDataElementStore) {
         this.programStageDataElementStore = programStageDataElementStore;
     }
 

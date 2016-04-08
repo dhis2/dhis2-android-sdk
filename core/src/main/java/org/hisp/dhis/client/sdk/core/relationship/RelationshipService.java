@@ -37,10 +37,10 @@ import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import java.util.List;
 
 public class RelationshipService implements IRelationshipService {
-    private IRelationshipStore relationshipStore;
+    private RelationshipStore relationshipStore;
     private StateStore stateStore;
 
-    public RelationshipService(IRelationshipStore relationshipStore, StateStore stateStore) {
+    public RelationshipService(RelationshipStore relationshipStore, StateStore stateStore) {
         this.relationshipStore = relationshipStore;
         this.stateStore = stateStore;
     }

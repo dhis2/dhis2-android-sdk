@@ -29,22 +29,22 @@
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
-import org.hisp.dhis.client.sdk.core.dataelement.IDataElementStore;
-import org.hisp.dhis.client.sdk.core.event.IEventStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionSetStore;
-import org.hisp.dhis.client.sdk.core.optionset.IOptionStore;
-import org.hisp.dhis.client.sdk.core.organisationunit.IOrganisationUnitStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramIndicatorStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleActionStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramRuleVariableStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageDataElementStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageSectionStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStageStore;
-import org.hisp.dhis.client.sdk.core.program.IProgramStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityAttributeStore;
-import org.hisp.dhis.client.sdk.core.trackedentity.ITrackedEntityDataValueStore;
-import org.hisp.dhis.client.sdk.core.user.IUserAccountStore;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementStore;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetStore;
+import org.hisp.dhis.client.sdk.core.optionset.OptionStore;
+import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageStore;
+import org.hisp.dhis.client.sdk.core.program.ProgramStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeStore;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
+import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 
 public interface PersistenceModule {
 
@@ -52,37 +52,37 @@ public interface PersistenceModule {
 
     StateStore getStateStore();
 
-    IUserAccountStore getUserAccountStore();
+    UserAccountStore getUserAccountStore();
 
-    IProgramStore getProgramStore();
+    ProgramStore getProgramStore();
 
-    IProgramStageStore getProgramStageStore();
+    ProgramStageStore getProgramStageStore();
 
-    IProgramStageSectionStore getProgramStageSectionStore();
+    ProgramStageSectionStore getProgramStageSectionStore();
 
-    IProgramStageDataElementStore getProgramStageDataElementStore();
+    ProgramStageDataElementStore getProgramStageDataElementStore();
 
-    IProgramRuleStore getProgramRuleStore();
+    ProgramRuleStore getProgramRuleStore();
 
-    IProgramRuleActionStore getProgramRuleActionStore();
+    ProgramRuleActionStore getProgramRuleActionStore();
 
-    IProgramRuleVariableStore getProgramRuleVariableStore();
+    ProgramRuleVariableStore getProgramRuleVariableStore();
 
-    IProgramIndicatorStore getProgramIndicatorStore();
+    ProgramIndicatorStore getProgramIndicatorStore();
 
-    ITrackedEntityAttributeStore getTrackedEntityAttributeStore();
+    TrackedEntityAttributeStore getTrackedEntityAttributeStore();
 
-    IOrganisationUnitStore getOrganisationUnitStore();
+    OrganisationUnitStore getOrganisationUnitStore();
 
-    IEventStore getEventStore();
+    EventStore getEventStore();
 
-    ITrackedEntityDataValueStore getTrackedEntityDataValueStore();
+    TrackedEntityDataValueStore getTrackedEntityDataValueStore();
 
-    IDataElementStore getDataElementStore();
+    DataElementStore getDataElementStore();
 
-    IOptionSetStore getOptionSetStore();
+    OptionSetStore getOptionSetStore();
 
-    IOptionStore getOptionStore();
+    OptionStore getOptionStore();
 
     boolean deleteAllTables();
 }

@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ProgramStageSectionService implements IProgramStageSectionService {
-    private IProgramStageSectionStore programStageSectionStore;
+    private ProgramStageSectionStore programStageSectionStore;
 
-    public ProgramStageSectionService(IProgramStageSectionStore programStageSectionStore) {
+    public ProgramStageSectionService(ProgramStageSectionStore programStageSectionStore) {
         this.programStageSectionStore = programStageSectionStore;
     }
 

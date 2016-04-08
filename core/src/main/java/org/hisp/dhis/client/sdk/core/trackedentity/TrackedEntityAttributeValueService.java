@@ -40,10 +40,10 @@ import java.util.List;
 
 public class TrackedEntityAttributeValueService implements ITrackedEntityAttributeValueService {
 
-    private ITrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
+    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
     private StateStore stateStore;
 
-    public TrackedEntityAttributeValueService(ITrackedEntityAttributeValueStore
+    public TrackedEntityAttributeValueService(TrackedEntityAttributeValueStore
                                                       trackedEntityAttributeValueStore,
                                               StateStore stateStore) {
         this.trackedEntityAttributeValueStore = trackedEntityAttributeValueStore;

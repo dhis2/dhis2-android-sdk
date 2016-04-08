@@ -57,7 +57,7 @@ public final class ProgramRuleController extends AbsSyncStrategyController<Progr
 
     public ProgramRuleController(TransactionManager transactionManager,
                                  LastUpdatedPreferences lastUpdatedPreferences,
-                                 IProgramRuleStore programRuleStore,
+                                 ProgramRuleStore programRuleStore,
                                  ISystemInfoController systemInfoController,
                                  IProgramRuleApiClient programRuleApiClient,
                                  IProgramController programController,

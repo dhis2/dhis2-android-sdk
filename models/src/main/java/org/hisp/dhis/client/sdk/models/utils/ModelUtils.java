@@ -39,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+
 public class ModelUtils {
     private ModelUtils() {
         // private constructor
@@ -76,6 +78,24 @@ public class ModelUtils {
         }
 
         return uIds;
+    }
+
+    public static <T extends IdentifiableObject> Set<String> toUidSet(
+            Collection<T> items, ModelAction<T> action) {
+        isNull(action, "ModelAction must not be null");
+
+        Set<String> uIds = new HashSet<>();
+        if (items != null && !items.isEmpty()) {
+            for (T item : items) {
+                uIds.addAll(action.getUids(item));
+            }
+        }
+
+        return uIds;
+    }
+
+    public interface ModelAction<T extends IdentifiableObject> {
+        Collection<String> getUids(T model);
     }
 
     /**

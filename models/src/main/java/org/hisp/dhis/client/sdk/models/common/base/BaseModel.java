@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.models.common.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class BaseModel implements IModel {
+public class BaseModel implements Model {
 
     @JsonIgnore
     private long id;

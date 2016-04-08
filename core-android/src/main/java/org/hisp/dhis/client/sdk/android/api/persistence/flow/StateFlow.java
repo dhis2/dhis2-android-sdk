@@ -33,12 +33,11 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
-import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.IStateMapper;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
@@ -137,25 +136,25 @@ public final class StateFlow extends BaseModelFlow {
 
         @Override
         @SuppressWarnings("unchecked")
-        public Class<? extends IModel> getRelatedModelClass(String type) {
+        public Class<? extends Model> getRelatedModelClass(String type) {
             isNull(type, "type must not be null");
 
             try {
-                return (Class<? extends IModel>) Class.forName(type);
+                return (Class<? extends Model>) Class.forName(type);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
         }
 
         @Override
-        public String getRelatedModelClass(Class<? extends IModel> clazz) {
+        public String getRelatedModelClass(Class<? extends Model> clazz) {
             isNull(clazz, "class object must not be null");
             return clazz.getName();
         }
 
         @Override
-        public Class<? extends Model> getRelatedDatabaseEntityClass(
-                Class<? extends IModel> objectClass) {
+        public Class<? extends com.raizlabs.android.dbflow.structure.Model> getRelatedDatabaseEntityClass(
+                Class<? extends Model> objectClass) {
             isNull(objectClass, "Class object must not be null");
 
             if (Event.class.equals(objectClass)) {

@@ -37,7 +37,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
-import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow;
@@ -45,7 +44,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.EventFlow_Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow_Table;
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
@@ -67,7 +66,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> boolean insertActionForModel(T object, Action action) {
+    public <T extends Model> boolean insertActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -79,7 +78,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> boolean updateActionForModel(T object, Action action) {
+    public <T extends Model> boolean updateActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -91,7 +90,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> boolean saveActionForModel(T object, Action action) {
+    public <T extends Model> boolean saveActionForModel(T object, Action action) {
         isNull(object, "State object must not be null");
 
         State state = new State();
@@ -103,7 +102,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> boolean deleteActionForModel(T object) {
+    public <T extends Model> boolean deleteActionForModel(T object) {
         isNull(object, "State object must not be null");
 
         State state = queryStateForModel(object);
@@ -111,7 +110,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> boolean deleteActionsForModelType(Class<T> modelType) {
+    public <T extends Model> boolean deleteActionsForModelType(Class<T> modelType) {
         isNull(modelType, "model class must not be null");
 
         new Delete()
@@ -124,7 +123,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> State queryStateForModel(T object) {
+    public <T extends Model> State queryStateForModel(T object) {
         isNull(object, "State object must not be null");
 
         StateFlow stateFlow = new Select()
@@ -139,7 +138,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> Action queryActionForModel(T object) {
+    public <T extends Model> Action queryActionForModel(T object) {
         isNull(object, "State object must not be null");
 
         State state = queryStateForModel(object);
@@ -151,7 +150,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> List<State> queryStatesForModelClass(Class<T> clazz) {
+    public <T extends Model> List<State> queryStatesForModelClass(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -166,7 +165,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> Map<Long, Action> queryActionsForModel(Class<T> clazz) {
+    public <T extends Model> Map<Long, Action> queryActionsForModel(Class<T> clazz) {
         if (clazz == null) {
             return null;
         }
@@ -184,12 +183,12 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @Override
-    public <T extends IModel> List<T> queryModelsWithActions(Class<T> aClass, Action... actions) {
+    public <T extends Model> List<T> queryModelsWithActions(Class<T> aClass, Action... actions) {
         return getObjectsByAction(aClass, null, true, actions);
     }
 
     @Override
-    public <T extends IModel> List<T> queryModelsWithActions(
+    public <T extends Model> List<T> queryModelsWithActions(
             Class<T> clazz, Set<String> uids, Action... actions) {
         isEmpty(uids, "Set of uids must not be null");
 
@@ -197,7 +196,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends IModel> List<T> getObjectsByAction(
+    private <T extends Model> List<T> getObjectsByAction(
             Class<T> clazz, Set<String> uids, boolean withAction, Action... actions) {
 
         if (Event.class.equals(clazz)) {
@@ -209,18 +208,18 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
         return null;
     }
 
-    private List<? extends Model> queryModels(
-            Class<? extends IModel> clazz, Set<String> uids, LongProperty column,
+    private List<? extends com.raizlabs.android.dbflow.structure.Model> queryModels(
+            Class<? extends Model> clazz, Set<String> uids, LongProperty column,
             boolean withAction, @Nullable Action... actions) {
 
         /* Creating left join on State and destination table in order to perform filtering  */
         /* Joining tables based on mime type and then filtering resulting table by action */
-        From<? extends Model> from = new Select()
+        From<? extends com.raizlabs.android.dbflow.structure.Model> from = new Select()
                 .from(getStateMapper().getRelatedDatabaseEntityClass(clazz))
                 .join(StateFlow.class, Join.JoinType.LEFT_OUTER)
                 .on(StateFlow_Table.itemId.eq(column));
 
-        Where<? extends Model> where = from.where(StateFlow_Table.itemType
+        Where<? extends com.raizlabs.android.dbflow.structure.Model> where = from.where(StateFlow_Table.itemType
                 .is(getStateMapper().getRelatedModelClass(clazz)));
 
         if (uids != null && !uids.isEmpty()) {
@@ -243,7 +242,7 @@ public class StateStore extends AbsStore<State, StateFlow> implements IStateStor
         }
 
         System.out.println("QUERY STRING: " + where.toString());
-        List<? extends Model> list = where.queryList();
+        List<? extends com.raizlabs.android.dbflow.structure.Model> list = where.queryList();
         System.out.println("LIST: " + list.size());
 
         return list;

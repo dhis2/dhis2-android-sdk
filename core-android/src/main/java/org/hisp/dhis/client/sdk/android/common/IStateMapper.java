@@ -28,16 +28,14 @@
 
 package org.hisp.dhis.client.sdk.android.common;
 
-import com.raizlabs.android.dbflow.structure.Model;
-
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.StateFlow;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 
 public interface IStateMapper extends IMapper<State, StateFlow> {
-    Class<? extends IModel> getRelatedModelClass(String type);
+    Class<? extends Model> getRelatedModelClass(String type);
 
-    String getRelatedModelClass(Class<? extends IModel> clazz);
+    String getRelatedModelClass(Class<? extends Model> clazz);
 
-    Class<? extends Model> getRelatedDatabaseEntityClass(Class<? extends IModel> clazz);
+    Class<? extends com.raizlabs.android.dbflow.structure.Model> getRelatedDatabaseEntityClass(Class<? extends Model> clazz);
 }

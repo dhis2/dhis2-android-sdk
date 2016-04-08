@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.common;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 
@@ -44,65 +44,65 @@ public interface IStateStore extends IStore<State> {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @param object IModel for which the action should be inserted.
+     * @param object Model for which the action should be inserted.
      * @param action Action to insert.
      */
-    <T extends IModel> boolean insertActionForModel(T object, Action action);
+    <T extends Model> boolean insertActionForModel(T object, Action action);
 
     /**
-     * @param object IModel for which the action should be updated.
+     * @param object Model for which the action should be updated.
      * @param action Action to update.
      */
-    <T extends IModel> boolean updateActionForModel(T object, Action action);
+    <T extends Model> boolean updateActionForModel(T object, Action action);
 
     /**
-     * @param object IModel for which the action should be saved.
+     * @param object Model for which the action should be saved.
      * @param action Action to save.
      */
-    <T extends IModel> boolean saveActionForModel(T object, Action action);
+    <T extends Model> boolean saveActionForModel(T object, Action action);
 
     /**
-     * @param object IModel for which the action should be deleted.
+     * @param object Model for which the action should be deleted.
      */
-    <T extends IModel> boolean deleteActionForModel(T object);
+    <T extends Model> boolean deleteActionForModel(T object);
 
     /**
      * @param modelType the model class for which we want to remove all corresponding actions
-     * @param <T>       type of model class (must extend IModel interface)
+     * @param <T>       type of model class (must extend Model interface)
      * @return true if operation succeeded
      */
-    <T extends IModel> boolean deleteActionsForModelType(Class<T> modelType);
+    <T extends Model> boolean deleteActionsForModelType(Class<T> modelType);
 
     /**
-     * @param object IModel which state the method returns.
+     * @param object Model which state the method returns.
      * @return State of given object.
      */
-    <T extends IModel> State queryStateForModel(T object);
+    <T extends Model> State queryStateForModel(T object);
 
     /**
-     * @param object IModel which action should be returned.
+     * @param object Model which action should be returned.
      * @return State of given object.
      */
-    <T extends IModel> Action queryActionForModel(T object);
+    <T extends Model> Action queryActionForModel(T object);
 
     /**
      * @param clazz Class for which we want to retrieve all state models.
      * @return List of states for given class.
      */
-    <T extends IModel> List<State> queryStatesForModelClass(Class<T> clazz);
+    <T extends Model> List<State> queryStatesForModelClass(Class<T> clazz);
 
     /**
      * @param clazz Class for which we want to retrieve actions.
      * @return Map where key is id and the value is action for model of given Class.
      */
-    <T extends IModel> Map<Long, Action> queryActionsForModel(Class<T> clazz);
+    <T extends Model> Map<Long, Action> queryActionsForModel(Class<T> clazz);
 
     /**
      * @param clazz   Class, instances of which we want to retrieve from database.
      * @param actions Action(s) which we want to have in resulting payload from database.
      * @return List of Class typed instances which State contain given action.
      */
-    <T extends IModel> List<T> queryModelsWithActions(Class<T> clazz, Action... actions);
+    <T extends Model> List<T> queryModelsWithActions(Class<T> clazz, Action... actions);
 
     /**
      * @param clazz   Class, instances of which we want to retrieve from database.
@@ -110,6 +110,6 @@ public interface IStateStore extends IStore<State> {
      * @param actions Action(s) which we want to have in resulting payload from database.
      * @return List of Class typed instances which State contain given action.
      */
-    <T extends IModel> List<T> queryModelsWithActions(
+    <T extends Model> List<T> queryModelsWithActions(
             Class<T> clazz, Set<String> uids, Action... actions);
 }

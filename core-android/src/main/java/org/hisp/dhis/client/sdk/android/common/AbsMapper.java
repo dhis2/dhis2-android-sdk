@@ -31,15 +31,13 @@ package org.hisp.dhis.client.sdk.android.common;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.raizlabs.android.dbflow.structure.Model;
-
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbsMapper<ModelType extends IModel, DatabaseEntityType
-        extends IModel & Model> implements IMapper<ModelType, DatabaseEntityType> {
+public abstract class AbsMapper<ModelType extends Model, DatabaseEntityType
+        extends Model & com.raizlabs.android.dbflow.structure.Model> implements IMapper<ModelType, DatabaseEntityType> {
 
     @Override
     @NonNull

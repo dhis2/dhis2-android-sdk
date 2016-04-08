@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public interface IAdd<T extends IModel> {
+public interface IAdd<T extends Model> {
 
     /**
      * Returns true if this collection changed as a result of the call. (Returns false if this

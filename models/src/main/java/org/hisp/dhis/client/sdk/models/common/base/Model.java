@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.client.sdk.models.common.base;
 
-public interface IModel {
-
+public interface Model {
     long getId();
 
     void setId(long id);

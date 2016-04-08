@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.joda.time.DateTime;
 
@@ -42,7 +42,7 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TrackedEntityInstance implements Serializable, IModel {
+public class TrackedEntityInstance implements Serializable, Model {
 
     @JsonIgnore
     private long id;

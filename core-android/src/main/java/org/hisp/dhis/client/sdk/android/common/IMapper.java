@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.common;
 
-import com.raizlabs.android.dbflow.structure.Model;
-
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
 
-public interface IMapper<ModelType extends IModel, DatabaseEntityType extends Model & IModel> {
+public interface IMapper<ModelType extends Model, DatabaseEntityType extends com.raizlabs.android
+        .dbflow.structure.Model & Model> {
     DatabaseEntityType mapToDatabaseEntity(ModelType model);
 
     ModelType mapToModel(DatabaseEntityType dataBaseEntity);

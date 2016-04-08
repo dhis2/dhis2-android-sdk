@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.common;
 
-import com.raizlabs.android.dbflow.structure.Model;
-
 import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 
-public class AbsDataStore<ModelType extends IModel, DataBaseEntityType extends IModel & Model>
+public class AbsDataStore<ModelType extends Model, DataBaseEntityType extends Model & com
+        .raizlabs.android.dbflow.structure.Model>
         extends AbsStore<ModelType, DataBaseEntityType> {
 
     private final IStateStore stateStore;

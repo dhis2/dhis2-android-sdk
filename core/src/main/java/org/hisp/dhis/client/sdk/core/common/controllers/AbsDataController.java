@@ -31,11 +31,11 @@ package org.hisp.dhis.client.sdk.core.common.controllers;
 import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.net.HttpURLConnection;
 
-public abstract class AbsDataController<T extends IModel> {
+public abstract class AbsDataController<T extends Model> {
     protected final ILogger logger;
     protected final IStore<T> store;
 

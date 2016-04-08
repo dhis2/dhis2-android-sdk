@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 /**
  * This class is intended to implement partial
  * functionality of ContentProviderOperation for DbFlow.
  */
-public final class DbOperation<T extends IModel> implements IDbOperation<T> {
+public final class DbOperation<T extends Model> implements IDbOperation<T> {
     private final DbAction mDbAction;
     private final T mModel;
     private final IStore<T> mModelStore;
@@ -46,7 +46,7 @@ public final class DbOperation<T extends IModel> implements IDbOperation<T> {
         mModelStore = Preconditions.isNull(store, "IStore object must not be null");
     }
 
-    public static <T extends IModel> DbOperationBuilder<T> with(IStore<T> store) {
+    public static <T extends Model> DbOperationBuilder<T> with(IStore<T> store) {
         return new DbOperationBuilder<>(store);
     }
 
@@ -86,7 +86,7 @@ public final class DbOperation<T extends IModel> implements IDbOperation<T> {
         return mModelStore;
     }
 
-    public static class DbOperationBuilder<T extends IModel> {
+    public static class DbOperationBuilder<T extends Model> {
         private final IStore<T> mStore;
 
         DbOperationBuilder(IStore<T> store) {

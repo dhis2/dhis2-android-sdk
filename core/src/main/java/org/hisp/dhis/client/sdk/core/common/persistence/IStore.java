@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
 
-public interface IStore<T extends IModel> {
+public interface IStore<T extends Model> {
 
     boolean insert(T object);
 

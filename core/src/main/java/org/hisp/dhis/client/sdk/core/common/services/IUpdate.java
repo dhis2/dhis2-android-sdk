@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public interface IUpdate<T extends IModel> {
+public interface IUpdate<T extends Model> {
     boolean update(T object);
 }

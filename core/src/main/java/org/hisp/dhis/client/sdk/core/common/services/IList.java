@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.services;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
 
-public interface IList<T extends IModel> {
+public interface IList<T extends Model> {
     List<T> list();
 }

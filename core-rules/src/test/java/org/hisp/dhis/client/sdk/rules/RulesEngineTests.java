@@ -192,7 +192,7 @@ public class RulesEngineTests {
     @Test
     public void ruleEngineExecuteRuleWithNewestEventSourceType() {
         //Metadata
-        String errorMessage = "this error will occur if both simpleBoolean1 and 2 is true";
+        String errorMessage = "this error will occur if both simpleBoolean1 is true";
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean1}", errorMessage));
 
@@ -224,6 +224,60 @@ public class RulesEngineTests {
 
         //Execute with an older value that is true, and a current event that is not filled
         //Expecting to get an effect, as there exists a true value
+        List<RuleEffect> effects = ruleEngine.execute(currentEvent, allEvents);
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+        //Insert a false value in between the old true value and the current blank value
+        //The false should stop the effect form happening:
+        Event middleEvent = new Event();
+        middleEvent.setEventDate(DateTime.now().minusDays(2));
+        addDataValueToEvent(middleEvent, d1, "false");
+        allEvents.add(middleEvent);
+        effects = ruleEngine.execute(currentEvent, allEvents);
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteRuleWithPreviousEventSourceType() {
+        //Metadata
+        String errorMessage = "this error will occur if both simpleBoolean1 is true";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean1}", errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement 1", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariable("simpleBoolean1", d1, ProgramRuleVariableSourceType.DATAELEMENT_PREVIOUS_EVENT));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event olderEvent = new Event();
+        olderEvent.setEventDate(DateTime.now().minusDays(10));
+        addDataValueToEvent(olderEvent, d1, "true");
+
+        Event currentEvent = new Event();
+        currentEvent.setEventDate(DateTime.now());
+        addDataValueToEvent(currentEvent, d1, "false");
+
+        Event newerEvent = new Event();
+        newerEvent.setEventDate(DateTime.now().plusDays(2));
+        addDataValueToEvent(newerEvent, d1, "false");
+
+        ArrayList<Event> allEvents = new ArrayList<>();
+        allEvents.add(currentEvent);
+        allEvents.add(olderEvent);
+
+        //Execute with a previous value that is true, and a current event that false,
+        //and a newer event that is false
+        //Expecting to get an effect, as there exists a true value in previous events, and
+        //the newer event and current event should be disregarded.
         List<RuleEffect> effects = ruleEngine.execute(currentEvent, allEvents);
         assertErrorRuleInEffect(effects, errorMessage, null, null);
 

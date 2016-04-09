@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import sun.security.ssl.Debug;
+
 /**
  * Created by markusbekken on 23.03.2016.
  */
@@ -71,8 +73,17 @@ public class RuleEngineExecution {
         }
 
         for (String variable : variablesFound) {
-            expression = expression.replace(variable, variableValueMap.getProgramRuleVariableValue(
-                    variable.replace("#{", "").replace("}", "")).toString());
+            String variableName = variable.replace("#{", "").replace("}", "");
+            ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
+                    variableName);
+            if(variableValue != null) {
+                expression = expression.replace(variable, variableValue.toString());
+            } else {
+              //TODO Log the problem - the expression contains a variable that is not defined
+                throw new IllegalArgumentException("Variable " + variableName + " found in expression "
+                                + expression + ", but is not defined as a variable");
+            }
+
         }
 
         return expression;

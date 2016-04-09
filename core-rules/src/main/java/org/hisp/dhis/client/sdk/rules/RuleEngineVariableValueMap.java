@@ -33,6 +33,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,15 +49,38 @@ public class RuleEngineVariableValueMap {
 
     private Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;
 
-    public RuleEngineVariableValueMap(List<ProgramRuleVariable> variables, Event currentEvent) {
+    public RuleEngineVariableValueMap(List<ProgramRuleVariable> variables, Event currentEvent, List<Event> allEvents) {
+
+
+
+        Collections.sort(allEvents, new Comparator<Event>() {
+            public int compare(Event e1, Event e2) {
+                return e1.getEventDate().compareTo(e2.getEventDate());
+            }
+        });
 
         programRuleVariableValueMap = new HashMap<>();
         if (variables != null) {
-            Map<String, TrackedEntityDataValue> currentEventTrackedEntityDataValueMap = new
-                    HashMap<>();
+            Map<String, TrackedEntityDataValue> currentEventTrackedEntityDataValueMap =
+                    new HashMap<>();
             if (currentEvent != null && currentEvent.getTrackedEntityDataValues() != null) {
                 for (TrackedEntityDataValue value : currentEvent.getTrackedEntityDataValues()) {
                     currentEventTrackedEntityDataValueMap.put(value.getDataElement(), value);
+                }
+            }
+
+            Map<String, List<TrackedEntityDataValue>> allEventsTrackedEntityDataValueMap =
+                    new HashMap<>();
+            for (Event e
+                    : allEvents ) {
+                if(e.getTrackedEntityDataValues() != null) {
+                    for (TrackedEntityDataValue value : e.getTrackedEntityDataValues()) {
+                        if(!allEventsTrackedEntityDataValueMap.containsKey(value.getDataElement())) {
+                            allEventsTrackedEntityDataValueMap.put(value.getDataElement(),
+                                   new ArrayList<>());
+                        }
+                        allEventsTrackedEntityDataValueMap.get(value.getDataElement()).add(value);
+                    }
                 }
             }
 
@@ -66,13 +92,23 @@ public class RuleEngineVariableValueMap {
                             variable.getDataElement().getUId())) {
                         TrackedEntityDataValue dataValue = currentEventTrackedEntityDataValueMap
                                 .get(variable.getDataElement().getUId());
-                        addProgramRuleVariableValueToMap(variable, dataValue);
+                        addProgramRuleVariableValueToMap(variable, dataValue, null);
+                        valueFound = true;
+                    }
+                } else if (variable.getSourceType() ==
+                        ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM) {
+                    if (allEventsTrackedEntityDataValueMap.containsKey(
+                            variable.getDataElement().getUId())) {
+                        List<TrackedEntityDataValue> valueList =
+                                allEventsTrackedEntityDataValueMap.get(
+                                        variable.getDataElement().getUId());
+                        TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
+                        addProgramRuleVariableValueToMap(variable, dataValue, valueList);
                         valueFound = true;
                     }
                 } else {
                     throw new NotImplementedException();
                 }
-
                 //TODO: Add general handling when value is not found.
             }
         }
@@ -87,10 +123,9 @@ public class RuleEngineVariableValueMap {
     }
 
     private void addProgramRuleVariableValueToMap(ProgramRuleVariable programRuleVariable,
-                                                  TrackedEntityDataValue dataValue) {
-        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(dataValue.getValue());
+                                                  TrackedEntityDataValue value,
+                                                  List<TrackedEntityDataValue> allValues) {
+        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues);
         programRuleVariableValueMap.put(programRuleVariable.getDisplayName(), variableValue);
     }
-
-
 }

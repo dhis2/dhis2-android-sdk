@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.joda.time.DateTime;
 import org.junit.BeforeClass;
@@ -44,9 +45,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jdk.nashorn.internal.ir.LiteralNode;
 
 import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.*;
+import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.addDataValueToEvent;
 
 public class RulesEngineTests {
     private static List<Program> programs;
@@ -56,7 +57,7 @@ public class RulesEngineTests {
     // programs should not be modified during runtime)
     @BeforeClass
     public static void setUp() throws IOException {
-        ApiClient.init(
+        /*ApiClient.init(
                 "https://play.dhis2.org/dev",
                 "android",
                 "Android123"
@@ -66,7 +67,7 @@ public class RulesEngineTests {
 
         for (Program program : programs) {
             System.out.println("Program: " + program.getDisplayName());
-        }
+        }*/
     }
 
     @Test
@@ -209,15 +210,10 @@ public class RulesEngineTests {
                 .build();
 
         //Payload
-        ArrayList<TrackedEntityDataValue> dataValues = new ArrayList<>();
-        TrackedEntityDataValue boolean1DataValue = new TrackedEntityDataValue();
-        boolean1DataValue.setDataElement(d1.getUId());
-        boolean1DataValue.setValue("true");
-        dataValues.add(boolean1DataValue);
-
         Event olderEvent = new Event();
         olderEvent.setEventDate(DateTime.now().minusDays(10));
-        olderEvent.setTrackedEntityDataValues(dataValues);
+
+        addDataValueToEvent(olderEvent, d1, "true");
 
         Event currentEvent = new Event();
         currentEvent.setEventDate(DateTime.now());
@@ -235,6 +231,7 @@ public class RulesEngineTests {
         //The false should stop the effect form happening:
         Event middleEvent = new Event();
         middleEvent.setEventDate(DateTime.now().minusDays(2));
+        addDataValueToEvent(middleEvent, d1, "false");
         allEvents.add(middleEvent);
         effects = ruleEngine.execute(currentEvent, allEvents);
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);

@@ -37,7 +37,9 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -204,5 +206,15 @@ public class RulesEngineTestHelpers {
         } else {
             return original.getUId() == toCompare.getUId();
         }
+    }
+
+    public static void addDataValueToEvent(Event e, DataElement de, String value) {
+        if(e.getTrackedEntityDataValues() == null) {
+            e.setTrackedEntityDataValues(new ArrayList<>());
+        }
+        TrackedEntityDataValue dataValue = new TrackedEntityDataValue();
+        dataValue.setDataElement(de.getUId());
+        dataValue.setValue(value);
+        e.getTrackedEntityDataValues().add(dataValue);
     }
 }

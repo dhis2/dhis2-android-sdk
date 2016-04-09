@@ -28,22 +28,40 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by markusbekken on 25.03.2016.
  */
 public class ProgramRuleVariableValue {
-    private String value;
+    private TrackedEntityDataValue value;
+    private List<TrackedEntityDataValue> allValues;
+    private List<String> allValuesString;
 
-    public ProgramRuleVariableValue(String value) {
+    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues) {
+        this.allValues = allValues;
+        this.allValuesString = new ArrayList<>();
+
+        if(allValues != null) {
+            for (TrackedEntityDataValue otherValue
+                    : allValues) {
+                allValuesString.add(otherValue.getValue());
+            }
+        }
         this.value = value;
     }
 
-    public String getValue() {
-        return this.value;
+    public String getValueString() {
+        return this.value.getValue();
     }
+
+    public List<String> getAllValuesString() { return this.allValuesString; }
 
     @Override
     public String toString() {
-        return this.value;
+        return this.getValueString();
     }
 }

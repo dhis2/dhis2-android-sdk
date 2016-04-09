@@ -64,7 +64,7 @@ public class RuleEngine {
             Event event, TrackedEntityInstance instance, List<Event> events) {
 
         RuleEngineVariableValueMap variableValueMap =
-                new RuleEngineVariableValueMap(this.programRuleVariables, event);
+                new RuleEngineVariableValueMap(this.programRuleVariables, event, events);
 
         return RuleEngineExecution.execute(this.programRules, variableValueMap);
     }

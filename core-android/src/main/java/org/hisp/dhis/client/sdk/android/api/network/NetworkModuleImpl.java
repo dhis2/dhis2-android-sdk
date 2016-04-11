@@ -91,7 +91,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -124,12 +123,8 @@ public class NetworkModuleImpl implements NetworkModule {
     public NetworkModuleImpl(PreferencesModule preferencesModule, OkHttpClient okClient) {
         AuthInterceptor authInterceptor = new AuthInterceptor(
                 preferencesModule.getUserPreferences());
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
         OkHttpClient okHttpClient = okClient.newBuilder()
                 .addInterceptor(authInterceptor)
-                .addInterceptor(loggingInterceptor)
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
                 .writeTimeout(DEFAULT_WRITE_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)
@@ -173,7 +168,8 @@ public class NetworkModuleImpl implements NetworkModule {
                 ProgramRuleVariableApiClientRetrofit.class));
         programIndicatorApiClient = new ProgramIndicatorApiClientImpl(
                 retrofit.create(ProgramIndicatorApiClientRetrofit.class));
-        systemInfoApiClient = new org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl(retrofit.create(
+        systemInfoApiClient = new org.hisp.dhis.client.sdk.android.systeminfo
+                .SystemInfoApiClientImpl(retrofit.create(
                 SystemInfoApiClientRetrofit.class));
         userApiClient = new UserAccountApiClientImpl(retrofit.create(
                 UserApiClientRetrofit.class));

@@ -34,6 +34,7 @@ import android.util.Log;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.persistence.models.Conflict;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
@@ -174,9 +175,12 @@ public class NetworkUtils {
     }
 
     private static void handleSerializableItemException(APIException apiException, String type, long id) {
+        FailedItem failedItem = TrackerController.getFailedItem(type, id);
         switch (apiException.getKind()) {
             case NETWORK: {
-                FailedItem failedItem = new FailedItem();
+                if(failedItem == null) {
+                    failedItem = new FailedItem();
+                }
                 String cause = "Network error\n\n";
                 if(apiException != null && apiException.getCause() != null) {
                     cause += ExceptionUtils.getStackTrace(apiException.getCause());
@@ -185,11 +189,15 @@ public class NetworkUtils {
                 failedItem.setHttpStatusCode(-1);
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
+                failedItem.setFailCount(failedItem.getFailCount() + 1);
                 failedItem.save();
                 break;
             }
             default: {
-                FailedItem failedItem = new FailedItem();
+                if(failedItem == null) {
+                    failedItem = new FailedItem();
+                }
+
                 if (apiException.getResponse() != null) {
                     failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
                     try {
@@ -201,6 +209,7 @@ public class NetworkUtils {
                 failedItem.setItemId(id);
                 failedItem.setItemType(type);
                 failedItem.setHttpStatusCode(apiException.getResponse().getStatus());
+                failedItem.setFailCount(failedItem.getFailCount() + 1);
                 failedItem.save();
             }
         }

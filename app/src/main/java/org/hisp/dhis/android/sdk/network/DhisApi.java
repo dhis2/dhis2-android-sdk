@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.network;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import org.hisp.dhis.android.sdk.controllers.ApiEndpointContainer;
+import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.Constant;
 import org.hisp.dhis.android.sdk.persistence.models.Dashboard;
 import org.hisp.dhis.android.sdk.persistence.models.DashboardItem;
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
-import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
@@ -261,7 +261,7 @@ public interface DhisApi {
     Response postEvent(@Body Event event);
 
     @POST("/"+ApiEndpointContainer.EVENTS+"/")
-    Response postEvents(@Body Map<String, List<Event>> events);
+    ApiResponse postEvents(@Body Map<String, List<Event>> events);
 
     @PUT("/"+ApiEndpointContainer.EVENTS+"/{eventUid}")
     Response putEvent(@Path("eventUid") String eventUid, @Body Event event);

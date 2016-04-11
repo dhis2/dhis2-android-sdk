@@ -34,6 +34,7 @@ import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.raizlabs.android.dbflow.sql.builder.Condition;
+import com.raizlabs.android.dbflow.sql.language.Join;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
@@ -48,6 +49,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment$Table;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Event$Table;
 import org.hisp.dhis.android.sdk.persistence.models.FailedItem;
+import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
@@ -82,7 +84,24 @@ final class TrackerDataSender {
     static void sendEventChanges(DhisApi dhisApi) throws APIException {
         List<Event> events = new Select().from(Event.class).where
                 (Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
-//        sendEventChanges(dhisApi, events);
+
+        List<Event> eventsWithFailedThreshold = new Select().from(Event.class)
+                .join(FailedItem.class, Join.JoinType.LEFT)
+                .on(Condition.column(FailedItem$Table.ITEMID).eq(Event$Table.LOCALID))
+                .where(Condition.column(FailedItem$Table.ITEMTYPE).eq(FailedItem.EVENT))
+                .and(Condition.column(FailedItem$Table.FAILCOUNT).greaterThan(3))
+                .and(Condition.column(Event$Table.FROMSERVER).is(false))
+                .queryList();
+
+        List<Event> eventsToPost = new ArrayList<>();
+        eventsToPost.addAll(events);
+        for(Event event : events) {
+            for(Event failedEvent : eventsWithFailedThreshold) {
+                if(event.getUid().equals(failedEvent.getUid())) {
+                    eventsToPost.remove(event);
+                }
+            }
+        }
         sendEventBatch(dhisApi, events);
     }
 
@@ -105,12 +124,14 @@ final class TrackerDataSender {
     static void postEventBatch(DhisApi dhisApi, List<Event> events) throws APIException {
         Map<String, Event> eventMap = new HashMap<>();
         List<ImportSummary> importSummaries = null;
+
+        ApiResponse apiResponse = null;
         try {
             Map<String, List<Event>> map = new HashMap<>();
             map.put("events", events);
-            Response response = dhisApi.postEvents(map);
-            importSummaries = getImportSummaries(response);
-//            importSummaries = response.getImportSummaries();
+            apiResponse = dhisApi.postEvents(map);
+
+            importSummaries = apiResponse.getImportSummaries();
 
             for(Event event : events) {
                 eventMap.put(event.getUid(), event);
@@ -132,12 +153,9 @@ final class TrackerDataSender {
             }
 
         } catch (APIException apiException) {
-            if (importSummaries != null && !importSummaries.isEmpty()) {
-                for (ImportSummary importSummary : importSummaries) {
-                    Event event = eventMap.get(importSummary.getReference());
-                    NetworkUtils.handleEventSendException(apiException, event);
-                }
-            }
+             //batch sending failed. Trying to re-send one by one
+            sendEventChanges(dhisApi, events);
+
         }
     }
 

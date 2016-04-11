@@ -35,8 +35,8 @@ public final class UserAccountControllerImpl implements UserAccountController {
     private final UserApiClient userApiClient;
     private final UserAccountStore userAccountStore;
 
-    public UserAccountControllerImpl(UserApiClient userApiClient, UserAccountStore
-            userAccountStore) {
+    public UserAccountControllerImpl(UserApiClient userApiClient,
+                                     UserAccountStore userAccountStore) {
         this.userApiClient = userApiClient;
         this.userAccountStore = userAccountStore;
     }

@@ -56,6 +56,7 @@ import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClient
 import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientImpl;
 import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionApiClientRetrofit;
+import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientImpl;
 import org.hisp.dhis.client.sdk.android.systeminfo.SystemInfoApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
@@ -154,37 +155,36 @@ public class NetworkModuleImpl implements NetworkModule {
                 .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .build();
 
-        programApiClient = new ProgramApiClientImpl(retrofit.create(
-                ProgramApiClientRetrofit.class));
-        programStageApiClient = new ProgramStageApiClientImpl(retrofit.create(
-                ProgramStageApiClientRetrofit.class));
+        programApiClient = new ProgramApiClientImpl(
+                retrofit.create(ProgramApiClientRetrofit.class));
+        programStageApiClient = new ProgramStageApiClientImpl(
+                retrofit.create(ProgramStageApiClientRetrofit.class));
         programStageSectionApiClient = new ProgramStageSectionApiClientImpl(
                 retrofit.create(ProgramStageSectionApiClientRetrofit.class));
-        programRuleApiClient = new ProgramRuleApiClientImpl(retrofit.create(
-                ProgramRuleApiClientRetrofit.class));
+        programRuleApiClient = new ProgramRuleApiClientImpl(
+                retrofit.create(ProgramRuleApiClientRetrofit.class));
         programRuleActionApiClient = new ProgramRuleActionApiClientImpl(
                 retrofit.create(ProgramRuleActionApiClientRetrofit.class));
-        programRuleVariableApiClient = new ProgramRuleVariableApiClientImpl(retrofit.create(
-                ProgramRuleVariableApiClientRetrofit.class));
+        programRuleVariableApiClient = new ProgramRuleVariableApiClientImpl(
+                retrofit.create(ProgramRuleVariableApiClientRetrofit.class));
         programIndicatorApiClient = new ProgramIndicatorApiClientImpl(
                 retrofit.create(ProgramIndicatorApiClientRetrofit.class));
-        systemInfoApiClient = new org.hisp.dhis.client.sdk.android.systeminfo
-                .SystemInfoApiClientImpl(retrofit.create(
-                SystemInfoApiClientRetrofit.class));
-        userApiClient = new UserAccountApiClientImpl(retrofit.create(
-                UserApiClientRetrofit.class));
-        organisationUnitApiClient = new OrganisationUnitApiClientImpl(retrofit.create(
-                OrganisationUnitApiClientRetrofit.class));
-        eventApiClient = new EventApiClientImpl(retrofit.create(
-                EventApiClientRetrofit.class));
-        dataElementApiClient = new DataElementApiClientImpl(retrofit.create(
-                DataElementApiClientRetrofit.class));
-        programStageDataElementApiClient = new ProgramStageDataElementApiClientImpl(retrofit.create(
-                ProgramStageDataElementApiClientRetrofit.class));
-        optionSetApiClient = new OptionSetApiClientImpl(retrofit.create(
-                OptionSetApiClientRetrofit.class));
-        trackedEntityAttributeApiClient = new TrackedEntityAttributeApiClientImpl(retrofit.create(
-                TrackedEntityAttributeApiClientRetrofit.class));
+        systemInfoApiClient = new SystemInfoApiClientImpl(
+                retrofit.create(SystemInfoApiClientRetrofit.class));
+        userApiClient = new UserAccountApiClientImpl(
+                retrofit.create(UserApiClientRetrofit.class));
+        organisationUnitApiClient = new OrganisationUnitApiClientImpl(
+                retrofit.create(OrganisationUnitApiClientRetrofit.class));
+        eventApiClient = new EventApiClientImpl(
+                retrofit.create(EventApiClientRetrofit.class));
+        dataElementApiClient = new DataElementApiClientImpl(
+                retrofit.create(DataElementApiClientRetrofit.class));
+        programStageDataElementApiClient = new ProgramStageDataElementApiClientImpl(
+                retrofit.create(ProgramStageDataElementApiClientRetrofit.class));
+        optionSetApiClient = new OptionSetApiClientImpl(
+                retrofit.create(OptionSetApiClientRetrofit.class));
+        trackedEntityAttributeApiClient = new TrackedEntityAttributeApiClientImpl(
+                retrofit.create(TrackedEntityAttributeApiClientRetrofit.class));
     }
 
     @Override

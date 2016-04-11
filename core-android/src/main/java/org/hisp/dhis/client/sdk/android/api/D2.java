@@ -36,38 +36,38 @@ import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModuleImpl;
 import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
 import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementScopeImpl;
-import org.hisp.dhis.client.sdk.android.event.EventScope;
-import org.hisp.dhis.client.sdk.android.event.EventScopeImpl;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScopeImpl;
-import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScopeImpl;
-import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
-import org.hisp.dhis.client.sdk.android.program.UserProgramScopeImpl;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScope;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeScopeImpl;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScope;
-import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueScopeImpl;
-import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
-import org.hisp.dhis.client.sdk.android.user.UserAccountScopeImpl;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractor;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractorImpl;
+import org.hisp.dhis.client.sdk.android.event.EventInteractor;
+import org.hisp.dhis.client.sdk.android.event.EventInteractorImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.UserProgramInteractor;
+import org.hisp.dhis.client.sdk.android.program.UserProgramInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
 import org.hisp.dhis.client.sdk.core.common.Logger;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
@@ -99,23 +99,23 @@ public class D2 {
     private final PreferencesModule preferencesModule;
 
     //-----------------------------------------------------------------------------------------
-    // Scopes
+    // Interactors
     //-----------------------------------------------------------------------------------------
 
-    private final UserAccountScope userAccountScope;
-    private final OrganisationUnitScope organisationUnitScope;
-    private final ProgramScope programScope;
-    private final ProgramStageScope programStageScope;
-    private final ProgramStageSectionScope programStageSectionScope;
-    private final ProgramRuleScope programRuleScope;
-    private final ProgramRuleActionScope programRuleActionScope;
-    private final ProgramRuleVariableScope programRuleVariableScope;
-    private final ProgramIndicatorScope programIndicatorScope;
-    private final TrackedEntityAttributeScope trackedEntityAttributeScope;
-    private final TrackedEntityDataValueScope trackedEntityDataValueScope;
-    private final EventScope eventScope;
-    private final ProgramStageDataElementScope programStageDataElementScope;
-    private final DataElementScope dataElementScope;
+    private final UserAccountInteractor userAccountInteractor;
+    private final OrganisationUnitInteractor organisationUnitInteractor;
+    private final ProgramInteractor programInteractor;
+    private final ProgramStageInteractor programStageInteractor;
+    private final ProgramStageSectionInteractor programStageSectionInteractor;
+    private final ProgramRuleInteractor programRuleInteractor;
+    private final ProgramRuleActionInteractor programRuleActionInteractor;
+    private final ProgramRuleVariableInteractor programRuleVariableInteractor;
+    private final ProgramIndicatorInteractor programIndicatorInteractor;
+    private final TrackedEntityAttributeInteractor trackedEntityAttributeInteractor;
+    private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
+    private final EventInteractor eventInteractor;
+    private final ProgramStageDataElementInteractor programStageDataElementInteractor;
+    private final DataElementInteractor dataElementInteractor;
 
     //-----------------------------------------------------------------------------------------
     // Utilities
@@ -135,20 +135,20 @@ public class D2 {
                 .getConfigurationPreferences().get().getServerUrl());
 
         if (!isD2Configured) {
-            userAccountScope = null;
-            organisationUnitScope = null;
-            programScope = null;
-            programStageScope = null;
-            programStageSectionScope = null;
-            eventScope = null;
-            programStageDataElementScope = null;
-            dataElementScope = null;
-            programRuleScope = null;
-            programRuleActionScope = null;
-            programRuleVariableScope = null;
-            programIndicatorScope = null;
-            trackedEntityAttributeScope = null;
-            trackedEntityDataValueScope = null;
+            userAccountInteractor = null;
+            organisationUnitInteractor = null;
+            programInteractor = null;
+            programStageInteractor = null;
+            programStageSectionInteractor = null;
+            eventInteractor = null;
+            programStageDataElementInteractor = null;
+            dataElementInteractor = null;
+            programRuleInteractor = null;
+            programRuleActionInteractor = null;
+            programRuleVariableInteractor = null;
+            programIndicatorInteractor = null;
+            trackedEntityAttributeInteractor = null;
+            trackedEntityDataValueInteractor = null;
             logger = null;
             return;
         }
@@ -159,70 +159,70 @@ public class D2 {
         ControllersModule controllersModule = new ControllersModuleImpl(
                 networkModule, persistenceModule, preferencesModule, new LoggerImpl());
 
-        UserProgramScope userProgramScope = new UserProgramScopeImpl(
+        UserProgramInteractor userProgramInteractor = new UserProgramInteractorImpl(
                 servicesModule.getProgramService(),
                 controllersModule.getAssignedProgramsController());
 
-        UserOrganisationUnitScope userOrganisationUnitScope = new UserOrganisationUnitScopeImpl(
+        UserOrganisationUnitInteractor userOrganisationUnitInteractor = new UserOrganisationUnitInteractorImpl(
                 servicesModule.getOrganisationUnitService(),
                 controllersModule.getAssignedOrganisationUnitsController());
 
-        programScope = new ProgramScopeImpl(
+        programInteractor = new ProgramInteractorImpl(
                 servicesModule.getProgramService(),
                 controllersModule.getProgramController());
 
-        programStageScope = new ProgramStageScopeImpl(
+        programStageInteractor = new ProgramStageInteractorImpl(
                 servicesModule.getProgramStageService(),
                 controllersModule.getProgramStageController());
 
-        programStageDataElementScope = new ProgramStageDataElementScopeImpl(
+        programStageDataElementInteractor = new ProgramStageDataElementInteractorImpl(
                 servicesModule.getProgramStageDataElementService(),
                 controllersModule.getProgramStageDataElementController());
 
-        programStageSectionScope = new ProgramStageSectionScopeImpl(
+        programStageSectionInteractor = new ProgramStageSectionInteractorImpl(
                 controllersModule.getProgramStageSectionController(),
                 servicesModule.getProgramStageSectionService());
 
-        programRuleScope = new ProgramRuleScopeImpl(
+        programRuleInteractor = new ProgramRuleInteractorImpl(
                 servicesModule.getProgramRuleService(),
                 controllersModule.getProgramRuleController());
 
-        programRuleActionScope = new ProgramRuleActionScopeImpl(
+        programRuleActionInteractor = new ProgramRuleActionInteractorImpl(
                 servicesModule.getProgramRuleActionService(),
                 controllersModule.getProgramRuleActionController());
 
-        programRuleVariableScope = new ProgramRuleVariableScopeImpl(
+        programRuleVariableInteractor = new ProgramRuleVariableInteractorImpl(
                 servicesModule.getProgramRuleVariableService(),
                 controllersModule.getProgramRuleVariableController());
 
-        programIndicatorScope = new ProgramIndicatorScopeImpl(
+        programIndicatorInteractor = new ProgramIndicatorInteractorImpl(
                 servicesModule.getProgramIndicatorService(),
                 controllersModule.getProgramIndicatorController());
 
-        organisationUnitScope = new OrganisationUnitScopeImpl(
+        organisationUnitInteractor = new OrganisationUnitInteractorImpl(
                 servicesModule.getOrganisationUnitService(),
                 controllersModule.getOrganisationUnitController());
 
-        eventScope = new EventScopeImpl(
+        eventInteractor = new EventInteractorImpl(
                 servicesModule.getEventService(),
                 controllersModule.getEventController());
 
-        dataElementScope = new DataElementScopeImpl(
+        dataElementInteractor = new DataElementInteractorImpl(
                 servicesModule.getDataElementService(),
                 controllersModule.getDataElementController());
 
-        trackedEntityAttributeScope = new TrackedEntityAttributeScopeImpl(
+        trackedEntityAttributeInteractor = new TrackedEntityAttributeInteractorImpl(
                 servicesModule.getTrackedEntityAttributeService(),
                 controllersModule.getTrackedEntityAttributeController());
 
-        trackedEntityDataValueScope = new TrackedEntityDataValueScopeImpl(
+        trackedEntityDataValueInteractor = new TrackedEntityDataValueInteractorImpl(
                 servicesModule.getTrackedEntityDataValueService());
 
-        userAccountScope = new UserAccountScopeImpl(
+        userAccountInteractor = new UserAccountInteractorImpl(
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
-                userProgramScope, userOrganisationUnitScope);
+                userProgramInteractor, userOrganisationUnitInteractor);
 
         logger = flavor.getLogger();
     }
@@ -313,62 +313,62 @@ public class D2 {
     /**
      * Provides current user aware APIs.
      *
-     * @return UserAccountScope instance.
+     * @return UserAccountInteractor instance.
      */
-    public static UserAccountScope me() {
-        return configuredInstance().userAccountScope;
+    public static UserAccountInteractor me() {
+        return configuredInstance().userAccountInteractor;
     }
 
-    public static ProgramScope programs() {
-        return configuredInstance().programScope;
+    public static ProgramInteractor programs() {
+        return configuredInstance().programInteractor;
     }
 
-    public static ProgramStageScope programStages() {
-        return configuredInstance().programStageScope;
+    public static ProgramStageInteractor programStages() {
+        return configuredInstance().programStageInteractor;
     }
 
-    public static ProgramStageSectionScope programStageSections() {
-        return configuredInstance().programStageSectionScope;
+    public static ProgramStageSectionInteractor programStageSections() {
+        return configuredInstance().programStageSectionInteractor;
     }
 
-    public static OrganisationUnitScope organisationUnits() {
-        return configuredInstance().organisationUnitScope;
+    public static OrganisationUnitInteractor organisationUnits() {
+        return configuredInstance().organisationUnitInteractor;
     }
 
-    public static ProgramStageDataElementScope programStageDataElements() {
-        return configuredInstance().programStageDataElementScope;
+    public static ProgramStageDataElementInteractor programStageDataElements() {
+        return configuredInstance().programStageDataElementInteractor;
     }
 
-    public static DataElementScope dataElements() {
-        return configuredInstance().dataElementScope;
+    public static DataElementInteractor dataElements() {
+        return configuredInstance().dataElementInteractor;
     }
 
-    public static ProgramRuleScope programRules() {
-        return configuredInstance().programRuleScope;
+    public static ProgramRuleInteractor programRules() {
+        return configuredInstance().programRuleInteractor;
     }
 
-    public static ProgramRuleActionScope programRuleActions() {
-        return configuredInstance().programRuleActionScope;
+    public static ProgramRuleActionInteractor programRuleActions() {
+        return configuredInstance().programRuleActionInteractor;
     }
 
-    public static ProgramRuleVariableScope programRuleVariables() {
-        return configuredInstance().programRuleVariableScope;
+    public static ProgramRuleVariableInteractor programRuleVariables() {
+        return configuredInstance().programRuleVariableInteractor;
     }
 
-    public static ProgramIndicatorScope programIndicators() {
-        return configuredInstance().programIndicatorScope;
+    public static ProgramIndicatorInteractor programIndicators() {
+        return configuredInstance().programIndicatorInteractor;
     }
 
-    public static TrackedEntityAttributeScope trackedEntityAttributes() {
-        return configuredInstance().trackedEntityAttributeScope;
+    public static TrackedEntityAttributeInteractor trackedEntityAttributes() {
+        return configuredInstance().trackedEntityAttributeInteractor;
     }
 
-    public static EventScope events() {
-        return configuredInstance().eventScope;
+    public static EventInteractor events() {
+        return configuredInstance().eventInteractor;
     }
 
-    public static TrackedEntityDataValueScope trackedEntityDataValues() {
-        return configuredInstance().trackedEntityDataValueScope;
+    public static TrackedEntityDataValueInteractor trackedEntityDataValues() {
+        return configuredInstance().trackedEntityDataValueInteractor;
     }
 
     public static Logger logger() {

@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
 import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
@@ -38,7 +39,6 @@ import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import rx.Observable;
-import rx.Subscriber;
 
 public class UserAccountScopeImpl implements UserAccountScope {
     // preferences
@@ -68,111 +68,67 @@ public class UserAccountScopeImpl implements UserAccountScope {
 
     @Override
     public Observable<UserAccount> signIn(final String username, final String password) {
-        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
-
+        return Observable.create(new DefaultOnSubscribe<UserAccount>() {
             @Override
-            public void call(Subscriber<? super UserAccount> subscriber) {
-                try {
-                    if (userPreferences.isUserConfirmed()) {
-                        throw new IllegalArgumentException("User is already signed in");
-                    }
-
-                    UserCredentials userCredentials = new UserCredentials(username, password);
-                    userPreferences.save(userCredentials);
-
-                    UserAccount userAccount = userAccountController.updateAccount();
-                    subscriber.onNext(userAccount);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
+            public UserAccount call() {
+                if (userPreferences.isUserConfirmed()) {
+                    throw new IllegalArgumentException("User is already signed in");
                 }
 
-                subscriber.onCompleted();
+                UserCredentials userCredentials = new UserCredentials(username, password);
+                userPreferences.save(userCredentials);
+
+                return userAccountController.updateAccount();
             }
         });
     }
 
     @Override
     public Observable<Boolean> isSignedIn() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    if (userPreferences.isUserConfirmed()) {
-                        subscriber.onNext(true);
-                    }
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return userPreferences.isUserConfirmed();
             }
         });
     }
 
     @Override
     public Observable<Boolean> signOut() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    subscriber.onNext(userPreferences.clear());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return userPreferences.clear();
             }
         });
     }
 
     @Override
     public Observable<UserAccount> account() {
-        return Observable.create(new Observable.OnSubscribe<UserAccount>() {
-
+        return Observable.create(new DefaultOnSubscribe<UserAccount>() {
             @Override
-            public void call(Subscriber<? super UserAccount> subscriber) {
-                try {
-                    subscriber.onNext(userAccountService.getCurrentUserAccount());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public UserAccount call() {
+                return userAccountService.getCurrentUserAccount();
             }
         });
     }
 
     @Override
     public Observable<UserCredentials> userCredentials() {
-        return Observable.create(new Observable.OnSubscribe<UserCredentials>() {
+        return Observable.create(new DefaultOnSubscribe<UserCredentials>() {
             @Override
-            public void call(Subscriber<? super UserCredentials> subscriber) {
-                try {
-                    subscriber.onNext(userPreferences.get());
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public UserCredentials call() {
+                return userPreferences.get();
             }
         });
     }
 
     @Override
     public Observable<Boolean> save(final UserAccount userAccount) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
-
+        return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
-            public void call(Subscriber<? super Boolean> subscriber) {
-                try {
-                    subscriber.onNext(userAccountService.save(userAccount));
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
-                }
-
-                subscriber.onCompleted();
+            public Boolean call() {
+                return userAccountService.save(userAccount);
             }
         });
     }

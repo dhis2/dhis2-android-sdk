@@ -285,19 +285,15 @@ public class NetworkModuleImpl implements NetworkModule {
                     .build();
 
             Response response = chain.proceed(request);
-            if (!response.isSuccessful() &&
-                    response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-
-                if (mUserPreferences.isUserConfirmed()) {
-                    // invalidate existing user
+            if (mUserPreferences.isUserConfirmed()) {
+                if (response.code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                     mUserPreferences.invalidateUser();
-                } else {
-                    // remove username/password
-                    mUserPreferences.clear();
                 }
             } else {
-                if (!mUserPreferences.isUserConfirmed()) {
+                if (response.isSuccessful()) {
                     mUserPreferences.confirmUser();
+                } else {
+                    mUserPreferences.clear();
                 }
             }
 

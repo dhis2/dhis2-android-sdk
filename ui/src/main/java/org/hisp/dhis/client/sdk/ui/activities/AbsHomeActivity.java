@@ -59,11 +59,14 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 public abstract class AbsHomeActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
 
-    private static final String APPS_DASHBOARD_PACKAGE = "org.hisp.dhis.android.dashboard";
-    private static final String APPS_DATA_CAPTURE_PACKAGE = "org.dhis2.mobile";
-    private static final String APPS_EVENT_CAPTURE_PACKAGE = "org.hisp.dhis.android.eventcapture";
-    private static final String APPS_TRACKER_CAPTURE_PACKAGE = "org.hisp.dhis.android" +
-            ".trackercapture";
+    private static final String APPS_DASHBOARD_PACKAGE =
+            "org.hisp.dhis.android.dashboard";
+    private static final String APPS_DATA_CAPTURE_PACKAGE =
+            "org.dhis2.mobile";
+    private static final String APPS_EVENT_CAPTURE_PACKAGE =
+            "org.hisp.dhis.android.eventcapture";
+    private static final String APPS_TRACKER_CAPTURE_PACKAGE =
+            "org.hisp.dhis.android.trackercapture";
 
     private static final int DEFAULT_ORDER_IN_CATEGORY = 100;
 
@@ -86,7 +89,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setDrawerListener(this);
+        drawerLayout.addDrawerListener(this);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -141,8 +144,8 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
         isSelected = onItemSelected(menuItem) || isSelected;
         if (isSelected) {
+            navigationView.setCheckedItem(menuItemId);
             drawerLayout.closeDrawers();
-            navigationView.setCheckedItem(menuItem.getItemId());
         }
 
         return isSelected;
@@ -192,7 +195,6 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         isNull(fragment, "Fragment must not be null");
 
         pendingRunnable = new Runnable() {
-
             @Override
             public void run() {
                 attachFragment(fragment);
@@ -236,6 +238,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         MenuItem menuItem = navigationView.getMenu().add(
                 R.id.drawer_group_main, menuItemId, DEFAULT_ORDER_IN_CATEGORY, title);
         menuItem.setIcon(icon);
+        menuItem.setCheckable(true);
         return menuItem;
     }
 

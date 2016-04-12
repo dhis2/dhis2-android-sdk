@@ -44,7 +44,7 @@ import org.hisp.dhis.client.sdk.ui.R;
 
 import java.io.Serializable;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 public class WrapperFragment extends BaseFragment implements View.OnClickListener {

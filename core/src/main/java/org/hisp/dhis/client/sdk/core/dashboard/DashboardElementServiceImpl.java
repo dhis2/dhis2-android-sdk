@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;

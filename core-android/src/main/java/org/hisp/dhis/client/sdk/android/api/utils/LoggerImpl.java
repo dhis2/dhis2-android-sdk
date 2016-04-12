@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.android.api.utils;
 
 import android.util.Log;
 
-import org.hisp.dhis.client.sdk.core.common.Logger;
+import org.hisp.dhis.client.sdk.utils.Logger;
 
 public class LoggerImpl implements Logger {
     private final Logger customLogger;

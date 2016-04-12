@@ -37,7 +37,7 @@ import org.joda.time.DateTime;
 
 import java.util.Map;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class SystemInfoPreferencesImpl implements SystemInfoPreferences {
     private static final String PREFERENCES = "preferences:systemInfo";

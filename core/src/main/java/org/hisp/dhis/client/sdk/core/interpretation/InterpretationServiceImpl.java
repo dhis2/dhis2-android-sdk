@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
 import org.hisp.dhis.client.sdk.models.interpretation.Interpretation;
 import org.hisp.dhis.client.sdk.models.interpretation.InterpretationElement;
 import org.hisp.dhis.client.sdk.models.user.User;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 import org.joda.time.DateTime;
 
 public class InterpretationServiceImpl implements InterpretationService {

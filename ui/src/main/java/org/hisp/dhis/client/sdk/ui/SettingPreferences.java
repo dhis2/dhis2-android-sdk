@@ -34,7 +34,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 
 public final class SettingPreferences {
     public static final String BACKGROUND_SYNCHRONIZATION = "backgroundSynchronization";

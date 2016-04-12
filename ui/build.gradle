@@ -54,6 +54,9 @@ android {
 }
 
 dependencies {
+    // Local
+    compile project(":utils")
+
     // Google
     compile "com.android.support:support-annotations:${libs.supportVersion}"
     compile "com.android.support:recyclerview-v7:${libs.supportVersion}"

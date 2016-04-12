@@ -34,7 +34,8 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 
 public class DataEntityText implements DataEntity<CharSequence> {
     private final Type type;

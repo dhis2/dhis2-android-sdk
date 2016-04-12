@@ -33,17 +33,17 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.TrackedEntityDataValueFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsStore;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class TrackedEntityDataValueStoreImpl extends AbsStore<TrackedEntityDataValue,
         TrackedEntityDataValueFlow> implements TrackedEntityDataValueStore {

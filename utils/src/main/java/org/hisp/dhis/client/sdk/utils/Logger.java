@@ -26,17 +26,26 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.utils;
+package org.hisp.dhis.client.sdk.utils;
 
-public class Preconditions {
+public interface Logger {
+    void v(String tag, String message);
 
-    private Preconditions() {
-        // empty constructor
-    }
+    void v(String tag, String message, Throwable throwable);
 
-    public static void isNull(Object object, String message) {
-        if (object == null) {
-            throw new IllegalArgumentException(message);
-        }
-    }
+    void d(String tag, String message);
+
+    void d(String tag, String message, Throwable throwable);
+
+    void i(String tag, String message);
+
+    void i(String tag, String message, Throwable throwable);
+
+    void w(String tag, String message);
+
+    void w(String tag, String message, Throwable throwable);
+
+    void e(String tag, String message);
+
+    void e(String tag, String message, Throwable throwable);
 }

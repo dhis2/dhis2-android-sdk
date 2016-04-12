@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.common.Logger;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.persistence.Store;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.net.HttpURLConnection;
 

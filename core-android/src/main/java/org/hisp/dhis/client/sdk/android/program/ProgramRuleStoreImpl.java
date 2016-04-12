@@ -36,12 +36,12 @@ import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleFlow_Tab
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleStore;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;

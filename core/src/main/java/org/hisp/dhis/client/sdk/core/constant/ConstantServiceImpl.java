@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.constant;
 
 import org.hisp.dhis.client.sdk.models.constant.Constant;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.List;
 

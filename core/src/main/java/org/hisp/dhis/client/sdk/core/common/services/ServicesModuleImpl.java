@@ -29,36 +29,36 @@
 package org.hisp.dhis.client.sdk.core.common.services;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
-import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
-import org.hisp.dhis.client.sdk.core.event.EventServiceImpl;
+import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
 import org.hisp.dhis.client.sdk.core.event.EventService;
+import org.hisp.dhis.client.sdk.core.event.EventServiceImpl;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitServiceImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
-import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
-import org.hisp.dhis.client.sdk.core.program.ProgramService;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
-import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleActionServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleService;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramService;
 import org.hisp.dhis.client.sdk.core.program.ProgramServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageDataElementServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageSectionServiceImpl;
+import org.hisp.dhis.client.sdk.core.program.ProgramStageService;
 import org.hisp.dhis.client.sdk.core.program.ProgramStageServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeServiceImpl;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService2;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountServiceImpl;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class ServicesModuleImpl implements ServicesModule {
     private final UserAccountService userAccountService;

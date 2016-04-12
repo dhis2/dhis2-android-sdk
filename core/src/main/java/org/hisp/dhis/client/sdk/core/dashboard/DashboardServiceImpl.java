@@ -40,7 +40,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class DashboardServiceImpl implements DashboardService {
     private final DashboardStore dashboardStore;

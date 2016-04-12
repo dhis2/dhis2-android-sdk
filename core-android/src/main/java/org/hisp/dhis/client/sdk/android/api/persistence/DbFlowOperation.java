@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbAction;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 /**

@@ -37,7 +37,7 @@ import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.List;
 

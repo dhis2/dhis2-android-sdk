@@ -39,7 +39,7 @@ import org.hisp.dhis.client.sdk.models.common.base.Model;
 
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 public abstract class AbsStore<ModelType extends Model,

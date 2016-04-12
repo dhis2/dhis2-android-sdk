@@ -53,7 +53,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 public abstract class AbsHomeActivity extends AppCompatActivity

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.common.utils;
 
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.ArrayList;
 import java.util.Collection;

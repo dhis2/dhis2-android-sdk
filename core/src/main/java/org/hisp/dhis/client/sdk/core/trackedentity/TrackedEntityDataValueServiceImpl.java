@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class TrackedEntityDataValueServiceImpl implements TrackedEntityDataValueService {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;

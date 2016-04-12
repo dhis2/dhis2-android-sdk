@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
 import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 
 import static android.text.TextUtils.isEmpty;
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class UserPreferencesImpl implements UserPreferences {
     private static final String USER_CREDENTIALS = "preferences:userCredentials";

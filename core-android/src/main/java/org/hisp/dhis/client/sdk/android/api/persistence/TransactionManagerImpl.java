@@ -33,7 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 
 import java.util.Collection;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 public class TransactionManagerImpl implements TransactionManager {

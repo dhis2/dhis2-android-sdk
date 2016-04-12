@@ -68,7 +68,6 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInte
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
 import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
-import org.hisp.dhis.client.sdk.core.common.Logger;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -77,12 +76,13 @@ import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModuleImpl;
+import org.hisp.dhis.client.sdk.utils.Logger;
 
 import okhttp3.OkHttpClient;
 import rx.Observable;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 // TODO D2 fails on 500 errors (because of
 // TODO response conversion in NetworkModule)

@@ -55,7 +55,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils.isEmpty;
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateStore {
     private final Mapper<Event, EventFlow> eventMapper;

@@ -29,7 +29,7 @@
 package org.hisp.dhis.client.sdk.core.dataelement;
 
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.List;
 

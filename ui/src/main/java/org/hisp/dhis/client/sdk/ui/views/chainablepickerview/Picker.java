@@ -54,6 +54,7 @@ public class Picker implements Parcelable {
             return new Picker[size];
         }
     };
+
     private Picker nextLinkedSibling;
     private List<Pickable> pickableItems;
     private AdapterView.OnItemClickListener listener;

@@ -26,25 +26,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.models;
+package org.hisp.dhis.client.sdk.ui.models.picker;
 
+public class PickerItem {
+    private final String id;
+    private final String value;
 
-import java.util.List;
-
-public class Picker {
-    private final String label;
-    private final List<PickerItem> items;
-
-    private Picker(String label, List<PickerItem> items) {
-        this.label = label;
-        this.items = items;
+    public PickerItem(String id, String value) {
+        this.id = id;
+        this.value = value;
     }
 
-    public String getLabel() {
-        return label;
+    public String getId() {
+        return id;
     }
 
-    public List<PickerItem> getItems() {
-        return items;
+    public String getValue() {
+        return value;
     }
 }

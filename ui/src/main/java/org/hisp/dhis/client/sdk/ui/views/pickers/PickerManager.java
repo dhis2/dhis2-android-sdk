@@ -26,22 +26,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.models.picker;
+package org.hisp.dhis.client.sdk.ui.views.pickers;
 
-public class PickerItem {
-    private final String id;
-    private final String value;
+import android.os.Bundle;
 
-    public PickerItem(String id, String value) {
-        this.id = id;
-        this.value = value;
+import org.hisp.dhis.client.sdk.ui.models.picker.PickerChain;
+
+public class PickerManager {
+
+    // TODO state handling (how to pass state in)
+    // TODO RecyclerView, NestedScrollView, or ScrollView
+    // TODO implementing Parcelable in Picker and PickerItem?
+    // TODO standalone object for preserving Picker, PickerItem states
+    public PickerManager(PickerChain pickerChain) {
+        // explicit empty constructor
     }
 
-    public String getId() {
-        return id;
+    public void restore(Bundle savedInstanceState) {
+        // TODO derive pickers and items from savedInstanceState
     }
 
-    public String getValue() {
-        return value;
+    public void preserver(Bundle savedInstanceState) {
+
     }
 }

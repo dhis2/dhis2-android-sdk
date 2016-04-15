@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.client.sdk.ui.views;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
@@ -42,26 +40,21 @@ import android.view.View;
  * ListView.
  */
 public class DividerDecoration extends RecyclerView.ItemDecoration {
+    private final Drawable mDivider;
 
-    private static final int[] ATTRS = {android.R.attr.listDivider};
-
-    private Drawable mDivider;
-
-    public DividerDecoration(Context context) {
-        TypedArray a = context.obtainStyledAttributes(ATTRS);
-        mDivider = a.getDrawable(0);
-        a.recycle();
+    public DividerDecoration(Drawable drawable) {
+        mDivider = drawable;
     }
 
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        drawVertical(c, parent);
+    public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+        drawVertical(canvas, parent);
     }
 
     /**
      * Draw dividers underneath each child view
      */
-    public void drawVertical(Canvas c, RecyclerView parent) {
+    public void drawVertical(Canvas canvas, RecyclerView parent) {
         final int left = parent.getPaddingLeft();
         final int right = parent.getWidth() - parent.getPaddingRight();
 
@@ -73,7 +66,7 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
             mDivider.setBounds(left, top, right, bottom);
-            mDivider.draw(c);
+            mDivider.draw(canvas);
         }
     }
 }

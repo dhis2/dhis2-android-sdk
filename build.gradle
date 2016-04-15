@@ -38,7 +38,7 @@ ext {
 
     libraries = [
             // android libs
-            supportVersion     : "23.1.1",
+            supportVersion     : "23.2.1",
             rxAndroidVersion   : "1.1.0",
             dbFlowVersion      : "3.0.0-beta5",
             progressBarVersion : "1.2.0",

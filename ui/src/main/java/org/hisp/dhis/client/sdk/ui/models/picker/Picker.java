@@ -31,19 +31,92 @@ package org.hisp.dhis.client.sdk.ui.models.picker;
 import java.util.List;
 
 public class Picker {
+    private final String id;
+    private final String name;
     private final String label;
-    private final List<PickerItem> items;
+    private final List<Picker> items;
+    private Picker descendant;
 
-    private Picker(String label, List<PickerItem> items) {
+    public Picker(String id, String name, String label, List<Picker> items) {
+        this.id = id;
+        this.name = name;
         this.label = label;
         this.items = items;
+    }
+
+    public Picker(String id, String name) {
+        this(id, name, null, null);
+    }
+
+    public Picker(String label, List<Picker> items) {
+        this(null, null, label, items);
     }
 
     public String getLabel() {
         return label;
     }
 
-    public List<PickerItem> getItems() {
+    public List<Picker> getItems() {
         return items;
+    }
+
+    public void setDescendant(Picker descendant) {
+        this.descendant = descendant;
+    }
+
+    public Picker getDescendant() {
+        return descendant;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Picker{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", label='" + label + '\'' +
+                ", items=" + items +
+                ", descendant=" + descendant +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Picker picker = (Picker) o;
+
+        if (label != null ? !label.equals(picker.label) : picker.label != null) {
+            return false;
+        }
+
+        if (items != null ? !items.equals(picker.items) : picker.items != null) {
+            return false;
+        }
+
+        return descendant != null ? descendant.equals(picker.descendant) :
+                picker.descendant == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = label != null ? label.hashCode() : 0;
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        result = 31 * result + (descendant != null ? descendant.hashCode() : 0);
+        return result;
     }
 }

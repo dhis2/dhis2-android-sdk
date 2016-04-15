@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.ui.fragments.eventdataentry;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -50,10 +52,12 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
@@ -71,6 +75,8 @@ import org.hisp.dhis.android.sdk.ui.fragments.dataentry.RowValueChangedEvent;
 import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,6 +105,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     private Spinner spinner;
     private SectionAdapter spinnerAdapter;
     private EventDataEntryFragmentForm form;
+    private DateTime scheduledDueDate;
 
     public EventDataEntryFragment() {
         setProgramRuleFragmentHelper(new EventDataEntryRuleHelper(this));
@@ -554,16 +561,55 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public void onItemClick(final OnCompleteEventClick eventClick) {
         if(isValid()) {
             if(!eventClick.getEvent().getStatus().equals(Event.STATUS_COMPLETED)) {
-                UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
-                        eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                eventClick.getComplete().setText(R.string.incomplete);
-                                eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
-                                eventClick.getEvent().setFromServer(false);
-                                Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
-                            }
-                        });
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    UiUtils.showConfirmDialog(getActivity(), eventClick.getLabel(), eventClick.getAction(),
+                            eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    eventClick.getComplete().setText(R.string.incomplete);
+                                    eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
+                                    eventClick.getEvent().setFromServer(false);
+                                    ProgramStage currentProgramStage = MetaDataController
+                                            .getProgramStage(eventClick.getEvent().getProgramStageId());
+
+                                    if(currentProgramStage.getAllowGenerateNextVisit()) {
+                                        if(currentProgramStage.getRepeatable()) {
+                                            showDatePicker(currentProgramStage); // datePicker will close this fragment when date is picked and new event is scheduled
+                                        }
+                                        else {
+                                            int sortOrder = currentProgramStage.getSortOrder();
+                                            Program currentProgram = currentProgramStage.getProgram();
+                                            ProgramStage programStageToSchedule = null;
+                                            for(ProgramStage programStage : currentProgram.getProgramStages()) {
+                                                if(programStage.getSortOrder() == (sortOrder + 1 )) {
+                                                    programStageToSchedule = programStage;
+                                                }
+                                            }
+
+                                            if(programStageToSchedule != null ) {
+                                                List<Event> events = form.getEnrollment().getEvents();
+                                                List<Event> eventForStage = new ArrayList<>();
+                                                for(Event event : events) {
+                                                    if(programStageToSchedule.getUid().equals(event.getProgramStageId())) {
+                                                        eventForStage.add(event);
+                                                    }
+                                                }
+                                                if(eventForStage.size() < 1) {
+                                                    showDatePicker(programStageToSchedule); // datePicker will close this fragment when date is picked and new event is scheduled
+                                                }
+
+                                            }
+
+                                        }
+                                    }
+                                    Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
+                                }
+                            });
+                    }
+                });
             } else {
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
@@ -627,5 +673,62 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
     public void setProgramIndicatorsForDataElements(Map<String, List<ProgramIndicator>> programIndicatorsForDataElements) {
         this.programIndicatorsForDataElements = programIndicatorsForDataElements;
+    }
+    private void showDatePicker(final ProgramStage programStage) {
+
+//        final DateTime dueDate = new DateTime(1, 1, 1, 1, 0);
+        int minDaysFromStart = 0;
+
+        if(programStage.getMinDaysFromStart() > 0) {
+            minDaysFromStart = programStage.getMinDaysFromStart();
+        }
+
+        LocalDate currentDate = new LocalDate();
+
+
+        final DatePickerDialog enrollmentDatePickerDialog =
+                new DatePickerDialog(getActivity(),
+                        null, currentDate.getYear(),
+                        currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth() + minDaysFromStart);
+        enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " scheduled date for " + programStage.getDisplayName());
+        enrollmentDatePickerDialog.setCanceledOnTouchOutside(true);
+
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DatePicker dp = enrollmentDatePickerDialog.getDatePicker();
+                        scheduledDueDate = new DateTime(dp.getYear(), dp.getMonth() +1, dp.getDayOfMonth(), 0, 0);
+                        scheduleNewEvent(programStage, scheduledDueDate);
+                        goBackToPreviousFragment();
+                    }
+                });
+        enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        enrollmentDatePickerDialog.show();
+
+
+
+    }
+
+    private void goBackToPreviousFragment() {
+        getFragmentManager().popBackStack();
+    }
+
+    public void scheduleNewEvent(ProgramStage programStage, DateTime scheduledDueDate) {
+        Event event = new Event(form.getEnrollment().getOrgUnit(), Event.STATUS_FUTURE_VISIT,
+                form.getEnrollment().getProgram().getUid(),programStage,
+                form.getEnrollment().getTrackedEntityInstance(),
+                form.getEnrollment().getEnrollment(), scheduledDueDate.toString());
+        event.save();
+        List<Event> eventsForEnrollment = form.getEnrollment().getEvents();
+        eventsForEnrollment.add(event);
+        form.getEnrollment().setEvents(eventsForEnrollment);
+        form.getEnrollment().save();
     }
 }

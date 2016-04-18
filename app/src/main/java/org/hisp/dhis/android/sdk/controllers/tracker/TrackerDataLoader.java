@@ -290,6 +290,12 @@ final class TrackerDataLoader extends ResourceController {
         if(enrollment == null) {
             return;
         }
+
+        if(enrollment.getProgram() == null) {
+            Log.d(CLASS_TAG, "Enrollment:" + enrollment.getUid());
+            return;
+        }
+
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
         DateTime serverDateTime = dhisApi.getSystemInfo()

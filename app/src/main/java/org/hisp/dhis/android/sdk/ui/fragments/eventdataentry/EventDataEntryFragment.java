@@ -56,6 +56,7 @@ import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
+import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
@@ -577,7 +578,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                                     if(currentProgramStage.getAllowGenerateNextVisit()) {
                                         if(currentProgramStage.getRepeatable()) {
-                                            showDatePicker(currentProgramStage); // datePicker will close this fragment when date is picked and new event is scheduled
+                                            DateTime scheduleTime = calculateScheduledDate(currentProgramStage, form.getEnrollment());
+                                            showDatePicker(currentProgramStage, scheduleTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                         }
                                         else {
                                             int sortOrder = currentProgramStage.getSortOrder();
@@ -598,7 +600,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                                     }
                                                 }
                                                 if(eventForStage.size() < 1) {
-                                                    showDatePicker(programStageToSchedule); // datePicker will close this fragment when date is picked and new event is scheduled
+                                                    DateTime dateTime = calculateScheduledDate(programStageToSchedule, form.getEnrollment());
+                                                    showDatePicker(programStageToSchedule, dateTime); // datePicker will close this fragment when date is picked and new event is scheduled
                                                 }
 
                                             }
@@ -674,22 +677,22 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     public void setProgramIndicatorsForDataElements(Map<String, List<ProgramIndicator>> programIndicatorsForDataElements) {
         this.programIndicatorsForDataElements = programIndicatorsForDataElements;
     }
-    private void showDatePicker(final ProgramStage programStage) {
+    private void showDatePicker(final ProgramStage programStage, DateTime scheduledDueDate) {
 
 //        final DateTime dueDate = new DateTime(1, 1, 1, 1, 0);
-        int minDaysFromStart = 0;
+        int standardInterval = 0;
 
-        if(programStage.getMinDaysFromStart() > 0) {
-            minDaysFromStart = programStage.getMinDaysFromStart();
+        if(programStage.getStandardInterval() > 0) {
+            standardInterval = programStage.getStandardInterval();
         }
 
-        LocalDate currentDate = new LocalDate();
+//        LocalDate currentDate = new LocalDate();
 
 
         final DatePickerDialog enrollmentDatePickerDialog =
                 new DatePickerDialog(getActivity(),
-                        null, currentDate.getYear(),
-                        currentDate.getMonthOfYear() - 1, currentDate.getDayOfMonth() + minDaysFromStart);
+                        null, scheduledDueDate.getYear(),
+                        scheduledDueDate.getMonthOfYear() - 1, scheduledDueDate.getDayOfMonth() + standardInterval);
         enrollmentDatePickerDialog.setTitle(getActivity().getString(R.string.please_enter) + " scheduled date for " + programStage.getDisplayName());
         enrollmentDatePickerDialog.setCanceledOnTouchOutside(true);
 
@@ -698,8 +701,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         DatePicker dp = enrollmentDatePickerDialog.getDatePicker();
-                        scheduledDueDate = new DateTime(dp.getYear(), dp.getMonth() +1, dp.getDayOfMonth(), 0, 0);
-                        scheduleNewEvent(programStage, scheduledDueDate);
+                        DateTime pickedDueDate = new DateTime(dp.getYear(), dp.getMonth() +1, dp.getDayOfMonth(), 0, 0);
+                        scheduleNewEvent(programStage, pickedDueDate);
                         goBackToPreviousFragment();
                     }
                 });
@@ -715,7 +718,30 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
 
     }
+    private DateTime calculateScheduledDate(ProgramStage programStage, Enrollment enrollment) {
+        DateTime scheduledDate = new DateTime();
 
+        if(programStage.getPeriodType() == null ||
+                programStage.getPeriodType().equals("")) {
+            for (Event event : enrollment.getEvents()) {
+                if (event.getProgramStageId().equals(programStage.getUid())) {
+                    return new DateTime(event.getEventDate());
+                }
+            }
+
+
+            if (programStage.getProgram().getDisplayIncidentDate()) {
+                return new DateTime(enrollment.getIncidentDate());
+            } else if (programStage.getGeneratedByEnrollmentDate()) {
+                return new DateTime(enrollment.getEnrollmentDate());
+            }
+        }
+        else {
+            //// TODO: 18.04.16  implement periods
+        }
+
+        return scheduledDate;
+    }
     private void goBackToPreviousFragment() {
         getFragmentManager().popBackStack();
     }

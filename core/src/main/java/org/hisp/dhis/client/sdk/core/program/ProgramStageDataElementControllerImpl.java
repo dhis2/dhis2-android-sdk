@@ -88,11 +88,11 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(ResourceType
-                .PROGRAM_STAGE_DATA_ELEMENTS, DateType.SERVER);
+        DateTime lastUpdated = lastUpdatedPreferences.get(
+                ResourceType.PROGRAM_STAGE_DATA_ELEMENTS,
+                DateType.SERVER);
 
-        List<ProgramStageDataElement> programStageDataElements =
-                identifiableObjectStore.queryAll();
+        List<ProgramStageDataElement> programStageDataElements = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
@@ -103,8 +103,7 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
         if (uids != null) {
             // here we want to get list of ids of program stage data elements which are
             // stored locally and list of program stage data elements which we want to download
-            uidSet = ModelUtils
-                    .toUidSet(programStageDataElements);
+            uidSet = ModelUtils.toUidSet(programStageDataElements);
             uidSet.addAll(uids);
         }
 
@@ -126,12 +125,15 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
                 allExistingStageDataElements, updatedStageDataElements, programStageDataElements);
         for (ProgramStageDataElement programStageDataElement : mergedProgramStageDataElements) {
             if (programStageDataElement.getProgramStageSection() != null) {
-                programStageSectionUids.add(programStageDataElement
-                        .getProgramStageSection().getUId());
+                programStageSectionUids.add(
+                        programStageDataElement.getProgramStageSection().getUId());
             }
 
-            programStageUids.add(programStageDataElement.getProgramStage().getUId());
-            dataElementUids.add(programStageDataElement.getDataElement().getUId());
+            if (programStageDataElement.getProgramStage() != null &&
+                    programStageDataElement.getDataElement() != null) {
+                programStageUids.add(programStageDataElement.getProgramStage().getUId());
+                dataElementUids.add(programStageDataElement.getDataElement().getUId());
+            }
         }
 
         stageController.pull(strategy, programStageUids);

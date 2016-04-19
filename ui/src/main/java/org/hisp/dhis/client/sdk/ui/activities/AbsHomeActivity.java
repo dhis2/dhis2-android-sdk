@@ -49,6 +49,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.SettingPreferences;
 import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
@@ -86,6 +87,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SettingPreferences.init(getApplicationContext());
         setContentView(R.layout.activity_home);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -269,7 +271,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     protected void setSynchronizedMessage(@NonNull CharSequence message) {
         String formattedMessage = String.format(getString(
-                R.string.drawer_item_synchronized), message);
+        R.string.drawer_item_synchronized), message);
         navigationView.getMenu().findItem(R.id.drawer_item_synchronized)
                 .setTitle(formattedMessage);
     }

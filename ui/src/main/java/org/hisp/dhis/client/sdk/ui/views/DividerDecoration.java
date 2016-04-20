@@ -55,16 +55,18 @@ public class DividerDecoration extends RecyclerView.ItemDecoration {
      * Draw dividers underneath each child view
      */
     public void drawVertical(Canvas canvas, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
+        int left = parent.getPaddingLeft();
+        int right = parent.getWidth() - parent.getPaddingRight();
 
-        final int childCount = parent.getChildCount();
+        int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            final View child = parent.getChildAt(i);
-            final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                    .getLayoutParams();
-            final int top = child.getBottom() + params.bottomMargin;
-            final int bottom = top + mDivider.getIntrinsicHeight();
+            View child = parent.getChildAt(i);
+            RecyclerView.LayoutParams params =
+                    (RecyclerView.LayoutParams) child.getLayoutParams();
+
+            int top = child.getBottom() + params.bottomMargin;
+            int bottom = top + mDivider.getIntrinsicHeight();
+
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(canvas);
         }

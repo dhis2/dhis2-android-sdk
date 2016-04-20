@@ -45,5 +45,5 @@
         android:adjustViewBounds="true"
         android:background="@drawable/button_background_light"
         android:contentDescription="@string/stub_description"
-        android:src="@drawable/ic_cancel"/>
+        android:src="@drawable/ic_cancel_grey"/>
 </LinearLayout>

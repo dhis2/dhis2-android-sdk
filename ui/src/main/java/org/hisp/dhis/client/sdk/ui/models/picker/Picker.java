@@ -28,44 +28,58 @@
 
 package org.hisp.dhis.client.sdk.ui.models.picker;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class Picker {
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
+public class Picker implements Parcelable {
+    // hint which describes the content of picker
+    private final String hint;
+
+    // if picker represents item
     private final String id;
     private final String name;
-    private final String label;
-    private final List<Picker> items;
-    private Picker descendant;
 
-    public Picker(String id, String name, String label, List<Picker> items) {
+    // parent node
+    private final Picker parent;
+
+    // available options (child nodes in tree)
+    private final List<Picker> children;
+
+    // selected item (represents path to selected node)
+    private Picker selectedChild;
+
+    private Picker(String id, String name, String hint, Picker parent) {
         this.id = id;
         this.name = name;
-        this.label = label;
-        this.items = items;
+        this.hint = hint;
+        this.parent = parent;
+        this.children = new ArrayList<>();
     }
 
-    public Picker(String id, String name) {
-        this(id, name, null, null);
+    public static Picker create(String label) {
+        return new Picker(null, null, label, null);
     }
 
-    public Picker(String label, List<Picker> items) {
-        this(null, null, label, items);
+    public static Picker create(String id, String name, Picker parent) {
+        return new Picker(id, name, null, parent);
     }
 
-    public String getLabel() {
-        return label;
+    public static Picker create(String label, Picker parent) {
+        return new Picker(null, null, label, parent);
     }
 
-    public List<Picker> getItems() {
-        return items;
+    public static Picker create(String id, String name, String label, Picker parent) {
+        return new Picker(id, name, label, parent);
     }
 
-    public void setDescendant(Picker descendant) {
-        this.descendant = descendant;
-    }
-
-    public Picker getDescendant() {
-        return descendant;
+    public String getHint() {
+        return hint;
     }
 
     public String getId() {
@@ -76,15 +90,35 @@ public class Picker {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return "Picker{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", label='" + label + '\'' +
-                ", items=" + items +
-                ", descendant=" + descendant +
-                '}';
+    public Picker getParent() {
+        return parent;
+    }
+
+    public boolean addItem(Picker picker) {
+        isNull(picker, "Picker must not be null");
+        return children.add(picker);
+    }
+
+    public boolean addItems(Collection<Picker> pickers) {
+        isNull(pickers, "Collection of pickers must not be null");
+        return children.addAll(pickers);
+    }
+
+    public List<Picker> getItems() {
+        return children;
+    }
+
+    public Picker getSelectedItem() {
+        return selectedChild;
+    }
+
+    public void setSelectedChild(Picker selectedChild) {
+        // if we set new selected child, we have to reset all descendants
+        if (this.selectedChild != null) {
+            this.selectedChild.setSelectedChild(null);
+        }
+
+        this.selectedChild = selectedChild;
     }
 
     @Override
@@ -92,31 +126,77 @@ public class Picker {
         if (this == o) {
             return true;
         }
-
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         Picker picker = (Picker) o;
-
-        if (label != null ? !label.equals(picker.label) : picker.label != null) {
+        if (hint != null ? !hint.equals(picker.hint) : picker.hint != null) {
+            return false;
+        }
+        if (id != null ? !id.equals(picker.id) : picker.id != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(picker.name) : picker.name != null) {
             return false;
         }
 
-        if (items != null ? !items.equals(picker.items) : picker.items != null) {
-            return false;
-        }
-
-        return descendant != null ? descendant.equals(picker.descendant) :
-                picker.descendant == null;
+        return parent != null ? parent.equals(picker.parent) : picker.parent == null;
 
     }
 
     @Override
+    public String toString() {
+        return "Picker{" +
+                "hint='" + hint + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", parent=" + parent +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
-        int result = label != null ? label.hashCode() : 0;
-        result = 31 * result + (items != null ? items.hashCode() : 0);
-        result = 31 * result + (descendant != null ? descendant.hashCode() : 0);
+        int result = hint != null ? hint.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.hint);
+        dest.writeString(this.id);
+        dest.writeString(this.name);
+        dest.writeParcelable(this.parent, flags);
+        dest.writeTypedList(children);
+        dest.writeParcelable(this.selectedChild, flags);
+    }
+
+    protected Picker(Parcel in) {
+        this.hint = in.readString();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.parent = in.readParcelable(Picker.class.getClassLoader());
+        this.children = in.createTypedArrayList(Picker.CREATOR);
+        this.selectedChild = in.readParcelable(Picker.class.getClassLoader());
+    }
+
+    public static final Creator<Picker> CREATOR = new Creator<Picker>() {
+        @Override
+        public Picker createFromParcel(Parcel source) {
+            return new Picker(source);
+        }
+
+        @Override
+        public Picker[] newArray(int size) {
+            return new Picker[size];
+        }
+    };
 }

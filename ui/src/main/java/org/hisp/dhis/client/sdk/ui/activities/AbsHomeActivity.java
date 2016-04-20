@@ -55,7 +55,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
+// TODO add support for custom applications in navigation drawer
 public abstract class AbsHomeActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
 

@@ -35,6 +35,7 @@ import com.squareup.okhttp.HttpUrl;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.SessionManager;
 import org.hisp.dhis.android.sdk.network.APIException;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
 import org.hisp.dhis.android.sdk.network.Credentials;
 import org.hisp.dhis.android.sdk.network.Session;
@@ -59,7 +60,7 @@ final class UserController {
         QUERY_PARAMS.put("fields", "id,created,lastUpdated,name,displayName," +
                 "firstName,surname,gender,birthday,introduction," +
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
-                "organisationUnits[id]");
+                "teiSearchOrganisationUnits[id],organisationUnits[id]");
         UserAccount userAccount = dhisApi
                 .getCurrentUserAccount(QUERY_PARAMS);
 

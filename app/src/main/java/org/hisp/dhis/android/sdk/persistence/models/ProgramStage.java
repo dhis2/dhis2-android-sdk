@@ -116,6 +116,10 @@ public class ProgramStage extends BaseMetaDataObject {
     @Column(name = "allowGenerateNextVisit")
     boolean allowGenerateNextVisit;
 
+    @JsonProperty("standardInterval")
+    @Column(name = "standardInterval")
+    int standardInterval;
+
     @JsonProperty("repeatable")
     @Column(name = "repeatable")
     boolean repeatable;
@@ -123,6 +127,10 @@ public class ProgramStage extends BaseMetaDataObject {
     @JsonProperty("minDaysFromStart")
     @Column(name = "minDaysFromStart")
     int minDaysFromStart;
+
+    @JsonProperty("periodType")
+    @Column(name = "periodType")
+    String periodType;
 
     @JsonProperty("programStageDataElements")
     List<ProgramStageDataElement> programStageDataElements;
@@ -336,5 +344,21 @@ public class ProgramStage extends BaseMetaDataObject {
 
     public void setHideDueDate(boolean hideDueDate) {
         this.hideDueDate = hideDueDate;
+    }
+
+    public int getStandardInterval() {
+        return standardInterval;
+    }
+
+    public void setStandardInterval(int standardInterval) {
+        this.standardInterval = standardInterval;
+    }
+
+    public String getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(String periodType) {
+        this.periodType = periodType;
     }
 }

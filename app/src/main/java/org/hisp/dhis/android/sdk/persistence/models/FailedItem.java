@@ -65,7 +65,8 @@ public class FailedItem extends BaseModel {
     private int httpStatusCode; // 401, 500 .. etc
     @Column
     private String errorMessage; // the web api sometimes crashes with status 500, so for example the stack trace could be here.
-
+    @Column
+    private int failCount;
     /**
      * Returns the item for the given FailedItem. Can be cast to either of the model types
      *
@@ -121,5 +122,13 @@ public class FailedItem extends BaseModel {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public int getFailCount() {
+        return failCount;
+    }
+
+    public void setFailCount(int failCount) {
+        this.failCount = failCount;
     }
 }

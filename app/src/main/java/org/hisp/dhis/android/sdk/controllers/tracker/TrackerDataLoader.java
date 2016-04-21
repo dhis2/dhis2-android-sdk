@@ -114,7 +114,7 @@ final class TrackerDataLoader extends ResourceController {
                     if (program.getUid() == null || program.getUid().length() == Utils.randomUUID.length())
                         continue;
 
-                    if (shouldLoad(dhisApi, ResourceType.EVENTS, organisationUnit.getId() + program.getUid())) {
+                    if (shouldLoad(serverDateTime, ResourceType.EVENTS, organisationUnit.getId() + program.getUid())) {
                         UiUtils.postProgressMessage(context.getString(R.string.loading_events) + ": "
                                 + organisationUnit.getLabel() + ": " + program.getName());
                         try {
@@ -290,6 +290,12 @@ final class TrackerDataLoader extends ResourceController {
         if(enrollment == null) {
             return;
         }
+
+        if(enrollment.getProgram() == null) {
+            Log.d(CLASS_TAG, "Enrollment:" + enrollment.getUid());
+            return;
+        }
+
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.EVENTS, enrollment.getEnrollment());
         DateTime serverDateTime = dhisApi.getSystemInfo()

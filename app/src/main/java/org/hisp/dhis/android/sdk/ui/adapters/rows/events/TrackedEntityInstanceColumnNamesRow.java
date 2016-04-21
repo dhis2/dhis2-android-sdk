@@ -46,6 +46,7 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
     private String mSecondItem;
     private String mThirdItem;
     private String mTitle;
+    private String mTrackedEntity;
     private View view;
 
     @Override
@@ -111,8 +112,32 @@ public class TrackedEntityInstanceColumnNamesRow implements EventRow
         this.mThirdItem = mThirdItem;
     }
 
-    public void setmTitle(String mTitle) {
+    public void setTitle(String mTitle) {
         this.mTitle = mTitle;
+    }
+
+    public String getmFirstItem() {
+        return mFirstItem;
+    }
+
+    public String getmSecondItem() {
+        return mSecondItem;
+    }
+
+    public String getmTitle() {
+        return mTitle;
+    }
+
+    public String getmThirdItem() {
+        return mThirdItem;
+    }
+
+    public String getTrackedEntity() {
+        return mTrackedEntity;
+    }
+
+    public void setTrackedEntity(String mTrackedEntity) {
+        this.mTrackedEntity = mTrackedEntity;
     }
 
     public View getView() {

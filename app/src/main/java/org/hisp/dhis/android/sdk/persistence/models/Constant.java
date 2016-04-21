@@ -29,6 +29,7 @@
 
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -38,6 +39,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 /**
  * @author Simen Skogly Russnes on 30.03.15.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(databaseName = Dhis2Database.NAME)
 public class Constant extends BaseMetaDataObject {
 
@@ -45,7 +47,7 @@ public class Constant extends BaseMetaDataObject {
     @Column(name = "value")
     double value;
 
-    @JsonProperty("publicAccess")
+    @JsonProperty("externalAccess")
     @Column(name = "externalAccess")
     boolean externalAccess;
 

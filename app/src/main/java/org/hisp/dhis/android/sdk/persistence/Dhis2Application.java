@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.persistence;
 import android.app.Activity;
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
@@ -57,6 +58,7 @@ public abstract class Dhis2Application extends Application {
         FlowManager.init(this);
         dhisController = new DhisController(this);
         bus.register(dhisController);
+        Stetho.initializeWithDefaults(this);
     }
 
     @Override

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.sdk.controllers;
 
 import android.content.Context;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.squareup.okhttp.HttpUrl;

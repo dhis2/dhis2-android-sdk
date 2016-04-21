@@ -53,8 +53,8 @@ public class OrganisationUnit extends BaseModel {
     @PrimaryKey
     String id;
 
-    @JsonProperty("label")
-    @Column(name = "label")
+    @JsonProperty("displayName")
+    @Column(name = "displayName")
     String label;
 
     @JsonProperty("level")
@@ -65,7 +65,8 @@ public class OrganisationUnit extends BaseModel {
     @Column(name = "parent")
     String parent;
 
-    List<String> programs;
+    @JsonProperty("programs")
+    List<Program> programs;
 
     public OrganisationUnit() {
     }
@@ -107,16 +108,12 @@ public class OrganisationUnit extends BaseModel {
         this.level = level;
     }
 
-    public List<String> getPrograms() {
+    public List<Program> getPrograms() {
         return programs;
     }
 
-    @JsonProperty("programs")
-    public void setPrograms(List<Map<String, Object>> programs) {
-        List<String> tempPrograms = new ArrayList<>();
-        for (Map<String, Object> program : programs) {
-            tempPrograms.add((String) program.get("id"));
-        }
-        this.programs = tempPrograms;
+    public void setPrograms(List<Program> programs) {
+        this.programs = programs;
     }
+
 }

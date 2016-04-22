@@ -28,16 +28,15 @@
 
 package org.hisp.dhis.client.sdk.ui.models.picker;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class Picker implements Parcelable {
+public class Picker implements Serializable {
+    // implements Parcelable {
     // hint which describes the content of picker
     private final String hint;
 
@@ -94,21 +93,21 @@ public class Picker implements Parcelable {
         return parent;
     }
 
-    public boolean addItem(Picker picker) {
+    public boolean addChild(Picker picker) {
         isNull(picker, "Picker must not be null");
         return children.add(picker);
     }
 
-    public boolean addItems(Collection<Picker> pickers) {
+    public boolean addChildren(Collection<Picker> pickers) {
         isNull(pickers, "Collection of pickers must not be null");
         return children.addAll(pickers);
     }
 
-    public List<Picker> getItems() {
+    public List<Picker> getChildren() {
         return children;
     }
 
-    public Picker getSelectedItem() {
+    public Picker getSelectedChild() {
         return selectedChild;
     }
 
@@ -137,22 +136,9 @@ public class Picker implements Parcelable {
         if (id != null ? !id.equals(picker.id) : picker.id != null) {
             return false;
         }
-        if (name != null ? !name.equals(picker.name) : picker.name != null) {
-            return false;
-        }
 
-        return parent != null ? parent.equals(picker.parent) : picker.parent == null;
+        return name != null ? name.equals(picker.name) : picker.name == null;
 
-    }
-
-    @Override
-    public String toString() {
-        return "Picker{" +
-                "hint='" + hint + '\'' +
-                ", id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", parent=" + parent +
-                '}';
     }
 
     @Override
@@ -160,43 +146,6 @@ public class Picker implements Parcelable {
         int result = hint != null ? hint.hashCode() : 0;
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (parent != null ? parent.hashCode() : 0);
         return result;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.hint);
-        dest.writeString(this.id);
-        dest.writeString(this.name);
-        dest.writeParcelable(this.parent, flags);
-        dest.writeTypedList(children);
-        dest.writeParcelable(this.selectedChild, flags);
-    }
-
-    protected Picker(Parcel in) {
-        this.hint = in.readString();
-        this.id = in.readString();
-        this.name = in.readString();
-        this.parent = in.readParcelable(Picker.class.getClassLoader());
-        this.children = in.createTypedArrayList(Picker.CREATOR);
-        this.selectedChild = in.readParcelable(Picker.class.getClassLoader());
-    }
-
-    public static final Creator<Picker> CREATOR = new Creator<Picker>() {
-        @Override
-        public Picker createFromParcel(Parcel source) {
-            return new Picker(source);
-        }
-
-        @Override
-        public Picker[] newArray(int size) {
-            return new Picker[size];
-        }
-    };
 }

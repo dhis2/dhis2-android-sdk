@@ -86,6 +86,7 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 // TODO D2 fails on 500 errors (because of
 // TODO response conversion in NetworkModule)
+// TODO consider handling 403 errors in more general way
 public class D2 {
     private static D2 d2;
 

@@ -26,4 +26,4 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':models', ':ui', ':core', ':persistence', ':network', ':core-java', ':core-android'
+include ':app'

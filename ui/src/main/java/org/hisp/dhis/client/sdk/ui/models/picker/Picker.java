@@ -28,22 +28,124 @@
 
 package org.hisp.dhis.client.sdk.ui.models.picker;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class Picker {
-    private final String label;
-    private final List<PickerItem> items;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-    private Picker(String label, List<PickerItem> items) {
-        this.label = label;
-        this.items = items;
+public class Picker implements Serializable {
+    // implements Parcelable {
+    // hint which describes the content of picker
+    private final String hint;
+
+    // if picker represents item
+    private final String id;
+    private final String name;
+
+    // parent node
+    private final Picker parent;
+
+    // available options (child nodes in tree)
+    private final List<Picker> children;
+
+    // selected item (represents path to selected node)
+    private Picker selectedChild;
+
+    private Picker(String id, String name, String hint, Picker parent) {
+        this.id = id;
+        this.name = name;
+        this.hint = hint;
+        this.parent = parent;
+        this.children = new ArrayList<>();
     }
 
-    public String getLabel() {
-        return label;
+    public static Picker create(String label) {
+        return new Picker(null, null, label, null);
     }
 
-    public List<PickerItem> getItems() {
-        return items;
+    public static Picker create(String id, String name, Picker parent) {
+        return new Picker(id, name, null, parent);
+    }
+
+    public static Picker create(String label, Picker parent) {
+        return new Picker(null, null, label, parent);
+    }
+
+    public static Picker create(String id, String name, String label, Picker parent) {
+        return new Picker(id, name, label, parent);
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Picker getParent() {
+        return parent;
+    }
+
+    public boolean addChild(Picker picker) {
+        isNull(picker, "Picker must not be null");
+        return children.add(picker);
+    }
+
+    public boolean addChildren(Collection<Picker> pickers) {
+        isNull(pickers, "Collection of pickers must not be null");
+        return children.addAll(pickers);
+    }
+
+    public List<Picker> getChildren() {
+        return children;
+    }
+
+    public Picker getSelectedChild() {
+        return selectedChild;
+    }
+
+    public void setSelectedChild(Picker selectedChild) {
+        // if we set new selected child, we have to reset all descendants
+        if (this.selectedChild != null) {
+            this.selectedChild.setSelectedChild(null);
+        }
+
+        this.selectedChild = selectedChild;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Picker picker = (Picker) o;
+        if (hint != null ? !hint.equals(picker.hint) : picker.hint != null) {
+            return false;
+        }
+        if (id != null ? !id.equals(picker.id) : picker.id != null) {
+            return false;
+        }
+
+        return name != null ? name.equals(picker.name) : picker.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = hint != null ? hint.hashCode() : 0;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

@@ -28,30 +28,12 @@
 
 package org.hisp.dhis.client.sdk.android.api.persistence;
 
-import com.raizlabs.android.dbflow.DatabaseHelperListener;
 import com.raizlabs.android.dbflow.annotation.Database;
-import com.raizlabs.android.dbflow.config.BaseDatabaseDefinition;
-import com.raizlabs.dbflow.android.sqlcipher.SQLCipherOpenHelper;
 
 @Database(
-        name = DbDhis.NAME, version = DbDhis.VERSION,
-        sqlHelperClass = DbDhisCipher.class
+        name = DbDhis.NAME, version = DbDhis.VERSION
 )
 public final class DbDhis {
     public static final String NAME = "dhis";
     public static final int VERSION = 3;
-
-    static class DbDhisCipher extends SQLCipherOpenHelper {
-
-        public DbDhisCipher(BaseDatabaseDefinition databaseDefinition,
-                            DatabaseHelperListener listener) {
-            super(databaseDefinition, listener);
-        }
-
-        // TODO replace with proper cipher secret
-        @Override
-        protected String getCipherSecret() {
-            return "dbflow-rules";
-        }
-    }
 }

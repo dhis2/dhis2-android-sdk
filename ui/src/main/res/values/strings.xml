@@ -62,6 +62,10 @@
         Allows to sync application data in background
     </string>
 
+    <string name="filter_options">Filter available options</string>
+
+    <string name="sync">Sync</string>
+
     <string name="synchronization_period_key">synchronizationPeriod</string>
     <string name="synchronization_period_name">Synchronization period</string>
     <string name="synchronization_period_description">Frequency of background syncing</string>

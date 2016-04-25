@@ -38,7 +38,7 @@
     <string name="title_activity_splash">DHIS2 Tracker</string>
     <string name="title_activity_pin">Pin Code Lock</string>
     <string name="organisation_unit">Organisation Unit</string>
-    <string name="program">Program</string>
+    <string name="programId">Program</string>
     <string name="register">Register</string>
     <string name="enrollment">Enrollment</string>
     <string name="eventDate">Event date</string>
@@ -136,14 +136,14 @@
     <string name="finishing_up">Finishing initial database setup. This may take several minutes so please be patient.</string>
     <string name="loading_server_info">Loading server info</string>
     <string name="loading_assigned_programs">Loading assigned programs</string>
-    <string name="loading_program">Loading program</string>
+    <string name="loading_program">Loading programId</string>
     <string name="loading_optionsets">Loading option sets</string>
     <string name="loading_trackedentityattributes">Loading Tracked Entity Attributes</string>
     <string name="updating_constants">Updating constants</string>
     <string name="loading_constants">Loading constants</string>
-    <string name="loading_programrules">Loading program rules</string>
-    <string name="loading_programrulevariables">Loading program rule variables</string>
-    <string name="loading_programruleactions">Loading program rule actions</string>
+    <string name="loading_programrules">Loading programId rules</string>
+    <string name="loading_programrulevariables">Loading programId rule variables</string>
+    <string name="loading_programruleactions">Loading programId rule actions</string>
     <string name="loading_tracked_entity_instances">Loading tracked entity instances</string>
     <string name="loading_relationshiptypes">Loading tracked entity instances</string>
     <string name="incomplete">Incomplete</string>
@@ -190,7 +190,7 @@
     <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>
     <string name="report_date">Report date</string>
     <string name="choose_organisation_unit">Choose organisation unit</string>
-    <string name="choose_program">Choose program</string>
+    <string name="choose_program">Choose programId</string>
     <string name="duedate">Due date</string>
     <string name="eventname">Event name</string>
     <string name="startdate">Start date</string>

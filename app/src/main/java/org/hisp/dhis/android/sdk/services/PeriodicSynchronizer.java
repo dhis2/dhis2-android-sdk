@@ -96,10 +96,10 @@ public class PeriodicSynchronizer extends BroadcastReceiver {
 	 * @param context
 	 */
 	public static void cancelPeriodicSynchronizer(Context context) {
-		Log.d(CLASS_TAG, "cancel periodic synchronizer");
-		Intent intent = new Intent(context, PeriodicSynchronizer.class);
-		PendingIntent sender = PendingIntent
-				.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
+        Log.d(CLASS_TAG, "cancel periodic synchronizer");
+        Intent intent = new Intent(context, PeriodicSynchronizer.class);
+        PendingIntent sender = PendingIntent
+                .getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
         if(sender!=null) {
             AlarmManager alarmManager = (AlarmManager) context
                     .getSystemService(Context.ALARM_SERVICE);

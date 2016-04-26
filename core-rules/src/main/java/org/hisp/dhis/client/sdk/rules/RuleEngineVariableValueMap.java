@@ -51,8 +51,6 @@ public class RuleEngineVariableValueMap {
 
     public RuleEngineVariableValueMap(List<ProgramRuleVariable> variables, Event currentEvent, List<Event> allEvents) {
 
-
-
         Collections.sort(allEvents, new Comparator<Event>() {
             public int compare(Event e1, Event e2) {
                 return e1.getEventDate().compareTo(e2.getEventDate());
@@ -110,6 +108,30 @@ public class RuleEngineVariableValueMap {
                         TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
                         addProgramRuleVariableValueToMap(variable, dataValue, valueList);
                         valueFound = true;
+                    }
+                } else if (variable.getSourceType() ==
+                        ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE) {
+                    if (variable.getProgramStage() != null &&
+                            allEventsTrackedEntityDataValueMap.containsKey(
+                                    variable.getDataElement().getUId())) {
+                        List<TrackedEntityDataValue> valueList =
+                                allEventsTrackedEntityDataValueMap.get(
+                                        variable.getDataElement().getUId());
+                        TrackedEntityDataValue bestCandidate = null;
+
+                        for( TrackedEntityDataValue candidate : valueList ) {
+                            if(candidate.getEvent().getProgramStageId() ==
+                                    variable.getProgramStage().getUId()) {
+                                //The candidate matches the program stage, and will be newer than
+                                // the potential previous candidate:
+                                bestCandidate = candidate;
+                            }
+                        }
+
+                        if(bestCandidate != null) {
+                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
+                            valueFound = true;
+                        }
                     }
                 } else if(variable.getSourceType() ==
                         ProgramRuleVariableSourceType.DATAELEMENT_PREVIOUS_EVENT) {

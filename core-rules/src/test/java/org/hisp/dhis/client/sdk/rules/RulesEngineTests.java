@@ -44,6 +44,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -277,16 +278,20 @@ public class RulesEngineTests {
         currentEventProgramStage2.setEventDate(DateTime.now());
         currentEventProgramStage2.setProgramStageId(ps2.getUId());
 
+        Event veryOldEventProgramStage1 = new Event();
+        veryOldEventProgramStage1.setProgramStageId(ps1.getUId());
+        veryOldEventProgramStage1.setEventDate(DateTime.now().minusDays(365));
+        addDataValueToEvent(veryOldEventProgramStage1, d1, "false");
+
         ArrayList<Event> allEvents = new ArrayList<>();
         allEvents.add(eventProgramStage2);
         allEvents.add(currentEventProgramStage2);
+        allEvents.add(veryOldEventProgramStage1);
 
-
-
-        //Execute with two irrelevant events, as they have the wrong program stage
+        //Execute with two irrelevant events, as they have the wrong program stage, and one
+        //relevant event where thr value is false
         List<RuleEffect> effects = ruleEngine.execute(currentEventProgramStage2, allEvents);
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
-
 
         //Insert new event with program stage 1 and a true value
         Event oldEventProgramStage1 = new Event();

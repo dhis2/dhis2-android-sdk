@@ -51,7 +51,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
+import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import fr.castorflex.android.circularprogressbar.CircularProgressBar;
 import fr.castorflex.android.circularprogressbar.CircularProgressDrawable;

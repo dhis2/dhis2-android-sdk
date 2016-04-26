@@ -35,6 +35,9 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
+/**
+ * This class represents the node in tree data structure.
+ */
 public class Picker implements Serializable {
     // implements Parcelable {
     // hint which describes the content of picker

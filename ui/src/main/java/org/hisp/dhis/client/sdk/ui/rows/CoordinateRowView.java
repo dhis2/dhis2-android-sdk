@@ -43,7 +43,7 @@ import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntityCoordinate;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.views.callbacks.AbsTextWatcher;
+import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 

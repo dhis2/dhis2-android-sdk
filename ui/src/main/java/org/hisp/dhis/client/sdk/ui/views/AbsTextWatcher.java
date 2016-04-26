@@ -26,50 +26,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.views.chainablepickerview;
+package org.hisp.dhis.client.sdk.ui.views;
 
-import android.os.Parcel;
+import android.text.Editable;
+import android.text.TextWatcher;
 
-public class DefaultPickable implements Pickable {
+public abstract class AbsTextWatcher implements TextWatcher {
 
-    public static final Creator<DefaultPickable> CREATOR = new Creator<DefaultPickable>() {
-        @Override
-        public DefaultPickable createFromParcel(Parcel in) {
-            return new DefaultPickable(in);
-        }
-
-        @Override
-        public DefaultPickable[] newArray(int size) {
-            return new DefaultPickable[size];
-        }
-    };
-    String id;
-    String label;
-
-    public DefaultPickable(String label, String id) {
-        this.label = label;
-        this.id = id;
-    }
-
-    public DefaultPickable(Parcel in) {
-        String[] data = new String[2];
-        in.readStringArray(data);
-        this.id = data[0];
-        this.label = data[1];
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        // default implementation
     }
 
     @Override
-    public String toString() {
-        return label;
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        // default implementation
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{id, label});
+    public void afterTextChanged(Editable s) {
+        // default implementation
     }
 }

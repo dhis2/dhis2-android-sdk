@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.models.picker;
+package org.hisp.dhis.client.sdk.ui.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

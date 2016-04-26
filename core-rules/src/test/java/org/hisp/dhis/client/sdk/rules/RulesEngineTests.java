@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.joda.time.DateTime;
@@ -234,6 +235,82 @@ public class RulesEngineTests {
         addDataValueToEvent(middleEvent, d1, "false");
         allEvents.add(middleEvent);
         effects = ruleEngine.execute(currentEvent, allEvents);
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteRuleWithNewestEventProgramStageSourceType() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleBoolean1 is true";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1", "a1", "#{simpleBoolean1}", errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement 1", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ProgramStage ps1 = createProgramStage("Stage1");
+        ProgramStage ps2 = createProgramStage("Stage2");
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        ProgramRuleVariable ps1Variable =
+                createProgramRuleVariable(
+                        "simpleBoolean1",
+                        d1,
+                        ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE);
+        ps1Variable.setProgramStage(ps1);
+        variables.add(ps1Variable);
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event eventProgramStage2 = new Event();
+        eventProgramStage2.setEventDate(DateTime.now().minusDays(10));
+        eventProgramStage2.setProgramStageId(ps2.getUId());
+        addDataValueToEvent(eventProgramStage2, d1, "true");
+
+        Event currentEventProgramStage2 = new Event();
+        currentEventProgramStage2.setEventDate(DateTime.now());
+        currentEventProgramStage2.setProgramStageId(ps2.getUId());
+
+        ArrayList<Event> allEvents = new ArrayList<>();
+        allEvents.add(eventProgramStage2);
+        allEvents.add(currentEventProgramStage2);
+
+
+
+        //Execute with two irrelevant events, as they have the wrong program stage
+        List<RuleEffect> effects = ruleEngine.execute(currentEventProgramStage2, allEvents);
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+
+        //Insert new event with program stage 1 and a true value
+        Event oldEventProgramStage1 = new Event();
+        oldEventProgramStage1.setEventDate(DateTime.now().minusDays(15));
+        eventProgramStage2.setProgramStageId(ps1.getUId());
+        addDataValueToEvent(oldEventProgramStage1, d1, "true");
+
+        allEvents.add(oldEventProgramStage1);
+
+        //Execute with the new true value, making sure that the rule is now in effect
+        effects = ruleEngine.execute(currentEventProgramStage2, allEvents);
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+
+        //Add a new event of the relevant program stage 1, setting the value to false.
+        //the new event will also be the current value
+        Event newCurrent = new Event();
+        newCurrent.setEventDate(DateTime.now());
+        addDataValueToEvent(newCurrent, d1, "false");
+        newCurrent.setProgramStageId(ps1.getUId());
+        allEvents.add(newCurrent);
+
+        //Run the rule and make sure that the new current event overrides the previous true value
+        effects = ruleEngine.execute(newCurrent, allEvents);
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
     }
 

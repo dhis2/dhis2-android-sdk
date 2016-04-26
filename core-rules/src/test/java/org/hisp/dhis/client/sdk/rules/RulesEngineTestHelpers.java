@@ -99,6 +99,12 @@ public class RulesEngineTestHelpers {
         return dataElement;
     }
 
+    public static ProgramStage createProgramStage(String identifier) {
+        ProgramStage ps = new ProgramStage();
+        ps.setUId(identifier);
+        return ps;
+    }
+
     public static void assertErrorRuleInEffect(List<RuleEffect> allEffects,
                                                String errorMessage,
                                                DataElement dataElement,

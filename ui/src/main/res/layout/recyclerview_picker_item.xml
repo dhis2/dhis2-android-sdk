@@ -27,46 +27,14 @@
   ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:paddingLeft="@dimen/keyline_default"
-              android:weightSum="1">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.86"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
-
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.14"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="#eaeaeaff"/>
-
-        <!--android:background="@drawable/transparent_selector"-->
-        <ImageButton
-            android:id="@+id/clear_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/button_background_light"
-            android:contentDescription=""
-            android:src="@drawable/ic_cancel_grey"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+<org.hisp.dhis.client.sdk.ui.views.FontTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="@dimen/keyline_default"
+    android:textSize="@dimen/text_size_medium"
+    app:font="@string/font_name_regular" />

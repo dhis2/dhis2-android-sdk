@@ -79,6 +79,11 @@ public class RuleEngineVariableValueMap {
                             allEventsTrackedEntityDataValueMap.put(value.getDataElement(),
                                    new ArrayList<>());
                         }
+                        //Make sure the event is assigned, it is used later to check event date for
+                        //the data values
+                        if(value.getEvent() == null) {
+                            value.setEvent(e);
+                        }
                         allEventsTrackedEntityDataValueMap.get(value.getDataElement()).add(value);
                     }
                 }
@@ -105,6 +110,35 @@ public class RuleEngineVariableValueMap {
                         TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
                         addProgramRuleVariableValueToMap(variable, dataValue, valueList);
                         valueFound = true;
+                    }
+                } else if(variable.getSourceType() ==
+                        ProgramRuleVariableSourceType.DATAELEMENT_PREVIOUS_EVENT) {
+                    if (currentEvent != null &&
+                            allEventsTrackedEntityDataValueMap.containsKey(
+                            variable.getDataElement().getUId())) {
+                        List<TrackedEntityDataValue> valueList =
+                                allEventsTrackedEntityDataValueMap.get(
+                                        variable.getDataElement().getUId());
+                        TrackedEntityDataValue bestCandidate = null;
+
+                        for( TrackedEntityDataValue candidate : valueList ) {
+                            if(candidate.getEvent().getEventDate().compareTo(currentEvent.getEventDate()) >= 0) {
+                                //we have reached the current event time, stop iterating, keep the
+                                //previous candidate, if any
+                                break;
+                            }
+                            else
+                            {
+                                //we have not yet reached the current event, keep this candidate
+                                //as it is the newest one examined:
+                                bestCandidate = candidate;
+                            }
+                        }
+
+                        if(bestCandidate != null) {
+                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
+                            valueFound = true;
+                        }
                     }
                 } else {
                     throw new NotImplementedException();

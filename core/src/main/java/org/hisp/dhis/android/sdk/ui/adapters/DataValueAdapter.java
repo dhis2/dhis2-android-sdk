@@ -178,8 +178,10 @@ public final class DataValueAdapter extends AbsAdapter<Row> {
     }
 
     public void hideAll() {
-        for(String dataElement : dataElementsToRowIndexMap.keySet()) {
-            hideIndex(dataElement);
+        if(dataElementsToRowIndexMap != null) {
+            for (String dataElement : dataElementsToRowIndexMap.keySet()) {
+                hideIndex(dataElement);
+            }
         }
     }
 

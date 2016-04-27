@@ -34,8 +34,8 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         rowViews.add(Type.TEXT.ordinal(), new EditTextRowView());
         rowViews.add(Type.DATE.ordinal(), new DatePickerRowView());
         rowViews.add(Type.TRUE_ONLY.ordinal(), new CheckBoxRowView());
-        // rowViews.add(Type.AUTO_COMPLETE.ordinal(), new AutoCompleteRowView());
+
+        rowViews.add(Type.AUTO_COMPLETE.ordinal(), null);
+        // new AutoCompleteRowView());
+
         rowViews.add(Type.COORDINATES.ordinal(), new CoordinateRowView());
         rowViews.add(Type.BOOLEAN.ordinal(), new RadioButtonRowView());
         rowViews.add(Type.INTEGER.ordinal(), new EditTextRowView());

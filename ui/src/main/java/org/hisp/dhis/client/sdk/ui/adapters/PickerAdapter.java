@@ -40,6 +40,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment.OnPickerItemClickListener;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 
 import java.util.ArrayList;
@@ -56,6 +57,7 @@ public class PickerAdapter extends RecyclerView.Adapter {
     private final LayoutInflater layoutInflater;
     private final List<Picker> pickers;
 
+    private OnPickerListChangeListener onPickerListChangeListener;
     private Picker pickerTree;
 
     public PickerAdapter(FragmentManager fragmentManager, Context context) {
@@ -106,6 +108,10 @@ public class PickerAdapter extends RecyclerView.Adapter {
         }
     }
 
+    public void setOnPickerListChangeListener(OnPickerListChangeListener listener) {
+        this.onPickerListChangeListener = listener;
+    }
+
     public void swapData(Picker pickerTree) {
         this.pickerTree = pickerTree;
         this.pickers.clear();
@@ -122,6 +128,11 @@ public class PickerAdapter extends RecyclerView.Adapter {
             } while ((node = node.getSelectedChild()) != null);
         }
 
+        if (onPickerListChangeListener != null) {
+            // TODO potentially can be a problem (client apps can mutate pickers)
+            onPickerListChangeListener.onPickerListChanged(new ArrayList<>(pickers));
+        }
+
         notifyDataSetChanged();
     }
 
@@ -136,8 +147,11 @@ public class PickerAdapter extends RecyclerView.Adapter {
         return node;
     }
 
-    private class OnItemClickedListener implements
-            FilterableDialogFragment.OnPickerItemClickListener {
+    public interface OnPickerListChangeListener {
+        void onPickerListChanged(List<Picker> pickers);
+    }
+
+    private class OnItemClickedListener implements OnPickerItemClickListener {
 
         @Override
         public void onPickerItemClickListener(Picker selectedPicker) {

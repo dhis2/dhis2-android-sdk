@@ -68,8 +68,8 @@ public class EditTextRow extends Row {
                 !DataEntryRowTypes.INTEGER_POSITIVE.equals(rowType)) {
             throw new IllegalArgumentException("Unsupported row type");
         }
-
         checkNeedsForDescriptionButton();
+
     }
 
     @Override
@@ -151,6 +151,9 @@ public class EditTextRow extends Row {
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {

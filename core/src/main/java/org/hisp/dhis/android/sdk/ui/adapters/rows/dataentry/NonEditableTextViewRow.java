@@ -45,6 +45,7 @@ public abstract class NonEditableTextViewRow extends Row {
     public NonEditableTextViewRow(String value) {
         mValue = value;
         checkNeedsForDescriptionButton();
+
     }
 
     @Override
@@ -83,7 +84,12 @@ public abstract class NonEditableTextViewRow extends Row {
         holder.textValue.setText(mValue);
 
         if(isDetailedInfoButtonHidden())
+        {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+        }
 
         return view;
     }

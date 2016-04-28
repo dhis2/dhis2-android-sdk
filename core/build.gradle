@@ -102,5 +102,4 @@ dependencies {
     compile('commons-validator:commons-validator:1.4.0') {
         exclude module: 'commons-logging'
     }
-    compile 'com.google.guava:guava-collections:r03'
 }

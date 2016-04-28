@@ -59,6 +59,7 @@ public abstract class Dhis2Application extends Application {
         dhisController = new DhisController(this);
         bus.register(dhisController);
         Stetho.initializeWithDefaults(this);
+
     }
 
     @Override

@@ -42,8 +42,13 @@ public final class SettingPreferences {
     public static final String SYNCHRONIZATION_PERIOD = "synchronizationPeriod";
     public static final String CRASH_REPORTS = "crashReports";
     public static final String SYNC_DATE = "syncDate";
+    public static final String UPDATE_FREQUENCY = "update_frequency";
+    public static final String BACKGROUND_SYNC = "background_sync";
 
-    private static final String SYNCHRONIZATION_DEFAULT = "hoursTwentyFour";
+    //Default values:
+    public static final int DEFAULT_UPDATE_FREQUENCY = 1440; //one hour
+    public static final Boolean DEFAULT_BACKGROUND_SYNC = true;
+    public static final Boolean DEFAULT_CRASH_REPORTS = true;
 
     private static SettingPreferences settingPreferences;
     private SharedPreferences sharedPreferences;
@@ -62,19 +67,6 @@ public final class SettingPreferences {
         return settingPreferences;
     }
 
-    public static boolean backgroundSynchronization() {
-        return getInstance().sharedPreferences.getBoolean(BACKGROUND_SYNCHRONIZATION, false);
-    }
-
-    public static String synchronizationPeriod() {
-        return getInstance().sharedPreferences.getString(SYNCHRONIZATION_PERIOD,
-                SYNCHRONIZATION_DEFAULT);
-    }
-
-    public static boolean crashReports() {
-        return getInstance().sharedPreferences.getBoolean(CRASH_REPORTS, true);
-    }
-
     @Nullable
     public static long getLastSynced() {
         return getInstance().sharedPreferences.getLong(SYNC_DATE, 0l);
@@ -84,4 +76,33 @@ public final class SettingPreferences {
         getInstance().sharedPreferences.edit().putLong(SYNC_DATE, date).commit();
     }
 
+    public static void setBackgroundSyncFrequency(int frequency) {
+        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
+        editor.putInt(UPDATE_FREQUENCY, frequency);
+        editor.apply();
+    }
+
+    public static int getBackgroundSyncFrequency() {
+        return getInstance().sharedPreferences.getInt(UPDATE_FREQUENCY, DEFAULT_UPDATE_FREQUENCY);
+    }
+
+    public static void setBackgroundSyncState(Boolean enabled) {
+        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
+        editor.putBoolean(BACKGROUND_SYNC, enabled);
+        editor.apply();
+    }
+
+    public static Boolean getBackgroundSyncState() {
+        return getInstance().sharedPreferences.getBoolean(BACKGROUND_SYNC, DEFAULT_BACKGROUND_SYNC);
+    }
+
+    public static Boolean getCrashReportsState() {
+        return getInstance().sharedPreferences.getBoolean(CRASH_REPORTS, DEFAULT_CRASH_REPORTS);
+    }
+
+    public static void setCrashReportsState(Boolean enabled) {
+        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
+        editor.putBoolean(CRASH_REPORTS, enabled);
+        editor.apply();
+    }
 }

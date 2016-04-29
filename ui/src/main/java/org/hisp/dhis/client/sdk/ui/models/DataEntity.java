@@ -53,4 +53,8 @@ public interface DataEntity<T> {
         INTEGER_POSITIVE, GENDER, INDICATOR, EVENT_DATE,
         ENROLLMENT_DATE, FILE, INCIDENT_DATE
     }
+
+    enum Type2 {
+        TEXT, EDITTEXT, CHECKBOX, FILTER, COORDINATES, RADIO_BUTTONS, DATE
+    }
 }

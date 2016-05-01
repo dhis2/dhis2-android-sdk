@@ -1,6 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -27,28 +28,36 @@ public class DataEntityEditText extends DataEntity {
         return Type.EDITTEXT;
     }
 
+    @Nullable
     public String getHint() {
         return hint;
     }
 
+    @Nullable
     public String getValue() {
         return value;
     }
 
+    @NonNull
     public InputType getInputType() {
         return inputType;
     }
 
-    public void setValue(String value) {
+    public void setValue(@Nullable String value) {
+        if (onValueChangeListener != null && !isValueSame(value)) {
+            onValueChangeListener.onValueChanged(getId(), value);
+        }
+
         this.value = value;
     }
 
+    @Nullable
     public OnValueChangeListener<String> getOnValueChangeListener() {
         return onValueChangeListener;
     }
 
-    public void setOnValueChangeListener(OnValueChangeListener<String> onValueChangeListener) {
-        this.onValueChangeListener = onValueChangeListener;
+    public void setOnValueChangeListener(@Nullable OnValueChangeListener<String> changeListener) {
+        this.onValueChangeListener = changeListener;
     }
 
     public enum InputType {
@@ -59,5 +68,13 @@ public class DataEntityEditText extends DataEntity {
         INTEGER_NEGATIVE,
         INTEGER_ZERO_OR_POSITIVE,
         INTEGER_POSITIVE,
+    }
+
+    private boolean isValueSame(@Nullable String value) {
+        if (this.value != null) {
+            return this.value.equals(value);
+        } else {
+            return value == null;
+        }
     }
 }

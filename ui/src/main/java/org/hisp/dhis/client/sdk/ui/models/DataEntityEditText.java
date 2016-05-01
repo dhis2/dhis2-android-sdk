@@ -7,6 +7,8 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 public class DataEntityEditText extends DataEntity {
     private final String hint;
     private final InputType inputType;
+
+    private OnValueChangeListener<String> onValueChangeListener;
     private String value;
 
     public DataEntityEditText(String id, String label, String hint, InputType inputType) {
@@ -35,6 +37,14 @@ public class DataEntityEditText extends DataEntity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public OnValueChangeListener<String> getOnValueChangeListener() {
+        return onValueChangeListener;
+    }
+
+    public void setOnValueChangeListener(OnValueChangeListener<String> onValueChangeListener) {
+        this.onValueChangeListener = onValueChangeListener;
     }
 
     public enum InputType {

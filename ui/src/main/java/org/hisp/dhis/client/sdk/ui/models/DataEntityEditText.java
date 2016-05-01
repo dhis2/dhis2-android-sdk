@@ -13,8 +13,12 @@ public class DataEntityEditText extends DataEntity {
 
     public DataEntityEditText(String id, String label, String hint, InputType inputType) {
         super(id, label);
-        this.hint = isNull(hint, "hint must not be null");
+        this.hint = hint;
         this.inputType = isNull(inputType, "inputType must not be null");
+    }
+
+    public DataEntityEditText(String id, String label, InputType inputType) {
+        this(id, label, null, inputType);
     }
 
     @NonNull

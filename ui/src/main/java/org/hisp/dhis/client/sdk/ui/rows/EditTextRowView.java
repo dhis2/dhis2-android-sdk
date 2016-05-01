@@ -28,13 +28,12 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
+import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,17 +66,43 @@ public final class EditTextRowView implements RowView {
     }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
+        /* number of lines for LONG_TEXT */
         private static final int LONG_TEXT_LINE_COUNT = 3;
+
+        /* in order to improve performance, we pre-fetch
+        all prompts from resources */
+        private final String enterText;
+        private final String enterLongText;
+        private final String enterNumber;
+        private final String enterInteger;
+        private final String enterPositiveInteger;
+        private final String enterPositiveOrZeroInteger;
+        private final String enterNegativeInteger;
 
         public final TextView textViewLabel;
         public final TextInputLayout textInputLayout;
         public final EditText editText;
 
-        public final OnFocusChangeListener focusChangeListener;
+        /* we use OnFocusChangeListener in order to hide
+        hint from user when row is not focused */
+        public final OnFocusChangeListener onFocusChangeListener;
+
+        /* callback which is triggered on value changes */
         public final OnValueChangedListener onValueChangedListener;
 
         public EditTextRowViewHolder(View itemView) {
             super(itemView);
+
+            Context context = itemView.getContext();
+
+            // fetching hint strings
+            enterText = context.getString(R.string.enter_text);
+            enterLongText = context.getString(R.string.enter_long_text);
+            enterNumber = context.getString(R.string.enter_number);
+            enterInteger = context.getString(R.string.enter_integer);
+            enterPositiveInteger = context.getString(R.string.enter_positive_integer);
+            enterPositiveOrZeroInteger = context.getString(R.string.enter_positive_integer_or_zero);
+            enterNegativeInteger = context.getString(R.string.enter_negative_integer);
 
             textViewLabel = (TextView) itemView
                     .findViewById(R.id.textview_row_label);
@@ -86,63 +111,59 @@ public final class EditTextRowView implements RowView {
             editText = (EditText) itemView
                     .findViewById(R.id.edittext_row_edittext);
 
-            focusChangeListener = new OnFocusChangeListener(textInputLayout, editText);
+            onFocusChangeListener = new OnFocusChangeListener(textInputLayout, editText);
             onValueChangedListener = new OnValueChangedListener();
 
-            editText.setOnFocusChangeListener(focusChangeListener);
+            editText.setOnFocusChangeListener(onFocusChangeListener);
             editText.addTextChangedListener(onValueChangedListener);
         }
 
         public void update(DataEntityEditText entity) {
-            // configure edittext according to entity
-            configureViews(entity);
-
             // update callbacks with current entities
             onValueChangedListener.setDataEntity(entity);
             textViewLabel.setText(entity.getLabel());
             editText.setText(entity.getValue());
 
-            // edittext value
-            CharSequence hint = !isEmpty(entity.getValue()) ? null : entity.getHint();
-            textInputLayout.setHint(hint);
+            // configure edittext according to entity
+            configureView(entity);
         }
 
-        private boolean configureViews(DataEntityEditText dataEntityText) {
+        private boolean configureView(DataEntityEditText dataEntityText) {
             switch (dataEntityText.getInputType()) {
                 case TEXT:
-                    return configure(dataEntityText, R.string.enter_text,
-                            InputType.TYPE_CLASS_TEXT, true);
+                    return configure(enterText, InputType.TYPE_CLASS_TEXT, true);
                 case LONG_TEXT:
-                    return configure(dataEntityText, R.string.enter_long_text,
-                            InputType.TYPE_CLASS_TEXT, false);
+                    return configure(enterLongText, InputType.TYPE_CLASS_TEXT, false);
                 case NUMBER:
-                    return configure(dataEntityText, R.string.enter_number,
-                            InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                    return configure(enterNumber,
+                            InputType.TYPE_CLASS_NUMBER |
+                                    InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                     InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER:
-                    return configure(dataEntityText, R.string.enter_integer,
-                            InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
+                    return configure(enterInteger,
+                            InputType.TYPE_CLASS_NUMBER |
+                                    InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_NEGATIVE:
-                    return configure(dataEntityText, R.string.enter_negative_integer,
-                            InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
+                    return configure(enterNegativeInteger,
+                            InputType.TYPE_CLASS_NUMBER |
+                                    InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_ZERO_OR_POSITIVE:
-                    return configure(dataEntityText, R.string.enter_positive_integer_or_zero,
-                            InputType.TYPE_CLASS_NUMBER, true);
+                    return configure(enterPositiveOrZeroInteger, InputType.TYPE_CLASS_NUMBER, true);
                 case INTEGER_POSITIVE:
-                    return configure(dataEntityText, R.string.enter_positive_integer,
-                            InputType.TYPE_CLASS_NUMBER, true);
+                    return configure(enterPositiveInteger, InputType.TYPE_CLASS_NUMBER, true);
                 default:
                     return false;
             }
         }
 
-        private boolean configure(DataEntityEditText entity, int hint, int inputType, boolean line) {
-            textInputLayout.setHint(editText.getContext().getString(hint));
+        private boolean configure(String hint, int inputType, boolean line) {
+            String textInputLayoutHint = isEmpty(editText.getText()) ? hint : null;
+
+            onFocusChangeListener.setHint(hint);
+            textInputLayout.setHint(textInputLayoutHint);
+
             editText.setInputType(inputType);
             editText.setSingleLine(line);
-            editText.setFilters(new InputFilter[]{
-                    new ValueFilter(entity)
-            });
 
             if (!line) {
                 editText.setLines(LONG_TEXT_LINE_COUNT);
@@ -170,16 +191,19 @@ public final class EditTextRowView implements RowView {
     private static class OnFocusChangeListener implements View.OnFocusChangeListener {
         private final TextInputLayout textInputLayout;
         private final EditText editText;
-        private final CharSequence hint;
+        private CharSequence hint;
 
         public OnFocusChangeListener(TextInputLayout inputLayout, EditText editText) {
             this.textInputLayout = inputLayout;
             this.editText = editText;
-            this.hint = textInputLayout.getHint();
+        }
+
+        public void setHint(CharSequence hint) {
+            this.hint = hint;
         }
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
+        public void onFocusChange(View view, boolean hasFocus) {
             if (hasFocus) {
                 textInputLayout.setHint(hint);
             } else {
@@ -187,25 +211,6 @@ public final class EditTextRowView implements RowView {
                     textInputLayout.setHint(null);
                 }
             }
-        }
-
-        public CharSequence getHint() {
-            return hint;
-        }
-    }
-
-    private static class ValueFilter implements InputFilter {
-        private final DataEntityEditText dataEntityText;
-
-        public ValueFilter(DataEntityEditText dataEntityText) {
-            this.dataEntityText = dataEntityText;
-        }
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end,
-                                   Spanned dest, int dstart, int dend) {
-
-            return source;
         }
     }
 }

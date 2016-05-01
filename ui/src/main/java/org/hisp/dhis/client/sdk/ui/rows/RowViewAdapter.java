@@ -73,12 +73,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         DataEntity dataEntity = getItem(position);
-
-        if (dataEntity != null) {
-            return dataEntity.getType().ordinal();
-        } else {
-            return -1;
-        }
+        return dataEntity != null ? dataEntity.getType().ordinal() : -1;
     }
 
     private void assignRowViewsToItemViewTypes() {

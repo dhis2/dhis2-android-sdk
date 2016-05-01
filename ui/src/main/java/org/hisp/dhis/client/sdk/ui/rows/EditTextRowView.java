@@ -130,27 +130,48 @@ public final class EditTextRowView implements RowView {
 
         private boolean configureView(DataEntityEditText dataEntityText) {
             switch (dataEntityText.getInputType()) {
-                case TEXT:
-                    return configure(enterText, InputType.TYPE_CLASS_TEXT, true);
-                case LONG_TEXT:
-                    return configure(enterLongText, InputType.TYPE_CLASS_TEXT, false);
-                case NUMBER:
-                    return configure(enterNumber,
+                case TEXT: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterText : dataEntityText.getHint();
+                    return configure(hint, InputType.TYPE_CLASS_TEXT, true);
+                }
+                case LONG_TEXT: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterLongText : dataEntityText.getHint();
+                    return configure(hint, InputType.TYPE_CLASS_TEXT, false);
+                }
+                case NUMBER: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterNumber : dataEntityText.getHint();
+                    return configure(hint,
                             InputType.TYPE_CLASS_NUMBER |
                                     InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                     InputType.TYPE_NUMBER_FLAG_SIGNED, true);
-                case INTEGER:
-                    return configure(enterInteger,
+                }
+                case INTEGER: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterInteger : dataEntityText.getHint();
+                    return configure(hint,
                             InputType.TYPE_CLASS_NUMBER |
                                     InputType.TYPE_NUMBER_FLAG_SIGNED, true);
-                case INTEGER_NEGATIVE:
-                    return configure(enterNegativeInteger,
+                }
+                case INTEGER_NEGATIVE: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterNegativeInteger : dataEntityText.getHint();
+                    return configure(hint,
                             InputType.TYPE_CLASS_NUMBER |
                                     InputType.TYPE_NUMBER_FLAG_SIGNED, true);
-                case INTEGER_ZERO_OR_POSITIVE:
-                    return configure(enterPositiveOrZeroInteger, InputType.TYPE_CLASS_NUMBER, true);
-                case INTEGER_POSITIVE:
-                    return configure(enterPositiveInteger, InputType.TYPE_CLASS_NUMBER, true);
+                }
+                case INTEGER_ZERO_OR_POSITIVE: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterPositiveOrZeroInteger : dataEntityText.getHint();
+                    return configure(hint, InputType.TYPE_CLASS_NUMBER, true);
+                }
+                case INTEGER_POSITIVE: {
+                    String hint = isEmpty(dataEntityText.getHint()) ?
+                            enterPositiveInteger : dataEntityText.getHint();
+                    return configure(hint, InputType.TYPE_CLASS_NUMBER, true);
+                }
                 default:
                     return false;
             }

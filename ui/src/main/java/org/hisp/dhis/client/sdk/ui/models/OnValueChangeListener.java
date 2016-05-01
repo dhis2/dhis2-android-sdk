@@ -29,5 +29,5 @@
 package org.hisp.dhis.client.sdk.ui.models;
 
 public interface OnValueChangeListener<T> {
-    void onValueChanged(T keyValue);
+    void onValueChanged(String id, T keyValue);
 }

@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
-import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Editable;
@@ -44,8 +42,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.DataEntityEditText;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -57,22 +55,15 @@ public final class EditTextRowView implements RowView {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(FragmentManager fragmentManager, LayoutInflater inflater,
-                                         ViewGroup parent, DataEntityText.Type type) {
-        if (!RowViewTypeMatcher.matchToRowView(type).equals(EditTextRowView.class)) {
-            throw new IllegalArgumentException("Unsupported row type");
-        }
-
+    public ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent) {
         return new EditTextRowViewHolder(inflater.inflate(
-                R.layout.recyclerview_row_edittext, parent, false), type);
+                R.layout.recyclerview_row_edittext, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, DataEntity dataEntity) {
-        EditTextRowViewHolder editTextRowViewHolder = (EditTextRowViewHolder) holder;
-        DataEntityText entity = (DataEntityText) dataEntity;
-        ((EditTextRowViewHolder) holder).update(entity);
-
+    public void onBindViewHolder(ViewHolder viewHolder, DataEntity dataEntity) {
+        DataEntityEditText entity = (DataEntityEditText) dataEntity;
+        ((EditTextRowViewHolder) viewHolder).update(entity);
     }
 
     private static class EditTextRowViewHolder extends RecyclerView.ViewHolder {
@@ -85,7 +76,7 @@ public final class EditTextRowView implements RowView {
         public final OnFocusChangeListener focusChangeListener;
         public final OnValueChangedListener onValueChangedListener;
 
-        public EditTextRowViewHolder(View itemView, DataEntityText.Type type) {
+        public EditTextRowViewHolder(View itemView) {
             super(itemView);
 
             textViewLabel = (TextView) itemView
@@ -95,10 +86,6 @@ public final class EditTextRowView implements RowView {
             editText = (EditText) itemView
                     .findViewById(R.id.edittext_row_edittext);
 
-            if (!configureViews(type)) {
-                throw new IllegalArgumentException("unsupported view type");
-            }
-
             focusChangeListener = new OnFocusChangeListener(textInputLayout, editText);
             onValueChangedListener = new OnValueChangedListener();
 
@@ -106,57 +93,58 @@ public final class EditTextRowView implements RowView {
             editText.addTextChangedListener(onValueChangedListener);
         }
 
-        public void update(DataEntityText entity) {
+        public void update(DataEntityEditText entity) {
+            // configure edittext according to entity
+            configureViews(entity);
+
+            // update callbacks with current entities
             onValueChangedListener.setDataEntity(entity);
             textViewLabel.setText(entity.getLabel());
             editText.setText(entity.getValue());
 
-            CharSequence hint = !isEmpty(entity.getValue()) ? null : focusChangeListener.getHint();
+            // edittext value
+            CharSequence hint = !isEmpty(entity.getValue()) ? null : entity.getHint();
             textInputLayout.setHint(hint);
         }
 
-        private boolean configureViews(DataEntityText.Type entityType) {
-            switch (entityType) {
+        private boolean configureViews(DataEntityEditText dataEntityText) {
+            switch (dataEntityText.getInputType()) {
                 case TEXT:
-                    return configure(entityType, R.string.enter_text,
+                    return configure(dataEntityText, R.string.enter_text,
                             InputType.TYPE_CLASS_TEXT, true);
                 case LONG_TEXT:
-                    return configure(entityType, R.string.enter_long_text,
+                    return configure(dataEntityText, R.string.enter_long_text,
                             InputType.TYPE_CLASS_TEXT, false);
                 case NUMBER:
-                    return configure(entityType, R.string.enter_number,
+                    return configure(dataEntityText, R.string.enter_number,
                             InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                     InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER:
-                    return configure(entityType, R.string.enter_integer,
+                    return configure(dataEntityText, R.string.enter_integer,
                             InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_NEGATIVE:
-                    return configure(entityType, R.string.enter_negative_integer,
+                    return configure(dataEntityText, R.string.enter_negative_integer,
                             InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_SIGNED, true);
                 case INTEGER_ZERO_OR_POSITIVE:
-                    return configure(entityType, R.string.enter_positive_integer_or_zero,
+                    return configure(dataEntityText, R.string.enter_positive_integer_or_zero,
                             InputType.TYPE_CLASS_NUMBER, true);
                 case INTEGER_POSITIVE:
-                    return configure(entityType, R.string.enter_positive_integer,
+                    return configure(dataEntityText, R.string.enter_positive_integer,
                             InputType.TYPE_CLASS_NUMBER, true);
-                case FILE:
-                    return configure(entityType, R.string.enter_text,
-                            InputType.TYPE_CLASS_TEXT, true);
                 default:
                     return false;
             }
         }
 
-        private boolean configure(DataEntityText.Type type, @StringRes int hint, int inputType,
-                                  boolean singleLine) {
+        private boolean configure(DataEntityEditText entity, int hint, int inputType, boolean line) {
             textInputLayout.setHint(editText.getContext().getString(hint));
             editText.setInputType(inputType);
-            editText.setSingleLine(singleLine);
+            editText.setSingleLine(line);
             editText.setFilters(new InputFilter[]{
-                    new ValueFilter(type)
+                    new ValueFilter(entity)
             });
 
-            if (!singleLine) {
+            if (!line) {
                 editText.setLines(LONG_TEXT_LINE_COUNT);
             }
 
@@ -165,16 +153,16 @@ public final class EditTextRowView implements RowView {
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntityText dataEntity;
+        private DataEntityEditText dataEntity;
 
-        public void setDataEntity(DataEntityText dataEntity) {
+        public void setDataEntity(DataEntityEditText dataEntity) {
             this.dataEntity = dataEntity;
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
             if (dataEntity != null) {
-                dataEntity.updateValue(editable.toString());
+                dataEntity.setValue(editable.toString());
             }
         }
     }
@@ -207,19 +195,15 @@ public final class EditTextRowView implements RowView {
     }
 
     private static class ValueFilter implements InputFilter {
-        private final DataEntityText.Type type;
+        private final DataEntityEditText dataEntityText;
 
-        public ValueFilter(DataEntityText.Type type) {
-            this.type = type;
+        public ValueFilter(DataEntityEditText dataEntityText) {
+            this.dataEntityText = dataEntityText;
         }
 
         @Override
         public CharSequence filter(CharSequence source, int start, int end,
                                    Spanned dest, int dstart, int dend) {
-            // perform validation
-            // if (entity.validateValue(source)) {
-            //     return "";
-            // }
 
             return source;
         }

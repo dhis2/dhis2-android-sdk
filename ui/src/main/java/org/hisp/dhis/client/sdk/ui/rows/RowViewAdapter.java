@@ -35,49 +35,29 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
     private final List<DataEntity> dataEntities;
     private final List<RowView> rowViews;
     private final FragmentManager fragmentManager;
 
-    public RowViewAdapter(FragmentManager childFragmentManager) {
-        dataEntities = new ArrayList<>();
-        rowViews = new ArrayList<>();
+    public RowViewAdapter(FragmentManager fragmentManager) {
+        this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
+        this.dataEntities = new ArrayList<>();
+        this.rowViews = new ArrayList<>();
 
-        rowViews.add(Type.TEXT.ordinal(), new EditTextRowView());
-        rowViews.add(Type.DATE.ordinal(), new DatePickerRowView());
-        rowViews.add(Type.TRUE_ONLY.ordinal(), new CheckBoxRowView());
-
-        rowViews.add(Type.AUTO_COMPLETE.ordinal(), null);
-        // new AutoCompleteRowView());
-
-        rowViews.add(Type.COORDINATES.ordinal(), new CoordinateRowView());
-        rowViews.add(Type.BOOLEAN.ordinal(), new RadioButtonRowView());
-        rowViews.add(Type.INTEGER.ordinal(), new EditTextRowView());
-        rowViews.add(Type.NUMBER.ordinal(), new EditTextRowView());
-        rowViews.add(Type.LONG_TEXT.ordinal(), new EditTextRowView());
-        rowViews.add(Type.INTEGER_NEGATIVE.ordinal(), new EditTextRowView());
-        rowViews.add(Type.INTEGER_ZERO_OR_POSITIVE.ordinal(), new EditTextRowView());
-        rowViews.add(Type.INTEGER_POSITIVE.ordinal(), new EditTextRowView());
-        rowViews.add(Type.GENDER.ordinal(), new RadioButtonRowView());
-        rowViews.add(Type.INDICATOR.ordinal(), new EditTextRowView());
-        rowViews.add(Type.EVENT_DATE.ordinal(), new DatePickerRowView());
-        rowViews.add(Type.ENROLLMENT_DATE.ordinal(), new DatePickerRowView());
-        rowViews.add(Type.FILE.ordinal(), new EditTextRowView());
-        rowViews.add(Type.INCIDENT_DATE.ordinal(), new DatePickerRowView());
-
-        fragmentManager = childFragmentManager;
+        assignRowViewsToItemViewTypes();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return rowViews.get(viewType).onCreateViewHolder(fragmentManager,
-                LayoutInflater.from(parent.getContext()), parent, Type.values()[viewType]);
+        return rowViews.get(viewType).onCreateViewHolder(
+                LayoutInflater.from(parent.getContext()), parent);
     }
 
     @Override
@@ -92,7 +72,41 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position) != null ? getItem(position).getType().ordinal() : -1;
+        DataEntity dataEntity = getItem(position);
+
+        if (dataEntity != null) {
+            return dataEntity.getType().ordinal();
+        } else {
+            return -1;
+        }
+    }
+
+    private void assignRowViewsToItemViewTypes() {
+        for (int ordinal = 0; ordinal < DataEntity.Type.values().length; ordinal++) {
+            DataEntity.Type dataEntityType = DataEntity.Type.values()[ordinal];
+            switch (dataEntityType) {
+                case EDITTEXT: {
+                    rowViews.add(ordinal, new EditTextRowView());
+                    break;
+                }
+                case CHECKBOX: {
+                    rowViews.add(ordinal, new CheckBoxRowView());
+                    break;
+                }
+                case COORDINATES: {
+                    rowViews.add(ordinal, new CoordinateRowView());
+                    break;
+                }
+                case RADIO_BUTTONS: {
+                    rowViews.add(ordinal, new RadioButtonRowView());
+                    break;
+                }
+                case DATE: {
+                    rowViews.add(ordinal, new DatePickerRowView(fragmentManager));
+                    break;
+                }
+            }
+        }
     }
 
     private DataEntity getItem(int position) {

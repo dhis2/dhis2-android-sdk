@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2016, University of Oslo
+  ~ Copyright (c) 2016, University of
+  Oslo
   ~
   ~ All rights reserved.
   ~ Redistribution and use in source and binary forms, with or without
@@ -27,13 +28,11 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:weightSum="1">
-
-    <!--android:paddingBottom="@dimen/keyline_default"-->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -43,35 +42,47 @@
         android:orientation="vertical"
         android:padding="@dimen/keyline_default">
 
-        <org.hisp.dhis.client.sdk.ui.views.FontTextView
-            android:id="@+id/autocomplete_row_label"
+        <include layout="@layout/recyclerview_row_label" />
+
+        <org.hisp.dhis.client.sdk.ui.views.FontEditText
+            android:id="@+id/recyclerview_row_filter_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
+            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/filter_options"
+            android:includeFontPadding="false"
+            android:singleLine="true"
             android:textSize="@dimen/text_size_large"
-            app:font="@string/font_name_condensed"/>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/autocomplete_row_text_input_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <org.hisp.dhis.client.sdk.ui.views.FontEditText
-                android:id="@+id/autocomplete_row_option_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:includeFontPadding="false"
-                android:textSize="@dimen/text_size_large"
-                app:font="@string/font_name_regular"/>
-
-        </android.support.design.widget.TextInputLayout>
+            app:font="@string/font_name_regular" />
 
     </LinearLayout>
 
-    <include layout="@layout/recyclerview_row_button_cancel"/>
+    <include layout="@layout/recyclerview_row_divider_vertical" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <include
+            layout="@layout/recyclerview_row_button_dropdown"
+            android:layout_width="64dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <include layout="@layout/recyclerview_row_divider_horizontal" />
+
+        <include
+            layout="@layout/recyclerview_row_button_cancel"
+            android:layout_width="64dp"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+    </LinearLayout>
 
 </LinearLayout>

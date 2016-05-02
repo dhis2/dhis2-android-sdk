@@ -100,6 +100,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                     rowViews.add(ordinal, new DatePickerRowView(fragmentManager));
                     break;
                 }
+                case FILTER: {
+                    rowViews.add(ordinal, new FilterableRowView(fragmentManager));
+                    break;
+                }
             }
         }
     }

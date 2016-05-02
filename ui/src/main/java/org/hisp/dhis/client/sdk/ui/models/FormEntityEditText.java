@@ -5,12 +5,9 @@ import android.support.annotation.Nullable;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class FormEntityEditText extends FormEntity {
+public class FormEntityEditText extends FormEntityString {
     private final String hint;
     private final InputType inputType;
-
-    private OnFormEntityChangeListener onFormEntityChangeListener;
-    private String value;
 
     public FormEntityEditText(String id, String label, String hint, InputType inputType) {
         super(id, label);
@@ -33,33 +30,9 @@ public class FormEntityEditText extends FormEntity {
         return hint;
     }
 
-    @Nullable
-    public String getValue() {
-        return value;
-    }
-
     @NonNull
     public InputType getInputType() {
         return inputType;
-    }
-
-    public void setValue(@Nullable String value) {
-        if (!isValueSame(value)) {
-            this.value = value;
-
-            if (onFormEntityChangeListener != null) {
-                this.onFormEntityChangeListener.onFormEntityChanged(this);
-            }
-        }
-    }
-
-    @Nullable
-    public OnFormEntityChangeListener getOnFormEntityChangeListener() {
-        return onFormEntityChangeListener;
-    }
-
-    public void setOnFormEntityChangeListener(@Nullable OnFormEntityChangeListener changeListener) {
-        this.onFormEntityChangeListener = changeListener;
     }
 
     public enum InputType {
@@ -70,13 +43,5 @@ public class FormEntityEditText extends FormEntity {
         INTEGER_NEGATIVE,
         INTEGER_ZERO_OR_POSITIVE,
         INTEGER_POSITIVE,
-    }
-
-    private boolean isValueSame(@Nullable String value) {
-        if (this.value != null) {
-            return this.value.equals(value);
-        } else {
-            return value == null;
-        }
     }
 }

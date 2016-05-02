@@ -2,8 +2,7 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class FormEntityDate extends FormEntity {
-    private String value;
+public class FormEntityDate extends FormEntityString {
 
     public FormEntityDate(String id, String label) {
         super(id, label);
@@ -13,13 +12,5 @@ public class FormEntityDate extends FormEntity {
     @Override
     public Type getType() {
         return Type.DATE;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

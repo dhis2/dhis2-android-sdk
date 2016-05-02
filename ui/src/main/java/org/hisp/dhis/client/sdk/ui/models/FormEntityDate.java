@@ -2,7 +2,7 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class FormEntityDate extends FormEntityString {
+public class FormEntityDate extends FormEntityCharSequence {
 
     public FormEntityDate(String id, String label) {
         super(id, label);

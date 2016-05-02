@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class FormEntityEditText extends FormEntityString {
+public class FormEntityEditText extends FormEntityCharSequence {
     private final String hint;
     private final InputType inputType;
 

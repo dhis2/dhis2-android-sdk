@@ -140,9 +140,9 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mListView = (ListView) view
                 .findViewById(R.id.simple_listview);
-        ImageView loadDialogButton = (ImageView) view
-                .findViewById(R.id.load_dialog_button);
-        loadDialogButton.setImageResource(R.drawable.ic_download);
+        //ImageView loadDialogButton = (ImageView) view
+          //      .findViewById(R.id.load_dialog_button);
+        // loadDialogButton.setImageResource(R.drawable.ic_download);
         ImageView closeDialogButton = (ImageView) view
                 .findViewById(R.id.close_dialog_button);
         mFilter = (EditText) view
@@ -177,7 +177,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
             }
         });
 
-        loadDialogButton.setOnClickListener(this);
+        //loadDialogButton.setOnClickListener(this);
 
         setDialogLabel(R.string.select_to_load);
         getAdapter().swapData(getTrackedEntityInstances());
@@ -240,10 +240,12 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.load_dialog_button) {
-            initiateLoading();
-            dismiss();
-        } else if(v.getId() == R.id.teiqueryresult_selectall) {
+        //if(v.getId() == R.id.load_dialog_button) {
+           // initiateLoading();
+           // dismiss();
+    //    }
+    //else
+        if(v.getId() == R.id.teiqueryresult_selectall) {
             toggleSelectAll();
         }
     }
@@ -331,11 +333,26 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
 
     static class ParameterParcelable implements Parcelable {
         public static final String TAG = ParameterParcelable.class.getSimpleName();
-        private final List<TrackedEntityInstance> trackedEntityInstances;
+        private List<TrackedEntityInstance> trackedEntityInstances;
         public ParameterParcelable(List<TrackedEntityInstance> trackedEntityInstances) {
             Log.d(TAG, "parcelputting " + trackedEntityInstances.size());
             this.trackedEntityInstances = trackedEntityInstances;
         }
+
+        protected ParameterParcelable(Parcel in) {
+        }
+
+        public static final Creator<ParameterParcelable> CREATOR = new Creator<ParameterParcelable>() {
+            @Override
+            public ParameterParcelable createFromParcel(Parcel in) {
+                return new ParameterParcelable(in);
+            }
+
+            @Override
+            public ParameterParcelable[] newArray(int size) {
+                return new ParameterParcelable[size];
+            }
+        };
 
         @Override
         public int describeContents() {

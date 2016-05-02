@@ -47,8 +47,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityDate;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityDate;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 import org.hisp.dhis.client.sdk.ui.views.RaisedButton;
 
@@ -73,8 +73,8 @@ public class DatePickerRowView implements RowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, DataEntity dataEntity) {
-        DataEntityDate entity = (DataEntityDate) dataEntity;
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityDate entity = (FormEntityDate) formEntity;
         ((DatePickerRowViewHolder) viewHolder).update(entity);
     }
 
@@ -131,7 +131,7 @@ public class DatePickerRowView implements RowView {
             displayValueEditText.setOnClickListener(onButtonClickListener);
         }
 
-        public void update(DataEntityDate dataEntity) {
+        public void update(FormEntityDate dataEntity) {
             CharSequence hint = !isEmpty(dataEntity.getValue()) ? null :
                     onFocusChangeListener.getHint();
 
@@ -145,9 +145,9 @@ public class DatePickerRowView implements RowView {
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntityDate dataEntity;
+        private FormEntityDate dataEntity;
 
-        public void setDataEntity(DataEntityDate dataEntity) {
+        public void setDataEntity(FormEntityDate dataEntity) {
             this.dataEntity = dataEntity;
         }
 

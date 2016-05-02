@@ -2,10 +2,10 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class DataEntityCheckBox extends DataEntity {
+public class FormEntityCheckBox extends FormEntity {
     private String value;
 
-    public DataEntityCheckBox(String id, String label) {
+    public FormEntityCheckBox(String id, String label) {
         super(id, label);
     }
 

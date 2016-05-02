@@ -5,20 +5,20 @@ import android.support.annotation.Nullable;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class DataEntityEditText extends DataEntity {
+public class FormEntityEditText extends FormEntity {
     private final String hint;
     private final InputType inputType;
 
-    private OnValueChangeListener<String> onValueChangeListener;
+    private OnFormEntityChangeListener onFormEntityChangeListener;
     private String value;
 
-    public DataEntityEditText(String id, String label, String hint, InputType inputType) {
+    public FormEntityEditText(String id, String label, String hint, InputType inputType) {
         super(id, label);
         this.hint = hint;
         this.inputType = isNull(inputType, "inputType must not be null");
     }
 
-    public DataEntityEditText(String id, String label, InputType inputType) {
+    public FormEntityEditText(String id, String label, InputType inputType) {
         this(id, label, null, inputType);
     }
 
@@ -44,20 +44,22 @@ public class DataEntityEditText extends DataEntity {
     }
 
     public void setValue(@Nullable String value) {
-        if (onValueChangeListener != null && !isValueSame(value)) {
-            onValueChangeListener.onValueChanged(getId(), value);
-        }
+        if (!isValueSame(value)) {
+            this.value = value;
 
-        this.value = value;
+            if (onFormEntityChangeListener != null) {
+                this.onFormEntityChangeListener.onFormEntityChanged(this);
+            }
+        }
     }
 
     @Nullable
-    public OnValueChangeListener<String> getOnValueChangeListener() {
-        return onValueChangeListener;
+    public OnFormEntityChangeListener getOnFormEntityChangeListener() {
+        return onFormEntityChangeListener;
     }
 
-    public void setOnValueChangeListener(@Nullable OnValueChangeListener<String> changeListener) {
-        this.onValueChangeListener = changeListener;
+    public void setOnFormEntityChangeListener(@Nullable OnFormEntityChangeListener changeListener) {
+        this.onFormEntityChangeListener = changeListener;
     }
 
     public enum InputType {

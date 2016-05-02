@@ -34,7 +34,7 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
-    private final List<DataEntity> dataEntities;
+    private final List<FormEntity> dataEntities;
     private final List<RowView> rowViews;
     private final FragmentManager fragmentManager;
 
@@ -72,13 +72,13 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        DataEntity dataEntity = getItem(position);
-        return dataEntity != null ? dataEntity.getType().ordinal() : -1;
+        FormEntity formEntity = getItem(position);
+        return formEntity != null ? formEntity.getType().ordinal() : -1;
     }
 
     private void assignRowViewsToItemViewTypes() {
-        for (int ordinal = 0; ordinal < DataEntity.Type.values().length; ordinal++) {
-            DataEntity.Type dataEntityType = DataEntity.Type.values()[ordinal];
+        for (int ordinal = 0; ordinal < FormEntity.Type.values().length; ordinal++) {
+            FormEntity.Type dataEntityType = FormEntity.Type.values()[ordinal];
             switch (dataEntityType) {
                 case EDITTEXT: {
                     rowViews.add(ordinal, new EditTextRowView());
@@ -104,11 +104,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    private DataEntity getItem(int position) {
+    private FormEntity getItem(int position) {
         return dataEntities.size() > position ? dataEntities.get(position) : null;
     }
 
-    public void swap(List<DataEntity> dataEntities) {
+    public void swap(List<FormEntity> dataEntities) {
         this.dataEntities.clear();
 
         if (dataEntities != null) {

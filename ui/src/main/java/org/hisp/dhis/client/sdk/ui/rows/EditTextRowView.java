@@ -41,8 +41,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityEditText;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -60,8 +60,8 @@ public final class EditTextRowView implements RowView {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, DataEntity dataEntity) {
-        DataEntityEditText entity = (DataEntityEditText) dataEntity;
+    public void onBindViewHolder(ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityEditText entity = (FormEntityEditText) formEntity;
         ((EditTextRowViewHolder) viewHolder).update(entity);
     }
 
@@ -118,7 +118,7 @@ public final class EditTextRowView implements RowView {
             editText.addTextChangedListener(onValueChangedListener);
         }
 
-        public void update(DataEntityEditText entity) {
+        public void update(FormEntityEditText entity) {
             // update callbacks with current entities
             onValueChangedListener.setDataEntity(entity);
             textViewLabel.setText(entity.getLabel());
@@ -128,7 +128,7 @@ public final class EditTextRowView implements RowView {
             configureView(entity);
         }
 
-        private boolean configureView(DataEntityEditText dataEntityText) {
+        private boolean configureView(FormEntityEditText dataEntityText) {
             switch (dataEntityText.getInputType()) {
                 case TEXT: {
                     String hint = isEmpty(dataEntityText.getHint()) ?
@@ -195,9 +195,9 @@ public final class EditTextRowView implements RowView {
     }
 
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntityEditText dataEntity;
+        private FormEntityEditText dataEntity;
 
-        public void setDataEntity(DataEntityEditText dataEntity) {
+        public void setDataEntity(FormEntityEditText dataEntity) {
             this.dataEntity = dataEntity;
         }
 

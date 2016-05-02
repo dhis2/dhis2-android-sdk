@@ -2,17 +2,17 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class DataEntityDate extends DataEntity {
+public class FormEntityRadioButtons extends FormEntity {
     private String value;
 
-    public DataEntityDate(String id, String label) {
+    public FormEntityRadioButtons(String id, String label) {
         super(id, label);
     }
 
     @NonNull
     @Override
     public Type getType() {
-        return Type.DATE;
+        return Type.RADIO_BUTTONS;
     }
 
     public String getValue() {

@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public abstract class DataEntity {
+public abstract class FormEntity {
     private final String id;
     private final String label;
 
-    public DataEntity(String id, String label) {
+    public FormEntity(String id, String label) {
         this.id = isNull(id, "id must not be null");
         this.label = isNull(label, "label must not be null");
     }

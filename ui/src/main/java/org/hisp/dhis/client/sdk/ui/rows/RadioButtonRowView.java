@@ -37,8 +37,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityRadioButtons;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityRadioButtons;
 
 public class RadioButtonRowView implements RowView {
     private static final String EMPTY_FIELD = "";
@@ -52,8 +52,8 @@ public class RadioButtonRowView implements RowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, DataEntity dataEntity) {
-        DataEntityRadioButtons entity = (DataEntityRadioButtons) dataEntity;
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityRadioButtons entity = (FormEntityRadioButtons) formEntity;
         ((RadioButtonRowViewHolder) viewHolder).update(entity);
     }
 
@@ -83,7 +83,7 @@ public class RadioButtonRowView implements RowView {
             radioGroup.setOnCheckedChangeListener(onCheckedChangedListener);
         }
 
-        public void update(DataEntityRadioButtons dataEntity) {
+        public void update(FormEntityRadioButtons dataEntity) {
             onCheckedChangedListener.setDataEntity(dataEntity);
             labelTextView.setText(dataEntity.getLabel());
 
@@ -98,9 +98,9 @@ public class RadioButtonRowView implements RowView {
     }
 
     private static class OnCheckedChangedListener implements RadioGroup.OnCheckedChangeListener {
-        private DataEntityRadioButtons dataEntity;
+        private FormEntityRadioButtons dataEntity;
 
-        public void setDataEntity(DataEntityRadioButtons dataEntity) {
+        public void setDataEntity(FormEntityRadioButtons dataEntity) {
             this.dataEntity = dataEntity;
         }
 

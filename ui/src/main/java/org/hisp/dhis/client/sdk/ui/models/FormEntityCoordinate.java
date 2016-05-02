@@ -2,11 +2,11 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class DataEntityCoordinate extends DataEntity {
+public class FormEntityCoordinate extends FormEntity {
     private double latitude;
     private double longitude;
 
-    public DataEntityCoordinate(String id, String label) {
+    public FormEntityCoordinate(String id, String label) {
         super(id, label);
     }
 

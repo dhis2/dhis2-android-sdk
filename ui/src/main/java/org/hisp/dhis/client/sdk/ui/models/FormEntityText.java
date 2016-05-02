@@ -2,9 +2,9 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class DataEntityText extends DataEntity {
+public class FormEntityText extends FormEntity {
 
-    public DataEntityText(String id, String label) {
+    public FormEntityText(String id, String label) {
         super(id, label);
     }
 

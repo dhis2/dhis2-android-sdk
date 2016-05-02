@@ -37,8 +37,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityCheckBox;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityCheckBox;
 
 public class CheckBoxRowView implements RowView {
     private static final String TRUE = "true";
@@ -55,8 +55,8 @@ public class CheckBoxRowView implements RowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, DataEntity dataEntity) {
-        DataEntityCheckBox entity = (DataEntityCheckBox) dataEntity;
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityCheckBox entity = (FormEntityCheckBox) formEntity;
         ((CheckBoxRowViewHolder) viewHolder).update(entity);
     }
 
@@ -78,7 +78,7 @@ public class CheckBoxRowView implements RowView {
             itemView.setOnClickListener(rowClickListener);
         }
 
-        public void update(DataEntityCheckBox dataEntity) {
+        public void update(FormEntityCheckBox dataEntity) {
             textViewLabel.setText(dataEntity.getLabel());
             onCheckBoxListener.setDataEntity(dataEntity);
 
@@ -104,9 +104,9 @@ public class CheckBoxRowView implements RowView {
     }
 
     private static class OnCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
-        private DataEntityCheckBox dataEntity;
+        private FormEntityCheckBox dataEntity;
 
-        public void setDataEntity(DataEntityCheckBox dataEntity) {
+        public void setDataEntity(FormEntityCheckBox dataEntity) {
             this.dataEntity = dataEntity;
         }
 

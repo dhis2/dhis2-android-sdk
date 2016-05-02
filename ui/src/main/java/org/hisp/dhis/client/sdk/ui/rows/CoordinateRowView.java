@@ -39,8 +39,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityCoordinate;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityCoordinate;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
@@ -59,8 +59,8 @@ public class CoordinateRowView implements RowView {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, DataEntity dataEntity) {
-        DataEntityCoordinate coordinateDataEntity = (DataEntityCoordinate) dataEntity;
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityCoordinate coordinateDataEntity = (FormEntityCoordinate) formEntity;
         ((CoordinateRowViewHolder) viewHolder).update(coordinateDataEntity);
     }
 
@@ -118,7 +118,7 @@ public class CoordinateRowView implements RowView {
 
         }
 
-        public void update(DataEntityCoordinate entity) {
+        public void update(FormEntityCoordinate entity) {
             textViewLabel.setText(R.string.enter_coordinates);
             onValueChangedListener.setDataEntity(entity);
 
@@ -135,9 +135,9 @@ public class CoordinateRowView implements RowView {
 
     // TODO we need to have two OnValueChangedListeners(one for latitude, another for longitude)
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntityCoordinate dataEntity;
+        private FormEntityCoordinate dataEntity;
 
-        public void setDataEntity(DataEntityCoordinate dataEntity) {
+        public void setDataEntity(FormEntityCoordinate dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -192,7 +192,7 @@ public class CoordinateRowView implements RowView {
         public void onClick(View v) {
             if (onCoordinatesCaptured != null) {
                 // TODO coordinates should be fed to row through
-                // TODO DataEntityCoordinate model (not callback)
+                // TODO FormEntityCoordinate model (not callback)
 
                 // latitudeEditText.setText(String.valueOf(onCoordinatesCaptured.onLatitudeCaptured()));
                 // longitudeEditText.setText(String.valueOf(onCoordinatesCaptured.onLongitudeCaptured()));

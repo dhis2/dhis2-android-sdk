@@ -71,24 +71,4 @@ public class BaseFragment extends Fragment {
         }
         return null;
     }
-//
-//    protected void setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener listener) {
-//        Toolbar t = getParentToolbar();
-//        if (getParentToolbar() != null) {
-//            t.setOnMenuItemClickListener(listener);
-//        }
-//    }
-//
-//    @Override
-//    public boolean onMenuItemClick(MenuItem item) {
-//        System.out.println("refresh clicked.");
-//        return false;
-//    }
-//
-//    public void showRefreshButton() {
-//        Toolbar toolbar = getParentToolbar();
-//        if (toolbar != null) {
-//            toolbar.inflateMenu(R.menu.menu_main);
-//        }
-//    }
 }

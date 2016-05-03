@@ -30,10 +30,12 @@
 package org.hisp.dhis.android.sdk.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.LoadingMessageEvent;
@@ -198,5 +200,14 @@ public final class UiUtils {
     public static void showSnackBarWithAction(View parentLayout, String text, int duration, String actionText, View.OnClickListener onClickListener )
     {
         Snackbar.make(parentLayout, text, duration).setAction(actionText, onClickListener).show();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        //hide keyboard
+        if(view != null) {
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

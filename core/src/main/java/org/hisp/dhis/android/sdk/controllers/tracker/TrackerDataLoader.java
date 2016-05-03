@@ -69,6 +69,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.mime.TypedString;
+
 import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
 /**
@@ -160,11 +162,21 @@ final class TrackerDataLoader extends ResourceController {
                 if( teav != null && teav.getValue() != null ) {
                     if( !teav.getValue().isEmpty() ) {
                         valueParams.add( teav );
-                        QUERY_MAP_FULL.put("filter",teav.getTrackedEntityAttributeId()+":LIKE:"+teav.getValue());
+//                        QUERY_MAP_FULL.put("filter",teav.getTrackedEntityAttributeId()+":LIKE:"+teav.getValue());
                     }
                 }
             }
         }
+        for(TrackedEntityAttributeValue val : valueParams) {
+            if(!QUERY_MAP_FULL.containsKey("filter")) {
+                QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+            }
+            else {
+                String currentFilter = QUERY_MAP_FULL.get("filter");
+                QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+            }
+        }
+
 
         //doesnt work with both attribute filter and query
         if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {

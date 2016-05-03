@@ -50,12 +50,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
@@ -145,6 +147,9 @@ public abstract class SelectProgramFragment extends Fragment
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
         mListView = (ListView) view.findViewById(R.id.event_listview);
+
+
+
         mAdapter = getAdapter(savedInstanceState);
         View header = getListViewHeader(savedInstanceState);
         setStandardButtons(header);
@@ -330,6 +335,7 @@ public abstract class SelectProgramFragment extends Fragment
                 );
             }
         }
+
     }
 
     public void onUnitSelected(String orgUnitId, String orgUnitLabel) {
@@ -356,6 +362,7 @@ public abstract class SelectProgramFragment extends Fragment
         // this call will trigger onCreateLoader method
         getLoaderManager().restartLoader(LOADER_ID, getArguments(), this);
     }
+
 
     @Subscribe /* it doesn't seem that this subscribe works. Inheriting class will have to */
     public void onReceivedUiEvent(UiEvent uiEvent) {

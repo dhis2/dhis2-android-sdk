@@ -47,6 +47,9 @@
             android:clipToPadding="false"
             android:padding="8dp"
             android:scrollbarStyle="outsideOverlay"/>
+
+
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>

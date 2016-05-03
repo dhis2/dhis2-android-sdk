@@ -94,6 +94,8 @@
         android:layout_height="48dp"
         android:layout_margin="16dp"
         android:drawableLeft="@drawable/ic_search"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
         android:drawablePadding="4dp"
         android:hint="@string/search"
         app:font="@string/light_font_name"/>

@@ -233,6 +233,9 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
                     final TrackedEntityInstance trackedEntityInstanceValue = values.get(i);
                     for(TrackedEntityAttributeValue attrValue: trackedEntityInstanceValue.getAttributes()) {
                         final String value = attrValue.getValue();
+                        if(value == null) {
+                            break;
+                        }
                         final String valueText = value.toLowerCase();
 
                         // First match against the whole, non-splitted value

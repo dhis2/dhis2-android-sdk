@@ -50,6 +50,7 @@
 
 
     <string name="description">ImageView description</string>
+    <string name="specify_search_criteria">Please specify a search criteria</string>
 
 
     <!-- Alert Dialogs -->

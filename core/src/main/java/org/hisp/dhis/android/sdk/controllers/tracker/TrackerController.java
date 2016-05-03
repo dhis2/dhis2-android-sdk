@@ -403,7 +403,7 @@ public final class TrackerController extends ResourceController {
                                                                                  String organisationUnitUid,
                                                                                  String programUid,
                                                                                  String queryString,
-                                                                                 TrackedEntityAttributeValue... params) throws APIException {
+                                                                                   TrackedEntityAttributeValue... params) throws APIException {
         return TrackerDataLoader.queryTrackedEntityInstancesDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
     }
 

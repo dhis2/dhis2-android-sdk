@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2016, University of
   Oslo
   ~
@@ -48,7 +49,7 @@
             android:id="@+id/recyclerview_row_filter_edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:clickable="true"
             android:focusable="false"
             android:focusableInTouchMode="false"

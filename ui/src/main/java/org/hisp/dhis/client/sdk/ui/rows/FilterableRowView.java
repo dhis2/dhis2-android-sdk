@@ -1,6 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.rows;
 
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,7 +45,9 @@ public class FilterableRowView implements RowView {
         private final EditText filterEditText;
         private final ImageButton buttonDropDown;
         private final ImageButton clearButton;
+
         private final OnClickListener onClickListener;
+        private final OnPickerItemClickListener onPickerItemClickListener;
 
         public FilterViewHolder(View itemView) {
             super(itemView);
@@ -59,6 +62,7 @@ public class FilterableRowView implements RowView {
                     .findViewById(R.id.button_clear);
 
             onClickListener = new OnClickListener();
+            onPickerItemClickListener = new OnPickerItemClickListener(filterEditText);
 
             filterEditText.setOnClickListener(onClickListener);
             clearButton.setOnClickListener(onClickListener);
@@ -67,6 +71,7 @@ public class FilterableRowView implements RowView {
 
         public void update(FormEntityFilter formEntityFilter) {
             onClickListener.setFormEntityFilter(formEntityFilter);
+            onPickerItemClickListener.setFormEntityFilter(formEntityFilter);
 
             textViewLabel.setText(formEntityFilter.getLabel());
 
@@ -75,12 +80,42 @@ public class FilterableRowView implements RowView {
 
             Picker picker = formEntityFilter.getPicker();
             if (picker != null && picker.getSelectedChild() != null) {
-                filterEditTextValue = picker.getName();
+                filterEditTextValue = picker.getSelectedChild().getName();
             }
 
             filterEditText.setText(filterEditTextValue);
+
+            // after configuration change, callback
+            // in dialog fragment can be lost
+            attachListenerToExistingFragment(picker);
         }
 
+        private void attachListenerToExistingFragment(Picker picker) {
+            FilterableDialogFragment fragment = (FilterableDialogFragment)
+                    fragmentManager.findFragmentByTag(FilterableDialogFragment.TAG);
+
+            // if we don't have fragment attached to activity,
+            // we don't want to do anything else
+            if (fragment == null) {
+                return;
+            }
+
+            // get the arguments bundle out from fragment
+            Bundle arguments = fragment.getArguments();
+
+            // if we don't have picker set to fragment, we can't distinguish
+            // the fragment which we need to update
+            if (arguments == null || !arguments
+                    .containsKey(FilterableDialogFragment.ARGS_PICKER)) {
+                return;
+            }
+
+            Picker existingPicker = (Picker) arguments
+                    .getSerializable(FilterableDialogFragment.ARGS_PICKER);
+            if (picker.equals(existingPicker)) {
+                fragment.setOnPickerItemClickListener(onPickerItemClickListener);
+            }
+        }
 
         private class OnClickListener implements View.OnClickListener {
             private FormEntityFilter formEntityFilter;
@@ -104,8 +139,38 @@ public class FilterableRowView implements RowView {
                 if (formEntityFilter.getPicker() != null) {
                     FilterableDialogFragment dialogFragment = FilterableDialogFragment
                             .newInstance(formEntityFilter.getPicker());
+                    dialogFragment.setOnPickerItemClickListener(onPickerItemClickListener);
                     dialogFragment.show(fragmentManager, FilterableDialogFragment.TAG);
                 }
+            }
+        }
+
+        private class OnPickerItemClickListener
+                implements FilterableDialogFragment.OnPickerItemClickListener {
+            private final EditText formEditText;
+            private FormEntityFilter formEntityFilter;
+
+            public OnPickerItemClickListener(EditText formEditText) {
+                this.formEditText = formEditText;
+            }
+
+            public void setFormEntityFilter(FormEntityFilter formEntityFilter) {
+                this.formEntityFilter = formEntityFilter;
+            }
+
+            @Override
+            public void onPickerItemClickListener(Picker selectedPicker) {
+                if (selectedPicker.getParent() != null) {
+                    Picker parentPicker = selectedPicker.getParent();
+                    parentPicker.setSelectedChild(selectedPicker);
+
+                    if (formEntityFilter != null) {
+                        formEntityFilter.setPicker(parentPicker);
+                    }
+                }
+
+                // setting value to edittext
+                formEditText.setText(selectedPicker.getName());
             }
         }
     }

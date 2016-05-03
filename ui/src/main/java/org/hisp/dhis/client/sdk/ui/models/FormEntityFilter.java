@@ -28,6 +28,11 @@ public class FormEntityFilter extends FormEntity {
 
     public void setPicker(@Nullable Picker picker) {
         this.picker = picker;
+
+        if (this.onFormEntityChangeListener != null &&
+                this.picker != null && this.picker.getSelectedChild() != null) {
+            this.onFormEntityChangeListener.onFormEntityChanged(this);
+        }
     }
 
     @Nullable

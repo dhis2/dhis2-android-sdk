@@ -68,6 +68,8 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInte
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -161,6 +163,10 @@ public class D2 {
         ControllersModule controllersModule = new ControllersModuleImpl(
                 networkModule, persistenceModule, preferencesModule, new LoggerImpl());
 
+        UserAccountInteractor userAccountInteractor = new UserAccountInteractorImpl(
+                servicesModule.getUserAccountService(),
+                controllersModule.getUserAccountController());
+
         UserProgramInteractor userProgramInteractor = new UserProgramInteractorImpl(
                 servicesModule.getProgramService(),
                 controllersModule.getAssignedProgramsController());
@@ -224,7 +230,7 @@ public class D2 {
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
-                userProgramInteractor, userOrganisationUnitInteractor);
+                userAccountInteractor, userProgramInteractor, userOrganisationUnitInteractor);
 
         logger = flavor.getLogger();
     }
@@ -251,7 +257,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.

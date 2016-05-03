@@ -28,8 +28,12 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 
 public interface UserAccountController {
-    UserAccount updateAccount();
+    void pull() throws ApiException;
+
+    void push() throws ApiException;
+
+    void sync() throws ApiException;
 }

@@ -42,11 +42,21 @@ public final class UserAccountControllerImpl implements UserAccountController {
     }
 
     @Override
-    public UserAccount updateAccount() throws ApiException {
+    public void pull() throws ApiException {
         UserAccount userAccount = userApiClient.getUserAccount();
 
         // update userAccount in database
         userAccountStore.save(userAccount);
-        return userAccount;
+        // return userAccount;
+    }
+
+    @Override
+    public void push() throws ApiException {
+
+    }
+
+    @Override
+    public void sync() throws ApiException {
+
     }
 }

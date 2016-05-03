@@ -45,14 +45,10 @@ public interface CurrentUserInteractor {
 
     Observable<Boolean> signOut();
 
-
-    // UserAccount related methods
-    Observable<UserAccount> account();
-
     Observable<UserCredentials> userCredentials();
 
-    Observable<Boolean> save(UserAccount userAccount);
-
+    // UserAccount related methods
+    UserAccountInteractor account();
 
     // Other resources
     UserProgramInteractor programs();

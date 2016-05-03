@@ -51,17 +51,20 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
     private final UserAccountController userAccountController;
 
     // interactors
+    private final UserAccountInteractor userAccountInteractor;
     private final UserProgramInteractor userProgramInteractor;
     private final UserOrganisationUnitInteractor organisationUnitInteractor;
 
     public CurrentUserInteractorImpl(UserPreferences userPreferences,
                                      UserAccountService userAccountService,
                                      UserAccountController userAccountController,
+                                     UserAccountInteractor userAccountInteractor,
                                      UserProgramInteractor userProgramInteractor,
                                      UserOrganisationUnitInteractor organisationUnitInteractor) {
         this.userPreferences = userPreferences;
         this.userAccountService = userAccountService;
         this.userAccountController = userAccountController;
+        this.userAccountInteractor = userAccountInteractor;
         this.userProgramInteractor = userProgramInteractor;
         this.organisationUnitInteractor = organisationUnitInteractor;
     }
@@ -78,7 +81,8 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
                 UserCredentials userCredentials = new UserCredentials(username, password);
                 userPreferences.save(userCredentials);
 
-                return userAccountController.updateAccount();
+                userAccountController.pull();
+                return userAccountService.get();
             }
         });
     }
@@ -104,16 +108,6 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
     }
 
     @Override
-    public Observable<UserAccount> account() {
-        return Observable.create(new DefaultOnSubscribe<UserAccount>() {
-            @Override
-            public UserAccount call() {
-                return userAccountService.getCurrentUserAccount();
-            }
-        });
-    }
-
-    @Override
     public Observable<UserCredentials> userCredentials() {
         return Observable.create(new DefaultOnSubscribe<UserCredentials>() {
             @Override
@@ -124,13 +118,8 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
     }
 
     @Override
-    public Observable<Boolean> save(final UserAccount userAccount) {
-        return Observable.create(new DefaultOnSubscribe<Boolean>() {
-            @Override
-            public Boolean call() {
-                return userAccountService.save(userAccount);
-            }
-        });
+    public UserAccountInteractor account() {
+        return userAccountInteractor;
     }
 
     @Override

@@ -42,17 +42,6 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public UserAccount getCurrentUserAccount() {
-        List<UserAccount> userAccounts = userAccountStore.queryAll();
-
-        if (userAccounts != null && !userAccounts.isEmpty()) {
-            return userAccounts.get(0);
-        }
-
-        return null;
-    }
-
-    @Override
     public boolean save(UserAccount object) {
         return userAccountStore.save(object);
     }
@@ -74,5 +63,16 @@ public class UserAccountServiceImpl implements UserAccountService {
         user.setName(userAccount.getName());
         user.setDisplayName(userAccount.getDisplayName());
         return user;
+    }
+
+    @Override
+    public UserAccount get() {
+        List<UserAccount> userAccounts = userAccountStore.queryAll();
+
+        if (userAccounts != null && !userAccounts.isEmpty()) {
+            return userAccounts.get(0);
+        }
+
+        return null;
     }
 }

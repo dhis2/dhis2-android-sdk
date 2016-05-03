@@ -35,7 +35,7 @@ import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public interface UserAccountService extends Service, Update<UserAccount>, Save<UserAccount> {
-    UserAccount getCurrentUserAccount();
+    UserAccount get();
 
     User toUser(UserAccount userAccount);
 }

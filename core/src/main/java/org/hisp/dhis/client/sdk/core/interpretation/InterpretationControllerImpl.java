@@ -490,7 +490,7 @@ public final class InterpretationControllerImpl implements IdentifiableControlle
     private List<User> updateInterpretationUsers(List<Interpretation> interpretations,
                                                  List<InterpretationComment> comments) {
         Map<String, User> users = new HashMap<>();
-        UserAccount currentUserAccount = mUserAccountService.getCurrentUserAccount();
+        UserAccount currentUserAccount = mUserAccountService.get();
         User currentUser = mUserStore.queryByUid(currentUserAccount.getUId());
         if (currentUser == null) {
             currentUser = mUserAccountService.toUser(currentUserAccount);

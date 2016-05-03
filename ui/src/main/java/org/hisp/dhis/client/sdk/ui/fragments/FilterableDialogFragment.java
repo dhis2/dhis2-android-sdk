@@ -161,7 +161,7 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new PickerItemViewHolder(inflater.inflate(
-                    R.layout.recyclerview_picker_item, parent, false));
+                    R.layout.recyclerview_row_picker_item, parent, false));
         }
 
         @Override

@@ -69,7 +69,7 @@ public class PickerAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new PickerViewHolder(layoutInflater.inflate(
-                R.layout.recyclerview_picker, parent, false));
+                R.layout.recyclerview_row_picker, parent, false));
     }
 
     @Override

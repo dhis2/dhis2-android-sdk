@@ -66,8 +66,8 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInte
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractorImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractor;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
-import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
-import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractorImpl;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
@@ -104,7 +104,7 @@ public class D2 {
     // Interactors
     //-----------------------------------------------------------------------------------------
 
-    private final UserAccountInteractor userAccountInteractor;
+    private final CurrentUserInteractor currentUserInteractor;
     private final OrganisationUnitInteractor organisationUnitInteractor;
     private final ProgramInteractor programInteractor;
     private final ProgramStageInteractor programStageInteractor;
@@ -137,7 +137,7 @@ public class D2 {
                 .getConfigurationPreferences().get().getServerUrl());
 
         if (!isD2Configured) {
-            userAccountInteractor = null;
+            currentUserInteractor = null;
             organisationUnitInteractor = null;
             programInteractor = null;
             programStageInteractor = null;
@@ -220,7 +220,7 @@ public class D2 {
         trackedEntityDataValueInteractor = new TrackedEntityDataValueInteractorImpl(
                 servicesModule.getTrackedEntityDataValueService());
 
-        userAccountInteractor = new UserAccountInteractorImpl(
+        currentUserInteractor = new CurrentUserInteractorImpl(
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
@@ -315,10 +315,10 @@ public class D2 {
     /**
      * Provides current user aware APIs.
      *
-     * @return UserAccountInteractor instance.
+     * @return CurrentUserInteractor instance.
      */
-    public static UserAccountInteractor me() {
-        return configuredInstance().userAccountInteractor;
+    public static CurrentUserInteractor me() {
+        return configuredInstance().currentUserInteractor;
     }
 
     public static ProgramInteractor programs() {

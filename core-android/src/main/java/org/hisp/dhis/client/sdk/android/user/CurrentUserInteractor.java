@@ -36,7 +36,7 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import rx.Observable;
 
-public interface UserAccountInteractor {
+public interface CurrentUserInteractor {
 
     // User session methods
     Observable<UserAccount> signIn(String username, String password);

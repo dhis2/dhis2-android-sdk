@@ -40,7 +40,7 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import rx.Observable;
 
-public class UserAccountInteractorImpl implements UserAccountInteractor {
+public class CurrentUserInteractorImpl implements CurrentUserInteractor {
     // preferences
     private final UserPreferences userPreferences;
 
@@ -54,7 +54,7 @@ public class UserAccountInteractorImpl implements UserAccountInteractor {
     private final UserProgramInteractor userProgramInteractor;
     private final UserOrganisationUnitInteractor organisationUnitInteractor;
 
-    public UserAccountInteractorImpl(UserPreferences userPreferences,
+    public CurrentUserInteractorImpl(UserPreferences userPreferences,
                                      UserAccountService userAccountService,
                                      UserAccountController userAccountController,
                                      UserProgramInteractor userProgramInteractor,

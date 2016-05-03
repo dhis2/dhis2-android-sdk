@@ -118,6 +118,10 @@ public class Program extends BaseMetaDataObject {
     @Column(name = "selectIncidentDatesInFuture")
     boolean selectIncidentDatesInFuture;
 
+    @JsonProperty("displayFrontPageList")
+    @Column(name = "displayFrontPageList")
+    boolean displayFrontPageList;
+
     @JsonProperty("programStages")
     List<ProgramStage> programStages;
 
@@ -293,5 +297,13 @@ public class Program extends BaseMetaDataObject {
 
     public void setSelectIncidentDatesInFuture(boolean selectIncidentDatesInFuture) {
         this.selectIncidentDatesInFuture = selectIncidentDatesInFuture;
+    }
+
+    public boolean isDisplayFrontPageList() {
+        return displayFrontPageList;
+    }
+
+    public void setDisplayFrontPageList(boolean displayFrontPageList) {
+        this.displayFrontPageList = displayFrontPageList;
     }
 }

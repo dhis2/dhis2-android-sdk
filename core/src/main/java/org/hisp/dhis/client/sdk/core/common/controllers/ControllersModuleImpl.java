@@ -170,8 +170,8 @@ public class ControllersModuleImpl implements ControllersModule {
 
         userAccountController = new UserAccountControllerImpl(
                 networkModule.getUserApiClient(),
-                persistenceModule.getUserAccountStore());
-
+                persistenceModule.getUserAccountStore(),
+                persistenceModule.getStateStore(), logger);
 
         trackedEntityAttributeController = new TrackedEntityAttributeControllerImpl(
                 networkModule.getTrackedEntityAttributeApiClient(),

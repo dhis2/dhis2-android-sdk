@@ -37,10 +37,10 @@ import java.util.Map;
 import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.call;
 
 public class UserAccountApiClientImpl implements UserApiClient {
-    private final UserApiClientRetrofit mApiClient;
+    private final UserApiClientRetrofit apiClient;
 
-    public UserAccountApiClientImpl(UserApiClientRetrofit mApiClient) {
-        this.mApiClient = mApiClient;
+    public UserAccountApiClientImpl(UserApiClientRetrofit apiClient) {
+        this.apiClient = apiClient;
     }
 
     @Override
@@ -51,6 +51,11 @@ public class UserAccountApiClientImpl implements UserApiClient {
                 "education,employer,interests,jobTitle,languages,email,phoneNumber," +
                 "organisationUnits[id],userCredentials[userRoles[dataSets[id],programs[id]]]");
 
-        return call(mApiClient.getCurrentUserAccount(QUERY_PARAMS));
+        return call(apiClient.getCurrentUserAccount(QUERY_PARAMS));
+    }
+
+    @Override
+    public void postUserAccount(UserAccount userAccount) {
+        call(apiClient.postCurrentUserAccount(userAccount));
     }
 }

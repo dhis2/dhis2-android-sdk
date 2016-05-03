@@ -66,6 +66,8 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInte
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractorImpl;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractor;
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractorImpl;
 import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
 import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
@@ -104,7 +106,7 @@ public class D2 {
     // Interactors
     //-----------------------------------------------------------------------------------------
 
-    private final UserAccountInteractor userAccountInteractor;
+    private final CurrentUserInteractor currentUserInteractor;
     private final OrganisationUnitInteractor organisationUnitInteractor;
     private final ProgramInteractor programInteractor;
     private final ProgramStageInteractor programStageInteractor;
@@ -137,7 +139,7 @@ public class D2 {
                 .getConfigurationPreferences().get().getServerUrl());
 
         if (!isD2Configured) {
-            userAccountInteractor = null;
+            currentUserInteractor = null;
             organisationUnitInteractor = null;
             programInteractor = null;
             programStageInteractor = null;
@@ -160,6 +162,10 @@ public class D2 {
                 preferencesModule, flavor.getOkHttpClient());
         ControllersModule controllersModule = new ControllersModuleImpl(
                 networkModule, persistenceModule, preferencesModule, new LoggerImpl());
+
+        UserAccountInteractor userAccountInteractor = new UserAccountInteractorImpl(
+                servicesModule.getUserAccountService(),
+                controllersModule.getUserAccountController());
 
         UserProgramInteractor userProgramInteractor = new UserProgramInteractorImpl(
                 servicesModule.getProgramService(),
@@ -220,11 +226,11 @@ public class D2 {
         trackedEntityDataValueInteractor = new TrackedEntityDataValueInteractorImpl(
                 servicesModule.getTrackedEntityDataValueService());
 
-        userAccountInteractor = new UserAccountInteractorImpl(
+        currentUserInteractor = new CurrentUserInteractorImpl(
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
-                userProgramInteractor, userOrganisationUnitInteractor);
+                userAccountInteractor, userProgramInteractor, userOrganisationUnitInteractor);
 
         logger = flavor.getLogger();
     }
@@ -251,7 +257,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p>
+     * <p/>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -315,10 +321,10 @@ public class D2 {
     /**
      * Provides current user aware APIs.
      *
-     * @return UserAccountInteractor instance.
+     * @return CurrentUserInteractor instance.
      */
-    public static UserAccountInteractor me() {
-        return configuredInstance().userAccountInteractor;
+    public static CurrentUserInteractor me() {
+        return configuredInstance().currentUserInteractor;
     }
 
     public static ProgramInteractor programs() {

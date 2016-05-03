@@ -55,6 +55,7 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
+
 public class FilterableDialogFragment extends AppCompatDialogFragment {
     // for fragment manager
     public static final String TAG = FilterableDialogFragment.class.getSimpleName();
@@ -66,7 +67,6 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
 
     public static FilterableDialogFragment newInstance(Picker picker) {
         Bundle arguments = new Bundle();
-        // arguments.putParcelable(ARGS_PICKER, picker);
         arguments.putSerializable(ARGS_PICKER, picker);
 
         FilterableDialogFragment fragment = new FilterableDialogFragment();

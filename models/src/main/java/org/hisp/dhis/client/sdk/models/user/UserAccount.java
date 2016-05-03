@@ -46,6 +46,9 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserAccount implements IdentifiableObject {
+    public static final String GENDER_MALE = "gender_male";
+    public static final String GENDER_FEMALE = "gender_female";
+    public static final String GENDER_OTHER = "gender_other";
 
     // As we have only one user account, the id will be constant
     private static final int LOCAL_ID = 1;

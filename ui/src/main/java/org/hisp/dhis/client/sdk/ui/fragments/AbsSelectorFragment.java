@@ -68,7 +68,7 @@ public abstract class AbsSelectorFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.menu_main, menu);
+//        inflater.inflate(R.menu.menu_refresh, menu);
     }
 
     @Override

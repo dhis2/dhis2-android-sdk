@@ -28,11 +28,11 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:weightSum="1">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -42,54 +42,52 @@
         android:orientation="vertical"
         android:padding="@dimen/keyline_default">
 
-        <include layout="@layout/recyclerview_row_label"/>
+        <include layout="@layout/recyclerview_row_label" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/row_date_picker_text_input_layout"
+        <org.hisp.dhis.client.sdk.ui.views.FontEditText
+            android:id="@+id/row_date_picker_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:hint="@string/enter_date"
+            android:includeFontPadding="false"
+            android:inputType="datetime"
+            android:singleLine="true"
+            android:textSize="@dimen/text_size_large"
+            app:font="@string/font_name_regular" />
 
-            <org.hisp.dhis.client.sdk.ui.views.FontEditText
-                android:id="@+id/row_date_picker_edit_text"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <org.hisp.dhis.client.sdk.ui.views.RaisedButton
+                android:id="@+id/row_date_picker_button_today"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="false"
-                android:includeFontPadding="false"
-                android:singleLine="true"
-                android:textSize="@dimen/text_size_large"
-                app:font="@string/font_name_regular"/>
+                android:text="@string/today_date"
+                android:textAllCaps="true"
+                android:textSize="@dimen/text_size_medium"
+                app:font="@string/font_name_condensed" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <org.hisp.dhis.client.sdk.ui.views.RaisedButton
+                android:id="@+id/row_date_picker_button_pick"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:text="@string/pick_date"
+                android:textAllCaps="true"
+                android:textSize="@dimen/text_size_medium"
+                app:font="@string/font_name_condensed" />
 
-                <org.hisp.dhis.client.sdk.ui.views.RaisedButton
-                    android:id="@+id/row_date_picker_button_today"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/today_date"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/text_size_medium"
-                    app:font="@string/font_name_condensed"/>
-
-                <org.hisp.dhis.client.sdk.ui.views.RaisedButton
-                    android:id="@+id/row_date_picker_button_pick"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/pick_date"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/text_size_medium"
-                    app:font="@string/font_name_condensed"/>
-
-            </LinearLayout>
-
-        </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/recyclerview_row_button_cancel"/>
+    <include layout="@layout/recyclerview_row_divider_vertical" />
+
+    <include layout="@layout/recyclerview_row_button_cancel" />
 
 </LinearLayout>

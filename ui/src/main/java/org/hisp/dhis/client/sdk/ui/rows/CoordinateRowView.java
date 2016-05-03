@@ -29,7 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -40,65 +39,54 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityCoordinate;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityCoordinate;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 
 import static android.text.TextUtils.isEmpty;
 
 public class CoordinateRowView implements RowView {
-    private static final String TAG = CoordinateRowView.class.getSimpleName();
     private OnCoordinatesCaptured onCoordinatesCaptured;
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
-                                                      LayoutInflater inflater,
-                                                      ViewGroup parent, DataEntityText.Type type) {
-        if (!RowViewTypeMatcher.matchToRowView(type).equals(CoordinateRowView.class)) {
-            throw new IllegalArgumentException("Unsupported row type");
-        }
-
-        return new CoordinateRowViewHolder(inflater.inflate(
-                R.layout.recyclerview_row_coordinate, parent, false), type, onCoordinatesCaptured);
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
-        CoordinateRowViewHolder coordinateRowViewHolder = (CoordinateRowViewHolder) holder;
-        DataEntityCoordinate coordinateDataEntity = (DataEntityCoordinate) dataEntity;
-        coordinateRowViewHolder.update(coordinateDataEntity);
-
-    }
 
     public void setOnCoordinatesCaptured(OnCoordinatesCaptured onCoordinatesCaptured) {
         this.onCoordinatesCaptured = onCoordinatesCaptured;
     }
 
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent) {
+        return new CoordinateRowViewHolder(inflater.inflate(
+                R.layout.recyclerview_row_coordinate, parent, false), onCoordinatesCaptured);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityCoordinate coordinateDataEntity = (FormEntityCoordinate) formEntity;
+        ((CoordinateRowViewHolder) viewHolder).update(coordinateDataEntity);
+    }
 
     public interface OnCoordinatesCaptured {
-        double onLatitudeCaptured();
+        void onLatitudeChangeListener(double latitude);
 
-        double onLongitudeCaptured();
+        void onLongitudeChangeListener(double longitude);
     }
 
     private static class CoordinateRowViewHolder extends RecyclerView.ViewHolder {
+        public final TextView textViewLabel;
         public final TextInputLayout latitudeTextInputLayout;
         public final TextInputLayout longitudeTextInputLayout;
         public final EditText latitudeEditText;
         public final EditText longitudeEditText;
         public final ImageButton captureCoordinateButton;
+
         public final OnCaptureCoordinatesListener onCaptureCoordinatesListener;
         public final OnFocusChangeListener onFocusChangeListener;
         public final OnValueChangedListener onValueChangedListener;
-        public final TextView textViewLabel;
 
-        public CoordinateRowViewHolder(View itemView, DataEntityText.Type type,
-                                       OnCoordinatesCaptured onCoordinatesCaptured) {
+        public CoordinateRowViewHolder(View itemView, OnCoordinatesCaptured onCoordinatesCaptured) {
             super(itemView);
 
-            textViewLabel = (TextView) itemView.findViewById(R.id.textview_row_label);
-
+            textViewLabel = (TextView) itemView
+                    .findViewById(R.id.textview_row_label);
             latitudeTextInputLayout = (TextInputLayout) itemView
                     .findViewById(R.id.coordinate_row_latitude_textinputlayout);
             longitudeTextInputLayout = (TextInputLayout) itemView
@@ -130,29 +118,33 @@ public class CoordinateRowView implements RowView {
 
         }
 
-        public void update(DataEntityCoordinate entity) {
+        public void update(FormEntityCoordinate entity) {
             textViewLabel.setText(R.string.enter_coordinates);
             onValueChangedListener.setDataEntity(entity);
-            latitudeEditText.setText(entity.getValue().get("latitude").toString());
-            longitudeEditText.setText(entity.getValue().get("longitude").toString());
 
-            CharSequence hint = entity.getValue() == null ? null : onFocusChangeListener.getHint();
-            latitudeTextInputLayout.setHint(hint);
-            longitudeTextInputLayout.setHint(hint);
+            latitudeEditText.setText(String.valueOf(entity.getLatitude()));
+            longitudeEditText.setText(String.valueOf(entity.getLongitude()));
+
+            // CharSequence hint = entity.getValue() == null
+            // ? null : onFocusChangeListener.getHint();
+
+            latitudeTextInputLayout.setHint(onFocusChangeListener.getHint());
+            longitudeTextInputLayout.setHint(onFocusChangeListener.getHint());
         }
     }
 
+    // TODO we need to have two OnValueChangedListeners(one for latitude, another for longitude)
     private static class OnValueChangedListener extends AbsTextWatcher {
-        private DataEntityCoordinate dataEntity;
+        private FormEntityCoordinate dataEntity;
 
-        public void setDataEntity(DataEntityCoordinate dataEntity) {
+        public void setDataEntity(FormEntityCoordinate dataEntity) {
             this.dataEntity = dataEntity;
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
             if (dataEntity != null) {
-//                dataEntity.updateValue(editable.toString());
+                // dataEntity.updateValue(editable.toString());
             }
         }
     }
@@ -185,9 +177,9 @@ public class CoordinateRowView implements RowView {
     }
 
     private static class OnCaptureCoordinatesListener implements View.OnClickListener {
-        private EditText latitudeEditText;
-        private EditText longitudeEditText;
-        private OnCoordinatesCaptured onCoordinatesCaptured;
+        private final EditText latitudeEditText;
+        private final EditText longitudeEditText;
+        private final OnCoordinatesCaptured onCoordinatesCaptured;
 
         public OnCaptureCoordinatesListener(OnCoordinatesCaptured onCoordinatesCaptured, EditText
                 latitudeEditText, EditText longitudeEditText) {
@@ -199,10 +191,11 @@ public class CoordinateRowView implements RowView {
         @Override
         public void onClick(View v) {
             if (onCoordinatesCaptured != null) {
-                latitudeEditText.setText(String.valueOf(onCoordinatesCaptured.onLatitudeCaptured
-                        ()));
-                longitudeEditText.setText(String.valueOf(onCoordinatesCaptured
-                        .onLongitudeCaptured()));
+                // TODO coordinates should be fed to row through
+                // TODO FormEntityCoordinate model (not callback)
+
+                // latitudeEditText.setText(String.valueOf(onCoordinatesCaptured.onLatitudeCaptured()));
+                // longitudeEditText.setText(String.valueOf(onCoordinatesCaptured.onLongitudeCaptured()));
             } else {
                 latitudeEditText.setText(String.valueOf(0.0));
                 longitudeEditText.setText(String.valueOf(0.0));

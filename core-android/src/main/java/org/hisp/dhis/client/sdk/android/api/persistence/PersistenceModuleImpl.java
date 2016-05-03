@@ -106,7 +106,7 @@ public class PersistenceModuleImpl implements PersistenceModule {
         programStageDataElementStore = new ProgramStageDataElementStoreImpl();
         dataElementStore = new DataElementStoreImpl();
 
-        userAccountStore = new UserAccountStoreImpl();
+        userAccountStore = new UserAccountStoreImpl(stateStore);
         organisationUnitStore = new OrganisationUnitStoreImpl(transactionManager);
 
         trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl();

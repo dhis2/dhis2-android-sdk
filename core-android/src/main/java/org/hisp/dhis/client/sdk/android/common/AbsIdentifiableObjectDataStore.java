@@ -47,8 +47,8 @@ public class AbsIdentifiableObjectDataStore<ModelType extends IdentifiableObject
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsDataStore<ModelType,
                 DatabaseEntityType> implements IdentifiableObjectStore<ModelType> {
 
-    public AbsIdentifiableObjectDataStore(Mapper<ModelType, DatabaseEntityType> mapper,
-                                          StateStore stateStore) {
+    public AbsIdentifiableObjectDataStore(
+            Mapper<ModelType, DatabaseEntityType> mapper, StateStore stateStore) {
         super(mapper, stateStore);
     }
 

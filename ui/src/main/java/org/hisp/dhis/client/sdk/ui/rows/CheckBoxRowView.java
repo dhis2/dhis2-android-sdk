@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,8 +37,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityCheckBox;
 
 public class CheckBoxRowView implements RowView {
     private static final String TRUE = "true";
@@ -50,24 +49,16 @@ public class CheckBoxRowView implements RowView {
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
-                                                      LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntityText.Type type) {
-        if (!RowViewTypeMatcher.matchToRowView(type).equals(CheckBoxRowView.class)) {
-            throw new IllegalArgumentException("Unsupported row type");
-        }
-
+    public RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent) {
         return new CheckBoxRowViewHolder(inflater.inflate(
                 R.layout.recyclerview_row_checkbox, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, DataEntity dataEntity) {
-        CheckBoxRowViewHolder viewHolder = (CheckBoxRowViewHolder) holder;
-        DataEntityText entity = (DataEntityText) dataEntity;
-        viewHolder.update(entity);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityCheckBox entity = (FormEntityCheckBox) formEntity;
+        ((CheckBoxRowViewHolder) viewHolder).update(entity);
     }
-
 
     private static class CheckBoxRowViewHolder extends RecyclerView.ViewHolder {
         public final CheckBox checkBox;
@@ -87,7 +78,7 @@ public class CheckBoxRowView implements RowView {
             itemView.setOnClickListener(rowClickListener);
         }
 
-        public void update(DataEntityText dataEntity) {
+        public void update(FormEntityCheckBox dataEntity) {
             textViewLabel.setText(dataEntity.getLabel());
             onCheckBoxListener.setDataEntity(dataEntity);
 
@@ -113,10 +104,9 @@ public class CheckBoxRowView implements RowView {
     }
 
     private static class OnCheckBoxListener implements CompoundButton.OnCheckedChangeListener {
+        private FormEntityCheckBox dataEntity;
 
-        private DataEntityText dataEntity;
-
-        public void setDataEntity(DataEntityText dataEntity) {
+        public void setDataEntity(FormEntityCheckBox dataEntity) {
             this.dataEntity = dataEntity;
         }
 
@@ -124,7 +114,7 @@ public class CheckBoxRowView implements RowView {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String newValue = isChecked ? TRUE : EMPTY_FIELD;
             if (!newValue.equals(dataEntity.getValue())) {
-                dataEntity.updateValue(newValue);
+                dataEntity.setValue(newValue);
             }
         }
     }

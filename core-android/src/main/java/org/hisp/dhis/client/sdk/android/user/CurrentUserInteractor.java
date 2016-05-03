@@ -26,44 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.rows;
+package org.hisp.dhis.client.sdk.android.user;
 
-import org.hisp.dhis.client.sdk.ui.models.DataEntityText;
 
-class RowViewTypeMatcher {
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.android.program.UserProgramInteractor;
+import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-    private RowViewTypeMatcher() {
-        // private constructor
-    }
+import rx.Observable;
 
-    public static Class<?> matchToRowView(DataEntityText.Type type) {
-        switch (type) {
-            case BOOLEAN:
-            case GENDER:
-                return RadioButtonRowView.class;
-            case COORDINATES:
-                return CoordinateRowView.class;
-            case DATE:
-            case ENROLLMENT_DATE:
-            case INCIDENT_DATE:
-            case EVENT_DATE:
-                return DatePickerRowView.class;
-            case TRUE_ONLY:
-                return CheckBoxRowView.class;
-//            case AUTO_COMPLETE:
-//                return AutoCompleteRowView.class;
-            case TEXT:
-            case LONG_TEXT:
-            case NUMBER:
-            case INTEGER:
-            case INTEGER_NEGATIVE:
-            case INTEGER_ZERO_OR_POSITIVE:
-            case INTEGER_POSITIVE:
-            case FILE:
-            case INDICATOR:
-                return EditTextRowView.class;
-            default:
-                throw new IllegalArgumentException("Unsupported row type");
-        }
-    }
+public interface CurrentUserInteractor {
+
+    // User session methods
+    Observable<UserAccount> signIn(String username, String password);
+
+    Observable<Boolean> isSignedIn();
+
+    Observable<Boolean> signOut();
+
+    Observable<UserCredentials> userCredentials();
+
+    // UserAccount related methods
+    UserAccountInteractor account();
+
+    // Other resources
+    UserProgramInteractor programs();
+
+    UserOrganisationUnitInteractor organisationUnits();
 }

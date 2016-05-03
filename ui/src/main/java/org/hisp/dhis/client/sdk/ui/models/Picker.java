@@ -124,6 +124,17 @@ public class Picker implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "Picker{" +
+                "hint='" + hint + '\'' +
+                ", id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", children=" + children +
+                ", selectedChild=" + selectedChild +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

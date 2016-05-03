@@ -29,14 +29,15 @@
 package org.hisp.dhis.client.sdk.android.user;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.UserAccountFlow;
-import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectDataStore;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.user.UserAccountStore;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public final class UserAccountStoreImpl extends AbsIdentifiableObjectStore<UserAccount,
+public final class UserAccountStoreImpl extends AbsIdentifiableObjectDataStore<UserAccount,
         UserAccountFlow> implements UserAccountStore {
 
-    public UserAccountStoreImpl() {
-        super(UserAccountFlow.MAPPER);
+    public UserAccountStoreImpl(StateStore stateStore) {
+        super(UserAccountFlow.MAPPER, stateStore);
     }
 }

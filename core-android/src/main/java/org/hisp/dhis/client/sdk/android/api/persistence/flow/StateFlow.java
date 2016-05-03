@@ -39,6 +39,7 @@ import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
@@ -93,7 +94,8 @@ public final class StateFlow extends BaseModelFlow {
         this.action = action;
     }
 
-    private static class StateMapper extends AbsMapper<State, StateFlow> implements org.hisp.dhis.client.sdk.android.common.StateMapper {
+    private static class StateMapper extends AbsMapper<State, StateFlow>
+            implements org.hisp.dhis.client.sdk.android.common.StateMapper {
 
         @Override
         public StateFlow mapToDatabaseEntity(State state) {
@@ -152,12 +154,14 @@ public final class StateFlow extends BaseModelFlow {
         }
 
         @Override
-        public Class<? extends com.raizlabs.android.dbflow.structure.Model> getRelatedDatabaseEntityClass(
-                Class<? extends Model> objectClass) {
+        public Class<? extends com.raizlabs.android.dbflow.structure.Model>
+                getRelatedDatabaseEntityClass(Class<? extends Model> objectClass) {
             isNull(objectClass, "Class object must not be null");
 
             if (Event.class.equals(objectClass)) {
                 return EventFlow.class;
+            } else if (UserAccount.class.equals(objectClass)) {
+                return UserAccountFlow.class;
             }
 
             throw new IllegalArgumentException("Unsupported type: " + objectClass.getSimpleName());

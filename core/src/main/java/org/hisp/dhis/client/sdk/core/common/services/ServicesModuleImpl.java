@@ -80,7 +80,8 @@ public final class ServicesModuleImpl implements ServicesModule {
         isNull(persistenceModule, "persistenceModule must not be null");
 
         userAccountService = new UserAccountServiceImpl(
-                persistenceModule.getUserAccountStore());
+                persistenceModule.getUserAccountStore(),
+                persistenceModule.getStateStore());
         programService = new ProgramServiceImpl(
                 persistenceModule.getProgramStore());
         programStageService = new ProgramStageServiceImpl(

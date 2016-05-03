@@ -28,27 +28,57 @@
 
 package org.hisp.dhis.client.sdk.core.user;
 
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.user.User;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
 import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.util.List;
 
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountStore userAccountStore;
+    private final StateStore stateStore;
 
-    public UserAccountServiceImpl(UserAccountStore userAccountStore) {
+    public UserAccountServiceImpl(UserAccountStore userAccountStore,
+                                  StateStore stateStore) {
         this.userAccountStore = userAccountStore;
+        this.stateStore = stateStore;
     }
 
     @Override
-    public boolean save(UserAccount object) {
-        return userAccountStore.save(object);
-    }
+    public boolean save(UserAccount userAccount) {
+        // return userAccountStore.save(object);
+        isNull(userAccount, "UserAccount must not be null");
 
-    @Override
-    public boolean update(UserAccount object) {
-        return userAccountStore.update(object);
+        Action action = stateStore.queryActionForModel(userAccount);
+        if (action == null) {
+            throw new UnsupportedOperationException("It seems that UserAccount " +
+                    "was saved incorrectly or does not exist at all");
+        }
+
+        switch (action) {
+            case TO_POST:
+                throw new UnsupportedOperationException("Unsupported state flag: TO_POST. " +
+                        "It seems that UserAccount was saved incorrectly or does not exist at all");
+            case TO_UPDATE: {
+                return userAccountStore.save(userAccount);
+            }
+            case SYNCED: {
+                return userAccountStore.save(userAccount) &&
+                        stateStore.saveActionForModel(userAccount, Action.TO_UPDATE);
+            }
+            // we cannot save what should be removed
+            case TO_DELETE: {
+                throw new UnsupportedOperationException("Unsupported state flag: TO_DELETE. " +
+                        "It seems that UserAccount was saved incorrectly or does not exist at all");
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported state action");
+            }
+        }
     }
 
     @Override

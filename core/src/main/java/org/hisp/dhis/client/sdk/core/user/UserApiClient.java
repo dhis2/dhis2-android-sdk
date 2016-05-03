@@ -32,4 +32,6 @@ import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
 public interface UserApiClient {
     UserAccount getUserAccount();
+
+    void postUserAccount(UserAccount userAccount);
 }

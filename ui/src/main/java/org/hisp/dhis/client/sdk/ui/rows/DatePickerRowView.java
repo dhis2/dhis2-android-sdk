@@ -57,9 +57,9 @@ import java.util.Locale;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-// TODO recycling
-// TODO configuration change handling (especially when it comes to Dialogs).
+
 public class DatePickerRowView implements RowView {
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = DatePickerRowView.class.getSimpleName();
 
     // we need fragment manager to display DatePickerDialogFragment
@@ -181,7 +181,6 @@ public class DatePickerRowView implements RowView {
     }
 
     private static class OnDateSetListener implements DatePickerDialog.OnDateSetListener {
-        private static final String DATE_FORMAT = "yyyy-MM-dd";
         private final EditText editText;
 
         public OnDateSetListener(EditText editText) {

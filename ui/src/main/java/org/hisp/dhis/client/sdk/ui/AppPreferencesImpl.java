@@ -42,7 +42,7 @@ public class AppPreferencesImpl implements AppPreferences {
     public static final String BACKGROUND_SYNC = "background_sync";
 
     //Default values:
-    public static final int DEFAULT_UPDATE_FREQUENCY = 1440; //TODO:switch this to 1h ? somewhere
+    public static final int DEFAULT_UPDATE_FREQUENCY = 1440; // (1 day in minutes)
     public static final Boolean DEFAULT_BACKGROUND_SYNC = true;
     public static final Boolean DEFAULT_CRASH_REPORTS = true;
 
@@ -65,9 +65,9 @@ public class AppPreferencesImpl implements AppPreferences {
     }
 
     @Override
-    public void setBackgroundSyncFrequency(int frequency) {
+    public void setBackgroundSyncFrequency(int minutes) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(UPDATE_FREQUENCY, frequency);
+        editor.putInt(UPDATE_FREQUENCY, minutes);
         editor.apply();
     }
 

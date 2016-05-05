@@ -37,7 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 @Table(database = DbDhis.class)

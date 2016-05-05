@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.android.api.persistence.converters;
 
 import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 
 @SuppressWarnings("unused")
 @com.raizlabs.android.dbflow.annotation.TypeConverter

@@ -1,7 +1,9 @@
+package org.hisp.dhis.client.sdk.models.dataelement;
+
 /*
- * Copyright (c) 2016, University of Oslo
- *
+ * Copyright (c) 2004-2016, University of Oslo
  * All rights reserved.
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * Redistributions of source code must retain the above copyright notice, this
@@ -26,7 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.common;
 
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
 
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 
 public enum ValueType {
     TEXT(String.class),
@@ -45,6 +47,7 @@ public enum ValueType {
     TRUE_ONLY(Boolean.class),
     DATE(Date.class),
     DATETIME(Date.class),
+    TIME(String.class),
     NUMBER(Double.class),
     UNIT_INTERVAL(Double.class),
     PERCENTAGE(Double.class),
@@ -60,26 +63,25 @@ public enum ValueType {
     public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));
 
-    public static final Set<ValueType> NUMERIC_TYPES = new HashSet(Arrays.asList(
-            INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, NUMBER,
-            UNIT_INTERVAL, PERCENTAGE));
+    public static final Set<ValueType> NUMERIC_TYPES = new HashSet<>(Arrays.asList(INTEGER,
+            INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, NUMBER, UNIT_INTERVAL,
+            PERCENTAGE));
 
-    public static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(
-            BOOLEAN, TRUE_ONLY));
+    public static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(BOOLEAN,
+            TRUE_ONLY));
 
-    public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(
-            TEXT, LONG_TEXT, LETTER, COORDINATE));
+    public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(TEXT, LONG_TEXT,
+            LETTER, COORDINATE, TIME));
 
-    public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
-            DATE, DATETIME));
+    public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(DATE, DATETIME));
 
     private final Class<?> javaClass;
 
-    private ValueType() {
+    ValueType() {
         this.javaClass = null;
     }
 
-    private ValueType(Class<?> javaClass) {
+    ValueType(Class<?> javaClass) {
         this.javaClass = javaClass;
     }
 

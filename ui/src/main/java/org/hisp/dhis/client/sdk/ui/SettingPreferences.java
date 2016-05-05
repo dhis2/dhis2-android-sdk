@@ -30,25 +30,18 @@ package org.hisp.dhis.client.sdk.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
-
 
 public final class SettingPreferences {
     public static final String BACKGROUND_SYNCHRONIZATION = "backgroundSynchronization";
     public static final String SYNCHRONIZATION_PERIOD = "synchronizationPeriod";
     public static final String CRASH_REPORTS = "crashReports";
-    public static final String SYNC_DATE = "syncDate";
-    public static final String UPDATE_FREQUENCY = "update_frequency";
-    public static final String BACKGROUND_SYNC = "background_sync";
+    public static final boolean DEFAULT_BACKGROUND_SYNC = false;
+    public static final boolean DEFAULT_CRASH_REPORTS = false;
 
-    //Default values:
-    public static final int DEFAULT_UPDATE_FREQUENCY = 1440; //one hour
-    public static final Boolean DEFAULT_BACKGROUND_SYNC = true;
-    public static final Boolean DEFAULT_CRASH_REPORTS = true;
+    private static final String DEFAULT_UPDATE_FREQUENCY = "hoursTwentyFour";
 
     private static SettingPreferences settingPreferences;
     private SharedPreferences sharedPreferences;
@@ -67,42 +60,18 @@ public final class SettingPreferences {
         return settingPreferences;
     }
 
-    @Nullable
-    public static long getLastSynced() {
-        return getInstance().sharedPreferences.getLong(SYNC_DATE, 0l);
+    public static boolean backgroundSynchronization() {
+        return getInstance().sharedPreferences.getBoolean(BACKGROUND_SYNCHRONIZATION,
+                DEFAULT_BACKGROUND_SYNC);
     }
 
-    public static void setLastSynched(@NonNull long date) {
-        getInstance().sharedPreferences.edit().putLong(SYNC_DATE, date).commit();
+    public static String synchronizationPeriod() {
+        return getInstance().sharedPreferences.getString(SYNCHRONIZATION_PERIOD,
+                DEFAULT_UPDATE_FREQUENCY);
     }
 
-    public static void setBackgroundSyncFrequency(int frequency) {
-        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
-        editor.putInt(UPDATE_FREQUENCY, frequency);
-        editor.apply();
-    }
-
-    public static int getBackgroundSyncFrequency() {
-        return getInstance().sharedPreferences.getInt(UPDATE_FREQUENCY, DEFAULT_UPDATE_FREQUENCY);
-    }
-
-    public static void setBackgroundSyncState(Boolean enabled) {
-        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
-        editor.putBoolean(BACKGROUND_SYNC, enabled);
-        editor.apply();
-    }
-
-    public static Boolean getBackgroundSyncState() {
-        return getInstance().sharedPreferences.getBoolean(BACKGROUND_SYNC, DEFAULT_BACKGROUND_SYNC);
-    }
-
-    public static Boolean getCrashReportsState() {
-        return getInstance().sharedPreferences.getBoolean(CRASH_REPORTS, DEFAULT_CRASH_REPORTS);
-    }
-
-    public static void setCrashReportsState(Boolean enabled) {
-        SharedPreferences.Editor editor = getInstance().sharedPreferences.edit();
-        editor.putBoolean(CRASH_REPORTS, enabled);
-        editor.apply();
+    public static Boolean crashReports() {
+        return getInstance().sharedPreferences.getBoolean(CRASH_REPORTS,
+                DEFAULT_CRASH_REPORTS);
     }
 }

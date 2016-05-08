@@ -47,9 +47,6 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by markusbekken on 22.03.2016.
- */
 public class RulesEngineTestHelpers {
     public static ProgramRule createSimpleProgramRuleShowError(String ruleIdentifier,
                                                                String actionIdentifier,

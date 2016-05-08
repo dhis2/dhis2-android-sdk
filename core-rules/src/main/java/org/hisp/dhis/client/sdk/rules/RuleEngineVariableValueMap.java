@@ -42,9 +42,6 @@ import java.util.Map;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-/**
- * Created by markusbekken on 24.03.2016.
- */
 public class RuleEngineVariableValueMap {
 
     private Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;

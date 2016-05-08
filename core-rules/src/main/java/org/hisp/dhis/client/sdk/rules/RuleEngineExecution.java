@@ -40,9 +40,6 @@ import java.util.regex.Pattern;
 
 import sun.security.ssl.Debug;
 
-/**
- * Created by markusbekken on 23.03.2016.
- */
 public class RuleEngineExecution {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("[A#CV]\\{(\\w+.?\\w*)\\}");
 

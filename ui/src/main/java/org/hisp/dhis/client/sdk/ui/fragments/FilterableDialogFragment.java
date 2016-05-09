@@ -247,4 +247,82 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
             }
         }
     }
+
+//    public static abstract class AbsPickerLoader {
+//        private final Picker picker;
+//        private OnPickerLoadedListener onPickersLoadedListener;
+//
+//        public AbsPickerLoader(Picker picker) {
+//            this.picker = picker;
+//        }
+//
+//        public void setOnPickersLoadedListener(OnPickerLoadedListener onPickersLoadedListener) {
+//            this.onPickersLoadedListener = onPickersLoadedListener;
+//        }
+//
+//        public OnPickerLoadedListener getOnPickersLoadedListener() {
+//            return onPickersLoadedListener;
+//        }
+//
+//        public Picker getPicker() {
+//            return picker;
+//        }
+//
+//        public abstract void onLoadPicker();
+//    }
+//
+//
+//    private static class PickerItemLoader extends FilterableDialogFragment.AbsPickerLoader {
+//        private final OptionSetInteractor optionSetInteractor;
+//
+//        private PickerItemLoader(Picker picker, OptionSetInteractor optionSetInteractor) {
+//            super(picker);
+//            this.optionSetInteractor = optionSetInteractor;
+//        }
+//
+//        @Override
+//        public void onLoadPicker() {
+//            OptionSet optionSet = new OptionSet();
+//            optionSet.setUId(getPicker().getId());
+//
+//            optionSetInteractor.list(optionSet)
+//                    .map(new Func1<List<Option>, Picker>() {
+//                        @Override
+//                        public Picker call(List<Option> options) {
+//                            if (options == null || options.isEmpty()) {
+//                                return getPicker();
+//                            }
+//
+//                            Picker picker = getPicker();
+//
+//                            // build options
+//                            for (Option option : options) {
+//                                picker.addChild(Picker.create(option.getCode(),
+//                                        option.getDisplayName(), picker));
+//                            }
+//
+//                            return picker;
+//                        }
+//                    })
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Action1<Picker>() {
+//                        @Override
+//                        public void call(Picker picker) {
+//                            if (getOnPickersLoadedListener() != null) {
+//                                getOnPickersLoadedListener().onPickerLoaded(picker);
+//                            }
+//                        }
+//                    }, new Action1<Throwable>() {
+//                        @Override
+//                        public void call(Throwable throwable) {
+//                            // log throwable exception
+//                        }
+//                    });
+//        }
+//    }
+//
+//    public interface OnPickerLoadedListener {
+//        void onPickerLoaded(Picker picker);
+//    }
 }

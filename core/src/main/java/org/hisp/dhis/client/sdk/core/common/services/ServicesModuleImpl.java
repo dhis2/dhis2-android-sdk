@@ -33,6 +33,8 @@ import org.hisp.dhis.client.sdk.core.dataelement.DataElementService;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementServiceImpl;
 import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.core.event.EventServiceImpl;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetService;
+import org.hisp.dhis.client.sdk.core.optionset.OptionSetServiceImpl;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitService;
 import org.hisp.dhis.client.sdk.core.organisationunit.OrganisationUnitServiceImpl;
 import org.hisp.dhis.client.sdk.core.program.ProgramIndicatorService;
@@ -75,6 +77,7 @@ public final class ServicesModuleImpl implements ServicesModule {
     private final ProgramRuleService programRuleService;
     private final ProgramRuleActionService programRuleActionService;
     private final TrackedEntityDataValueService trackedEntityDataValueService;
+    private final OptionSetService optionSetService;
 
     public ServicesModuleImpl(PersistenceModule persistenceModule) {
         isNull(persistenceModule, "persistenceModule must not be null");
@@ -121,6 +124,9 @@ public final class ServicesModuleImpl implements ServicesModule {
                 persistenceModule.getTrackedEntityDataValueStore(),
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore());
+
+        optionSetService = new OptionSetServiceImpl(persistenceModule.getOptionSetStore(),
+                persistenceModule.getOptionStore());
     }
 
     @Override
@@ -190,5 +196,10 @@ public final class ServicesModuleImpl implements ServicesModule {
     @Override
     public TrackedEntityDataValueService getTrackedEntityDataValueService() {
         return null;
+    }
+
+    @Override
+    public OptionSetService getOptionSetService() {
+        return optionSetService;
     }
 }

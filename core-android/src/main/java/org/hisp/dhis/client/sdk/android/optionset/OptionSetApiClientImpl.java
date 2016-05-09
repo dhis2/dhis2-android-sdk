@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.optionset.OptionSetApiClient;
+import org.hisp.dhis.client.sdk.models.optionset.Option;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
@@ -50,40 +51,48 @@ public class OptionSetApiClientImpl implements OptionSetApiClient {
         this.optionSetApiClientRetrofit = optionSetApiClientRetrofit;
     }
 
-    ApiResource<OptionSet> apiResource = new ApiResource<OptionSet>() {
-
-        @Override
-        public String getResourceName() {
-            return "optionSets";
-        }
-
-        @Override
-        public String getBasicProperties() {
-            return "id,displayName";
-        }
-
-        @Override
-        public String getAllProperties() {
-            return "id,name,displayName,created,lastUpdated,access," +
-                    "version,options[id,name,displayName,created,lastUpdated,access,code]";
-        }
-
-        @Override
-        public Call<Map<String, List<OptionSet>>> getEntities(
-                Map<String, String> queryMap, List<String> filters) throws ApiException {
-            return optionSetApiClientRetrofit.getOptionSets(queryMap, filters);
-        }
-    };
-
-    @Override
-    public List<OptionSet> getOptionSets(Fields fields, DateTime lastUpdated,
-                                         Set<String> uids) throws ApiException {
-        return getCollection(apiResource, fields, lastUpdated, uids);
-    }
-
     @Override
     public List<OptionSet> getOptionSets(
-            Fields fields, Set<String> optionSetUids) throws ApiException {
-        return getCollection(apiResource, "options.id", fields, null, optionSetUids);
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+
+        ApiResource<OptionSet> apiResource = new ApiResource<OptionSet>() {
+
+            @Override
+            public String getResourceName() {
+                return "optionSets";
+            }
+
+            @Override
+            public String getBasicProperties() {
+                return "id,displayName";
+            }
+
+            @Override
+            public String getAllProperties() {
+                return "id,name,displayName,created,lastUpdated,access," +
+                        "version,options[id,name,displayName,created,lastUpdated,access,code]";
+            }
+
+            @Override
+            public Call<Map<String, List<OptionSet>>> getEntities(
+                    Map<String, String> queryMap, List<String> filters) throws ApiException {
+                return optionSetApiClientRetrofit.getOptionSets(queryMap, filters);
+            }
+        };
+
+        List<OptionSet> optionSets = getCollection(apiResource, fields, lastUpdated, uids);
+
+        // we need to inverse relationships manually
+        for (OptionSet optionSet : optionSets) {
+            if (optionSet.getOptions() == null) {
+                continue;
+            }
+
+            for (Option option : optionSet.getOptions()) {
+                option.setOptionSet(optionSet);
+            }
+        }
+
+        return optionSets;
     }
 }

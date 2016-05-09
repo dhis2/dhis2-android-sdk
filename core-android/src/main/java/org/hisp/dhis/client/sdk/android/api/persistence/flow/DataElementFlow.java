@@ -75,7 +75,7 @@ public final class DataElementFlow extends BaseIdentifiableObjectFlow {
             references = {
                     @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class,
                             foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSetFlow optionSet;
 

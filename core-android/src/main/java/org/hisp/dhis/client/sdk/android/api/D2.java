@@ -40,6 +40,8 @@ import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractor;
 import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractorImpl;
 import org.hisp.dhis.client.sdk.android.event.EventInteractor;
 import org.hisp.dhis.client.sdk.android.event.EventInteractorImpl;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetInteractor;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetInteractorImpl;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractor;
 import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractorImpl;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractor;
@@ -120,6 +122,7 @@ public class D2 {
     private final EventInteractor eventInteractor;
     private final ProgramStageDataElementInteractor programStageDataElementInteractor;
     private final DataElementInteractor dataElementInteractor;
+    private final OptionSetInteractor optionSetInteractor;
 
     //-----------------------------------------------------------------------------------------
     // Utilities
@@ -153,6 +156,7 @@ public class D2 {
             programIndicatorInteractor = null;
             trackedEntityAttributeInteractor = null;
             trackedEntityDataValueInteractor = null;
+            optionSetInteractor = null;
             logger = null;
             return;
         }
@@ -231,6 +235,9 @@ public class D2 {
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
                 userAccountInteractor, userProgramInteractor, userOrganisationUnitInteractor);
+
+        optionSetInteractor = new OptionSetInteractorImpl(
+                servicesModule.getOptionSetService());
 
         logger = flavor.getLogger();
     }
@@ -377,6 +384,10 @@ public class D2 {
 
     public static TrackedEntityDataValueInteractor trackedEntityDataValues() {
         return configuredInstance().trackedEntityDataValueInteractor;
+    }
+
+    public static OptionSetInteractor optionSets() {
+        return configuredInstance().optionSetInteractor;
     }
 
     public static Logger logger() {

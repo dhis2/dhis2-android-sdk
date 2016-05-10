@@ -58,6 +58,7 @@ import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
@@ -66,6 +67,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
+import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.Row;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnCompleteEventClick;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.DataEntryFragment;
@@ -278,8 +280,37 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                     listViewAdapter.swapData(section.getRows());
                 }
             }
+            OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
+            if(!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
+                setEditableDataEntryRows(form,false);
+            }
             initiateEvaluateProgramRules();
         }
+    }
+
+    public void setEditableDataEntryRows(EventDataEntryFragmentForm form, boolean editable) {
+        List<Row> rows = new ArrayList<>();
+        if(!form.getSections().isEmpty()) {
+            if(form.getSections().size() > 1) {
+                rows = form.getCurrentSection().getRows();
+            }
+            else {
+                rows = form.getSections().get(0).getRows();
+            }
+        }
+        listViewAdapter.swapData(null);
+        if(editable) {
+            for(Row row : rows) {
+                row.setEditable(true);
+            }
+        } else {
+            for(Row row : rows) {
+                row.setEditable(false);
+            }
+        }
+        listView.setAdapter(null);
+        listViewAdapter.swapData(rows);
+        listView.setAdapter(listViewAdapter);
     }
 
     private void attachSpinner() {

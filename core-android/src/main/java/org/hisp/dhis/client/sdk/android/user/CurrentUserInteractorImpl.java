@@ -33,6 +33,8 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractor;
 import org.hisp.dhis.client.sdk.android.program.UserProgramInteractor;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
+import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.preferences.UserPreferences;
 import org.hisp.dhis.client.sdk.core.user.UserAccountController;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
@@ -55,18 +57,26 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
     private final UserProgramInteractor userProgramInteractor;
     private final UserOrganisationUnitInteractor organisationUnitInteractor;
 
+    //modules
+    private final PersistenceModule persistanceModule;
+    private final PreferencesModule preferencesModule;
+
     public CurrentUserInteractorImpl(UserPreferences userPreferences,
                                      UserAccountService userAccountService,
                                      UserAccountController userAccountController,
                                      UserAccountInteractor userAccountInteractor,
                                      UserProgramInteractor userProgramInteractor,
-                                     UserOrganisationUnitInteractor organisationUnitInteractor) {
+                                     UserOrganisationUnitInteractor organisationUnitInteractor,
+                                     PreferencesModule preferencesModule,
+                                     PersistenceModule persitenceModule) {
         this.userPreferences = userPreferences;
         this.userAccountService = userAccountService;
         this.userAccountController = userAccountController;
         this.userAccountInteractor = userAccountInteractor;
         this.userProgramInteractor = userProgramInteractor;
         this.organisationUnitInteractor = organisationUnitInteractor;
+        this.persistanceModule = persitenceModule;
+        this.preferencesModule = preferencesModule;
     }
 
     @Override
@@ -102,7 +112,9 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
         return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
             public Boolean call() {
-                return userPreferences.clear();
+                return userPreferences.clear() &&
+                        preferencesModule.clearAllPreferences() &&
+                        persistanceModule.deleteAllTables();
             }
         });
     }

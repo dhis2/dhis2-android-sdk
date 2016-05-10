@@ -234,7 +234,11 @@ public class D2 {
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
-                userAccountInteractor, userProgramInteractor, userOrganisationUnitInteractor);
+                userAccountInteractor,
+                userProgramInteractor,
+                userOrganisationUnitInteractor,
+                preferencesModule,
+                persistenceModule);
 
         optionSetInteractor = new OptionSetInteractorImpl(
                 servicesModule.getOptionSetService());

@@ -635,44 +635,44 @@ public final class MetaDataController extends ResourceController {
             organisationUnit.setType(OrganisationUnit.TYPE.ASSIGNED);
         }
 
-//        Set<String> teiSearchOrganisationUnitUids = null;
-//        if(userAccount.getTeiSearchOrganisationUnits() != null) {
-//            if(!userAccount.getTeiSearchOrganisationUnits().isEmpty()) {
-//                teiSearchOrganisationUnitUids = new HashSet<>();
-//                List<OrganisationUnit> teiSearchOrganisatonUnits = userAccount.getTeiSearchOrganisationUnits();
-//                for(OrganisationUnit organisationUnit : teiSearchOrganisatonUnits) {
-//                    teiSearchOrganisationUnitUids.add(organisationUnit.getId());
-//                }
-//            }
-//        }
-//        Map<String, List<OrganisationUnit>> teiSearchOrganisationUnitMap = null;
-//        List<OrganisationUnit> teiSearchOrganisationUnits = null;
-//        if(teiSearchOrganisationUnitUids != null) {
-//            Map<String,String> queryMap = new HashMap<>();
-//            queryMap.put("fields", "[id,displayName,programs]");
-//            String filter = "id:in:[";
-//
-//            for(String orgUnitUid : teiSearchOrganisationUnitUids) {
-//                if(!queryMap.containsKey("filter")) {
-//                    queryMap.put("filter", filter + orgUnitUid);
-//                }
-//                else {
-//                    String currentFilter = queryMap.get("filter");
-//                    queryMap.put("filter", currentFilter + "," + orgUnitUid);
-//                }
-//            }
-//            String currentFilter = queryMap.get("filter");
-//            queryMap.put("filter", currentFilter + "]");
-//            teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap);
-//            teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
-//        }
-//        if(teiSearchOrganisationUnits != null) {
-//
-//            for(OrganisationUnit organisationUnit : teiSearchOrganisationUnits) {
-//                organisationUnit.setType(OrganisationUnit.TYPE.SEARCH);
-//            }
-//            organisationUnitList.addAll(teiSearchOrganisationUnits);
-//        }
+        Set<String> teiSearchOrganisationUnitUids = null;
+        if(userAccount.getTeiSearchOrganisationUnits() != null) {
+            if(!userAccount.getTeiSearchOrganisationUnits().isEmpty()) {
+                teiSearchOrganisationUnitUids = new HashSet<>();
+                List<OrganisationUnit> teiSearchOrganisatonUnits = userAccount.getTeiSearchOrganisationUnits();
+                for(OrganisationUnit organisationUnit : teiSearchOrganisatonUnits) {
+                    teiSearchOrganisationUnitUids.add(organisationUnit.getId());
+                }
+            }
+        }
+        Map<String, List<OrganisationUnit>> teiSearchOrganisationUnitMap = null;
+        List<OrganisationUnit> teiSearchOrganisationUnits = null;
+        if(teiSearchOrganisationUnitUids != null) {
+            Map<String,String> queryMap = new HashMap<>();
+            queryMap.put("fields", "[id,displayName,programs]");
+            String filter = "id:in:[";
+
+            for(String orgUnitUid : teiSearchOrganisationUnitUids) {
+                if(!queryMap.containsKey("filter")) {
+                    queryMap.put("filter", filter + orgUnitUid);
+                }
+                else {
+                    String currentFilter = queryMap.get("filter");
+                    queryMap.put("filter", currentFilter + "," + orgUnitUid);
+                }
+            }
+            String currentFilter = queryMap.get("filter");
+            queryMap.put("filter", currentFilter + "]");
+            teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap);
+            teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
+        }
+        if(teiSearchOrganisationUnits != null) {
+
+            for(OrganisationUnit organisationUnit : teiSearchOrganisationUnits) {
+                organisationUnit.setType(OrganisationUnit.TYPE.SEARCH);
+            }
+            organisationUnitList.addAll(teiSearchOrganisationUnits);
+        }
 
         for(OrganisationUnit organisationUnit : organisationUnitList) {
 

@@ -147,7 +147,7 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
             List<OrganisationUnit> orgUnits = queryUnits();
             List<OptionAdapterValue> values = new ArrayList<>();
             for (OrganisationUnit orgUnit : orgUnits) {
-                if (hasPrograms(orgUnit.getId(), this.kinds)) {
+                if (hasPrograms(orgUnit.getId(), this.kinds) && OrganisationUnit.TYPE.ASSIGNED.equals(orgUnit.getType())) {
                     values.add(new OptionAdapterValue(orgUnit.getId(), orgUnit.getLabel()));
                 }
             }

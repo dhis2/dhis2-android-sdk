@@ -38,11 +38,15 @@ import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
 public interface EventService extends Service, Save<Event>, Remove<Event>, Get<Event>,
         GetUid<Event>, ListAll<Event>, ListUids<Event> {
+
+    Event create(OrganisationUnit organisationUnit, Program program, ProgramStage programStage,
+                 Event.EventStatus status);
 
     List<Event> list(OrganisationUnit organisationUnit, Program program);
 }

@@ -40,23 +40,23 @@ import java.util.Set;
 public enum ValueType {
     TEXT(String.class),
     LONG_TEXT(String.class),
-    LETTER(String.class),
+    LETTER(String.class),        // TODO
     PHONE_NUMBER(String.class),
     EMAIL(String.class),
     BOOLEAN(Boolean.class),
     TRUE_ONLY(Boolean.class),
-    DATE(Date.class),
-    DATETIME(Date.class),
-    TIME(String.class),
+    DATE(Date.class),            // TODO
+    DATETIME(Date.class),        // TODO
+    TIME(String.class),          // TODO
     NUMBER(Double.class),
-    UNIT_INTERVAL(Double.class),
-    PERCENTAGE(Double.class),
+    UNIT_INTERVAL(Double.class), // TODO
+    PERCENTAGE(Double.class),    // TODO
     INTEGER(Integer.class),
     INTEGER_POSITIVE(Integer.class),
     INTEGER_NEGATIVE(Integer.class),
     INTEGER_ZERO_OR_POSITIVE(Integer.class),
     TRACKER_ASSOCIATE(TrackedEntityInstance.class),
-    USERNAME(String.class),
+    USERNAME(String.class),      // TODO
     FILE_RESOURCE(String.class),
     COORDINATE(String.class);
 

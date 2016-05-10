@@ -99,8 +99,10 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
 
@@ -629,6 +631,48 @@ public final class MetaDataController extends ResourceController {
         }
 
         List<OrganisationUnit> organisationUnitList = userAccount.getOrganisationUnits();
+        for(OrganisationUnit organisationUnit : organisationUnitList) {
+            organisationUnit.setType(OrganisationUnit.TYPE.ASSIGNED);
+        }
+
+//        Set<String> teiSearchOrganisationUnitUids = null;
+//        if(userAccount.getTeiSearchOrganisationUnits() != null) {
+//            if(!userAccount.getTeiSearchOrganisationUnits().isEmpty()) {
+//                teiSearchOrganisationUnitUids = new HashSet<>();
+//                List<OrganisationUnit> teiSearchOrganisatonUnits = userAccount.getTeiSearchOrganisationUnits();
+//                for(OrganisationUnit organisationUnit : teiSearchOrganisatonUnits) {
+//                    teiSearchOrganisationUnitUids.add(organisationUnit.getId());
+//                }
+//            }
+//        }
+//        Map<String, List<OrganisationUnit>> teiSearchOrganisationUnitMap = null;
+//        List<OrganisationUnit> teiSearchOrganisationUnits = null;
+//        if(teiSearchOrganisationUnitUids != null) {
+//            Map<String,String> queryMap = new HashMap<>();
+//            queryMap.put("fields", "[id,displayName,programs]");
+//            String filter = "id:in:[";
+//
+//            for(String orgUnitUid : teiSearchOrganisationUnitUids) {
+//                if(!queryMap.containsKey("filter")) {
+//                    queryMap.put("filter", filter + orgUnitUid);
+//                }
+//                else {
+//                    String currentFilter = queryMap.get("filter");
+//                    queryMap.put("filter", currentFilter + "," + orgUnitUid);
+//                }
+//            }
+//            String currentFilter = queryMap.get("filter");
+//            queryMap.put("filter", currentFilter + "]");
+//            teiSearchOrganisationUnitMap = dhisApi.getOrganisationUnits(queryMap);
+//            teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
+//        }
+//        if(teiSearchOrganisationUnits != null) {
+//
+//            for(OrganisationUnit organisationUnit : teiSearchOrganisationUnits) {
+//                organisationUnit.setType(OrganisationUnit.TYPE.SEARCH);
+//            }
+//            organisationUnitList.addAll(teiSearchOrganisationUnits);
+//        }
 
         for(OrganisationUnit organisationUnit : organisationUnitList) {
 
@@ -642,6 +686,8 @@ public final class MetaDataController extends ResourceController {
                 organisationUnit.setPrograms(assignedProgramToUnit);
             }
         }
+
+
 
         List<DbOperation> operations = AssignedProgramsWrapper.getOperations(organisationUnitList);
 

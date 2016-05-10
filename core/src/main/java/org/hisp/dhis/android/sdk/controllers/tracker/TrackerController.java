@@ -113,6 +113,14 @@ public final class TrackerController extends ResourceController {
                 queryList();
     }
 
+
+    public static List<Enrollment> getEnrollmentsForProgram(String program) {
+        return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.PROGRAM).
+                is(program)).orderBy(false, Enrollment$Table.ENROLLMENTDATE).
+                queryList();
+    }
+
+
     public static List<Enrollment> getEnrollments(TrackedEntityInstance trackedEntityInstance) {
         return new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.LOCALTRACKEDENTITYINSTANCEID).
                 is(trackedEntityInstance.getLocalId())).queryList();
@@ -194,6 +202,22 @@ public final class TrackerController extends ResourceController {
         List<Event> events = new Select().from(Event.class).where(Condition.column
                 (Event$Table.ORGANISATIONUNITID).is(organisationUnitId)).
                 and(Condition.column(Event$Table.PROGRAMID).is(programId)).orderBy(false, Event$Table.LASTUPDATED).queryList();
+        return events;
+    }
+
+    /**
+     * Returns a list of events for a given org unit and program and event has enrollment
+     *
+     * @param organisationUnitId
+     * @param programId
+     * @return
+     */
+    public static List<Event> getEventsThatHasEnrollments(String organisationUnitId, String programId) {
+        List<Event> events = new Select().from(Event.class).where(Condition.column
+                (Event$Table.ORGANISATIONUNITID).is(organisationUnitId))
+                .and(Condition.column(Event$Table.PROGRAMID).is(programId))
+                .and(Condition.column(Event$Table.ENROLLMENT).isNotNull())
+                .orderBy(false, Event$Table.LASTUPDATED).queryList();
         return events;
     }
 
@@ -405,6 +429,14 @@ public final class TrackerController extends ResourceController {
                                                                                  String queryString,
                                                                                    TrackedEntityAttributeValue... params) throws APIException {
         return TrackerDataLoader.queryTrackedEntityInstancesDataFromServer(dhisApi, organisationUnitUid, programUid, queryString, params);
+    }
+    public static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgUnits(DhisApi dhisApi,
+                                                                                        String organisationUnitUid,
+                                                                                        String programUid,
+                                                                                        String queryString,
+                                                                                        boolean detailedSearch,
+                                                                                        TrackedEntityAttributeValue... params) throws APIException {
+        return TrackerDataLoader.queryTrackedEntityInstancesDataFromAllAccessibleOrgunits(dhisApi, organisationUnitUid, programUid, queryString, detailedSearch, params);
     }
 
     public static void getTrackedEntityInstancesDataFromServer(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean getEnrollments) throws APIException {

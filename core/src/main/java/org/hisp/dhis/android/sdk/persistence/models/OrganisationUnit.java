@@ -30,6 +30,7 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -67,6 +68,10 @@ public class OrganisationUnit extends BaseModel {
 
     @JsonProperty("programs")
     List<Program> programs;
+
+    @JsonIgnore
+    @Column(name = "type")
+    OrganisationUnit.TYPE type;
 
     public OrganisationUnit() {
     }
@@ -112,8 +117,21 @@ public class OrganisationUnit extends BaseModel {
         return programs;
     }
 
+    public TYPE getType() {
+        return type;
+    }
+
+    public void setType(TYPE type) {
+        this.type = type;
+    }
+
     public void setPrograms(List<Program> programs) {
         this.programs = programs;
+    }
+
+    public enum TYPE {
+        ASSIGNED,
+        SEARCH
     }
 
 }

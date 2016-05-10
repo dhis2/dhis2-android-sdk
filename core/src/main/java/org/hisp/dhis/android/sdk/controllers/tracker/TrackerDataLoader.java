@@ -148,10 +148,10 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromServer(DhisApi dhisApi,
-                                                                                        String organisationUnitUid,
-                                                                                        String programUid,
-                                                                                        String queryString,
-                                                                                        TrackedEntityAttributeValue... params) throws APIException {
+                                                                                 String organisationUnitUid,
+                                                                                 String programUid,
+                                                                                 String queryString,
+                                                                                 TrackedEntityAttributeValue... params) throws APIException {
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         if(programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
@@ -185,6 +185,47 @@ final class TrackerDataLoader extends ResourceController {
         List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
                 .getTrackedEntityInstances(organisationUnitUid,
                         QUERY_MAP_FULL), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+        return trackedEntityInstances;
+    }
+
+    static List<TrackedEntityInstance> queryTrackedEntityInstancesDataFromAllAccessibleOrgunits(DhisApi dhisApi,
+                                                                                        String organisationUnitUid,
+                                                                                        String programUid,
+                                                                                        String queryString,
+                                                                                        boolean detailedSearch,
+                                                                                        TrackedEntityAttributeValue... params) throws APIException {
+        final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
+        if(programUid != null) {
+            QUERY_MAP_FULL.put("program", programUid);
+        }
+        List<TrackedEntityAttributeValue> valueParams = new LinkedList<>();
+        if( params != null ) {
+            for(TrackedEntityAttributeValue teav: params ) {
+                if( teav != null && teav.getValue() != null ) {
+                    if( !teav.getValue().isEmpty() ) {
+                        valueParams.add( teav );
+//                        QUERY_MAP_FULL.put("filter",teav.getTrackedEntityAttributeId()+":LIKE:"+teav.getValue());
+                    }
+                }
+            }
+        }
+        for(TrackedEntityAttributeValue val : valueParams) {
+            if(!QUERY_MAP_FULL.containsKey("filter")) {
+                QUERY_MAP_FULL.put("filter", val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+            }
+            else {
+                String currentFilter = QUERY_MAP_FULL.get("filter");
+                QUERY_MAP_FULL.put("filter", currentFilter + "&" + val.getTrackedEntityAttributeId() + ":LIKE:" + val.getValue());
+            }
+        }
+
+
+        //doesnt work with both attribute filter and query
+        if(queryString!=null && !queryString.isEmpty() && valueParams.isEmpty() ) {
+            QUERY_MAP_FULL.put("query","LIKE:"+queryString);//todo: make a map where we can use more than one of each key
+        }
+        List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
+                .getTrackedEntityInstancesFromAllAccessibleOrgUnits(QUERY_MAP_FULL), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
         return trackedEntityInstances;
     }
 

@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.Enrollment;
 import org.hisp.dhis.android.sdk.persistence.models.Event;
 import org.hisp.dhis.android.sdk.persistence.models.Interpretation;
 import org.hisp.dhis.android.sdk.persistence.models.OptionSet;
+import org.hisp.dhis.android.sdk.persistence.models.OrganisationUnit;
 import org.hisp.dhis.android.sdk.persistence.models.Program;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRuleAction;
@@ -211,8 +212,11 @@ public interface DhisApi {
     @GET("/me/programs/")
     Response getAssignedPrograms(@QueryMap Map<String, String> queryMap);
 
-    @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]]")
+    @GET("/me?fields=organisationUnits[id,displayName,programs[id]],userCredentials[userRoles[programs[id]]],teiSearchOrganisationUnits")
     UserAccount getUserAccount();
+
+    @GET("/" + ApiEndpointContainer.ORGANISATIONUNITS + "?paging=false")
+    Map<String,List<OrganisationUnit>> getOrganisationUnits(@QueryMap(encodeValues = false) Map<String,String> queryMap);
 
     @GET("/" + ApiEndpointContainer.PROGRAMS + "/{programUid}")
     Program getProgram(@Path("programUid") String programUid, @QueryMap Map<String, String> queryMap);
@@ -288,6 +292,9 @@ public interface DhisApi {
 
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true")
     Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encodeValues = false) Map<String, String> queryMap);
+
+    @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true&ouMode=ACCESSIBLE")
+    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@QueryMap(encodeValues = false) Map<String, String> queryMap);
 
     @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")
     Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);

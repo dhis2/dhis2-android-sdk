@@ -710,7 +710,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        goBackToPreviousFragment();
                     }
                 });
         enrollmentDatePickerDialog.show();

@@ -42,6 +42,9 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
+    <style name="AppTheme.Main" parent="AppTheme.Base" >
+    </style>
+
     <style name="AppTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">@color/color_primary_default</item>
         <item name="colorPrimaryDark">@color/color_primary_dark</item>

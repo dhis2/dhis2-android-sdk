@@ -23,19 +23,26 @@ public class PickerItemAdapter extends RecyclerView.Adapter {
     private final LayoutInflater inflater;
 
     // Adapter data
-    private final Picker currentPicker;
+    private Picker currentPicker;
     private final List<Picker> originalPickers;
     private final List<Picker> filteredPickers;
     private final Context context;
 
     private OnPickerItemClickListener onPickerItemClickListener;
 
-    public PickerItemAdapter(Context context, Picker currentPicker) {
+    public PickerItemAdapter(Context context, Picker picker) {
         this.context = isNull(context, "context must not be null!");
         this.inflater = LayoutInflater.from(context);
-        this.currentPicker = isNull(currentPicker, "Picker must not be null");
+        this.currentPicker = isNull(picker, "Picker must not be null");
         this.originalPickers = currentPicker.getChildren();
         this.filteredPickers = new ArrayList<>(currentPicker.getChildren());
+    }
+
+    public PickerItemAdapter(Context context) {
+        this.context = isNull(context, "context must not be null!");
+        this.inflater = LayoutInflater.from(context);
+        this.originalPickers = new ArrayList<>();
+        this.filteredPickers = new ArrayList<>();
     }
 
     @Override
@@ -49,7 +56,7 @@ public class PickerItemAdapter extends RecyclerView.Adapter {
         PickerItemViewHolder pickerViewHolder = (PickerItemViewHolder) holder;
         Picker picker = filteredPickers.get(position);
 
-        if (this.currentPicker.getSelectedChild() != null &&
+        if (this.currentPicker != null && this.currentPicker.getSelectedChild() != null &&
                 picker.equals(this.currentPicker.getSelectedChild())) {
             pickerViewHolder.updateViewHolder(picker, true);
         } else {
@@ -64,6 +71,23 @@ public class PickerItemAdapter extends RecyclerView.Adapter {
 
     public void setOnPickerItemClickListener(OnPickerItemClickListener onPickerItemClickListener) {
         this.onPickerItemClickListener = onPickerItemClickListener;
+    }
+
+    public void swapData(Picker picker) {
+        currentPicker = picker;
+        originalPickers.clear();
+        filteredPickers.clear();
+
+        if (picker != null) {
+            originalPickers.addAll(picker.getChildren());
+            filteredPickers.addAll(picker.getChildren());
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public Picker getData() {
+        return currentPicker;
     }
 
     public void filter(@NonNull String query) {

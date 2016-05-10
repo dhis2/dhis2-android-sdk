@@ -68,6 +68,10 @@ public class Picker implements Serializable {
         return new Picker(null, null, label, null);
     }
 
+    public static Picker create(String id, String label) {
+        return new Picker(id, null, label, null);
+    }
+
     public static Picker create(String id, String name, Picker parent) {
         return new Picker(id, name, null, parent);
     }

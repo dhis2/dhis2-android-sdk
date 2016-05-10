@@ -29,10 +29,12 @@
 package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,28 @@ public class EventServiceImpl implements EventService {
     public EventServiceImpl(EventStore eventStore, StateStore stateStore) {
         this.eventStore = eventStore;
         this.stateStore = stateStore;
+    }
+
+    @Override
+    public Event create(OrganisationUnit organisationUnit, Program program,
+                        ProgramStage programStage, Event.EventStatus status) {
+        isNull(organisationUnit, "organisationUnit argument must not be null");
+        isNull(program, "program argument must not be null");
+        isNull(programStage, "programStage argument must not be null");
+        isNull(status, "status argument must not be null");
+
+        if(!Event.EventStatus.ACTIVE.equals(status) &&
+                !Event.EventStatus.COMPLETED.equals(status)) {
+            throw new IllegalArgumentException("Event status must be either ACTIVE or COMPLETED");
+        }
+
+        Event event = new Event();
+        event.setUId(CodeGenerator.generateCode());
+        event.setStatus(status);
+        event.setOrgUnit(organisationUnit.getUId());
+        event.setProgram(program.getUId());
+        event.setProgramStage(programStage.getUId());
+        return event;
     }
 
     @Override

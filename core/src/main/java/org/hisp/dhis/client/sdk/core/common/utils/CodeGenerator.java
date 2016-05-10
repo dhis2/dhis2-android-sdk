@@ -33,13 +33,10 @@ import java.util.regex.Pattern;
 
 public class CodeGenerator {
     private static final Pattern CODE_PATTERN = Pattern.compile("^[a-zA-Z]{1}[a-zA-Z0-9]{10}$");
-
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz"
             + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
     private static final String ALLOWED_CHARS = "0123456789" + LETTERS;
     private static final int NUMBER_OF_CODE_POINTS = ALLOWED_CHARS.length();
-
     private static final int CODE_SIZE = 11;
 
     /**

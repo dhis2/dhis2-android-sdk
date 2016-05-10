@@ -70,7 +70,7 @@ public class DataElementApiClientImpl implements DataElementApiClient {
             public String getAllProperties() {
                 return "id,name,displayName,created,lastUpdated,access," +
                         "shortName,valueType,zeroIsSignificant,aggregationOperator" +
-                        "formName,numberType,domainType,dimension,displayFormName" +
+                        "formName,numberType,domainType,dimension,displayFormName," +
                         "optionSet[id]";
             }
 

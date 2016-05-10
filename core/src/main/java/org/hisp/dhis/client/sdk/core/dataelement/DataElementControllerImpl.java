@@ -98,10 +98,11 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
                 Fields.ALL, lastUpdated, uidSet);
 
         // Retrieving program stage uids from program stages sections
-        Set<String> optionSetUids = new HashSet<>();
         List<DataElement> mergedDataElements = ModelUtils.merge(
                 allExistingDataElements, updatedDataElements,
                 persistedDataElements);
+
+        Set<String> optionSetUids = new HashSet<>();
         for (DataElement dataElement : mergedDataElements) {
             if(dataElement.getOptionSet() != null) {
                 optionSetUids.add(dataElement.getOptionSet().getUId());
@@ -112,9 +113,7 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
         // data elements are referencing them directly)
         optionSetController.pull(strategy, optionSetUids);
 
-
         // we will have to perform something similar to what happens in AbsController
-
         System.out.println("allExistingDataElements: " + allExistingDataElements);
         System.out.println("updatedDataElements: " + updatedDataElements);
         System.out.println("DataElements in store: " + persistedDataElements);

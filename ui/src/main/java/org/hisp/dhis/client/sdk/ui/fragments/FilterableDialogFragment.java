@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.client.sdk.ui.fragments;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -46,14 +44,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.adapters.OnPickerItemClickListener;
+import org.hisp.dhis.client.sdk.ui.adapters.PickerItemAdapter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
 import org.hisp.dhis.client.sdk.ui.views.DividerDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 public class FilterableDialogFragment extends AppCompatDialogFragment {
@@ -63,7 +58,7 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
     // for arguments bundle
     public static final String ARGS_PICKER = "args:picker";
 
-    private OnPickerItemClickListener onPickerItemClickListener;
+    private OnPickerItemClickDelegate onPickerItemClickDelegate;
 
     public static FilterableDialogFragment newInstance(Picker picker) {
         Bundle arguments = new Bundle();
@@ -78,6 +73,7 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
 
     public FilterableDialogFragment() {
         // explicit empty constructor
+        onPickerItemClickDelegate = new OnPickerItemClickDelegate();
     }
 
     @Nullable
@@ -118,14 +114,15 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        final PickerItemAdapter itemAdapter = new PickerItemAdapter(picker);
+        final PickerItemAdapter itemAdapter = new PickerItemAdapter(getActivity(), picker);
+        itemAdapter.setOnPickerItemClickListener(onPickerItemClickDelegate);
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerDecoration(
                 ContextCompat.getDrawable(getActivity(), R.drawable.divider)));
 
         EditText filterEditText = (EditText) view
-                .findViewById(R.id.edittext_search_picker_items);
+                .findViewById(R.id.edittext_filter_picker_items);
         filterEditText.addTextChangedListener(new AbsTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -135,116 +132,101 @@ public class FilterableDialogFragment extends AppCompatDialogFragment {
     }
 
     public void setOnPickerItemClickListener(OnPickerItemClickListener clickListener) {
-        onPickerItemClickListener = clickListener;
+        onPickerItemClickDelegate.setOnPickerItemClickListener(clickListener);
     }
 
-    public interface OnPickerItemClickListener {
-        void onPickerItemClickListener(Picker selectedPicker);
+    private class OnPickerItemClickDelegate implements OnPickerItemClickListener {
+        private OnPickerItemClickListener onPickerItemClickListener;
+
+        @Override
+        public void onPickerItemClickListener(Picker selectedPicker) {
+            if (onPickerItemClickListener != null) {
+                onPickerItemClickListener.onPickerItemClickListener(selectedPicker);
+            }
+
+            dismiss();
+        }
+
+        public void setOnPickerItemClickListener(OnPickerItemClickListener onItemClickListener) {
+            this.onPickerItemClickListener = onItemClickListener;
+        }
     }
 
-    private class PickerItemAdapter extends RecyclerView.Adapter {
-        // view inflater
-        private final LayoutInflater inflater;
-
-        // Adapter data
-        private final Picker currentPicker;
-        private final List<Picker> originalPickers;
-        private final List<Picker> filteredPickers;
-
-        public PickerItemAdapter(Picker currentPicker) {
-            this.inflater = LayoutInflater.from(getActivity());
-            this.currentPicker = isNull(currentPicker, "Picker must not be null");
-            this.originalPickers = currentPicker.getChildren();
-            this.filteredPickers = new ArrayList<>(currentPicker.getChildren());
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new PickerItemViewHolder(inflater.inflate(
-                    R.layout.recyclerview_picker_item, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            PickerItemViewHolder pickerViewHolder = (PickerItemViewHolder) holder;
-            Picker picker = filteredPickers.get(position);
-
-            if (this.currentPicker.getSelectedChild() != null &&
-                    picker.equals(this.currentPicker.getSelectedChild())) {
-                pickerViewHolder.updateViewHolder(picker, true);
-            } else {
-                pickerViewHolder.updateViewHolder(picker, false);
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return filteredPickers.size();
-        }
-
-        private void filter(@NonNull String query) {
-            filteredPickers.clear();
-
-            query = query.toLowerCase();
-            for (Picker picker : originalPickers) {
-                if (picker.getName() != null && picker.getName().toLowerCase().contains(query)) {
-                    filteredPickers.add(picker);
-                }
-            }
-
-            notifyDataSetChanged();
-        }
-
-        private class PickerItemViewHolder extends RecyclerView.ViewHolder {
-            final TextView textViewLabel;
-            final OnClickListener onTextViewLabelClickListener;
-
-            public PickerItemViewHolder(View itemView) {
-                super(itemView);
-
-                this.textViewLabel = (TextView) itemView;
-                this.onTextViewLabelClickListener = new OnClickListener();
-
-                ColorStateList colorStateList = new ColorStateList(
-                        new int[][]{
-                                // for selected state
-                                new int[]{android.R.attr.state_selected},
-
-                                // default color state
-                                new int[]{}
-                        },
-                        new int[]{
-                                ContextCompat.getColor(
-                                        getActivity(), R.color.color_primary_default),
-                                textViewLabel.getCurrentTextColor()
-                        });
-
-                this.textViewLabel.setTextColor(colorStateList);
-                this.textViewLabel.setOnClickListener(onTextViewLabelClickListener);
-            }
-
-            public void updateViewHolder(Picker picker, boolean isSelected) {
-                textViewLabel.setSelected(isSelected);
-                textViewLabel.setText(picker.getName());
-                onTextViewLabelClickListener.setPicker(picker);
-            }
-
-            private class OnClickListener implements View.OnClickListener {
-                private Picker picker;
-
-                public void setPicker(Picker picker) {
-                    this.picker = picker;
-                }
-
-                @Override
-                public void onClick(View view) {
-                    if (onPickerItemClickListener != null) {
-                        onPickerItemClickListener.onPickerItemClickListener(picker);
-                    }
-
-                    dismiss();
-                }
-            }
-        }
-    }
+//    public static abstract class AbsPickerLoader {
+//        private final Picker picker;
+//        private OnPickerLoadedListener onPickersLoadedListener;
+//
+//        public AbsPickerLoader(Picker picker) {
+//            this.picker = picker;
+//        }
+//
+//        public void setOnPickersLoadedListener(OnPickerLoadedListener onPickersLoadedListener) {
+//            this.onPickersLoadedListener = onPickersLoadedListener;
+//        }
+//
+//        public OnPickerLoadedListener getOnPickersLoadedListener() {
+//            return onPickersLoadedListener;
+//        }
+//
+//        public Picker getPicker() {
+//            return picker;
+//        }
+//
+//        public abstract void onLoadPicker();
+//    }
+//
+//
+//    private static class PickerItemLoader extends FilterableDialogFragment.AbsPickerLoader {
+//        private final OptionSetInteractor optionSetInteractor;
+//
+//        private PickerItemLoader(Picker picker, OptionSetInteractor optionSetInteractor) {
+//            super(picker);
+//            this.optionSetInteractor = optionSetInteractor;
+//        }
+//
+//        @Override
+//        public void onLoadPicker() {
+//            OptionSet optionSet = new OptionSet();
+//            optionSet.setUId(getPicker().getId());
+//
+//            optionSetInteractor.list(optionSet)
+//                    .map(new Func1<List<Option>, Picker>() {
+//                        @Override
+//                        public Picker call(List<Option> options) {
+//                            if (options == null || options.isEmpty()) {
+//                                return getPicker();
+//                            }
+//
+//                            Picker picker = getPicker();
+//
+//                            // build options
+//                            for (Option option : options) {
+//                                picker.addChild(Picker.create(option.getCode(),
+//                                        option.getDisplayName(), picker));
+//                            }
+//
+//                            return picker;
+//                        }
+//                    })
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Action1<Picker>() {
+//                        @Override
+//                        public void call(Picker picker) {
+//                            if (getOnPickersLoadedListener() != null) {
+//                                getOnPickersLoadedListener().onPickerLoaded(picker);
+//                            }
+//                        }
+//                    }, new Action1<Throwable>() {
+//                        @Override
+//                        public void call(Throwable throwable) {
+//                            // log throwable exception
+//                        }
+//                    });
+//        }
+//    }
+//
+//    public interface OnPickerLoadedListener {
+//        void onPickerLoaded(Picker picker);
+//    }
 }

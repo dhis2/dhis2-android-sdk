@@ -70,68 +70,6 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
         this.transactionManager = transactionManager;
     }
 
-
-//    private void linkOptionsWithOptionSets(List<OptionSet> optionSets) {
-//        // Building option to optionset relationship.
-//        if (optionSets != null && !optionSets.isEmpty()) {
-//            for (OptionSet optionSet : optionSets) {
-//                if (optionSet == null || optionSet.getOptions() == null) {
-//                    continue;
-//                }
-//                int sortOrder = 0;
-//                for (Option option : optionSet.getOptions()) {
-//                    option.setUId(optionSet.getUId() + option.getCode());//options don't have
-//                    // uid, but uid is used in createOperations
-//                    option.setLastUpdated(new DateTime());//same with these dates
-//                    option.setCreated(new DateTime());
-//                    option.setOptionSet(optionSet);
-//                    option.setSortOrder(sortOrder);
-//                    sortOrder++;
-//                }
-//            }
-//        }
-//    }
-//
-//
-//    @Override
-//    protected void synchronizes(SyncStrategy strategy, Set<String> uids) {
-//        ResourceType resource = ResourceType.OPTION_SETS;
-//        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-//        DateTime lastUpdated = lastUpdatedPreferences.get(resource, DateType.SERVER);
-//        List<OptionSet> allOptionSets = optionSetApiClient.getOptionSets(Fields.BASIC,
-// lastUpdated, null);
-//        List<OptionSet> updatedOptionSets = optionSetApiClient.getOptionSets(lastUpdated);
-////        linkOptionsWithOptionSets(updatedOptionSets);
-//        List<OptionSet> existingPersistedAndUpdatedOptionSets =
-//                ModelUtils.merge(allOptionSets, updatedOptionSets, optionSetStore.queryAll());
-//
-//        List<DbOperation> operations = new ArrayList<>();
-//        List<OptionSet> persistedOptionSets = optionSetStore.queryAll();
-//        if (existingPersistedAndUpdatedOptionSets != null &&
-//                !existingPersistedAndUpdatedOptionSets.isEmpty()) {
-//            for (OptionSet optionSet : existingPersistedAndUpdatedOptionSets) {
-//                if (optionSet == null || optionSet.getOptions() == null) {
-//                    continue;
-//                }
-//                OptionSet persistedOptionSet = optionSetStore.queryByUid(optionSet.getUId());
-//                List<Option> persistedOptions;
-//                if (persistedOptionSet != null) {
-//                    persistedOptions = persistedOptionSet.getOptions();
-//                } else {
-//                    persistedOptions = new ArrayList<>();
-//                }
-//                operations.addAll(DbUtils.createOperations(optionStore,
-//                        persistedOptions, optionSet.getOptions()));
-//            }
-//        }
-//        operations.addAll(DbUtils.createOperations(optionSetStore,
-//                persistedOptionSets, existingPersistedAndUpdatedOptionSets));
-//
-////        DbUtils.applyBatch(operations);
-//        transactionManager.transact(operations);
-//        lastUpdatedPreferences.save(ResourceType.OPTION_SETS, DateType.SERVER, serverTime);
-//    }
-
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
@@ -144,7 +82,7 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<OptionSet> allExistingOptionSets = optionSetApiClient
-                .getOptionSets(Fields.BASIC, null);
+                .getOptionSets(Fields.BASIC, null, null);
 
         Set<String> uidSet = null;
         if (uids != null) {
@@ -157,16 +95,13 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
         List<OptionSet> updatedOptionSets = optionSetApiClient
                 .getOptionSets(Fields.ALL, lastUpdated, uidSet);
 
-
         List<OptionSet> mergedOptionSets = ModelUtils.merge(
                 allExistingOptionSets, updatedOptionSets,
                 persistedOptionSets);
 
-
         List<DbOperation> optionDbOperations = new ArrayList<>();
 
-        if (mergedOptionSets != null &&
-                !mergedOptionSets.isEmpty()) {
+        if (mergedOptionSets != null && !mergedOptionSets.isEmpty()) {
             for (OptionSet optionSet : mergedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
@@ -183,12 +118,11 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
             }
         }
 
-
         // we will have to perform something similar to what happens in AbsController
-
         List<DbOperation> dbOperations = DbUtils.createOperations(
                 allExistingOptionSets, updatedOptionSets,
                 persistedOptionSets, identifiableObjectStore);
+
         transactionManager.transact(optionDbOperations);
         transactionManager.transact(dbOperations);
 

@@ -67,7 +67,7 @@
     </LinearLayout>
 
     <org.hisp.dhis.client.sdk.ui.views.FontEditText
-        android:id="@+id/edittext_search_picker_items"
+        android:id="@+id/edittext_filter_picker_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="13dp"

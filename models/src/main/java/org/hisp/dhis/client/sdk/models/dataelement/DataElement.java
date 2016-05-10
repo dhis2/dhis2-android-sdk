@@ -30,7 +30,6 @@ package org.hisp.dhis.client.sdk.models.dataelement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
 import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 

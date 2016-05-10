@@ -37,7 +37,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 
 @Table(database = DbDhis.class)
@@ -75,7 +75,7 @@ public final class DataElementFlow extends BaseIdentifiableObjectFlow {
             references = {
                     @ForeignKeyReference(columnName = OPTION_SET_KEY, columnType = String.class,
                             foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSetFlow optionSet;
 

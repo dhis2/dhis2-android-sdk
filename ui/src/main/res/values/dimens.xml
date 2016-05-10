@@ -35,6 +35,7 @@
 
     <dimen name="navigation_header_height">192dp</dimen>
     <dimen name="navigation_avatar_radius">32dp</dimen>
+    <dimen name="navigation_drawer_width">304dp</dimen>
 
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_large">17sp</dimen>

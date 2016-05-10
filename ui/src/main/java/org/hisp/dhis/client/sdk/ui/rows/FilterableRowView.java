@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.adapters.OnPickerItemClickListener;
 import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
@@ -47,7 +48,7 @@ public class FilterableRowView implements RowView {
         private final ImageButton clearButton;
 
         private final OnClickListener onClickListener;
-        private final OnPickerItemClickListener onPickerItemClickListener;
+        private final OnItemClickListener onItemClickListener;
 
         public FilterViewHolder(View itemView) {
             super(itemView);
@@ -62,7 +63,7 @@ public class FilterableRowView implements RowView {
                     .findViewById(R.id.button_clear);
 
             onClickListener = new OnClickListener();
-            onPickerItemClickListener = new OnPickerItemClickListener(filterEditText);
+            onItemClickListener = new OnItemClickListener(filterEditText);
 
             filterEditText.setOnClickListener(onClickListener);
             clearButton.setOnClickListener(onClickListener);
@@ -71,7 +72,7 @@ public class FilterableRowView implements RowView {
 
         public void update(FormEntityFilter formEntityFilter) {
             onClickListener.setFormEntityFilter(formEntityFilter);
-            onPickerItemClickListener.setFormEntityFilter(formEntityFilter);
+            onItemClickListener.setFormEntityFilter(formEntityFilter);
 
             textViewLabel.setText(formEntityFilter.getLabel());
 
@@ -113,7 +114,7 @@ public class FilterableRowView implements RowView {
             Picker existingPicker = (Picker) arguments
                     .getSerializable(FilterableDialogFragment.ARGS_PICKER);
             if (picker.equals(existingPicker)) {
-                fragment.setOnPickerItemClickListener(onPickerItemClickListener);
+                fragment.setOnPickerItemClickListener(onItemClickListener);
             }
         }
 
@@ -139,18 +140,17 @@ public class FilterableRowView implements RowView {
                 if (formEntityFilter.getPicker() != null) {
                     FilterableDialogFragment dialogFragment = FilterableDialogFragment
                             .newInstance(formEntityFilter.getPicker());
-                    dialogFragment.setOnPickerItemClickListener(onPickerItemClickListener);
+                    dialogFragment.setOnPickerItemClickListener(onItemClickListener);
                     dialogFragment.show(fragmentManager, FilterableDialogFragment.TAG);
                 }
             }
         }
 
-        private class OnPickerItemClickListener
-                implements FilterableDialogFragment.OnPickerItemClickListener {
+        private class OnItemClickListener implements OnPickerItemClickListener {
             private final EditText formEditText;
             private FormEntityFilter formEntityFilter;
 
-            public OnPickerItemClickListener(EditText formEditText) {
+            public OnItemClickListener(EditText formEditText) {
                 this.formEditText = formEditText;
             }
 

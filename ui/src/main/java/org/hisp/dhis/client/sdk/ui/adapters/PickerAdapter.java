@@ -40,7 +40,7 @@ import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment;
-import org.hisp.dhis.client.sdk.ui.fragments.FilterableDialogFragment.OnPickerItemClickListener;
+
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 
 import java.util.ArrayList;
@@ -212,7 +212,7 @@ public class PickerAdapter extends RecyclerView.Adapter {
             Picker existingPicker = (Picker) arguments
                     .getSerializable(FilterableDialogFragment.ARGS_PICKER);
             if (picker.equals(existingPicker)) {
-                FilterableDialogFragment.OnPickerItemClickListener listener =
+                OnPickerItemClickListener listener =
                         new OnItemClickedListener();
                 fragment.setOnPickerItemClickListener(listener);
             }
@@ -236,7 +236,7 @@ public class PickerAdapter extends RecyclerView.Adapter {
         }
 
         private void attachFragment() {
-            FilterableDialogFragment.OnPickerItemClickListener listener =
+            OnPickerItemClickListener listener =
                     new OnItemClickedListener();
             FilterableDialogFragment dialogFragment =
                     FilterableDialogFragment.newInstance(picker);

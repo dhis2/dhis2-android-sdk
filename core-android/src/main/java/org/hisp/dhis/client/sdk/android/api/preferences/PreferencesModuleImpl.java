@@ -72,7 +72,9 @@ public class PreferencesModuleImpl implements PreferencesModule {
 
     @Override
     public boolean clearAllPreferences() {
-        return configurationPreferences.clear() && lastUpdatedPreferences.clear()
-                && userPreferences.clear();
+        return configurationPreferences.clear() &&
+                lastUpdatedPreferences.clear() &&
+                userPreferences.clear() &&
+                systemInfoPreferences.clear();
     }
 }

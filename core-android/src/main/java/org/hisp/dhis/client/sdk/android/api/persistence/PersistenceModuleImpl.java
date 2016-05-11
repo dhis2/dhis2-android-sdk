@@ -208,14 +208,22 @@ public class PersistenceModuleImpl implements PersistenceModule {
 
     @Override
     public boolean deleteAllTables() {
-        return userAccountStore.deleteAll() &&
-                organisationUnitStore.deleteAll() &&
-                stateStore.deleteAll() &&
+        return stateStore.deleteAll() &&
+                userAccountStore.deleteAll() &&
                 programStore.deleteAll() &&
                 programStageStore.deleteAll() &&
                 programStageSectionStore.deleteAll() &&
-                dataElementStore.deleteAll() &&
+                programRuleStore.deleteAll() &&
+                programRuleActionStore.deleteAll() &&
+                programRuleVariableStore.deleteAll() &&
+                programIndicatorStore.deleteAll() &&
+                trackedEntityAttributeStore.deleteAll() &&
+                programStageDataElementStore.deleteAll() &&
+                organisationUnitStore.deleteAll() &&
                 eventStore.deleteAll() &&
-                trackedEntityDataValueStore.deleteAll();
+                trackedEntityDataValueStore.deleteAll() &&
+                dataElementStore.deleteAll() &&
+                optionStore.deleteAll() &&
+                optionSetStore.deleteAll();
     }
 }

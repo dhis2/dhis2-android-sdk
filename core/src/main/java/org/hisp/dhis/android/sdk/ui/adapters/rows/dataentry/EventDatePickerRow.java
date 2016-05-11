@@ -61,8 +61,8 @@ public class EventDatePickerRow extends Row {
         this.mAllowDatesInFuture = allowDatesInFuture;
         mLabel = label;
         mEvent = event;
-
         checkNeedsForDescriptionButton();
+
     }
 
     @Override
@@ -97,7 +97,14 @@ public class EventDatePickerRow extends Row {
         holder.updateViews(mLabel, mEvent);
 
         if(isDetailedInfoButtonHidden())
+        {
+
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
+        }
+
 
         return view;
     }

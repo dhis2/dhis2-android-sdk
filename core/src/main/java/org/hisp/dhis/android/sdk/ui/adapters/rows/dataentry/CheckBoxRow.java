@@ -59,6 +59,7 @@ public class CheckBoxRow extends Row {
         this.mMandatory = mandatory;
 
         checkNeedsForDescriptionButton();
+
     }
 
     @Override
@@ -85,7 +86,6 @@ public class CheckBoxRow extends Row {
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
-
             if(!isEditable()) {
                 holder.checkBox.setEnabled(false);
                 holder.textLabel.setEnabled(false);
@@ -109,6 +109,9 @@ public class CheckBoxRow extends Row {
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {

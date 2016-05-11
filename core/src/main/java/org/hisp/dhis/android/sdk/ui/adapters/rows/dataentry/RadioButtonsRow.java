@@ -64,6 +64,8 @@ public class RadioButtonsRow extends Row {
         mWarning = warning;
 
         checkNeedsForDescriptionButton();
+
+
     }
 
     @Override
@@ -91,6 +93,8 @@ public class RadioButtonsRow extends Row {
                     root.findViewById(R.id.third_radio_button);
             detailedInfoButton =
                     root.findViewById(R.id.detailed_info_button_layout);
+
+
 
             if (DataEntryRowTypes.BOOLEAN.equals(mRowType)) {
                 firstButton.setText(R.string.yes);
@@ -128,6 +132,9 @@ public class RadioButtonsRow extends Row {
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {

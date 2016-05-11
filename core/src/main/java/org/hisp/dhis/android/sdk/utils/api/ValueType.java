@@ -29,10 +29,10 @@
 
 package org.hisp.dhis.android.sdk.utils.api;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
-
-import com.google.common.collect.Sets;
 
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 
@@ -62,20 +62,20 @@ public enum ValueType
     FILE_RESOURCE( String.class ),
     COORDINATE( String.class);
 
-    public static final Set<ValueType> INTEGER_TYPES = Sets.newHashSet(
-        INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE );
+    public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(
+        INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE ));
 
-    public static final Set<ValueType> NUMERIC_TYPES = Sets.newHashSet(
-        INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, NUMBER, UNIT_INTERVAL, PERCENTAGE );
+    public static final Set<ValueType> NUMERIC_TYPES = new HashSet<>(Arrays.asList(
+        INTEGER, INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE, NUMBER, UNIT_INTERVAL, PERCENTAGE ));
 
-    public static final Set<ValueType> BOOLEAN_TYPES = Sets.newHashSet(
-        BOOLEAN, TRUE_ONLY );
+    public static final Set<ValueType> BOOLEAN_TYPES = new HashSet<>(Arrays.asList(
+        BOOLEAN, TRUE_ONLY ));
     
-    public static final Set<ValueType> TEXT_TYPES = Sets.newHashSet( 
-        TEXT, LONG_TEXT, LETTER, COORDINATE );
+    public static final Set<ValueType> TEXT_TYPES = new HashSet<>(Arrays.asList(
+        TEXT, LONG_TEXT, LETTER, COORDINATE ));
     
-    public static final Set<ValueType> DATE_TYPES = Sets.newHashSet(
-        DATE, DATETIME );
+    public static final Set<ValueType> DATE_TYPES = new HashSet<>(Arrays.asList(
+        DATE, DATETIME ));
     
     private final Class<?> javaClass;
 

@@ -36,6 +36,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
@@ -134,6 +136,7 @@ public abstract class SelectProgramFragment extends Fragment
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
         mPrefs = new SelectProgramFragmentPreferences(
                 getActivity().getApplicationContext());
 

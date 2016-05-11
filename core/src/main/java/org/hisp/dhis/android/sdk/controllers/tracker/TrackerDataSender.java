@@ -41,6 +41,8 @@ import com.raizlabs.android.dbflow.sql.language.Update;
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
+import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
+import org.hisp.dhis.android.sdk.network.response.ImportSummary2;
 import org.hisp.dhis.android.sdk.persistence.models.ApiResponse;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue$Table;
@@ -53,6 +55,8 @@ import org.hisp.dhis.android.sdk.persistence.models.FailedItem$Table;
 import org.hisp.dhis.android.sdk.persistence.models.ImportSummary;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship;
 import org.hisp.dhis.android.sdk.persistence.models.Relationship$Table;
+import org.hisp.dhis.android.sdk.persistence.models.SystemInfo;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
@@ -60,6 +64,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance$Table;
 import org.hisp.dhis.android.sdk.utils.StringConverter;
 import org.hisp.dhis.android.sdk.utils.Utils;
 import org.hisp.dhis.android.sdk.utils.NetworkUtils;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -139,15 +144,19 @@ final class TrackerDataSender {
 
             // check if all items were synced successfully
             if(importSummaries != null) {
+                SystemInfo systemInfo = dhisApi.getSystemInfo();
+                DateTime eventUploadTime = systemInfo.getServerDate();
                 for (ImportSummary importSummary : importSummaries) {
                     Event event = eventMap.get(importSummary.getReference());
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                             ImportSummary.OK.equals(importSummary.getStatus())) {
                         event.setFromServer(true);
+                        event.setCreated(eventUploadTime.toString());
+                        event.setLastUpdated(eventUploadTime.toString());
                         event.save();
                         clearFailedItem(FailedItem.EVENT, event.getLocalId());
-                        UpdateEventTimestamp(event, dhisApi);
+                        //UpdateEventTimestamp(event, dhisApi);
                     }
                 }
             }
@@ -268,9 +277,56 @@ final class TrackerDataSender {
         }
     }
 
+    static void postEnrollmentBatch(DhisApi dhisApi, List<Enrollment> enrollments) throws APIException {
+        Map<String, Enrollment> enrollmentMap = new HashMap<>();
+        List<ImportSummary2> importSummaries = null;
+
+        ApiResponse2 apiResponse = null;
+        try {
+            Map<String, List<Enrollment>> map = new HashMap<>();
+            map.put("enrollments", enrollments);
+            apiResponse = dhisApi.postEnrollments(map);
+
+            importSummaries = apiResponse.getImportSummaries();
+
+            for(Enrollment enrollment : enrollments) {
+                enrollmentMap.put(enrollment.getUid(), enrollment);
+            }
+
+            // check if all items were synced successfully
+            if(importSummaries != null) {
+                SystemInfo systemInfo = dhisApi.getSystemInfo();
+                DateTime enrollmentUploadTime = systemInfo.getServerDate();
+                for (ImportSummary2 importSummary : importSummaries) {
+                    Enrollment enrollment = enrollmentMap.get(importSummary.getReference());
+                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
+                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                        enrollment.setFromServer(true);
+                        enrollment.setCreated(enrollmentUploadTime.toString());
+                        enrollment.setLastUpdated(enrollmentUploadTime.toString());
+                        enrollment.save();
+                        clearFailedItem(FailedItem.ENROLLMENT, enrollment.getLocalId());
+                        //UpdateEnrollmentTimestamp(enrollment, dhisApi);
+                    }
+                }
+            }
+
+        } catch (APIException apiException) {
+            //batch sending failed. Trying to re-send one by one
+            sendEnrollmentChanges(dhisApi, enrollments, false);
+
+        }
+    }
+
     static void sendEnrollmentChanges(DhisApi dhisApi, boolean sendEvents) throws APIException {
         List<Enrollment> enrollments = new Select().from(Enrollment.class).where(Condition.column(Enrollment$Table.FROMSERVER).is(false)).queryList();
-        sendEnrollmentChanges(dhisApi, enrollments, sendEvents);
+        if(enrollments.size() <= 1) {
+            sendEnrollmentChanges(dhisApi, enrollments, sendEvents);
+        }
+        else if (enrollments.size() > 1) {
+            postEnrollmentBatch(dhisApi, enrollments);
+        }
     }
 
     static void sendEnrollmentChanges(DhisApi dhisApi, List<Enrollment> enrollments, boolean sendEvents) throws APIException {
@@ -397,7 +453,13 @@ final class TrackerDataSender {
 
     static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, boolean sendEnrollments) throws APIException {
         List<TrackedEntityInstance> trackedEntityInstances = new Select().from(TrackedEntityInstance.class).where(Condition.column(TrackedEntityInstance$Table.FROMSERVER).is(false)).queryList();
-        sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, sendEnrollments);
+        if(trackedEntityInstances.size() <= 1) {
+            sendTrackedEntityInstanceChanges(dhisApi,trackedEntityInstances,sendEnrollments);
+        }
+        else {
+            postTrackedEntityInstanceBatch(dhisApi,trackedEntityInstances);
+        }
+        // sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, sendEnrollments);
     }
 
     static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances, boolean sendEnrollments) throws APIException {
@@ -424,6 +486,48 @@ final class TrackerDataSender {
         if( success && sendEnrollments ) {
             List<Enrollment> enrollments = TrackerController.getEnrollments(trackedEntityInstance);
             sendEnrollmentChanges(dhisApi, enrollments, sendEnrollments);
+        }
+    }
+
+    static void postTrackedEntityInstanceBatch(DhisApi dhisApi, List<TrackedEntityInstance> trackedEntityInstances) throws APIException {
+        Map<String, TrackedEntityInstance> trackedEntityInstanceMap = new HashMap<>();
+        List<ImportSummary2> importSummaries = null;
+
+        ApiResponse2 apiResponse = null;
+        try {
+            Map<String, List<TrackedEntityInstance>> map = new HashMap<>();
+            map.put("trackedEntityInstances", trackedEntityInstances);
+            apiResponse = dhisApi.postTrackedEntityInstances(map);
+
+            importSummaries = apiResponse.getImportSummaries();
+
+            for(TrackedEntityInstance trackedEntityInstance : trackedEntityInstances) {
+                trackedEntityInstanceMap.put(trackedEntityInstance.getUid(), trackedEntityInstance);
+            }
+
+            // check if all items were synced successfully
+            if(importSummaries != null) {
+                SystemInfo systemInfo = dhisApi.getSystemInfo();
+                DateTime eventUploadTime = systemInfo.getServerDate();
+                for (ImportSummary2 importSummary : importSummaries) {
+                    TrackedEntityInstance trackedEntityInstance = trackedEntityInstanceMap.get(importSummary.getReference());
+                    System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
+                    if (ImportSummary2.Status.SUCCESS.equals(importSummary.getStatus()) ||
+                            ImportSummary2.Status.OK.equals(importSummary.getStatus())) {
+                        trackedEntityInstance.setFromServer(true);
+                        trackedEntityInstance.setCreated(eventUploadTime.toString());
+                        trackedEntityInstance.setLastUpdated(eventUploadTime.toString());
+                        trackedEntityInstance.save();
+                        clearFailedItem(FailedItem.TRACKEDENTITYINSTANCE, trackedEntityInstance.getLocalId());
+                        //UpdateTrackedEntityInstanceTimestamp(trackedEntityInstance, dhisApi);
+                    }
+                }
+            }
+
+        } catch (APIException apiException) {
+            //batch sending failed. Trying to re-send one by one
+            sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstances, false);
+
         }
     }
 

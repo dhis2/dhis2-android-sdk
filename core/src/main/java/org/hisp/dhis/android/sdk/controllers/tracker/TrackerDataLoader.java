@@ -139,7 +139,7 @@ final class TrackerDataLoader extends ResourceController {
         if (lastUpdated != null) {
             map.put("lastUpdated", lastUpdated.toString());
         }
-        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 200,
+        JsonNode response = dhisApi.getEvents(programUid, organisationUnitUid, 50,
                 map);
         List<Event> events = EventsWrapper.getEvents(response);
         saveResourceDataFromServer(ResourceType.EVENTS,organisationUnitUid+programUid, dhisApi, events, null, serverDateTime);

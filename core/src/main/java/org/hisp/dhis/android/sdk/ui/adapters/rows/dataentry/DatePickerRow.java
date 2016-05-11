@@ -75,7 +75,9 @@ public class DatePickerRow extends Row {
             View root = inflater.inflate(
                     R.layout.listview_row_datepicker, container, false);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
+
             holder = new DatePickerRowHolder(root, inflater.getContext(), detailedInfoButton, mAllowDatesInFuture);
+
 
             root.setTag(holder);
             view = root;
@@ -93,6 +95,9 @@ public class DatePickerRow extends Row {
 
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {

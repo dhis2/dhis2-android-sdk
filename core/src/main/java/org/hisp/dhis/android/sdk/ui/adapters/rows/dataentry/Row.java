@@ -117,6 +117,9 @@ public abstract class Row implements DataEntryRow {
         if(mDescription == null || mDescription.equals("")) {
             setHideDetailedInfoButton(true);
         }
+        else {
+            setHideDetailedInfoButton(false);
+        }
     }
     public boolean isDetailedInfoButtonHidden() {
         return hideDetailedInfoButton;

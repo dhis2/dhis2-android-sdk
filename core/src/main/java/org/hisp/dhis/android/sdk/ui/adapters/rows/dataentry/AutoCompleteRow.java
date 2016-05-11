@@ -84,8 +84,8 @@ public final class AutoCompleteRow extends Row {
         }
 
         mOptions = new ArrayList<>(mNameToCodeMap.keySet());
-
         checkNeedsForDescriptionButton();
+
     }
 
     @Override
@@ -93,7 +93,7 @@ public final class AutoCompleteRow extends Row {
                         View convertView, ViewGroup container) {
         View view;
         ViewHolder holder;
-
+        checkNeedsForDescriptionButton();
         if (convertView != null && convertView.getTag() instanceof ViewHolder) {
             view = convertView;
             holder = (ViewHolder) view.getTag();
@@ -104,7 +104,6 @@ public final class AutoCompleteRow extends Row {
             holder = new ViewHolder(view, detailedInfoButton);
             view.setTag(holder);
         }
-
         holder.textView.setText(mLabel);
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.onTextChangedListener.setBaseValue(mValue);
@@ -135,6 +134,9 @@ public final class AutoCompleteRow extends Row {
         }
         if(isDetailedInfoButtonHidden()) {
             holder.detailedInfoButton.setVisibility(View.INVISIBLE);
+        }
+        else {
+            holder.detailedInfoButton.setVisibility(View.VISIBLE);
         }
 
         if(mWarning == null) {

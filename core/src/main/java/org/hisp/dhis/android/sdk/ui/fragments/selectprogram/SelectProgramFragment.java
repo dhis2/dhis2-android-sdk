@@ -72,10 +72,12 @@ import org.hisp.dhis.android.sdk.ui.dialogs.OrgUnitDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.ProgramDialogFragment;
 import org.hisp.dhis.android.sdk.ui.views.CardTextViewButton;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
+import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
+import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
 import java.util.List;
 
-public abstract class SelectProgramFragment extends Fragment
+public abstract class SelectProgramFragment extends BaseFragment
         implements View.OnClickListener, AutoCompleteDialogFragment.OnOptionSelectedListener,
         SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm> {
     public static final String TAG = SelectProgramFragment.class.getSimpleName();

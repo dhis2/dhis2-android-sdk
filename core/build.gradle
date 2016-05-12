@@ -107,4 +107,5 @@ dependencies {
     compile('commons-validator:commons-validator:1.4.0') {
         exclude module: 'commons-logging'
     }
+    compile project(path: ':ui')
 }

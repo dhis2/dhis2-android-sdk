@@ -42,6 +42,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.utils.comparators.ProgramRulePriorityComparator;
 import org.hisp.dhis.android.sdk.utils.services.ProgramRuleService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
+import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +52,7 @@ import java.util.List;
  * Abstract Fragment that can be extended by Fragments that want to make use of Program Rules.
  * @param <D>
  */
-public abstract class AbsProgramRuleFragment<D> extends Fragment {
+public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
 
     private static final String TAG = AbsProgramRuleFragment.class.getSimpleName();
     protected IProgramRuleFragmentHelper programRuleFragmentHelper;

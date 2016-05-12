@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.event.EventService;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 import java.util.Set;
@@ -91,6 +92,12 @@ public class EventInteractorImpl implements EventInteractor {
                 return eventService.list(uids);
             }
         });
+    }
+
+    @Override
+    public Event create(OrganisationUnit organisationUnit, Program program,
+                        ProgramStage programStage, Event.EventStatus status) {
+        return eventService.create(organisationUnit, program, programStage, status);
     }
 
     @Override

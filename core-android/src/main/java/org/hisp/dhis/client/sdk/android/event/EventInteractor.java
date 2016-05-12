@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,9 @@ import java.util.Set;
 import rx.Observable;
 
 public interface EventInteractor {
+
+    Event create(OrganisationUnit organisationUnit, Program program, ProgramStage programStage,
+                 Event.EventStatus status);
 
     Observable<Boolean> save(Event event);
 

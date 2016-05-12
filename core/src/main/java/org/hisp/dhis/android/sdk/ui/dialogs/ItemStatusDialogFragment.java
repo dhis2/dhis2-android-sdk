@@ -38,7 +38,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.internal.widget.AdapterViewCompat;
 import android.support.v7.widget.ActionMenuView;
 import android.util.Log;
 import android.view.ContextMenu;

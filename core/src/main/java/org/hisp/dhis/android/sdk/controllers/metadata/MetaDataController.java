@@ -667,9 +667,18 @@ public final class MetaDataController extends ResourceController {
             teiSearchOrganisationUnits = teiSearchOrganisationUnitMap.get("organisationUnits");
         }
         if(teiSearchOrganisationUnits != null) {
+            for(OrganisationUnit searchOrgUnit : teiSearchOrganisationUnits) {
+                boolean isOrgUnitAssigned = false;
+                for(OrganisationUnit assignedOrganisationUnit : organisationUnitList) {
+                    if(searchOrgUnit.getId().equals(assignedOrganisationUnit)) {
+                        isOrgUnitAssigned = true;
+                        break;
+                    }
+                }
+                if(!isOrgUnitAssigned) {
+                    searchOrgUnit.setType(OrganisationUnit.TYPE.SEARCH);
+                }
 
-            for(OrganisationUnit organisationUnit : teiSearchOrganisationUnits) {
-                organisationUnit.setType(OrganisationUnit.TYPE.SEARCH);
             }
             organisationUnitList.addAll(teiSearchOrganisationUnits);
         }

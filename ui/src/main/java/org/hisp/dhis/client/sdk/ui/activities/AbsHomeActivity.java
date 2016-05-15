@@ -58,7 +58,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 // TODO add support for custom applications in navigation drawer
-public abstract class AbsHomeActivity extends AppCompatActivity
+public abstract class AbsHomeActivity extends BaseActivity
         implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
 
     private static final String APPS_DASHBOARD_PACKAGE =
@@ -282,7 +282,7 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
     protected void setSynchronizedMessage(@NonNull CharSequence message) {
         String formattedMessage = String.format(getString(
-        R.string.drawer_item_synchronized), message);
+                R.string.drawer_item_synchronized), message);
         navigationView.getMenu().findItem(R.id.drawer_item_synchronized)
                 .setTitle(formattedMessage);
     }

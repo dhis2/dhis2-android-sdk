@@ -33,9 +33,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
+import org.hisp.dhis.client.sdk.ui.activities.BaseActivity;
 import org.hisp.dhis.client.sdk.ui.activities.NavigationCallback;
+import org.hisp.dhis.client.sdk.ui.activities.OnBackPressedCallback;
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends Fragment implements OnBackPressedCallback {
     private NavigationCallback navigationCallback;
 
     @Override
@@ -45,13 +47,22 @@ public class BaseFragment extends Fragment {
         if (context instanceof NavigationCallback) {
             navigationCallback = (NavigationCallback) context;
         }
+
+        if (context instanceof BaseActivity) {
+            ((BaseActivity) context).setOnBackPressedCallback(this);
+        }
     }
 
     @Override
     public void onDetach() {
-        super.onDetach();
-
         navigationCallback = null;
+
+        // nullifying callback references
+        if (getActivity() != null && getActivity() instanceof BaseActivity) {
+            ((BaseActivity) getActivity()).setOnBackPressedCallback(null);
+        }
+
+        super.onDetach();
     }
 
     protected void toggleNavigationDrawer() {
@@ -70,5 +81,11 @@ public class BaseFragment extends Fragment {
             return ((WrapperFragment) getParentFragment()).getToolbar();
         }
         return null;
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        // default implementation
+        return false;
     }
 }

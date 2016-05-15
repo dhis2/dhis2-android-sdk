@@ -76,7 +76,7 @@ public class RuleEngineExecution {
             if(variableValue != null) {
                 expression = expression.replace(variable, variableValue.toString());
             } else {
-              //TODO Log the problem - the expression contains a variable that is not defined
+                //TODO Log the problem - the expression contains a variable that is not defined
                 throw new IllegalArgumentException("Variable " + variableName + " found in expression "
                                 + expression + ", but is not defined as a variable");
             }

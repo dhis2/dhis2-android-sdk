@@ -53,8 +53,6 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.models.BaseValue;
-import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
-import org.hisp.dhis.android.sdk.ui.activities.OnBackPressedListener;
 import org.hisp.dhis.android.sdk.ui.adapters.DataValueAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.CoordinatesRow;
@@ -82,21 +80,15 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected boolean refreshing = false;
     protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
-    protected INavigationHandler navigationHandler;
     protected RulesEvaluatorThread rulesEvaluatorThread;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if (activity instanceof AppCompatActivity) {
-            getActionBar().setDisplayShowTitleEnabled(false);
+//            getActionBar().setDisplayShowTitleEnabled(false);
             getActionBar().setDisplayHomeAsUpEnabled(true);
             getActionBar().setHomeButtonEnabled(true);
-        }
-        if (activity instanceof INavigationHandler) {
-            navigationHandler = (INavigationHandler) activity;
-        } else {
-            throw new IllegalArgumentException("Activity must implement INavigationHandler interface");
         }
     }
 
@@ -104,19 +96,14 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     public void onDetach() {
         if (getActivity() != null &&
                 getActivity() instanceof AppCompatActivity) {
-            getActionBar().setDisplayShowTitleEnabled(true);
+//            getActionBar().setDisplayShowTitleEnabled(true);
             getActionBar().setDisplayHomeAsUpEnabled(false);
             getActionBar().setHomeButtonEnabled(false);
         }
 
         // we need to nullify reference
         // to parent activity in order not to leak it
-        if (getActivity() != null &&
-                getActivity() instanceof INavigationHandler) {
-            ((INavigationHandler) getActivity()).setBackPressedListener(null);
-        }
 
-        navigationHandler = null;
         super.onDetach();
     }
 
@@ -160,6 +147,10 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         return inflater.inflate(R.layout.fragment_data_entry, container, false);
     }
 
+    public ActionBar getActionBar() {
+        return ((AppCompatActivity)getActivity()).getSupportActionBar();
+    }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
@@ -186,7 +177,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == android.R.id.home) {
-            navigationHandler.onBackPressed();
+            getActivity().finish();
             return true;
         } else if (menuItem.getItemId() == R.id.action_new_event) {
             proceed();
@@ -303,14 +294,14 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         }
     }
 
-    private ActionBar getActionBar() {
-        if (getActivity() != null &&
-                getActivity() instanceof AppCompatActivity) {
-            return ((AppCompatActivity) getActivity()).getSupportActionBar();
-        } else {
-            throw new IllegalArgumentException("Fragment should be attached to ActionBarActivity");
-        }
-    }
+//    private ActionBar getActionBar() {
+//        if (getActivity() != null &&
+//                getActivity() instanceof AppCompatActivity) {
+//            return ((AppCompatActivity) getActivity()).getSupportActionBar();
+//        } else {
+//            throw new IllegalArgumentException("Fragment should be attached to ActionBarActivity");
+//        }
+//    }
 
     public ValidationErrorDialog getValidationErrorDialog() {
         return validationErrorDialog;

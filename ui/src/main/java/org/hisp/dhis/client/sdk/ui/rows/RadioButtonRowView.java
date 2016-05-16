@@ -72,9 +72,9 @@ public class RadioButtonRowView implements RowView {
             radioGroup = (RadioGroup) itemView
                     .findViewById(R.id.radiogroup_radiobutton_row);
             firstRadioButton = (RadioButton) itemView
-                    .findViewById(R.id.first_radiobutton_radiobutton_row);
+                    .findViewById(R.id.radiobutton_row_radiobutton_first);
             secondRadioButton = (RadioButton) itemView
-                    .findViewById(R.id.second_radiobutton_radiobutton_row);
+                    .findViewById(R.id.radiobutton_row_radiobutton_second);
 
             firstRadioButton.setText(itemView.getContext().getString(R.string.yes));
             secondRadioButton.setText(itemView.getContext().getString(R.string.no));
@@ -108,9 +108,9 @@ public class RadioButtonRowView implements RowView {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             String newValue;
 
-            if (checkedId == R.id.first_radiobutton_radiobutton_row) {
+            if (checkedId == R.id.radiobutton_row_radiobutton_first) {
                 newValue = TRUE;
-            } else if (checkedId == R.id.second_radiobutton_radiobutton_row) {
+            } else if (checkedId == R.id.radiobutton_row_radiobutton_second) {
                 newValue = FALSE;
             } else {
                 newValue = EMPTY_FIELD;

@@ -113,9 +113,7 @@ public class CheckBoxRowView implements RowView {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             String newValue = isChecked ? TRUE : EMPTY_FIELD;
-            if (!newValue.equals(dataEntity.getValue())) {
-                dataEntity.setValue(newValue);
-            }
+            dataEntity.setValue(newValue);
         }
     }
 }

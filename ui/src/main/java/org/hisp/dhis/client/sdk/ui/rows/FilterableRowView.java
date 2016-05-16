@@ -133,6 +133,14 @@ public class FilterableRowView implements RowView {
                     showFilterableDialogFragment();
                 } else if (view.getId() == R.id.button_clear) {
                     filterEditText.setText(EMPTY_STRING);
+
+                    // we also have to clear out selected child in picker
+                    if (formEntityFilter != null && formEntityFilter.getPicker() != null) {
+                        formEntityFilter.getPicker().setSelectedChild(null);
+
+                        // using this hack in order to trigger listener in formEntityFilter
+                        formEntityFilter.setPicker(formEntityFilter.getPicker());
+                    }
                 }
             }
 

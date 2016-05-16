@@ -80,6 +80,10 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         for (int ordinal = 0; ordinal < FormEntity.Type.values().length; ordinal++) {
             FormEntity.Type dataEntityType = FormEntity.Type.values()[ordinal];
             switch (dataEntityType) {
+                case TEXT: {
+                    rowViews.add(ordinal, new TextRowView());
+                    break;
+                }
                 case EDITTEXT: {
                     rowViews.add(ordinal, new EditTextRowView());
                     break;

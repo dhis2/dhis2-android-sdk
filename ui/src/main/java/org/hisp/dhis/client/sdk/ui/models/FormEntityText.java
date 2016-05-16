@@ -2,7 +2,7 @@ package org.hisp.dhis.client.sdk.ui.models;
 
 import android.support.annotation.NonNull;
 
-public class FormEntityText extends FormEntity {
+public class FormEntityText extends FormEntityCharSequence {
 
     public FormEntityText(String id, String label) {
         this(id, label, null);

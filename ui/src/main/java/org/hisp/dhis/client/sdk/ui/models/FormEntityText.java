@@ -5,7 +5,11 @@ import android.support.annotation.NonNull;
 public class FormEntityText extends FormEntity {
 
     public FormEntityText(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityText(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @NonNull

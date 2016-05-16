@@ -7,7 +7,11 @@ public class FormEntityCoordinate extends FormEntity {
     private double longitude;
 
     public FormEntityCoordinate(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityCoordinate(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @NonNull

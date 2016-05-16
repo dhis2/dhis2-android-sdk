@@ -53,7 +53,7 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
 
     static final int UNIQUE_EVENT_DATAVALUE = 1;
 
-    @Column()
+    @Column
     @Unique(unique = true, uniqueGroups = {
             UNIQUE_EVENT_DATAVALUE
     })

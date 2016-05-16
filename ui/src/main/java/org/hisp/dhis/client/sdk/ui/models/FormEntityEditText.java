@@ -9,14 +9,18 @@ public class FormEntityEditText extends FormEntityCharSequence {
     private final String hint;
     private final InputType inputType;
 
-    public FormEntityEditText(String id, String label, String hint, InputType inputType) {
-        super(id, label);
+    public FormEntityEditText(String id, String label, String hint, InputType inputType, Object tag) {
+        super(id, label, tag);
         this.hint = hint;
         this.inputType = isNull(inputType, "inputType must not be null");
     }
 
     public FormEntityEditText(String id, String label, InputType inputType) {
-        this(id, label, null, inputType);
+        this(id, label, null, inputType, null);
+    }
+
+    public FormEntityEditText(String id, String label, InputType inputType, Object tag) {
+        this(id, label, null, inputType, tag);
     }
 
     @NonNull

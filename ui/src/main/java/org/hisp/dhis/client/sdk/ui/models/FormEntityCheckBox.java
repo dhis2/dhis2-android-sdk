@@ -6,7 +6,11 @@ public class FormEntityCheckBox extends FormEntity {
     private String value;
 
     public FormEntityCheckBox(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityCheckBox(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @NonNull

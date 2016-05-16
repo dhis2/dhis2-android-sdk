@@ -29,138 +29,169 @@
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
 import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.core.event.EventStore;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
+
 public class TrackedEntityDataValueServiceImpl implements TrackedEntityDataValueService {
     private final TrackedEntityDataValueStore trackedEntityDataValueStore;
+    private final EventStore eventStore;
     private final StateStore stateStore;
 
-    public TrackedEntityDataValueServiceImpl(
-            TrackedEntityDataValueStore trackedEntityDataValueStore, StateStore stateStore) {
-        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
+    public TrackedEntityDataValueServiceImpl(TrackedEntityDataValueStore dataValueStore,
+                                             EventStore eventStore, StateStore stateStore) {
+        this.trackedEntityDataValueStore = dataValueStore;
+        this.eventStore = eventStore;
         this.stateStore = stateStore;
     }
 
     @Override
-    public boolean save(TrackedEntityDataValue object) {
-        isNull(object, "Object must not be null");
+    public boolean save(TrackedEntityDataValue dataValue) {
+        checkDataValueProperties(dataValue);
 
-        Action action = stateStore.queryActionForModel(object);
+        Event event = dataValue.getEvent();
+        Action action = stateStore.queryActionForModel(event);
         if (action == null) {
-            boolean status = trackedEntityDataValueStore.save(object);
-
-            if (status) {
-                status = stateStore.saveActionForModel(object, Action.TO_POST);
-            }
-
-            return status;
+            throw new IllegalArgumentException("Related event is not persisted " +
+                    "(you should save event first)");
         }
 
-        boolean status = false;
         switch (action) {
             case TO_POST:
             case TO_UPDATE: {
-                status = trackedEntityDataValueStore.save(object);
-                break;
+                return trackedEntityDataValueStore.save(dataValue);
             }
             case SYNCED: {
-                status = trackedEntityDataValueStore.save(object);
-
-                if (status) {
-                    status = stateStore.saveActionForModel(object, Action.TO_UPDATE);
-                }
-                break;
+                return trackedEntityDataValueStore.save(dataValue) &&
+                        stateStore.saveActionForModel(event, Action.TO_UPDATE);
             }
+            // we cannot save what should be removed
             case TO_DELETE: {
-                status = false;
-                break;
+                return false;
             }
+            default: {
+                throw new IllegalArgumentException("Unsupported state action");
+            }
+        }
+    }
 
+    @Override
+    public boolean remove(TrackedEntityDataValue dataValue) {
+        checkDataValueProperties(dataValue);
+
+        Event event = dataValue.getEvent();
+        Action action = stateStore.queryActionForModel(event);
+        if (action == null) {
+            return false;
         }
 
-        return status;
+        switch (action) {
+            case TO_POST:
+            case TO_UPDATE: {
+                return trackedEntityDataValueStore.delete(dataValue);
+            }
+            case SYNCED: {
+                return trackedEntityDataValueStore.delete(dataValue) &&
+                        stateStore.saveActionForModel(event, Action.TO_UPDATE);
+            }
+            // we cannot save what should be removed
+            case TO_DELETE: {
+                return false;
+            }
+            default: {
+                throw new IllegalArgumentException("Unsupported state action");
+            }
+        }
     }
 
     @Override
     public List<TrackedEntityDataValue> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityDataValue.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
+        Map<Long, Action> stateMap = stateStore.queryActionsForModel(Event.class);
+
+        List<Event> events = eventStore.queryAll();
+        List<TrackedEntityDataValue> dataValues = new ArrayList<>();
+        if (events == null || events.isEmpty()) {
+            return dataValues;
+        }
+
+        for (Event event : events) {
+            if (!Action.TO_DELETE.equals(stateMap.get(event.getId()))) {
+                dataValues.addAll(event.getDataValues());
+            }
+        }
+
+        return dataValues;
     }
 
     @Override
     public List<TrackedEntityDataValue> list(Event event) {
-        isNull(event, "Object must not be null");
+        // check state of event
 
-        Action action = stateStore.queryActionForModel(event);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityDataValueStore.query(event);
-        }
-
-        return null;
+        return trackedEntityDataValueStore.query(event);
     }
 
     @Override
     public TrackedEntityDataValue get(long id) {
-        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.queryById(id);
+        TrackedEntityDataValue dataValue =
+                trackedEntityDataValueStore.queryById(id);
 
-        if (trackedEntityDataValue != null) {
-            Action action = stateStore.queryActionForModel(trackedEntityDataValue);
+        if (dataValue == null) {
+            return null;
+        }
+
+        Event persistedEvent = eventStore
+                .queryById(dataValue.getEvent().getId());
+
+        if (persistedEvent != null) {
+            Action action = stateStore.queryActionForModel(persistedEvent);
 
             if (!Action.TO_DELETE.equals(action)) {
-                return trackedEntityDataValue;
+                return dataValue;
             }
         }
+
         return null;
     }
 
     @Override
     public TrackedEntityDataValue get(Event event, DataElement dataElement) {
-        isNull(event, "Event object must not be null");
-        isNull(dataElement, "DataElement must not be null");
+        TrackedEntityDataValue dataValue =
+                trackedEntityDataValueStore.query(event, dataElement);
 
-        Action action = stateStore.queryActionForModel(event);
+        if (dataValue == null) {
+            return null;
+        }
 
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityDataValueStore.query(event, dataElement);
+        Event persistedEvent = eventStore
+                .queryById(dataValue.getEvent().getId());
+
+        if (persistedEvent != null) {
+            Action action = stateStore.queryActionForModel(persistedEvent);
+
+            if (!Action.TO_DELETE.equals(action)) {
+                return dataValue;
+            }
         }
 
         return null;
     }
 
-    @Override
-    public boolean remove(TrackedEntityDataValue object) {
-        isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = trackedEntityDataValueStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
+    private static void checkDataValueProperties(TrackedEntityDataValue dataValue) {
+        isNull(dataValue, "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getEvent(), "Event associated with " +
+                "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getDataElement(), "DataElement associated with " +
+                "TrackedEntityDataValue must not be null");
+        isNull(dataValue.getStoredBy(), "storedBy field in " +
+                "TrackedEntityDataValue must not be null");
     }
 }

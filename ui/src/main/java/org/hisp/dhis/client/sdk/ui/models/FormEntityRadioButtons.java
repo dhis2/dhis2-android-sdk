@@ -6,7 +6,11 @@ public class FormEntityRadioButtons extends FormEntity {
     private String value;
 
     public FormEntityRadioButtons(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityRadioButtons(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @NonNull

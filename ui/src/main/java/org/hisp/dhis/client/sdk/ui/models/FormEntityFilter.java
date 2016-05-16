@@ -12,7 +12,11 @@ public class FormEntityFilter extends FormEntity {
     private OnFormEntityChangeListener onFormEntityChangeListener;
 
     public FormEntityFilter(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityFilter(String id, String label, Object tag) {
+        super(id, label, tag);
     }
 
     @NonNull

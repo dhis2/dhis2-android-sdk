@@ -56,7 +56,7 @@ import org.hisp.dhis.client.sdk.core.program.ProgramStageServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeService;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeServiceImpl;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService;
-import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueService2;
+import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityDataValueServiceImpl;
 import org.hisp.dhis.client.sdk.core.user.UserAccountService;
 import org.hisp.dhis.client.sdk.core.user.UserAccountServiceImpl;
 
@@ -120,7 +120,7 @@ public final class ServicesModuleImpl implements ServicesModule {
         trackedEntityAttributeService = new TrackedEntityAttributeServiceImpl(
                 persistenceModule.getTrackedEntityAttributeStore());
 
-        trackedEntityDataValueService = new TrackedEntityDataValueService2(
+        trackedEntityDataValueService = new TrackedEntityDataValueServiceImpl(
                 persistenceModule.getTrackedEntityDataValueStore(),
                 persistenceModule.getEventStore(),
                 persistenceModule.getStateStore());
@@ -195,7 +195,7 @@ public final class ServicesModuleImpl implements ServicesModule {
 
     @Override
     public TrackedEntityDataValueService getTrackedEntityDataValueService() {
-        return null;
+        return trackedEntityDataValueService;
     }
 
     @Override

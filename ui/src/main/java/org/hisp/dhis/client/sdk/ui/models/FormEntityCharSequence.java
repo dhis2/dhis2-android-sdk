@@ -13,7 +13,11 @@ public abstract class FormEntityCharSequence extends FormEntity {
     private CharSequence value;
 
     public FormEntityCharSequence(String id, String label) {
-        super(id, label);
+        this(id, label, null);
+    }
+
+    public FormEntityCharSequence(String id, String label, Object tag) {
+        super(id, label, tag);
 
         this.value = EMPTY_STRING;
     }

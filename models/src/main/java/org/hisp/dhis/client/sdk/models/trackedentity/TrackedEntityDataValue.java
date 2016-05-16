@@ -85,4 +85,14 @@ public final class TrackedEntityDataValue extends BaseModel {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "TrackedEntityDataValue{" +
+                "event=" + event +
+                ", dataElement='" + dataElement + '\'' +
+                ", storedBy='" + storedBy + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }

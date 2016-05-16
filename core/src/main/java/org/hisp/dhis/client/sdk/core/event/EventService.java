@@ -35,6 +35,7 @@ import org.hisp.dhis.client.sdk.core.common.services.ListUids;
 import org.hisp.dhis.client.sdk.core.common.services.Remove;
 import org.hisp.dhis.client.sdk.core.common.services.Save;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
+import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -49,4 +50,6 @@ public interface EventService extends Service, Save<Event>, Remove<Event>, Get<E
                  Event.EventStatus status);
 
     List<Event> list(OrganisationUnit organisationUnit, Program program);
+
+    State get(Event event);
 }

@@ -123,7 +123,8 @@ public class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event, EventF
                         .program.is((program.getUId())))
                 .queryList();
 
-        return getMapper().mapToModels(eventFlows);
+        List<Event> events = getMapper().mapToModels(eventFlows);
+        return mapEventsToDataValues(events, dataValueStore.query(events));
     }
 
     private void saveEventDataValues(Event event) {
@@ -169,11 +170,12 @@ public class EventStoreImpl extends AbsIdentifiableObjectDataStore<Event, EventF
 
         Map<String, Event> eventMap = ModelUtils.toMap(events);
         for (TrackedEntityDataValue dataValue : dataValues) {
-            Event event = dataValue.getEvent();
-            if (event == null || eventMap.get(event.getUId()) == null) {
+            if (dataValue.getEvent() == null ||
+                    eventMap.get(dataValue.getEvent().getUId()) == null) {
                 continue;
             }
 
+            Event event = eventMap.get(dataValue.getEvent().getUId());
             if (event.getDataValues() == null) {
                 event.setDataValues(new ArrayList<TrackedEntityDataValue>());
             }

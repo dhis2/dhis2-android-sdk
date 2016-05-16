@@ -31,6 +31,7 @@ package org.hisp.dhis.client.sdk.core.event;
 import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
@@ -162,6 +163,11 @@ public class EventServiceImpl implements EventService {
         }
 
         return filteredEvents;
+    }
+
+    @Override
+    public State get(Event event) {
+        return stateStore.queryStateForModel(event);
     }
 
     @Override

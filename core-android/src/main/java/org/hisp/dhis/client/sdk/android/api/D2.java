@@ -175,9 +175,10 @@ public class D2 {
                 servicesModule.getProgramService(),
                 controllersModule.getAssignedProgramsController());
 
-        UserOrganisationUnitInteractor userOrganisationUnitInteractor = new UserOrganisationUnitInteractorImpl(
-                servicesModule.getOrganisationUnitService(),
-                controllersModule.getAssignedOrganisationUnitsController());
+        UserOrganisationUnitInteractor userOrganisationUnitInteractor =
+                new UserOrganisationUnitInteractorImpl(
+                        servicesModule.getOrganisationUnitService(),
+                        controllersModule.getAssignedOrganisationUnitsController());
 
         programInteractor = new ProgramInteractorImpl(
                 servicesModule.getProgramService(),

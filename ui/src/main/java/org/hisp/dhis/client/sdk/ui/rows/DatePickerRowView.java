@@ -164,7 +164,7 @@ public class DatePickerRowView implements RowView {
                     view.getId() == R.id.row_date_picker_button_pick) {
                 DatePickerDialogFragment datePicker = DatePickerDialogFragment.newInstance(false);
                 datePicker.setOnDateSetListener(onDateSetListener);
-                datePicker.show(fragmentManager, TAG);
+                datePicker.show(fragmentManager);
             } else if (view.getId() == R.id.button_clear) {
                 editText.setText(EMPTY_STRING);
             } else if (view.getId() == R.id.row_date_picker_button_today) {

@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 
 import java.util.Calendar;
 
 public class DatePickerDialogFragment extends DialogFragment {
+    private static final String TAG = DatePickerDialogFragment.class.getSimpleName();
     private static final String ARG_ALLOW_DATES_IN_FUTURE = "arg:allowDatesInFuture";
 
     @Nullable
@@ -40,6 +42,10 @@ public class DatePickerDialogFragment extends DialogFragment {
         }
 
         return datePickerDialog;
+    }
+
+    public void show(FragmentManager fragmentManager) {
+        show(fragmentManager, TAG);
     }
 
     public void setOnDateSetListener(@Nullable DatePickerDialog.OnDateSetListener listener) {

@@ -142,11 +142,11 @@ public class StateStoreImpl extends AbsStore<State, StateFlow> implements StateS
         isNull(object, "State object must not be null");
 
         State state = queryStateForModel(object);
-        if (state == null) {
-            return Action.SYNCED;
+        if (state != null) {
+            return state.getAction();
         }
 
-        return state.getAction();
+        return null;
     }
 
     @Override

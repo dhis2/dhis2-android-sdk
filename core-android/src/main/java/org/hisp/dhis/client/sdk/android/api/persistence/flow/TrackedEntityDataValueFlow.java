@@ -54,7 +54,7 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
     static final int UNIQUE_EVENT_DATAVALUE = 1;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {
+    @Unique(unique = false, uniqueGroups = {
             UNIQUE_EVENT_DATAVALUE
     })
     @ForeignKey(
@@ -67,7 +67,7 @@ public final class TrackedEntityDataValueFlow extends BaseModelFlow {
     EventFlow event;
 
     @Column
-    @Unique(unique = true, uniqueGroups = {
+    @Unique(unique = false, uniqueGroups = {
             UNIQUE_EVENT_DATAVALUE
     })
     String dataElement;

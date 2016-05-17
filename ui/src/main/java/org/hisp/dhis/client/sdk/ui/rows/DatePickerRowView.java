@@ -56,7 +56,6 @@ import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class DatePickerRowView implements RowView {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
-    private static final String TAG = DatePickerRowView.class.getSimpleName();
 
     // we need fragment manager to display DatePickerDialogFragment
     private final FragmentManager fragmentManager;

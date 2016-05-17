@@ -29,11 +29,6 @@
 package org.hisp.dhis.client.sdk.ui.rows;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -46,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.fragments.DatePickerDialogFragment;
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityDate;
 import org.hisp.dhis.client.sdk.ui.views.AbsTextWatcher;
@@ -197,50 +193,6 @@ public class DatePickerRowView implements RowView {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.US);
             String newValue = simpleDateFormat.format(calendar.getTime());
             editText.setText(newValue);
-        }
-    }
-
-    // TODO If configuration change will happen,
-    // TODO Also, there is no way to set callback to DatePickerDialog after creation.
-    public static class DatePickerDialogFragment extends DialogFragment {
-        private static final String ARG_ALLOW_DATES_IN_FUTURE = "arg:allowDatesInFuture";
-
-        @Nullable
-        private DatePickerDialog.OnDateSetListener onDateSetListener;
-
-        public static DatePickerDialogFragment newInstance(boolean allowDatesInFuture) {
-            Bundle arguments = new Bundle();
-            arguments.putBoolean(ARG_ALLOW_DATES_IN_FUTURE, allowDatesInFuture);
-
-            DatePickerDialogFragment fragment = new DatePickerDialogFragment();
-            fragment.setArguments(arguments);
-
-            return fragment;
-        }
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            Calendar calendar = Calendar.getInstance();
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    getContext(), onDateSetListener,
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH));
-
-            if (!isAllowDatesInFuture()) {
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-            }
-
-            return datePickerDialog;
-        }
-
-        private void setOnDateSetListener(@Nullable DatePickerDialog.OnDateSetListener listener) {
-            this.onDateSetListener = listener;
-        }
-
-        private boolean isAllowDatesInFuture() {
-            return getArguments().getBoolean(ARG_ALLOW_DATES_IN_FUTURE, false);
         }
     }
 }

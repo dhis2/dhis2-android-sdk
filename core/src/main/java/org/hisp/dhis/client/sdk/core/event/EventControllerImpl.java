@@ -106,7 +106,7 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
         isEmpty(uids, "Set of event uids must not be null");
 
         /* first we need to get information about new events from server */
-        pull(strategy, uids);
+        // pull(strategy, uids);
 
         /* then we should try to push data to server */
         push(uids);

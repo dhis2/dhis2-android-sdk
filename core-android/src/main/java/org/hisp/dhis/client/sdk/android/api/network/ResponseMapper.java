@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.android.api.network;
 
-
 import org.hisp.dhis.client.sdk.core.common.network.Header;
 import org.hisp.dhis.client.sdk.core.common.network.Response;
 
@@ -47,10 +46,14 @@ public final class ResponseMapper {
         }
 
         List<Header> headers = HeaderMapper.fromOkHeaders(okResponse.headers());
-        byte[] responseBody = null;
+        byte[] responseBody = new byte[0];
 
         try {
-            responseBody = okResponse.body().bytes();
+            //Double check if there is a body.
+            // If there isn't we would get an IllegalArgumentException from OkHttpCall line 255
+            if (okResponse.body().contentLength() > 0) {
+                responseBody = okResponse.body().bytes();
+            }
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

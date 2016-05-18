@@ -96,7 +96,7 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
                 eventStore.queryAll());
 
         if (!uids.isEmpty()) {
-            pull(strategy, uids);
+            // pull(strategy, uids);
             push(uids);
         }
     }
@@ -161,12 +161,16 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
     }
 
     private void sendEvents(Set<String> uids) throws ApiException {
-        List<Event> events = stateStore.queryModelsWithActions(
+        // retrieve basic events with given state from database
+        List<Event> eventStates = stateStore.queryModelsWithActions(
                 Event.class, uids, Action.TO_POST, Action.TO_UPDATE);
 
-        if (events == null || events.isEmpty()) {
+        if (eventStates == null || eventStates.isEmpty()) {
             return;
         }
+
+        Set<String> eventUids = ModelUtils.toUidSet(eventStates);
+        List<Event> events = eventStore.queryByUids(eventUids);
 
         try {
             ApiResponse apiResponse = eventApiClient.postEvents(events);

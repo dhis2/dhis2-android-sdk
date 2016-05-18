@@ -36,6 +36,7 @@ import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,8 @@ public class EventServiceImpl implements EventService {
 
         Event event = new Event();
         event.setUId(CodeGenerator.generateCode());
+        event.setCreated(DateTime.now());
+        event.setLastUpdated(DateTime.now());
         event.setStatus(status);
         event.setOrgUnit(organisationUnit.getUId());
         event.setProgram(program.getUId());

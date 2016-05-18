@@ -84,6 +84,7 @@ public class CollectionUtils {
 
     public static <T> Collection<T> isEmpty(Collection<T> collection, String messgae) {
         if (collection == null || collection.isEmpty()) {
+            //TODO: Araz
             throw new IllegalArgumentException(messgae);
         }
 

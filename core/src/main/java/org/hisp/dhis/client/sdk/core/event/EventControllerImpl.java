@@ -33,6 +33,7 @@ import org.hisp.dhis.client.sdk.core.common.StateStore;
 import org.hisp.dhis.client.sdk.core.common.controllers.AbsDataController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.ApiMessage;
 import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
@@ -173,9 +174,11 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
         List<Event> events = eventStore.queryByUids(eventUids);
 
         try {
-            ApiResponse apiResponse = eventApiClient.postEvents(events);
+            ApiMessage apiMessage = eventApiClient.postEvents(events);
 
-            List<ImportSummary> importSummaries = apiResponse.getImportSummaries();
+            System.out.println("ApiResponse: " + apiMessage);
+
+            List<ImportSummary> importSummaries = apiMessage.getResponse().getImportSummaries();
             Map<String, Event> eventMap = ModelUtils.toMap(events);
 
             // check if all items were synced successfully
@@ -203,7 +206,7 @@ public final class EventControllerImpl extends AbsDataController<Event> implemen
 
         for (Event event : events) {
             try {
-                ApiResponse apiResponse = eventApiClient.deleteEvent(event);
+                ApiResponse apiResponse = eventApiClient.deleteEvent(event).getResponse();
                 if (ImportSummary.Status.SUCCESS.equals(apiResponse.getStatus()) ||
                         ImportSummary.Status.OK.equals(apiResponse.getStatus())) {
                     stateStore.saveActionForModel(event, Action.SYNCED);

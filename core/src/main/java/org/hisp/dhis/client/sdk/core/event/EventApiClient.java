@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.core.event;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
+import org.hisp.dhis.client.sdk.core.common.network.ApiMessage;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.joda.time.DateTime;
 
@@ -41,7 +41,7 @@ public interface EventApiClient {
     List<Event> getEvents(
             Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException;
 
-    ApiResponse postEvents(List<Event> events) throws ApiException;
+    ApiMessage postEvents(List<Event> events) throws ApiException;
 
-    ApiResponse deleteEvent(Event event) throws ApiException;
+    ApiMessage deleteEvent(Event event) throws ApiException;
 }

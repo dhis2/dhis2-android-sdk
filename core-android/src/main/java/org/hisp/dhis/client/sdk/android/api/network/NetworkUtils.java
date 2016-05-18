@@ -143,8 +143,9 @@ public class NetworkUtils {
         }
 
         if (!(response.code() >= 200 && response.code() < 300)) {
-            throw ApiException.httpError(response.raw().request().url().toString(),
-                    ResponseMapper.fromOkResponse(response.raw()));
+            throw ApiException.httpError(
+                    response.raw().request().url().toString(),
+                    ResponseMapper.fromRetrofitResponse(response));
         }
 
         return response.body();

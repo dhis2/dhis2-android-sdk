@@ -85,6 +85,8 @@ import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -101,6 +103,9 @@ import static okhttp3.Credentials.basic;
 
 // Find a way to organize session
 public class NetworkModuleImpl implements NetworkModule {
+    private static final SimpleDateFormat DATE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+
     private static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 15 * 1000;   // 15s
     private static final int DEFAULT_READ_TIMEOUT_MILLIS = 20 * 1000;      // 20s
     private static final int DEFAULT_WRITE_TIMEOUT_MILLIS = 20 * 1000;     // 20s
@@ -133,6 +138,7 @@ public class NetworkModuleImpl implements NetworkModule {
 
         // Constructing jackson's object mapper
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setDateFormat(DATE_FORMAT);
         mapper.registerModule(new JodaModule());
         mapper.disable(
                 MapperFeature.AUTO_DETECT_CREATORS, MapperFeature.AUTO_DETECT_FIELDS,

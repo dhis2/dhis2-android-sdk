@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.models.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.Access;
@@ -49,9 +50,11 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private String uId;
 
     @JsonProperty("name")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String name;
 
     @JsonProperty("displayName")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String displayName;
 
     @JsonProperty("created")
@@ -61,6 +64,7 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private DateTime lastUpdated;
 
     @JsonProperty("access")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Access access;
 
     @JsonProperty("status")
@@ -81,7 +85,12 @@ public final class Event extends BaseModel implements IdentifiableObject {
     @JsonProperty("eventDate")
     private DateTime eventDate;
 
+    /*
+    *
+    * This property is optional (used only in tracker)
+    * */
     @JsonProperty("dueDate")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private DateTime dueDate;
 
     @JsonProperty("dataValues")

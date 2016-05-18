@@ -40,26 +40,26 @@ public final class ResponseMapper {
         // private constructor
     }
 
-    public static Response fromOkResponse(okhttp3.Response okResponse) {
-        if (okResponse == null) {
+    public static Response fromRetrofitResponse(retrofit2.Response retrofitResponse) {
+        if (retrofitResponse == null) {
             return null;
         }
 
-        List<Header> headers = HeaderMapper.fromOkHeaders(okResponse.headers());
+        List<Header> headers = HeaderMapper.fromOkHeaders(retrofitResponse.headers());
         byte[] responseBody = new byte[0];
 
         try {
-            //Double check if there is a body.
-            // If there isn't we would get an IllegalArgumentException from OkHttpCall line 255
-            if (okResponse.body().contentLength() > 0) {
-                responseBody = okResponse.body().bytes();
+            if (retrofitResponse.isSuccessful()) {
+                responseBody = retrofitResponse.raw().body().bytes();
+            } else {
+                responseBody = retrofitResponse.errorBody().bytes();
             }
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
 
-        return new Response(okResponse.request().toString(),
-                okResponse.code(), okResponse.message(),
+        return new Response(retrofitResponse.raw().request().toString(),
+                retrofitResponse.code(), retrofitResponse.message(),
                 headers, responseBody);
     }
 }

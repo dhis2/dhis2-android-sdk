@@ -46,7 +46,7 @@ ext {
             // java libs
             okhttpVersion      : "3.2.0",
             retrofitVersion    : "2.0.0",
-            jacksonVersion     : "2.7.3",
+            jacksonVersion     : "2.7.4",
             jodaTimeVersion    : "2.9.2",
             jexlVersion        : "2.1.1",
             commonsLang3Version: "3.3.2",

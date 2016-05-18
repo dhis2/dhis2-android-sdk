@@ -71,4 +71,14 @@ public class ApiResponse {
     public List<ImportSummary> getImportSummaries() {
         return importSummaries;
     }
+
+    @Override
+    public String toString() {
+        return "ApiResponse{" +
+                "responseType='" + responseType + '\'' +
+                ", status=" + status +
+                ", importCount=" + importCount +
+                ", importSummaries=" + importSummaries +
+                '}';
+    }
 }

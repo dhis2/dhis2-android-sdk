@@ -85,4 +85,16 @@ public class ImportSummary {
     public enum Status {
         SUCCESS, OK, ERROR
     }
+
+    @Override
+    public String toString() {
+        return "ImportSummary{" +
+                "status=" + status +
+                ", description='" + description + '\'' +
+                ", importCount=" + importCount +
+                ", reference='" + reference + '\'' +
+                ", href='" + href + '\'' +
+                ", conflicts=" + conflicts +
+                '}';
+    }
 }

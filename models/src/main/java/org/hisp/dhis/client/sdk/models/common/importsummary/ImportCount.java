@@ -65,4 +65,14 @@ public class ImportCount {
     public int getDeleted() {
         return deleted;
     }
+
+    @Override
+    public String toString() {
+        return "ImportCount{" +
+                "imported=" + imported +
+                ", updated=" + updated +
+                ", ignored=" + ignored +
+                ", deleted=" + deleted +
+                '}';
+    }
 }

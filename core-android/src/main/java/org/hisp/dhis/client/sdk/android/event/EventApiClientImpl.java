@@ -2,6 +2,7 @@ package org.hisp.dhis.client.sdk.android.event;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.network.ApiMessage;
 import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
 import org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.event.EventApiClient;
@@ -74,7 +75,7 @@ public class EventApiClientImpl implements EventApiClient {
     }
 
     @Override
-    public ApiResponse postEvents(List<Event> events) throws ApiException {
+    public ApiMessage postEvents(List<Event> events) throws ApiException {
         Map<String, List<Event>> eventMap = new HashMap<>();
         eventMap.put("events", events);
 
@@ -82,7 +83,7 @@ public class EventApiClientImpl implements EventApiClient {
     }
 
     @Override
-    public ApiResponse deleteEvent(Event event) throws ApiException {
+    public ApiMessage deleteEvent(Event event) throws ApiException {
         return call(eventApiclientRetrofit.deleteEvent(event.getUId()));
     }
 

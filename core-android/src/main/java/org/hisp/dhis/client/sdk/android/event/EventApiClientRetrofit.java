@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.client.sdk.android.event;
 
-import org.hisp.dhis.client.sdk.core.common.network.ApiResponse;
+import org.hisp.dhis.client.sdk.core.common.network.ApiMessage;
 import org.hisp.dhis.client.sdk.models.event.Event;
 
 import java.util.List;
@@ -40,16 +40,15 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface EventApiClientRetrofit {
 
     @DELETE("events/{uid}")
-    Call<ApiResponse> deleteEvent(@Path("uid") String eventUid);
+    Call<ApiMessage> deleteEvent(@Path("uid") String eventUid);
 
     @POST("events")
-    Call<ApiResponse> postEvents(@Body Map<String, List<Event>> events);
+    Call<ApiMessage> postEvents(@Body Map<String, List<Event>> events);
 
     @GET("events")
     Call<Map<String, List<Event>>> getEvents(@QueryMap Map<String, String> queryMap);

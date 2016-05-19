@@ -4,6 +4,7 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableController;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableService;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
@@ -59,6 +60,29 @@ public class ProgramRuleVariableInteractorImpl implements ProgramRuleVariableInt
     @Override
     public Observable<List<ProgramRuleVariable>> pull(Set<String> uids) {
         return pull(SyncStrategy.DEFAULT, uids);
+    }
+
+    @Override
+    public Observable<List<ProgramRuleVariable>> pull(final List<Program> programs) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
+            @Override
+            public List<ProgramRuleVariable> call() {
+                programRuleVariableController.pull(SyncStrategy.DEFAULT, programs);
+                return programRuleVariableService.list(programs);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<ProgramRuleVariable>> pull(
+            final SyncStrategy strategy, final List<Program> programs) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
+            @Override
+            public List<ProgramRuleVariable> call() {
+                programRuleVariableController.pull(SyncStrategy.DEFAULT, programs);
+                return programRuleVariableService.list(programs);
+            }
+        });
     }
 
     @Override

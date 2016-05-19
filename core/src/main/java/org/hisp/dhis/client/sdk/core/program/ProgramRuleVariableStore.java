@@ -39,4 +39,6 @@ public interface ProgramRuleVariableStore extends IdentifiableObjectStore<Progra
     ProgramRuleVariable query(Program program, DataElement dataElement);
 
     List<ProgramRuleVariable> query(Program program);
+
+    List<ProgramRuleVariable> query(List<Program> programs);
 }

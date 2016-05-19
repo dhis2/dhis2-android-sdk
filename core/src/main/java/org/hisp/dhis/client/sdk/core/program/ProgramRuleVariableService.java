@@ -33,8 +33,13 @@ import org.hisp.dhis.client.sdk.core.common.services.GetUid;
 import org.hisp.dhis.client.sdk.core.common.services.ListAll;
 import org.hisp.dhis.client.sdk.core.common.services.ListUids;
 import org.hisp.dhis.client.sdk.core.common.services.Service;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+
+import java.util.List;
 
 public interface ProgramRuleVariableService extends Service, Get<ProgramRuleVariable>,
         GetUid<ProgramRuleVariable>, ListAll<ProgramRuleVariable>, ListUids<ProgramRuleVariable> {
+
+    List<ProgramRuleVariable> list(List<Program> programs);
 }

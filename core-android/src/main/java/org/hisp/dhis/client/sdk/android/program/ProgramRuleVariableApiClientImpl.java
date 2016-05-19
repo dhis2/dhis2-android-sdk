@@ -4,9 +4,11 @@ import org.hisp.dhis.client.sdk.android.api.network.ApiResource;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableApiClient;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.joda.time.DateTime;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +35,20 @@ public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiC
             Fields fields, Set<String> programRuleVariableUids) throws ApiException {
         return getCollection(apiResource, fields, null, programRuleVariableUids);
 
+    }
+
+    @Override
+    public List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException {
+
+        Set<String> programUidSet = new HashSet<>();
+
+        if (programs != null && !programs.isEmpty()) {
+            for (Program program : programs) {
+                programUidSet.add(program.getUId());
+            }
+        }
+        return getCollection(apiResource, "program.id", fields, lastUpdated, programUidSet);
     }
 
     private ApiResource<ProgramRuleVariable> apiResource = new ApiResource<ProgramRuleVariable>() {

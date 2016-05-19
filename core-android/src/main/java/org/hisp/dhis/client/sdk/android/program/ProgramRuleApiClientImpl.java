@@ -60,7 +60,7 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
 
         @Override
         public String getBasicProperties() {
-            return "id,displayName";
+            return "id";
         }
 
         @Override

@@ -53,7 +53,7 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     @JsonProperty("dataElement")
     private DataElement dataElement;
 
-    @JsonProperty("attribute")
+    @JsonProperty("trackedEntityAttribute")
     private TrackedEntityAttribute trackedEntityAttribute;
 
     @JsonIgnore

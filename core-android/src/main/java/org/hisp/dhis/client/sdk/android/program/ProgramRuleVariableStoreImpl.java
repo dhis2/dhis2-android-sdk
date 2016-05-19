@@ -28,20 +28,24 @@
 
 package org.hisp.dhis.client.sdk.android.program;
 
+
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.ProgramRuleVariableFlow_Table;
 import org.hisp.dhis.client.sdk.android.common.AbsIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.program.ProgramRuleVariableStore;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
+import java.util.Set;
 
-public final class ProgramRuleVariableStoreImpl extends AbsIdentifiableObjectStore<ProgramRuleVariable,
-        ProgramRuleVariableFlow> implements ProgramRuleVariableStore {
+public final class ProgramRuleVariableStoreImpl
+        extends AbsIdentifiableObjectStore<ProgramRuleVariable, ProgramRuleVariableFlow>
+        implements ProgramRuleVariableStore {
 
     public ProgramRuleVariableStoreImpl() {
         super(ProgramRuleVariableFlow.MAPPER);
@@ -67,9 +71,24 @@ public final class ProgramRuleVariableStoreImpl extends AbsIdentifiableObjectSto
     @Override
     public List<ProgramRuleVariable> query(Program program) {
         List<ProgramRuleVariableFlow> programRuleVariableFlow = new Select()
-                .from(ProgramRuleVariableFlow.class).where(ProgramRuleVariableFlow_Table
+                .from(ProgramRuleVariableFlow.class)
+                .where(ProgramRuleVariableFlow_Table
                         .program.is(program.getUId()))
                 .queryList();
+
+        return getMapper().mapToModels(programRuleVariableFlow);
+    }
+
+    @Override
+    public List<ProgramRuleVariable> query(List<Program> programs) {
+        Set<String> programUidSet = ModelUtils.toUidSet(programs);
+
+        List<ProgramRuleVariableFlow> programRuleVariableFlow = new Select()
+                .from(ProgramRuleVariableFlow.class)
+                .where(ProgramRuleVariableFlow_Table
+                        .program.in(programUidSet))
+                .queryList();
+
         return getMapper().mapToModels(programRuleVariableFlow);
     }
 }

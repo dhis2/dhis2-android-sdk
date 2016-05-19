@@ -30,6 +30,7 @@ package org.hisp.dhis.client.sdk.core.program;
 
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.joda.time.DateTime;
 
@@ -42,4 +43,7 @@ public interface ProgramRuleVariableApiClient {
 
     List<ProgramRuleVariable> getProgramRuleVariables(
             Fields fields, Set<String> programRuleVariableUids) throws ApiException;
+
+    List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException;
 }

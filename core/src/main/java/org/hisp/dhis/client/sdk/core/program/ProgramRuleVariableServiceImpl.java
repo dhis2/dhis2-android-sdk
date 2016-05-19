@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 
 import java.util.List;
@@ -58,5 +59,10 @@ public final class ProgramRuleVariableServiceImpl implements ProgramRuleVariable
     @Override
     public List<ProgramRuleVariable> list(Set<String> uids) {
         return programRuleVariableStore.queryByUids(uids);
+    }
+
+    @Override
+    public List<ProgramRuleVariable> list(List<Program> programs) {
+        return programRuleVariableStore.query(programs);
     }
 }

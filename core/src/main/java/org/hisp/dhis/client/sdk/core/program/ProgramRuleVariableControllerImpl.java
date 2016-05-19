@@ -41,6 +41,8 @@ import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
+import org.hisp.dhis.client.sdk.models.program.Program;
+import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.joda.time.DateTime;
 
@@ -78,7 +80,6 @@ public final class ProgramRuleVariableControllerImpl
         this.programStageController = programStageController;
         this.dataElementController = dataElementController;
         this.trackedEntityAttributeController = attributeController;
-
     }
 
     @Override
@@ -117,10 +118,22 @@ public final class ProgramRuleVariableControllerImpl
                 persistedProgramRuleVariables);
 
         for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            dataElementUids.add(programRuleVariable.getDataElement().getUId());
-            trackedEntityAttributeUids.add(programRuleVariable.getTrackedEntityAttribute().getUId());
-            programStageUids.add(programRuleVariable.getProgramStage().getUId());
-            programUids.add(programRuleVariable.getProgram().getUId());
+            if (programRuleVariable.getDataElement() != null) {
+                dataElementUids.add(programRuleVariable.getDataElement().getUId());
+            }
+
+            if (programRuleVariable.getTrackedEntityAttribute() != null) {
+                trackedEntityAttributeUids.add(
+                        programRuleVariable.getTrackedEntityAttribute().getUId());
+            }
+
+            if (programRuleVariable.getProgramStage() != null) {
+                programStageUids.add(programRuleVariable.getProgramStage().getUId());
+            }
+
+            if (programRuleVariable.getProgram() != null) {
+                programUids.add(programRuleVariable.getProgram().getUId());
+            }
         }
 
         // checking if programs is synced.
@@ -152,5 +165,15 @@ public final class ProgramRuleVariableControllerImpl
 
         lastUpdatedPreferences.save(ResourceType.PROGRAM_RULE_VARIABLES,
                 DateType.SERVER, serverTime);
+    }
+
+    @Override
+    public void pull(SyncStrategy strategy, List<Program> programList) {
+        List<ProgramRuleVariable> variablesAssignedToPrograms = programRuleVariableApiClient
+                .getProgramRuleVariables(Fields.BASIC, null, programList);
+        Set<String> variableUids = ModelUtils.toUidSet(variablesAssignedToPrograms);
+
+        // delegate syncing to another pull method
+        pull(strategy, variableUids);
     }
 }

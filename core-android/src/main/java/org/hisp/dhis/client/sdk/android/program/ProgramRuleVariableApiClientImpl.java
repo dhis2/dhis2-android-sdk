@@ -35,30 +35,28 @@ public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiC
 
     }
 
-    private final ApiResource<ProgramRuleVariable> apiResource =
-            new ApiResource<ProgramRuleVariable>() {
+    private ApiResource<ProgramRuleVariable> apiResource = new ApiResource<ProgramRuleVariable>() {
 
-                @Override
-                public String getResourceName() {
-                    return "programRuleVariables";
-                }
+        @Override
+        public String getResourceName() {
+            return "programRuleVariables";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,name,displayName,created,lastUpdated,access," +
-                            "programRuleVariableSourceType,program[id],dataElement[id]" +
-                            "attribute[id],programStage[id]";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "programRuleVariableSourceType,program[id],programStage[id]," +
+                    "dataElement[id],trackedEntityAttribute[id]";
+        }
 
-                public Call<Map<String, List<ProgramRuleVariable>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return programRuleVariableApiClientRetrofit
-                            .getProgramRuleVariables(queryMap, filters);
-                }
-            };
+        public Call<Map<String, List<ProgramRuleVariable>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return programRuleVariableApiClientRetrofit.getProgramRuleVariables(queryMap, filters);
+        }
+    };
 }

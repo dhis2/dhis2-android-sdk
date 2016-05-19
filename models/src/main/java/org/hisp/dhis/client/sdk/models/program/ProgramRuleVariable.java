@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.client.sdk.models.program;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramRuleVariable extends BaseIdentifiableObject {
@@ -53,20 +56,8 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     @JsonProperty("attribute")
     private TrackedEntityAttribute trackedEntityAttribute;
 
-//    @JsonIgnore
-//    String variableValue;
-//
-//    @JsonIgnore
-//    ValueType variableType;
-//
-//    @JsonIgnore
-//    boolean hasValue;
-//
-//    @JsonIgnore
-//    String variableEventDate;
-//
-//    @JsonIgnore
-//    List<String> allValues;
+    @JsonIgnore
+    private List<String> allValues;
 
     public DataElement getDataElement() {
         return dataElement;
@@ -107,44 +98,12 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     public void setProgramStage(ProgramStage programStage) {
         this.programStage = programStage;
     }
-//
-//    public String getVariableValue() {
-//        return variableValue;
-//    }
-//
-//    public void setVariableValue(String variableValue) {
-//        this.variableValue = variableValue;
-//    }
-//
-//    public ValueType getVariableType() {
-//        return variableType;
-//    }
-//
-//    public void setVariableType(ValueType variableType) {
-//        this.variableType = variableType;
-//    }
-//
-//    public boolean isHasValue() {
-//        return hasValue;
-//    }
-//
-//    public void setHasValue(boolean hasValue) {
-//        this.hasValue = hasValue;
-//    }
-//
-//    public String getVariableEventDate() {
-//        return variableEventDate;
-//    }
-//
-//    public void setVariableEventDate(String variableEventDate) {
-//        this.variableEventDate = variableEventDate;
-//    }
-//
-//    public List<String> getAllValues() {
-//        return allValues;
-//    }
-//
-//    public void setAllValues(List<String> allValues) {
-//        this.allValues = allValues;
-//    }
+
+    public List<String> getAllValues() {
+        return allValues;
+    }
+
+    public void setAllValues(List<String> allValues) {
+        this.allValues = allValues;
+    }
 }

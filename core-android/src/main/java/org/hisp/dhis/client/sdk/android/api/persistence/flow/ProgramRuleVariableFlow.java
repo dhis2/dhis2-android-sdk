@@ -154,6 +154,7 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
             programRuleVariableFlow.setName(variable.getName());
             programRuleVariableFlow.setDisplayName(variable.getDisplayName());
             programRuleVariableFlow.setAccess(variable.getAccess());
+
             programRuleVariableFlow.setSourceType(variable.getSourceType());
             programRuleVariableFlow.setProgram(ProgramFlow.MAPPER
                     .mapToDatabaseEntity(variable.getProgram()));
@@ -163,6 +164,7 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
                     .mapToDatabaseEntity(variable.getDataElement()));
             programRuleVariableFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
                     .mapToDatabaseEntity(variable.getTrackedEntityAttribute()));
+
             return programRuleVariableFlow;
         }
 
@@ -180,9 +182,10 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
             programRuleVariable.setName(variableFlow.getName());
             programRuleVariable.setDisplayName(variableFlow.getDisplayName());
             programRuleVariable.setAccess(variableFlow.getAccess());
+
             programRuleVariable.setSourceType(variableFlow.getSourceType());
-            programRuleVariable.setProgramStage(ProgramStageFlow.MAPPER
-                    .mapToModel(variableFlow.getProgramStage()));
+            programRuleVariable.setProgram(ProgramFlow.MAPPER
+                    .mapToModel(variableFlow.getProgram()));
             programRuleVariable.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToModel(variableFlow.getProgramStage()));
             programRuleVariable.setDataElement(DataElementFlow.MAPPER

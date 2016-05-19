@@ -48,8 +48,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyController
-        <ProgramRuleVariable> implements ProgramRuleVariableController {
+public final class ProgramRuleVariableControllerImpl
+        extends AbsSyncStrategyController<ProgramRuleVariable>
+        implements ProgramRuleVariableController {
+
     private final ProgramRuleVariableApiClient programRuleVariableApiClient;
     private final TransactionManager transactionManager;
     private final SystemInfoController systemInfoController;
@@ -58,7 +60,7 @@ public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyCont
     private final DataElementController dataElementController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
 
-    public ProgramRuleVariableControllerImpl(ProgramRuleVariableApiClient programRuleVariableApiClient,
+    public ProgramRuleVariableControllerImpl(ProgramRuleVariableApiClient variableApiClient,
                                              TransactionManager transactionManager,
                                              LastUpdatedPreferences lastUpdatedPreferences,
                                              SystemInfoController systemInfoController,
@@ -66,17 +68,19 @@ public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyCont
                                              ProgramController programController,
                                              ProgramStageController programStageController,
                                              DataElementController dataElementController,
-                                             TrackedEntityAttributeController trackedEntityAttributeController) {
+                                             TrackedEntityAttributeController attributeController) {
         super(ResourceType.PROGRAM_RULE_VARIABLES, programRuleVariableStore, lastUpdatedPreferences);
-        this.programRuleVariableApiClient = programRuleVariableApiClient;
+
+        this.programRuleVariableApiClient = variableApiClient;
         this.transactionManager = transactionManager;
         this.systemInfoController = systemInfoController;
         this.programController = programController;
         this.programStageController = programStageController;
         this.dataElementController = dataElementController;
-        this.trackedEntityAttributeController = trackedEntityAttributeController;
+        this.trackedEntityAttributeController = attributeController;
 
     }
+
     @Override
     protected void synchronize(SyncStrategy strategy, Set<String> uids) {
         DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
@@ -107,9 +111,11 @@ public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyCont
         Set<String> trackedEntityAttributeUids = new HashSet<>();
         Set<String> programStageUids = new HashSet<>();
         Set<String> programUids = new HashSet<>();
+
         List<ProgramRuleVariable> programRuleVariables = ModelUtils.merge(
                 allExistingProgramRuleVariables, updatedProgramRuleVariables,
                 persistedProgramRuleVariables);
+
         for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
             dataElementUids.add(programRuleVariable.getDataElement().getUId());
             trackedEntityAttributeUids.add(programRuleVariable.getTrackedEntityAttribute().getUId());
@@ -118,24 +124,25 @@ public final class ProgramRuleVariableControllerImpl extends AbsSyncStrategyCont
         }
 
         // checking if programs is synced.
-        if(!programUids.isEmpty()) {
+        if (!programUids.isEmpty()) {
             programController.pull(strategy, programUids);
         }
+
         // checking if program stages is synced
-        if(!programStageUids.isEmpty()) {
+        if (!programStageUids.isEmpty()) {
             programStageController.pull(strategy, programStageUids);
         }
+
         // checking if data elements is synced
-        if(!dataElementUids.isEmpty()) {
+        if (!dataElementUids.isEmpty()) {
             dataElementController.pull(strategy, dataElementUids);
         }
-        // checking if tracked entity attributes is synced
-        // trackedEntityAttributeUids will always be empty if user has access to programs without
-        // registration!
-        if(!trackedEntityAttributeUids.isEmpty()) {
+
+        // checking if tracked entity attributes is synced trackedEntityAttributeUids will
+        // always be empty if user has access to programs without registration!
+        if (!trackedEntityAttributeUids.isEmpty()) {
             trackedEntityAttributeController.pull(strategy, trackedEntityAttributeUids);
         }
-
 
         // we will have to perform something similar to what happens in AbsController
         List<DbOperation> dbOperations = DbUtils.createOperations(

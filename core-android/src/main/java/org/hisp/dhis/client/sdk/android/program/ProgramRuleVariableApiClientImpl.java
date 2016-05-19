@@ -18,17 +18,19 @@ import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getColle
 public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiClient {
     private final ProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit;
 
-    public ProgramRuleVariableApiClientImpl(ProgramRuleVariableApiClientRetrofit programRuleVariableApiClientRetrofit) {
-        this.programRuleVariableApiClientRetrofit = programRuleVariableApiClientRetrofit;
+    public ProgramRuleVariableApiClientImpl(ProgramRuleVariableApiClientRetrofit apiClientRetrofit) {
+        this.programRuleVariableApiClientRetrofit = apiClientRetrofit;
     }
 
     @Override
-    public List<ProgramRuleVariable> getProgramRuleVariables(Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+    public List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
 
     @Override
-    public List<ProgramRuleVariable> getProgramRuleVariables(Fields fields, Set<String> programRuleVariableUids) throws ApiException {
+    public List<ProgramRuleVariable> getProgramRuleVariables(
+            Fields fields, Set<String> programRuleVariableUids) throws ApiException {
         return getCollection(apiResource, fields, null, programRuleVariableUids);
 
     }
@@ -43,7 +45,7 @@ public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiC
 
                 @Override
                 public String getBasicProperties() {
-                    return "id,displayName";
+                    return "id";
                 }
 
                 @Override

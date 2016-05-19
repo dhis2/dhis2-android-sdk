@@ -42,13 +42,16 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
-    public static final Mapper<ProgramRuleVariable, ProgramRuleVariableFlow>
-            MAPPER = new VariableMapper();
+    public static final Mapper<ProgramRuleVariable, ProgramRuleVariableFlow> MAPPER
+            = new VariableMapper();
 
-    private static final String DATA_ELEMENT_KEY = "dataElement";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
     private static final String PROGRAM_KEY = "program";
     private static final String PROGRAM_STAGE_KEY = "programStage";
+    private static final String DATA_ELEMENT_KEY = "dataElement";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
+
+    @Column
+    ProgramRuleVariableSourceType sourceType;
 
     @Column
     @ForeignKey(
@@ -90,8 +93,6 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
     )
     TrackedEntityAttributeFlow trackedEntityAttribute;
 
-    @Column
-    ProgramRuleVariableSourceType sourceType;
 
     public ProgramRuleVariableFlow() {
         // empty constructor

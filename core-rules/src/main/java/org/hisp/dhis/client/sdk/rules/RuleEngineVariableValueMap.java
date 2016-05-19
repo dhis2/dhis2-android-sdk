@@ -58,25 +58,25 @@ public class RuleEngineVariableValueMap {
         if (variables != null) {
             Map<String, TrackedEntityDataValue> currentEventTrackedEntityDataValueMap =
                     new HashMap<>();
-            if (currentEvent != null && currentEvent.getTrackedEntityDataValues() != null) {
-                for (TrackedEntityDataValue value : currentEvent.getTrackedEntityDataValues()) {
+            if (currentEvent != null && currentEvent.getDataValues() != null) {
+                for (TrackedEntityDataValue value : currentEvent.getDataValues()) {
                     currentEventTrackedEntityDataValueMap.put(value.getDataElement(), value);
                 }
             }
 
             Map<String, List<TrackedEntityDataValue>> allEventsTrackedEntityDataValueMap =
                     new HashMap<>();
-            for (Event e
-                    : allEvents ) {
-                if(e.getTrackedEntityDataValues() != null) {
-                    for (TrackedEntityDataValue value : e.getTrackedEntityDataValues()) {
-                        if(!allEventsTrackedEntityDataValueMap.containsKey(value.getDataElement())) {
-                            allEventsTrackedEntityDataValueMap.put(value.getDataElement(),
-                                   new ArrayList<>());
+            for (Event e : allEvents) {
+                if (e.getDataValues() != null) {
+                    for (TrackedEntityDataValue value : e.getDataValues()) {
+                        if (!allEventsTrackedEntityDataValueMap.containsKey(value.getDataElement())) {
+                            allEventsTrackedEntityDataValueMap.put(
+                                    value.getDataElement(),
+                                    new ArrayList<TrackedEntityDataValue>());
                         }
                         //Make sure the event is assigned, it is used later to check event date for
                         //the data values
-                        if(value.getEvent() == null) {
+                        if (value.getEvent() == null) {
                             value.setEvent(e);
                         }
                         allEventsTrackedEntityDataValueMap.get(value.getDataElement()).add(value);
@@ -116,8 +116,8 @@ public class RuleEngineVariableValueMap {
                                         variable.getDataElement().getUId());
                         TrackedEntityDataValue bestCandidate = null;
 
-                        for( TrackedEntityDataValue candidate : valueList ) {
-                            if(candidate.getEvent().getProgramStageId() ==
+                        for (TrackedEntityDataValue candidate : valueList) {
+                            if (candidate.getEvent().getProgramStage() ==
                                     variable.getProgramStage().getUId()) {
                                 //The candidate matches the program stage, and will be newer than
                                 // the potential previous candidate:
@@ -125,36 +125,34 @@ public class RuleEngineVariableValueMap {
                             }
                         }
 
-                        if(bestCandidate != null) {
+                        if (bestCandidate != null) {
                             addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
                             valueFound = true;
                         }
                     }
-                } else if(variable.getSourceType() ==
+                } else if (variable.getSourceType() ==
                         ProgramRuleVariableSourceType.DATAELEMENT_PREVIOUS_EVENT) {
                     if (currentEvent != null &&
                             allEventsTrackedEntityDataValueMap.containsKey(
-                            variable.getDataElement().getUId())) {
+                                    variable.getDataElement().getUId())) {
                         List<TrackedEntityDataValue> valueList =
                                 allEventsTrackedEntityDataValueMap.get(
                                         variable.getDataElement().getUId());
                         TrackedEntityDataValue bestCandidate = null;
 
-                        for( TrackedEntityDataValue candidate : valueList ) {
-                            if(candidate.getEvent().getEventDate().compareTo(currentEvent.getEventDate()) >= 0) {
+                        for (TrackedEntityDataValue candidate : valueList) {
+                            if (candidate.getEvent().getEventDate().compareTo(currentEvent.getEventDate()) >= 0) {
                                 //we have reached the current event time, stop iterating, keep the
                                 //previous candidate, if any
                                 break;
-                            }
-                            else
-                            {
+                            } else {
                                 //we have not yet reached the current event, keep this candidate
                                 //as it is the newest one examined:
                                 bestCandidate = candidate;
                             }
                         }
 
-                        if(bestCandidate != null) {
+                        if (bestCandidate != null) {
                             addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
                             valueFound = true;
                         }

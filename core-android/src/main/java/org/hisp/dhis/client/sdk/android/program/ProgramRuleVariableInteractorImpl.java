@@ -16,9 +16,9 @@ public class ProgramRuleVariableInteractorImpl implements ProgramRuleVariableInt
     private final ProgramRuleVariableController programRuleVariableController;
 
     public ProgramRuleVariableInteractorImpl(ProgramRuleVariableService programRuleVariableService,
-                                             ProgramRuleVariableController programRuleVariableController) {
+                                             ProgramRuleVariableController variableController) {
         this.programRuleVariableService = programRuleVariableService;
-        this.programRuleVariableController = programRuleVariableController;
+        this.programRuleVariableController = variableController;
     }
 
     @Override
@@ -73,8 +73,8 @@ public class ProgramRuleVariableInteractorImpl implements ProgramRuleVariableInt
     }
 
     @Override
-    public Observable<List<ProgramRuleVariable>> pull(final SyncStrategy syncStrategy,
-                                                      final Set<String> uids) {
+    public Observable<List<ProgramRuleVariable>> pull(
+            final SyncStrategy syncStrategy, final Set<String> uids) {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
             @Override
             public List<ProgramRuleVariable> call() {

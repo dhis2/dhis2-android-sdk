@@ -62,7 +62,7 @@ dependencies {
     // Square
     compile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
     compile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
-    compile("com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}")
+    compile "com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}"
 
     // ReactiveX
     compile "io.reactivex:rxandroid:${libs.rxAndroidVersion}";

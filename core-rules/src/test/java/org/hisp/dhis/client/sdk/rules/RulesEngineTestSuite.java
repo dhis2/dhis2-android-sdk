@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.program.Program;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class Main {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+        RulesEngineExpressionTests.class,
+        RulesEngineSourceTypeTests.class
+})
+public class RulesEngineTestSuite {
 
-    public static void main(String[] args) {
-        Program program = new Program();
-        program.setDisplayName("Hello, World");
-
-        System.out.println(program.getDisplayName());
-    }
 }

@@ -26,25 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'java'
+package org.hisp.dhis.client.sdk.rules;
 
-def cfg = rootProject.ext.configuration
-def libs = rootProject.ext.libraries
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
-dependencies {
-    compile project(":models")
-    compile "org.hisp.dhis:dhis2-support-commons:${libs.dhisCommonsVersion}"
-    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
-        exclude module: 'commons-logging'
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProgramRuleVariableValue {
+    private TrackedEntityDataValue value;
+    private List<TrackedEntityDataValue> allValues;
+    private List<String> allValuesString;
+
+    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues) {
+        this.allValues = allValues;
+        this.allValuesString = new ArrayList<>();
+
+        if(allValues != null) {
+            for (TrackedEntityDataValue otherValue
+                    : allValues) {
+                allValuesString.add(otherValue.getValue());
+            }
+        }
+        this.value = value;
     }
 
-    // Test compile dependencies.
-    testCompile "junit:junit:${libs.jUnitVersion}"
-    testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+    public String getValueString() {
+        return this.value.getValue();
+    }
 
-    // Square
-    testCompile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
-    testCompile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
-    testCompile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
-    testCompile "com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}"
+    public List<String> getAllValuesString() { return this.allValuesString; }
+
+    @Override
+    public String toString() {
+        return this.getValueString();
+    }
 }

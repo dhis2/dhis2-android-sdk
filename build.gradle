@@ -37,6 +37,9 @@ ext {
     ]
 
     libraries = [
+            // dhis libs
+            dhisCommonsVersion : "1.1",
+
             // android libs
             supportVersion     : "23.2.1",
             rxAndroidVersion   : "1.1.0",

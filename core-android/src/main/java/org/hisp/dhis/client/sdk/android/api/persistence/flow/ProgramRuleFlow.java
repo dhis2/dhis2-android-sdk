@@ -39,14 +39,11 @@ import org.hisp.dhis.client.sdk.android.common.AbsMapper;
 import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 
-import java.util.List;
-
 @Table(database = DbDhis.class)
 public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
-    public static final Mapper<ProgramRule, ProgramRuleFlow>
-            MAPPER = new RuleMapper();
+    public static final Mapper<ProgramRule, ProgramRuleFlow> MAPPER = new RuleMapper();
 
-    private static final String PROGRAM_STAGE_KEY = "programstage";
+    private static final String PROGRAM_STAGE_KEY = "programStage";
     private static final String PROGRAM_KEY = "program";
 
     @Column
@@ -80,8 +77,6 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
 
     @Column
     boolean externalAction;
-
-    List<ProgramRuleActionFlow> programRuleActions;
 
     public ProgramRuleFlow() {
         // empty constructor
@@ -133,14 +128,6 @@ public final class ProgramRuleFlow extends BaseIdentifiableObjectFlow {
 
     public void setExternalAction(boolean externalAction) {
         this.externalAction = externalAction;
-    }
-
-    public List<ProgramRuleActionFlow> getProgramRuleActions() {
-        return programRuleActions;
-    }
-
-    public void setProgramRuleActions(List<ProgramRuleActionFlow> programRuleActions) {
-        this.programRuleActions = programRuleActions;
     }
 
     private static class RuleMapper extends AbsMapper<ProgramRule, ProgramRuleFlow> {

@@ -25,29 +25,33 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
     }
 
     @Override
-    public List<ProgramRule> getProgramRules(Fields fields, DateTime lastUpdated, Set<String> uids)
-            throws ApiException {
+    public List<ProgramRule> getProgramRules(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
 
     }
 
     @Override
-    public List<ProgramRule> getProgramRules(Fields fields, Set<String> programRuleUids) throws ApiException {
+    public List<ProgramRule> getProgramRules(
+            Fields fields, Set<String> programRuleUids) throws ApiException {
         return getCollection(apiResource, fields, null, programRuleUids);
     }
 
     @Override
-    public List<ProgramRule> getProgramRules(Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException {
+    public List<ProgramRule> getProgramRules(
+            Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException {
         Set<String> programUidSet = new HashSet<>();
-        for(Program program : programs) {
-            programUidSet.add(program.getUId());
+
+        if (programs != null && !programs.isEmpty()) {
+            for(Program program : programs) {
+                programUidSet.add(program.getUId());
+            }
         }
 
         return getCollection(apiResource, "program.id", fields, lastUpdated, programUidSet);
     }
 
-    private final ApiResource<ProgramRule> apiResource =
-            new ApiResource<ProgramRule>() {
+    private final ApiResource<ProgramRule> apiResource = new ApiResource<ProgramRule>() {
 
                 @Override
                 public String getResourceName() {
@@ -62,7 +66,7 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
                 @Override
                 public String getAllProperties() {
                     return "id,name,displayName,created,lastUpdated,access," +
-                            "condition,externalAccess,description,program," +
+                            "condition,externalAccess,description,program,priority," +
                             "programRuleActions,programStage";
                 }
 

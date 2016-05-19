@@ -8,5 +8,5 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import java.util.List;
 
 public interface ProgramRuleController extends IdentifiableController<ProgramRule> {
-    void pullUpdates(SyncStrategy strategy, List<Program> programList);
+    void pull(SyncStrategy strategy, List<Program> programList);
 }

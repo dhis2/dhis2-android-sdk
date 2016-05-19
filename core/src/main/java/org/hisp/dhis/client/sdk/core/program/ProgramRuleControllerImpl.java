@@ -47,8 +47,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class ProgramRuleControllerImpl extends AbsSyncStrategyController<ProgramRule>
-        implements ProgramRuleController {
+public final class ProgramRuleControllerImpl
+        extends AbsSyncStrategyController<ProgramRule> implements ProgramRuleController {
     private final TransactionManager transactionManager;
     private final SystemInfoController systemInfoController;
     private final ProgramRuleApiClient programRuleApiClient;
@@ -100,23 +100,22 @@ public final class ProgramRuleControllerImpl extends AbsSyncStrategyController<P
         Set<String> programUids = new HashSet<>();
 
         List<ProgramRule> programRules = ModelUtils.merge(
-                allExistingProgramRules, updatedProgramRules,
-                persistedProgramRules);
+                allExistingProgramRules, updatedProgramRules, persistedProgramRules);
         for (ProgramRule programRule : programRules) {
-            if(programRule.getProgramStage() != null) {
+            if (programRule.getProgramStage() != null) {
                 programStageUids.add(programRule.getProgramStage().getUId());
             }
-            if(programRule.getProgram() != null) {
+            if (programRule.getProgram() != null) {
                 programUids.add(programRule.getProgram().getUId());
             }
         }
 
-        // checking if programs is synced
-        if(!programUids.isEmpty()) {
+        // checking if programs are synced
+        if (!programUids.isEmpty()) {
             programController.pull(strategy, programUids);
         }
         // checking if program stages is synced
-        if(!programStageUids.isEmpty()) {
+        if (!programStageUids.isEmpty()) {
             programStageController.pull(strategy, programStageUids);
         }
 
@@ -131,59 +130,12 @@ public final class ProgramRuleControllerImpl extends AbsSyncStrategyController<P
     }
 
     @Override
-    public void pullUpdates(SyncStrategy strategy, List<Program> programList) {
-        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.PROGRAM_RULES, DateType.SERVER);
-
-        List<ProgramRule> persistedProgramRules =
-                identifiableObjectStore.queryAll();
-
-        // we have to download all ids from server in order to
-        // find out what was removed on the server side
-
-        List<ProgramRule> allExistingProgramRules = programRuleApiClient
+    public void pull(SyncStrategy strategy, List<Program> programList) {
+        List<ProgramRule> programRulesAssignedToPrograms = programRuleApiClient
                 .getProgramRules(Fields.BASIC, null, programList);
+        Set<String> programRuleUids = ModelUtils.toUidSet(programRulesAssignedToPrograms);
 
-        Set<String> uidSet = null;
-//        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramRules);
-//            uidSet.addAll(uids);
-//        }
-
-        List<ProgramRule> updatedProgramRules = programRuleApiClient
-                .getProgramRules(Fields.ALL, lastUpdated, uidSet);
-
-        // Retrieving foreign key uids from programRules
-        Set<String> programStageUids = new HashSet<>();
-//        Set<String> programUids = new HashSet<>();
-
-        List<ProgramRule> programRules = ModelUtils.merge(
-                allExistingProgramRules, updatedProgramRules,
-                persistedProgramRules);
-//        for (ProgramRule programRule : programRules) {
-//            programStageUids.add(programRule.getProgramStage().getUId());
-//            programUids.add(programRule.getProgram().getUId());
-//        }
-
-        // checking if programs is synced
-//        if(!programUids.isEmpty()) {
-//            programController.pull(strategy, programUids);
-//        }
-        // checking if program stages is synced
-//        if(!programStageUids.isEmpty()) {
-//            programStageController.pull(strategy, programStageUids);
-//        }
-
-        // we will have to perform something similar to what happens in AbsController
-        List<DbOperation> dbOperations = DbUtils.createOperations(
-                allExistingProgramRules, updatedProgramRules,
-                persistedProgramRules, identifiableObjectStore);
-        transactionManager.transact(dbOperations);
-
-        lastUpdatedPreferences.save(ResourceType.PROGRAM_RULES,
-                DateType.SERVER, serverTime);
+        // delegate syncing to another pull method
+        pull(strategy, programRuleUids);
     }
 }

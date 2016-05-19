@@ -153,7 +153,7 @@ public final class ProgramRuleStoreImpl extends AbsIdentifiableObjectStore<Progr
         List<ProgramRuleFlow> programRuleFlows = new Select()
                 .from(ProgramRuleFlow.class)
                 .where(ProgramRuleFlow_Table
-                        .programstage.is(programStage.getUId()))
+                        .programStage.is(programStage.getUId()))
                 .queryList();
 
         return getMapper().mapToModels(programRuleFlows);

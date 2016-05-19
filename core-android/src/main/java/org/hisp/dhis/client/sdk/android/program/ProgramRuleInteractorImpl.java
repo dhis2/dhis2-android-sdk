@@ -145,7 +145,7 @@ public class ProgramRuleInteractorImpl implements ProgramRuleInteractor {
         return Observable.create(new DefaultOnSubscribe<List<ProgramRule>>() {
             @Override
             public List<ProgramRule> call() {
-                programRuleController.pullUpdates(syncStrategy, programs);
+                programRuleController.pull(syncStrategy, programs);
                 return programRuleService.list(programs);
             }
         });

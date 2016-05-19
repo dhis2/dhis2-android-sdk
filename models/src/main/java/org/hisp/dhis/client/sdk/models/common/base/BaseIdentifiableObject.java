@@ -38,8 +38,8 @@ import java.util.Comparator;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
-    public static final Comparator<? extends
-            BaseIdentifiableObject> COMPARATOR_DISPLAY_NAME = new DisplayNameComparator<>();
+    public static final Comparator<? extends BaseIdentifiableObject> COMPARATOR_DISPLAY_NAME
+            = new DisplayNameComparator<>();
 
     @JsonProperty("id")
     private String uId;

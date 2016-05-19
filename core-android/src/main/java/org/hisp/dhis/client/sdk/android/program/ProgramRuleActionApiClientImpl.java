@@ -18,45 +18,46 @@ import static org.hisp.dhis.client.sdk.android.api.network.NetworkUtils.getColle
 public class ProgramRuleActionApiClientImpl implements ProgramRuleActionApiClient {
     private final ProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit;
 
-    public ProgramRuleActionApiClientImpl(
-            ProgramRuleActionApiClientRetrofit programRuleActionApiClientRetrofit) {
-        this.programRuleActionApiClientRetrofit = programRuleActionApiClientRetrofit;
+    public ProgramRuleActionApiClientImpl(ProgramRuleActionApiClientRetrofit retrofitClient) {
+        this.programRuleActionApiClientRetrofit = retrofitClient;
     }
 
     @Override
-    public List<ProgramRuleAction> getProgramRuleActions(Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
+    public List<ProgramRuleAction> getProgramRuleActions(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
         return getCollection(apiResource, fields, lastUpdated, uids);
     }
 
     @Override
-    public List<ProgramRuleAction> getProgramRuleActions(Fields fields, Set<String> programRuleActionUids) throws ApiException {
+    public List<ProgramRuleAction> getProgramRuleActions(
+            Fields fields, Set<String> programRuleActionUids) throws ApiException {
         return getCollection(apiResource, fields, null, programRuleActionUids);
     }
 
-    private final ApiResource<ProgramRuleAction> apiResource =
-            new ApiResource<ProgramRuleAction>() {
+    private final ApiResource<ProgramRuleAction> apiResource = new ApiResource<ProgramRuleAction>() {
 
-                @Override
-                public String getResourceName() {
-                    return "programRuleActions";
-                }
+        @Override
+        public String getResourceName() {
+            return "programRuleActions";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,created,lastUpdated,access,content,programRuleActionType" +
-                            "programStage[id],programStageSection[id],dataElement[id]"
-                            + "programRule[id],trackedEntityAttribute[id],programIndicator[id]";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,created,lastUpdated,access," +
+                    "programRuleActionType,programRule[id],programStage[id]," +
+                    "programStageSection[id],programIndicator[id]," +
+                    "trackedEntityAttribute[id],dataElement[id]," +
+                    "content,location,data";
+        }
 
-                public Call<Map<String, List<ProgramRuleAction>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return programRuleActionApiClientRetrofit
-                            .getProgramRuleActions(queryMap, filters);
-                }
-            };
+        public Call<Map<String, List<ProgramRuleAction>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return programRuleActionApiClientRetrofit.getProgramRuleActions(queryMap, filters);
+        }
+    };
 }

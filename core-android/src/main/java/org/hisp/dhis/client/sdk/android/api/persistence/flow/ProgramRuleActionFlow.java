@@ -42,54 +42,26 @@ import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
-    public static final Mapper<ProgramRuleAction, ProgramRuleActionFlow>
-            MAPPER = new ActionMapper();
+    public static final Mapper<ProgramRuleAction, ProgramRuleActionFlow> MAPPER = new ActionMapper();
 
     private static final String PROGRAM_RULE_KEY = "programRule";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
-    private static final String DATA_ELEMENT_KEY = "dataElement";
-    private static final String PROGRAM_INDICATOR_KEY = "programIndicator";
     private static final String PROGRAM_STAGE_KEY = "programStage";
     private static final String PROGRAM_STAGE_SECTION_KEY = "programStageSection";
+    private static final String PROGRAM_INDICATOR_KEY = "programIndicator";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
+    private static final String DATA_ELEMENT_KEY = "dataElement";
+
+    @Column
+    ProgramRuleActionType programRuleActionType;
 
     @Column
     @ForeignKey(
             references = {
                     @ForeignKeyReference(columnName = PROGRAM_RULE_KEY, columnType = String.class,
-                            foreignKeyColumnName = "uId"),
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramRuleFlow programRule;
-
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(
-                            columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class,
-                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    TrackedEntityAttributeFlow trackedEntityAttribute;
-
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(
-                            columnName = DATA_ELEMENT_KEY, columnType = String.class,
-                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    DataElementFlow dataElement;
-
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(
-                            columnName = PROGRAM_INDICATOR_KEY, columnType = String.class,
-                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    ProgramIndicatorFlow programIndicator;
 
     @Column
     @ForeignKey(
@@ -112,7 +84,34 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     ProgramStageSectionFlow programStageSection;
 
     @Column
-    ProgramRuleActionType programRuleActionType;
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_INDICATOR_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    ProgramIndicatorFlow programIndicator;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(
+                            columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    TrackedEntityAttributeFlow trackedEntityAttribute;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(
+                            columnName = DATA_ELEMENT_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    DataElementFlow dataElement;
 
     @Column
     String content;
@@ -210,8 +209,7 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
     private static class ActionMapper extends AbsMapper<ProgramRuleAction, ProgramRuleActionFlow> {
 
         @Override
-        public ProgramRuleActionFlow mapToDatabaseEntity(
-                ProgramRuleAction programRuleAction) {
+        public ProgramRuleActionFlow mapToDatabaseEntity(ProgramRuleAction programRuleAction) {
             if (programRuleAction == null) {
                 return null;
             }
@@ -221,24 +219,26 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
             programRuleActionFlow.setUId(programRuleAction.getUId());
             programRuleActionFlow.setCreated(programRuleAction.getCreated());
             programRuleActionFlow.setLastUpdated(programRuleAction.getLastUpdated());
-            programRuleActionFlow.setName(programRuleAction.getName());
-            programRuleActionFlow.setDisplayName(programRuleAction.getDisplayName());
             programRuleActionFlow.setAccess(programRuleAction.getAccess());
-            programRuleActionFlow.setData(programRuleAction.getData());
-            programRuleActionFlow.setContent(programRuleAction.getContent());
-            programRuleActionFlow.setLocation(programRuleAction.getLocation());
-            programRuleActionFlow.setProgramStage(ProgramStageFlow.MAPPER
-                    .mapToDatabaseEntity(programRuleAction.getProgramStage()));
+
             programRuleActionFlow.setProgramRule(ProgramRuleFlow.MAPPER
                     .mapToDatabaseEntity(programRuleAction.getProgramRule()));
-            programRuleActionFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
-                    .mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
             programRuleActionFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
                     .mapToDatabaseEntity(programRuleAction.getTrackedEntityAttribute()));
             programRuleActionFlow.setDataElement(DataElementFlow.MAPPER
                     .mapToDatabaseEntity(programRuleAction.getDataElement()));
             programRuleActionFlow.setProgramIndicator(ProgramIndicatorFlow.MAPPER
                     .mapToDatabaseEntity(programRuleAction.getProgramIndicator()));
+            programRuleActionFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramStage()));
+            programRuleActionFlow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToDatabaseEntity(programRuleAction.getProgramStageSection()));
+            programRuleActionFlow.setProgramRuleActionType(
+                    programRuleAction.getProgramRuleActionType());
+
+            programRuleActionFlow.setContent(programRuleAction.getContent());
+            programRuleActionFlow.setLocation(programRuleAction.getLocation());
+            programRuleActionFlow.setData(programRuleAction.getData());
 
             return programRuleActionFlow;
         }
@@ -254,24 +254,28 @@ public final class ProgramRuleActionFlow extends BaseIdentifiableObjectFlow {
             programRuleAction.setUId(programRuleActionFlow.getUId());
             programRuleAction.setCreated(programRuleActionFlow.getCreated());
             programRuleAction.setLastUpdated(programRuleActionFlow.getLastUpdated());
-            programRuleAction.setName(programRuleActionFlow.getName());
-            programRuleAction.setDisplayName(programRuleActionFlow.getDisplayName());
             programRuleAction.setAccess(programRuleActionFlow.getAccess());
-            programRuleAction.setData(programRuleActionFlow.getData());
-            programRuleAction.setContent(programRuleActionFlow.getContent());
-            programRuleAction.setLocation(programRuleActionFlow.getLocation());
-            programRuleAction.setProgramStage(ProgramStageFlow.MAPPER
-                    .mapToModel(programRuleActionFlow.getProgramStage()));
+
+            programRuleAction.setProgramRuleActionType(
+                    programRuleActionFlow.getProgramRuleActionType());
             programRuleAction.setProgramRule(ProgramRuleFlow.MAPPER
                     .mapToModel(programRuleActionFlow.getProgramRule()));
+            programRuleAction.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramStage()));
             programRuleAction.setProgramStageSection(ProgramStageSectionFlow.MAPPER
                     .mapToModel(programRuleActionFlow.getProgramStageSection()));
+            programRuleAction.setProgramIndicator(ProgramIndicatorFlow.MAPPER
+                    .mapToModel(programRuleActionFlow.getProgramIndicator()));
             programRuleAction.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
                     .mapToModel(programRuleActionFlow.getTrackedEntityAttribute()));
             programRuleAction.setDataElement(DataElementFlow.MAPPER
                     .mapToModel(programRuleActionFlow.getDataElement()));
-            programRuleAction.setProgramIndicator(ProgramIndicatorFlow.MAPPER
-                    .mapToModel(programRuleActionFlow.getProgramIndicator()));
+
+
+            programRuleAction.setContent(programRuleActionFlow.getContent());
+            programRuleAction.setLocation(programRuleActionFlow.getLocation());
+            programRuleAction.setData(programRuleActionFlow.getData());
+
             return programRuleAction;
         }
 

@@ -43,7 +43,7 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
         Set<String> programUidSet = new HashSet<>();
 
         if (programs != null && !programs.isEmpty()) {
-            for(Program program : programs) {
+            for (Program program : programs) {
                 programUidSet.add(program.getUId());
             }
         }
@@ -53,27 +53,26 @@ public class ProgramRuleApiClientImpl implements ProgramRuleApiClient {
 
     private final ApiResource<ProgramRule> apiResource = new ApiResource<ProgramRule>() {
 
-                @Override
-                public String getResourceName() {
-                    return "programRules";
-                }
+        @Override
+        public String getResourceName() {
+            return "programRules";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id,displayName";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id,displayName";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,name,displayName,created,lastUpdated,access," +
-                            "condition,externalAccess,description,program,priority," +
-                            "programRuleActions,programStage";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "condition,externalAccess,description,program,priority," +
+                    "programRuleActions,programStage";
+        }
 
-                public Call<Map<String, List<ProgramRule>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return programRuleApiClientRetrofit
-                            .getProgramRules(queryMap, filters);
-                }
-            };
+        public Call<Map<String, List<ProgramRule>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return programRuleApiClientRetrofit.getProgramRules(queryMap, filters);
+        }
+    };
 }

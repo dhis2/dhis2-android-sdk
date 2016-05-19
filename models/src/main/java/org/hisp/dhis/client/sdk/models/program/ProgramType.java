@@ -38,16 +38,6 @@ public enum ProgramType {
         this.value = value;
     }
 
-    public static ProgramType fromValue(String value) {
-        for (ProgramType programType : ProgramType.values()) {
-            if (programType.value.equalsIgnoreCase(value)) {
-                return programType;
-            }
-        }
-
-        return null;
-    }
-
     public String getValue() {
         return value;
     }

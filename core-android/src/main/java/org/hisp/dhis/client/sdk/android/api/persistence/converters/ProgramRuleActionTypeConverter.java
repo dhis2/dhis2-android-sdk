@@ -26,25 +26,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.models.program;
+package org.hisp.dhis.client.sdk.android.api.persistence.converters;
 
-public enum ProgramRuleActionType {
-    DISPLAYTEXT("displaytext"),
-    DISPLAYKEYVALUEPAIR("displaykeyvaluepair"),
-    HIDEFIELD("hidefield"),
-    HIDESECTION("hidesection"),
-    ASSIGN("assign"),
-    SHOWWARNING("showwarning"),
-    SHOWERROR("showerror"),
-    CREATEEVENT("createevent");
+import com.raizlabs.android.dbflow.converter.TypeConverter;
 
-    private final String value;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
 
-    ProgramRuleActionType(String value) {
-        this.value = value;
+@SuppressWarnings("unused")
+@com.raizlabs.android.dbflow.annotation.TypeConverter
+public final class ProgramRuleActionTypeConverter extends TypeConverter<String, ProgramRuleActionType> {
+
+    @Override
+    public String getDBValue(ProgramRuleActionType model) {
+        return model.toString();
     }
 
-    public String getValue() {
-        return value;
+    @Override
+    public ProgramRuleActionType getModelValue(String data) {
+        return ProgramRuleActionType.valueOf(data);
     }
 }

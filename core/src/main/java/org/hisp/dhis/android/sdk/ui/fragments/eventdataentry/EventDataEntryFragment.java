@@ -64,6 +64,7 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -97,11 +98,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
     private IndicatorEvaluatorThread indicatorEvaluatorThread;
     private EventSaveThread saveThread;
 
-    private static final String ORG_UNIT_ID = "extra:orgUnitId";
-    private static final String PROGRAM_ID = "extra:ProgramId";
-    private static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
-    private static final String EVENT_ID = "extra:EventId";
-    private static final String ENROLLMENT_ID = "extra:EnrollmentId";
+    public static final String ORG_UNIT_ID = "extra:orgUnitId";
+    public static final String PROGRAM_ID = "extra:ProgramId";
+    public static final String PROGRAM_STAGE_ID = "extra:ProgramStageId";
+    public static final String EVENT_ID = "extra:EventId";
+    public static final String ENROLLMENT_ID = "extra:EnrollmentId";
     private ImageView previousSectionButton;
     private ImageView nextSectionButton;
     private View spinnerContainer;
@@ -292,7 +293,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         List<Row> rows = new ArrayList<>();
         if(!form.getSections().isEmpty()) {
             if(form.getSections().size() > 1) {
-                rows = form.getCurrentSection().getRows();
+                for(DataEntryFragmentSection section : form.getSections()) {
+                    rows.addAll(section.getRows());
+                }
+
             }
             else {
                 rows = form.getSections().get(0).getRows();

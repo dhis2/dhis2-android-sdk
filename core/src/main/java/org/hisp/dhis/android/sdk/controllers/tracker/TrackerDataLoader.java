@@ -225,7 +225,8 @@ final class TrackerDataLoader extends ResourceController {
             QUERY_MAP_FULL.put("query","LIKE:"+queryString);//todo: make a map where we can use more than one of each key
         }
         List<TrackedEntityInstance> trackedEntityInstances = unwrapResponse(dhisApi
-                .getTrackedEntityInstancesFromAllAccessibleOrgUnits(QUERY_MAP_FULL), ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
+                .getTrackedEntityInstancesFromAllAccessibleOrgUnits(organisationUnitUid, QUERY_MAP_FULL),
+                ApiEndpointContainer.TRACKED_ENTITY_INSTANCES);
         return trackedEntityInstances;
     }
 

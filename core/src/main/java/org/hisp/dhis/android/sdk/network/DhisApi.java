@@ -294,7 +294,7 @@ public interface DhisApi {
     Map<String, List<TrackedEntityInstance>> getTrackedEntityInstances(@Query("ou") String organisationUnitUid, @QueryMap(encodeValues = false) Map<String, String> queryMap);
 
     @GET("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"?skipPaging=true&ouMode=ACCESSIBLE")
-    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@QueryMap(encodeValues = false) Map<String, String> queryMap);
+    Map<String, List<TrackedEntityInstance>> getTrackedEntityInstancesFromAllAccessibleOrgUnits(@Query("ou") String organisationUnitUid, @QueryMap(encodeValues = false) Map<String, String> queryMap);
 
     @POST("/"+ApiEndpointContainer.TRACKED_ENTITY_INSTANCES+"/")
     Response postTrackedEntityInstance(@Body TrackedEntityInstance trackedEntityInstance);

@@ -84,4 +84,5 @@ public abstract class NetworkJob<T> extends Job<ResponseHolder<T>> {
     }
 
     public abstract T execute() throws APIException;
+
 }

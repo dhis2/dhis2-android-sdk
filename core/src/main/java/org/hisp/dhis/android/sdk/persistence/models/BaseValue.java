@@ -35,11 +35,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.io.Serializable;
+
 /**
  * @author Simen Skogly Russnes on 20.03.15.
  */
 @JsonIgnoreProperties("modelAdapter")
-public abstract class BaseValue extends BaseModel {
+public abstract class BaseValue extends BaseModel implements Serializable {
 
     public static final String FALSE = "false";
     public static final String TRUE = "true";

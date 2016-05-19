@@ -95,8 +95,6 @@ public abstract class SelectProgramFragment extends BaseFragment
     protected SelectProgramFragmentState mState;
     protected SelectProgramFragmentPreferences mPrefs;
 
-    protected INavigationHandler mNavigationHandler;
-
     public SelectProgramFragment() {
         this("state:SelectProgramFragment", 1);
     }
@@ -109,13 +107,6 @@ public abstract class SelectProgramFragment extends BaseFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        if (activity instanceof INavigationHandler) {
-            mNavigationHandler = (INavigationHandler) activity;
-        } else {
-            throw new IllegalArgumentException("Activity must " +
-                    "implement INavigationHandler interface");
-        }
     }
 
     @Override
@@ -123,7 +114,6 @@ public abstract class SelectProgramFragment extends BaseFragment
         super.onDetach();
         // we need to nullify reference
         // to parent activity in order not to leak it
-        mNavigationHandler = null;
     }
 
     @Override
@@ -241,17 +231,10 @@ public abstract class SelectProgramFragment extends BaseFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_main, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            mNavigationHandler.switchFragment(
-                    new SettingsFragment(), SettingsFragment.TAG, true);
-        }
-
         return super.onOptionsItemSelected(item);
     }
 

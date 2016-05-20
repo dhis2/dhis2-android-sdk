@@ -63,29 +63,28 @@ public class ProgramStageSectionApiClientImpl implements ProgramStageSectionApiC
                 fields, null, stageDataElementUids);
     }
 
-    private final ApiResource<ProgramStageSection> apiResource =
-            new ApiResource<ProgramStageSection>() {
+    private ApiResource<ProgramStageSection> apiResource = new ApiResource<ProgramStageSection>() {
 
-                @Override
-                public String getResourceName() {
-                    return "programStageSections";
-                }
+        @Override
+        public String getResourceName() {
+            return "programStageSections";
+        }
 
-                @Override
-                public String getBasicProperties() {
-                    return "id,displayName";
-                }
+        @Override
+        public String getBasicProperties() {
+            return "id";
+        }
 
-                @Override
-                public String getAllProperties() {
-                    return "id,name,displayName,created,lastUpdated,access," +
-                            "programStage,programStageDataElements[id]";
-                }
+        @Override
+        public String getAllProperties() {
+            return "id,name,displayName,created,lastUpdated,access," +
+                    "sortOrder,programStage[id],programStageDataElements[id]";
+        }
 
-                public Call<Map<String, List<ProgramStageSection>>> getEntities(
-                        Map<String, String> queryMap, List<String> filters) throws ApiException {
-                    return programStageSectionApiClientRetrofit
-                            .getProgramStageSections(queryMap, filters);
-                }
-            };
+        public Call<Map<String, List<ProgramStageSection>>> getEntities(
+                Map<String, String> queryMap, List<String> filters) throws ApiException {
+            return programStageSectionApiClientRetrofit
+                    .getProgramStageSections(queryMap, filters);
+        }
+    };
 }

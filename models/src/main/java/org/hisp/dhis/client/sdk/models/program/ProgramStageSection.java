@@ -33,16 +33,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hisp.dhis.client.sdk.models.common.base.BaseIdentifiableObject;
 
+import java.util.Comparator;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramStageSection extends BaseIdentifiableObject {
+    public static final Comparator<ProgramStageSection>
+            SORT_ORDER_COMPARATOR = new SortOrderComparator();
 
     @JsonProperty("sortOrder")
     private int sortOrder;
-
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
 
     @JsonProperty("programStage")
     private ProgramStage programStage;
@@ -59,14 +59,6 @@ public final class ProgramStageSection extends BaseIdentifiableObject {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
     }
 
     public ProgramStage getProgramStage() {
@@ -92,5 +84,23 @@ public final class ProgramStageSection extends BaseIdentifiableObject {
 
     public void setProgramIndicators(List<ProgramIndicator> programIndicators) {
         this.programIndicators = programIndicators;
+    }
+
+    private static final class SortOrderComparator implements Comparator<ProgramStageSection> {
+
+        @Override
+        public int compare(ProgramStageSection one, ProgramStageSection two) {
+            if (one == null || two == null) {
+                return 0;
+            }
+
+            if (one.getSortOrder() > two.getSortOrder()) {
+                return 1;
+            } else if (one.getSortOrder() < two.getSortOrder()) {
+                return -1;
+            }
+
+            return 0;
+        }
     }
 }

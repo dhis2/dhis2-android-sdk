@@ -185,17 +185,19 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             flow.setName(model.getName());
             flow.setDisplayName(model.getDisplayName());
             flow.setAccess(model.getAccess());
-            flow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
-                    .mapToDatabaseEntity(model.getProgramStageSection()));
-            flow.setProgramStage(ProgramStageFlow.MAPPER
-                    .mapToDatabaseEntity(model.getProgramStage()));
-            flow.setDataElement(DataElementFlow.MAPPER
-                    .mapToDatabaseEntity(model.getDataElement()));
             flow.setAllowFutureDate(model.isAllowFutureDate());
             flow.setSortOrder(model.getSortOrder());
             flow.setDisplayInReports(model.isDisplayInReports());
             flow.setAllowProvidedElsewhere(model.isAllowProvidedElsewhere());
             flow.setCompulsory(model.isCompulsory());
+
+            flow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(model.getProgramStage()));
+            flow.setProgramStageSection(ProgramStageSectionFlow.MAPPER
+                    .mapToDatabaseEntity(model.getProgramStageSection()));
+            flow.setDataElement(DataElementFlow.MAPPER
+                    .mapToDatabaseEntity(model.getDataElement()));
+
             return flow;
         }
 
@@ -213,17 +215,19 @@ public final class ProgramStageDataElementFlow extends BaseIdentifiableObjectFlo
             model.setName(flow.getName());
             model.setDisplayName(flow.getDisplayName());
             model.setAccess(flow.getAccess());
-            model.setProgramStage(ProgramStageFlow.MAPPER
-                    .mapToModel(flow.getProgramStage()));
-            model.setDataElement(DataElementFlow.MAPPER
-                    .mapToModel(flow.getDataElement()));
             model.setAllowFutureDate(flow.isAllowFutureDate());
             model.setSortOrder(flow.getSortOrder());
             model.setDisplayInReports(flow.isDisplayInReports());
             model.setAllowProvidedElsewhere(flow.isAllowProvidedElsewhere());
             model.setCompulsory(flow.isCompulsory());
+
+            model.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(flow.getProgramStage()));
             model.setProgramStageSection(ProgramStageSectionFlow.MAPPER
                     .mapToModel(flow.getProgramStageSection()));
+            model.setDataElement(DataElementFlow.MAPPER
+                    .mapToModel(flow.getDataElement()));
+
             return model;
         }
 

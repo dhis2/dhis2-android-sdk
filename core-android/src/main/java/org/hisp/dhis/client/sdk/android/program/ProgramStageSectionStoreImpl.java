@@ -62,7 +62,7 @@ public class ProgramStageSectionStoreImpl extends AbsIdentifiableObjectStore<Pro
         List<ProgramStageSectionFlow> programStageSectionFlows = new Select()
                 .from(ProgramStageSectionFlow.class)
                 .where(ProgramStageSectionFlow_Table
-                        .programstage.is(programStage.getUId()))
+                        .programStage.is(programStage.getUId()))
                 .queryList();
         return getMapper().mapToModels(programStageSectionFlows);
     }

@@ -52,36 +52,35 @@ public class ProgramStageDataElementApiClientImpl implements ProgramStageDataEle
     }
 
     @Override
-    public List<ProgramStageDataElement> getProgramStageDataElements(Fields fields, DateTime
-            lastUpdated, Set<String> uids) throws ApiException {
+    public List<ProgramStageDataElement> getProgramStageDataElements(
+            Fields fields, DateTime lastUpdated, Set<String> uids) throws ApiException {
 
-        ApiResource<ProgramStageDataElement> apiResource =
-                new ApiResource<ProgramStageDataElement>() {
+        ApiResource<ProgramStageDataElement> apiResource = new ApiResource<ProgramStageDataElement>() {
 
-                    @Override
-                    public String getResourceName() {
-                        return "programStageDataElements";
-                    }
+            @Override
+            public String getResourceName() {
+                return "programStageDataElements";
+            }
 
-                    @Override
-                    public String getBasicProperties() {
-                        return "id";
-                    }
+            @Override
+            public String getBasicProperties() {
+                return "id";
+            }
 
-                    @Override
-                    public String getAllProperties() {
-                        return "id,created,lastUpdated,access," +
-                                "programStage[id],dataElement[id],allowFutureDate," +
-                                "sortOrder,displayInReports,allowProvidedElsewhere,compulsory";
-                    }
+            @Override
+            public String getAllProperties() {
+                return "id,created,lastUpdated,access," +
+                        "programStage[id],dataElement[id],allowFutureDate," +
+                        "sortOrder,displayInReports,allowProvidedElsewhere,compulsory";
+            }
 
-                    @Override
-                    public Call<Map<String, List<ProgramStageDataElement>>> getEntities(
-                            Map<String, String> queryMap, List<String> filters) throws
-                            ApiException {
-                        return apiClientRetrofit.getProgramStageDataElements(queryMap, filters);
-                    }
-                };
+            @Override
+            public Call<Map<String, List<ProgramStageDataElement>>> getEntities(
+                    Map<String, String> queryMap, List<String> filters) throws
+                    ApiException {
+                return apiClientRetrofit.getProgramStageDataElements(queryMap, filters);
+            }
+        };
 
         return getCollection(apiResource, fields, lastUpdated, uids);
     }

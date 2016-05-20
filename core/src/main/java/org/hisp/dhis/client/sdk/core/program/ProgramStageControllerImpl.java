@@ -42,6 +42,7 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,21 +86,33 @@ public class ProgramStageControllerImpl extends AbsSyncStrategyController<Progra
         List<ProgramStage> allExistingProgramStages = programStageApiClient
                 .getProgramStages(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stages which are
-            // stored locally and list of program stages which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramStages);
-            uidSet.addAll(uids);
-        }
+        List<ProgramStage> updatedProgramStages = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramStages.addAll(programStageApiClient.getProgramStages(
+                    Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramStages);
 
-        List<ProgramStage> updatedProgramStages = programStageApiClient.getProgramStages(
-                Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramStages.addAll(programStageApiClient.getProgramStages(
+                        Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramStages.addAll(programStageApiClient.getProgramStages(
+                        Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving program uids from program stages
         Set<String> programUids = new HashSet<>();
         List<ProgramStage> mergedProgramStages = ModelUtils.merge(
                 allExistingProgramStages, updatedProgramStages, persistedProgramStages);
+
         for (ProgramStage programStage : mergedProgramStages) {
             programUids.add(programStage.getProgram().getUId());
         }

@@ -45,6 +45,7 @@ import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -76,54 +77,65 @@ public final class OptionSetControllerImpl extends AbsSyncStrategyController<Opt
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.OPTION_SETS, DateType.SERVER);
 
-        List<OptionSet> persistedOptionSets =
-                identifiableObjectStore.queryAll();
+        List<OptionSet> persistedOptionSets = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<OptionSet> allExistingOptionSets = optionSetApiClient
                 .getOptionSets(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of option sets which are
-            // stored locally and list of option sets which we want to download
-            uidSet = ModelUtils.toUidSet(persistedOptionSets);
-            uidSet.addAll(uids);
+        List<OptionSet> updatedOptionSets = new ArrayList<>();
+        if (uids == null) {
+            updatedOptionSets.addAll(optionSetApiClient
+                    .getOptionSets(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedOptionSets);
+
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedOptionSets.addAll(optionSetApiClient
+                        .getOptionSets(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedOptionSets.addAll(optionSetApiClient
+                        .getOptionSets(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
         }
 
-        List<OptionSet> updatedOptionSets = optionSetApiClient
-                .getOptionSets(Fields.ALL, lastUpdated, uidSet);
-
         List<OptionSet> mergedOptionSets = ModelUtils.merge(
-                allExistingOptionSets, updatedOptionSets,
-                persistedOptionSets);
+                allExistingOptionSets, updatedOptionSets, persistedOptionSets);
 
-        List<DbOperation> optionDbOperations = new ArrayList<>();
+        List<DbOperation> dbOperations = new ArrayList<>();
 
         if (mergedOptionSets != null && !mergedOptionSets.isEmpty()) {
             for (OptionSet optionSet : mergedOptionSets) {
                 if (optionSet == null || optionSet.getOptions() == null) {
                     continue;
                 }
+
                 OptionSet persistedOptionSet = optionSetStore.queryByUid(optionSet.getUId());
+
                 List<Option> persistedOptions;
                 if (persistedOptionSet != null) {
                     persistedOptions = persistedOptionSet.getOptions();
                 } else {
                     persistedOptions = new ArrayList<>();
                 }
-                optionDbOperations.addAll(DbUtils.createOperations(optionStore,
+
+                dbOperations.addAll(DbUtils.createOperations(optionStore,
                         persistedOptions, optionSet.getOptions()));
             }
         }
 
         // we will have to perform something similar to what happens in AbsController
-        List<DbOperation> dbOperations = DbUtils.createOperations(
+        dbOperations.addAll(DbUtils.createOperations(
                 allExistingOptionSets, updatedOptionSets,
-                persistedOptionSets, identifiableObjectStore);
+                persistedOptionSets, identifiableObjectStore));
 
-        transactionManager.transact(optionDbOperations);
         transactionManager.transact(dbOperations);
 
         lastUpdatedPreferences.save(ResourceType.OPTION_SETS,

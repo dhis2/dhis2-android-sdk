@@ -43,6 +43,7 @@ import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -76,24 +77,34 @@ public final class ProgramRuleControllerImpl
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_RULES, DateType.SERVER);
 
-        List<ProgramRule> persistedProgramRules =
-                identifiableObjectStore.queryAll();
+        List<ProgramRule> persistedProgramRules = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<ProgramRule> allExistingProgramRules = programRuleApiClient
                 .getProgramRules(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramRules);
-            uidSet.addAll(uids);
-        }
+        List<ProgramRule> updatedProgramRules = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramRules.addAll(programRuleApiClient.getProgramRules(
+                    Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramRules);
 
-        List<ProgramRule> updatedProgramRules = programRuleApiClient
-                .getProgramRules(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramRules.addAll(programRuleApiClient.getProgramRules(
+                        Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramRules.addAll(programRuleApiClient.getProgramRules(
+                        Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving foreign key uids from programRules
         Set<String> programStageUids = new HashSet<>();
@@ -132,7 +143,7 @@ public final class ProgramRuleControllerImpl
     @Override
     public void pull(SyncStrategy strategy, List<Program> programList) {
         List<ProgramRule> programRulesAssignedToPrograms = programRuleApiClient
-                .getProgramRules(Fields.BASIC, null, programList);
+                .getProgramRulesByPrograms(Fields.BASIC, null, programList);
         Set<String> programRuleUids = ModelUtils.toUidSet(programRulesAssignedToPrograms);
 
         // delegate syncing to another pull method

@@ -48,8 +48,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class ProgramRuleActionControllerImpl extends AbsSyncStrategyController
-        <ProgramRuleAction> implements ProgramRuleActionController {
+public final class ProgramRuleActionControllerImpl
+        extends AbsSyncStrategyController<ProgramRuleAction> implements ProgramRuleActionController {
     private final ProgramRuleActionApiClient programRuleActionApiClient;
     private final TransactionManager transactionManager;
     private final SystemInfoController systemInfoController;
@@ -115,55 +115,69 @@ public final class ProgramRuleActionControllerImpl extends AbsSyncStrategyContro
         Set<String> programIndicatorUids = new HashSet<>();
         Set<String> programRuleUids = new HashSet<>();
         Set<String> programStageSectionUids = new HashSet<>();
+
         List<ProgramRuleAction> programRuleActions = ModelUtils.merge(
                 allExistingProgramRuleActions, updatedProgramRuleActions,
                 persistedProgramRuleActions);
+
         for (ProgramRuleAction programRuleAction : programRuleActions) {
-            if(programRuleAction.getDataElement() != null) {
+
+            if (programRuleAction.getDataElement() != null) {
                 dataElementUids.add(programRuleAction.getDataElement().getUId());
             }
-            if(programRuleAction.getTrackedEntityAttribute() != null ) {
-                trackedEntityAttributeUids.add(programRuleAction.getTrackedEntityAttribute().getUId());
+
+            if (programRuleAction.getTrackedEntityAttribute() != null) {
+                trackedEntityAttributeUids.add(
+                        programRuleAction.getTrackedEntityAttribute().getUId());
             }
-            if(programRuleAction.getProgramStage() != null) {
+
+            if (programRuleAction.getProgramStage() != null) {
                 programStageUids.add(programRuleAction.getProgramStage().getUId());
             }
-            if(programRuleAction.getProgramIndicator() != null) {
+
+            if (programRuleAction.getProgramIndicator() != null) {
                 programIndicatorUids.add(programRuleAction.getProgramIndicator().getUId());
             }
-            if(programRuleAction.getProgramRule() != null) {
+
+            if (programRuleAction.getProgramRule() != null) {
                 programRuleUids.add(programRuleAction.getProgramRule().getUId());
             }
-            if(programRuleAction.getProgramStageSection() != null) {
+
+            if (programRuleAction.getProgramStageSection() != null) {
                 programStageSectionUids.add(programRuleAction.getProgramStageSection().getUId());
             }
         }
 
 
         // checking if program stages is synced
-        if(!programStageUids.isEmpty()) {
+        if (!programStageUids.isEmpty()) {
             programStageController.pull(strategy, programStageUids);
         }
+
         // checking if program stage sections is synced
-        if(!programStageSectionUids.isEmpty()) {
+        if (!programStageSectionUids.isEmpty()) {
             programStageSectionController.pull(strategy, programStageSectionUids);
         }
+
         // checking if data elements is synced
-        if(!dataElementUids.isEmpty()) {
+        if (!dataElementUids.isEmpty()) {
             dataElementController.pull(strategy, dataElementUids);
         }
+
         // checking if tracked entity attributes is synced
         // trackedEntityAttributeUids will always be empty if user has access to programs without
         // registration!
-        if(!trackedEntityAttributeUids.isEmpty()) {
+        if (!trackedEntityAttributeUids.isEmpty()) {
             trackedEntityAttributeController.pull(strategy, trackedEntityAttributeUids);
         }
+
         // checking if program rules is synced
-        if(!programRuleUids.isEmpty()) {
+        if (!programRuleUids.isEmpty()) {
             programRuleController.pull(strategy, programRuleUids);
         }
+
         // checking if program indicators is synced
-        if(!programIndicatorUids.isEmpty()) {
+        if (!programIndicatorUids.isEmpty()) {
             programIndicatorController.pull(strategy, programIndicatorUids);
         }
 

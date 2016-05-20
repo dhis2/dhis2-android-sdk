@@ -43,6 +43,7 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -86,16 +87,28 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
         List<DataElement> allExistingDataElements = dataElementApiClient
                 .getDataElements(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of data elements which are
-            // stored locally and list of data elements which we want to download
-            uidSet = ModelUtils.toUidSet(persistedDataElements);
-            uidSet.addAll(uids);
-        }
 
-        List<DataElement> updatedDataElements = dataElementApiClient.getDataElements(
-                Fields.ALL, lastUpdated, uidSet);
+        List<DataElement> updatedDataElements = new ArrayList<>();
+        if (uids == null) {
+            updatedDataElements.addAll(dataElementApiClient.getDataElements(
+                    Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedDataElements);
+
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedDataElements.addAll(dataElementApiClient.getDataElements(
+                        Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedDataElements.addAll(dataElementApiClient.getDataElements(
+                        Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving program stage uids from program stages sections
         List<DataElement> mergedDataElements = ModelUtils.merge(
@@ -104,7 +117,7 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
 
         Set<String> optionSetUids = new HashSet<>();
         for (DataElement dataElement : mergedDataElements) {
-            if(dataElement.getOptionSet() != null) {
+            if (dataElement.getOptionSet() != null) {
                 optionSetUids.add(dataElement.getOptionSet().getUId());
             }
         }
@@ -113,13 +126,9 @@ public final class DataElementControllerImpl extends AbsSyncStrategyController<D
         // data elements are referencing them directly)
         optionSetController.pull(strategy, optionSetUids);
 
-        // we will have to perform something similar to what happens in AbsController
-        System.out.println("allExistingDataElements: " + allExistingDataElements);
-        System.out.println("updatedDataElements: " + updatedDataElements);
-        System.out.println("DataElements in store: " + persistedDataElements);
-
         List<DbOperation> dbOperations = DbUtils.createOperations(allExistingDataElements,
                 updatedDataElements, persistedDataElements, identifiableObjectStore);
+
         transactionManager.transact(dbOperations);
         lastUpdatedPreferences.save(ResourceType.DATA_ELEMENTS, DateType.SERVER, serverTime);
     }

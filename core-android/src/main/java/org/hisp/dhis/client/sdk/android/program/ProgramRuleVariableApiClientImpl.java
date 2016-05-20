@@ -38,7 +38,7 @@ public class ProgramRuleVariableApiClientImpl implements ProgramRuleVariableApiC
     }
 
     @Override
-    public List<ProgramRuleVariable> getProgramRuleVariables(
+    public List<ProgramRuleVariable> getProgramRuleVariablesByPrograms(
             Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException {
 
         Set<String> programUidSet = new HashSet<>();

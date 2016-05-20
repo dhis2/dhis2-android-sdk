@@ -14,12 +14,14 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProgramIndicatorControllerImpl extends AbsSyncStrategyController
-        <ProgramIndicator> implements ProgramIndicatorController {
+public class ProgramIndicatorControllerImpl
+        extends AbsSyncStrategyController<ProgramIndicator> implements ProgramIndicatorController {
+
     private final SystemInfoController systemInfoController;
     private final ProgramIndicatorApiClient programindicatorApiClient;
     private final TransactionManager transactionManager;
@@ -50,24 +52,34 @@ public class ProgramIndicatorControllerImpl extends AbsSyncStrategyController
         DateTime lastUpdated = lastUpdatedPreferences.get(
                 ResourceType.PROGRAM_INDICATORS, DateType.SERVER);
 
-        List<ProgramIndicator> persistedProgramIndicators =
-                identifiableObjectStore.queryAll();
+        List<ProgramIndicator> persistedProgramIndicators = identifiableObjectStore.queryAll();
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
         List<ProgramIndicator> allExistingProgramIndicators = programindicatorApiClient
                 .getProgramIndicators(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program indicators which are
-            // stored locally and list of program indicators which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramIndicators);
-            uidSet.addAll(uids);
-        }
+        List<ProgramIndicator> updatedProgramIndicators = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramIndicators.addAll(programindicatorApiClient
+                    .getProgramIndicators(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramIndicators);
 
-        List<ProgramIndicator> updatedProgramIndicators = programindicatorApiClient
-                .getProgramIndicators(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramIndicators.addAll(programindicatorApiClient
+                        .getProgramIndicators(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramIndicators.addAll(programindicatorApiClient
+                        .getProgramIndicators(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving foreign key uids from programIndicators
         Set<String> programUids = new HashSet<>();
@@ -77,23 +89,32 @@ public class ProgramIndicatorControllerImpl extends AbsSyncStrategyController
         List<ProgramIndicator> programIndicators = ModelUtils.merge(
                 allExistingProgramIndicators, updatedProgramIndicators,
                 persistedProgramIndicators);
+
         for (ProgramIndicator programIndicator : programIndicators) {
-            programUids.add(programIndicator.getProgram().getUId());
-            programStageUids.add(programIndicator.getProgramStage().getUId());
-            programStageSectionUids.add(programIndicator.getProgramStageSection().getUId());
+            if (programIndicator.getProgram() != null) {
+                programUids.add(programIndicator.getProgram().getUId());
+            }
+
+            if (programIndicator.getProgramStage() != null) {
+                programStageUids.add(programIndicator.getProgramStage().getUId());
+            }
+
+            if (programIndicator.getProgramStageSection() != null) {
+                programStageSectionUids.add(programIndicator.getProgramStageSection().getUId());
+            }
 
         }
 
         // checking if progams is synced
-        if(!programUids.isEmpty()) {
+        if (!programUids.isEmpty()) {
             programController.pull(strategy, programUids);
         }
         // checking if program stages is synced
-        if(!programStageUids.isEmpty()) {
+        if (!programStageUids.isEmpty()) {
             programStageController.pull(strategy, programStageUids);
         }
         // checking if program stage sections is synced
-        if(!programStageSectionUids.isEmpty()) {
+        if (!programStageSectionUids.isEmpty()) {
             programStageSectionController.pull(strategy, programStageSectionUids);
         }
         // we will have to perform something similar to what happens in AbsController

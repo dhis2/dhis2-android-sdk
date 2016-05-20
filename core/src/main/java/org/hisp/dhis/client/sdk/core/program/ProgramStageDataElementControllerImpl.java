@@ -44,13 +44,15 @@ import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyController
-        <ProgramStageDataElement> implements ProgramStageDataElementController {
+public class ProgramStageDataElementControllerImpl
+        extends AbsSyncStrategyController<ProgramStageDataElement>
+        implements ProgramStageDataElementController {
 
     /* Controllers */
     private final SystemInfoController systemInfoController;
@@ -99,16 +101,27 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
         List<ProgramStageDataElement> allExistingStageDataElements =
                 stageDataElementApiClient.getProgramStageDataElements(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage data elements which are
-            // stored locally and list of program stage data elements which we want to download
-            uidSet = ModelUtils.toUidSet(programStageDataElements);
-            uidSet.addAll(uids);
-        }
+        List<ProgramStageDataElement> updatedStageDataElements = new ArrayList<>();
+        if (uids == null) {
+            updatedStageDataElements.addAll(stageDataElementApiClient
+                    .getProgramStageDataElements(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(programStageDataElements);
 
-        List<ProgramStageDataElement> updatedStageDataElements = stageDataElementApiClient
-                .getProgramStageDataElements(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedStageDataElements.addAll(stageDataElementApiClient
+                        .getProgramStageDataElements(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedStageDataElements.addAll(stageDataElementApiClient
+                        .getProgramStageDataElements(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Inverse relationships from sections to stage data elements
         List<ProgramStageSection> stageSectionToDataElementsRelationships = stageSectionApiClient
@@ -136,7 +149,6 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
             }
         }
 
-        System.out.println("Controller UIDs: " + dataElementUids);
         stageController.pull(strategy, programStageUids);
         dataElementController.pull(strategy, dataElementUids);
         stageSectionController.pull(strategy, programStageSectionUids);

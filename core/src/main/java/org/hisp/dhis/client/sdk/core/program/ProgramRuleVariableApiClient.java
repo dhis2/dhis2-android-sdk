@@ -44,6 +44,6 @@ public interface ProgramRuleVariableApiClient {
     List<ProgramRuleVariable> getProgramRuleVariables(
             Fields fields, Set<String> programRuleVariableUids) throws ApiException;
 
-    List<ProgramRuleVariable> getProgramRuleVariables(
+    List<ProgramRuleVariable> getProgramRuleVariablesByPrograms(
             Fields fields, DateTime lastUpdated, List<Program> programs) throws ApiException;
 }

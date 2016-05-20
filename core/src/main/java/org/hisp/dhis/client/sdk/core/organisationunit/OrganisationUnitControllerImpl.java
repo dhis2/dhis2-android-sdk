@@ -43,6 +43,8 @@ import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,17 +89,28 @@ public class OrganisationUnitControllerImpl extends AbsSyncStrategyController<Or
         List<OrganisationUnit> allExistingOrganisationUnits =
                 organisationUnitApiClient.getOrganisationUnits(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of programs which are
-            // stored locally and list of organisation units which we want to download
-            uidSet = ModelUtils.toUidSet(persistedOrganisationUnits);
-            uidSet.addAll(uids);
-        }
 
-        // Retrieving only updated organisation units
-        List<OrganisationUnit> updatedOrganisationUnits = organisationUnitApiClient
-                .getOrganisationUnits(Fields.ALL, lastUpdated, uidSet);
+        List<OrganisationUnit> updatedOrganisationUnits = new ArrayList<>();
+        if (uids == null) {
+            updatedOrganisationUnits.addAll(organisationUnitApiClient
+                    .getOrganisationUnits(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedOrganisationUnits);
+
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedOrganisationUnits.addAll(organisationUnitApiClient
+                        .getOrganisationUnits(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedOrganisationUnits.addAll(organisationUnitApiClient
+                        .getOrganisationUnits(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // we need to mark assigned organisation units as "assigned" before storing them
         Map<String, OrganisationUnit> assignedOrganisationUnits = ModelUtils

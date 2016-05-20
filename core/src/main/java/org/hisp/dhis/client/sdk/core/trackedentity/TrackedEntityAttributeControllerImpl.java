@@ -43,26 +43,27 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public final class TrackedEntityAttributeControllerImpl extends AbsSyncStrategyController
-        <TrackedEntityAttribute> implements TrackedEntityAttributeController {
+public final class TrackedEntityAttributeControllerImpl
+        extends AbsSyncStrategyController<TrackedEntityAttribute>
+        implements TrackedEntityAttributeController {
     private final TrackedEntityAttributeApiClient trackedEntityAttributeApiClient;
     private final TransactionManager transactionManager;
     private final SystemInfoController systemInfoController;
     private final OptionSetController optionSetController;
 
-    public TrackedEntityAttributeControllerImpl(TrackedEntityAttributeApiClient
-                                                    trackedEntityAttributeApiClient,
+    public TrackedEntityAttributeControllerImpl(TrackedEntityAttributeApiClient attributeApiClient,
                                                 TransactionManager transactionManager,
                                                 LastUpdatedPreferences lastUpdatedPreferences,
-                                                TrackedEntityAttributeStore trackedEntityAttributeStore,
+                                                TrackedEntityAttributeStore attributeStore,
                                                 SystemInfoController systemInfoController,
                                                 OptionSetController optionSetController) {
-        super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, trackedEntityAttributeStore, lastUpdatedPreferences);
-        this.trackedEntityAttributeApiClient = trackedEntityAttributeApiClient;
+        super(ResourceType.TRACKED_ENTITY_ATTRIBUTES, attributeStore, lastUpdatedPreferences);
+        this.trackedEntityAttributeApiClient = attributeApiClient;
         this.transactionManager = transactionManager;
         this.systemInfoController = systemInfoController;
         this.optionSetController = optionSetController;
@@ -82,16 +83,27 @@ public final class TrackedEntityAttributeControllerImpl extends AbsSyncStrategyC
         List<TrackedEntityAttribute> allExistingTrackedEntityAttributes = trackedEntityAttributeApiClient
                 .getTrackedEntityAttributes(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedTrackedEntityAttributes);
-            uidSet.addAll(uids);
-        }
+        List<TrackedEntityAttribute> updatedTrackedEntityAttributes = new ArrayList<>();
+        if (uids == null) {
+            updatedTrackedEntityAttributes.addAll(trackedEntityAttributeApiClient
+                    .getTrackedEntityAttributes(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedTrackedEntityAttributes);
 
-        List<TrackedEntityAttribute> updatedTrackedEntityAttributes = trackedEntityAttributeApiClient
-                .getTrackedEntityAttributes(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedTrackedEntityAttributes.addAll(trackedEntityAttributeApiClient
+                        .getTrackedEntityAttributes(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedTrackedEntityAttributes.addAll(trackedEntityAttributeApiClient
+                        .getTrackedEntityAttributes(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving foreign key uids from trackedEntityAttributes
         Set<String> optionSetUids = new HashSet<>();
@@ -100,13 +112,13 @@ public final class TrackedEntityAttributeControllerImpl extends AbsSyncStrategyC
                 allExistingTrackedEntityAttributes, updatedTrackedEntityAttributes,
                 persistedTrackedEntityAttributes);
         for (TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
-            if(trackedEntityAttribute.getOptionSet() != null) {
+            if (trackedEntityAttribute.getOptionSet() != null) {
                 optionSetUids.add(trackedEntityAttribute.getOptionSet().getUId());
             }
         }
 
         // checking if option sets is synced
-        if(!optionSetUids.isEmpty()) {
+        if (!optionSetUids.isEmpty()) {
             optionSetController.pull(strategy, optionSetUids);
         }
 

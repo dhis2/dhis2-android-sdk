@@ -83,10 +83,10 @@ public class ControllersModuleImpl implements ControllersModule {
     private final OrganisationUnitController organisationUnitController;
     private final AssignedProgramsController assignedProgramsController;
     private final AssignedOrganisationUnitsController assignedOrganisationUnitsController;
-    private final EventController eventController;
     private final DataElementController dataElementController;
     private final OptionSetController optionSetController;
     private final TrackedEntityAttributeController trackedEntityAttributeController;
+    private final EventController eventController;
 
     public ControllersModuleImpl(NetworkModule networkModule,
                                  PersistenceModule persistenceModule,

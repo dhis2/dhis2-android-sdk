@@ -42,6 +42,7 @@ import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,16 +88,27 @@ public class ProgramStageSectionControllerImpl extends AbsSyncStrategyController
         List<ProgramStageSection> allExistingProgramStageSections = programStageSectionApiClient
                 .getProgramStageSections(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramStageSections);
-            uidSet.addAll(uids);
-        }
+        List<ProgramStageSection> updatedProgramStageSections = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramStageSections.addAll(programStageSectionApiClient
+                    .getProgramStageSections(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramStageSections);
 
-        List<ProgramStageSection> updatedProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramStageSections.addAll(programStageSectionApiClient
+                        .getProgramStageSections(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramStageSections.addAll(programStageSectionApiClient
+                        .getProgramStageSections(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving program stage uids from program stages sections
         Set<String> programStageSectionUids = new HashSet<>();

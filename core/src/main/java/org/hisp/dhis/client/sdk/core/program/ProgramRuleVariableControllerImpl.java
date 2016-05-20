@@ -42,10 +42,10 @@ import org.hisp.dhis.client.sdk.core.dataelement.DataElementController;
 import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoController;
 import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeController;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -93,19 +93,31 @@ public final class ProgramRuleVariableControllerImpl
 
         // we have to download all ids from server in order to
         // find out what was removed on the server side
-        List<ProgramRuleVariable> allExistingProgramRuleVariables = programRuleVariableApiClient
-                .getProgramRuleVariables(Fields.BASIC, null);
+        List<ProgramRuleVariable> allExistingProgramRuleVariables =
+                programRuleVariableApiClient.getProgramRuleVariables(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramRuleVariables);
-            uidSet.addAll(uids);
+
+        List<ProgramRuleVariable> updatedProgramRuleVariables = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramRuleVariables.addAll(programRuleVariableApiClient
+                    .getProgramRuleVariables(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramRuleVariables);
+
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramRuleVariables.addAll(programRuleVariableApiClient
+                        .getProgramRuleVariables(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramRuleVariables.addAll(programRuleVariableApiClient
+                        .getProgramRuleVariables(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
         }
-
-        List<ProgramRuleVariable> updatedProgramRuleVariables = programRuleVariableApiClient
-                .getProgramRuleVariables(Fields.ALL, lastUpdated, uidSet);
 
         // Retrieving foreign key uids from programRuleVariables
         Set<String> dataElementUids = new HashSet<>();
@@ -123,8 +135,8 @@ public final class ProgramRuleVariableControllerImpl
             }
 
             if (programRuleVariable.getTrackedEntityAttribute() != null) {
-                trackedEntityAttributeUids.add(
-                        programRuleVariable.getTrackedEntityAttribute().getUId());
+                trackedEntityAttributeUids.add(programRuleVariable
+                        .getTrackedEntityAttribute().getUId());
             }
 
             if (programRuleVariable.getProgramStage() != null) {
@@ -170,7 +182,7 @@ public final class ProgramRuleVariableControllerImpl
     @Override
     public void pull(SyncStrategy strategy, List<Program> programList) {
         List<ProgramRuleVariable> variablesAssignedToPrograms = programRuleVariableApiClient
-                .getProgramRuleVariables(Fields.BASIC, null, programList);
+                .getProgramRuleVariablesByPrograms(Fields.BASIC, null, programList);
         Set<String> variableUids = ModelUtils.toUidSet(variablesAssignedToPrograms);
 
         // delegate syncing to another pull method

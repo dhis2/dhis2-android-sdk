@@ -43,6 +43,8 @@ import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -83,16 +85,28 @@ public class ProgramControllerImpl extends AbsSyncStrategyController<Program>
         // find out what was removed on the server side
         List<Program> allExistingPrograms = programApiClient.getPrograms(Fields.BASIC, null, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of programs which are
-            // stored locally and list of programs which we want to download
-            uidSet = ModelUtils.toUidSet(persistedPrograms);
-            uidSet.addAll(uids);
-        }
 
-        List<Program> updatedPrograms = programApiClient.getPrograms(
-                Fields.ALL, lastUpdated, uidSet);
+        List<Program> updatedPrograms = new ArrayList<>();
+        if (uids == null) {
+            updatedPrograms.addAll(programApiClient.getPrograms(
+                    Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedPrograms);
+
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedPrograms.addAll(programApiClient.getPrograms(
+                        Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedPrograms.addAll(programApiClient.getPrograms(
+                        Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // we need to mark assigned programs as "assigned" before storing them
         Map<String, Program> assignedPrograms = ModelUtils.toMap(userApiClient

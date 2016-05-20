@@ -136,6 +136,7 @@ public class ProgramStageDataElementControllerImpl extends AbsSyncStrategyContro
             }
         }
 
+        System.out.println("Controller UIDs: " + dataElementUids);
         stageController.pull(strategy, programStageUids);
         dataElementController.pull(strategy, dataElementUids);
         stageSectionController.pull(strategy, programStageSectionUids);

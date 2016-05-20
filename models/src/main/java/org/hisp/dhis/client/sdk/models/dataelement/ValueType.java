@@ -57,8 +57,8 @@ public enum ValueType {
     INTEGER_ZERO_OR_POSITIVE(Integer.class),
     TRACKER_ASSOCIATE(TrackedEntityInstance.class),
     USERNAME(String.class),      // TODO
-    FILE_RESOURCE(String.class),
-    COORDINATE(String.class);
+    FILE_RESOURCE(String.class), // TODO
+    COORDINATE(String.class);    // TODO
 
     public static final Set<ValueType> INTEGER_TYPES = new HashSet<>(Arrays.asList(INTEGER,
             INTEGER_POSITIVE, INTEGER_NEGATIVE, INTEGER_ZERO_OR_POSITIVE));

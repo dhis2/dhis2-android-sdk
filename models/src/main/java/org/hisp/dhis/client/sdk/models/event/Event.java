@@ -94,6 +94,7 @@ public final class Event extends BaseModel implements IdentifiableObject {
     private DateTime dueDate;
 
     @JsonProperty("dataValues")
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<TrackedEntityDataValue> dataValues;
 
     public Event() {

@@ -137,7 +137,7 @@ public class ProgramStageDataElement extends BaseModel {
 
     public DataElement getDataElement() {
         return MetaDataController.getDataElement(dataElement);
-    }
+}
 
     public void setDataElement(String dataElement) {
         this.dataElement = dataElement;

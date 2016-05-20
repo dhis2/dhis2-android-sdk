@@ -99,6 +99,12 @@ public class TrackedEntityAttribute extends BaseNameableObject {
     @Column(name = "sortOrderInListNoProgram")
     int sortOrderInListNoProgram;
 
+    @JsonProperty("generated")
+    @Column(name = "generated")
+    boolean generated;
+
+
+
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
         this.optionSet = (String) optionSet.get("id");
@@ -214,5 +220,13 @@ public class TrackedEntityAttribute extends BaseNameableObject {
 
     public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
         this.sortOrderInListNoProgram = sortOrderInListNoProgram;
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public void setGenerated(boolean generated) {
+        this.generated = generated;
     }
 }

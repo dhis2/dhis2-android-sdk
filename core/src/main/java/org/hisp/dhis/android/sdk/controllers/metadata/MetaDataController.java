@@ -86,6 +86,8 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntity$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
@@ -111,6 +113,7 @@ import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
  */
 public final class MetaDataController extends ResourceController {
     private final static String CLASS_TAG = "MetaDataController";
+    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 100;
 
     private MetaDataController() {
     }
@@ -330,6 +333,10 @@ public final class MetaDataController extends ResourceController {
 
     public static List<TrackedEntityAttribute> getTrackedEntityAttributes() {
         return new Select().from(TrackedEntityAttribute.class).queryList();
+    }
+
+    public static List<TrackedEntityAttributeGeneratedValue> getTrackedEntityAttributeGeneratedValues() {
+        return new Select().from(TrackedEntityAttributeGeneratedValue.class).queryList();
     }
 
     /**
@@ -616,6 +623,10 @@ public final class MetaDataController extends ResourceController {
                 getRelationshipTypesDataFromServer(dhisApi, serverDateTime);
             }
         }
+        List<TrackedEntityAttribute> trackedEntityAttributes = getTrackedEntityAttributes();
+        if(trackedEntityAttributes != null && !trackedEntityAttributes.isEmpty()) {
+            getTrackedEntityAttributeGeneratedValuesFromServer(dhisApi, getTrackedEntityAttributes(), serverDateTime);
+        }
     }
 
     private static void getAssignedProgramsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
@@ -713,6 +724,7 @@ public final class MetaDataController extends ResourceController {
         Program program = updateProgram(dhisApi, uid, lastUpdated);
         DateTimeManager.getInstance()
                 .setLastUpdated(ResourceType.PROGRAM, uid, serverDateTime);
+
     }
 
     private static Program updateProgram(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
@@ -733,6 +745,7 @@ public final class MetaDataController extends ResourceController {
         Program updatedProgram = dhisApi.getProgram(uid, QUERY_MAP_FULL);
         List<DbOperation> operations = ProgramWrapper.setReferences(updatedProgram);
         DbUtils.applyBatch(operations);
+
 
         return updatedProgram;
     }
@@ -762,7 +775,51 @@ public final class MetaDataController extends ResourceController {
                 .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTES);
         List<TrackedEntityAttribute> trackedEntityAttributes = unwrapResponse(dhisApi
                 .getTrackedEntityAttributes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.TRACKED_ENTITY_ATTRIBUTES);
+
+
         saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTES, dhisApi, trackedEntityAttributes, getTrackedEntityAttributes(), serverDateTime);
+    }
+
+    /**
+     * @param dhisApi
+     * @param trackedEntityAttributes
+     * @param serverDateTime
+     * This method tries to get trackedEntityAttributeGeneratedValues from server if we need it
+     */
+    public static void getTrackedEntityAttributeGeneratedValuesFromServer(DhisApi dhisApi, List<TrackedEntityAttribute> trackedEntityAttributes,  DateTime serverDateTime) {
+        // After fetching trackedEntityAttributes from server, we want to go through all of them and fetch IDs for generation
+        DateTime lastUpdated = DateTimeManager.getInstance()
+                .getLastUpdated(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES);
+
+        for(TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
+            if(trackedEntityAttribute.isGenerated()) {
+                long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute);
+                if(numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
+                    List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
+                            dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
+
+                    saveResourceDataFromServer(ResourceType.TRACKEDENTITYATTRIBUTEGENERATEDVALUES, dhisApi, trackedEntityAttributeGeneratedValues, getTrackedEntityAttributeGeneratedValues(), serverDateTime);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param trackedEntityAttribute
+     * @return number of trackedEntityAttributeGeneratedValues to fetch
+     */
+    private static long shouldFetchGeneratedTrackedEntityAttributeValues(TrackedEntityAttribute trackedEntityAttribute) {
+        long numberOfTrackedEntityAttributeGeneratedValues = new Select().
+                from(TrackedEntityAttributeGeneratedValue.class)
+                        .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
+                        .eq(trackedEntityAttribute.getUid())).count();
+
+        if(numberOfTrackedEntityAttributeGeneratedValues < TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD) {
+
+            return (TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD - numberOfTrackedEntityAttributeGeneratedValues);
+        }
+
+        return 0;
     }
 
     private static void getConstantsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
@@ -809,5 +866,9 @@ public final class MetaDataController extends ResourceController {
         List<RelationshipType> relationshipTypes = unwrapResponse(dhisApi
                 .getRelationshipTypes(getBasicQueryMap(lastUpdated)), ApiEndpointContainer.RELATIONSHIPTYPES);
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
+    }
+
+    public TrackedEntityAttributeGeneratedValue getTrackedEntityAttributeGeneratedValue(TrackedEntityAttribute trackedEntityAttribute) {
+
     }
 }

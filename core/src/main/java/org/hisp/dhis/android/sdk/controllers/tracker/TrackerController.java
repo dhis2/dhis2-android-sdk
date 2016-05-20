@@ -410,6 +410,7 @@ public final class TrackerController extends ResourceController {
      */
     public static void sendLocalData(DhisApi dhisApi) throws APIException {
         Log.d(CLASS_TAG, "sending local data");
+        MetaDataController.getTrackedEntityAttributeGeneratedValues();
         TrackerDataSender.sendTrackedEntityInstanceChanges(dhisApi, false);
         TrackerDataSender.sendEnrollmentChanges(dhisApi, false);
         TrackerDataSender.sendEventChanges(dhisApi);

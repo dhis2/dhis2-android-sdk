@@ -34,7 +34,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         RulesEngineExpressionTests.class,
-        RulesEngineSourceTypeTests.class
+        RulesEngineSourceTypeTests.class,
+        RulesEngineFunctionTests.class
 })
 public class RulesEngineTestSuite {
 

@@ -42,13 +42,13 @@ import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.*;
 
 public class RulesEngineFunctionTests {
     @Test
-    public void ruleEngineExecuteWarningRuleWithCurrentEventVariable() {
+    public void ruleEngineExecuteWarningSimpleD2Function() {
         //Metadata
         String errorMessage = "this error will occur if simpleBoolean has a value";
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1",
                 "a1",
-                "d2:hasValue(simpleBoolean)",
+                "d2:hasValue('simpleBoolean')",
                 errorMessage));
 
         ArrayList<DataElement> dataElements = new ArrayList<>();

@@ -137,4 +137,20 @@ public class RuleEffect {
     public void setData(String data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "RuleEffect{" +
+                "programRule=" + programRule +
+                ", trackedEntityAttribute=" + trackedEntityAttribute +
+                ", dataElement=" + dataElement +
+                ", programIndicator=" + programIndicator +
+                ", programStage=" + programStage +
+                ", programStageSection=" + programStageSection +
+                ", programRuleActionType=" + programRuleActionType +
+                ", content='" + content + '\'' +
+                ", location='" + location + '\'' +
+                ", data='" + data + '\'' +
+                '}';
+    }
 }

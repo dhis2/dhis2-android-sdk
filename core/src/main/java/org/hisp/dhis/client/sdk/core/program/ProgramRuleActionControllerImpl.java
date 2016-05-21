@@ -44,6 +44,7 @@ import org.hisp.dhis.client.sdk.core.trackedentity.TrackedEntityAttributeControl
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,16 +98,27 @@ public final class ProgramRuleActionControllerImpl
         List<ProgramRuleAction> allExistingProgramRuleActions = programRuleActionApiClient
                 .getProgramRuleActions(Fields.BASIC, null);
 
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramRuleActions);
-            uidSet.addAll(uids);
-        }
+        List<ProgramRuleAction> updatedProgramRuleActions = new ArrayList<>();
+        if (uids == null) {
+            updatedProgramRuleActions.addAll(programRuleActionApiClient
+                    .getProgramRuleActions(Fields.ALL, lastUpdated, null));
+        } else {
+            // defensive copy
+            Set<String> modelsToFetch = new HashSet<>(uids);
+            Set<String> modelsToUpdate = ModelUtils.toUidSet(persistedProgramRuleActions);
 
-        List<ProgramRuleAction> updatedProgramRuleActions = programRuleActionApiClient
-                .getProgramRuleActions(Fields.ALL, lastUpdated, uidSet);
+            modelsToFetch.removeAll(modelsToUpdate);
+
+            if (!modelsToFetch.isEmpty()) {
+                updatedProgramRuleActions.addAll(programRuleActionApiClient
+                        .getProgramRuleActions(Fields.ALL, null, modelsToFetch));
+            }
+
+            if (!modelsToUpdate.isEmpty()) {
+                updatedProgramRuleActions.addAll(programRuleActionApiClient
+                        .getProgramRuleActions(Fields.ALL, lastUpdated, modelsToUpdate));
+            }
+        }
 
         // Retrieving foreign key uids from programRuleActions
         Set<String> dataElementUids = new HashSet<>();

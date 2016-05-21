@@ -139,4 +139,16 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
             return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "BaseIdentifiableObject{" +
+                "uId='" + uId + '\'' +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", created=" + created +
+                ", lastUpdated=" + lastUpdated +
+                ", access=" + access +
+                '}';
+    }
 }

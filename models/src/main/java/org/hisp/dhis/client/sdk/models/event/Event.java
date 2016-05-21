@@ -237,24 +237,11 @@ public final class Event extends BaseModel implements IdentifiableObject {
 
         @Override
         public int compare(Event first, Event second) {
-            if (first == null && second == null) {
-                return 0;
-            } else if (first == null) {
-                return -1;
-            } else if (second == null) {
-                return 1;
+            if (first != null && second != null && first.getEventDate() != null) {
+                return first.getEventDate().compareTo(second.getEventDate());
             }
 
-            DateTime firstDate = new DateTime(first.getEventDate());
-            DateTime secondDate = new DateTime(second.getEventDate());
-
-            if (firstDate.isBefore(secondDate)) {
-                return -1;
-            } else if (firstDate.isAfter(secondDate)) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return 0;
         }
     }
 }

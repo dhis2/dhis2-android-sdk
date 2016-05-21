@@ -41,5 +41,7 @@ import java.util.List;
 public interface ProgramRuleVariableService extends Service, Get<ProgramRuleVariable>,
         GetUid<ProgramRuleVariable>, ListAll<ProgramRuleVariable>, ListUids<ProgramRuleVariable> {
 
+    List<ProgramRuleVariable> list(Program program);
+
     List<ProgramRuleVariable> list(List<Program> programs);
 }

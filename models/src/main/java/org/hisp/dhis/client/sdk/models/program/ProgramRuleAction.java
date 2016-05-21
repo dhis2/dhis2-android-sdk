@@ -147,4 +147,20 @@ public final class ProgramRuleAction extends BaseIdentifiableObject {
     public void setData(String data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "ProgramRuleAction{" +
+                "programRuleActionType=" + programRuleActionType +
+                ", programRule=" + programRule +
+                ", programStage=" + programStage +
+                ", programStageSection=" + programStageSection +
+                ", programIndicator=" + programIndicator +
+                ", trackedEntityAttribute=" + trackedEntityAttribute +
+                ", dataElement=" + dataElement +
+                ", content='" + content + '\'' +
+                ", location='" + location + '\'' +
+                ", data='" + data + '\'' +
+                '}';
+    }
 }

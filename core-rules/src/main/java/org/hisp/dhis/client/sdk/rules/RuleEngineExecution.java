@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RuleEngineExecution {
+class RuleEngineExecution {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("[A#CV]\\{(\\w+.?\\w*)\\}");
 
     public static List<RuleEffect> execute(
@@ -56,27 +56,30 @@ public class RuleEngineExecution {
         return effects;
     }
 
-    private static String replaceVariables(String expression,
-                                           final RuleEngineVariableValueMap variableValueMap) {
+    private static String replaceVariables(
+            String expression, RuleEngineVariableValueMap variableValueMap) {
 
-        ArrayList<String> variablesFound = new ArrayList<>();
+        System.out.println("ProgramRuleVariableMap: " + variableValueMap);
 
-        Matcher m = VARIABLE_PATTERN.matcher(expression);
-        while (m.find()) {
-            String variable = expression.substring(m.start(), m.end());
+        List<String> variablesFound = new ArrayList<>();
+        Matcher matcher = VARIABLE_PATTERN.matcher(expression);
+
+        while (matcher.find()) {
+            String variable = expression.substring(matcher.start(), matcher.end());
             variablesFound.add(variable);
         }
 
         for (String variable : variablesFound) {
             String variableName = variable.replace("#{", "").replace("}", "");
-            ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
-                    variableName);
+            ProgramRuleVariableValue variableValue = variableValueMap
+                    .getProgramRuleVariableValue(variableName);
+
             if (variableValue != null) {
                 expression = expression.replace(variable, variableValue.toString());
             } else {
-                //TODO Log the problem - the expression contains a variable that is not defined
-                throw new IllegalArgumentException("Variable " + variableName + " found in expression "
-                        + expression + ", but is not defined as a variable");
+                // TODO Log the problem - the expression contains a variable that is not defined
+                throw new IllegalArgumentException("Variable " + variableName +
+                        " found in expression " + expression + ", but is not defined as a variable");
             }
 
         }
@@ -90,17 +93,18 @@ public class RuleEngineExecution {
      * @param condition
      * @return
      */
-    private static boolean conditionIsTrue(String condition,
-                                           final RuleEngineVariableValueMap variableValueMap) {
+    private static boolean conditionIsTrue(
+            String condition, RuleEngineVariableValueMap variableValueMap) {
+
         condition = replaceVariables(condition, variableValueMap);
 
-        boolean isTrue = false;
         try {
-            isTrue = ExpressionUtils.isTrue(condition, null);
+            return ExpressionUtils.isTrue(condition, null);
         } catch (JexlException jxlException) {
             jxlException.printStackTrace();
         }
-        return isTrue;
+
+        return false;
     }
 
     /**
@@ -111,6 +115,7 @@ public class RuleEngineExecution {
      */
     private static RuleEffect createEffect(ProgramRuleAction action) {
         RuleEffect effect = new RuleEffect();
+
         effect.setProgramRule(action.getProgramRule());
         effect.setProgramRuleActionType(action.getProgramRuleActionType());
         effect.setContent(action.getContent());

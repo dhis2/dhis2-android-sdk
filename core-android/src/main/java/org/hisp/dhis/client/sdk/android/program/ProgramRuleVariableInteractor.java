@@ -16,6 +16,8 @@ public interface ProgramRuleVariableInteractor {
 
     Observable<List<ProgramRuleVariable>> list();
 
+    Observable<List<ProgramRuleVariable>> list(Program program);
+
     Observable<List<ProgramRuleVariable>> pull();
 
     Observable<List<ProgramRuleVariable>> pull(Set<String> uids);

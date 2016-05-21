@@ -116,6 +116,19 @@ public final class ProgramRule extends BaseIdentifiableObject {
         this.programRuleActions = programRuleActions;
     }
 
+    @Override
+    public String toString() {
+        return "ProgramRule{" +
+                "programStage=" + programStage +
+                ", program=" + program +
+                ", description='" + description + '\'' +
+                ", condition='" + condition + '\'' +
+                ", priority=" + priority +
+                ", externalAction=" + externalAction +
+                ", programRuleActions=" + programRuleActions +
+                '}';
+    }
+
     public static class PriorityComparator implements Comparator<ProgramRule> {
 
         @Override

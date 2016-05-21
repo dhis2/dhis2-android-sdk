@@ -53,6 +53,16 @@ public class ProgramRuleVariableInteractorImpl implements ProgramRuleVariableInt
     }
 
     @Override
+    public Observable<List<ProgramRuleVariable>> list(final Program program) {
+        return Observable.create(new DefaultOnSubscribe<List<ProgramRuleVariable>>() {
+            @Override
+            public List<ProgramRuleVariable> call() {
+                return programRuleVariableService.list(program);
+            }
+        });
+    }
+
+    @Override
     public Observable<List<ProgramRuleVariable>> pull() {
         return pull(SyncStrategy.DEFAULT);
     }

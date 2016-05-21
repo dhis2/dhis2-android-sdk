@@ -178,6 +178,7 @@ public final class ProgramRuleStoreImpl extends AbsIdentifiableObjectStore<Progr
             programRule.setProgramRuleActions(rulesToActions.get(programRule.getUId()));
         }
 
+        System.out.println(" RULES: " + programRules);
         return programRules;
     }
 

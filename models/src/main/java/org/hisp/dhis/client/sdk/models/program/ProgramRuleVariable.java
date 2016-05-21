@@ -106,4 +106,16 @@ public final class ProgramRuleVariable extends BaseIdentifiableObject {
     public void setAllValues(List<String> allValues) {
         this.allValues = allValues;
     }
+
+    @Override
+    public String toString() {
+        return "ProgramRuleVariable{" +
+                "sourceType=" + sourceType +
+                ", program=" + program +
+                ", programStage=" + programStage +
+                ", dataElement=" + dataElement +
+                ", trackedEntityAttribute=" + trackedEntityAttribute +
+                ", allValues=" + allValues +
+                '}';
+    }
 }

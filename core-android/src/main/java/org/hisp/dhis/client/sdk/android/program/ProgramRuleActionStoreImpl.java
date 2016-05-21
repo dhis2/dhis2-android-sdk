@@ -49,7 +49,8 @@ public final class ProgramRuleActionStoreImpl extends AbsIdentifiableObjectStore
     @Override
     public List<ProgramRuleAction> query(ProgramRule programRule) {
         List<ProgramRuleActionFlow> programRuleActionFlows = new Select()
-                .from(ProgramRuleActionFlow.class).where(ProgramRuleActionFlow_Table
+                .from(ProgramRuleActionFlow.class)
+                .where(ProgramRuleActionFlow_Table
                         .programRule.is(programRule.getUId()))
                 .queryList();
         return getMapper().mapToModels(programRuleActionFlows);

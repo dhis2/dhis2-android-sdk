@@ -62,6 +62,11 @@ public final class ProgramRuleVariableServiceImpl implements ProgramRuleVariable
     }
 
     @Override
+    public List<ProgramRuleVariable> list(Program program) {
+        return programRuleVariableStore.query(program);
+    }
+
+    @Override
     public List<ProgramRuleVariable> list(List<Program> programs) {
         return programRuleVariableStore.query(programs);
     }

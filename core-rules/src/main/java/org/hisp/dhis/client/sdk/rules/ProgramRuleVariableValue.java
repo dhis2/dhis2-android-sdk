@@ -33,7 +33,7 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramRuleVariableValue {
+class ProgramRuleVariableValue {
     private final TrackedEntityDataValue value;
     private final List<TrackedEntityDataValue> allValues;
     private final List<String> allValuesString;

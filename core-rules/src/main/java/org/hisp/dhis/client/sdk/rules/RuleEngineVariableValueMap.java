@@ -169,7 +169,10 @@ public class RuleEngineVariableValueMap {
 
                     TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
 
-                    if(variable.getDataElement().getValueType() == ValueType.TEXT ) {
+                    if(variable.getDataElement().getValueType() == ValueType.TEXT
+                            || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
+                            || variable.getDataElement().getValueType() == ValueType.EMAIL
+                            || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
                         defaultValue.setValue("''");
                     }
                     else if(variable.getDataElement().getValueType() == ValueType.INTEGER

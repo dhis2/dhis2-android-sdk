@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
@@ -115,7 +116,7 @@ class RuleEngineVariableValueMap {
 
         for (ProgramRuleVariable variable : programRuleVariables) {
 
-            boolean valueFound = true;
+            boolean valueFound = false;
             switch (variable.getSourceType()) {
                 case DATAELEMENT_CURRENT_EVENT: {
                     if (currentEventToValuesMap.containsKey(variable.getDataElement().getUId())) {
@@ -194,6 +195,27 @@ class RuleEngineVariableValueMap {
                     // TODO: Use logger to output values
                     throw new NotImplementedException();
                 }
+            }
+
+            if (!valueFound) {
+                TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
+
+                if (variable.getDataElement().getValueType() == ValueType.TEXT
+                        || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
+                        || variable.getDataElement().getValueType() == ValueType.EMAIL
+                        || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
+                    defaultValue.setValue("''");
+                } else if (variable.getDataElement().getValueType() == ValueType.INTEGER
+                        || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
+                        || variable.getDataElement().getValueType() == ValueType.NUMBER
+                        || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
+                    defaultValue.setValue("0");
+                } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN) {
+                    defaultValue.setValue("false");
+                }
+
+                addProgramRuleVariableValueToMap(variable, defaultValue, null);
+
             }
         }
     }

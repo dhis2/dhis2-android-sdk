@@ -40,6 +40,7 @@ import java.util.Map;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+/* Part of RuleEngine implementation detail. Hence, class visibility defined as package private */
 class RuleEngineVariableValueMap {
     private final Map<String, ProgramRuleVariableValue> programRuleVariableValueMap;
 

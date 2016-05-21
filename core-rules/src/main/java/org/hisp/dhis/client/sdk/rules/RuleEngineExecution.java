@@ -69,20 +69,37 @@ class RuleEngineExecution {
             variablesFound.add(variable);
         }
 
+        System.out.println("Expression before: " + expression);
         for (String variable : variablesFound) {
             String variableName = variable.replace("#{", "").replace("}", "");
+
+            System.out.println("Expression variable: " + variableName);
+
             ProgramRuleVariableValue variableValue = variableValueMap
                     .getProgramRuleVariableValue(variableName);
+            String variableValueString = variableValue != null ? variableValue.toString() : "";
 
-            if (variableValue != null) {
-                expression = expression.replace(variable, variableValue.toString());
+            if (variableValueString.length() != 0) {
+                expression = expression.replace(variable, variableValueString);
             } else {
-                // TODO Log the problem - the expression contains a variable that is not defined
-                throw new IllegalArgumentException("Variable " + variableName +
-                        " found in expression " + expression + ", but is not defined as a variable");
+                // get value type of data element
+                // provide sensible fallback value for it
+                // basically, we can have three types: boolean, integer, string
+
+                // TODO: replace with logging
+                System.out.println("No value found for variable: " + variable);
             }
 
+//            if (variableValue != null) {
+//                expression = expression.replace(variable, variableValue.toString());
+//            } else {
+//                // TODO Log the problem - the expression contains a variable that is not defined
+//                throw new IllegalArgumentException("Variable " + variableName +
+//                        " found in expression " + expression + ", but is not defined as a variable");
+//            }
         }
+
+        System.out.println("Expression after: " + expression);
 
         return expression;
     }

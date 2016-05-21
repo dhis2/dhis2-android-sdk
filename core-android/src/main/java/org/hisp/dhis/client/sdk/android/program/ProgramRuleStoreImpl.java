@@ -171,14 +171,13 @@ public final class ProgramRuleStoreImpl extends AbsIdentifiableObjectStore<Progr
             return null;
         }
 
-        Map<String, List<ProgramRuleAction>> rulesToActions = ModelLinkFlow.queryLinksForModel(
-                ProgramRuleAction.class, PROGRAMRULE_TO_PROGRAMRULEACTIONS);
-        System.out.println(" STORE: " + rulesToActions);
+        Map<String, List<ProgramRuleAction>> rulesToActions = ModelLinkFlow
+                .queryLinksForModel(ProgramRuleAction.class, PROGRAMRULE_TO_PROGRAMRULEACTIONS);
+
         for (ProgramRule programRule : programRules) {
             programRule.setProgramRuleActions(rulesToActions.get(programRule.getUId()));
         }
 
-        System.out.println(" RULES: " + programRules);
         return programRules;
     }
 

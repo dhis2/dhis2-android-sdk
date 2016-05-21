@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
+import org.hisp.dhis.client.sdk.models.optionset.OptionSet;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -73,15 +76,15 @@ public class RulesEngineExpressionTests {
         rules.add(createSimpleProgramRuleShowError("r1", "a1", "true", errorMessage));
 
         RuleEngine ruleEngine = new RuleEngine.Builder()
-                .trackedEntityAttributes(new ArrayList<>())
+                .trackedEntityAttributes(new ArrayList<TrackedEntityAttribute>())
                 .programRules(rules)
-                .dataElements(new ArrayList<>())
-                .optionSets(new ArrayList<>())
-                .constants(new ArrayList<>())
+                .dataElements(new ArrayList<DataElement>())
+                .optionSets(new ArrayList<OptionSet>())
+                .constants(new ArrayList<Constant>())
                 .build();
 
 
-        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<>());
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
@@ -97,7 +100,7 @@ public class RulesEngineExpressionTests {
                 .build();
 
 
-        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<>());
+        List<RuleEffect> effects = ruleEngine.execute(new Event(), new ArrayList<Event>());
 
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
     }
@@ -130,9 +133,9 @@ public class RulesEngineExpressionTests {
         dataValues.add(trueDataValue);
 
         Event simpleEvent = new Event();
-        simpleEvent.setTrackedEntityDataValues(dataValues);
+        simpleEvent.setDataValues(dataValues);
 
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
@@ -173,15 +176,15 @@ public class RulesEngineExpressionTests {
         dataValues.add(boolean2DataValue);
 
         Event simpleEvent = new Event();
-        simpleEvent.setTrackedEntityDataValues(dataValues);
+        simpleEvent.setDataValues(dataValues);
 
         //Execute with one false and one true - expecting no effect:
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
 
         //Change the last variable to true - expecting the error message effect:
         boolean1DataValue.setValue("true");
-        effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
 

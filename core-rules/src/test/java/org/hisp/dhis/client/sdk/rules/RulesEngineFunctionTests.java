@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
@@ -68,7 +68,7 @@ public class RulesEngineFunctionTests {
         Event simpleEvent = new Event();
         addDataValueToEvent(simpleEvent,d1,"false");
 
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }

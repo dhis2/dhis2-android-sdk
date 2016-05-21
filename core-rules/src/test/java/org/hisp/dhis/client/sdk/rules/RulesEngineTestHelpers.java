@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.program.ProgramIndicator;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
@@ -212,12 +213,12 @@ public class RulesEngineTestHelpers {
     }
 
     public static void addDataValueToEvent(Event e, DataElement de, String value) {
-        if(e.getTrackedEntityDataValues() == null) {
-            e.setTrackedEntityDataValues(new ArrayList<>());
+        if(e.getDataValues() == null) {
+            e.setDataValues(new ArrayList<TrackedEntityDataValue>());
         }
         TrackedEntityDataValue dataValue = new TrackedEntityDataValue();
         dataValue.setDataElement(de.getUId());
         dataValue.setValue(value);
-        e.getTrackedEntityDataValues().add(dataValue);
+        e.getDataValues().add(dataValue);
     }
 }

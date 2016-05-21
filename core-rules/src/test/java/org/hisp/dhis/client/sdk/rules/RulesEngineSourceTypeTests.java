@@ -28,7 +28,8 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
@@ -134,15 +135,15 @@ public class RulesEngineSourceTypeTests {
         //Payload
         Event eventProgramStage2 = new Event();
         eventProgramStage2.setEventDate(DateTime.now().minusDays(10));
-        eventProgramStage2.setProgramStageId(ps2.getUId());
+        eventProgramStage2.setProgramStage(ps2.getUId());
         addDataValueToEvent(eventProgramStage2, d1, "true");
 
         Event currentEventProgramStage2 = new Event();
         currentEventProgramStage2.setEventDate(DateTime.now());
-        currentEventProgramStage2.setProgramStageId(ps2.getUId());
+        currentEventProgramStage2.setProgramStage(ps2.getUId());
 
         Event veryOldEventProgramStage1 = new Event();
-        veryOldEventProgramStage1.setProgramStageId(ps1.getUId());
+        veryOldEventProgramStage1.setProgramStage(ps1.getUId());
         veryOldEventProgramStage1.setEventDate(DateTime.now().minusDays(365));
         addDataValueToEvent(veryOldEventProgramStage1, d1, "false");
 
@@ -159,7 +160,7 @@ public class RulesEngineSourceTypeTests {
         //Insert new event with program stage 1 and a true value
         Event oldEventProgramStage1 = new Event();
         oldEventProgramStage1.setEventDate(DateTime.now().minusDays(15));
-        eventProgramStage2.setProgramStageId(ps1.getUId());
+        eventProgramStage2.setProgramStage(ps1.getUId());
         addDataValueToEvent(oldEventProgramStage1, d1, "true");
 
         allEvents.add(oldEventProgramStage1);
@@ -174,7 +175,7 @@ public class RulesEngineSourceTypeTests {
         Event newCurrent = new Event();
         newCurrent.setEventDate(DateTime.now());
         addDataValueToEvent(newCurrent, d1, "false");
-        newCurrent.setProgramStageId(ps1.getUId());
+        newCurrent.setProgramStage(ps1.getUId());
         allEvents.add(newCurrent);
 
         //Run the rule and make sure that the new current event overrides the previous true value

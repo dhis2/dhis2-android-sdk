@@ -36,8 +36,7 @@ import org.hisp.dhis.client.sdk.models.constant.Constant;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+import org.hisp.dhis.client.sdk.utils.Preconditions;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -112,12 +111,12 @@ public class ApiClient {
         UserAccount userAccount = instance().getUserAccount();
         List<Program> assignedPrograms = userAccount.getPrograms();
 
-        return instance().getPrograms(ModelUtils.toUidSet(assignedPrograms));
+        return null;//instance().getPrograms(ModelUtils.toUidSet(assignedPrograms));
     }
 
     public static List<ProgramRule> getProgramRules(
             Collection<Program> programs) throws IOException {
-        Set<String> programUids = ModelUtils.toUidSet(programs);
+        //Set<String> programUids = ModelUtils.toUidSet(programs);
 
         return null;
     }

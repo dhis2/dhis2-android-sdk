@@ -11,7 +11,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.addDataValueToEvent;
 import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.assertErrorRuleInEffect;
 import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.createDataElement;
 import static org.hisp.dhis.client.sdk.rules.RulesEngineTestHelpers.createProgramRuleVariableCurrentEvent;

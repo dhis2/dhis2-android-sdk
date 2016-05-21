@@ -38,8 +38,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sun.security.ssl.Debug;
-
 public class RuleEngineExecution {
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("[A#CV]\\{(\\w+.?\\w*)\\}");
 
@@ -73,12 +71,12 @@ public class RuleEngineExecution {
             String variableName = variable.replace("#{", "").replace("}", "");
             ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
                     variableName);
-            if(variableValue != null) {
+            if (variableValue != null) {
                 expression = expression.replace(variable, variableValue.toString());
             } else {
-              //TODO Log the problem - the expression contains a variable that is not defined
+                //TODO Log the problem - the expression contains a variable that is not defined
                 throw new IllegalArgumentException("Variable " + variableName + " found in expression "
-                                + expression + ", but is not defined as a variable");
+                        + expression + ", but is not defined as a variable");
             }
 
         }

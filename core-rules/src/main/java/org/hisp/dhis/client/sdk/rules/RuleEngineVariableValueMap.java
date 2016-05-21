@@ -56,8 +56,7 @@ public class RuleEngineVariableValueMap {
 
         programRuleVariableValueMap = new HashMap<>();
         if (variables != null) {
-            Map<String, TrackedEntityDataValue> currentEventTrackedEntityDataValueMap =
-                    new HashMap<>();
+            Map<String, TrackedEntityDataValue> currentEventTrackedEntityDataValueMap = new HashMap<>();
             if (currentEvent != null && currentEvent.getDataValues() != null) {
                 for (TrackedEntityDataValue value : currentEvent.getDataValues()) {
                     currentEventTrackedEntityDataValueMap.put(value.getDataElement(), value);

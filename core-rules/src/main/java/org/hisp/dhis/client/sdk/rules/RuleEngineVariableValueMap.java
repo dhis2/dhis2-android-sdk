@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+
+import org.hisp.dhis.client.sdk.models.common.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
@@ -162,7 +164,27 @@ public class RuleEngineVariableValueMap {
                 } else {
                     throw new NotImplementedException();
                 }
-                //TODO: Add general handling when value is not found.
+
+                if(!valueFound) {
+
+                    TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
+
+                    if(variable.getDataElement().getValueType() == ValueType.TEXT ) {
+                        defaultValue.setValue("''");
+                    }
+                    else if(variable.getDataElement().getValueType() == ValueType.INTEGER
+                            || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
+                            || variable.getDataElement().getValueType() == ValueType.NUMBER
+                            || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
+                        defaultValue.setValue("0");
+                    }
+                    else if(variable.getDataElement().getValueType() == ValueType.BOOLEAN) {
+                        defaultValue.setValue("false");
+                    }
+
+                    addProgramRuleVariableValueToMap(variable, defaultValue, null);
+
+                }
             }
         }
     }

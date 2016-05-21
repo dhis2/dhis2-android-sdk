@@ -504,7 +504,7 @@ public class RuleEngineExecution {
                 boolean brokenExecution = false;
                 for (DhisFunction dhisFunction : dhisFunctions){
                     //Select the function call, with any number of parameters inside single quotations, or number parameters witout quotations
-                    Pattern regularExFunctionCall = Pattern.compile(dhisFunction.getName() + "( \\*(([\\d\\*\\+\\-%\\.]+)|( *'[^']*'))*( *, *(([\\d\\*\\+\\-%\\.]+)|'[^']*'))* *)");
+                    Pattern regularExFunctionCall = Pattern.compile(dhisFunction.getName() + "\\( *(([\\d/\\*\\+\\-%\\.]+)|( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\.]+)|'[^']*'))* *\\)");
                     Matcher callsToThisFunction = regularExFunctionCall.matcher(expression);
                     while(callsToThisFunction.find()) {
                         String callToThisFunction = callsToThisFunction.group();

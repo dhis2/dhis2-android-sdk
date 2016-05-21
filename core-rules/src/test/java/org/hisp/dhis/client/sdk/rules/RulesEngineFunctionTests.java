@@ -33,6 +33,8 @@ import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -69,6 +71,94 @@ public class RulesEngineFunctionTests {
         addDataValueToEvent(simpleEvent,d1,"false");
 
         List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteHasValueFunctionWithCurrentEventSourceType() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleBoolean has a value";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "d2:hasValue('simpleBoolean')",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleBoolean", d1));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d1,"false");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
+    public void ruleEngineExecuteHasValueFunctionWithNewestEventSourceType() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleBoolean has a value";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "d2:hasValue('simpleBoolean')",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariable("simpleBoolean", d1, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+        List<Event> allEvents = new ArrayList<Event>();
+
+        Event e1 = new Event();
+        e1.setEventDate(DateTime.now().minusDays(10));
+        allEvents.add(e1);
+
+        Event e2 = new Event();
+        e2.setEventDate(DateTime.now().minusDays(5));
+        allEvents.add(e2);
+
+        Event e3 = new Event();
+        e3.setEventDate(DateTime.now().minusDays(1));
+        allEvents.add(e3);
+
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(e2,d1,"false");
+
+        effects = ruleEngine.execute(simpleEvent, allEvents);
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }

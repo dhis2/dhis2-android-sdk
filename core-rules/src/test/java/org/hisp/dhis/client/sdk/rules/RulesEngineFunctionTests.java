@@ -48,7 +48,7 @@ public class RulesEngineFunctionTests {
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1",
                 "a1",
-                "d2:hasValue(simpleBoolean)",
+                "d2:hasValue('simpleBoolean')",
                 errorMessage));
 
         ArrayList<DataElement> dataElements = new ArrayList<>();

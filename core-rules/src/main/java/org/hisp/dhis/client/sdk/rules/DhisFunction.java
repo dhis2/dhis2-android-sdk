@@ -1,5 +1,7 @@
 package org.hisp.dhis.client.sdk.rules;
 
+import java.util.List;
+
 /**
  * Created by markusbekken on 20.05.2016.
  */
@@ -20,5 +22,5 @@ abstract class DhisFunction {
         return parameters;
     }
 
-    public abstract String execute( String expression );
+    public abstract String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression);
 }

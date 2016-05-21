@@ -34,14 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ProgramRuleVariableValue {
-    private final TrackedEntityDataValue value;
-    private final List<TrackedEntityDataValue> allValues;
-    private final List<String> allValuesString;
+    private TrackedEntityDataValue value;
+    private List<TrackedEntityDataValue> allValues;
+    private List<String> allValuesString;
+    private boolean hasValue;
 
-    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues) {
+    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues, boolean hasValue) {
         this.value = value;
         this.allValues = allValues;
         this.allValuesString = new ArrayList<>();
+        this.hasValue = hasValue;
 
         if (allValues != null) {
             for (TrackedEntityDataValue otherValue : allValues) {
@@ -57,6 +59,8 @@ class ProgramRuleVariableValue {
     public List<String> getAllValuesString() {
         return this.allValuesString;
     }
+
+    public boolean hasValue() { return this.hasValue; }
 
     @Override
     public String toString() {

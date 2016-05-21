@@ -45,13 +45,13 @@ public class RuleEngineExecution {
     private static List<DhisFunction> dhisFunctions = Arrays.asList(
             new DhisFunction("d2:daysBetween", 2) {
                 @Override
-                public String execute(String expression) {
+                public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
                     return "-1";
                 }
             },
         new DhisFunction("d2:weeksBetween", 2) {
             @Override
-            public String execute(String expression) {
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
                 return null;
             }
         }/*,
@@ -70,8 +70,15 @@ public class RuleEngineExecution {
         new DhisFunction("d2:round", 1)*/,
         new DhisFunction("d2:hasValue", 1) {
             @Override
-            public String execute(String expression) {
-                return "true";
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                String variableName = parameters.get(0).replace("'","");
+                ProgramRuleVariableValue variable = valueMap.getProgramRuleVariableValue(variableName);
+                if(variable != null) {
+                    return variable.hasValue() ? "true" : "false";
+                }
+                else {
+                    return "false";
+                }
             }
         }/*,
         new DhisFunction("d2:lastEventDate", 1),
@@ -513,17 +520,14 @@ public class RuleEngineExecution {
                         List<String> parameters = new ArrayList<>(2);
                         Pattern justParametersPattern = Pattern.compile("(^[^\\(]+\\()|\\)");
                         Matcher justParametersMatcher = justParametersPattern.matcher(callToThisFunction);
+                        String justParameters = justParametersMatcher.replaceAll("");
 
-                        if(justParametersMatcher.find()) {
-                            String justParameters = justParametersMatcher.group();
+                        //Then split into single parameters:
+                        Pattern splitParametersPattern = Pattern.compile("(('[^']+')|([^,]+))");
+                        Matcher splitParametersMatcher = splitParametersPattern.matcher(justParameters);
 
-                            //Then split into single parameters:
-                            Pattern splitParametersPattern = Pattern.compile("(('[^']+')|([^,]+))");
-                            Matcher splitParametersMatcher = splitParametersPattern.matcher(justParameters);
-
-                            while(splitParametersMatcher.find()) {
-                                parameters.add(splitParametersMatcher.group());
-                            }
+                        while(splitParametersMatcher.find()) {
+                            parameters.add(splitParametersMatcher.group());
                         }
 
                         //Show error if no parameters is given and the function requires parameters,
@@ -555,7 +559,7 @@ public class RuleEngineExecution {
                             expression = expression.replace(callToThisFunction, "false");
                             expressionUpdated = true;
                         } else {
-                            expression = dhisFunction.execute(expression);
+                            expression = dhisFunction.execute(parameters, variableValueMap, expression);
                         }
 
                     }

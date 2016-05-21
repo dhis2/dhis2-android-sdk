@@ -122,8 +122,8 @@ class RuleEngineVariableValueMap {
                     if (currentEventToValuesMap.containsKey(variable.getDataElement().getUId())) {
                         TrackedEntityDataValue dataValue = currentEventToValuesMap
                                 .get(variable.getDataElement().getUId());
-                        addProgramRuleVariableValueToMap(variable, dataValue, null);
                         valueFound = true;
+                        addProgramRuleVariableValueToMap(variable, dataValue, null, valueFound);
                     }
                     break;
                 }
@@ -132,8 +132,8 @@ class RuleEngineVariableValueMap {
                         List<TrackedEntityDataValue> valueList = allEventsToValuesMap.get(
                                 variable.getDataElement().getUId());
                         TrackedEntityDataValue dataValue = valueList.get(valueList.size() - 1);
-                        addProgramRuleVariableValueToMap(variable, dataValue, valueList);
                         valueFound = true;
+                        addProgramRuleVariableValueToMap(variable, dataValue, valueList, valueFound);
                     }
                     break;
                 }
@@ -157,8 +157,8 @@ class RuleEngineVariableValueMap {
                         }
 
                         if (bestCandidate != null) {
-                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
                             valueFound = true;
+                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList, valueFound);
                         }
                     }
                     break;
@@ -184,15 +184,14 @@ class RuleEngineVariableValueMap {
                         }
 
                         if (bestCandidate != null) {
-                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList);
                             valueFound = true;
+                            addProgramRuleVariableValueToMap(variable, bestCandidate, valueList, valueFound);
                         }
                     }
                     break;
                 }
                 default: {
-                    // TODO: Add general handling when value is not found.
-                    // TODO: Use logger to output values
+                    // TODO: Use logger to output the not implemented source type
                     throw new NotImplementedException();
                 }
             }
@@ -214,8 +213,7 @@ class RuleEngineVariableValueMap {
                     defaultValue.setValue("false");
                 }
 
-                addProgramRuleVariableValueToMap(variable, defaultValue, null);
-
+                addProgramRuleVariableValueToMap(variable, defaultValue, null, valueFound);
             }
         }
     }
@@ -230,8 +228,9 @@ class RuleEngineVariableValueMap {
 
     private void addProgramRuleVariableValueToMap(ProgramRuleVariable programRuleVariable,
                                                   TrackedEntityDataValue value,
-                                                  List<TrackedEntityDataValue> allValues) {
-        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues);
+                                                  List<TrackedEntityDataValue> allValues,
+                                                  boolean hasValue) {
+        ProgramRuleVariableValue variableValue = new ProgramRuleVariableValue(value, allValues, hasValue);
         programRuleVariableValueMap.put(programRuleVariable.getDisplayName(), variableValue);
     }
 

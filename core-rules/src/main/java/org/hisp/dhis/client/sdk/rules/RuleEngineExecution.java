@@ -96,7 +96,7 @@ public class RuleEngineExecution {
                 boolean brokenExecution = false;
                 for (DhisFunction dhisFunction : DhisFunction.getDhisFunctions()){
                     //Select the function call, with any number of parameters inside single quotations, or number parameters witout quotations
-                    Pattern regularExFunctionCall = Pattern.compile(dhisFunction.getName() + "\\( *(([\\d/\\*\\+\\-%\\.]+)|( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\.]+)|'[^']*'))* *\\)");
+                    Pattern regularExFunctionCall = Pattern.compile(dhisFunction.getName() + "\\( *(([\\d/\\*\\+\\-%\\. ]+)|( *'[^']*'))*( *, *(([\\d/\\*\\+\\-%\\. ]+)|'[^']*'))* *\\)");
                     Matcher callsToThisFunction = regularExFunctionCall.matcher(expression);
                     while(callsToThisFunction.find()) {
                         String callToThisFunction = callsToThisFunction.group();
@@ -144,7 +144,8 @@ public class RuleEngineExecution {
                             expression = expression.replace(callToThisFunction, "false");
                             expressionUpdated = true;
                         } else {
-                            expression = dhisFunction.execute(parameters, variableValueMap, expression);
+                            String executionResult = dhisFunction.execute(parameters, variableValueMap, expression);
+                            expression = expression.replace(callToThisFunction, executionResult);
                         }
 
                     }
@@ -167,11 +168,22 @@ public class RuleEngineExecution {
 
     }
 
-    private static String runExpression(String condition,
-                                        final RuleEngineVariableValueMap variableValueMap) {
-        condition = replaceVariables(condition, variableValueMap);
-        condition = runDhisFunctions(condition, variableValueMap);
-        return condition;
+    private static String evaluateExpression(String expression) {
+        try {
+            Object response = ExpressionUtils.evaluate(expression, null);
+            expression = response.toString();
+        } catch (JexlException jxlException) {
+            jxlException.printStackTrace();
+        }
+        return expression;
+    }
+
+    private static String runExpression(String expression,
+                                        RuleEngineVariableValueMap variableValueMap) {
+        expression = replaceVariables(expression, variableValueMap);
+        expression = runDhisFunctions(expression, variableValueMap);
+        expression = evaluateExpression(expression);
+        return expression;
     }
 
     /**
@@ -181,7 +193,7 @@ public class RuleEngineExecution {
      * @return
      */
     private static boolean conditionIsTrue(String condition,
-                                           final RuleEngineVariableValueMap variableValueMap) {
+                                            RuleEngineVariableValueMap variableValueMap) {
         condition = runExpression(condition, variableValueMap);
         boolean isTrue = false;
         try {

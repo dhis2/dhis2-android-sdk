@@ -152,7 +152,7 @@ public class RulesEngineFunctionTests {
         allEvents.add(e3);
 
 
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, allEvents);
 
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
 
@@ -170,7 +170,7 @@ public class RulesEngineFunctionTests {
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1",
                 "a1",
-                "d2:floor(2/#{simpleInt}) == 0",
+                "d2:floor(2 / #{simpleInt}) == 0",
                 errorMessage));
 
         ArrayList<DataElement> dataElements = new ArrayList<>();
@@ -190,10 +190,6 @@ public class RulesEngineFunctionTests {
         Event simpleEvent = new Event();
         List<Event> allEvents = new ArrayList<Event>();
 
-        Event e1 = new Event();
-        e1.setEventDate(DateTime.now().minusDays(10));
-        allEvents.add(e1);
-
         Event e2 = new Event();
         e2.setEventDate(DateTime.now().minusDays(5));
         allEvents.add(e2);
@@ -202,9 +198,13 @@ public class RulesEngineFunctionTests {
         e3.setEventDate(DateTime.now().minusDays(1));
         allEvents.add(e3);
 
+        Event e1 = new Event();
+        e1.setEventDate(DateTime.now().minusDays(10));
+        allEvents.add(e1);
+
         addDataValueToEvent(e1,d1,"2");
 
-        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, allEvents);
 
         assertErrorRuleNotInEffect(effects, errorMessage, null, null);
 

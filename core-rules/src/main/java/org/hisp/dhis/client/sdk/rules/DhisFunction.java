@@ -1,5 +1,7 @@
 package org.hisp.dhis.client.sdk.rules;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,21 +10,37 @@ import java.util.List;
  */
 abstract class DhisFunction {
     private static List<DhisFunction> dhisFunctions = Arrays.asList(
-            new DhisFunction("d2:daysBetween", 2) {
-                @Override
-                public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                    return "-1";
-                }
-            },
-            new DhisFunction("d2:weeksBetween", 2) {
-                @Override
-                public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                    return null;
-                }
-            }/*,
-        new DhisFunction("d2:monthsBetween", 2),
-        new DhisFunction("d2:yearsBetween", 2),
-        new DhisFunction("d2:floor", 1),
+        new DhisFunction("d2:daysBetween", 2) {
+            @Override
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                return "-1";
+            }
+        },
+        new DhisFunction("d2:weeksBetween", 2) {
+            @Override
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                return null;
+            }
+        },
+        new DhisFunction("d2:monthsBetween", 2) {
+            @Override
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                return null;
+            }
+        },
+        new DhisFunction("d2:yearsBetween", 2) {
+            @Override
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                return null;
+            }
+        },
+        new DhisFunction("d2:floor", 1) {
+            @Override
+            public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
+                Integer floored = (int) NumberUtils.toDouble(parameters.get(0));
+                return floored.toString();
+            }
+        }/*,
         new DhisFunction("d2:modulus", 2),
         new DhisFunction("d2:concatenate", null),
         new DhisFunction("d2:addDays", 2),
@@ -55,6 +73,7 @@ abstract class DhisFunction {
         new DhisFunction("d2:substring", 3),
         new DhisFunction("d2:split", 3),
         new DhisFunction("d2:length", 1)*/);
+    //TODO: Implement the rest of the functions
 
     public static List<DhisFunction> getDhisFunctions() {
         return dhisFunctions;

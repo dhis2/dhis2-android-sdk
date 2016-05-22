@@ -46,6 +46,7 @@ public class RulesEngineAdvancedScenarioTests {
         a2.setContent("#{assignedVariable}");
         //data to assign to the variable:
         a2.setData("d2:floor(#{simpleInt} / 10)");
+        rules.add(calculationRuleWithPri1);
 
         ArrayList<DataElement> dataElements = new ArrayList<>();
         DataElement d1 = createDataElement("d1", "Integer DataElement", ValueType.INTEGER);

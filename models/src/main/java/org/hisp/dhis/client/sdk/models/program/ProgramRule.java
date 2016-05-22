@@ -39,6 +39,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramRule extends BaseIdentifiableObject {
 
+    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
+
     @JsonProperty("programStage")
     private ProgramStage programStage;
 

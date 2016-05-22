@@ -31,7 +31,10 @@ package org.hisp.dhis.client.sdk.rules;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 class ProgramRuleVariableValue {
     private TrackedEntityDataValue value;
@@ -42,14 +45,26 @@ class ProgramRuleVariableValue {
     public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues, boolean hasValue) {
         this.value = value;
         this.allValues = allValues;
-        this.allValuesString = new ArrayList<>();
+        initializeAllValuesString();
         this.hasValue = hasValue;
+    }
 
-        if (allValues != null) {
-            for (TrackedEntityDataValue otherValue : allValues) {
-                allValuesString.add(otherValue.getValue());
+    private void initializeAllValuesString(){
+        this.allValuesString = new ArrayList<>();
+        if (this.allValues != null) {
+            for (TrackedEntityDataValue otherValue : this.allValues) {
+                this.allValuesString.add(otherValue.getValue());
             }
         }
+    }
+
+    public void setValueString(String value) {
+        this.value = new TrackedEntityDataValue();
+        this.value.setValue(value);
+
+        this.allValues = new ArrayList<>();
+        this.allValues.add(this.value);
+        initializeAllValuesString();
     }
 
     public String getValueString() {

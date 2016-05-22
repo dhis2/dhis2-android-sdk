@@ -31,10 +31,13 @@ package org.hisp.dhis.client.sdk.rules;
 import org.apache.commons.jexl2.JexlException;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleActionType;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.commons.util.ExpressionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +47,8 @@ public class RuleEngineExecution {
 
     public static List<RuleEffect> execute(
             List<ProgramRule> rules, RuleEngineVariableValueMap variableValueMap) {
+
+        Collections.sort(rules, ProgramRule.PRIORITY_COMPARATOR);
 
         ArrayList<RuleEffect> effects = new ArrayList<>();
         for (ProgramRule rule : rules) {
@@ -80,7 +85,6 @@ public class RuleEngineExecution {
                     throw new IllegalArgumentException("Variable " + variableName + " found in expression "
                             + expression + ", but is not defined as a variable");
                 }
-
             }
         }
 
@@ -228,6 +232,17 @@ public class RuleEngineExecution {
         effect.setProgramStage(action.getProgramStage());
         effect.setProgramStageSection(action.getProgramStageSection());
         effect.setTrackedEntityAttribute(action.getTrackedEntityAttribute());
+
+        if(effect.getProgramRuleActionType() == ProgramRuleActionType.ASSIGN) {
+            //in case the action type is assign, it might be needed to update the variable value map:
+            if(effect.getContent() != null && effect.getContent().contains("#{")) {
+                String variableName = effect.getContent().replace("#{","").replace("}","");
+                ProgramRuleVariableValue valueObject = variableValueMap.getProgramRuleVariableValue(variableName);
+                if(valueObject != null) {
+                    valueObject.setValueString(effect.getData());
+                }
+            }
+        }
 
         return effect;
     }

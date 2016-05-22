@@ -140,7 +140,8 @@ public class RuleEffect {
 
     @Override
     public String toString() {
-        return "RuleEffect{" +
+        return "";
+        /*return "RuleEffect{" +
                 "programRule=" + programRule +
                 ", trackedEntityAttribute=" + trackedEntityAttribute +
                 ", dataElement=" + dataElement +
@@ -151,6 +152,6 @@ public class RuleEffect {
                 ", content='" + content + '\'' +
                 ", location='" + location + '\'' +
                 ", data='" + data + '\'' +
-                '}';
+                '}';*/
     }
 }

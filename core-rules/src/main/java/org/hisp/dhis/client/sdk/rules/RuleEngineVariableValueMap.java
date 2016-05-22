@@ -203,7 +203,7 @@ class RuleEngineVariableValueMap {
             if (!valueFound) {
                 TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
 
-                if( variable.getDataElement() != null) {
+                if (variable.getDataElement() != null) {
                     if (variable.getDataElement().getValueType() == ValueType.TEXT
                             || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
                             || variable.getDataElement().getValueType() == ValueType.EMAIL
@@ -214,12 +214,11 @@ class RuleEngineVariableValueMap {
                             || variable.getDataElement().getValueType() == ValueType.NUMBER
                             || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
                         defaultValue.setValue("0");
-                    } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN) {
+                    } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN
+                            || variable.getDataElement().getValueType() == ValueType.TRUE_ONLY) {
                         defaultValue.setValue("false");
                     }
-                }
-                else
-                {
+                } else {
                     defaultValue.setValue("''");
                 }
 

@@ -36,7 +36,8 @@ import org.junit.runners.Suite;
         RulesEngineExpressionTests.class,
         RulesEngineSourceTypeTests.class,
         RulesEngineFunctionTests.class,
-        RulesEngineFallbackTests.class
+        RulesEngineFallbackTests.class,
+        RulesEngineAdvancedScenarioTests.class
 })
 public class RulesEngineTestSuite {
 

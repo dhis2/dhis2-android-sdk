@@ -190,6 +190,10 @@ class RuleEngineVariableValueMap {
                     }
                     break;
                 }
+                case CALCULATED_VALUE: {
+                    //Do nothing - ASSIGN actions will populate these values
+                    break;
+                }
                 default: {
                     // TODO: Use logger to output the not implemented source type
                     throw new NotImplementedException();
@@ -199,18 +203,24 @@ class RuleEngineVariableValueMap {
             if (!valueFound) {
                 TrackedEntityDataValue defaultValue = new TrackedEntityDataValue();
 
-                if (variable.getDataElement().getValueType() == ValueType.TEXT
-                        || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
-                        || variable.getDataElement().getValueType() == ValueType.EMAIL
-                        || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
+                if( variable.getDataElement() != null) {
+                    if (variable.getDataElement().getValueType() == ValueType.TEXT
+                            || variable.getDataElement().getValueType() == ValueType.LONG_TEXT
+                            || variable.getDataElement().getValueType() == ValueType.EMAIL
+                            || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
+                        defaultValue.setValue("''");
+                    } else if (variable.getDataElement().getValueType() == ValueType.INTEGER
+                            || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
+                            || variable.getDataElement().getValueType() == ValueType.NUMBER
+                            || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
+                        defaultValue.setValue("0");
+                    } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN) {
+                        defaultValue.setValue("false");
+                    }
+                }
+                else
+                {
                     defaultValue.setValue("''");
-                } else if (variable.getDataElement().getValueType() == ValueType.INTEGER
-                        || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
-                        || variable.getDataElement().getValueType() == ValueType.NUMBER
-                        || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {
-                    defaultValue.setValue("0");
-                } else if (variable.getDataElement().getValueType() == ValueType.BOOLEAN) {
-                    defaultValue.setValue("false");
                 }
 
                 addProgramRuleVariableValueToMap(variable, defaultValue, null, valueFound);

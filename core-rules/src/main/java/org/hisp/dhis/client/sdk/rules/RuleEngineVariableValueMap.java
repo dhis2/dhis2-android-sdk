@@ -210,6 +210,8 @@ class RuleEngineVariableValueMap {
                             || variable.getDataElement().getValueType() == ValueType.PHONE_NUMBER) {
                         defaultValue.setValue("''");
                     } else if (variable.getDataElement().getValueType() == ValueType.INTEGER
+                            || variable.getDataElement().getValueType() == ValueType.INTEGER_POSITIVE
+                            || variable.getDataElement().getValueType() == ValueType.INTEGER_NEGATIVE
                             || variable.getDataElement().getValueType() == ValueType.INTEGER_ZERO_OR_POSITIVE
                             || variable.getDataElement().getValueType() == ValueType.NUMBER
                             || variable.getDataElement().getValueType() == ValueType.PERCENTAGE) {

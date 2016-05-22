@@ -49,7 +49,7 @@ public class RuleEngineExecution {
         for (ProgramRule rule : rules) {
             if (conditionIsTrue(rule.getCondition(), variableValueMap)) {
                 for (ProgramRuleAction action : rule.getProgramRuleActions()) {
-                    effects.add(createEffect(action));
+                    effects.add(createEffect(action, variableValueMap));
                 }
             }
         }
@@ -60,26 +60,28 @@ public class RuleEngineExecution {
     private static String replaceVariables(String expression,
                                            final RuleEngineVariableValueMap variableValueMap) {
 
-        ArrayList<String> variablesFound = new ArrayList<>();
+        if(expression != null && expression.length() > 0) {
+            ArrayList<String> variablesFound = new ArrayList<>();
 
-        Matcher m = VARIABLE_PATTERN.matcher(expression);
-        while (m.find()) {
-            String variable = expression.substring(m.start(), m.end());
-            variablesFound.add(variable);
-        }
-
-        for (String variable : variablesFound) {
-            String variableName = variable.replace("#{", "").replace("}", "");
-            ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
-                    variableName);
-            if(variableValue != null) {
-                expression = expression.replace(variable, variableValue.toString());
-            } else {
-                //TODO Log the problem - the expression contains a variable that is not defined
-                throw new IllegalArgumentException("Variable " + variableName + " found in expression "
-                                + expression + ", but is not defined as a variable");
+            Matcher m = VARIABLE_PATTERN.matcher(expression);
+            while (m.find()) {
+                String variable = expression.substring(m.start(), m.end());
+                variablesFound.add(variable);
             }
 
+            for (String variable : variablesFound) {
+                String variableName = variable.replace("#{", "").replace("}", "");
+                ProgramRuleVariableValue variableValue = variableValueMap.getProgramRuleVariableValue(
+                        variableName);
+                if (variableValue != null) {
+                    expression = expression.replace(variable, variableValue.toString());
+                } else {
+                    //TODO Log the problem - the expression contains a variable that is not defined
+                    throw new IllegalArgumentException("Variable " + variableName + " found in expression "
+                            + expression + ", but is not defined as a variable");
+                }
+
+            }
         }
 
         return expression;
@@ -169,11 +171,13 @@ public class RuleEngineExecution {
     }
 
     private static String evaluateExpression(String expression) {
-        try {
-            Object response = ExpressionUtils.evaluate(expression, null);
-            expression = response.toString();
-        } catch (JexlException jxlException) {
-            jxlException.printStackTrace();
+        if(expression != null && expression.length() > 0) {
+            try {
+                Object response = ExpressionUtils.evaluate(expression, null);
+                expression = response.toString();
+            } catch (JexlException jxlException) {
+                jxlException.printStackTrace();
+            }
         }
         return expression;
     }
@@ -210,12 +214,14 @@ public class RuleEngineExecution {
      * @param action
      * @return
      */
-    private static RuleEffect createEffect(ProgramRuleAction action) {
+    private static RuleEffect createEffect(ProgramRuleAction action,
+                                           RuleEngineVariableValueMap variableValueMap) {
         RuleEffect effect = new RuleEffect();
         effect.setProgramRule(action.getProgramRule());
         effect.setProgramRuleActionType(action.getProgramRuleActionType());
         effect.setContent(action.getContent());
-        effect.setData(action.getData());
+        //run expressions to evaluate content of data column:
+        effect.setData(runExpression(action.getData(), variableValueMap));
         effect.setDataElement(action.getDataElement());
         effect.setProgramIndicator(action.getProgramIndicator());
         effect.setLocation(action.getLocation());

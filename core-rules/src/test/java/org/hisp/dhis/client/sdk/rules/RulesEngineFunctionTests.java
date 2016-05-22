@@ -162,4 +162,56 @@ public class RulesEngineFunctionTests {
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
+
+    @Test
+    public void ruleEngineExecuteFloorFunction() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleNumber is more than two";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "d2:floor(2/#{simpleInt}) == 0",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Integer DataElement", ValueType.INTEGER);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariable("simpleInt", d1, ProgramRuleVariableSourceType.DATAELEMENT_NEWEST_EVENT_PROGRAM));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+        List<Event> allEvents = new ArrayList<Event>();
+
+        Event e1 = new Event();
+        e1.setEventDate(DateTime.now().minusDays(10));
+        allEvents.add(e1);
+
+        Event e2 = new Event();
+        e2.setEventDate(DateTime.now().minusDays(5));
+        allEvents.add(e2);
+
+        Event e3 = new Event();
+        e3.setEventDate(DateTime.now().minusDays(1));
+        allEvents.add(e3);
+
+        addDataValueToEvent(e1,d1,"2");
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(e2,d1,"3");
+
+        effects = ruleEngine.execute(simpleEvent, allEvents);
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
 }

@@ -113,6 +113,43 @@ public class RulesEngineFunctionTests {
     }
 
     @Test
+    public void ruleEngineExecuteHasValueWithBlank() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleInt has a value";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "d2:hasValue('simpleInt')",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleBoolean", d1));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d1,"");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
     public void ruleEngineExecuteHasValueFunctionWithNewestEventSourceType() {
         //Metadata
         String errorMessage = "this error will occur if simpleBoolean has a value";

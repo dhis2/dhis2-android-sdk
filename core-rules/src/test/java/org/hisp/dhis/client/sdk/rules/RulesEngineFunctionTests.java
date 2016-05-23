@@ -113,6 +113,43 @@ public class RulesEngineFunctionTests {
     }
 
     @Test
+    public void ruleEngineExecuteHasValueWithBlank() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleInt does not have a value";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "!d2:hasValue('simpleInt')",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+        DataElement d1 = createDataElement("d1", "Boolean DataElement", ValueType.BOOLEAN);
+        dataElements.add(d1);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleInt", d1));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d1,"");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+    }
+
+    @Test
     public void ruleEngineExecuteHasValueFunctionWithNewestEventSourceType() {
         //Metadata
         String errorMessage = "this error will occur if simpleBoolean has a value";
@@ -137,7 +174,7 @@ public class RulesEngineFunctionTests {
 
         //Payload
         Event simpleEvent = new Event();
-        List<Event> allEvents = new ArrayList<Event>();
+        List<Event> allEvents = new ArrayList<>();
 
         Event e1 = new Event();
         e1.setEventDate(DateTime.now().minusDays(10));
@@ -188,7 +225,7 @@ public class RulesEngineFunctionTests {
 
         //Payload
         Event simpleEvent = new Event();
-        List<Event> allEvents = new ArrayList<Event>();
+        List<Event> allEvents = new ArrayList<>();
 
         Event e2 = new Event();
         e2.setEventDate(DateTime.now().minusDays(5));

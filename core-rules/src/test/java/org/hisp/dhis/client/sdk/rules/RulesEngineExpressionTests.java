@@ -228,6 +228,12 @@ public class RulesEngineExpressionTests {
         effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
 
         assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d3,"2");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
     }
 
 }

@@ -40,6 +40,6 @@ public class ReportEntity {
     }
 
     public enum Status {
-        SENT, OFFLINE, ERROR
+        SENT, TO_UPDATE, TO_POST, ERROR
     }
 }

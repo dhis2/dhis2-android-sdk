@@ -122,7 +122,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     statusIcon.setImageDrawable(drawableSent);
                     break;
                 }
-                case OFFLINE: {
+                case TO_UPDATE:
+                case TO_POST: {
                     statusBackground.setFillColor(colorOffline);
                     statusIcon.setImageDrawable(drawableOffline);
                     break;

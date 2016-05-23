@@ -174,7 +174,7 @@ public class RulesEngineFunctionTests {
 
         //Payload
         Event simpleEvent = new Event();
-        List<Event> allEvents = new ArrayList<Event>();
+        List<Event> allEvents = new ArrayList<>();
 
         Event e1 = new Event();
         e1.setEventDate(DateTime.now().minusDays(10));
@@ -225,7 +225,7 @@ public class RulesEngineFunctionTests {
 
         //Payload
         Event simpleEvent = new Event();
-        List<Event> allEvents = new ArrayList<Event>();
+        List<Event> allEvents = new ArrayList<>();
 
         Event e2 = new Event();
         e2.setEventDate(DateTime.now().minusDays(5));

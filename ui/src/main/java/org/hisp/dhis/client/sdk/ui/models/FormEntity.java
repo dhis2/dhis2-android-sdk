@@ -35,14 +35,6 @@ public abstract class FormEntity {
     public abstract Type getType();
 
     public enum Type {
-        EDITTEXT,
-        CHECKBOX,
-        COORDINATES,
-        RADIO_BUTTONS,
-        DATE,
-
-        // not implemented
-        FILTER,
-        TEXT
+        EDITTEXT, CHECKBOX, COORDINATES, RADIO_BUTTONS, DATE, FILTER, TEXT
     }
 }

@@ -67,7 +67,10 @@ class RuleEngineVariableValueMap {
 
         if (currentEvent != null && currentEvent.getDataValues() != null) {
             for (TrackedEntityDataValue value : currentEvent.getDataValues()) {
-                eventToValueMap.put(value.getDataElement(), value);
+
+                if (value.getValue() != null && value.getValue().length() != 0) {
+                    eventToValueMap.put(value.getDataElement(), value);
+                }
             }
         }
 
@@ -102,7 +105,9 @@ class RuleEngineVariableValueMap {
                     value.setEvent(event);
                 }
 
-                eventsToValuesMap.get(value.getDataElement()).add(value);
+                if (value.getValue() != null && value.getValue().length() != 0) {
+                    eventsToValuesMap.get(value.getDataElement()).add(value);
+                }
             }
         }
 

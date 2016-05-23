@@ -35,21 +35,27 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityAction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class RowViewAdapter extends Adapter<ViewHolder> {
-    private final List<FormEntity> dataEntities;
-    private final List<RowView> rowViews;
     private final FragmentManager fragmentManager;
+    private final List<FormEntity> originalDataEntities;
+    private final List<FormEntity> modifiedDataEntities;
+    private final List<RowView> rowViews;
 
     public RowViewAdapter(FragmentManager fragmentManager) {
         this.fragmentManager = isNull(fragmentManager, "fragmentManager must not be null");
-        this.dataEntities = new ArrayList<>();
         this.rowViews = new ArrayList<>();
+
+        this.originalDataEntities = new ArrayList<>();
+        this.modifiedDataEntities = new ArrayList<>();
 
         assignRowViewsToItemViewTypes();
     }
@@ -67,7 +73,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return dataEntities.size();
+        return modifiedDataEntities.size();
     }
 
     @Override
@@ -113,16 +119,128 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     }
 
     private FormEntity getItem(int position) {
-        return dataEntities.size() > position ? dataEntities.get(position) : null;
+        return modifiedDataEntities.size() > position ? modifiedDataEntities.get(position) : null;
     }
 
-    public void swap(List<FormEntity> dataEntities) {
-        this.dataEntities.clear();
+    public void update(List<FormEntityAction> actions) {
+        Map<String, FormEntityAction> actionMap = mapActions(actions);
+        List<FormEntity> updatedDataEntities = new ArrayList<>();
+
+        for (FormEntity originalDataEntity : originalDataEntities) {
+            FormEntityAction formEntityAction = actionMap.get(originalDataEntity.getId());
+
+            if (formEntityAction == null) {
+                // we need to show item
+                updatedDataEntities.add(originalDataEntity);
+                continue;
+            }
+
+            switch (formEntityAction.getActionType()) {
+                case HIDE: {
+
+                    System.out.println(formEntityAction);
+                    // ignore field
+                    continue;
+                }
+                case ASSIGN: {
+                    // do something
+                    break;
+                }
+            }
+
+            updatedDataEntities.add(originalDataEntity);
+        }
+
+        System.out.println("Modified       : " + modifiedDataEntities);
+        List<FormEntity> oldDataEntities = new ArrayList<>(modifiedDataEntities);
+
+        modifiedDataEntities.clear();
+        modifiedDataEntities.addAll(updatedDataEntities);
+
+        System.out.println("OldEntities    : " + oldDataEntities);
+        System.out.println("UpdatedEntities: " + updatedDataEntities);
+
+        // removing items which are not in updated entities
+        for (int index = 0; index < oldDataEntities.size(); index++) {
+            FormEntity formEntity = oldDataEntities.get(index);
+
+            System.out.println("FormEntity: " + updatedDataEntities.indexOf(formEntity));
+
+            if (updatedDataEntities.indexOf(formEntity) < 0) {
+                System.out.println("notifyItemRemoved() is called");
+
+                notifyItemRemoved(index);
+            }
+        }
+
+        for (int index = 0; index < updatedDataEntities.size(); index++) {
+            FormEntity formEntity = updatedDataEntities.get(index);
+
+            // insert
+            if (oldDataEntities.indexOf(formEntity) < 0) {
+                notifyItemInserted(index);
+            }
+        }
+    }
+
+    public void swap(List<FormEntity> formEntities) {
+        swapData(formEntities, null);
+    }
+
+    public void swap(List<FormEntity> formEntities, List<FormEntityAction> actions) {
+        swapData(formEntities, actions);
+    }
+
+    private void swapData(List<FormEntity> dataEntities, List<FormEntityAction> actions) {
+        this.originalDataEntities.clear();
 
         if (dataEntities != null) {
-            this.dataEntities.addAll(dataEntities);
+            this.originalDataEntities.addAll(dataEntities);
+        }
+
+        // apply rule effects before rendering list
+        Map<String, FormEntityAction> actionMap = mapActions(actions);
+        for (FormEntity dataEntity : originalDataEntities) {
+            FormEntityAction action = actionMap.get(dataEntity.getId());
+
+            if (action != null) {
+                switch (action.getActionType()) {
+                    case HIDE: {
+                        // we don't want to include form entity in this case
+                        continue;
+                    }
+                }
+
+                modifiedDataEntities.add(dataEntity);
+            } else {
+                modifiedDataEntities.add(dataEntity);
+            }
         }
 
         notifyDataSetChanged();
+    }
+
+    private Map<String, FormEntityAction> mapActions(List<FormEntityAction> actions) {
+        Map<String, FormEntityAction> formEntityActionMap = new HashMap<>();
+
+        if (actions != null && !actions.isEmpty()) {
+            for (FormEntityAction action : actions) {
+                formEntityActionMap.put(action.getId(), action);
+            }
+        }
+
+        return formEntityActionMap;
+    }
+
+    private Map<String, FormEntity> mapFormEntities(List<FormEntity> formEntities) {
+        Map<String, FormEntity> formEntityMap = new HashMap<>();
+
+        if (formEntities != null && !formEntities.isEmpty()) {
+            for (FormEntity formEntity : formEntities) {
+                formEntityMap.put(formEntity.getId(), formEntity);
+            }
+        }
+
+        return formEntityMap;
     }
 }

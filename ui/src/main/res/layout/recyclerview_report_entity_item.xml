@@ -9,11 +9,13 @@
     android:padding="@dimen/keyline_default">
 
     <FrameLayout
+        android:id="@+id/status_icon_container"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp">
+        android:layout_marginRight="4dp"
+        android:background="?attr/selectableItemBackground">
 
         <org.hisp.dhis.client.sdk.ui.views.CircleView
             android:id="@+id/circleview_status_background"

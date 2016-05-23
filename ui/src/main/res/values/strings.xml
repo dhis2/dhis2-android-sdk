@@ -151,4 +151,9 @@
     <string name="no">No</string>
     <string name="edit_columns">Edit columns</string>
 
+    <string name="sync_status_ok">This item has been successfully synchronized with the server</string>
+    <string name="sync_status_offline">This item has not yet been synchronized with the server</string>
+    <string name="sync_status_error">Something went wrong. Please, try to re-upload event or contact system administrator</string>
+    <string name="sync_now">Sync now</string>
+
 </resources>

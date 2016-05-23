@@ -1,9 +1,12 @@
 package org.hisp.dhis.client.sdk.ui.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +73,9 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
     }
 
     private final class ReportEntityViewHolder extends RecyclerView.ViewHolder {
+
+        ReportEntity reportEntity;
+        final View statusIconContainer;
         final CircleView statusBackground;
         final ImageView statusIcon;
         final TextView lineOne;
@@ -85,9 +91,11 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         final int colorOffline;
         final int colorError;
 
+
         public ReportEntityViewHolder(View itemView) {
             super(itemView);
 
+            statusIconContainer = itemView.findViewById(R.id.status_icon_container);
             statusBackground = (CircleView) itemView
                     .findViewById(R.id.circleview_status_background);
             statusIcon = (ImageView) itemView
@@ -114,6 +122,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         }
 
         public void update(ReportEntity reportEntity) {
+
+            this.reportEntity = reportEntity;
             onRecyclerViewItemClickListener.setReportEntity(reportEntity);
 
             switch (reportEntity.getStatus()) {
@@ -139,6 +149,51 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             lineTwo.setText(reportEntity.getLineTwo());
             lineThree.setText(reportEntity.getLineThree());
         }
+
+        private void showStatusDialog(Context context) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.drawer_item_status);
+
+            switch (reportEntity.getStatus()) {
+                case SENT: {
+                    Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_sent).mutate();
+                    mutableSentIcon.setColorFilter(colorSent, PorterDuff.Mode.MULTIPLY);
+                    builder.setIcon(mutableSentIcon);
+                    builder.setMessage(R.string.sync_status_ok);
+                    break;
+                }
+                case OFFLINE: {
+                    Drawable mutableOfflineIcon = ContextCompat.getDrawable(context, R.drawable.ic_offline).mutate();
+                    mutableOfflineIcon.setColorFilter(colorOffline, PorterDuff.Mode.MULTIPLY);
+                    builder.setIcon(mutableOfflineIcon);
+                    builder.setMessage(R.string.sync_status_offline);
+                    break;
+                }
+                case ERROR: {
+                    Drawable mutableDrawableError = ContextCompat.getDrawable(context, R.drawable.ic_error).mutate();
+                    mutableDrawableError.setColorFilter(colorError, PorterDuff.Mode.MULTIPLY);
+                    builder.setIcon(mutableDrawableError);
+                    builder.setMessage(R.string.sync_status_error);
+                    break;
+                }
+            }
+
+            builder.setPositiveButton(R.string.sync_now, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //TODO: sync this report entity
+                    dialog.dismiss();
+                }
+            }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.create().show();
+        }
+
     }
 
     private class OnRecyclerViewItemClickListener implements View.OnClickListener {

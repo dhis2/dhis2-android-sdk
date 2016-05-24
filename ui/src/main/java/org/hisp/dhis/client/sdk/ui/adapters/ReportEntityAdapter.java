@@ -162,7 +162,8 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                     builder.setMessage(R.string.sync_status_ok);
                     break;
                 }
-                case OFFLINE: {
+                case TO_UPDATE:
+                case TO_POST: {
                     Drawable mutableOfflineIcon = ContextCompat.getDrawable(context, R.drawable.ic_offline).mutate();
                     mutableOfflineIcon.setColorFilter(colorOffline, PorterDuff.Mode.MULTIPLY);
                     builder.setIcon(mutableOfflineIcon);

@@ -36,6 +36,9 @@ import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityAction;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityCharSequence;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
+import org.hisp.dhis.client.sdk.ui.models.Picker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,12 +140,11 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
             switch (formEntityAction.getActionType()) {
                 case HIDE: {
-
-                    System.out.println(formEntityAction);
                     // ignore field
                     continue;
                 }
                 case ASSIGN: {
+
                     // do something
                     break;
                 }
@@ -151,32 +153,45 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
             updatedDataEntities.add(originalDataEntity);
         }
 
-        System.out.println("Modified       : " + modifiedDataEntities);
         List<FormEntity> oldDataEntities = new ArrayList<>(modifiedDataEntities);
 
         modifiedDataEntities.clear();
         modifiedDataEntities.addAll(updatedDataEntities);
 
-        System.out.println("OldEntities    : " + oldDataEntities);
-        System.out.println("UpdatedEntities: " + updatedDataEntities);
+        // we should have at least one entity
+        if (!oldDataEntities.isEmpty()) {
+            int currentFormEntityPosition = 0;
 
-        // removing items which are not in updated entities
-        for (int index = 0; index < oldDataEntities.size(); index++) {
-            FormEntity formEntity = oldDataEntities.get(index);
+            while (currentFormEntityPosition < oldDataEntities.size()) {
+                FormEntity formEntity = oldDataEntities.get(currentFormEntityPosition);
 
-            System.out.println("FormEntity: " + updatedDataEntities.indexOf(formEntity));
+                if (updatedDataEntities.indexOf(formEntity) < 0) {
+                    // updating recycler view
+                    notifyItemRemoved(currentFormEntityPosition);
 
-            if (updatedDataEntities.indexOf(formEntity) < 0) {
-                System.out.println("notifyItemRemoved() is called");
+                    // removing corresponding model from lsit
+                    oldDataEntities.remove(currentFormEntityPosition);
 
-                notifyItemRemoved(index);
+                    // nullifying value in entity
+                    if (formEntity instanceof FormEntityCharSequence) {
+                        ((FormEntityCharSequence) formEntity).setValue("");
+                    } else if (formEntity instanceof FormEntityFilter) {
+                        Picker picker = ((FormEntityFilter) formEntity).getPicker();
+
+                        if (picker != null) {
+                            picker.setSelectedChild(null);
+                            ((FormEntityFilter) formEntity).setPicker(picker);
+                        }
+                    }
+                } else {
+                    currentFormEntityPosition = currentFormEntityPosition + 1;
+                }
             }
         }
 
         for (int index = 0; index < updatedDataEntities.size(); index++) {
             FormEntity formEntity = updatedDataEntities.get(index);
 
-            // insert
             if (oldDataEntities.indexOf(formEntity) < 0) {
                 notifyItemInserted(index);
             }
@@ -200,6 +215,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
 
         // apply rule effects before rendering list
         Map<String, FormEntityAction> actionMap = mapActions(actions);
+        Map<String, FormEntity> formEntityMap = mapFormEntities(originalDataEntities);
         for (FormEntity dataEntity : originalDataEntities) {
             FormEntityAction action = actionMap.get(dataEntity.getId());
 
@@ -208,6 +224,15 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
                     case HIDE: {
                         // we don't want to include form entity in this case
                         continue;
+                    }
+                    case ASSIGN: {
+                        System.out.println("Assign action: " + action);
+
+                        FormEntity formEntity = formEntityMap.get(action.getId());
+                        if (formEntity instanceof FormEntityCharSequence) {
+                            ((FormEntityCharSequence) formEntity).setValue(action.getValue());
+                        }
+                        break;
                     }
                 }
 

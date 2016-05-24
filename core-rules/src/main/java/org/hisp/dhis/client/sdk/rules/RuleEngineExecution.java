@@ -188,9 +188,16 @@ public class RuleEngineExecution {
 
     private static String runExpression(String expression,
                                         RuleEngineVariableValueMap variableValueMap) {
+        System.out.println("Initial expression: " + expression);
+
         expression = replaceVariables(expression, variableValueMap);
+        System.out.println("Replaced vars expression: " + expression);
+
         expression = runDhisFunctions(expression, variableValueMap);
+        System.out.println("Functions processed expression: " + expression);
+
         expression = evaluateExpression(expression);
+        System.out.println("Evaluate expression: " + expression);
         return expression;
     }
 

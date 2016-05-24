@@ -87,8 +87,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         super.onAttach(activity);
         if (activity instanceof AppCompatActivity) {
 //            getActionBar().setDisplayShowTitleEnabled(false);
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActionBar().setHomeButtonEnabled(true);
+//            getActionBar().setDisplayHomeAsUpEnabled(true);
+//            getActionBar().setHomeButtonEnabled(true);
         }
     }
 
@@ -97,8 +97,8 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         if (getActivity() != null &&
                 getActivity() instanceof AppCompatActivity) {
 //            getActionBar().setDisplayShowTitleEnabled(true);
-            getActionBar().setDisplayHomeAsUpEnabled(false);
-            getActionBar().setHomeButtonEnabled(false);
+//            getActionBar().setDisplayHomeAsUpEnabled(false);
+//            getActionBar().setHomeButtonEnabled(false);
         }
 
         // we need to nullify reference

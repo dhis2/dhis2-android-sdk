@@ -114,7 +114,7 @@ import static org.hisp.dhis.android.sdk.utils.NetworkUtils.unwrapResponse;
  */
 public final class MetaDataController extends ResourceController {
     private final static String CLASS_TAG = "MetaDataController";
-    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 100;
+    private final static long TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD = 10;
 
     private MetaDataController() {
     }
@@ -894,9 +894,22 @@ public final class MetaDataController extends ResourceController {
         if(trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
             TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue = trackedEntityAttributeGeneratedValues.get(0);
 
-            trackedEntityAttributeGeneratedValue.delete(); // Deleting it so it cannot be re-used
+            //trackedEntityAttributeGeneratedValue.delete(); // Deleting it so it cannot be re-used
 
             return trackedEntityAttributeGeneratedValue;
+        }
+
+        return null;
+    }
+
+    public static TrackedEntityAttributeGeneratedValue getTrackedEntityAttributeGeneratedValue(String trackedEntityAttributeGeneratedValue) {
+        List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues = new Select().from(TrackedEntityAttributeGeneratedValue.class)
+                .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.VALUE).eq(trackedEntityAttributeGeneratedValue)).queryList();
+
+        if(trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
+            TrackedEntityAttributeGeneratedValue generatedValue = trackedEntityAttributeGeneratedValues.get(0);
+
+            return generatedValue;
         }
 
         return null;

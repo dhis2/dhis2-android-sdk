@@ -132,9 +132,9 @@ public class ProgramStage extends BaseMetaDataObject {
     @Column(name = "periodType")
     String periodType;
 
-    @JsonProperty("excecutionDateLabel")
-    @Column(name = "excecutionDateLabel")
-    String excecutionDateLabel;
+    @JsonProperty("executionDateLabel")
+    @Column(name = "executionDateLabel")
+    String executionDateLabel;
 
     @JsonProperty("programStageDataElements")
     List<ProgramStageDataElement> programStageDataElements;
@@ -370,12 +370,12 @@ public class ProgramStage extends BaseMetaDataObject {
         return repeatable;
     }
 
-    public String getExcecutionDateLabel() {
-        return excecutionDateLabel;
+    public String getExecutionDateLabel() {
+        return executionDateLabel;
     }
 
-    public void setExcecutionDateLabel(String excecutionDateLabel) {
-        this.excecutionDateLabel = excecutionDateLabel;
+    public void setExecutionDateLabel(String executionDateLabel) {
+        this.executionDateLabel = executionDateLabel;
     }
 
     public boolean isBlockEntryForm() {

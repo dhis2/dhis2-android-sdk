@@ -189,8 +189,8 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
 
     private static void addEventDateRow(Context context, EventDataEntryFragmentForm form,
                                         List<Row> rows) {
-        String reportDateDescription = form.getStage().getReportDateDescription()== null ?
-                context.getString(R.string.report_date) : form.getStage().getReportDateDescription();
+        String reportDateDescription = form.getStage().getExcecutionDateLabel()== null ?
+                context.getString(R.string.report_date) : form.getStage().getExcecutionDateLabel();
         rows.add(new EventDatePickerRow(reportDateDescription, form.getEvent(), false));
     }
 

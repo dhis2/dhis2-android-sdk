@@ -41,6 +41,7 @@ import java.util.Map;
 /**
  * @author Simen Skogly Russnes on 20.02.15.
  */
+
 @Table(databaseName = Dhis2Database.NAME)
 public class TrackedEntityAttribute extends BaseNameableObject {
 
@@ -103,7 +104,9 @@ public class TrackedEntityAttribute extends BaseNameableObject {
     @Column(name = "generated")
     boolean generated;
 
-
+    @JsonProperty("pattern")
+    @Column(name = "pattern")
+    String pattern;
 
     @JsonProperty("optionSet")
     public void setOptionSet(Map<String, Object> optionSet) {
@@ -118,23 +121,15 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.optionSet = optionSet;
     }
 
-    public boolean getIsUnique() {
+    public boolean isUnique() {
         return isUnique;
     }
 
-    public void setIsUnique(boolean isUnique) {
-        this.isUnique = isUnique;
+    public void setUnique(boolean unique) {
+        isUnique = unique;
     }
 
-    public boolean getProgramScope() {
-        return programScope;
-    }
-
-    public void setProgramScope(boolean programScope) {
-        this.programScope = programScope;
-    }
-
-    public boolean getOrgunitScope() {
+    public boolean isOrgunitScope() {
         return orgunitScope;
     }
 
@@ -142,7 +137,15 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.orgunitScope = orgunitScope;
     }
 
-    public boolean getDisplayInListNoProgram() {
+    public boolean isProgramScope() {
+        return programScope;
+    }
+
+    public void setProgramScope(boolean programScope) {
+        this.programScope = programScope;
+    }
+
+    public boolean isDisplayInListNoProgram() {
         return displayInListNoProgram;
     }
 
@@ -150,7 +153,7 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.displayInListNoProgram = displayInListNoProgram;
     }
 
-    public boolean getDisplayOnVisitSchedule() {
+    public boolean isDisplayOnVisitSchedule() {
         return displayOnVisitSchedule;
     }
 
@@ -158,7 +161,7 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.displayOnVisitSchedule = displayOnVisitSchedule;
     }
 
-    public boolean getExternalAccess() {
+    public boolean isExternalAccess() {
         return externalAccess;
     }
 
@@ -174,6 +177,14 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.valueType = valueType;
     }
 
+    public boolean isConfidential() {
+        return confidential;
+    }
+
+    public void setConfidential(boolean confidential) {
+        this.confidential = confidential;
+    }
+
     public boolean isOptionSetValue() {
         return optionSetValue;
     }
@@ -182,15 +193,7 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.optionSetValue = optionSetValue;
     }
 
-    public boolean getConfidential() {
-        return confidential;
-    }
-
-    public void setConfidential(boolean confidential) {
-        this.confidential = confidential;
-    }
-
-    public boolean getInherit() {
+    public boolean isInherit() {
         return inherit;
     }
 
@@ -206,14 +209,6 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.sortOrderVisitSchedule = sortOrderVisitSchedule;
     }
 
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
     public int getSortOrderInListNoProgram() {
         return sortOrderInListNoProgram;
     }
@@ -222,11 +217,27 @@ public class TrackedEntityAttribute extends BaseNameableObject {
         this.sortOrderInListNoProgram = sortOrderInListNoProgram;
     }
 
+    public String getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(String dimension) {
+        this.dimension = dimension;
+    }
+
     public boolean isGenerated() {
         return generated;
     }
 
     public void setGenerated(boolean generated) {
         this.generated = generated;
+    }
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 }

@@ -71,7 +71,7 @@ public class TrackedEntityInstanceItemRow implements EventRow, Comparator<Tracke
     public TrackedEntityInstanceItemRow(Context context) {
         isNull(context, "Context must not be null");
 
-        mOfflineDrawable = context.getResources().getDrawable(R.drawable.ic_offline);
+        mOfflineDrawable = context.getResources().getDrawable(R.drawable.ic_legacy_offline);
         mErrorDrawable = context.getResources().getDrawable(R.drawable.ic_event_error);
         mSentDrawable = context.getResources().getDrawable(R.drawable.ic_from_server);
 

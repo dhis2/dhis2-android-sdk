@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.sdk.persistence.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -12,7 +13,7 @@ import org.hisp.dhis.android.sdk.persistence.Dhis2Database;
 import java.io.Serializable;
 
 @Table(databaseName = Dhis2Database.NAME)
-public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject implements Serializable {
+public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject {
 
     @JsonProperty("id")
     @Column(name = "id")
@@ -32,7 +33,7 @@ public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject
     @ForeignKey(references = {
             @ForeignKeyReference(columnName = "trackedEntityAttribute",
                     columnType = String.class, foreignColumnName = "id")
-    })
+    },saveForeignKeyModel = false)
     TrackedEntityAttribute trackedEntityAttribute;
 
     public int getId() {
@@ -67,5 +68,13 @@ public class TrackedEntityAttributeGeneratedValue extends BaseIdentifiableObject
 
     public void setTrackedEntityAttribute(TrackedEntityAttribute trackedEntityAttribute) {
         this.trackedEntityAttribute = trackedEntityAttribute;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

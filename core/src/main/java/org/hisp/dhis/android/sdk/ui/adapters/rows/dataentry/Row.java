@@ -56,6 +56,7 @@ public abstract class Row implements DataEntryRow {
     private boolean hideDetailedInfoButton;
     private boolean editable = true;
     protected boolean mMandatory = false;
+    private boolean shouldNeverBeEdited = false;
 
     public View getDetailedInfoButton(){
         return detailedInfoButton;
@@ -143,5 +144,13 @@ public abstract class Row implements DataEntryRow {
 
     public void setError(String mError) {
         this.mError = mError;
+    }
+
+    public boolean isShouldNeverBeEdited() {
+        return shouldNeverBeEdited;
+    }
+
+    public void setShouldNeverBeEdited(boolean shouldNeverBeEdited) {
+        this.shouldNeverBeEdited = shouldNeverBeEdited;
     }
 }

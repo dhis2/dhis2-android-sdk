@@ -88,6 +88,7 @@ import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeGeneratedValue$Table;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue$Table;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.persistence.models.User;
 import org.hisp.dhis.android.sdk.persistence.models.UserAccount;
@@ -793,7 +794,7 @@ public final class MetaDataController extends ResourceController {
 
         for(TrackedEntityAttribute trackedEntityAttribute : trackedEntityAttributes) {
             if(trackedEntityAttribute.isGenerated()) {
-                long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute);
+                long numberOfGeneratedTrackedEntityAttributesToFetch = shouldFetchGeneratedTrackedEntityAttributeValues(trackedEntityAttribute, serverDateTime);
                 if(numberOfGeneratedTrackedEntityAttributesToFetch > 0) {
                     List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues =
                             dhisApi.getTrackedEntityAttributeGeneratedValues(trackedEntityAttribute.getUid(), numberOfGeneratedTrackedEntityAttributesToFetch); // Downloading x generated IDs per trackedEntityAttribute
@@ -808,11 +809,15 @@ public final class MetaDataController extends ResourceController {
      * @param trackedEntityAttribute
      * @return number of trackedEntityAttributeGeneratedValues to fetch
      */
-    private static long shouldFetchGeneratedTrackedEntityAttributeValues(TrackedEntityAttribute trackedEntityAttribute) {
+    private static long shouldFetchGeneratedTrackedEntityAttributeValues(TrackedEntityAttribute trackedEntityAttribute, DateTime serverDateTime) {
+
+        checkIfGeneratedTrackedEntityAttributeValuesHasExpired(serverDateTime);
+
         long numberOfTrackedEntityAttributeGeneratedValues = new Select().
                 from(TrackedEntityAttributeGeneratedValue.class)
                         .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE)
-                        .eq(trackedEntityAttribute.getUid())).count();
+                        .eq(trackedEntityAttribute.getUid()))
+                        .queryList().size();
 
         if(numberOfTrackedEntityAttributeGeneratedValues < TRACKED_ENTITY_ATTRITBUTE_GENERATED_VALUE_THRESHOLD) {
 
@@ -820,6 +825,20 @@ public final class MetaDataController extends ResourceController {
         }
 
         return 0;
+    }
+
+    public static void checkIfGeneratedTrackedEntityAttributeValuesHasExpired(DateTime serverDateTime) {
+        List<TrackedEntityAttributeGeneratedValue> generatedValuesThatIsExpired = new Select()
+                .from(TrackedEntityAttributeGeneratedValue.class)
+                .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.EXPIRYDATE)
+                        .lessThan(serverDateTime)).queryList();
+
+        for(TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue : generatedValuesThatIsExpired) {
+            new Delete().from(TrackedEntityAttributeGeneratedValue.class)
+                            .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.ID)
+                            .eq(trackedEntityAttributeGeneratedValue.getId()));
+        }
+
     }
 
     private static void getConstantsDataFromServer(DhisApi dhisApi, DateTime serverDateTime) throws APIException {
@@ -868,7 +887,18 @@ public final class MetaDataController extends ResourceController {
         saveResourceDataFromServer(resource, dhisApi, relationshipTypes, getRelationshipTypes(), serverDateTime);
     }
 
-    public TrackedEntityAttributeGeneratedValue getTrackedEntityAttributeGeneratedValue(TrackedEntityAttribute trackedEntityAttribute) {
+    public static TrackedEntityAttributeGeneratedValue getTrackedEntityAttributeGeneratedValue(TrackedEntityAttribute trackedEntityAttribute) {
+        List<TrackedEntityAttributeGeneratedValue> trackedEntityAttributeGeneratedValues = new Select().from(TrackedEntityAttributeGeneratedValue.class)
+                .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.TRACKEDENTITYATTRIBUTE_TRACKEDENTITYATTRIBUTE).eq(trackedEntityAttribute.getUid())).queryList();
 
+        if(trackedEntityAttributeGeneratedValues != null && !trackedEntityAttributeGeneratedValues.isEmpty()) {
+            TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue = trackedEntityAttributeGeneratedValues.get(0);
+
+            trackedEntityAttributeGeneratedValue.delete(); // Deleting it so it cannot be re-used
+
+            return trackedEntityAttributeGeneratedValue;
+        }
+
+        return null;
     }
 }

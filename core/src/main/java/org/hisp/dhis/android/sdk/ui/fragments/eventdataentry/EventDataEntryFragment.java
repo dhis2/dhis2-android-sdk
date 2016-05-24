@@ -611,6 +611,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                     ProgramStage currentProgramStage = MetaDataController
                                             .getProgramStage(eventClick.getEvent().getProgramStageId());
 
+                                    // checking if should schedule new event
+
                                     if(currentProgramStage.getAllowGenerateNextVisit()) {
                                         if(currentProgramStage.getRepeatable()) {
                                             DateTime scheduleTime = calculateScheduledDate(currentProgramStage, form.getEnrollment());
@@ -643,6 +645,18 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
                                         }
                                     }
+                                    // Checking if dataEntryForm should be blocked after completed
+
+                                    if(currentProgramStage.isBlockEntryForm()) {
+                                        List<DataEntryFragmentSection> sections = form.getSections();
+                                        for(DataEntryFragmentSection section : sections) {
+                                            List<Row> rowsForSection = section.getRows();
+                                            for(Row row : rowsForSection) {
+                                                row.setEditable(false);
+                                            }
+                                        }
+                                    }
+
                                     Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
                                 }
                             });
@@ -652,6 +666,20 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 eventClick.getComplete().setText(R.string.complete);
                 eventClick.getEvent().setStatus(Event.STATUS_ACTIVE);
                 eventClick.getEvent().setFromServer(false);
+
+
+                // Checking if dataEntryForm should be enabled after un-completed
+                ProgramStage currentProgramStage = MetaDataController.getProgramStage(eventClick.getEvent().getProgramStageId());
+                if(currentProgramStage.isBlockEntryForm()) {
+                    List<DataEntryFragmentSection> sections = form.getSections();
+                    for(DataEntryFragmentSection section : sections) {
+                        List<Row> rowsForSection = section.getRows();
+                        for(Row row : rowsForSection) {
+                            row.setEditable(true);
+                        }
+                    }
+                }
+
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
             }
         } else {
@@ -778,7 +806,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         return scheduledDate;
     }
     private void goBackToPreviousFragment() {
-        getFragmentManager().popBackStack();
+        getActivity().finish();
     }
 
     public void scheduleNewEvent(ProgramStage programStage, DateTime scheduledDueDate) {

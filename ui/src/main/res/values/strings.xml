@@ -151,4 +151,15 @@
     <string name="no">No</string>
     <string name="edit_columns">Edit columns</string>
 
+    <string name="sync_status_ok">This item has been successfully synchronized with the server</string>
+    <string name="sync_status_offline">This item has not yet been synchronized with the server</string>
+    <string name="sync_status_error">Something went wrong. Please, try to re-upload event or contact system administrator</string>
+    <string name="sync_now">Sync now</string>
+
+    <!-- Delete Report Entity confirmation dialog -->
+    <string name="delete">Delete</string>
+    <string name="delete_report_entity_dialog_title">Delete this Report Entity?</string>
+    <string name="delete_report_entity_dialog_message">The Entity will be lost forever. You will have to create a new Entity and re-enter any information.</string>
+    <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
+
 </resources>

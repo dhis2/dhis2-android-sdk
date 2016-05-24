@@ -188,4 +188,52 @@ public class RulesEngineExpressionTests {
         assertErrorRuleInEffect(effects, errorMessage, null, null);
     }
 
+    @Test
+    public void ruleEngineExecuteSimpleCalculation() {
+        //Metadata
+        String errorMessage = "this error will occur if simpleInt1+2-3 is bigger than zer does not have a value";
+        ArrayList<ProgramRule> rules = new ArrayList<>();
+        rules.add(createSimpleProgramRuleShowError("r1",
+                "a1",
+                "( #{simpleInt1} + #{simpleInt2} - #{simpleInt3} ) > 0",
+                errorMessage));
+
+        ArrayList<DataElement> dataElements = new ArrayList<>();
+
+        DataElement d1 = createDataElement("d1", "Integer DataElement", ValueType.INTEGER);
+        dataElements.add(d1);
+        DataElement d2 = createDataElement("d2", "Integer DataElement", ValueType.INTEGER);
+        dataElements.add(d2);
+        DataElement d3 = createDataElement("d3", "Integer DataElement", ValueType.INTEGER);
+        dataElements.add(d3);
+
+        ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
+        variables.add(createProgramRuleVariableCurrentEvent("simpleInt", d1));
+
+        RuleEngine ruleEngine = new RuleEngine.Builder()
+                .programRules(rules)
+                .dataElements(dataElements)
+                .programRuleVariables(variables)
+                .build();
+
+        //Payload
+        Event simpleEvent = new Event();
+
+        List<RuleEffect> effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d1,"1");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleInEffect(effects, errorMessage, null, null);
+
+        addDataValueToEvent(simpleEvent,d3,"2");
+
+        effects = ruleEngine.execute(simpleEvent, new ArrayList<Event>());
+
+        assertErrorRuleNotInEffect(effects, errorMessage, null, null);
+    }
+
 }

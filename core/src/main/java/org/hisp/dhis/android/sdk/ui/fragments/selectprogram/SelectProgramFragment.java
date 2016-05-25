@@ -32,13 +32,9 @@ package org.hisp.dhis.android.sdk.ui.fragments.selectprogram;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -47,39 +43,28 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
-import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.events.UiEvent;
-import org.hisp.dhis.android.sdk.ui.activities.INavigationHandler;
-import org.hisp.dhis.android.sdk.controllers.DhisController;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.TrackedEntityInstanceItemRow;
-import org.hisp.dhis.android.sdk.ui.fragments.settings.SettingsFragment;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.ui.activities.SynchronisationHandler;
 import org.hisp.dhis.android.sdk.ui.adapters.AbsAdapter;
-import org.hisp.dhis.android.sdk.ui.adapters.rows.events.EventRow;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.OrgUnitDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.ProgramDialogFragment;
 import org.hisp.dhis.android.sdk.ui.views.CardTextViewButton;
 import org.hisp.dhis.android.sdk.utils.api.ProgramType;
 import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
-import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
-
-import java.util.List;
 
 public abstract class SelectProgramFragment extends BaseFragment
         implements View.OnClickListener, AutoCompleteDialogFragment.OnOptionSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm> {
+        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm>, SynchronisationHandler.OnCustomStateListener {
     public static final String TAG = SelectProgramFragment.class.getSimpleName();
     protected final String STATE;
     protected final int LOADER_ID;
@@ -120,6 +105,7 @@ public abstract class SelectProgramFragment extends BaseFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        SynchronisationHandler.getInstance().setListener(this);
     }
 
     @Override
@@ -356,6 +342,18 @@ public abstract class SelectProgramFragment extends BaseFragment
         } else if(uiEvent.getEventType().equals(UiEvent.UiEventType.SYNCING_END)) {
             setRefreshing(false);
         }
+    }
+
+    @Override
+    public void stateChanged() {
+        boolean state = SynchronisationHandler.getInstance().getState();
+
+//        if(state) {
+//            setRefreshing(true);
+//        }
+//        else {
+//            setRefreshing(false);
+//        }
     }
 
     protected abstract void handleViews(int level);

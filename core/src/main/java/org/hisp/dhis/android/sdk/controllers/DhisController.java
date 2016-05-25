@@ -49,8 +49,9 @@ import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.services.SyncDateWrapper;
 import org.hisp.dhis.client.sdk.ui.AppPreferences;
+import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
 
-public final class DhisController implements AppPreferences {
+public final class DhisController {
     private static final String CLASS_TAG = "Dhis2";
 
     public final static String LAST_UPDATED_METADATA = "lastupdated_metadata";
@@ -76,8 +77,8 @@ public final class DhisController implements AppPreferences {
     private ObjectMapper objectMapper;
     private DhisApi dhisApi;
     private Session session;
-    private long lastSynced;
     private SyncDateWrapper syncDateWrapper;
+    private AppPreferencesImpl appPreferences;
 
 
     private boolean blocking = false;
@@ -90,7 +91,8 @@ public final class DhisController implements AppPreferences {
         objectMapper = getObjectMapper();
         LastUpdatedManager.init(context);
         DateTimeManager.init(context);
-        syncDateWrapper = new SyncDateWrapper(this);
+        appPreferences = new AppPreferencesImpl(context);
+        syncDateWrapper = new SyncDateWrapper(appPreferences);
     }
 
     public void init() {
@@ -191,46 +193,7 @@ public final class DhisController implements AppPreferences {
         return objectMapper;
     }
 
-    @Override
-    public long getLastSynced() {
-        return getInstance().lastSynced;
-    }
 
-    @Override
-    public boolean setLastSynced(long date) {
-        getInstance().lastSynced = date;
-        return true;
-    }
-
-    @Override
-    public void setBackgroundSyncFrequency(int frequency) {
-
-    }
-
-    @Override
-    public int getBackgroundSyncFrequency() {
-        return 0;
-    }
-
-    @Override
-    public void setBackgroundSyncState(Boolean enabled) {
-
-    }
-
-    @Override
-    public boolean getBackgroundSyncState() {
-        return false;
-    }
-
-    @Override
-    public boolean getCrashReportsState() {
-        return false;
-    }
-
-    @Override
-    public void setCrashReportsState(Boolean enabled) {
-
-    }
 
     public SyncDateWrapper getSyncDateWrapper() {
         return getInstance().syncDateWrapper;

@@ -162,4 +162,10 @@
     <string name="delete_report_entity_dialog_message">The Entity will be lost forever. You will have to create a new Entity and re-enter any information.</string>
     <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
 
-</resources>
+    <!-- SyncDateWrapper strings: -->
+    <string name="date_format">dd/mm/yy hh:mm</string>
+    <string name="never">never</string>
+    <string name="min_ago">m ago</string>
+    <string name="hours">h</string>
+
+    </resources>

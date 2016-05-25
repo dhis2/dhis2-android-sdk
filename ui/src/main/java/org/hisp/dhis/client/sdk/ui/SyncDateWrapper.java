@@ -1,31 +1,33 @@
 package org.hisp.dhis.client.sdk.ui;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
-
-import org.hisp.dhis.client.sdk.ui.AppPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-
 public class SyncDateWrapper {
+    //Constants:
     private static final long DAYS_OLD = 1L;
     private static final long NEVER = 0L;
 
-    // TODO: move strings to resources
-    private static final String DATE_FORMAT = "dd/mm/yy hh:mm";
-    private static final String NEVER_SYNCED = "never";
-    private static final String MIN_AGO = "m ago";
-    private static final String HOURS = "h";
+    private final String DATE_FORMAT;
+    private final String NEVER_SYNCED;
+    private final String MIN_AGO;
+    private final String HOURS;
 
     private final AppPreferences appPreferences;
     private final Calendar calendar;
 
-    public SyncDateWrapper(AppPreferences appPreferences) {
+    public SyncDateWrapper(Context context, AppPreferences appPreferences) {
         this.appPreferences = appPreferences;
         this.calendar = Calendar.getInstance();
+        DATE_FORMAT = context.getString(R.string.date_format);
+        NEVER_SYNCED = context.getString(R.string.never);
+        MIN_AGO = context.getString(R.string.min_ago);
+        HOURS = context.getString(R.string.hours);
     }
 
     public void setLastSyncedNow() {
@@ -60,7 +62,7 @@ public class SyncDateWrapper {
             return NEVER_SYNCED;
         }
 
-        Long diff = calendar.getTime().getTime() - lastSync;
+        Long diff = Calendar.getInstance().getTimeInMillis() - lastSync;
         if (diff >= TimeUnit.DAYS.toMillis(DAYS_OLD)) {
             return new SimpleDateFormat(DATE_FORMAT)
                     .format(getLastSyncedDate());

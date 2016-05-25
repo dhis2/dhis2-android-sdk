@@ -34,7 +34,6 @@ public class FormEntityFilter extends FormEntity {
         this.picker = picker;
 
         if (this.onFormEntityChangeListener != null && this.picker != null) {
-            // && this.picker.getSelectedChild() != null) {
             this.onFormEntityChangeListener.onFormEntityChanged(this);
         }
     }

@@ -86,6 +86,6 @@ public class BaseFragment extends Fragment implements OnBackPressedCallback {
     @Override
     public boolean onBackPressed() {
         // default implementation
-        return false;
+        return true;
     }
 }

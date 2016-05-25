@@ -136,6 +136,12 @@ public class PickerAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    public List<Picker> getData() {
+        // defensive copy: preventing clients from mutating
+        // list of pickers set to adapyer
+        return new ArrayList<>(pickers);
+    }
+
     private Picker getRootNode(Picker picker) {
         Picker node = picker;
 

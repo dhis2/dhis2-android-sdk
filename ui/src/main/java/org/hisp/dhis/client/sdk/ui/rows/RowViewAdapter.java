@@ -36,7 +36,9 @@ import android.view.ViewGroup;
 
 import org.hisp.dhis.client.sdk.ui.models.FormEntity;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityAction;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityAction.FormEntityActionType;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityCharSequence;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityEditText;
 import org.hisp.dhis.client.sdk.ui.models.FormEntityFilter;
 import org.hisp.dhis.client.sdk.ui.models.Picker;
 
@@ -126,51 +128,70 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
     }
 
     public void update(List<FormEntityAction> actions) {
-        Map<String, FormEntityAction> actionMap = mapActions(actions);
-        List<FormEntity> updatedDataEntities = new ArrayList<>();
+        applyFormEntityActions(actions, true);
+    }
 
-        for (FormEntity originalDataEntity : originalDataEntities) {
-            FormEntityAction formEntityAction = actionMap.get(originalDataEntity.getId());
+    public void swap(List<FormEntity> formEntities) {
+        swapData(formEntities, null);
+    }
 
-            if (formEntityAction == null) {
-                // we need to show item
-                updatedDataEntities.add(originalDataEntity);
-                continue;
-            }
+    public void swap(List<FormEntity> formEntities, List<FormEntityAction> actions) {
+        swapData(formEntities, actions);
+    }
 
-            switch (formEntityAction.getActionType()) {
-                case HIDE: {
-                    // ignore field
-                    continue;
-                }
-                case ASSIGN: {
+    private void swapData(List<FormEntity> dataEntities, List<FormEntityAction> actions) {
+        this.originalDataEntities.clear();
+        this.modifiedDataEntities.clear();
 
-                    // do something
-                    break;
-                }
-            }
-
-            updatedDataEntities.add(originalDataEntity);
+        if (dataEntities != null) {
+            this.originalDataEntities.addAll(dataEntities);
         }
 
-        List<FormEntity> oldDataEntities = new ArrayList<>(modifiedDataEntities);
+        // we don't want trigger ui updates during data changes
+        applyFormEntityActions(actions, false);
+
+        notifyDataSetChanged();
+    }
+
+    // if granularNotificationsEnabled is set to true, method will trigger changes in UI,
+    // otherwise it will only modify underlying data
+    private void applyFormEntityActions(
+            List<FormEntityAction> formEntityActions, boolean granularUiUpdatesEnabled) {
+
+        // apply rule effects before rendering list
+        Map<String, FormEntityAction> actionMap = mapActions(formEntityActions);
+
+        // applying FormEntityActions. Note, methods below will gradually
+        // mutate list of form entities. So it is important to preserve, order of calls
+        applyHideFormEntityActions(actionMap, granularUiUpdatesEnabled);
+        applyAssignFormEntityActions(actionMap, granularUiUpdatesEnabled);
+    }
+
+    private void applyHideFormEntityActions(
+            Map<String, FormEntityAction> actionMap, boolean granularUiUpdatesEnabled) {
+
+        List<FormEntity> activeFormEntities = distinctActiveFormEntities(actionMap);
+        List<FormEntity> previousDataEntities = new ArrayList<>(modifiedDataEntities);
 
         modifiedDataEntities.clear();
-        modifiedDataEntities.addAll(updatedDataEntities);
+        modifiedDataEntities.addAll(activeFormEntities);
 
         // we should have at least one entity
-        if (!oldDataEntities.isEmpty()) {
+        if (!previousDataEntities.isEmpty()) {
             int currentFormEntityPosition = 0;
 
-            while (currentFormEntityPosition < oldDataEntities.size()) {
-                FormEntity formEntity = oldDataEntities.get(currentFormEntityPosition);
+            while (currentFormEntityPosition < previousDataEntities.size()) {
+                FormEntity formEntity = previousDataEntities.get(currentFormEntityPosition);
 
-                if (updatedDataEntities.indexOf(formEntity) < 0) {
-                    // updating recycler view
-                    notifyItemRemoved(currentFormEntityPosition);
+                if (activeFormEntities.indexOf(formEntity) < 0) {
 
-                    // removing corresponding model from lsit
-                    oldDataEntities.remove(currentFormEntityPosition);
+                    if (granularUiUpdatesEnabled) {
+                        // updating recycler view
+                        notifyItemRemoved(currentFormEntityPosition);
+                    }
+
+                    // removing corresponding model from list
+                    previousDataEntities.remove(currentFormEntityPosition);
 
                     // nullifying value in entity
                     if (formEntity instanceof FormEntityCharSequence) {
@@ -189,63 +210,77 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
             }
         }
 
-        for (int index = 0; index < updatedDataEntities.size(); index++) {
-            FormEntity formEntity = updatedDataEntities.get(index);
+        for (int index = 0; index < activeFormEntities.size(); index++) {
+            FormEntity formEntity = activeFormEntities.get(index);
 
-            if (oldDataEntities.indexOf(formEntity) < 0) {
+            if (granularUiUpdatesEnabled &&
+                    previousDataEntities.indexOf(formEntity) < 0) {
                 notifyItemInserted(index);
             }
         }
     }
 
-    public void swap(List<FormEntity> formEntities) {
-        swapData(formEntities, null);
-    }
+    private void applyAssignFormEntityActions(
+            Map<String, FormEntityAction> actionMap, boolean granularUiUpdatesEnabled) {
 
-    public void swap(List<FormEntity> formEntities, List<FormEntityAction> actions) {
-        swapData(formEntities, actions);
-    }
+        // go through all existing form entities
+        for (FormEntity formEntity : originalDataEntities) {
+            FormEntityAction entityAction = actionMap.get(formEntity.getId());
 
-    private void swapData(List<FormEntity> dataEntities, List<FormEntityAction> actions) {
-        this.originalDataEntities.clear();
+            if (!(formEntity instanceof FormEntityEditText)) {
+                continue;
+            }
 
-        if (dataEntities != null) {
-            this.originalDataEntities.addAll(dataEntities);
-        }
+            FormEntityEditText formEntityEditText = (FormEntityEditText) formEntity;
 
-        // apply rule effects before rendering list
-        Map<String, FormEntityAction> actionMap = mapActions(actions);
-        Map<String, FormEntity> formEntityMap = mapFormEntities(originalDataEntities);
-        for (FormEntity dataEntity : originalDataEntities) {
-            FormEntityAction action = actionMap.get(dataEntity.getId());
+            if (entityAction == null ||
+                    !FormEntityActionType.ASSIGN.equals(entityAction.getActionType())) {
+                // if the field previously was
+                // locked, we need to unlock it
+                if (formEntityEditText.isLocked()) {
+                    formEntityEditText.setLocked(false);
 
-            if (action != null) {
-                switch (action.getActionType()) {
-                    case HIDE: {
-                        // we don't want to include form entity in this case
-                        continue;
-                    }
-                    case ASSIGN: {
-                        System.out.println("Assign action: " + action);
-
-                        FormEntity formEntity = formEntityMap.get(action.getId());
-                        if (formEntity instanceof FormEntityCharSequence) {
-                            ((FormEntityCharSequence) formEntity).setValue(action.getValue());
-                        }
-                        break;
+                    int indexOfVisibleEntity = modifiedDataEntities.indexOf(formEntity);
+                    if (granularUiUpdatesEnabled && !(indexOfVisibleEntity < 0)) {
+                        notifyItemChanged(indexOfVisibleEntity);
                     }
                 }
-
-                modifiedDataEntities.add(dataEntity);
             } else {
-                modifiedDataEntities.add(dataEntity);
+                // assigning new value
+                formEntityEditText.setValue(entityAction.getValue());
+
+                // conditionally updating ui
+                if (!formEntityEditText.isLocked()) {
+                    formEntityEditText.setLocked(true);
+
+                    int indexOfVisibleEntity = modifiedDataEntities.indexOf(formEntity);
+                    if (granularUiUpdatesEnabled && !(indexOfVisibleEntity < 0)) {
+                        notifyItemChanged(indexOfVisibleEntity);
+                    }
+                }
+            }
+        }
+    }
+
+    // we need to filter out entities which should be hidden from user
+    private List<FormEntity> distinctActiveFormEntities(Map<String, FormEntityAction> actionMap) {
+        List<FormEntity> activeDataEntities = new ArrayList<>();
+
+        for (FormEntity originalDataEntity : originalDataEntities) {
+            FormEntityAction formEntityAction = actionMap.get(originalDataEntity.getId());
+
+            if (formEntityAction == null || !FormEntityActionType.HIDE
+                    .equals(formEntityAction.getActionType())) {
+
+                // we need to show item
+                activeDataEntities.add(originalDataEntity);
             }
         }
 
-        notifyDataSetChanged();
+        return activeDataEntities;
     }
 
-    private Map<String, FormEntityAction> mapActions(List<FormEntityAction> actions) {
+    private static Map<String, FormEntityAction> mapActions(List<FormEntityAction> actions) {
         Map<String, FormEntityAction> formEntityActionMap = new HashMap<>();
 
         if (actions != null && !actions.isEmpty()) {
@@ -257,7 +292,7 @@ public class RowViewAdapter extends Adapter<ViewHolder> {
         return formEntityActionMap;
     }
 
-    private Map<String, FormEntity> mapFormEntities(List<FormEntity> formEntities) {
+    private static Map<String, FormEntity> mapFormEntities(List<FormEntity> formEntities) {
         Map<String, FormEntity> formEntityMap = new HashMap<>();
 
         if (formEntities != null && !formEntities.isEmpty()) {

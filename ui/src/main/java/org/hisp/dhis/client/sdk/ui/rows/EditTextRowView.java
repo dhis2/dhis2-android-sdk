@@ -123,6 +123,7 @@ public final class EditTextRowView implements RowView {
             onValueChangedListener.setDataEntity(entity);
             textViewLabel.setText(entity.getLabel());
             editText.setText(entity.getValue());
+            editText.setEnabled(!entity.isLocked());
 
             // configure edittext according to entity
             configureView(entity);

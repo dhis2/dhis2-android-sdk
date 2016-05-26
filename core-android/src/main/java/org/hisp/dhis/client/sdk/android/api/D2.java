@@ -269,7 +269,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p/>
+     * <p>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -305,8 +305,15 @@ public class D2 {
                 instance().preferencesModule.getConfigurationPreferences()
                         .save(configuration);
 
-                // re-initialising the whole object graph
-                init(instance().applicationContext);
+                try {
+                    // re-initialising the whole object graph
+                    init(instance().applicationContext);
+                } catch (Throwable throwable) {
+                    instance().preferencesModule.clearAllPreferences();
+                    instance().persistenceModule.deleteAllTables();
+
+                    throw throwable;
+                }
                 return null;
             }
         });

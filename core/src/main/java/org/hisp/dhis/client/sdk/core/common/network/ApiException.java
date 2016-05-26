@@ -31,12 +31,11 @@ package org.hisp.dhis.client.sdk.core.common.network;
 import java.io.IOException;
 
 public class ApiException extends RuntimeException {
-
     private final String url;
     private final Response response;
     private final Kind kind;
 
-    ApiException(String message, String url, Response response,
+    private ApiException(String message, String url, Response response,
                  Kind kind, Throwable exception) {
         super(message, exception);
         this.url = url;

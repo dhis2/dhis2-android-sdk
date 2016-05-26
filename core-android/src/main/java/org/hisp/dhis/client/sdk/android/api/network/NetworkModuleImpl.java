@@ -62,6 +62,7 @@ import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiC
 import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeApiClientRetrofit;
 import org.hisp.dhis.client.sdk.android.user.UserAccountApiClientImpl;
 import org.hisp.dhis.client.sdk.android.user.UserApiClientRetrofit;
+import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
 import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
 import org.hisp.dhis.client.sdk.core.common.network.UserCredentials;
@@ -85,6 +86,7 @@ import org.hisp.dhis.client.sdk.core.user.UserApiClient;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -148,10 +150,17 @@ public class NetworkModuleImpl implements NetworkModule {
         // Extracting base url
         Configuration configuration = preferencesModule
                 .getConfigurationPreferences().get();
-        HttpUrl url = HttpUrl.parse(configuration.getServerUrl())
-                .newBuilder()
+        HttpUrl url = HttpUrl.parse(configuration.getServerUrl());
+
+        if (url == null) {
+            throw ApiException.unexpectedError(
+                    configuration.getServerUrl(), new MalformedURLException());
+        }
+
+        url = url.newBuilder()
                 .addPathSegment("api")
                 .build();
+
         HttpUrl modifiedUrl = HttpUrl.parse(url.toString() + "/"); // TODO EW!!!
 
         // Creating retrofit instance

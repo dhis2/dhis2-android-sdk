@@ -112,8 +112,7 @@ public class CurrentUserInteractorImpl implements CurrentUserInteractor {
         return Observable.create(new DefaultOnSubscribe<Boolean>() {
             @Override
             public Boolean call() {
-                return userPreferences.clear() &&
-                        preferencesModule.clearAllPreferences() &&
+                return preferencesModule.clearAllPreferences() &&
                         persistanceModule.deleteAllTables();
             }
         });

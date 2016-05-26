@@ -251,7 +251,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
     public void addItem(ReportEntity reportEntity) {
         reportEntities.add(reportEntity);
-        notifyDataSetChanged();
+        notifyItemInserted(reportEntities.size() - 1);
     }
 
     private class OnRecyclerViewItemClickListener implements View.OnClickListener {

@@ -169,6 +169,6 @@
     <string name="hours">h</string>
 
     <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
-    <string name="no_programs">You don't have any programs assigned to Organsation unit or you don't have the sufficient user roles. Please contact system administrator</string>
+    <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator</string>
 
     </resources>

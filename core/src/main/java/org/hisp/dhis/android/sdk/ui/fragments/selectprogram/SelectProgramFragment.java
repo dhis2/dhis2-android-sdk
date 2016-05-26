@@ -199,6 +199,7 @@ public abstract class SelectProgramFragment extends BaseFragment
     @Override
     public void onResume() {
         super.onResume();
+        setRefreshing(SynchronisationStateHandler.getInstance().getState());
         Dhis2Application.getEventBus().register(this);
     }
 
@@ -334,14 +335,7 @@ public abstract class SelectProgramFragment extends BaseFragment
 
     @Override
     public void stateChanged() {
-        boolean state = SynchronisationStateHandler.getInstance().getState();
-
-//        if(state) {
-//            setRefreshing(true);
-//        }
-//        else {
-//            setRefreshing(false);
-//        }
+        // stub - will listen to updates in onResume()
     }
 
     protected abstract void handleViews(int level);

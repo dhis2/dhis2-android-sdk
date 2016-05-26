@@ -277,9 +277,11 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
                 errors.add(getActivity().getString(R.string.error_message) + ": " + programRulesError);
             }
         }
-        validationErrorDialog = ValidationErrorDialog
-                .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
-        validationErrorDialog.show(getChildFragmentManager());
+        if(!errors.isEmpty()) {
+            validationErrorDialog = ValidationErrorDialog
+                    .newInstance(getActivity().getString(R.string.unable_to_complete_registration) + " " + getActivity().getString(R.string.review_errors), errors);
+            validationErrorDialog.show(getChildFragmentManager());
+        }
     }
 
     protected boolean haveValuesChanged() {

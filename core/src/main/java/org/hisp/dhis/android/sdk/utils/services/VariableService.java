@@ -156,7 +156,12 @@ public class VariableService {
                 !getInstance().getEventsForEnrollment().contains(getInstance().getCurrentEvent())) {
             getInstance().getEventsForEnrollment().add(getInstance().getCurrentEvent());
         }
-        Collections.sort(getInstance().getEventsForEnrollment(), new EventDateComparator());
+
+        List<Event> eventsForEnrollment = new ArrayList<>();
+        if(getInstance().getEventsForEnrollment() != null) {
+            eventsForEnrollment = getInstance().getEventsForEnrollment();
+            Collections.sort(getInstance().getEventsForEnrollment(), new EventDateComparator());
+        }
 
         //setting data elements map
         List<DataElement> dataElements = MetaDataController.getDataElements();
@@ -174,7 +179,7 @@ public class VariableService {
 
         //setting events in map for each program stage
         getInstance().setEventsForProgramStages(new HashMap<String, List<Event>>());
-        for(Event event : getInstance().getEventsForEnrollment()) {
+        for(Event event : eventsForEnrollment) {
             List<Event> eventsForProgramStage = getInstance().getEventsForProgramStages().get(event.getProgramStageId());
             if(eventsForProgramStage == null) {
                 eventsForProgramStage = new ArrayList<>();
@@ -185,7 +190,7 @@ public class VariableService {
 
         //setting data values in map for each event
         getInstance().setEventDataValueMaps(new HashMap<Event, Map<String, DataValue>>());
-        for(Event event : getInstance().getEventsForEnrollment()) {
+        for(Event event : eventsForEnrollment) {
             Map<String, DataValue> dataValueMap = new HashMap<>();
             for(DataValue dataValue : event.getDataValues()) {
                 dataValueMap.put(dataValue.getDataElement(), dataValue);
@@ -345,7 +350,11 @@ public class VariableService {
                 break;
             case DATAELEMENT_NEWEST_EVENT_PROGRAM: {
                 DataValue dataValue;
-                for (Event event : getInstance().getEventsForEnrollment()) {
+                List<Event> eventsForEnrollment = new ArrayList<>();
+                if(getInstance().getEventsForEnrollment() != null) {
+                    eventsForEnrollment = getInstance().getEventsForEnrollment();
+                }
+                for (Event event : eventsForEnrollment) {
                     dataValue = getInstance().getEventDataValueMaps().get(event).get(programRuleVariable.getDataElement());
                     if (dataValue != null) {
                         if(value == null) {
@@ -484,10 +493,14 @@ public class VariableService {
      */
     private static List<ProgramRuleVariable> createContextVariables() {
         List<ProgramRuleVariable> programRuleVariables = new ArrayList<>();
+        List<Event> eventsForEnrollment = new ArrayList<>();
+        if(getInstance().getEventsForEnrollment() != null) {
+            eventsForEnrollment = getInstance().getEventsForEnrollment();
+        }
         for(ContextVariableType type : ContextVariableType.values()) {
             programRuleVariables.add(createContextVariable(type.toString(),
                     getInstance().getCurrentEvent(), getInstance().getCurrentEnrollment(),
-                    getInstance().getEventsForEnrollment()));
+                    eventsForEnrollment));
         }
         return programRuleVariables;
     }

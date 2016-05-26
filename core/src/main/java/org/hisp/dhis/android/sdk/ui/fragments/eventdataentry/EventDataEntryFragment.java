@@ -52,7 +52,6 @@ import com.squareup.otto.Subscribe;
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.GpsController;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
-import org.hisp.dhis.android.sdk.controllers.tracker.TrackerController;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
 import org.hisp.dhis.android.sdk.persistence.loaders.DbLoader;
 import org.hisp.dhis.android.sdk.persistence.models.DataValue;
@@ -64,7 +63,6 @@ import org.hisp.dhis.android.sdk.persistence.models.ProgramIndicator;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramRule;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.persistence.models.ProgramStageDataElement;
-import org.hisp.dhis.android.sdk.persistence.models.ProgramStageSection;
 import org.hisp.dhis.android.sdk.ui.adapters.SectionAdapter;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.DataEntryRowTypes;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.dataentry.IndicatorRow;
@@ -80,7 +78,6 @@ import org.hisp.dhis.android.sdk.utils.UiUtils;
 import org.hisp.dhis.android.sdk.utils.services.ProgramIndicatorService;
 import org.hisp.dhis.android.sdk.utils.services.VariableService;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -398,6 +395,9 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         );
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
+            if(dataElement == null) {
+                return false;
+            }
             if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
                 return false;
             }
@@ -433,7 +433,10 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
         );
         for (DataValue dataValue : form.getEvent().getDataValues()) {
             ProgramStageDataElement dataElement = dataElements.get(dataValue.getDataElement());
-            if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
+            if(dataElement == null) {
+                // don't do anything
+            }
+            else if (dataElement.getCompulsory() && isEmpty(dataValue.getValue())) {
                 errors.add(MetaDataController.getDataElement(dataElement.getDataelement()).getDisplayName());
             }
         }
@@ -766,14 +769,14 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                         DatePicker dp = enrollmentDatePickerDialog.getDatePicker();
                         DateTime pickedDueDate = new DateTime(dp.getYear(), dp.getMonth() +1, dp.getDayOfMonth(), 0, 0);
                         scheduleNewEvent(programStage, pickedDueDate);
-                        goBackToPreviousFragment();
+                        goBackToPreviousActivity();
                     }
                 });
         enrollmentDatePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        goBackToPreviousFragment();
+                        goBackToPreviousActivity();
                     }
                 });
         enrollmentDatePickerDialog.show();
@@ -805,7 +808,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
 
         return scheduledDate;
     }
-    private void goBackToPreviousFragment() {
+    private void goBackToPreviousActivity() {
         getActivity().finish();
     }
 

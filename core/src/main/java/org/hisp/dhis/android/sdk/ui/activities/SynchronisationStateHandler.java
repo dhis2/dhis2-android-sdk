@@ -1,26 +1,26 @@
 package org.hisp.dhis.android.sdk.ui.activities;
 
 
-public class SynchronisationHandler {
+public class SynchronisationStateHandler {
 
-    public interface OnCustomStateListener {
+    public interface OnSynchronisationStateListener {
         void stateChanged();
     }
 
-    private static SynchronisationHandler mInstance;
-    private OnCustomStateListener mListener;
+    private static SynchronisationStateHandler mInstance;
+    private OnSynchronisationStateListener mListener;
     private boolean mState;
 
-    private SynchronisationHandler() {}
+    private SynchronisationStateHandler() {}
 
-    public static SynchronisationHandler getInstance() {
+    public static SynchronisationStateHandler getInstance() {
         if(mInstance == null) {
-            mInstance = new SynchronisationHandler();
+            mInstance = new SynchronisationStateHandler();
         }
         return mInstance;
     }
 
-    public void setListener(OnCustomStateListener listener) {
+    public void setListener(OnSynchronisationStateListener listener) {
         mListener = listener;
     }
 

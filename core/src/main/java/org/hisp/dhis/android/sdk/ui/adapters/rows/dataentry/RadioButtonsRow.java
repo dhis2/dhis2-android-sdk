@@ -114,19 +114,20 @@ public class RadioButtonsRow extends Row {
             holder.secondButton.setOnCheckedChangeListener(listener);
             holder.thirdButton.setOnCheckedChangeListener(listener);
 
-            if(!isEditable()) {
-                holder.firstButton.setEnabled(false);
-                holder.secondButton.setEnabled(false);
-                holder.thirdButton.setEnabled(false);
-            } else {
-                holder.firstButton.setEnabled(true);
-                holder.secondButton.setEnabled(true);
-                holder.thirdButton.setEnabled(true);
-            }
-
             root.setTag(holder);
             view = root;
         }
+
+        if(!isEditable()) {
+            holder.firstButton.setEnabled(false);
+            holder.secondButton.setEnabled(false);
+            holder.thirdButton.setEnabled(false);
+        } else {
+            holder.firstButton.setEnabled(true);
+            holder.secondButton.setEnabled(true);
+            holder.thirdButton.setEnabled(true);
+        }
+
         holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
         holder.updateViews(mLabel, mValue);
 

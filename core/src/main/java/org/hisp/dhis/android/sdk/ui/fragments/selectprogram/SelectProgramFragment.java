@@ -53,7 +53,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.DhisService;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.persistence.Dhis2Application;
-import org.hisp.dhis.android.sdk.ui.activities.SynchronisationHandler;
+import org.hisp.dhis.android.sdk.ui.activities.SynchronisationStateHandler;
 import org.hisp.dhis.android.sdk.ui.adapters.AbsAdapter;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogFragment;
 import org.hisp.dhis.android.sdk.ui.dialogs.OrgUnitDialogFragment;
@@ -64,7 +64,7 @@ import org.hisp.dhis.client.sdk.ui.fragments.BaseFragment;
 
 public abstract class SelectProgramFragment extends BaseFragment
         implements View.OnClickListener, AutoCompleteDialogFragment.OnOptionSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm>, SynchronisationHandler.OnCustomStateListener {
+        SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<SelectProgramFragmentForm>, SynchronisationStateHandler.OnSynchronisationStateListener {
     public static final String TAG = SelectProgramFragment.class.getSimpleName();
     protected final String STATE;
     protected final int LOADER_ID;
@@ -90,22 +90,10 @@ public abstract class SelectProgramFragment extends BaseFragment
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        // we need to nullify reference
-        // to parent activity in order not to leak it
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        SynchronisationHandler.getInstance().setListener(this);
+        SynchronisationStateHandler.getInstance().setListener(this);
     }
 
     @Override
@@ -346,7 +334,7 @@ public abstract class SelectProgramFragment extends BaseFragment
 
     @Override
     public void stateChanged() {
-        boolean state = SynchronisationHandler.getInstance().getState();
+        boolean state = SynchronisationStateHandler.getInstance().getState();
 
 //        if(state) {
 //            setRefreshing(true);

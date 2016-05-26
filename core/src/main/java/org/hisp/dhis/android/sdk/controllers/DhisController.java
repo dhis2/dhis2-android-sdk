@@ -31,7 +31,6 @@ package org.hisp.dhis.android.sdk.controllers;
 
 import android.content.Context;
 
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.squareup.okhttp.HttpUrl;
@@ -47,9 +46,8 @@ import org.hisp.dhis.android.sdk.network.Session;
 import org.hisp.dhis.android.sdk.persistence.preferences.DateTimeManager;
 import org.hisp.dhis.android.sdk.persistence.preferences.LastUpdatedManager;
 import org.hisp.dhis.android.sdk.network.APIException;
-import org.hisp.dhis.android.sdk.services.SyncDateWrapper;
-import org.hisp.dhis.client.sdk.ui.AppPreferences;
 import org.hisp.dhis.client.sdk.ui.AppPreferencesImpl;
+import org.hisp.dhis.client.sdk.ui.SyncDateWrapper;
 
 public final class DhisController {
     private static final String CLASS_TAG = "Dhis2";
@@ -92,7 +90,7 @@ public final class DhisController {
         LastUpdatedManager.init(context);
         DateTimeManager.init(context);
         appPreferences = new AppPreferencesImpl(context);
-        syncDateWrapper = new SyncDateWrapper(appPreferences);
+        syncDateWrapper = new SyncDateWrapper(context, appPreferences);
     }
 
     public void init() {

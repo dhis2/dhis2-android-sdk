@@ -131,15 +131,15 @@ public class EditTextRow extends Row {
             holder = new ValueEntryHolder(label, mandatoryIndicator, warningLabel, errorLabel, editText, detailedInfoButton, listener );
             holder.editText.addTextChangedListener(listener);
 
-            if(!isEditable()) {
-                holder.editText.setEnabled(false);
-            } else {
-                holder.editText.setEnabled(true);
-            }
-
             rowTypeTemp = mRowType.toString();
             root.setTag(holder);
             view = root;
+        }
+
+        if(!isEditable()) {
+            holder.editText.setEnabled(false);
+        } else {
+            holder.editText.setEnabled(true);
         }
 
         holder.textLabel.setText(mLabel);

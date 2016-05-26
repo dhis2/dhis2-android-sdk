@@ -86,17 +86,18 @@ public class CheckBoxRow extends Row {
             holder.checkBox.setOnCheckedChangeListener(holder.listener);
             holder.detailedInfoButton.setOnClickListener(new OnDetailedInfoButtonClick(this));
 
-            if(!isEditable()) {
-                holder.checkBox.setEnabled(false);
-                holder.textLabel.setEnabled(false);
-            } else {
-                holder.textLabel.setEnabled(true);
-                holder.checkBox.setEnabled(true);
-            }
+
             root.setTag(holder);
             view = root;
         }
 
+        if(!isEditable()) {
+            holder.checkBox.setEnabled(false);
+            holder.textLabel.setEnabled(false);
+        } else {
+            holder.textLabel.setEnabled(true);
+            holder.checkBox.setEnabled(true);
+        }
         holder.textLabel.setText(mLabel);
         holder.listener.setValue(mValue);
 

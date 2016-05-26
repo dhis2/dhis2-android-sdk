@@ -52,6 +52,7 @@ import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.events.UiEvent;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.AbsTextWatcher;
 import org.hisp.dhis.android.sdk.ui.dialogs.AutoCompleteDialogAdapter.OptionAdapterValue;
+import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 
 public class AutoCompleteDialogFragment extends DialogFragment
         implements AdapterView.OnItemClickListener {
@@ -63,6 +64,7 @@ public class AutoCompleteDialogFragment extends DialogFragment
     private OnOptionSelectedListener mListener;
     private int mDialogId;
     public ProgressBar mProgressBar;
+    private FontTextView mFontTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,8 @@ public class AutoCompleteDialogFragment extends DialogFragment
                 .findViewById(R.id.dialog_label);
         mProgressBar = (ProgressBar) view
                 .findViewById(R.id.auto_complete_dialog_progress_bar);
+        mFontTextView = (FontTextView) view
+                .findViewById(R.id.no_items_textview);
         InputMethodManager imm = (InputMethodManager)
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
@@ -171,5 +175,29 @@ public class AutoCompleteDialogFragment extends DialogFragment
 
     public interface OnOptionSelectedListener {
         void onOptionSelected(int dialogId, int position, String id, String name);
+    }
+
+    public void setTextToNoItemsTextView(String text) {
+        mFontTextView.setText(text);
+    }
+
+    public void setNoItemsTextViewVisibility(int visible) {
+        switch (visible) {
+            case View.VISIBLE : {
+                mFontTextView.setVisibility(visible);
+                break;
+            }
+            case View.INVISIBLE : {
+                mFontTextView.setVisibility(visible);
+                break;
+            }
+            case View.GONE: {
+                mFontTextView.setVisibility(visible);
+                break;
+            }
+            default: break;
+        }
+
+
     }
 }

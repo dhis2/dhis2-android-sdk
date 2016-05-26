@@ -58,7 +58,7 @@ import java.util.List;
 
 
 public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
-        implements LoaderManager.LoaderCallbacks<List<OptionAdapterValue>> {
+        implements LoaderManager.LoaderCallbacks<OrgUnitDialogFragmentForm> {
     public static final int ID = 450123;
     private static final int LOADER_ID = 1;
     private static final String PROGRAMTYPE = "programType";
@@ -94,7 +94,7 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
     }
 
     @Override
-    public Loader<List<OptionAdapterValue>> onCreateLoader(int id, Bundle args) {
+    public Loader<OrgUnitDialogFragmentForm> onCreateLoader(int id, Bundle args) {
         if (LOADER_ID == id && isAdded()) {
             List<Class<? extends Model>> modelsToTrack = new ArrayList<>();
             modelsToTrack.add(OrganisationUnitProgramRelationship.class);
@@ -119,22 +119,36 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
     }
 
     @Override
-    public void onLoadFinished(Loader<List<OptionAdapterValue>> loader,
-                               List<OptionAdapterValue> data) {
+    public void onLoadFinished(Loader<OrgUnitDialogFragmentForm> loader,
+                               OrgUnitDialogFragmentForm data) {
         if (loader.getId() == LOADER_ID) {
-            getAdapter().swapData(data);
+            getAdapter().swapData(data.getOptionAdapterValueList());
 
-            if (MetaDataController.isDataLoaded(getActivity()))
+            if (MetaDataController.isDataLoaded(getActivity())) {
                 mProgressBar.setVisibility(View.GONE);
+
+                if(data.getType().equals(OrgUnitDialogFragmentForm.Error.NO_ASSIGNED_ORGANISATION_UNITS)) {
+                    this.setNoItemsTextViewVisibility(View.VISIBLE);
+                    this.setTextToNoItemsTextView(getString(R.string.no_organisation_units));
+                }
+                else if(data.getType().equals(OrgUnitDialogFragmentForm.Error.NO_PROGRAMS_TO_ORGANSATION_UNIT)) {
+                    this.setNoItemsTextViewVisibility(View.VISIBLE);
+                    this.setTextToNoItemsTextView(getString(R.string.no_programs));
+                }
+                else {
+                    this.setNoItemsTextViewVisibility(View.GONE);
+                    this.setTextToNoItemsTextView("");
+                }
+            }
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<OptionAdapterValue>> loader) {
+    public void onLoaderReset(Loader<OrgUnitDialogFragmentForm> loader) {
         getAdapter().swapData(null);
     }
 
-    static class OrgUnitQuery implements Query<List<OptionAdapterValue>> {
+    static class OrgUnitQuery implements Query<OrgUnitDialogFragmentForm> {
 
         private final ProgramType[] kinds;
 
@@ -143,16 +157,32 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
         }
 
         @Override
-        public List<OptionAdapterValue> query(Context context) {
+        public OrgUnitDialogFragmentForm query(Context context) {
+            OrgUnitDialogFragmentForm mForm = new OrgUnitDialogFragmentForm();
+
             List<OrganisationUnit> orgUnits = queryUnits();
             List<OptionAdapterValue> values = new ArrayList<>();
-            for (OrganisationUnit orgUnit : orgUnits) {
-                if (hasPrograms(orgUnit.getId(), this.kinds) && OrganisationUnit.TYPE.ASSIGNED.equals(orgUnit.getType())) {
-                    values.add(new OptionAdapterValue(orgUnit.getId(), orgUnit.getLabel()));
+            if(orgUnits.isEmpty()) {
+                mForm.setType(OrgUnitDialogFragmentForm.Error.NO_ASSIGNED_ORGANISATION_UNITS);
+            }
+            else {
+                for (OrganisationUnit orgUnit : orgUnits) {
+                    if (hasPrograms(orgUnit.getId(), this.kinds) && OrganisationUnit.TYPE.ASSIGNED.equals(orgUnit.getType())) {
+                        values.add(new OptionAdapterValue(orgUnit.getId(), orgUnit.getLabel()));
+                        mForm.setType(OrgUnitDialogFragmentForm.Error.NONE);
+                    } else {
+                        mForm.setType(OrgUnitDialogFragmentForm.Error.NO_PROGRAMS_TO_ORGANSATION_UNIT);
+                    }
                 }
             }
-            Collections.sort(values);
-            return values;
+
+            if(!values.isEmpty()) {
+                Collections.sort(values);
+            }
+
+            mForm.setOrganisationUnits(orgUnits);
+            mForm.setOptionAdapterValueList(values);
+            return mForm;
         }
 
         private List<OrganisationUnit> queryUnits() {

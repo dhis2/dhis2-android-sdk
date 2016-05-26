@@ -125,6 +125,11 @@ public class ProgramDialogFragment extends AutoCompleteDialogFragment
 
             if (MetaDataController.isDataLoaded(getActivity()))
                 mProgressBar.setVisibility(View.GONE);
+
+            if(data.isEmpty()) {
+                this.setNoItemsTextViewVisibility(View.VISIBLE);
+                this.setTextToNoItemsTextView(getString(R.string.no_programs));
+            }
         }
     }
 

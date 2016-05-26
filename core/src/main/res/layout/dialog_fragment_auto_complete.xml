@@ -90,6 +90,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
+    <org.hisp.dhis.android.sdk.ui.views.FontTextView
+        android:id="@+id/no_items_textview"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        app:font="@string/light_font_name"/>
     <ListView
         android:id="@+id/simple_listview"
         android:layout_width="match_parent"

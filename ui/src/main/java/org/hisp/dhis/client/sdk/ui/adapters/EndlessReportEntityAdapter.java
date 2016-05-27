@@ -1,3 +1,31 @@
+/*
+ * Copyright (c) 2016, University of Oslo
+ *
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package org.hisp.dhis.client.sdk.ui.adapters;
 
 import android.content.Context;
@@ -7,6 +35,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,30 +53,53 @@ import java.util.List;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class ReportEntityAdapter extends RecyclerView.Adapter {
+public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
+
+    private final int VIEW_TYPE_ITEM = 0;
+    private final int VIEW_TYPE_LOADING = 1;
+
     private final List<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
+    private final RecyclerView recyclerView;
+    private final EndlessScrollListener endlessScrollListener;
 
-    // click listener
+
+    // interaction listener
     private OnReportEntityInteractionListener onReportEntityInteractionListener;
+    private boolean loading;
 
-    public ReportEntityAdapter(Context context) {
-        isNull(context, "context must not be null");
+    public EndlessReportEntityAdapter(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        isNull(recyclerView, "RecyclerView must not be null");
+        Context context = recyclerView.getContext();
+        isNull(context, "RecyclerView must have valid Context");
 
-        this.layoutInflater = LayoutInflater.from(context);
+        layoutInflater = LayoutInflater.from(context);
         this.reportEntities = new ArrayList<>();
+        endlessScrollListener = new EndlessScrollListener();
+        recyclerView.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ReportEntityViewHolder(layoutInflater.inflate(
-                R.layout.recyclerview_report_entity_item, parent, false));
+        if (viewType == VIEW_TYPE_ITEM) {
+            return new ReportEntityViewHolder(layoutInflater.inflate(
+                    R.layout.recyclerview_report_entity_item, parent, false));
+        } else if (viewType == VIEW_TYPE_LOADING) {
+            return new LoadingViewHolder(layoutInflater.inflate(R.layout.loading_view, parent, false));
+        }
+
+        return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ReportEntity reportEntity = reportEntities.get(position);
-        ((ReportEntityViewHolder) holder).update(reportEntity);
+
+        if (holder instanceof ReportEntityViewHolder) {
+            ReportEntity reportEntity = reportEntities.get(position);
+            ((ReportEntityViewHolder) holder).update(reportEntity);
+        }
+
     }
 
     @Override
@@ -55,9 +107,15 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         return reportEntities.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return isLoadingView(position) ? VIEW_TYPE_LOADING : VIEW_TYPE_ITEM;
+    }
+
     public void setOnReportEntityInteractionListener(OnReportEntityInteractionListener onInteractionListener) {
         this.onReportEntityInteractionListener = onInteractionListener;
     }
+
 
     public void swapData(@Nullable List<ReportEntity> reportEntities) {
         this.reportEntities.clear();
@@ -73,6 +131,14 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
         void onReportEntityClicked(ReportEntity reportEntity);
 
         void onDeleteReportEntity(ReportEntity reportEntity);
+    }
+
+
+    private final class LoadingViewHolder extends RecyclerView.ViewHolder {
+
+        public LoadingViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
     private final class ReportEntityViewHolder extends RecyclerView.ViewHolder {
@@ -268,4 +334,81 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             }
         }
     }
+
+    private class EndlessScrollListener extends RecyclerView.OnScrollListener {
+
+        // number of items to the bottom of the list where we start fetching new items
+        public static final int BOTTOM_ITEM_TRESHOLD = 3;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (!loading && bottomTresholdReached(recyclerView)) {
+
+                loading = true;
+                showLoadingView();
+                onLoadData();
+            }
+        }
+
+        private boolean bottomTresholdReached(RecyclerView recyclerView) {
+            int visibleItemCount = recyclerView.getChildCount();
+            int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+            int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+            return totalItemCount - visibleItemCount < (firstVisibleItem + BOTTOM_ITEM_TRESHOLD);
+        }
+    }
+
+    private void showLoadingView() {
+
+        if (!loadingViewIsShowing()) {
+            reportEntities.add(null);
+            notifyItemInserted(reportEntities.size() - 1);
+        }
+    }
+
+    public void addLoadedItems(List<ReportEntity> newItems) {
+
+        hideLoadingView();
+
+        reportEntities.addAll(newItems);
+
+        notifyDataSetChanged();
+
+        loading = false;
+
+    }
+
+    private void hideLoadingView() {
+        if (!reportEntities.isEmpty() && loadingViewIsShowing()) {
+            reportEntities.remove(reportEntities.size() - 1);
+            notifyItemRemoved(reportEntities.size());
+        }
+    }
+
+    private boolean loadingViewIsShowing() {
+        return isLoadingView(reportEntities.size() - 1);
+    }
+
+    private boolean isLoadingView(int position) {
+        return reportEntities.get(position) == null;
+    }
+
+    /**
+     * Do your fetching of data items
+     * Add fetched items with {@link #addLoadedItems(List)}
+     */
+    public abstract void onLoadData();
+
+    /**
+     * Hides the loading view
+     * Call when there are no more items to fetch
+     */
+    public void onLoadFinished() {
+        recyclerView.removeOnScrollListener(endlessScrollListener);
+        hideLoadingView();
+    }
+
+
 }

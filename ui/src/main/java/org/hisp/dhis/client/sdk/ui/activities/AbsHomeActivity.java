@@ -261,6 +261,15 @@ public abstract class AbsHomeActivity extends BaseActivity
         return menuItem;
     }
 
+    protected boolean removeMenuItem(int menuItemId) {
+        MenuItem menuItem = getNavigationView().getMenu().findItem(menuItemId);
+        if(menuItem != null) {
+            getNavigationView().getMenu().removeItem(menuItem.getItemId());
+            return true;
+        }
+        return false;
+    }
+
     @NonNull
     protected NavigationView getNavigationView() {
         return navigationView;

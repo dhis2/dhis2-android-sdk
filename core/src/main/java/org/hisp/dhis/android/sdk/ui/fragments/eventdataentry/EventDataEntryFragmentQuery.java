@@ -176,7 +176,7 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
                                      List<Row> rows) {
         Event event = form.getEvent();
         if(event==null) return;
-        StatusRow row = new StatusRow(context, event);
+        StatusRow row = new StatusRow(context, event, form.getStage());
         rows.add(row);
         form.setStatusRow(row);
     }

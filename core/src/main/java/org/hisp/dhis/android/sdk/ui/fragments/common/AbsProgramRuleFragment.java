@@ -68,8 +68,13 @@ public abstract class AbsProgramRuleFragment<D> extends BaseFragment {
     /**
      * Evaluates the ProgramRules for the current program and the current data values and applies
      * the results. This is for example used for hiding views if a rule contains skip logic
+     * If no rules exist for Enrollment, this won't be run
      */
     public void evaluateAndApplyProgramRules() {
+        if(programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules() == null ||
+                programRuleFragmentHelper.getEnrollment().getProgram().getProgramRules().isEmpty()) {
+            return;
+        }
         VariableService.initialize(programRuleFragmentHelper.getEnrollment(), programRuleFragmentHelper.getEvent());
         programRuleFragmentHelper.mapFieldsToRulesAndIndicators();
         ArrayList<String> affectedFieldsWithValue = new ArrayList<>();

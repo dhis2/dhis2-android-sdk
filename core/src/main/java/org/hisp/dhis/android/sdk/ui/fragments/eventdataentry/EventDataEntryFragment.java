@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -202,6 +203,11 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread = new IndicatorEvaluatorThread();
             indicatorEvaluatorThread.start();
         }
+
+        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
         indicatorEvaluatorThread.init(this);
     }
 
@@ -280,27 +286,30 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             }
             OrganisationUnit eventOrganisationUnit = MetaDataController.getOrganisationUnit(form.getEvent().getOrganisationUnitId());
             if(!OrganisationUnit.TYPE.ASSIGNED.equals(eventOrganisationUnit.getType())) { // if user is not assigned to the event's OrgUnit. Disable data entry screen
-                setEditableDataEntryRows(form,false);
+                setEditableDataEntryRows(form,false, false);
+            }
+            if(Event.STATUS_COMPLETED.equals(form.getEvent().getStatus())) { // if event is completed. Disable data entry screen
+                setEditableDataEntryRows(form,false, true);
+
             }
             initiateEvaluateProgramRules();
         }
     }
 
-    public void setEditableDataEntryRows(EventDataEntryFragmentForm form, boolean editable) {
+    public void setEditableDataEntryRows(EventDataEntryFragmentForm form, boolean editableDataEntryRows, boolean editableStatusRow) {
         List<Row> rows = new ArrayList<>();
         if(!form.getSections().isEmpty()) {
             if(form.getSections().size() > 1) {
                 for(DataEntryFragmentSection section : form.getSections()) {
                     rows.addAll(section.getRows());
                 }
-
             }
             else {
                 rows = form.getSections().get(0).getRows();
             }
         }
         listViewAdapter.swapData(null);
-        if(editable) {
+        if(editableDataEntryRows) {
             for(Row row : rows) {
                 row.setEditable(true);
             }
@@ -309,8 +318,13 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 row.setEditable(false);
             }
         }
+        if(editableStatusRow) {
+            form.getStatusRow().setEditable(true);
+        }
+
         listView.setAdapter(null);
-        listViewAdapter.swapData(rows);
+//        listViewAdapter.swapData(rows);
+        listViewAdapter.swapData(form.getSections().get(0).getRows()); //TODO find a better solution for this hack
         listView.setAdapter(listViewAdapter);
     }
 
@@ -658,15 +672,8 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                                         }
                                     }
                                     // Checking if dataEntryForm should be blocked after completed
-
                                     if(currentProgramStage.isBlockEntryForm()) {
-                                        List<DataEntryFragmentSection> sections = form.getSections();
-                                        for(DataEntryFragmentSection section : sections) {
-                                            List<Row> rowsForSection = section.getRows();
-                                            for(Row row : rowsForSection) {
-                                                row.setEditable(false);
-                                            }
-                                        }
+                                        setEditableDataEntryRows(form, false, true);
                                     }
 
                                     Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));
@@ -683,13 +690,7 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                 // Checking if dataEntryForm should be enabled after un-completed
                 ProgramStage currentProgramStage = MetaDataController.getProgramStage(eventClick.getEvent().getProgramStageId());
                 if(currentProgramStage.isBlockEntryForm()) {
-                    List<DataEntryFragmentSection> sections = form.getSections();
-                    for(DataEntryFragmentSection section : sections) {
-                        List<Row> rowsForSection = section.getRows();
-                        for(Row row : rowsForSection) {
-                            row.setEditable(true);
-                        }
-                    }
+                    setEditableDataEntryRows(form, true, true);
                 }
 
                 Dhis2Application.getEventBus().post(new RowValueChangedEvent(null, null));

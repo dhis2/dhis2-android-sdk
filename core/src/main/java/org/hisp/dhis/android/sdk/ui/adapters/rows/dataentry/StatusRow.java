@@ -43,6 +43,7 @@ import android.widget.ImageButton;
 
 import org.hisp.dhis.android.sdk.R;
 import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramStage;
 import org.hisp.dhis.android.sdk.ui.adapters.rows.events.OnDetailedInfoButtonClick;
 import org.hisp.dhis.android.sdk.ui.fragments.eventdataentry.EventDataEntryFragment;
 import org.hisp.dhis.android.sdk.ui.fragments.dataentry.ValidationErrorDialog;
@@ -60,10 +61,12 @@ public final class StatusRow extends Row {
     private Context context;
     private StatusViewHolder holder;
     private FragmentActivity fragmentActivity;
+    private ProgramStage programStage;
 
-    public StatusRow(Context context, Event event) {
+    public StatusRow(Context context, Event event, ProgramStage programStage) {
         this.context = context;
         mEvent = event;
+        this.programStage = programStage;
     }
 
     public void setFragmentActivity(FragmentActivity fragmentActivity) {
@@ -82,7 +85,7 @@ public final class StatusRow extends Row {
             View root = inflater.inflate(
                     R.layout.listview_row_status, container, false);
             detailedInfoButton = root.findViewById(R.id.detailed_info_button_layout);
-            holder = new StatusViewHolder(context, root, mEvent, detailedInfoButton);
+            holder = new StatusViewHolder(context, root, mEvent, programStage, detailedInfoButton);
 
             root.setTag(holder);
             view = root;
@@ -118,10 +121,12 @@ public final class StatusRow extends Row {
         private final OnValidateClickListener onValidateButtonClickListener;
         private final Event event;
         private final View detailedInfoButton;
+        private final ProgramStage programStage;
 
-        public StatusViewHolder(Context context, View view, Event event, View detailedInfoButton) {
+        public StatusViewHolder(Context context, View view, Event event, ProgramStage programStage, View detailedInfoButton) {
 
             this.event = event;
+            this.programStage = programStage;
 
             /* views */
             complete = (Button) view.findViewById(R.id.complete);
@@ -129,18 +134,23 @@ public final class StatusRow extends Row {
             this.detailedInfoButton = detailedInfoButton;
 
             /* text watchers and click listener */
-            onCompleteButtonClickListener = new OnCompleteClickListener(context, complete, this.event);
+            onCompleteButtonClickListener = new OnCompleteClickListener(context, complete, this.event, this.programStage);
             onValidateButtonClickListener = new OnValidateClickListener(context, validate, this.event);
             complete.setOnClickListener(onCompleteButtonClickListener);
             validate.setOnClickListener(onValidateButtonClickListener);
 
-            updateViews(event, complete, context);
+            updateViews(event, programStage, complete, context);
         }
 
-        public static void updateViews(Event event, Button button, Context context) {
+        public static void updateViews(Event event, ProgramStage programStage,Button button, Context context) {
             if(event.getStatus().equals(Event.STATUS_COMPLETED)) {
                 if(context != null) {
-                    button.setText(context.getString(R.string.incomplete));
+                    if(programStage.isBlockEntryForm()) {
+                        button.setText(context.getString(R.string.edit));
+                    }
+                    else {
+                        button.setText(context.getString(R.string.incomplete));
+                    }
                 }
             } else {
                 if(context != null) {
@@ -153,13 +163,15 @@ public final class StatusRow extends Row {
     private static class OnCompleteClickListener implements View.OnClickListener, DialogInterface.OnClickListener {
         private final Button complete;
         private final Event event;
+        private final ProgramStage programStage;
         private final Context context;
         private Activity activity;
 
-        public OnCompleteClickListener(Context context, Button complete, Event event) {
+        public OnCompleteClickListener(Context context, Button complete, Event event, ProgramStage programStage) {
             this.context = context;
             this.complete = complete;
             this.event = event;
+            this.programStage = programStage;
         }
 
         @Override
@@ -185,7 +197,7 @@ public final class StatusRow extends Row {
             } else {
                 event.setStatus(Event.STATUS_COMPLETED);
             }
-            StatusViewHolder.updateViews(event, complete, context);
+            StatusViewHolder.updateViews(event, programStage, complete, context);
         }
     }
 

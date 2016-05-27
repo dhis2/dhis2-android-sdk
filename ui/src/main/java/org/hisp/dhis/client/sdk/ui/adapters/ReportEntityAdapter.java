@@ -117,7 +117,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
             Context context = itemView.getContext();
 
-            drawableSent = ContextCompat.getDrawable(context, R.drawable.ic_sent);
+            drawableSent = ContextCompat.getDrawable(context, R.drawable.ic_tick);
             drawableOffline = ContextCompat.getDrawable(context, R.drawable.ic_offline);
             drawableError = ContextCompat.getDrawable(context, R.drawable.ic_error);
 
@@ -194,7 +194,7 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
 
             switch (reportEntity.getStatus()) {
                 case SENT: {
-                    Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_sent).mutate();
+                    Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_tick).mutate();
                     mutableSentIcon.setColorFilter(colorSent, PorterDuff.Mode.MULTIPLY);
                     builder.setIcon(mutableSentIcon);
                     builder.setMessage(R.string.sync_status_ok);

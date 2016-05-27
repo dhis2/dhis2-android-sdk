@@ -114,6 +114,12 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             onRecyclerViewItemClickListener = new OnRecyclerViewItemClickListener();
             itemView.setOnClickListener(onRecyclerViewItemClickListener);
             deleteButton.setOnClickListener(new OnDeleteButtonClickListener());
+            statusIconContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showStatusDialog(v.getContext());
+                }
+            });
 
             Context context = itemView.getContext();
 
@@ -124,30 +130,6 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             colorSent = ContextCompat.getColor(context, R.color.color_material_green_default);
             colorOffline = ContextCompat.getColor(context, R.color.color_accent_default);
             colorError = ContextCompat.getColor(context, R.color.color_material_red_default);
-        }
-
-        private void showEntityDeletionConfirmationDialog() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(deleteButton.getContext());
-            builder.setTitle(R.string.delete_report_entity_dialog_title).setMessage(R.string.delete_report_entity_dialog_message).setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-
-                    if (onReportEntityInteractionListener != null) {
-                        int entityIndex = reportEntities.indexOf(reportEntity);
-                        reportEntities.remove(reportEntity);
-                        notifyItemRemoved(entityIndex);
-                        onReportEntityInteractionListener.onDeleteReportEntity(reportEntity);
-                    } else {
-                        Toast.makeText(deleteButton.getContext(), R.string.report_entity_deletion_error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).create().show();
         }
 
         public void update(ReportEntity reportEntity) {
@@ -233,6 +215,29 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             builder.create().show();
         }
 
+        private void showEntityDeletionConfirmationDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(deleteButton.getContext());
+            builder.setTitle(R.string.delete_report_entity_dialog_title).setMessage(R.string.delete_report_entity_dialog_message).setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                    if (onReportEntityInteractionListener != null) {
+                        int entityIndex = reportEntities.indexOf(reportEntity);
+                        reportEntities.remove(reportEntity);
+                        notifyItemRemoved(entityIndex);
+                        onReportEntityInteractionListener.onDeleteReportEntity(reportEntity);
+                    } else {
+                        Toast.makeText(deleteButton.getContext(), R.string.report_entity_deletion_error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).create().show();
+        }
 
         private class OnDeleteButtonClickListener implements View.OnClickListener {
 

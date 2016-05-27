@@ -28,4 +28,4 @@
   ~  */
   -->
 
-<manifest package="org.hisp.dhis.android.sdk" />
+<manifest package="org.hisp.dhis.android.sdk"/>

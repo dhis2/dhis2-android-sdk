@@ -100,7 +100,11 @@ public final class GpsController implements LocationListener {
 
         Criteria criteria = new Criteria();
         String provider = getInstance().mLocationManager.getBestProvider(criteria, false);
-        Location location = getInstance().mLocationManager.getLastKnownLocation(provider);
+        Location location = null;
+        if(provider != null) {
+            location = getInstance().mLocationManager.getLastKnownLocation(provider);
+        }
+
         if (location != null) {
             getInstance().mLatitude = location.getLatitude();
             getInstance().mLongitude = location.getLongitude();

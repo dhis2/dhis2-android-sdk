@@ -64,6 +64,10 @@
                         android:icon="@drawable/ic_tracker_capture"
                         android:orderInCategory="200"
                         android:title="@string/drawer_item_tracker_capture"/>
+                    <item
+                        android:id="@+id/drawer_item_tracker_capture_reports"
+                        android:orderInCategory="200"
+                        android:title="@string/drawer_item_tracker_capture_reports"/>
                 </group>
             </menu>
         </item>

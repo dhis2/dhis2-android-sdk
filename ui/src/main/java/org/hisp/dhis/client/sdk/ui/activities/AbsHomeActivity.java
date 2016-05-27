@@ -68,6 +68,8 @@ public abstract class AbsHomeActivity extends BaseActivity
             "org.hisp.dhis.android.eventcapture";
     private static final String APPS_TRACKER_CAPTURE_PACKAGE =
             "org.hisp.dhis.android.trackercapture";
+    private static final String APPS_TRACKER_CAPTURE_REPORTS_PACKAGE =
+            "org.hispindia.bidtrackerreports";
 
     private static final int DEFAULT_ORDER_IN_CATEGORY = 100;
 
@@ -114,6 +116,9 @@ public abstract class AbsHomeActivity extends BaseActivity
                 isAppInstalled(APPS_EVENT_CAPTURE_PACKAGE));
         navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture).setVisible(
                 isAppInstalled(APPS_TRACKER_CAPTURE_PACKAGE));
+        navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture_reports).setVisible(
+                isAppInstalled(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE));
+
     }
 
     @Override
@@ -129,6 +134,8 @@ public abstract class AbsHomeActivity extends BaseActivity
             isSelected = openApp(APPS_EVENT_CAPTURE_PACKAGE);
         } else if (menuItemId == R.id.drawer_item_tracker_capture) {
             isSelected = openApp(APPS_TRACKER_CAPTURE_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_tracker_capture_reports) {
+            isSelected = openApp(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE);
         } else if (menuItemId == R.id.drawer_item_profile) {
             attachFragmentDelayed(getProfileFragment());
             isSelected = true;

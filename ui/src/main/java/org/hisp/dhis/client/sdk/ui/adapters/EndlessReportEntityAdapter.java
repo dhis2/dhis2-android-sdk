@@ -263,7 +263,7 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
                     Drawable mutableSentIcon = ContextCompat.getDrawable(context, R.drawable.ic_tick).mutate();
                     mutableSentIcon.setColorFilter(colorSent, PorterDuff.Mode.MULTIPLY);
                     builder.setIcon(mutableSentIcon);
-                    builder.setMessage(R.string.sync_status_ok);
+                    builder.setMessage(R.string.sync_status_ok_message);
                     break;
                 }
                 case TO_UPDATE:
@@ -271,14 +271,14 @@ public abstract class EndlessReportEntityAdapter extends RecyclerView.Adapter {
                     Drawable mutableOfflineIcon = ContextCompat.getDrawable(context, R.drawable.ic_offline).mutate();
                     mutableOfflineIcon.setColorFilter(colorOffline, PorterDuff.Mode.MULTIPLY);
                     builder.setIcon(mutableOfflineIcon);
-                    builder.setMessage(R.string.sync_status_offline);
+                    builder.setMessage(R.string.sync_status_offline_message);
                     break;
                 }
                 case ERROR: {
                     Drawable mutableDrawableError = ContextCompat.getDrawable(context, R.drawable.ic_error).mutate();
                     mutableDrawableError.setColorFilter(colorError, PorterDuff.Mode.MULTIPLY);
                     builder.setIcon(mutableDrawableError);
-                    builder.setMessage(R.string.sync_status_error);
+                    builder.setMessage(R.string.sync_status_error_message);
                     break;
                 }
             }

@@ -152,9 +152,12 @@
     <string name="no">No</string>
     <string name="edit_columns">Edit columns</string>
 
-    <string name="sync_status_ok">This item has been successfully synchronized with the server</string>
-    <string name="sync_status_offline">This item has not yet been synchronized with the server</string>
-    <string name="sync_status_error">Something went wrong. Please, try to re-upload event or contact system administrator</string>
+    <string name="sync_status_ok_title">Synced</string>
+    <string name="sync_status_ok_message">This item has been successfully synchronized with the server</string>
+    <string name="sync_status_offline_title">Not Synced</string>
+    <string name="sync_status_offline_message">This item has not yet been synchronized with the server</string>
+    <string name="sync_status_error_title">Error</string>
+    <string name="sync_status_error_message">Something went wrong. Please, try to re-upload event or contact system administrator</string>
     <string name="sync_now">Sync now</string>
 
     <!-- Delete Report Entity confirmation dialog -->
@@ -172,4 +175,4 @@
     <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
     <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator</string>
 
-    </resources>
+</resources>

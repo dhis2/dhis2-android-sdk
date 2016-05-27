@@ -415,7 +415,9 @@ public final class MetaDataController extends ResourceController {
      * @return
      */
     public static List<OrganisationUnit> getAssignedOrganisationUnits() {
-        List<OrganisationUnit> organisationUnits = new Select().from(OrganisationUnit.class).queryList();
+        List<OrganisationUnit> organisationUnits = new Select().from(OrganisationUnit.class)
+                .where(Condition.column(OrganisationUnit$Table.TYPE).eq(OrganisationUnit.TYPE.ASSIGNED))
+                .queryList();
         return organisationUnits;
     }
 

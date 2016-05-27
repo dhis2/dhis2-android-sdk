@@ -167,9 +167,8 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
             }
             else {
                 for (OrganisationUnit orgUnit : orgUnits) {
-                    if (hasPrograms(orgUnit.getId(), this.kinds) && OrganisationUnit.TYPE.ASSIGNED.equals(orgUnit.getType())) {
+                    if (hasPrograms(orgUnit.getId(), this.kinds)) {
                         values.add(new OptionAdapterValue(orgUnit.getId(), orgUnit.getLabel()));
-                        mForm.setType(OrgUnitDialogFragmentForm.Error.NONE);
                     } else {
                         mForm.setType(OrgUnitDialogFragmentForm.Error.NO_PROGRAMS_TO_ORGANSATION_UNIT);
                     }
@@ -178,6 +177,7 @@ public class OrgUnitDialogFragment extends AutoCompleteDialogFragment
 
             if(!values.isEmpty()) {
                 Collections.sort(values);
+                mForm.setType(OrgUnitDialogFragmentForm.Error.NONE); // if has values, no errors
             }
 
             mForm.setOrganisationUnits(orgUnits);

@@ -199,13 +199,21 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
                 }
             }
 
+            /* TODO: sync individual report entities
             builder.setPositiveButton(R.string.sync_now, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //TODO: sync this report entity
+                    //TODO: syncing happens here
                     dialog.dismiss();
                 }
             }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }*/
+
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();

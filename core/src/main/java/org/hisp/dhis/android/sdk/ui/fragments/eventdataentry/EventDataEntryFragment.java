@@ -608,7 +608,16 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
                             eventClick.getLabel(), getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    eventClick.getComplete().setText(R.string.incomplete);
+
+                                    String labelForCompleteButton = "";
+                                    if(form.getStage().isBlockEntryForm()) {
+                                        labelForCompleteButton = getString(R.string.edit);
+                                    }
+                                    else {
+                                        labelForCompleteButton = getString(R.string.incomplete);
+                                    }
+
+                                    eventClick.getComplete().setText(labelForCompleteButton);
                                     eventClick.getEvent().setStatus(Event.STATUS_COMPLETED);
                                     eventClick.getEvent().setFromServer(false);
                                     ProgramStage currentProgramStage = MetaDataController

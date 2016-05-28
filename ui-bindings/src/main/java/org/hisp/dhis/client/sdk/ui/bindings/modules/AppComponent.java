@@ -26,66 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    configuration = [
-            buildToolsVersion: "23.0.2",
-            minSdkVersion    : 15,
-            compileSdkVersion: 23,
-            targetSdkVersion : 23,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+package org.hisp.dhis.client.sdk.ui.bindings.modules;
 
-    libraries = [
-            // dhis libs
-            dhisCommonsVersion : "1.1",
+import org.hisp.dhis.client.sdk.ui.bindings.App;
 
-            // android libs
-            supportVersion     : "23.4.0",
-            rxAndroidVersion   : "1.1.0",
-            dbFlowVersion      : "3.0.0-beta5",
-            progressBarVersion : "1.2.0",
+import javax.inject.Singleton;
 
-            // java libs
-            okhttpVersion      : "3.2.0",
-            retrofitVersion    : "2.0.0",
-            jacksonVersion     : "2.7.4",
-            jodaTimeVersion    : "2.9.2",
-            jexlVersion        : "2.1.1",
-            commonsLang3Version: "3.3.2",
-            commonsMath3Version: "3.6",
-            dagger             : "2.2",
+import dagger.Component;
 
-            // testing libs
-            jUnitVersion       : "4.12",
-            mockitoVersion     : "1.10.19",
-            powerMockVersion   : "1.6.3",
-    ]
-}
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-
-        // We need JitPack's repository in order
-        // to compile DbFlow (3)
-        maven {
-            url "https://jitpack.io"
+@Singleton
+@Component(
+        modules = {
+                AppModule.class
         }
-    }
-}
+)
+public interface AppComponent {
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    //------------------------------------------------------------------------
+    // Sub-modules
+    //------------------------------------------------------------------------
+
+    // UserComponent plus(UserModule userModule);
+
+
+    //------------------------------------------------------------------------
+    // Injection targets
+    //------------------------------------------------------------------------
+
+    void inject(App app);
 }

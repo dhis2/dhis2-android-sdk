@@ -1,4 +1,3 @@
-include ':core', ':core-rules', ':utils'
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -27,4 +26,4 @@ include ':core', ':core-rules', ':utils'
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ":models", ":core", ":core-android", ":ui"
+include ":models", ":core", ':core-rules', ":core-android", ":ui", ':ui-bindings', ':utils'

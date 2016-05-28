@@ -38,24 +38,13 @@ public enum ProgramRuleActionType {
     SHOWERROR("showerror"),
     CREATEEVENT("createevent");
 
-    final String value;
+    private final String value;
 
-    private ProgramRuleActionType(String value) {
+    ProgramRuleActionType(String value) {
         this.value = value;
     }
 
-    public static ProgramRuleActionType fromValue(String value) {
-        for (ProgramRuleActionType type : ProgramRuleActionType.values()) {
-            if (type.value.equalsIgnoreCase(value)) {
-                return type;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public String toString() {
+    public String getValue() {
         return value;
     }
 }

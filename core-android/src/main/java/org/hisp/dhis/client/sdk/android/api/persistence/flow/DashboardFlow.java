@@ -31,10 +31,62 @@ package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 
 @Table(database = DbDhis.class)
 public final class DashboardFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<Dashboard, DashboardFlow> MAPPER = new DashboardMapper();
 
     public DashboardFlow() {
+        // empty constructor
+    }
+
+    private static class DashboardMapper extends AbsMapper<Dashboard, DashboardFlow> {
+
+        @Override
+        public DashboardFlow mapToDatabaseEntity(Dashboard dashboard) {
+            if (dashboard == null) {
+                return null;
+            }
+
+            DashboardFlow dashboardFlow = new DashboardFlow();
+            dashboardFlow.setId(dashboard.getId());
+            dashboardFlow.setUId(dashboard.getUId());
+            dashboardFlow.setCreated(dashboard.getCreated());
+            dashboardFlow.setLastUpdated(dashboard.getLastUpdated());
+            dashboardFlow.setAccess(dashboard.getAccess());
+            dashboardFlow.setName(dashboard.getName());
+            dashboardFlow.setDisplayName(dashboard.getDisplayName());
+            return dashboardFlow;
+        }
+
+        @Override
+        public Dashboard mapToModel(DashboardFlow dashboardFlow) {
+            if (dashboardFlow == null) {
+                return null;
+            }
+
+            Dashboard dashboard = new Dashboard();
+            dashboard.setId(dashboardFlow.getId());
+            dashboard.setUId(dashboardFlow.getUId());
+            dashboard.setCreated(dashboardFlow.getCreated());
+            dashboard.setLastUpdated(dashboardFlow.getLastUpdated());
+            dashboard.setAccess(dashboardFlow.getAccess());
+            dashboard.setName(dashboardFlow.getName());
+            dashboard.setDisplayName(dashboardFlow.getDisplayName());
+            return dashboard;
+        }
+
+        @Override
+        public Class<Dashboard> getModelTypeClass() {
+            return Dashboard.class;
+        }
+
+        @Override
+        public Class<DashboardFlow> getDatabaseEntityTypeClass() {
+            return DashboardFlow.class;
+        }
     }
 }

@@ -37,8 +37,11 @@ ext {
     ]
 
     libraries = [
+            // dhis libs
+            dhisCommonsVersion : "1.1",
+
             // android libs
-            supportVersion     : "23.1.1",
+            supportVersion     : "23.2.1",
             rxAndroidVersion   : "1.1.0",
             dbFlowVersion      : "3.0.0-beta5",
             progressBarVersion : "1.2.0",
@@ -46,7 +49,7 @@ ext {
             // java libs
             okhttpVersion      : "3.2.0",
             retrofitVersion    : "2.0.0",
-            jacksonVersion     : "2.7.3",
+            jacksonVersion     : "2.7.4",
             jodaTimeVersion    : "2.9.2",
             jexlVersion        : "2.1.1",
             commonsLang3Version: "3.3.2",
@@ -65,7 +68,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.1.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }

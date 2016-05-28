@@ -33,7 +33,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.common.Coordinates;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.event.Event.EventStatus;
@@ -41,7 +41,7 @@ import org.joda.time.DateTime;
 
 @Table(database = DbDhis.class)
 public final class EventFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<Event, EventFlow> MAPPER = new EventMapper();
+    public static final Mapper<Event, EventFlow> MAPPER = new EventMapper();
 
     @Column(name = "status")
     EventStatus status;

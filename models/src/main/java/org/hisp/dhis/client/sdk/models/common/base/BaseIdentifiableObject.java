@@ -34,8 +34,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hisp.dhis.client.sdk.models.common.Access;
 import org.joda.time.DateTime;
 
+import java.util.Comparator;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BaseIdentifiableObject extends BaseModel implements IdentifiableObject {
+    public static final Comparator<? extends BaseIdentifiableObject> COMPARATOR_DISPLAY_NAME
+            = new DisplayNameComparator<>();
 
     @JsonProperty("id")
     private String uId;
@@ -113,5 +117,38 @@ public class BaseIdentifiableObject extends BaseModel implements IdentifiableObj
     @Override
     public void setAccess(Access access) {
         this.access = access;
+    }
+
+    private static class DisplayNameComparator<T extends BaseIdentifiableObject>
+            implements Comparator<T> {
+
+        @Override
+        public int compare(T first, T second) {
+            if (first == null || second == null) {
+                return 0;
+            }
+
+            if (first.getDisplayName() != null) {
+                return first.getDisplayName().compareTo(second.getDisplayName());
+            }
+
+            if (second.getDisplayName() != null) {
+                return second.getDisplayName().compareTo(first.getDisplayName());
+            }
+
+            return 0;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "BaseIdentifiableObject{" +
+                "uId='" + uId + '\'' +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", created=" + created +
+                ", lastUpdated=" + lastUpdated +
+                ", access=" + access +
+                '}';
     }
 }

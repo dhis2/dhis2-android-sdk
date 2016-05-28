@@ -36,12 +36,12 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 
 @Table(database = DbDhis.class)
 public final class OrganisationUnitFlow extends BaseIdentifiableObjectFlow {
-    public static IMapper<OrganisationUnit, OrganisationUnitFlow>
+    public static Mapper<OrganisationUnit, OrganisationUnitFlow>
             MAPPER = new OrganisationUnitMapper();
 
     private final String ORGANISATION_UNIT_PARENT_KEY = "parent";

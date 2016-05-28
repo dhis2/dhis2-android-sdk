@@ -28,18 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.common.controllers;
 
-import org.hisp.dhis.client.sdk.core.common.ILogger;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.persistence.IStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.core.common.persistence.Store;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
+import org.hisp.dhis.client.sdk.utils.Logger;
 
 import java.net.HttpURLConnection;
 
-public abstract class AbsDataController<T extends IModel> {
-    protected final ILogger logger;
-    protected final IStore<T> store;
+public abstract class AbsDataController<T extends Model> {
+    protected final Logger logger;
+    protected final Store<T> store;
 
-    public AbsDataController(ILogger logger, IStore<T> store) {
+    public AbsDataController(Logger logger, Store<T> store) {
         this.logger = logger;
         this.store = store;
     }

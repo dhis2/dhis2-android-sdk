@@ -30,47 +30,9 @@ package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.program.IProgramController;
-import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
-import java.util.List;
-import java.util.Set;
+public interface AssignedProgramsController {
+    void sync() throws ApiException;
 
-/**
- * This class is intended to build relationships between organisation units and programs.
- */
-public class AssignedProgramsController implements IAssignedProgramsController {
-
-    /* Program controller */
-    private final IProgramController programController;
-
-    /* Api clients */
-    private final IUserApiClient userApiClient;
-
-    public AssignedProgramsController(IProgramController programController,
-                                      IUserApiClient userApiClient) {
-        this.userApiClient = userApiClient;
-        this.programController = programController;
-    }
-
-    @Override
-    public void sync() throws ApiException {
-        sync(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public void sync(SyncStrategy strategy) throws ApiException {
-        UserAccount userAccount = userApiClient.getUserAccount();
-
-        /* get list of assigned programs */
-        List<Program> assignedPrograms = userAccount.getPrograms();
-
-        /* convert them to set of ids */
-        Set<String> ids = ModelUtils.toUidSet(assignedPrograms);
-
-        /* get them through program controller */
-        programController.sync(strategy, ids);
-    }
+    void sync(SyncStrategy strategy) throws ApiException;
 }

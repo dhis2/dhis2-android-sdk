@@ -28,34 +28,20 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
 
 import java.util.List;
+import java.util.Set;
 
-public class DashboardContentService implements IDashboardContentService {
-    private final IDashboardItemContentStore mDashboardItemContentStore;
+public interface DashboardContentService extends Service, Get<DashboardContent>,
+        GetUid<DashboardContent>, ListAll<DashboardContent> {
 
-    public DashboardContentService(IDashboardItemContentStore mDashboardItemContentStore) {
-        this.mDashboardItemContentStore = mDashboardItemContentStore;
-    }
-
-    @Override
-    public DashboardContent get(long id) {
-        return mDashboardItemContentStore.queryById(id);
-    }
-
-    @Override
-    public DashboardContent get(String uid) {
-        return mDashboardItemContentStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<DashboardContent> list() {
-        return mDashboardItemContentStore.queryAll();
-    }
-
-    @Override
-    public List<DashboardContent> list(List<String> types) {
-        return mDashboardItemContentStore.queryByTypes(types);
-    }
+    /**
+     * {@inheritDoc}
+     */
+    List<DashboardContent> list(Set<String> types);
 }

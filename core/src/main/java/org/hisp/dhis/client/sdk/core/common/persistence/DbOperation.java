@@ -28,85 +28,10 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
+public interface DbOperation<T> {
+    T getModel();
 
-/**
- * This class is intended to implement partial
- * functionality of ContentProviderOperation for DbFlow.
- */
-public final class DbOperation<T extends IModel> implements IDbOperation<T> {
-    private final DbAction mDbAction;
-    private final T mModel;
-    private final IStore<T> mModelStore;
+    DbAction getAction();
 
-    private DbOperation(DbAction dbAction, T model, IStore<T> store) {
-        mModel = Preconditions.isNull(model, "IdentifiableObject object must not be null,");
-        mDbAction = Preconditions.isNull(dbAction, "BaseModel.DbAction object must not be null");
-        mModelStore = Preconditions.isNull(store, "IStore object must not be null");
-    }
-
-    public static <T extends IModel> DbOperationBuilder<T> with(IStore<T> store) {
-        return new DbOperationBuilder<>(store);
-    }
-
-    @Override
-    public T getModel() {
-        return mModel;
-    }
-
-    @Override
-    public DbAction getAction() {
-        return mDbAction;
-    }
-
-    @Override
-    public void execute() {
-        switch (mDbAction) {
-            case INSERT: {
-                mModelStore.insert(mModel);
-                break;
-            }
-            case UPDATE: {
-                mModelStore.update(mModel);
-                break;
-            }
-            case SAVE: {
-                mModelStore.save(mModel);
-                break;
-            }
-            case DELETE: {
-                mModelStore.delete(mModel);
-                break;
-            }
-        }
-    }
-
-    public IStore<T> getStore() {
-        return mModelStore;
-    }
-
-    public static class DbOperationBuilder<T extends IModel> {
-        private final IStore<T> mStore;
-
-        DbOperationBuilder(IStore<T> store) {
-            mStore = store;
-        }
-
-        public DbOperation<T> insert(T model) {
-            return new DbOperation<>(DbAction.INSERT, model, mStore);
-        }
-
-        public DbOperation<T> update(T model) {
-            return new DbOperation<>(DbAction.UPDATE, model, mStore);
-        }
-
-        public DbOperation<T> save(T model) {
-            return new DbOperation<>(DbAction.SAVE, model, mStore);
-        }
-
-        public DbOperation<T> delete(T model) {
-            return new DbOperation<>(DbAction.DELETE, model, mStore);
-        }
-    }
+    void execute();
 }

@@ -28,50 +28,22 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleAction;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class ProgramRuleActionService implements IProgramRuleActionService {
+public interface ProgramRuleActionService extends Service, Save<ProgramRuleAction>,
+        Remove<ProgramRuleAction>, Get<ProgramRuleAction>, GetUid<ProgramRuleAction>,
+        ListAll<ProgramRuleAction>, ListUids<ProgramRuleAction> {
 
-    private IProgramRuleActionStore programRuleActionStore;
-
-    public ProgramRuleActionService(IProgramRuleActionStore programRuleActionStore) {
-        this.programRuleActionStore = programRuleActionStore;
-    }
-
-    @Override
-    public ProgramRuleAction get(long id) {
-        return programRuleActionStore.queryById(id);
-    }
-
-    @Override
-    public ProgramRuleAction get(String uid) {
-        return programRuleActionStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramRuleAction> list() {
-        return programRuleActionStore.queryAll();
-    }
-
-    @Override
-    public List<ProgramRuleAction> list(ProgramRule programRule) {
-        Preconditions.isNull(programRule, "Object must not be null");
-        return programRuleActionStore.query(programRule);
-    }
-
-    @Override
-    public boolean remove(ProgramRuleAction object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programRuleActionStore.delete(object);
-    }
-
-    @Override
-    public boolean save(ProgramRuleAction object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programRuleActionStore.save(object);
-    }
+    List<ProgramRuleAction> list(ProgramRule programRule);
 }

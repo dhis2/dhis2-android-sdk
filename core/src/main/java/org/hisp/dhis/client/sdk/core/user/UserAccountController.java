@@ -29,24 +29,11 @@
 package org.hisp.dhis.client.sdk.core.user;
 
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.models.user.UserAccount;
 
-public final class UserAccountController implements IUserAccountController {
-    private final IUserApiClient userApiClient;
-    private final IUserAccountStore userAccountStore;
+public interface UserAccountController {
+    void pull() throws ApiException;
 
-    public UserAccountController(IUserApiClient userApiClient, IUserAccountStore
-            userAccountStore) {
-        this.userApiClient = userApiClient;
-        this.userAccountStore = userAccountStore;
-    }
+    void push() throws ApiException;
 
-    @Override
-    public UserAccount updateAccount() throws ApiException {
-        UserAccount userAccount = userApiClient.getUserAccount();
-
-        // update userAccount in database
-        userAccountStore.save(userAccount);
-        return userAccount;
-    }
+    void sync() throws ApiException;
 }

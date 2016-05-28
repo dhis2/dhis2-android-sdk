@@ -35,18 +35,24 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 
 @Table(database = DbDhis.class)
 public final class TrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<TrackedEntityAttribute, TrackedEntityAttributeFlow>
+            MAPPER = new AttributeMapper();
 
-    final static String OPTION_SET_KEY = "optionset";
+    final static String OPTION_SET_KEY = "optionSet";
 
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = OPTION_SET_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = OPTION_SET_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     OptionSetFlow optionSet;
@@ -193,5 +199,81 @@ public final class TrackedEntityAttributeFlow extends BaseIdentifiableObjectFlow
 
     public void setSortOrderInListNoProgram(int sortOrderInListNoProgram) {
         this.sortOrderInListNoProgram = sortOrderInListNoProgram;
+    }
+
+    private static class AttributeMapper extends
+            AbsMapper<TrackedEntityAttribute, TrackedEntityAttributeFlow> {
+
+        @Override
+        public TrackedEntityAttributeFlow mapToDatabaseEntity(TrackedEntityAttribute attribute) {
+            if (attribute == null) {
+                return null;
+            }
+
+            TrackedEntityAttributeFlow attributeFlow =
+                    new TrackedEntityAttributeFlow();
+            attributeFlow.setId(attribute.getId());
+            attributeFlow.setUId(attribute.getUId());
+            attributeFlow.setCreated(attribute.getCreated());
+            attributeFlow.setLastUpdated(attribute.getLastUpdated());
+            attributeFlow.setName(attribute.getName());
+            attributeFlow.setDisplayName(attribute.getDisplayName());
+            attributeFlow.setAccess(attribute.getAccess());
+            attributeFlow.setExternalAccess(attribute.isExternalAccess());
+            attributeFlow.setUnique(attribute.isUnique());
+            attributeFlow.setConfidential(attribute.isConfidential());
+            attributeFlow.setDimension(attribute.getDimension());
+            attributeFlow.setDisplayInListNoProgram(attribute.isDisplayInListNoProgram());
+            attributeFlow.setDisplayOnVisitSchedule(attribute.isDisplayOnVisitSchedule());
+            attributeFlow.setInherit(attribute.isInherit());
+            attributeFlow.setOrgunitScope(attribute.isOrgunitScope());
+            attributeFlow.setProgramScope(attribute.isProgramScope());
+            attributeFlow.setSortOrderInListNoProgram(attribute.getSortOrderInListNoProgram());
+            attributeFlow.setSortOrderVisitSchedule(attribute.getSortOrderVisitSchedule());
+            attributeFlow.setValueType(attribute.getValueType());
+            attributeFlow.setOptionSet(OptionSetFlow.MAPPER
+                    .mapToDatabaseEntity(attribute.getOptionSet()));
+            return attributeFlow;
+        }
+
+        @Override
+        public TrackedEntityAttribute mapToModel(TrackedEntityAttributeFlow attributeFlow) {
+            if (attributeFlow == null) {
+                return null;
+            }
+
+            TrackedEntityAttribute attribute = new TrackedEntityAttribute();
+            attribute.setId(attributeFlow.getId());
+            attribute.setUId(attributeFlow.getUId());
+            attribute.setCreated(attributeFlow.getCreated());
+            attribute.setLastUpdated(attributeFlow.getLastUpdated());
+            attribute.setName(attributeFlow.getName());
+            attribute.setDisplayName(attributeFlow.getDisplayName());
+            attribute.setAccess(attributeFlow.getAccess());
+            attribute.setExternalAccess(attributeFlow.isExternalAccess());
+            attribute.setUnique(attributeFlow.isUnique());
+            attribute.setConfidential(attributeFlow.isConfidential());
+            attribute.setDimension(attributeFlow.getDimension());
+            attribute.setDisplayInListNoProgram(attributeFlow.isDisplayInListNoProgram());
+            attribute.setDisplayOnVisitSchedule(attributeFlow.isDisplayOnVisitSchedule());
+            attribute.setInherit(attributeFlow.isInherit());
+            attribute.setOrgunitScope(attributeFlow.isOrgunitScope());
+            attribute.setProgramScope(attributeFlow.isProgramScope());
+            attribute.setSortOrderInListNoProgram(attributeFlow.getSortOrderInListNoProgram());
+            attribute.setSortOrderVisitSchedule(attributeFlow.getSortOrderVisitSchedule());
+            attribute.setValueType(attributeFlow.getValueType());
+            attribute.setOptionSet(OptionSetFlow.MAPPER.mapToModel(attributeFlow.getOptionSet()));
+            return attribute;
+        }
+
+        @Override
+        public Class<TrackedEntityAttribute> getModelTypeClass() {
+            return TrackedEntityAttribute.class;
+        }
+
+        @Override
+        public Class<TrackedEntityAttributeFlow> getDatabaseEntityTypeClass() {
+            return TrackedEntityAttributeFlow.class;
+        }
     }
 }

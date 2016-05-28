@@ -38,6 +38,9 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttributeValue;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
         @UniqueGroup(
@@ -46,8 +49,10 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
+    public static final Mapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow>
+            MAPPER = new AttributeValueMapper();
 
-    static final int UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE = 901;
+    static final int UNIQUE_TRACKEDENTITYINSTANCE_ATTRIBUTEVALUE = 1;
     static final String TRACKED_ENTITY_INSTANCE_KEY = "trackedEntityInstance";
 
     @Column
@@ -93,5 +98,50 @@ public final class TrackedEntityAttributeValueFlow extends BaseModelFlow {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    private static class AttributeValueMapper
+            extends AbsMapper<TrackedEntityAttributeValue, TrackedEntityAttributeValueFlow> {
+
+        @Override
+        public TrackedEntityAttributeValueFlow mapToDatabaseEntity(
+                TrackedEntityAttributeValue attributeValue) {
+            if (attributeValue == null) {
+                return null;
+            }
+
+            TrackedEntityAttributeValueFlow valueFlow = new TrackedEntityAttributeValueFlow();
+            valueFlow.setId(attributeValue.getId());
+            valueFlow.setTrackedEntityAttributeUId(attributeValue.getTrackedEntityAttributeUId());
+            valueFlow.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
+                    .mapToDatabaseEntity(attributeValue.getTrackedEntityInstance()));
+            valueFlow.setValue(attributeValue.getValue());
+            return valueFlow;
+        }
+
+        @Override
+        public TrackedEntityAttributeValue mapToModel(TrackedEntityAttributeValueFlow valueFlow) {
+            if (valueFlow == null) {
+                return null;
+            }
+
+            TrackedEntityAttributeValue attributeValue = new TrackedEntityAttributeValue();
+            attributeValue.setId(valueFlow.getId());
+            attributeValue.setTrackedEntityAttributeUId(valueFlow.getTrackedEntityAttributeUId());
+            attributeValue.setTrackedEntityInstance(TrackedEntityInstanceFlow.MAPPER
+                    .mapToModel(valueFlow.getTrackedEntityInstance()));
+            attributeValue.setValue(valueFlow.getValue());
+            return attributeValue;
+        }
+
+        @Override
+        public Class<TrackedEntityAttributeValue> getModelTypeClass() {
+            return TrackedEntityAttributeValue.class;
+        }
+
+        @Override
+        public Class<TrackedEntityAttributeValueFlow> getDatabaseEntityTypeClass() {
+            return TrackedEntityAttributeValueFlow.class;
+        }
     }
 }

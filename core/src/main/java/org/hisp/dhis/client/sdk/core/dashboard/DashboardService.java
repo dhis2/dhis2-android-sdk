@@ -28,228 +28,41 @@
 
 package org.hisp.dhis.client.sdk.core.dashboard;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.models.common.Access;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dashboard.Dashboard;
 import org.hisp.dhis.client.sdk.models.dashboard.DashboardContent;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardElement;
-import org.hisp.dhis.client.sdk.models.dashboard.DashboardItem;
-import org.joda.time.DateTime;
 
-import java.util.List;
+public interface DashboardService extends Service, Save<Dashboard>, Remove<Dashboard>,
+        Get<Dashboard>, GetUid<Dashboard>, ListAll<Dashboard> {
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+    Dashboard create(String name);
 
-public class DashboardService implements IDashboardService {
-    private final IDashboardStore dashboardStore;
-    private final IDashboardItemStore dashboardItemStore;
-    private final IDashboardElementStore dashboardElementStore;
-    private final IStateStore stateStore;
-    private final IDashboardItemService dashboardItemService;
-    private final IDashboardElementService dashboardElementService;
+    /**
+     * Will try to append DashboardContent to current dashboard.
+     * If the type of DashboardContent is embedded (chart, eventChart, map, eventReport,
+     * reportTable),
+     * method will create a new item and append it to dashboard.
+     * <p>
+     * If the type of DashboardContent is link type (users, reports, resources),
+     * method will try to append content to existing item. Otherwise it will create a new
+     * dashboard item.
+     * <p>
+     * If the overall countElements of items in dashboard is bigger that Dashboard.MAX_ITEMS,
+     * method will not
+     * add content and return false;
+     *
+     * @param dashboard dashboard to which we want add new content.
+     * @param content   content which we want to add to given dashboard.
+     * @return false if item countElements is bigger than MAX_ITEMS.
+     * @throws IllegalArgumentException if dashboard or content is null.
+     */
+    boolean addContent(Dashboard dashboard, DashboardContent content);
 
-    public DashboardService(IDashboardStore dashboardStore, IDashboardItemStore dashboardItemStore,
-                            IDashboardElementStore dashboardElementStore, IStateStore stateStore,
-                            IDashboardItemService dashboardItemService,
-                            IDashboardElementService dashboardElementService) {
-        this.dashboardStore = dashboardStore;
-        this.dashboardItemStore = dashboardItemStore;
-        this.dashboardElementStore = dashboardElementStore;
-        this.stateStore = stateStore;
-        this.dashboardItemService = dashboardItemService;
-        this.dashboardElementService = dashboardElementService;
-    }
 
-    private static boolean isItemContentTypeEmbedded(String type) {
-        if (type != null) {
-            switch (type) {
-                case DashboardContent.TYPE_CHART:
-                case DashboardContent.TYPE_EVENT_CHART:
-                case DashboardContent.TYPE_MAP:
-                case DashboardContent.TYPE_EVENT_REPORT:
-                case DashboardContent.TYPE_REPORT_TABLE: {
-                    return true;
-                }
-                case DashboardContent.TYPE_USERS:
-                case DashboardContent.TYPE_REPORTS:
-                case DashboardContent.TYPE_RESOURCES: {
-                    return false;
-                }
-            }
-        }
-
-        throw new IllegalArgumentException("Unsupported DashboardContent type: " + type);
-    }
-
-    @Override
-    public Dashboard create(String name) {
-        isNull(name, "Name must not be null");
-
-        DateTime dateTime = DateTime.now();
-        Access access = Access.createDefaultAccess();
-
-        Dashboard dashboard = new Dashboard();
-        dashboard.setUId(CodeGenerator.generateCode());
-        dashboard.setCreated(dateTime);
-        dashboard.setLastUpdated(dateTime);
-        dashboard.setName(name);
-        dashboard.setDisplayName(name);
-        dashboard.setAccess(access);
-
-        return dashboard;
-    }
-
-    @Override
-    public boolean save(Dashboard object) {
-        isNull(object, "Dashboard object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            boolean status = dashboardStore.save(object);
-
-            if (status) {
-                status = stateStore.saveActionForModel(object, Action.TO_POST);
-            }
-
-            return status;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case TO_POST:
-            case TO_UPDATE: {
-                status = dashboardStore.save(object);
-                break;
-            }
-            case SYNCED: {
-                status = dashboardStore.save(object);
-
-                if (status) {
-                    status = stateStore.saveActionForModel(object, Action.TO_UPDATE);
-                }
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-
-        }
-
-        return status;
-    }
-
-    @Override
-    public boolean remove(Dashboard object) {
-        isNull(object, "Dashboard object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = dashboardStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
-    }
-
-    @Override
-    public Dashboard get(long id) {
-        Dashboard dashboard = dashboardStore.queryById(id);
-
-        if (dashboard != null) {
-            Action action = stateStore.queryActionForModel(dashboard);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return dashboard;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Dashboard get(String uid) {
-        Dashboard dashboard = dashboardStore.queryByUid(uid);
-
-        if (dashboard != null) {
-            Action action = stateStore.queryActionForModel(dashboard);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return dashboard;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<Dashboard> list() {
-        return stateStore.queryModelsWithActions(Dashboard.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public int countItems(Dashboard dashboard) {
-        isNull(dashboard, "Dashboard object must not be null");
-
-        List<DashboardItem> dashboardItems = dashboardItemService.list(dashboard);
-        return dashboardItems != null ? dashboardItems.size() : 0;
-    }
-
-    @Override
-    public boolean addContent(Dashboard dashboard, DashboardContent content) {
-        isNull(dashboard, "Dashboard object must not be null");
-        isNull(content, "DashboardContent object must not be null");
-
-        DashboardItem item;
-        DashboardElement element;
-        int itemsCount = countItems(dashboard);
-
-        if (isItemContentTypeEmbedded(content.getType())) {
-            item = dashboardItemService.create(dashboard, content.getType());
-            element = dashboardElementService.create(item, content);
-            itemsCount += 1;
-        } else {
-            item = getAvailableItemByType(dashboard, content.getType());
-            if (item == null) {
-                item = dashboardItemService.create(dashboard, content.getType());
-                itemsCount += 1;
-            }
-            element = dashboardElementService.create(item, content);
-        }
-
-        if (itemsCount > Dashboard.MAX_ITEMS) {
-            return false;
-        }
-
-        return dashboardItemStore.save(item) && dashboardElementStore.save(element);
-    }
-
-    private DashboardItem getAvailableItemByType(Dashboard dashboard, String type) {
-        List<DashboardItem> dashboardItems = dashboardItemService.list(dashboard);
-        for (DashboardItem item : dashboardItems) {
-            if (type.equals(item.getType()) && dashboardItemService.countElements(item) <
-                    DashboardItem.MAX_CONTENT) {
-                return item;
-            }
-        }
-
-        return null;
-    }
+    int countItems(Dashboard dashboard);
 }

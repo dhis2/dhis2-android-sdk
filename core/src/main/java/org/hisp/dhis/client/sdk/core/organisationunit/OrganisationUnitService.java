@@ -28,52 +28,23 @@
 
 package org.hisp.dhis.client.sdk.core.organisationunit;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
 
 import java.util.List;
-import java.util.Set;
 
-public class OrganisationUnitService implements IOrganisationUnitService {
-    private final IOrganisationUnitStore organisationUnitStore;
+public interface OrganisationUnitService extends Service, Get<OrganisationUnit>,
+        GetUid<OrganisationUnit>, ListAll<OrganisationUnit>, ListUids<OrganisationUnit> {
 
-    public OrganisationUnitService(IOrganisationUnitStore organisationUnitStore) {
-        this.organisationUnitStore = organisationUnitStore;
-    }
+    List<OrganisationUnit> list(boolean assignedToCurrentUser);
 
-    @Override
-    public OrganisationUnit get(long id) {
-        return organisationUnitStore.queryById(id);
-    }
+    List<OrganisationUnit> listByPrograms(List<Program> programs);
 
-    @Override
-    public OrganisationUnit get(String uid) {
-        return organisationUnitStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<OrganisationUnit> list() {
-        return organisationUnitStore.queryAll();
-    }
-
-    @Override
-    public List<OrganisationUnit> list(boolean assignedToCurrentUser) {
-        return organisationUnitStore.query(assignedToCurrentUser);
-    }
-
-    @Override
-    public List<OrganisationUnit> list(Program... programs) {
-        return organisationUnitStore.query(programs);
-    }
-
-    @Override
-    public List<OrganisationUnit> list(DataSet... dataSets) {
-        return organisationUnitStore.query(dataSets);
-    }
-
-    @Override
-    public List<OrganisationUnit> list(Set<String> uids) {
-        return organisationUnitStore.queryByUids(uids);
-    }
+    List<OrganisationUnit> listByDataSets(List<DataSet> dataSets);
 }

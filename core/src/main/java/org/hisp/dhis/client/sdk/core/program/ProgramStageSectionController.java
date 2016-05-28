@@ -28,96 +28,9 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
-import org.hisp.dhis.client.sdk.core.common.Fields;
-import org.hisp.dhis.client.sdk.core.common.controllers.AbsSyncStrategyController;
-import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
-import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
-import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
-import org.joda.time.DateTime;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-public class ProgramStageSectionController extends AbsSyncStrategyController<ProgramStageSection>
-        implements IProgramStageSectionController {
-
-    /* Controllers */
-    private final ISystemInfoController systemInfoController;
-    private final IProgramStageController programStageController;
-
-    /* Api clients */
-    private final IProgramStageSectionApiClient programStageSectionApiClient;
-
-    /* Utilities */
-    private final ITransactionManager transactionManager;
-
-    public ProgramStageSectionController(IProgramStageController programStageController,
-                                         ISystemInfoController systemInfoController,
-                                         IProgramStageSectionApiClient programStageSectionApiClient,
-                                         IProgramStageSectionStore sectionStore,
-                                         ITransactionManager transactionManager,
-                                         ILastUpdatedPreferences lastUpdatedPreferences) {
-        super(ResourceType.PROGRAM_STAGE_SECTIONS, sectionStore, lastUpdatedPreferences);
-
-        this.programStageSectionApiClient = programStageSectionApiClient;
-        this.systemInfoController = systemInfoController;
-        this.programStageController = programStageController;
-        this.transactionManager = transactionManager;
-    }
-
-    @Override
-    protected void synchronize(SyncStrategy strategy, Set<String> uids) {
-        DateTime serverTime = systemInfoController.getSystemInfo().getServerDate();
-        DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.PROGRAM_STAGE_SECTIONS, DateType.SERVER);
-
-        List<ProgramStageSection> persistedProgramStageSections =
-                identifiableObjectStore.queryAll();
-
-        // we have to download all ids from server in order to
-        // find out what was removed on the server side
-        List<ProgramStageSection> allExistingProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.BASIC, null);
-
-        Set<String> uidSet = null;
-        if (uids != null) {
-            // here we want to get list of ids of program stage sections which are
-            // stored locally and list of program stage sections which we want to download
-            uidSet = ModelUtils.toUidSet(persistedProgramStageSections);
-            uidSet.addAll(uids);
-        }
-
-        List<ProgramStageSection> updatedProgramStageSections = programStageSectionApiClient
-                .getProgramStageSections(Fields.ALL, lastUpdated, uidSet);
-
-        // Retrieving program stage uids from program stages sections
-        Set<String> programStageSectionUids = new HashSet<>();
-        List<ProgramStageSection> mergedProgramStageSections = ModelUtils.merge(
-                allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections);
-        for (ProgramStageSection programStageSection : mergedProgramStageSections) {
-            programStageSectionUids.add(programStageSection.getProgramStage().getUId());
-        }
-
-        // Syncing programs before saving program stages (since
-        // program stages are referencing them directly)
-        programStageController.sync(strategy, programStageSectionUids);
-
-        // we will have to perform something similar to what happens in AbsController
-        List<IDbOperation> dbOperations = DbUtils.createOperations(
-                allExistingProgramStageSections, updatedProgramStageSections,
-                persistedProgramStageSections, identifiableObjectStore);
-        transactionManager.transact(dbOperations);
-
-        lastUpdatedPreferences.save(ResourceType.PROGRAM_STAGE_SECTIONS,
-                DateType.SERVER, serverTime);
-    }
+public interface ProgramStageSectionController extends
+        IdentifiableController<ProgramStageSection> {
 }

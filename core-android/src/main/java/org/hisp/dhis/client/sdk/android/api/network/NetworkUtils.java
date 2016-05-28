@@ -31,9 +31,9 @@ package org.hisp.dhis.client.sdk.android.api.network;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.hisp.dhis.client.sdk.android.api.utils.CollectionUtils;
 import org.hisp.dhis.client.sdk.core.common.Fields;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.utils.CollectionUtils;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
@@ -86,7 +86,7 @@ public class NetworkUtils {
             }
         }
 
-        List<T> allPrograms = new ArrayList<>();
+        List<T> models = new ArrayList<>();
         if (uids != null && !uids.isEmpty()) {
 
             // splitting up request into chunks
@@ -95,17 +95,17 @@ public class NetworkUtils {
                 List<String> combinedFilters = new ArrayList<>(filters);
                 combinedFilters.add(idFilter);
 
-                // downloading subset of programs
-                allPrograms.addAll(unwrap(call(apiResource
+                // downloading subset of models
+                models.addAll(unwrap(call(apiResource
                         .getEntities(queryMap, combinedFilters)), apiResource.getResourceName()));
             }
         } else {
-            allPrograms.addAll(unwrap(call(
+            models.addAll(unwrap(call(
 
                     apiResource.getEntities(queryMap, filters)), apiResource.getResourceName()));
         }
 
-        return allPrograms;
+        return models;
     }
 
     private static List<String> buildIdFilter(String uidProperty, Set<String> ids) {
@@ -143,8 +143,9 @@ public class NetworkUtils {
         }
 
         if (!(response.code() >= 200 && response.code() < 300)) {
-            throw ApiException.httpError(response.raw().request().url().toString(),
-                    ResponseMapper.fromOkResponse(response.raw()));
+            throw ApiException.httpError(
+                    response.raw().request().url().toString(),
+                    ResponseMapper.fromRetrofitResponse(response));
         }
 
         return response.body();

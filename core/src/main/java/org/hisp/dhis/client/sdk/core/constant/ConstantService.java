@@ -28,44 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.constant;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.constant.Constant;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
-
-
-public class ConstantService implements IConstantService {
-    private final IConstantStore constantStore;
-
-    public ConstantService(IConstantStore constantStore) {
-        this.constantStore = constantStore;
-    }
-
-    @Override
-    public Constant get(long id) {
-        return constantStore.queryById(id);
-    }
-
-    @Override
-    public Constant get(String uid) {
-        return constantStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<Constant> list() {
-        return constantStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(Constant object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return constantStore.delete(object);
-    }
-
-    @Override
-    public boolean save(Constant object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return constantStore.save(object);
-    }
-
+public interface ConstantService extends Service, Save<Constant>, Remove<Constant>,
+        Get<Constant>, GetUid<Constant>, ListAll<Constant> {
 }

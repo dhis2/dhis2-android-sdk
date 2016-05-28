@@ -1,4 +1,4 @@
-include ':core', ':core-rules'
+include ':core', ':core-rules', ':utils'
 /*
  * Copyright (c) 2016, University of Oslo
  *

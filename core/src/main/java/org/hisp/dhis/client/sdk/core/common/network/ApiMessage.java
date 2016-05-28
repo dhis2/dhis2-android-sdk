@@ -72,4 +72,15 @@ public class ApiMessage {
     public ApiResponse getResponse() {
         return response;
     }
+
+    @Override
+    public String toString() {
+        return "ApiMessage{" +
+                "httpStatus='" + httpStatus + '\'' +
+                ", httpStatusCode=" + httpStatusCode +
+                ", message='" + message + '\'' +
+                ", status='" + status + '\'' +
+                ", response=" + response +
+                '}';
+    }
 }

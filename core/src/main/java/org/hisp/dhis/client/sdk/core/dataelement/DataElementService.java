@@ -28,43 +28,14 @@
 
 package org.hisp.dhis.client.sdk.core.dataelement;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
-
-public class DataElementService implements IDataElementService {
-
-    private final IDataElementStore dataElementStore;
-
-    public DataElementService(IDataElementStore dataElementStore) {
-        this.dataElementStore = dataElementStore;
-    }
-
-    @Override
-    public DataElement get(long id) {
-        return dataElementStore.queryById(id);
-    }
-
-    @Override
-    public DataElement get(String uid) {
-        return dataElementStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<DataElement> list() {
-        return dataElementStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(DataElement object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return dataElementStore.delete(object);
-    }
-
-    @Override
-    public boolean save(DataElement object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return dataElementStore.save(object);
-    }
+public interface DataElementService extends Service, Save<DataElement>, Remove<DataElement>,
+        Get<DataElement>, GetUid<DataElement>, ListAll<DataElement> {
 }

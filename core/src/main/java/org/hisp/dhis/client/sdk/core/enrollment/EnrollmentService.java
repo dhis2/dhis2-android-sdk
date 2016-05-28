@@ -28,168 +28,57 @@
 
 package org.hisp.dhis.client.sdk.core.enrollment;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.core.common.utils.CodeGenerator;
-import org.hisp.dhis.client.sdk.core.event.IEventService;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.enrollment.Enrollment;
-import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
 import org.hisp.dhis.client.sdk.models.program.Program;
-import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class EnrollmentService implements IEnrollmentService {
+public interface EnrollmentService extends Service, Save<Enrollment>,
+        Remove<Enrollment>, Get<Enrollment>, ListAll<Enrollment> {
+    Enrollment get(String uid);
 
-    private final IEnrollmentStore enrollmentStore;
-    private final IStateStore stateStore;
-    private final IEventService eventService;
+    Enrollment create(OrganisationUnit organisationUnit,
+                      TrackedEntityInstance trackedEntityInstance,
+                      Program program, boolean followUp, DateTime dateOfEnrollment,
+                      DateTime dateOfIncident);
 
-    public EnrollmentService(IEnrollmentStore enrollmentStore, IStateStore stateStore,
-                             IEventService eventService) {
-        this.enrollmentStore = enrollmentStore;
-        this.stateStore = stateStore;
-        this.eventService = eventService;
-    }
+    /**
+     * Returns the active enrollment (if any) for the given Tracked Entity Instance, Program,
+     * and Organisation Unit
+     *
+     * @param trackedEntityInstance
+     * @param organisationUnit
+     * @param program
+     * @return
+     */
+    Enrollment getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
+                                   OrganisationUnit organisationUnit, Program program);
 
-    @Override
-    public Enrollment get(String uid) {
-        Preconditions.isNull(uid, "Uid must not be null");
-        Enrollment enrollment = enrollmentStore.queryByUid(uid);
-        Action action = stateStore.queryActionForModel(enrollment);
+    /**
+     * Returns a list of all Enrollments for a given Tracked Entity Instance
+     *
+     * @param trackedEntityInstance
+     * @return
+     */
+    List<Enrollment> list(TrackedEntityInstance trackedEntityInstance);
 
-        if (!Action.TO_DELETE.equals(action)) {
-            return enrollment;
-        }
+    /**
+     * Returns a list of all Enrollments for a program and organisation unit
+     *
+     * @param program
+     * @param organisationUnit
+     * @return
+     */
+    List<Enrollment> list(Program program, OrganisationUnit organisationUnit);
 
-        return null;
-    }
+    List<Enrollment> list(Program program, TrackedEntityInstance trackedEntityInstance);
 
-    @Override
-    public Enrollment create(OrganisationUnit organisationUnit,
-                             TrackedEntityInstance trackedEntityInstance,
-                             Program program, boolean followUp, DateTime dateOfEnrollment,
-                             DateTime dateOfIncident) {
-        Preconditions.isNull(organisationUnit, "Organisation unit must not be null");
-        Preconditions.isNull(trackedEntityInstance, "Tracked entity instance must not be null");
-        Preconditions.isNull(program, "Program must not be null");
-        Preconditions.isNull(dateOfEnrollment, "Date of enrollment must not be null");
-
-        if (program.isDisplayIncidentDate()) {
-            Preconditions.isNull(dateOfIncident, "Date of incident must not be null");
-        }
-
-        if (!program.isSelectEnrollmentDatesInFuture()) {
-            if (dateOfEnrollment.isAfterNow()) {
-                throw new IllegalArgumentException("Program doesn't allow to set future " +
-                        "enrollment dates");
-            }
-        }
-        if (!program.isSelectIncidentDatesInFuture()) {
-            if (dateOfIncident.isAfterNow()) {
-                throw new IllegalArgumentException("Program doesn't allow to set future incident " +
-                        "dates");
-            }
-        }
-
-        if (program.isOnlyEnrollOnce()) {
-            List<Enrollment> enrollments = enrollmentStore.query(program, trackedEntityInstance);
-            if (enrollments.size() > 0) {
-                throw new IllegalArgumentException("Tracked entity instance can only be enrolled " +
-                        "once");
-            }
-        }
-
-        Enrollment enrollment = new Enrollment();
-        enrollment.setUId(CodeGenerator.generateCode());
-        enrollment.setTrackedEntityInstance(trackedEntityInstance);
-        enrollment.setOrgUnit(organisationUnit.getUId());
-        enrollment.setProgram(program.getUId());
-        enrollment.setStatus(Enrollment.ACTIVE);
-        enrollment.setFollowup(followUp);
-        enrollment.setDateOfEnrollment(dateOfEnrollment);
-        enrollment.setDateOfIncident(dateOfIncident);
-        save(enrollment);
-
-        List<Event> events = new ArrayList<>();
-        for (ProgramStage programStage : program.getProgramStages()) {
-            if (programStage.isAutoGenerateEvent()) {
-//                Event event = eventService.create(trackedEntityInstance, enrollment,
-//                        organisationUnit, program, programStage, Event.EventStatus.SCHEDULE); //.STATUS_FUTURE_VISIT
-                // events.add(event);
-            }
-        }
-        enrollment.setEvents(events);
-        return enrollment;
-    }
-
-    @Override
-    public Enrollment getActiveEnrollment(TrackedEntityInstance trackedEntityInstance,
-                                          OrganisationUnit organisationUnit, Program program) {
-        return enrollmentStore.queryActiveEnrollment(trackedEntityInstance, organisationUnit,
-                program);
-    }
-
-    @Override
-    public List<Enrollment> list(TrackedEntityInstance trackedEntityInstance) {
-        return enrollmentStore.query(trackedEntityInstance);
-    }
-
-    @Override
-    public List<Enrollment> list(Program program, OrganisationUnit organisationUnit) {
-        return enrollmentStore.query(program, organisationUnit);
-    }
-
-    @Override
-    public List<Enrollment> list(Program program, TrackedEntityInstance trackedEntityInstance) {
-        return enrollmentStore.query(program, trackedEntityInstance);
-    }
-
-    @Override
-    public Enrollment get(long id) {
-        Enrollment enrollment = enrollmentStore.queryById(id);
-        Action action = stateStore.queryActionForModel(enrollment);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return enrollment;
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<Enrollment> list() {
-        return stateStore.queryModelsWithActions(Enrollment.class, Action.SYNCED, Action
-                .TO_UPDATE, Action.TO_POST);
-    }
-
-    @Override
-    public boolean remove(Enrollment object) {
-        Preconditions.isNull(object, "Enrollment argument must not be null");
-
-        if (!enrollmentStore.delete(object)) {
-            return false;
-        }
-        return stateStore.deleteActionForModel(object);
-    }
-
-    @Override
-    public boolean save(Enrollment object) {
-        Preconditions.isNull(object, "Enrollment argument must not be null");
-
-        if (!enrollmentStore.save(object)) {
-            return false;
-        }
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null || Action.TO_POST.equals(action)) {
-            return stateStore.saveActionForModel(object, Action.TO_POST);
-        } else {
-            return stateStore.saveActionForModel(object, Action.TO_UPDATE);
-        }
-    }
 }

@@ -40,30 +40,36 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
+import org.hisp.dhis.client.sdk.ui.SettingPreferences;
 import org.hisp.dhis.client.sdk.ui.fragments.AboutFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.HelpFragment;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
+// TODO add support for custom applications in navigation drawer
+public abstract class AbsHomeActivity extends BaseActivity
+        implements OnNavigationItemSelectedListener, DrawerListener, NavigationCallback {
 
-public abstract class AbsHomeActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener, DrawerListener, INavigationCallback {
-
-    private static final String APPS_DASHBOARD_PACKAGE = "org.hisp.dhis.android.dashboard";
-    private static final String APPS_DATA_CAPTURE_PACKAGE = "org.dhis2.mobile";
-    private static final String APPS_EVENT_CAPTURE_PACKAGE = "org.hisp.dhis.android.eventcapture";
-    private static final String APPS_TRACKER_CAPTURE_PACKAGE = "org.hisp.dhis.android" +
-            ".trackercapture";
+    private static final String APPS_DASHBOARD_PACKAGE =
+            "org.hisp.dhis.android.dashboard";
+    private static final String APPS_DATA_CAPTURE_PACKAGE =
+            "org.dhis2.mobile";
+    private static final String APPS_EVENT_CAPTURE_PACKAGE =
+            "org.hisp.dhis.android.eventcapture";
+    private static final String APPS_TRACKER_CAPTURE_PACKAGE =
+            "org.hisp.dhis.android.trackercapture";
+    private static final String APPS_TRACKER_CAPTURE_REPORTS_PACKAGE =
+            "org.hispindia.bidtrackerreports";
 
     private static final int DEFAULT_ORDER_IN_CATEGORY = 100;
 
@@ -83,10 +89,11 @@ public abstract class AbsHomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SettingPreferences.init(getApplicationContext());
         setContentView(R.layout.activity_home);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setDrawerListener(this);
+        drawerLayout.addDrawerListener(this);
 
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -109,6 +116,9 @@ public abstract class AbsHomeActivity extends AppCompatActivity
                 isAppInstalled(APPS_EVENT_CAPTURE_PACKAGE));
         navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture).setVisible(
                 isAppInstalled(APPS_TRACKER_CAPTURE_PACKAGE));
+        navigationView.getMenu().findItem(R.id.drawer_item_tracker_capture_reports).setVisible(
+                isAppInstalled(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE));
+
     }
 
     @Override
@@ -124,6 +134,8 @@ public abstract class AbsHomeActivity extends AppCompatActivity
             isSelected = openApp(APPS_EVENT_CAPTURE_PACKAGE);
         } else if (menuItemId == R.id.drawer_item_tracker_capture) {
             isSelected = openApp(APPS_TRACKER_CAPTURE_PACKAGE);
+        } else if (menuItemId == R.id.drawer_item_tracker_capture_reports) {
+            isSelected = openApp(APPS_TRACKER_CAPTURE_REPORTS_PACKAGE);
         } else if (menuItemId == R.id.drawer_item_profile) {
             attachFragmentDelayed(getProfileFragment());
             isSelected = true;
@@ -141,8 +153,8 @@ public abstract class AbsHomeActivity extends AppCompatActivity
 
         isSelected = onItemSelected(menuItem) || isSelected;
         if (isSelected) {
+            navigationView.setCheckedItem(menuItemId);
             drawerLayout.closeDrawers();
-            navigationView.setCheckedItem(menuItem.getItemId());
         }
 
         return isSelected;
@@ -181,6 +193,16 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
     protected void attachFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -192,7 +214,6 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         isNull(fragment, "Fragment must not be null");
 
         pendingRunnable = new Runnable() {
-
             @Override
             public void run() {
                 attachFragment(fragment);
@@ -236,7 +257,17 @@ public abstract class AbsHomeActivity extends AppCompatActivity
         MenuItem menuItem = navigationView.getMenu().add(
                 R.id.drawer_group_main, menuItemId, DEFAULT_ORDER_IN_CATEGORY, title);
         menuItem.setIcon(icon);
+        menuItem.setCheckable(true);
         return menuItem;
+    }
+
+    protected boolean removeMenuItem(int menuItemId) {
+        MenuItem menuItem = getNavigationView().getMenu().findItem(menuItemId);
+        if(menuItem != null) {
+            getNavigationView().getMenu().removeItem(menuItem.getItemId());
+            return true;
+        }
+        return false;
     }
 
     @NonNull

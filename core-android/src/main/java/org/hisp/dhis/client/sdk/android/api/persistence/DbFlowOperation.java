@@ -31,16 +31,16 @@ package org.hisp.dhis.client.sdk.android.api.persistence;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.hisp.dhis.client.sdk.core.common.persistence.DbAction;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
 /**
  * This class is intended to implement partial
  * functionality of ContentProviderOperation for DbFlow.
  */
-public final class DbFlowOperation<T extends BaseModel> implements IDbOperation<T> {
+public final class DbFlowOperation<T extends BaseModel> implements DbOperation<T> {
     private final DbAction mDbAction;
     private final T mModel;
 

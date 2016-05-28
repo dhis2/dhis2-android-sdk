@@ -39,6 +39,8 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramRule extends BaseIdentifiableObject {
 
+    public static final Comparator<ProgramRule> PRIORITY_COMPARATOR = new PriorityComparator();
+
     @JsonProperty("programStage")
     private ProgramStage programStage;
 
@@ -114,6 +116,19 @@ public final class ProgramRule extends BaseIdentifiableObject {
 
     public void setProgramRuleActions(List<ProgramRuleAction> programRuleActions) {
         this.programRuleActions = programRuleActions;
+    }
+
+    @Override
+    public String toString() {
+        return "ProgramRule{" +
+                "programStage=" + programStage +
+                ", program=" + program +
+                ", description='" + description + '\'' +
+                ", condition='" + condition + '\'' +
+                ", priority=" + priority +
+                ", externalAction=" + externalAction +
+                ", programRuleActions=" + programRuleActions +
+                '}';
     }
 
     public static class PriorityComparator implements Comparator<ProgramRule> {

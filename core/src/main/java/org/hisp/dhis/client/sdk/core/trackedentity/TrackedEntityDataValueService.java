@@ -28,139 +28,22 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
 
 import java.util.List;
 
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+public interface TrackedEntityDataValueService extends Service, Save<TrackedEntityDataValue>,
+        Remove<TrackedEntityDataValue>, Get<TrackedEntityDataValue>,
+        ListAll<TrackedEntityDataValue> {
 
-public class TrackedEntityDataValueService implements ITrackedEntityDataValueService {
-    private final ITrackedEntityDataValueStore trackedEntityDataValueStore;
-    private final IStateStore stateStore;
+    List<TrackedEntityDataValue> list(Event event);
 
-    public TrackedEntityDataValueService(
-            ITrackedEntityDataValueStore trackedEntityDataValueStore, IStateStore stateStore) {
-        this.trackedEntityDataValueStore = trackedEntityDataValueStore;
-        this.stateStore = stateStore;
-    }
-
-    @Override
-    public boolean save(TrackedEntityDataValue object) {
-        isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            boolean status = trackedEntityDataValueStore.save(object);
-
-            if (status) {
-                status = stateStore.saveActionForModel(object, Action.TO_POST);
-            }
-
-            return status;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case TO_POST:
-            case TO_UPDATE: {
-                status = trackedEntityDataValueStore.save(object);
-                break;
-            }
-            case SYNCED: {
-                status = trackedEntityDataValueStore.save(object);
-
-                if (status) {
-                    status = stateStore.saveActionForModel(object, Action.TO_UPDATE);
-                }
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-
-        }
-
-        return status;
-    }
-
-    @Override
-    public List<TrackedEntityDataValue> list() {
-        return stateStore.queryModelsWithActions(TrackedEntityDataValue.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public List<TrackedEntityDataValue> list(Event event) {
-        isNull(event, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(event);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityDataValueStore.query(event);
-        }
-
-        return null;
-    }
-
-    @Override
-    public TrackedEntityDataValue get(long id) {
-        TrackedEntityDataValue trackedEntityDataValue = trackedEntityDataValueStore.queryById(id);
-
-        if (trackedEntityDataValue != null) {
-            Action action = stateStore.queryActionForModel(trackedEntityDataValue);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return trackedEntityDataValue;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public TrackedEntityDataValue get(Event event, DataElement dataElement) {
-        isNull(event, "Event object must not be null");
-        isNull(dataElement, "DataElement must not be null");
-
-        Action action = stateStore.queryActionForModel(event);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return trackedEntityDataValueStore.query(event, dataElement);
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean remove(TrackedEntityDataValue object) {
-        isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = trackedEntityDataValueStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
-    }
+    TrackedEntityDataValue get(Event event, DataElement dataElement);
 }

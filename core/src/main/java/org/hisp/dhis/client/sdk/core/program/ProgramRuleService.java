@@ -28,52 +28,25 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRule;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 import java.util.List;
 
-public final class ProgramRuleService implements IProgramRuleService {
+public interface ProgramRuleService extends Service, Get<ProgramRule>, GetUid<ProgramRule>,
+        ListAll<ProgramRule>, ListUids<ProgramRule>, Save<ProgramRule>, Remove<ProgramRule> {
 
-    private final IProgramRuleStore programRuleStore;
+    List<ProgramRule> list(ProgramStage programStage);
 
-    public ProgramRuleService(IProgramRuleStore programRuleStore) {
-        this.programRuleStore = programRuleStore;
-    }
+    List<ProgramRule> list(Program program);
 
-    @Override
-    public List<ProgramRule> list(ProgramStage programStage) {
-        return programRuleStore.query(programStage);
-    }
-
-    @Override
-    public List<ProgramRule> list(Program program) {
-        return programRuleStore.query(program);
-    }
-
-    @Override
-    public ProgramRule get(long id) {
-        return programRuleStore.queryById(id);
-    }
-
-    @Override
-    public ProgramRule get(String uid) {
-        return programRuleStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramRule> list() {
-        return programRuleStore.queryAll();
-    }
-
-    @Override
-    public boolean save(ProgramRule programRule) {
-        return programRuleStore.save(programRule);
-    }
-
-    @Override
-    public boolean remove(ProgramRule object) {
-        return programRuleStore.delete(object);
-    }
+    List<ProgramRule> list(List<Program> programs);
 }

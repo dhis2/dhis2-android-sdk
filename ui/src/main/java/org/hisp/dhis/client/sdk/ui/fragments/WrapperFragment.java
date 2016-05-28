@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
@@ -44,10 +45,10 @@ import org.hisp.dhis.client.sdk.ui.R;
 
 import java.io.Serializable;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 
-public class WrapperFragment extends BaseFragment2 implements View.OnClickListener {
+public class WrapperFragment extends BaseFragment implements View.OnClickListener {
     private static final String ARG_TITLE = "arg:title";
     private static final String ARG_NESTED_FRAGMENT = "arg:nestedFragment";
 
@@ -79,9 +80,8 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        final Drawable buttonDrawable = DrawableCompat.wrap(ContextCompat
+        Drawable buttonDrawable = DrawableCompat.wrap(ContextCompat
                 .getDrawable(getActivity(), R.drawable.ic_menu));
-
         DrawableCompat.setTint(buttonDrawable, ContextCompat
                 .getColor(getContext(), android.R.color.white));
 
@@ -89,7 +89,10 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
         toolbar.setNavigationOnClickListener(this);
         toolbar.setTitle(getTitle());
 
-        attachFragment(getFragment());
+        // don't force fragment attachment if it is already in fragment manager
+        if (getFragmentClass() != null) {
+            attachFragment(getFragment(), getFragmentClass().getSimpleName());
+        }
     }
 
     @Override
@@ -107,16 +110,12 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
     }
 
     @NonNull
-    @SuppressWarnings("unchecked")
     private Fragment getFragment() {
         if (isAdded() && getArguments() != null) {
-            Serializable fragmentClassSerialized = getArguments()
-                    .getSerializable(ARG_NESTED_FRAGMENT);
+            Class<? extends Fragment> fragmentClass = getFragmentClass();
 
             // Using reflection API to create an instance of fragment
-            if (fragmentClassSerialized != null) {
-                Class<? extends Fragment> fragmentClass = (Class<? extends Fragment>)
-                        fragmentClassSerialized;
+            if (fragmentClass != null) {
                 try {
                     return fragmentClass.newInstance();
                 } catch (Exception e) {
@@ -133,9 +132,23 @@ public class WrapperFragment extends BaseFragment2 implements View.OnClickListen
         return toolbar;
     }
 
-    private void attachFragment(@NonNull Fragment fragment) {
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.container_fragment_frame, fragment)
-                .commit();
+    @SuppressWarnings("unchecked")
+    private Class<? extends Fragment> getFragmentClass() {
+        Serializable fragmentClassSerialized = getArguments()
+                .getSerializable(ARG_NESTED_FRAGMENT);
+        if (fragmentClassSerialized != null) {
+            return (Class<? extends Fragment>) fragmentClassSerialized;
+        }
+
+        return null;
+    }
+
+    private void attachFragment(@NonNull Fragment fragment, String tag) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        if (fragmentManager.findFragmentByTag(tag) == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container_fragment_frame, fragment, tag)
+                    .commit();
+        }
     }
 }

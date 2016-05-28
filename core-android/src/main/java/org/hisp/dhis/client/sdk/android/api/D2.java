@@ -31,138 +31,220 @@ package org.hisp.dhis.client.sdk.android.api;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.hisp.dhis.client.sdk.android.api.network.NetworkModule;
-import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModule;
-import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModule;
-import org.hisp.dhis.client.sdk.android.api.utils.Logger;
-import org.hisp.dhis.client.sdk.android.dataelement.DataElementScope;
-import org.hisp.dhis.client.sdk.android.dataelement.IDataElementScope;
-import org.hisp.dhis.client.sdk.android.event.EventScope;
-import org.hisp.dhis.client.sdk.android.event.IEventScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.IOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.IUserOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitScope;
-import org.hisp.dhis.client.sdk.android.program.IProgramScope;
-import org.hisp.dhis.client.sdk.android.program.IProgramStageDataElementScope;
-import org.hisp.dhis.client.sdk.android.program.IProgramStageScope;
-import org.hisp.dhis.client.sdk.android.program.IProgramStageSectionScope;
-import org.hisp.dhis.client.sdk.android.program.IUserProgramScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageScope;
-import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionScope;
-import org.hisp.dhis.client.sdk.android.program.UserProgramScope;
-import org.hisp.dhis.client.sdk.android.user.IUserAccountScope;
-import org.hisp.dhis.client.sdk.android.user.UserAccountScope;
+import org.hisp.dhis.client.sdk.android.api.network.NetworkModuleImpl;
+import org.hisp.dhis.client.sdk.android.api.persistence.PersistenceModuleImpl;
+import org.hisp.dhis.client.sdk.android.api.preferences.PreferencesModuleImpl;
+import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
+import org.hisp.dhis.client.sdk.android.api.utils.LoggerImpl;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractor;
+import org.hisp.dhis.client.sdk.android.dataelement.DataElementInteractorImpl;
+import org.hisp.dhis.client.sdk.android.event.EventInteractor;
+import org.hisp.dhis.client.sdk.android.event.EventInteractorImpl;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetInteractor;
+import org.hisp.dhis.client.sdk.android.optionset.OptionSetInteractorImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.android.organisationunit.OrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractor;
+import org.hisp.dhis.client.sdk.android.organisationunit.UserOrganisationUnitInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramIndicatorInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleActionInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramRuleVariableInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageDataElementInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractor;
+import org.hisp.dhis.client.sdk.android.program.ProgramStageSectionInteractorImpl;
+import org.hisp.dhis.client.sdk.android.program.UserProgramInteractor;
+import org.hisp.dhis.client.sdk.android.program.UserProgramInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityAttributeInteractorImpl;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractor;
+import org.hisp.dhis.client.sdk.android.trackedentity.TrackedEntityDataValueInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
+import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractorImpl;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractor;
+import org.hisp.dhis.client.sdk.android.user.UserAccountInteractorImpl;
 import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModule;
-import org.hisp.dhis.client.sdk.core.common.controllers.IControllersModule;
+import org.hisp.dhis.client.sdk.core.common.controllers.ControllersModuleImpl;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
-import org.hisp.dhis.client.sdk.core.common.network.INetworkModule;
-import org.hisp.dhis.client.sdk.core.common.persistence.IPersistenceModule;
-import org.hisp.dhis.client.sdk.core.common.preferences.IPreferencesModule;
-import org.hisp.dhis.client.sdk.core.common.services.IServicesModule;
+import org.hisp.dhis.client.sdk.core.common.network.NetworkModule;
+import org.hisp.dhis.client.sdk.core.common.persistence.PersistenceModule;
+import org.hisp.dhis.client.sdk.core.common.preferences.PreferencesModule;
 import org.hisp.dhis.client.sdk.core.common.services.ServicesModule;
+import org.hisp.dhis.client.sdk.core.common.services.ServicesModuleImpl;
+import org.hisp.dhis.client.sdk.utils.Logger;
 
+import okhttp3.OkHttpClient;
 import rx.Observable;
-import rx.Subscriber;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.hisp.dhis.client.sdk.models.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-
-// TODO Managing logging properly
-// TODO Allow clients to set custom objects (like OkHttpClient)
+// TODO D2 fails on 500 errors (because of
+// TODO response conversion in NetworkModule)
+// TODO consider handling 403 errors in more general way
 public class D2 {
     private static D2 d2;
 
     private final Context applicationContext;
     private final boolean isD2Configured;
 
+    //-----------------------------------------------------------------------------------------
+    // Modules
+    //-----------------------------------------------------------------------------------------
 
-    private final IPersistenceModule persistenceModule;
-    private final IPreferencesModule preferencesModule;
+    private final PersistenceModule persistenceModule;
+    private final PreferencesModule preferencesModule;
+
+    //-----------------------------------------------------------------------------------------
+    // Interactors
+    //-----------------------------------------------------------------------------------------
+
+    private final CurrentUserInteractor currentUserInteractor;
+    private final OrganisationUnitInteractor organisationUnitInteractor;
+    private final ProgramInteractor programInteractor;
+    private final ProgramStageInteractor programStageInteractor;
+    private final ProgramStageSectionInteractor programStageSectionInteractor;
+    private final ProgramRuleInteractor programRuleInteractor;
+    private final ProgramRuleActionInteractor programRuleActionInteractor;
+    private final ProgramRuleVariableInteractor programRuleVariableInteractor;
+    private final ProgramIndicatorInteractor programIndicatorInteractor;
+    private final TrackedEntityAttributeInteractor trackedEntityAttributeInteractor;
+    private final TrackedEntityDataValueInteractor trackedEntityDataValueInteractor;
+    private final EventInteractor eventInteractor;
+    private final ProgramStageDataElementInteractor programStageDataElementInteractor;
+    private final DataElementInteractor dataElementInteractor;
+    private final OptionSetInteractor optionSetInteractor;
+
+    //-----------------------------------------------------------------------------------------
+    // Utilities
+    //-----------------------------------------------------------------------------------------
+
+    private final Logger logger;
 
 
-    private final IUserAccountScope userAccountScope;
-    private final IOrganisationUnitScope organisationUnitScope;
-    private final IProgramScope programScope;
-    private final IProgramStageScope programStageScope;
-    private final IProgramStageSectionScope programStageSectionScope;
-    private final IEventScope eventScope;
-    private final IProgramStageDataElementScope programStageDataElementScope;
-    private final IDataElementScope dataElementScope;
-
-
-    private D2(Context context) {
+    private D2(Context context, Flavor flavor) {
         applicationContext = context;
 
         // Modules which preserve state
-        persistenceModule = new PersistenceModule(context);
-        preferencesModule = new PreferencesModule(context);
+        persistenceModule = new PersistenceModuleImpl(applicationContext);
+        preferencesModule = new PreferencesModuleImpl(applicationContext);
 
         isD2Configured = !isEmpty(preferencesModule
                 .getConfigurationPreferences().get().getServerUrl());
 
         if (!isD2Configured) {
-            userAccountScope = null;
-            organisationUnitScope = null;
-            programScope = null;
-            programStageScope = null;
-            programStageSectionScope = null;
-            eventScope = null;
-            programStageDataElementScope = null;
-            dataElementScope = null;
+            currentUserInteractor = null;
+            organisationUnitInteractor = null;
+            programInteractor = null;
+            programStageInteractor = null;
+            programStageSectionInteractor = null;
+            eventInteractor = null;
+            programStageDataElementInteractor = null;
+            dataElementInteractor = null;
+            programRuleInteractor = null;
+            programRuleActionInteractor = null;
+            programRuleVariableInteractor = null;
+            programIndicatorInteractor = null;
+            trackedEntityAttributeInteractor = null;
+            trackedEntityDataValueInteractor = null;
+            optionSetInteractor = null;
+            logger = null;
             return;
         }
 
-        IServicesModule servicesModule = new ServicesModule(persistenceModule);
-        INetworkModule networkModule = new NetworkModule(preferencesModule);
-        IControllersModule controllersModule = new ControllersModule(
-                networkModule, persistenceModule, preferencesModule, new Logger());
+        ServicesModule servicesModule = new ServicesModuleImpl(persistenceModule);
+        NetworkModule networkModule = new NetworkModuleImpl(
+                preferencesModule, flavor.getOkHttpClient());
+        ControllersModule controllersModule = new ControllersModuleImpl(
+                networkModule, persistenceModule, preferencesModule, new LoggerImpl());
 
-        IUserProgramScope userProgramScope = new UserProgramScope(
+        UserAccountInteractor userAccountInteractor = new UserAccountInteractorImpl(
+                servicesModule.getUserAccountService(),
+                controllersModule.getUserAccountController());
+
+        UserProgramInteractor userProgramInteractor = new UserProgramInteractorImpl(
                 servicesModule.getProgramService(),
                 controllersModule.getAssignedProgramsController());
 
-        IUserOrganisationUnitScope userOrganisationUnitScope = new UserOrganisationUnitScope(
-                servicesModule.getOrganisationUnitService(),
-                controllersModule.getAssignedOrganisationUnitsController());
+        UserOrganisationUnitInteractor userOrganisationUnitInteractor =
+                new UserOrganisationUnitInteractorImpl(
+                        servicesModule.getOrganisationUnitService(),
+                        controllersModule.getAssignedOrganisationUnitsController());
 
-        programScope = new ProgramScope(
+        programInteractor = new ProgramInteractorImpl(
                 servicesModule.getProgramService(),
                 controllersModule.getProgramController());
 
-        programStageScope = new ProgramStageScope(
+        programStageInteractor = new ProgramStageInteractorImpl(
                 servicesModule.getProgramStageService(),
                 controllersModule.getProgramStageController());
 
-        programStageDataElementScope = new ProgramStageDataElementScope(
+        programStageDataElementInteractor = new ProgramStageDataElementInteractorImpl(
                 servicesModule.getProgramStageDataElementService(),
                 controllersModule.getProgramStageDataElementController());
 
-        programStageSectionScope = new ProgramStageSectionScope(
+        programStageSectionInteractor = new ProgramStageSectionInteractorImpl(
                 controllersModule.getProgramStageSectionController(),
                 servicesModule.getProgramStageSectionService());
 
-        organisationUnitScope = new OrganisationUnitScope(
+        programRuleInteractor = new ProgramRuleInteractorImpl(
+                servicesModule.getProgramRuleService(),
+                controllersModule.getProgramRuleController());
+
+        programRuleActionInteractor = new ProgramRuleActionInteractorImpl(
+                servicesModule.getProgramRuleActionService(),
+                controllersModule.getProgramRuleActionController());
+
+        programRuleVariableInteractor = new ProgramRuleVariableInteractorImpl(
+                servicesModule.getProgramRuleVariableService(),
+                controllersModule.getProgramRuleVariableController());
+
+        programIndicatorInteractor = new ProgramIndicatorInteractorImpl(
+                servicesModule.getProgramIndicatorService(),
+                controllersModule.getProgramIndicatorController());
+
+        organisationUnitInteractor = new OrganisationUnitInteractorImpl(
                 servicesModule.getOrganisationUnitService(),
                 controllersModule.getOrganisationUnitController());
 
-        eventScope = new EventScope(
+        eventInteractor = new EventInteractorImpl(
                 servicesModule.getEventService(),
                 controllersModule.getEventController());
 
-        dataElementScope = new DataElementScope(
+        dataElementInteractor = new DataElementInteractorImpl(
                 servicesModule.getDataElementService(),
                 controllersModule.getDataElementController());
 
-        userAccountScope = new UserAccountScope(
+        trackedEntityAttributeInteractor = new TrackedEntityAttributeInteractorImpl(
+                servicesModule.getTrackedEntityAttributeService(),
+                controllersModule.getTrackedEntityAttributeController());
+
+        trackedEntityDataValueInteractor = new TrackedEntityDataValueInteractorImpl(
+                servicesModule.getTrackedEntityDataValueService());
+
+        currentUserInteractor = new CurrentUserInteractorImpl(
                 preferencesModule.getUserPreferences(),
                 servicesModule.getUserAccountService(),
                 controllersModule.getUserAccountController(),
-                userProgramScope, userOrganisationUnitScope);
+                userAccountInteractor,
+                userProgramInteractor,
+                userOrganisationUnitInteractor,
+                preferencesModule,
+                persistenceModule);
 
+        optionSetInteractor = new OptionSetInteractorImpl(
+                servicesModule.getOptionSetService());
+
+        logger = flavor.getLogger();
     }
 
     // utility method which performs check if D2 is initialised
@@ -187,7 +269,7 @@ public class D2 {
 
     /**
      * Initialises D2.
-     * <p/>
+     * <p>
      * Warning! Use only application context to init D2, otherwise you
      * will certainly create a memory leak of activity or other
      * android component.
@@ -195,9 +277,14 @@ public class D2 {
      * @param context Application context.
      */
     public static void init(@NonNull Context context) {
-        isNull(context, "Context object must not be null");
+        init(context, new Builder().build());
+    }
 
-        d2 = new D2(context);
+    public static void init(@NonNull Context context, @NonNull Flavor flavor) {
+        isNull(context, "Context object must not be null");
+        isNull(flavor, "Flavor must not be null");
+
+        d2 = new D2(context, flavor);
     }
 
     /**
@@ -208,27 +295,37 @@ public class D2 {
     public static Observable<Void> configure(@NonNull final Configuration configuration) {
         isNull(configuration, "Configuration must not be null");
 
-        return Observable.create(new Observable.OnSubscribe<Void>() {
-
+        return Observable.create(new DefaultOnSubscribe<Void>() {
             @Override
-            public void call(Subscriber<? super Void> subscriber) {
+            public Void call() {
+                instance().preferencesModule.clearAllPreferences();
+                instance().persistenceModule.deleteAllTables();
+
+                // save new configuration object
+                instance().preferencesModule.getConfigurationPreferences()
+                        .save(configuration);
+
                 try {
-                    // erase all existing content
+                    // re-initialising the whole object graph
+                    init(instance().applicationContext);
+                } catch (Throwable throwable) {
                     instance().preferencesModule.clearAllPreferences();
                     instance().persistenceModule.deleteAllTables();
 
-                    // save new configuration object
-                    instance().preferencesModule.getConfigurationPreferences()
-                            .save(configuration);
-
-                    // re-initialising the whole object graph
-                    init(instance().applicationContext);
-                    subscriber.onNext(null);
-                } catch (Throwable throwable) {
-                    subscriber.onError(throwable);
+                    throw throwable;
                 }
+                return null;
+            }
+        });
+    }
 
-                subscriber.onCompleted();
+    public static Observable<Configuration> configuration() {
+        return Observable.create(new DefaultOnSubscribe<Configuration>() {
+
+            @Override
+            public Configuration call() {
+                return configuredInstance().preferencesModule
+                        .getConfigurationPreferences().get();
             }
         });
     }
@@ -243,37 +340,118 @@ public class D2 {
     /**
      * Provides current user aware APIs.
      *
-     * @return IUserAccountScope instance.
+     * @return CurrentUserInteractor instance.
      */
-    public static IUserAccountScope me() {
-        return configuredInstance().userAccountScope;
+    public static CurrentUserInteractor me() {
+        return configuredInstance().currentUserInteractor;
     }
 
-    public static IProgramScope programs() {
-        return configuredInstance().programScope;
+    public static ProgramInteractor programs() {
+        return configuredInstance().programInteractor;
     }
 
-    public static IProgramStageScope programStages() {
-        return configuredInstance().programStageScope;
+    public static ProgramStageInteractor programStages() {
+        return configuredInstance().programStageInteractor;
     }
 
-    public static IProgramStageSectionScope programStageSections() {
-        return configuredInstance().programStageSectionScope;
+    public static ProgramStageSectionInteractor programStageSections() {
+        return configuredInstance().programStageSectionInteractor;
     }
 
-    public static IOrganisationUnitScope organisationUnits() {
-        return configuredInstance().organisationUnitScope;
+    public static OrganisationUnitInteractor organisationUnits() {
+        return configuredInstance().organisationUnitInteractor;
     }
 
-    public static IProgramStageDataElementScope programStageDataElements() {
-        return configuredInstance().programStageDataElementScope;
+    public static ProgramStageDataElementInteractor programStageDataElements() {
+        return configuredInstance().programStageDataElementInteractor;
     }
 
-    public static IDataElementScope dataElements() {
-        return configuredInstance().dataElementScope;
+    public static DataElementInteractor dataElements() {
+        return configuredInstance().dataElementInteractor;
     }
 
-    public static IEventScope events() {
-        return configuredInstance().eventScope;
+    public static ProgramRuleInteractor programRules() {
+        return configuredInstance().programRuleInteractor;
+    }
+
+    public static ProgramRuleActionInteractor programRuleActions() {
+        return configuredInstance().programRuleActionInteractor;
+    }
+
+    public static ProgramRuleVariableInteractor programRuleVariables() {
+        return configuredInstance().programRuleVariableInteractor;
+    }
+
+    public static ProgramIndicatorInteractor programIndicators() {
+        return configuredInstance().programIndicatorInteractor;
+    }
+
+    public static TrackedEntityAttributeInteractor trackedEntityAttributes() {
+        return configuredInstance().trackedEntityAttributeInteractor;
+    }
+
+    public static EventInteractor events() {
+        return configuredInstance().eventInteractor;
+    }
+
+    public static TrackedEntityDataValueInteractor trackedEntityDataValues() {
+        return configuredInstance().trackedEntityDataValueInteractor;
+    }
+
+    public static OptionSetInteractor optionSets() {
+        return configuredInstance().optionSetInteractor;
+    }
+
+    public static Logger logger() {
+        return instance().logger;
+    }
+
+    public static final class Flavor {
+        private final OkHttpClient okHttpClient;
+        private final Logger logger;
+
+        public Flavor(OkHttpClient okHttpClient, Logger logger) {
+            this.okHttpClient = okHttpClient;
+            this.logger = logger;
+        }
+
+        public OkHttpClient getOkHttpClient() {
+            return okHttpClient;
+        }
+
+        public Logger getLogger() {
+            return logger;
+        }
+    }
+
+    public static final class Builder {
+        private OkHttpClient okHttpClient;
+        private Logger logger;
+
+        public Builder() {
+            // explicit empty constructor
+        }
+
+        public Builder okHttp(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        public Builder logger(Logger logger) {
+            this.logger = logger;
+            return this;
+        }
+
+        public Flavor build() {
+            if (okHttpClient == null) {
+                okHttpClient = new OkHttpClient();
+            }
+
+            if (logger == null) {
+                logger = new LoggerImpl();
+            }
+
+            return new Flavor(okHttpClient, logger);
+        }
     }
 }

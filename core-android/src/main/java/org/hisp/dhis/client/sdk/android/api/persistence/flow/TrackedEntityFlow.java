@@ -31,11 +31,62 @@ package org.hisp.dhis.client.sdk.android.api.persistence.flow;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
 
 @Table(database = DbDhis.class)
 public final class TrackedEntityFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<TrackedEntity, TrackedEntityFlow> MAPPER = new TrackedEntityMapper();
 
     public TrackedEntityFlow() {
         // empty constructor
+    }
+
+    private static class TrackedEntityMapper extends AbsMapper<TrackedEntity, TrackedEntityFlow> {
+
+        @Override
+        public TrackedEntityFlow mapToDatabaseEntity(TrackedEntity trackedEntity) {
+            if (trackedEntity == null) {
+                return null;
+            }
+
+            TrackedEntityFlow trackedEntityFlow = new TrackedEntityFlow();
+            trackedEntityFlow.setId(trackedEntity.getId());
+            trackedEntityFlow.setUId(trackedEntity.getUId());
+            trackedEntityFlow.setCreated(trackedEntity.getCreated());
+            trackedEntityFlow.setLastUpdated(trackedEntity.getLastUpdated());
+            trackedEntityFlow.setName(trackedEntity.getName());
+            trackedEntityFlow.setDisplayName(trackedEntity.getDisplayName());
+            trackedEntityFlow.setAccess(trackedEntity.getAccess());
+            return trackedEntityFlow;
+        }
+
+        @Override
+        public TrackedEntity mapToModel(TrackedEntityFlow trackedEntityFlow) {
+            if (trackedEntityFlow == null) {
+                return null;
+            }
+
+            TrackedEntity trackedEntity = new TrackedEntity();
+            trackedEntity.setId(trackedEntityFlow.getId());
+            trackedEntity.setUId(trackedEntityFlow.getUId());
+            trackedEntity.setCreated(trackedEntityFlow.getCreated());
+            trackedEntity.setLastUpdated(trackedEntityFlow.getLastUpdated());
+            trackedEntity.setName(trackedEntityFlow.getName());
+            trackedEntity.setDisplayName(trackedEntityFlow.getDisplayName());
+            trackedEntity.setAccess(trackedEntityFlow.getAccess());
+            return trackedEntity;
+        }
+
+        @Override
+        public Class<TrackedEntity> getModelTypeClass() {
+            return TrackedEntity.class;
+        }
+
+        @Override
+        public Class<TrackedEntityFlow> getDatabaseEntityTypeClass() {
+            return TrackedEntityFlow.class;
+        }
     }
 }

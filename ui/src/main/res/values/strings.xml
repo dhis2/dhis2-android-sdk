@@ -40,6 +40,7 @@
     <string name="drawer_item_data_capture">Data capture</string>
     <string name="drawer_item_event_capture">Event capture</string>
     <string name="drawer_item_tracker_capture">Tracker capture</string>
+    <string name="drawer_item_tracker_capture_reports">BID reports</string>
     <string name="drawer_item_synchronized">Synchronized: %s</string>
 
     <!-- AbsLoginActivity strings -->
@@ -47,6 +48,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
+    <string name="confirm_user">Confirm user</string>
+    <string name="clear_and_logout">Clear and log out</string>
     <string name="two">2</string>
 
     <!-- Preferences fragment -->
@@ -59,6 +62,10 @@
     <string name="background_synchronization_description">
         Allows to sync application data in background
     </string>
+
+    <string name="filter_options">Filter available options</string>
+
+    <string name="sync">Sync</string>
 
     <string name="synchronization_period_key">synchronizationPeriod</string>
     <string name="synchronization_period_name">Synchronization period</string>
@@ -86,11 +93,6 @@
     <string name="account_name">Account</string>
     <string name="account_description">Managing current login session</string>
 
-
-    <!-- AbsConfirmUserActivity -->
-    <string name="activity_confirm_user">Confirm user</string>
-    <string name="re_log_in">Re-Log in</string>
-    <string name="clear_and_logout">Clear and log out</string>
 
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>
@@ -149,5 +151,28 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="edit_columns">Edit columns</string>
+
+    <string name="sync_status_ok_title">Synced</string>
+    <string name="sync_status_ok_message">This item has been successfully synchronized with the server</string>
+    <string name="sync_status_offline_title">Not Synced</string>
+    <string name="sync_status_offline_message">This item has not yet been synchronized with the server</string>
+    <string name="sync_status_error_title">Error</string>
+    <string name="sync_status_error_message">Something went wrong. Please, try to re-upload event or contact system administrator</string>
+    <string name="sync_now">Sync now</string>
+
+    <!-- Delete Report Entity confirmation dialog -->
+    <string name="delete">Delete</string>
+    <string name="delete_report_entity_dialog_title">Delete this Report Entity?</string>
+    <string name="delete_report_entity_dialog_message">The Entity will be lost forever. You will have to create a new Entity and re-enter any information.</string>
+    <string name="report_entity_deletion_error">Unable to delete Report Entity</string>
+
+    <!-- SyncDateWrapper strings: -->
+    <string name="date_format">dd/mm/yy hh:mm</string>
+    <string name="never">never</string>
+    <string name="min_ago">m ago</string>
+    <string name="hours">h</string>
+
+    <string name="no_organisation_units">You are not assigned to any Organisation Units. Please contact system administrator.</string>
+    <string name="no_programs">You do not have any programs assigned to Organisation unit or you do not have the sufficient user roles. Please contact system administrator</string>
 
 </resources>

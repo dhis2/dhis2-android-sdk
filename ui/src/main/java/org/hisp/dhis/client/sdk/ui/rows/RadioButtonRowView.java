@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.client.sdk.ui.rows;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,41 +37,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hisp.dhis.client.sdk.ui.R;
-import org.hisp.dhis.client.sdk.ui.models.DataEntity;
-import org.hisp.dhis.client.sdk.ui.models.IDataEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntity;
+import org.hisp.dhis.client.sdk.ui.models.FormEntityRadioButtons;
 
-
-public class RadioButtonRowView implements IRowView {
+public class RadioButtonRowView implements RowView {
     private static final String EMPTY_FIELD = "";
     private static final String TRUE = "true";
     private static final String FALSE = "false";
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(FragmentManager fragmentManager,
-                                                      LayoutInflater inflater, ViewGroup parent,
-                                                      DataEntity.Type type) {
-        if (!RowViewTypeMatcher.matchToRowView(type).equals(RadioButtonRowView.class)) {
-            throw new IllegalArgumentException("Unsupported row type");
-        }
-
+    public RecyclerView.ViewHolder onCreateViewHolder(LayoutInflater inflater, ViewGroup parent) {
         return new RadioButtonRowViewHolder(inflater.inflate(
                 R.layout.recyclerview_row_radiobutton, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, IDataEntity dataEntity) {
-        RadioButtonRowViewHolder radioButtonRowViewHolder = (RadioButtonRowViewHolder) holder;
-        DataEntity entity = (DataEntity) dataEntity;
-        radioButtonRowViewHolder.onCheckedChangedListener.setDataEntity(entity);
-        radioButtonRowViewHolder.labelTextView.setText(entity.getLabel());
-        if (TRUE.equals(dataEntity.getValue())) {
-            radioButtonRowViewHolder.firstRadioButton.setChecked(true);
-        } else if (FALSE.equals(dataEntity.getValue())) {
-            radioButtonRowViewHolder.secondRadioButton.setChecked(true);
-        } else {
-            radioButtonRowViewHolder.radioGroup.clearCheck();
-        }
-
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, FormEntity formEntity) {
+        FormEntityRadioButtons entity = (FormEntityRadioButtons) formEntity;
+        ((RadioButtonRowViewHolder) viewHolder).update(entity);
     }
 
     private static class RadioButtonRowViewHolder extends RecyclerView.ViewHolder {
@@ -84,41 +66,57 @@ public class RadioButtonRowView implements IRowView {
 
         public RadioButtonRowViewHolder(View itemView) {
             super(itemView);
+
             labelTextView = (TextView) itemView
                     .findViewById(R.id.textview_row_label);
             radioGroup = (RadioGroup) itemView
                     .findViewById(R.id.radiogroup_radiobutton_row);
             firstRadioButton = (RadioButton) itemView
-                    .findViewById(R.id.first_radiobutton_radiobutton_row);
+                    .findViewById(R.id.radiobutton_row_radiobutton_first);
             secondRadioButton = (RadioButton) itemView
-                    .findViewById(R.id.second_radiobutton_radiobutton_row);
+                    .findViewById(R.id.radiobutton_row_radiobutton_second);
 
             firstRadioButton.setText(itemView.getContext().getString(R.string.yes));
             secondRadioButton.setText(itemView.getContext().getString(R.string.no));
+
             onCheckedChangedListener = new OnCheckedChangedListener();
             radioGroup.setOnCheckedChangeListener(onCheckedChangedListener);
+        }
+
+        public void update(FormEntityRadioButtons dataEntity) {
+            onCheckedChangedListener.setDataEntity(dataEntity);
+            labelTextView.setText(dataEntity.getLabel());
+
+            if (TRUE.equals(dataEntity.getValue())) {
+                firstRadioButton.setChecked(true);
+            } else if (FALSE.equals(dataEntity.getValue())) {
+                secondRadioButton.setChecked(true);
+            } else {
+                radioGroup.clearCheck();
+            }
         }
     }
 
     private static class OnCheckedChangedListener implements RadioGroup.OnCheckedChangeListener {
-        private DataEntity dataEntity;
+        private FormEntityRadioButtons dataEntity;
 
-        public void setDataEntity(DataEntity dataEntity) {
+        public void setDataEntity(FormEntityRadioButtons dataEntity) {
             this.dataEntity = dataEntity;
         }
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
-            String newValue = "";
+            String newValue;
 
-            if (checkedId == R.id.first_radiobutton_radiobutton_row) {
+            if (checkedId == R.id.radiobutton_row_radiobutton_first) {
                 newValue = TRUE;
-            } else if (checkedId == R.id.second_radiobutton_radiobutton_row) {
+            } else if (checkedId == R.id.radiobutton_row_radiobutton_second) {
                 newValue = FALSE;
             } else {
                 newValue = EMPTY_FIELD;
             }
-            dataEntity.updateValue(newValue);
+
+            dataEntity.setValue(newValue);
         }
     }
 }

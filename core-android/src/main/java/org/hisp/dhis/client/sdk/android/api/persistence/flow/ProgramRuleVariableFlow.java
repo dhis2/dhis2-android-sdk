@@ -35,32 +35,20 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariableSourceType;
 
 @Table(database = DbDhis.class)
 public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
-    private static final String DATA_ELEMENT_KEY = "dataelement";
-    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedentityattribute";
+    public static final Mapper<ProgramRuleVariable, ProgramRuleVariableFlow> MAPPER
+            = new VariableMapper();
+
     private static final String PROGRAM_KEY = "program";
     private static final String PROGRAM_STAGE_KEY = "programStage";
-
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = DATA_ELEMENT_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    DataElementFlow dataElement;
-
-    @Column
-    @ForeignKey(
-            references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_ATTRIBUTE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
-            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
-    )
-    TrackedEntityAttributeFlow trackedEntityAttribute;
+    private static final String DATA_ELEMENT_KEY = "dataElement";
+    private static final String TRACKED_ENTITY_ATTRIBUTE_KEY = "trackedEntityAttribute";
 
     @Column
     ProgramRuleVariableSourceType sourceType;
@@ -68,8 +56,9 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramFlow program;
@@ -77,11 +66,33 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = PROGRAM_STAGE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
     )
     ProgramStageFlow programStage;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(
+                            columnName = DATA_ELEMENT_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    DataElementFlow dataElement;
+
+    @Column
+    @ForeignKey(
+            references = {
+                    @ForeignKeyReference(
+                            columnName = TRACKED_ENTITY_ATTRIBUTE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
+            }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.NO_ACTION
+    )
+    TrackedEntityAttributeFlow trackedEntityAttribute;
+
 
     public ProgramRuleVariableFlow() {
         // empty constructor
@@ -125,5 +136,73 @@ public final class ProgramRuleVariableFlow extends BaseIdentifiableObjectFlow {
 
     public void setProgramStage(ProgramStageFlow programStage) {
         this.programStage = programStage;
+    }
+
+    private static class VariableMapper extends AbsMapper<ProgramRuleVariable, ProgramRuleVariableFlow> {
+
+        @Override
+        public ProgramRuleVariableFlow mapToDatabaseEntity(ProgramRuleVariable variable) {
+            if (variable == null) {
+                return null;
+            }
+
+            ProgramRuleVariableFlow programRuleVariableFlow = new ProgramRuleVariableFlow();
+            programRuleVariableFlow.setId(variable.getId());
+            programRuleVariableFlow.setUId(variable.getUId());
+            programRuleVariableFlow.setCreated(variable.getCreated());
+            programRuleVariableFlow.setLastUpdated(variable.getLastUpdated());
+            programRuleVariableFlow.setName(variable.getName());
+            programRuleVariableFlow.setDisplayName(variable.getDisplayName());
+            programRuleVariableFlow.setAccess(variable.getAccess());
+
+            programRuleVariableFlow.setSourceType(variable.getSourceType());
+            programRuleVariableFlow.setProgram(ProgramFlow.MAPPER
+                    .mapToDatabaseEntity(variable.getProgram()));
+            programRuleVariableFlow.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToDatabaseEntity(variable.getProgramStage()));
+            programRuleVariableFlow.setDataElement(DataElementFlow.MAPPER
+                    .mapToDatabaseEntity(variable.getDataElement()));
+            programRuleVariableFlow.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToDatabaseEntity(variable.getTrackedEntityAttribute()));
+
+            return programRuleVariableFlow;
+        }
+
+        @Override
+        public ProgramRuleVariable mapToModel(ProgramRuleVariableFlow variableFlow) {
+            if (variableFlow == null) {
+                return null;
+            }
+
+            ProgramRuleVariable programRuleVariable = new ProgramRuleVariable();
+            programRuleVariable.setId(variableFlow.getId());
+            programRuleVariable.setUId(variableFlow.getUId());
+            programRuleVariable.setCreated(variableFlow.getCreated());
+            programRuleVariable.setLastUpdated(variableFlow.getLastUpdated());
+            programRuleVariable.setName(variableFlow.getName());
+            programRuleVariable.setDisplayName(variableFlow.getDisplayName());
+            programRuleVariable.setAccess(variableFlow.getAccess());
+
+            programRuleVariable.setSourceType(variableFlow.getSourceType());
+            programRuleVariable.setProgram(ProgramFlow.MAPPER
+                    .mapToModel(variableFlow.getProgram()));
+            programRuleVariable.setProgramStage(ProgramStageFlow.MAPPER
+                    .mapToModel(variableFlow.getProgramStage()));
+            programRuleVariable.setDataElement(DataElementFlow.MAPPER
+                    .mapToModel(variableFlow.getDataElement()));
+            programRuleVariable.setTrackedEntityAttribute(TrackedEntityAttributeFlow.MAPPER
+                    .mapToModel(variableFlow.getTrackedEntityAttribute()));
+            return programRuleVariable;
+        }
+
+        @Override
+        public Class<ProgramRuleVariable> getModelTypeClass() {
+            return ProgramRuleVariable.class;
+        }
+
+        @Override
+        public Class<ProgramRuleVariableFlow> getDatabaseEntityTypeClass() {
+            return ProgramRuleVariableFlow.class;
+        }
     }
 }

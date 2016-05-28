@@ -31,10 +31,24 @@ apply plugin: 'java'
 def cfg = rootProject.ext.configuration
 def libs = rootProject.ext.libraries
 
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
 dependencies {
     compile project(":models")
+
+    compile "org.hisp.dhis:dhis2-support-commons:${libs.dhisCommonsVersion}"
+    compile("org.apache.commons:commons-jexl:${libs.jexlVersion}") {
+        exclude module: 'commons-logging'
+    }
 
     // Test compile dependencies.
     testCompile "junit:junit:${libs.jUnitVersion}"
     testCompile "org.mockito:mockito-core:${libs.mockitoVersion}"
+
+    // Square
+    testCompile "com.squareup.okhttp3:okhttp:${libs.okhttpVersion}"
+    testCompile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
+    testCompile "com.squareup.retrofit2:retrofit:${libs.retrofitVersion}"
+    testCompile "com.squareup.retrofit2:converter-jackson:${libs.retrofitVersion}"
 }

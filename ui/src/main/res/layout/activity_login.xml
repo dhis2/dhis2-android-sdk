@@ -39,6 +39,8 @@
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center"
         android:padding="8dp">
 
@@ -51,9 +53,9 @@
             <org.hisp.dhis.client.sdk.ui.views.CircleView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:circle_radius="52dp"
+                app:circle_radius="50dp"
                 app:stroke_color="@android:color/white"
-                app:stroke_width="@dimen/progressbar_stroke_width"/>
+                app:stroke_width="@dimen/circle_stroke_width"/>
 
             <fr.castorflex.android.circularprogressbar.CircularProgressBar
                 android:id="@+id/progress_bar_circular"
@@ -96,7 +98,7 @@
                     android:layout_height="56dp"
                     android:layout_marginBottom="8dp">
 
-                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
                         android:id="@+id/edittext_server_url"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -112,7 +114,7 @@
                     android:layout_height="56dp"
                     android:layout_marginBottom="8dp">
 
-                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
                         android:id="@+id/edittext_username"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -128,7 +130,7 @@
                     android:layout_height="56dp"
                     android:layout_marginBottom="16dp">
 
-                    <org.hisp.dhis.client.sdk.ui.views.FontEditText
+                    <org.hisp.dhis.client.sdk.ui.views.FontTextInputEditText
                         android:id="@+id/edittext_password"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -141,15 +143,28 @@
 
                 <org.hisp.dhis.client.sdk.ui.views.FontButton
                     android:id="@+id/button_log_in"
-                    android:layout_width="180dp"
+                    android:layout_width="196dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/button_selector"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/button_selector_accent"
                     android:text="@string/log_in"
                     android:textAllCaps="true"
                     android:textColor="@android:color/white"
                     android:textSize="17sp"
-                    app:font="@string/font_name_bold"/>
+                    app:font="@string/font_name_medium"/>
+
+                <org.hisp.dhis.client.sdk.ui.views.FontButton
+                    android:id="@+id/button_log_out"
+                    android:layout_width="196dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_selector_red"
+                    android:text="@string/clear_and_logout"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="17sp"
+                    app:font="@string/font_name_medium"/>
 
             </LinearLayout>
 

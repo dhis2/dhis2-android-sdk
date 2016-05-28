@@ -28,66 +28,26 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.dataelement.DataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageDataElement;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
-import java.util.Set;
 
-public class ProgramStageDataElementService implements IProgramStageDataElementService {
-    private final IProgramStageDataElementStore programStageDataElementStore;
+public interface ProgramStageDataElementService extends Service, Save<ProgramStageDataElement>,
+        Remove<ProgramStageDataElement>, Get<ProgramStageDataElement>,
+        ListAll<ProgramStageDataElement>, ListUids<ProgramStageDataElement> {
 
-    public ProgramStageDataElementService(
-            IProgramStageDataElementStore programStageDataElementStore) {
-        this.programStageDataElementStore = programStageDataElementStore;
-    }
+    List<ProgramStageDataElement> list(ProgramStage programStage);
 
-    @Override
-    public List<ProgramStageDataElement> list(ProgramStage programStage) {
-        Preconditions.isNull(programStage, "Object must not be null");
-        return programStageDataElementStore.query(programStage);
-    }
+    List<ProgramStageDataElement> list(ProgramStageSection programStageSection);
 
-    @Override
-    public List<ProgramStageDataElement> list(ProgramStageSection programStageSection) {
-        Preconditions.isNull(programStageSection, "Object must not be null");
-        return programStageDataElementStore.query(programStageSection);
-    }
-
-    @Override
-    public ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement) {
-        Preconditions.isNull(programStage, "Object must not be null");
-        Preconditions.isNull(dataElement, "Object must not be null");
-        return programStageDataElementStore.query(programStage, dataElement);
-    }
-
-    @Override
-    public ProgramStageDataElement get(long id) {
-        return programStageDataElementStore.queryById(id);
-    }
-
-    @Override
-    public List<ProgramStageDataElement> list() {
-        return programStageDataElementStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(ProgramStageDataElement object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programStageDataElementStore.delete(object);
-    }
-
-    @Override
-    public boolean save(ProgramStageDataElement object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return programStageDataElementStore.save(object);
-    }
-
-    @Override
-    public List<ProgramStageDataElement> list(Set<String> uids) {
-        return programStageDataElementStore.queryByUids(uids);
-    }
+    ProgramStageDataElement query(ProgramStage programStage, DataElement dataElement);
 }

@@ -32,9 +32,13 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.constant.Constant;
 
 @Table(database = DbDhis.class)
 public final class ConstantFlow extends BaseIdentifiableObjectFlow {
+    public static final Mapper<Constant, ConstantFlow> MAPPER = new ConstantMapper();
 
     @Column
     double value;
@@ -49,5 +53,58 @@ public final class ConstantFlow extends BaseIdentifiableObjectFlow {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    private static class ConstantMapper extends AbsMapper<Constant, ConstantFlow> {
+
+        public ConstantMapper() {
+            // empty constructor
+        }
+
+        @Override
+        public ConstantFlow mapToDatabaseEntity(Constant constant) {
+            if (constant == null) {
+                return null;
+            }
+
+            ConstantFlow constantFlow = new ConstantFlow();
+            constantFlow.setId(constant.getId());
+            constantFlow.setUId(constant.getUId());
+            constantFlow.setCreated(constant.getCreated());
+            constantFlow.setLastUpdated(constant.getLastUpdated());
+            constantFlow.setName(constant.getName());
+            constantFlow.setDisplayName(constant.getDisplayName());
+            constantFlow.setAccess(constant.getAccess());
+            constantFlow.setValue(constant.getValue());
+            return constantFlow;
+        }
+
+        @Override
+        public Constant mapToModel(ConstantFlow constantFlow) {
+            if (constantFlow == null) {
+                return null;
+            }
+
+            Constant constant = new Constant();
+            constant.setId(constantFlow.getId());
+            constant.setUId(constantFlow.getUId());
+            constant.setCreated(constantFlow.getCreated());
+            constant.setLastUpdated(constantFlow.getLastUpdated());
+            constant.setName(constantFlow.getName());
+            constant.setDisplayName(constantFlow.getDisplayName());
+            constant.setAccess(constantFlow.getAccess());
+            constant.setValue(constantFlow.getValue());
+            return constant;
+        }
+
+        @Override
+        public Class<Constant> getModelTypeClass() {
+            return Constant.class;
+        }
+
+        @Override
+        public Class<ConstantFlow> getDatabaseEntityTypeClass() {
+            return ConstantFlow.class;
+        }
     }
 }

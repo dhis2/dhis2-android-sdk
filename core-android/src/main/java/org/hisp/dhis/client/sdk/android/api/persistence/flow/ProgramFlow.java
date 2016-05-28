@@ -35,21 +35,23 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
-import org.hisp.dhis.client.sdk.android.api.persistence.MapperModuleProvider;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramType;
 
 @Table(database = DbDhis.class)
 public final class ProgramFlow extends BaseIdentifiableObjectFlow {
+    public static Mapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
+
     private static final String TRACKED_ENTITY_KEY = "trackedEntity";
-    public static IMapper<Program, ProgramFlow> MAPPER = new ProgramMapper();
+
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = TRACKED_ENTITY_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(
+                            columnName = TRACKED_ENTITY_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = true, onDelete = ForeignKeyAction.NO_ACTION
     )
     TrackedEntityFlow trackedEntity;
@@ -258,8 +260,8 @@ public final class ProgramFlow extends BaseIdentifiableObjectFlow {
             programFlow.setName(program.getName());
             programFlow.setDisplayName(program.getDisplayName());
             programFlow.setAccess(program.getAccess());
-            programFlow.setTrackedEntity(MapperModuleProvider.getInstance()
-                    .getTrackedEntityMapper().mapToDatabaseEntity(program.getTrackedEntity()));
+            programFlow.setTrackedEntity(TrackedEntityFlow.MAPPER
+                    .mapToDatabaseEntity(program.getTrackedEntity()));
             programFlow.setProgramType(program.getProgramType());
             programFlow.setVersion(program.getVersion());
             programFlow.setEnrollmentDateLabel(program.getEnrollmentDateLabel());
@@ -293,8 +295,8 @@ public final class ProgramFlow extends BaseIdentifiableObjectFlow {
             program.setName(programFlow.getName());
             program.setDisplayName(programFlow.getDisplayName());
             program.setAccess(programFlow.getAccess());
-            program.setTrackedEntity(MapperModuleProvider.getInstance()
-                    .getTrackedEntityMapper().mapToModel(programFlow.getTrackedEntity()));
+            program.setTrackedEntity(TrackedEntityFlow.MAPPER
+                    .mapToModel(programFlow.getTrackedEntity()));
             program.setProgramType(programFlow.getProgramType());
             program.setVersion(programFlow.getVersion());
             program.setEnrollmentDateLabel(programFlow.getEnrollmentDateLabel());

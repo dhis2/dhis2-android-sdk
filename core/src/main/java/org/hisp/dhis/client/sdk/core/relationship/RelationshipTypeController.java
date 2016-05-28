@@ -28,19 +28,19 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.controllers.IIdentifiableController;
+import org.hisp.dhis.client.sdk.core.common.controllers.IdentifiableController;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
+import org.hisp.dhis.client.sdk.core.common.persistence.DbOperation;
 import org.hisp.dhis.client.sdk.core.common.persistence.DbUtils;
-import org.hisp.dhis.client.sdk.core.common.persistence.IDbOperation;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
-import org.hisp.dhis.client.sdk.core.common.persistence.ITransactionManager;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.TransactionManager;
 import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
+import org.hisp.dhis.client.sdk.core.common.preferences.LastUpdatedPreferences;
 import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
-import org.hisp.dhis.client.sdk.core.systeminfo.ISystemInfoApiClient;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
+import org.hisp.dhis.client.sdk.core.systeminfo.SystemInfoApiClient;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 import org.joda.time.DateTime;
 
 import java.util.LinkedList;
@@ -48,19 +48,19 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public final class RelationshipTypeController implements IIdentifiableController<RelationshipType> {
-    private final ITransactionManager transactionManager;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-    private final IRelationshipTypeApiClient relationshipTypeApiClient;
-    private final ISystemInfoApiClient systemInfoApiClient;
-    private final IIdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
+public final class RelationshipTypeController implements IdentifiableController<RelationshipType> {
+    private final TransactionManager transactionManager;
+    private final LastUpdatedPreferences lastUpdatedPreferences;
+    private final RelationshipTypeApiClient relationshipTypeApiClient;
+    private final SystemInfoApiClient systemInfoApiClient;
+    private final IdentifiableObjectStore<RelationshipType> mRelationshipTypeStore;
 
-    public RelationshipTypeController(IRelationshipTypeApiClient relationshipApiClient,
-                                      ITransactionManager transactionManager,
-                                      IIdentifiableObjectStore<RelationshipType>
+    public RelationshipTypeController(RelationshipTypeApiClient relationshipApiClient,
+                                      TransactionManager transactionManager,
+                                      IdentifiableObjectStore<RelationshipType>
                                               mRelationshipTypeStore,
-                                      ILastUpdatedPreferences lastUpdatedPreferences,
-                                      ISystemInfoApiClient systemInfoApiClient) {
+                                      LastUpdatedPreferences lastUpdatedPreferences,
+                                      SystemInfoApiClient systemInfoApiClient) {
         this.relationshipTypeApiClient = relationshipApiClient;
         this.transactionManager = transactionManager;
         this.mRelationshipTypeStore = mRelationshipTypeStore;
@@ -88,7 +88,7 @@ public final class RelationshipTypeController implements IIdentifiableController
                 ModelUtils.merge(allRelationshipTypes, updatedRelationshipTypes,
                         mRelationshipTypeStore.queryAll());
 
-        Queue<IDbOperation> operations = new LinkedList<>();
+        Queue<DbOperation> operations = new LinkedList<>();
         operations.addAll(DbUtils.createOperations(mRelationshipTypeStore,
                 existingPersistedAndUpdatedRelationshipTypes, mRelationshipTypeStore.queryAll()));
 
@@ -97,12 +97,12 @@ public final class RelationshipTypeController implements IIdentifiableController
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy) throws ApiException {
+    public void pull(SyncStrategy syncStrategy) throws ApiException {
         getRelationshipTypesDataFromServer();
     }
 
     @Override
-    public void sync(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
+    public void pull(SyncStrategy syncStrategy, Set<String> uids) throws ApiException {
 
     }
 }

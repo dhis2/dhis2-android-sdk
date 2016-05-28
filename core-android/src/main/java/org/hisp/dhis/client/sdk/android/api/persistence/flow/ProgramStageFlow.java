@@ -36,12 +36,12 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStage;
 
 @Table(database = DbDhis.class)
 public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<ProgramStage, ProgramStageFlow> MAPPER = new ProgramStageMapper();
+    public static final Mapper<ProgramStage, ProgramStageFlow> MAPPER = new ProgramStageMapper();
     private static final String PROGRAM_KEY = "program";
 
     @Column
@@ -61,6 +61,9 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
 
     @Column
     String reportDateDescription;
+
+    @Column
+    String executionDateLabel;
 
     @Column
     boolean displayGenerateEventBox;
@@ -141,6 +144,14 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
 
     public void setReportDateDescription(String reportDateDescription) {
         this.reportDateDescription = reportDateDescription;
+    }
+
+    public String getExecutionDateLabel() {
+        return executionDateLabel;
+    }
+
+    public void setExecutionDateLabel(String executionDateLabel) {
+        this.executionDateLabel = executionDateLabel;
     }
 
     public boolean isDisplayGenerateEventBox() {
@@ -284,6 +295,7 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
             programStageFlow.setDataEntryType(programStage.getDataEntryType());
             programStageFlow.setBlockEntryForm(programStage.isBlockEntryForm());
             programStageFlow.setReportDateDescription(programStage.getReportDateDescription());
+            programStageFlow.setExecutionDateLabel(programStage.getExecutionDateLabel());
             programStageFlow.setDisplayGenerateEventBox(programStage.isDisplayGenerateEventBox());
             programStageFlow.setDescription(programStage.getDescription());
             programStageFlow.setExternalAccess(programStage.isExternalAccess());
@@ -322,6 +334,7 @@ public final class ProgramStageFlow extends BaseIdentifiableObjectFlow {
             programStage.setDataEntryType(programStageFlow.getDataEntryType());
             programStage.setBlockEntryForm(programStageFlow.isBlockEntryForm());
             programStage.setReportDateDescription(programStageFlow.getReportDateDescription());
+            programStage.setExecutionDateLabel(programStageFlow.getExecutionDateLabel());
             programStage.setDisplayGenerateEventBox(programStageFlow.isDisplayGenerateEventBox());
             programStage.setDescription(programStageFlow.getDescription());
             programStage.setExternalAccess(programStageFlow.isExternalAccess());

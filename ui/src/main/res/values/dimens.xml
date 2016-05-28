@@ -28,15 +28,19 @@
   -->
 
 <resources>
-    <dimen name="progressbar_stroke_width">6dp</dimen>
+    <dimen name="circle_stroke_width">6dp</dimen>
+    <dimen name="progressbar_stroke_width">10dp</dimen>
 
     <dimen name="keyline_default">16dp</dimen>
 
     <dimen name="navigation_header_height">192dp</dimen>
     <dimen name="navigation_avatar_radius">32dp</dimen>
+    <dimen name="navigation_drawer_width">304dp</dimen>
 
     <dimen name="text_size_medium">14sp</dimen>
     <dimen name="text_size_large">17sp</dimen>
+
+    <dimen name="titlebar_height">56dp</dimen>
 
     <integer name="activity_anim_duration">300</integer>
 </resources>

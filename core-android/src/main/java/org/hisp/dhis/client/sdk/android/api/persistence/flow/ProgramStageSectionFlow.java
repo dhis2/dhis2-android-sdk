@@ -36,13 +36,15 @@ import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
 import org.hisp.dhis.client.sdk.android.common.AbsMapper;
-import org.hisp.dhis.client.sdk.android.common.IMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
 import org.hisp.dhis.client.sdk.models.program.ProgramStageSection;
 
 @Table(database = DbDhis.class)
 public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
-    public static final IMapper<ProgramStageSection, ProgramStageSectionFlow> MAPPER = new Mapper();
-    private static final String PROGRAM_STAGE_KEY = "programstage";
+    public static final Mapper<ProgramStageSection, ProgramStageSectionFlow>
+            MAPPER = new SectionMapper();
+
+    private static final String PROGRAM_STAGE_KEY = "programStage";
 
     @Column
     int sortOrder;
@@ -53,8 +55,8 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
     @Column
     @ForeignKey(
             references = {
-                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY,
-                            columnType = String.class, foreignKeyColumnName = "uId"),
+                    @ForeignKeyReference(columnName = PROGRAM_STAGE_KEY, columnType = String.class,
+                            foreignKeyColumnName = BaseIdentifiableObjectFlow.COLUMN_UID),
             }, saveForeignKeyModel = false, onDelete = ForeignKeyAction.CASCADE
     )
     ProgramStageFlow programStage;
@@ -87,7 +89,7 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
         this.programStage = programStage;
     }
 
-    private static class Mapper extends AbsMapper<ProgramStageSection, ProgramStageSectionFlow> {
+    private static class SectionMapper extends AbsMapper<ProgramStageSection, ProgramStageSectionFlow> {
 
         @Override
         public ProgramStageSectionFlow mapToDatabaseEntity(
@@ -105,7 +107,6 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
             programStageSectionFlow.setDisplayName(programStageSection.getDisplayName());
             programStageSectionFlow.setAccess(programStageSection.getAccess());
             programStageSectionFlow.setSortOrder(programStageSection.getSortOrder());
-            programStageSectionFlow.setExternalAccess(programStageSection.isExternalAccess());
             programStageSectionFlow.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToDatabaseEntity(programStageSection.getProgramStage()));
             return programStageSectionFlow;
@@ -126,7 +127,6 @@ public final class ProgramStageSectionFlow extends BaseIdentifiableObjectFlow {
             programStageSection.setDisplayName(programStageSectionFlow.getDisplayName());
             programStageSection.setAccess(programStageSectionFlow.getAccess());
             programStageSection.setSortOrder(programStageSectionFlow.getSortOrder());
-            programStageSection.setExternalAccess(programStageSectionFlow.isExternalAccess());
             programStageSection.setProgramStage(ProgramStageFlow.MAPPER
                     .mapToModel(programStageSectionFlow.getProgramStage()));
             return programStageSection;

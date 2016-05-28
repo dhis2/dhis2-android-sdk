@@ -35,6 +35,8 @@ targetCompatibility = JavaVersion.VERSION_1_7
 def libs = rootProject.ext.libraries
 
 dependencies {
+    compile project(":utils")
+
     // Fasterxml libraries.
     compile "com.fasterxml.jackson.core:jackson-annotations:${libs.jacksonVersion}"
     compile "com.fasterxml.jackson.core:jackson-core:${libs.jacksonVersion}"

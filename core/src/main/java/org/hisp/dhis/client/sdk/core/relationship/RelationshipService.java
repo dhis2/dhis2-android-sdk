@@ -28,122 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.state.Action;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public class RelationshipService implements IRelationshipService {
-    private IRelationshipStore relationshipStore;
-    private IStateStore stateStore;
+public interface RelationshipService extends Service, Save<Relationship>, Remove<Relationship>,
+        Get<Relationship>, ListAll<Relationship> {
+    List<Relationship> list(TrackedEntityInstance trackedEntityInstance);
 
-    public RelationshipService(IRelationshipStore relationshipStore, IStateStore stateStore) {
-        this.relationshipStore = relationshipStore;
-        this.stateStore = stateStore;
-    }
-
-    @Override
-    public List<Relationship> list(TrackedEntityInstance trackedEntityInstance) {
-        Preconditions.isNull(trackedEntityInstance, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(trackedEntityInstance);
-
-        if (!Action.TO_DELETE.equals(action)) {
-            return relationshipStore.query(trackedEntityInstance);
-        }
-
-        return null;
-    }
-
-    @Override
-    public Relationship get(long id) {
-        Relationship relationship = relationshipStore.queryById(id);
-
-        if (relationship != null) {
-            Action action = stateStore.queryActionForModel(relationship);
-
-            if (!Action.TO_DELETE.equals(action)) {
-                return relationship;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<Relationship> list() {
-        return stateStore.queryModelsWithActions(Relationship.class,
-                Action.SYNCED, Action.TO_POST, Action.TO_UPDATE);
-    }
-
-    @Override
-    public boolean remove(Relationship object) {
-        Preconditions.isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            return false;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case SYNCED:
-            case TO_UPDATE: {
-                status = stateStore.saveActionForModel(object, Action.TO_DELETE);
-                break;
-            }
-            case TO_POST: {
-                status = relationshipStore.delete(object);
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-        }
-
-        return status;
-    }
-
-    @Override
-    public boolean save(Relationship object) {
-        Preconditions.isNull(object, "Object must not be null");
-
-        Action action = stateStore.queryActionForModel(object);
-        if (action == null) {
-            boolean status = relationshipStore.save(object);
-
-            if (status) {
-                status = stateStore.saveActionForModel(object, Action.TO_POST);
-            }
-
-            return status;
-        }
-
-        boolean status = false;
-        switch (action) {
-            case TO_POST:
-            case TO_UPDATE: {
-                status = relationshipStore.save(object);
-                break;
-            }
-            case SYNCED: {
-                status = relationshipStore.save(object);
-
-                if (status) {
-                    status = stateStore.saveActionForModel(object, Action.TO_UPDATE);
-                }
-                break;
-            }
-            case TO_DELETE: {
-                status = false;
-                break;
-            }
-
-        }
-
-        return status;
-    }
 }

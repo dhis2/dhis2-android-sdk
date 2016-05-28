@@ -38,17 +38,11 @@ import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public final class ProgramRuleAction extends BaseIdentifiableObject {
 
+    @JsonProperty("programRuleActionType")
+    private ProgramRuleActionType programRuleActionType;
+
     @JsonProperty("programRule")
     private ProgramRule programRule;
-
-    @JsonProperty("trackedEntityAttribute")
-    private TrackedEntityAttribute trackedEntityAttribute;
-
-    @JsonProperty("dataElement")
-    private DataElement dataElement;
-
-    @JsonProperty("programIndicator")
-    private ProgramIndicator programIndicator;
 
     @JsonProperty("programStage")
     private ProgramStage programStage;
@@ -56,11 +50,14 @@ public final class ProgramRuleAction extends BaseIdentifiableObject {
     @JsonProperty("programStageSection")
     private ProgramStageSection programStageSection;
 
-    @JsonProperty("programRuleActionType")
-    private ProgramRuleActionType programRuleActionType;
+    @JsonProperty("programIndicator")
+    private ProgramIndicator programIndicator;
 
-    @JsonProperty("externalAccess")
-    private boolean externalAccess;
+    @JsonProperty("trackedEntityAttribute")
+    private TrackedEntityAttribute trackedEntityAttribute;
+
+    @JsonProperty("dataElement")
+    private DataElement dataElement;
 
     @JsonProperty("content")
     private String content;
@@ -111,14 +108,6 @@ public final class ProgramRuleAction extends BaseIdentifiableObject {
         this.programRuleActionType = programRuleActionType;
     }
 
-    public boolean isExternalAccess() {
-        return externalAccess;
-    }
-
-    public void setExternalAccess(boolean externalAccess) {
-        this.externalAccess = externalAccess;
-    }
-
     public ProgramIndicator getProgramIndicator() {
         return programIndicator;
     }
@@ -157,5 +146,21 @@ public final class ProgramRuleAction extends BaseIdentifiableObject {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "ProgramRuleAction{" +
+                "programRuleActionType=" + programRuleActionType +
+                ", programRule=" + programRule +
+                ", programStage=" + programStage +
+                ", programStageSection=" + programStageSection +
+                ", programIndicator=" + programIndicator +
+                ", trackedEntityAttribute=" + trackedEntityAttribute +
+                ", dataElement=" + dataElement +
+                ", content='" + content + '\'' +
+                ", location='" + location + '\'' +
+                ", data='" + data + '\'' +
+                '}';
     }
 }

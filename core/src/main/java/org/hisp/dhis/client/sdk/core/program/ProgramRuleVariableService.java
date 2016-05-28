@@ -28,45 +28,20 @@
 
 package org.hisp.dhis.client.sdk.core.program;
 
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.program.Program;
 import org.hisp.dhis.client.sdk.models.program.ProgramRuleVariable;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
 import java.util.List;
 
-public final class ProgramRuleVariableService implements IProgramRuleVariableService {
+public interface ProgramRuleVariableService extends Service, Get<ProgramRuleVariable>,
+        GetUid<ProgramRuleVariable>, ListAll<ProgramRuleVariable>, ListUids<ProgramRuleVariable> {
 
-    private final IProgramRuleVariableStore programRuleVariableStore;
+    List<ProgramRuleVariable> list(Program program);
 
-    public ProgramRuleVariableService(IProgramRuleVariableStore programRuleVariableStore) {
-        this.programRuleVariableStore = programRuleVariableStore;
-    }
-
-    @Override
-    public ProgramRuleVariable get(long id) {
-        return programRuleVariableStore.queryById(id);
-    }
-
-    @Override
-    public ProgramRuleVariable get(String uid) {
-        return programRuleVariableStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<ProgramRuleVariable> list() {
-        return programRuleVariableStore.queryAll();
-    }
-
-    @Override
-    public ProgramRuleVariable getByName(Program program, String programRuleVariableName) {
-        Preconditions.isNull(programRuleVariableName, "programRuleVariableName cannot be null!");
-
-        List<ProgramRuleVariable> programRuleVariables = programRuleVariableStore.query(program);
-        for (ProgramRuleVariable programRuleVariable : programRuleVariables) {
-            if (programRuleVariable.getName().equals(programRuleVariableName)) {
-                return programRuleVariable;
-            }
-        }
-        return null;
-    }
+    List<ProgramRuleVariable> list(List<Program> programs);
 }

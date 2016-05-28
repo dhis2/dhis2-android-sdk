@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.client.sdk.models.common.state;
 
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 
-public final class State implements IModel {
+public final class State implements Model {
     private long id;
     private long itemId;
-    private Class<? extends IModel> itemType;
+    private Class<? extends Model> itemType;
     private Action action;
 
     public State() {
@@ -58,11 +58,11 @@ public final class State implements IModel {
         this.itemId = itemId;
     }
 
-    public Class<? extends IModel> getItemType() {
+    public Class<? extends Model> getItemType() {
         return itemType;
     }
 
-    public void setItemType(Class<? extends IModel> itemType) {
+    public void setItemType(Class<? extends Model> itemType) {
         this.itemType = itemType;
     }
 

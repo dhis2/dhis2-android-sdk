@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.client.sdk.core.common.persistence;
 
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +41,8 @@ public class DbUtils {
         // no instances
     }
 
-    public static <T extends IdentifiableObject> List<IDbOperation> createOperations(
-            List<T> existingItems, List<T> updatedItems, List<T> persistedItems, IStore<T> store) {
+    public static <T extends IdentifiableObject> List<DbOperation> createOperations(
+            List<T> existingItems, List<T> updatedItems, List<T> persistedItems, Store<T> store) {
         Map<String, T> persistedItemsMap = ModelUtils.toMap(persistedItems);
         Map<String, T> updatedItemsMap = ModelUtils.toMap(updatedItems);
         Map<String, T> existingItemsMap = ModelUtils.toMap(existingItems);
@@ -54,18 +54,18 @@ public class DbUtils {
             }
         }
 
-        List<IDbOperation> operations = new ArrayList<>();
+        List<DbOperation> operations = new ArrayList<>();
         for (T updatedItem : updatedItems) {
             if (persistedItemsMap.containsKey(updatedItem.getUId())) {
-                operations.add(DbOperation.with(store).update(updatedItem));
+                operations.add(DbOperationImpl.with(store).update(updatedItem));
             } else {
-                operations.add(DbOperation.with(store).insert(updatedItem));
+                operations.add(DbOperationImpl.with(store).insert(updatedItem));
             }
         }
 
         for (String persistedItemUid : persistedItemsMap.keySet()) {
             if (!existingItemsMap.containsKey(persistedItemUid)) {
-                operations.add(DbOperation.with(store).delete(persistedItemsMap.get
+                operations.add(DbOperationImpl.with(store).delete(persistedItemsMap.get
                         (persistedItemUid)));
             }
         }
@@ -73,9 +73,9 @@ public class DbUtils {
         return operations;
     }
 
-    public static <T extends IdentifiableObject> List<IDbOperation> createOperations(
-            IIdentifiableObjectStore<T> modelStore, List<T> oldModels, List<T> newModels) {
-        List<IDbOperation> ops = new ArrayList<>();
+    public static <T extends IdentifiableObject> List<DbOperation> createOperations(
+            IdentifiableObjectStore<T> modelStore, List<T> oldModels, List<T> newModels) {
+        List<DbOperation> ops = new ArrayList<>();
 
         Map<String, T> newModelsMap = ModelUtils.toMap(newModels);
         Map<String, T> oldModelsMap = ModelUtils.toMap(oldModels);
@@ -91,7 +91,7 @@ public class DbUtils {
             // if there is no particular model with given uid in list of
             // actual (up to date) items, it means it was removed on the server side
             if (newModel == null) {
-                ops.add(DbOperation.with(modelStore)
+                ops.add(DbOperationImpl.with(modelStore)
                         .delete(oldModel));
 
                 // in case if there is no new model object,
@@ -105,7 +105,7 @@ public class DbUtils {
                 // note, we need to pass database primary id to updated model
                 // in order to avoid creation of new object.
                 newModel.setId(oldModel.getId());
-                ops.add(DbOperation.with(modelStore)
+                ops.add(DbOperationImpl.with(modelStore)
                         .update(newModel));
             }
 
@@ -117,7 +117,7 @@ public class DbUtils {
         // Inserting new items.
         for (String newModelKey : newModelsMap.keySet()) {
             T item = newModelsMap.get(newModelKey);
-            ops.add(DbOperation.with(modelStore)
+            ops.add(DbOperationImpl.with(modelStore)
                     .insert(item));
         }
 

@@ -34,8 +34,6 @@ targetCompatibility = JavaVersion.VERSION_1_7
 def libs = rootProject.ext.libraries
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
     compile project(":models")
 
     // Apache

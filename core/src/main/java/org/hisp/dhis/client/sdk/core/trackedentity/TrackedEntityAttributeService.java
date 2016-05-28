@@ -28,45 +28,18 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.ListUids;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
 
-public class TrackedEntityAttributeService implements ITrackedEntityAttributeService {
-    private IIdentifiableObjectStore<TrackedEntityAttribute> trackedEntityAttributeStore;
-
-    public TrackedEntityAttributeService(IIdentifiableObjectStore<TrackedEntityAttribute>
-                                                 trackedEntityAttributeStore) {
-        this.trackedEntityAttributeStore = trackedEntityAttributeStore;
-    }
-
-    @Override
-    public TrackedEntityAttribute get(long id) {
-        return trackedEntityAttributeStore.queryById(id);
-    }
-
-    @Override
-    public TrackedEntityAttribute get(String uid) {
-        return trackedEntityAttributeStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<TrackedEntityAttribute> list() {
-        return trackedEntityAttributeStore.queryAll();
-
-    }
-
-    @Override
-    public boolean remove(TrackedEntityAttribute object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return trackedEntityAttributeStore.delete(object);
-    }
-
-    @Override
-    public boolean save(TrackedEntityAttribute object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return trackedEntityAttributeStore.save(object);
-    }
+public interface TrackedEntityAttributeService extends Service, Save<TrackedEntityAttribute>,
+        Remove<TrackedEntityAttribute>, Get<TrackedEntityAttribute>,
+        GetUid<TrackedEntityAttribute>, ListAll<TrackedEntityAttribute>,
+        ListUids<TrackedEntityAttribute> {
 }

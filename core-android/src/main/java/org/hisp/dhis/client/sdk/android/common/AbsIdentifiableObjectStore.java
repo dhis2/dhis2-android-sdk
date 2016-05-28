@@ -35,30 +35,33 @@ import com.raizlabs.android.dbflow.structure.Model;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseIdentifiableObjectFlow;
 import org.hisp.dhis.client.sdk.android.api.persistence.flow.BaseModelFlow;
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.persistence.IdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.utils.ModelUtils;
 import org.hisp.dhis.client.sdk.models.common.base.IdentifiableObject;
-import org.hisp.dhis.client.sdk.models.utils.ModelUtils;
 
 import java.util.List;
 import java.util.Set;
 
 public abstract class AbsIdentifiableObjectStore<ModelType extends IdentifiableObject,
         DatabaseEntityType extends Model & IdentifiableObject> extends AbsStore<ModelType,
-        DatabaseEntityType> implements IIdentifiableObjectStore<ModelType> {
+        DatabaseEntityType> implements IdentifiableObjectStore<ModelType> {
 
-    public AbsIdentifiableObjectStore(IMapper<ModelType, DatabaseEntityType> mapper) {
+    public AbsIdentifiableObjectStore(Mapper<ModelType, DatabaseEntityType> mapper) {
         super(mapper);
     }
 
     @Override
     public ModelType queryById(long id) {
-        DatabaseEntityType databaseEntity = new Select()
+        List<DatabaseEntityType> databaseEntities = new Select()
                 .from(getMapper().getDatabaseEntityTypeClass())
                 .where(Condition.column(new NameAlias(BaseModelFlow
                         .COLUMN_ID)).is(id))
-                .querySingle();
+                .queryList();
+        if(databaseEntities != null && !databaseEntities.isEmpty()) {
+            return getMapper().mapToModel(databaseEntities.get(0));
+        }
+        return null;
 
-        return getMapper().mapToModel(databaseEntity);
     }
 
     @Override

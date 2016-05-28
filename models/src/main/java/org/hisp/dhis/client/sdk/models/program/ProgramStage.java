@@ -50,6 +50,9 @@ public final class ProgramStage extends BaseIdentifiableObject {
     @JsonProperty("reportDateDescription")
     private String reportDateDescription;
 
+    @JsonProperty("excecutionDateLabel")
+    private String executionDateLabel;
+
     @JsonProperty("displayGenerateEventBox")
     private boolean displayGenerateEventBox;
 
@@ -138,6 +141,14 @@ public final class ProgramStage extends BaseIdentifiableObject {
 
     public void setReportDateDescription(String reportDateDescription) {
         this.reportDateDescription = reportDateDescription;
+    }
+
+    public String getExecutionDateLabel() {
+        return executionDateLabel;
+    }
+
+    public void setExecutionDateLabel(String executionDateLabel) {
+        this.executionDateLabel = executionDateLabel;
     }
 
     public boolean isDisplayGenerateEventBox() {

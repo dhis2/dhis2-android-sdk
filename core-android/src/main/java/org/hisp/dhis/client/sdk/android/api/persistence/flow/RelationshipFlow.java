@@ -38,6 +38,9 @@ import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.annotation.UniqueGroup;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.relationship.Relationship;
 
 @Table(database = DbDhis.class, uniqueColumnGroups = {
         @UniqueGroup(
@@ -45,6 +48,7 @@ import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
                 uniqueConflict = ConflictAction.FAIL)
 })
 public final class RelationshipFlow extends BaseModelFlow {
+    public static final Mapper<Relationship, RelationshipFlow> MAPPER = new RelationshipMapper();
 
     static final int UNIQUE_RELATIONSHIP_GROUP = 93;
     static final String TRACKED_ENTITY_INSTANCE_A_KEY = "trackedEntityInstanceA";
@@ -113,5 +117,52 @@ public final class RelationshipFlow extends BaseModelFlow {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    private static class RelationshipMapper extends AbsMapper<Relationship, RelationshipFlow> {
+
+        @Override
+        public RelationshipFlow mapToDatabaseEntity(Relationship relationship) {
+            if (relationship == null) {
+                return null;
+            }
+
+            RelationshipFlow relationshipFlow = new RelationshipFlow();
+            relationshipFlow.setId(relationship.getId());
+            relationshipFlow.setRelationship(relationship.getRelationship());
+            relationshipFlow.setTrackedEntityInstanceA(TrackedEntityInstanceFlow.MAPPER
+                    .mapToDatabaseEntity(relationship.getTrackedEntityInstanceA()));
+            relationshipFlow.setTrackedEntityInstanceB(TrackedEntityInstanceFlow.MAPPER
+                    .mapToDatabaseEntity(relationship.getTrackedEntityInstanceB()));
+            relationshipFlow.setDisplayName(relationship.getDisplayName());
+            return relationshipFlow;
+        }
+
+        @Override
+        public Relationship mapToModel(RelationshipFlow relationshipFlow) {
+            if (relationshipFlow == null) {
+                return null;
+            }
+
+            Relationship relationship = new Relationship();
+            relationship.setId(relationshipFlow.getId());
+            relationship.setRelationship(relationshipFlow.getRelationship());
+            relationship.setTrackedEntityInstanceA(TrackedEntityInstanceFlow.MAPPER
+                    .mapToModel(relationshipFlow.getTrackedEntityInstanceA()));
+            relationship.setTrackedEntityInstanceB(TrackedEntityInstanceFlow.MAPPER
+                    .mapToModel(relationshipFlow.getTrackedEntityInstanceB()));
+            relationship.setDisplayName(relationshipFlow.getDisplayName());
+            return relationship;
+        }
+
+        @Override
+        public Class<Relationship> getModelTypeClass() {
+            return Relationship.class;
+        }
+
+        @Override
+        public Class<RelationshipFlow> getDatabaseEntityTypeClass() {
+            return RelationshipFlow.class;
+        }
     }
 }

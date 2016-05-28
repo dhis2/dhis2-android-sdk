@@ -28,45 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.trackedentity;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntity;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
-
-public class TrackedEntityService implements ITrackedEntityService {
-    private IIdentifiableObjectStore<TrackedEntity> trackedEntityStore;
-
-    public TrackedEntityService(IIdentifiableObjectStore<TrackedEntity> trackedEntityStore) {
-        this.trackedEntityStore = trackedEntityStore;
-    }
-
-    @Override
-    public TrackedEntity get(long id) {
-        TrackedEntity trackedEntity = trackedEntityStore.queryById(id);
-        return trackedEntity;
-    }
-
-    @Override
-    public TrackedEntity get(String uid) {
-        TrackedEntity trackedEntityAttribute = trackedEntityStore.queryByUid(uid);
-        return trackedEntityAttribute;
-    }
-
-    @Override
-    public List<TrackedEntity> list() {
-        return trackedEntityStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(TrackedEntity object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return trackedEntityStore.delete(object);
-    }
-
-    @Override
-    public boolean save(TrackedEntity object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return trackedEntityStore.save(object);
-    }
+public interface TrackedEntityService extends Service, Save<TrackedEntity>,
+        Remove<TrackedEntity>, Get<TrackedEntity>, GetUid<TrackedEntity>,
+        ListAll<TrackedEntity> {
 }

@@ -30,56 +30,10 @@ package org.hisp.dhis.client.sdk.core.systeminfo;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
-import org.hisp.dhis.client.sdk.core.common.preferences.DateType;
-import org.hisp.dhis.client.sdk.core.common.preferences.ILastUpdatedPreferences;
-import org.hisp.dhis.client.sdk.core.common.preferences.ResourceType;
 import org.hisp.dhis.client.sdk.models.common.SystemInfo;
-import org.joda.time.DateTime;
-import org.joda.time.Seconds;
 
-public class SystemInfoController implements ISystemInfoController {
-    private static final int EXPIRATION_THRESHOLD = 128;
+public interface SystemInfoController {
+    SystemInfo getSystemInfo() throws ApiException;
 
-    /* API clients */
-    private final ISystemInfoApiClient systemInfoApiClient;
-
-    /* Stores and preferences */
-    private final ISystemInfoPreferences systemInfoPreferences;
-    private final ILastUpdatedPreferences lastUpdatedPreferences;
-
-    public SystemInfoController(ISystemInfoApiClient systemInfoApiClient,
-                                ISystemInfoPreferences systemInfoPreferences,
-                                ILastUpdatedPreferences lastUpdatedPreferences) {
-        this.systemInfoApiClient = systemInfoApiClient;
-        this.systemInfoPreferences = systemInfoPreferences;
-        this.lastUpdatedPreferences = lastUpdatedPreferences;
-    }
-
-    @Override
-    public SystemInfo getSystemInfo() throws ApiException {
-        return getSystemInfo(SyncStrategy.DEFAULT);
-    }
-
-    @Override
-    public SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException {
-        SystemInfo systemInfo = systemInfoPreferences.get();
-        DateTime currentDate = DateTime.now();
-
-        if (SyncStrategy.FORCE_UPDATE.equals(strategy) || (SyncStrategy.DEFAULT.equals(strategy) &&
-                isSystemInfoExpired(currentDate))) {
-            systemInfo = systemInfoApiClient.getSystemInfo();
-
-            lastUpdatedPreferences.save(ResourceType.SYSTEM_INFO, DateType.LOCAL, currentDate);
-            systemInfoPreferences.save(systemInfo);
-        }
-
-        return systemInfo;
-    }
-
-    private boolean isSystemInfoExpired(DateTime currentDate) {
-        DateTime lastUpdated = lastUpdatedPreferences.get(
-                ResourceType.SYSTEM_INFO, DateType.LOCAL);
-        return lastUpdated == null || Seconds.secondsBetween(lastUpdated,
-                currentDate).isGreaterThan(Seconds.seconds(EXPIRATION_THRESHOLD));
-    }
+    SystemInfo getSystemInfo(SyncStrategy strategy) throws ApiException;
 }

@@ -39,22 +39,11 @@ public enum ProgramRuleVariableSourceType {
 
     private final String value;
 
-    private ProgramRuleVariableSourceType(String value) {
+    ProgramRuleVariableSourceType(String value) {
         this.value = value;
     }
 
-    public static ProgramRuleVariableSourceType fromValue(String value) {
-        for (ProgramRuleVariableSourceType type : ProgramRuleVariableSourceType.values()) {
-            if (type.value.equalsIgnoreCase(value)) {
-                return type;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public String toString() {
+    public String getValue() {
         return value;
     }
 }

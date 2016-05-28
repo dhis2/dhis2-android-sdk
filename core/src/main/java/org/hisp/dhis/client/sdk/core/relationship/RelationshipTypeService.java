@@ -28,44 +28,15 @@
 
 package org.hisp.dhis.client.sdk.core.relationship;
 
-import org.hisp.dhis.client.sdk.core.common.persistence.IIdentifiableObjectStore;
+import org.hisp.dhis.client.sdk.core.common.services.Get;
+import org.hisp.dhis.client.sdk.core.common.services.GetUid;
+import org.hisp.dhis.client.sdk.core.common.services.ListAll;
+import org.hisp.dhis.client.sdk.core.common.services.Remove;
+import org.hisp.dhis.client.sdk.core.common.services.Save;
+import org.hisp.dhis.client.sdk.core.common.services.Service;
 import org.hisp.dhis.client.sdk.models.relationship.RelationshipType;
-import org.hisp.dhis.client.sdk.models.utils.Preconditions;
 
-import java.util.List;
-
-public class RelationshipTypeService implements IRelationshipTypeService {
-    private IIdentifiableObjectStore<RelationshipType> relationshipTypeStore;
-
-    public RelationshipTypeService(IIdentifiableObjectStore<RelationshipType>
-                                           relationshipTypeStore) {
-        this.relationshipTypeStore = relationshipTypeStore;
-    }
-
-    @Override
-    public RelationshipType get(long id) {
-        return relationshipTypeStore.queryById(id);
-    }
-
-    @Override
-    public RelationshipType get(String uid) {
-        return relationshipTypeStore.queryByUid(uid);
-    }
-
-    @Override
-    public List<RelationshipType> list() {
-        return relationshipTypeStore.queryAll();
-    }
-
-    @Override
-    public boolean remove(RelationshipType object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return relationshipTypeStore.delete(object);
-    }
-
-    @Override
-    public boolean save(RelationshipType object) {
-        Preconditions.isNull(object, "Object must not be null");
-        return relationshipTypeStore.save(object);
-    }
+public interface RelationshipTypeService extends Service, Save<RelationshipType>,
+        Remove<RelationshipType>, Get<RelationshipType>, GetUid<RelationshipType>,
+        ListAll<RelationshipType> {
 }

@@ -34,7 +34,7 @@ import org.joda.time.DateTime;
 
 import java.util.Comparator;
 
-public interface IdentifiableObject extends IModel {
+public interface IdentifiableObject extends Model {
     Comparator<IdentifiableObject> DISPLAY_NAME_COMPARATOR = new NameComparator();
     Comparator<IdentifiableObject> CREATED_COMPARATOR = new CreatedComparator();
 

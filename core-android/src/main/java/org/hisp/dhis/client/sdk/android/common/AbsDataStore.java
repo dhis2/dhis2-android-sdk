@@ -28,19 +28,18 @@
 
 package org.hisp.dhis.client.sdk.android.common;
 
-import com.raizlabs.android.dbflow.structure.Model;
-
-import org.hisp.dhis.client.sdk.core.common.IStateStore;
-import org.hisp.dhis.client.sdk.models.common.base.IModel;
+import org.hisp.dhis.client.sdk.core.common.StateStore;
+import org.hisp.dhis.client.sdk.models.common.base.Model;
 import org.hisp.dhis.client.sdk.models.common.state.Action;
 
-public class AbsDataStore<ModelType extends IModel, DataBaseEntityType extends IModel & Model>
+public class AbsDataStore<ModelType extends Model, DataBaseEntityType
+        extends Model & com.raizlabs.android.dbflow.structure.Model>
         extends AbsStore<ModelType, DataBaseEntityType> {
 
-    private final IStateStore stateStore;
+    private final StateStore stateStore;
 
-    public AbsDataStore(IMapper<ModelType, DataBaseEntityType> mapper,
-                        IStateStore stateStore) {
+    public AbsDataStore(Mapper<ModelType, DataBaseEntityType> mapper,
+                        StateStore stateStore) {
         super(mapper);
         this.stateStore = stateStore;
     }
@@ -71,7 +70,8 @@ public class AbsDataStore<ModelType extends IModel, DataBaseEntityType extends I
     }
 
     private boolean saveActionForModel(boolean isModelSaved, ModelType model) {
-        return isModelSaved && stateStore.saveActionForModel(model, Action.SYNCED);
+        return isModelSaved && (stateStore.queryActionForModel(model) != null ||
+                stateStore.saveActionForModel(model, Action.SYNCED));
     }
 
     private boolean deleteActionForModel(boolean isDeleted, ModelType model) {

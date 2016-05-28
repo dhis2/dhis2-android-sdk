@@ -40,7 +40,8 @@ import android.widget.RadioGroup;
 import org.hisp.dhis.client.sdk.ui.R;
 import org.hisp.dhis.client.sdk.ui.utils.TypefaceManager;
 
-import static org.hisp.dhis.client.sdk.ui.utils.Preconditions.isNull;
+import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
+
 
 public class FontRadioButton extends AppCompatRadioButton {
     public FontRadioButton(Context context) {

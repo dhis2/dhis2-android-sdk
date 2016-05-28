@@ -30,7 +30,7 @@ package org.hisp.dhis.client.sdk.models.program;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.hisp.dhis.client.sdk.models.common.ValueType;
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.common.base.BaseNameableObject;
 
 import java.util.regex.Pattern;

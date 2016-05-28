@@ -35,9 +35,14 @@ import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import org.hisp.dhis.client.sdk.android.api.persistence.DbDhis;
+import org.hisp.dhis.client.sdk.android.common.AbsMapper;
+import org.hisp.dhis.client.sdk.android.common.Mapper;
+import org.hisp.dhis.client.sdk.models.dataset.DataSet;
 
 @Table(database = DbDhis.class)
 public final class DataSetFlow extends BaseIdentifiableObjectFlow {
+    public static Mapper<DataSet, DataSetFlow> MAPPER = new DataSetMapper();
+
     private static final String CATEGORY_COMBO_KEY = "categoryComboKey";
 
     @Column
@@ -102,5 +107,62 @@ public final class DataSetFlow extends BaseIdentifiableObjectFlow {
 
     public void setPeriodType(String periodType) {
         this.periodType = periodType;
+    }
+
+    private static class DataSetMapper extends AbsMapper<DataSet, DataSetFlow> {
+
+        @Override
+        public DataSetFlow mapToDatabaseEntity(DataSet dataSet) {
+            if (dataSet == null) {
+                return null;
+            }
+
+            DataSetFlow dataSetFlow = new DataSetFlow();
+            dataSetFlow.setId(dataSet.getId());
+            dataSetFlow.setUId(dataSet.getUId());
+            dataSetFlow.setCreated(dataSet.getCreated());
+            dataSetFlow.setLastUpdated(dataSet.getLastUpdated());
+            dataSetFlow.setName(dataSet.getName());
+            dataSetFlow.setDisplayName(dataSet.getDisplayName());
+            dataSetFlow.setAccess(dataSet.getAccess());
+            dataSetFlow.setVersion(dataSet.getVersion());
+            dataSetFlow.setExpiryDays(dataSet.getExpiryDays());
+            dataSetFlow.setAllowFuturePeriods(dataSet.isAllowFuturePeriods());
+            dataSetFlow.setPeriodType(dataSet.getPeriodType());
+            dataSetFlow.setCategoryCombo(null);
+            return dataSetFlow;
+        }
+
+        @Override
+        public DataSet mapToModel(DataSetFlow dataSetFlow) {
+            if (dataSetFlow == null) {
+                return null;
+            }
+
+            DataSet dataSet = new DataSet();
+            dataSet.setId(dataSetFlow.getId());
+            dataSet.setUId(dataSetFlow.getUId());
+            dataSet.setCreated(dataSetFlow.getCreated());
+            dataSet.setLastUpdated(dataSetFlow.getLastUpdated());
+            dataSet.setName(dataSetFlow.getName());
+            dataSet.setDisplayName(dataSetFlow.getDisplayName());
+            dataSet.setAccess(dataSetFlow.getAccess());
+            dataSet.setVersion(dataSetFlow.getVersion());
+            dataSet.setExpiryDays(dataSetFlow.getExpiryDays());
+            dataSet.setAllowFuturePeriods(dataSetFlow.isAllowFuturePeriods());
+            dataSet.setPeriodType(dataSetFlow.getPeriodType());
+            dataSet.setCategoryCombo(null);
+            return dataSet;
+        }
+
+        @Override
+        public Class<DataSet> getModelTypeClass() {
+            return DataSet.class;
+        }
+
+        @Override
+        public Class<DataSetFlow> getDatabaseEntityTypeClass() {
+            return DataSetFlow.class;
+        }
     }
 }

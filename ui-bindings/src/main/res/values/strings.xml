@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ui-bindings</string>
+    <!-- Error/warning messages -->
+    <string name="title_error">Error</string>
+    <string name="title_error_unexpected">Unexpected error</string>
+    <string name="error_not_found">Server not found.</string>
+    <string name="error_unauthorized">Wrong username or password.</string>
 </resources>

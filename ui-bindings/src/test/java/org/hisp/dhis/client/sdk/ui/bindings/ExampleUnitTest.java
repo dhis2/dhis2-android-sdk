@@ -1,4 +1,4 @@
-package org.hisp.dhis.client.sdk.ui;
+package org.hisp.dhis.client.sdk.ui.bindings;
 
 import org.junit.Test;
 

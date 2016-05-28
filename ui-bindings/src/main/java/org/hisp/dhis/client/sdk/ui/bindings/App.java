@@ -26,66 +26,44 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-ext {
-    configuration = [
-            buildToolsVersion: "23.0.2",
-            minSdkVersion    : 15,
-            compileSdkVersion: 23,
-            targetSdkVersion : 23,
-            versionCode      : 1,
-            versionName      : "0.1"
-    ]
+package org.hisp.dhis.client.sdk.ui.bindings;
 
-    libraries = [
-            // dhis libs
-            dhisCommonsVersion : "1.1",
+import android.app.Application;
 
-            // android libs
-            supportVersion     : "23.4.0",
-            rxAndroidVersion   : "1.1.0",
-            dbFlowVersion      : "3.0.0-beta5",
-            progressBarVersion : "1.2.0",
+import org.hisp.dhis.client.sdk.android.api.D2;
+import org.hisp.dhis.client.sdk.ui.bindings.modules.AppComponent;
+import org.hisp.dhis.client.sdk.ui.bindings.modules.AppModule;
 
-            // java libs
-            okhttpVersion      : "3.2.0",
-            retrofitVersion    : "2.0.0",
-            jacksonVersion     : "2.7.4",
-            jodaTimeVersion    : "2.9.2",
-            jexlVersion        : "2.1.1",
-            commonsLang3Version: "3.3.2",
-            commonsMath3Version: "3.6",
-            dagger             : "2.2",
+import javax.inject.Inject;
 
-            // testing libs
-            jUnitVersion       : "4.12",
-            mockitoVersion     : "1.10.19",
-            powerMockVersion   : "1.6.3",
-    ]
-}
+public final class App extends Application {
 
-buildscript {
-    repositories {
-        jcenter()
+    @Inject
+    D2.Flavor flavor;
+
+    AppComponent appComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        // Global dependency graph
+//        appComponent = DaggerAppComponent.builder()
+//                .appModule(new AppModule(this))
+//                .build();
+
+        // injecting dependencies
+        appComponent.inject(this);
+
+        // initializing stetho
+        // Stetho.initializeWithDefaults(this);
+        D2.init(this, flavor);
+
+        // TODO Add LeakCanary support
+        // TODO implement debug navigation drawer
     }
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    public AppComponent getAppComponent() {
+        return appComponent;
     }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-
-        // We need JitPack's repository in order
-        // to compile DbFlow (3)
-        maven {
-            url "https://jitpack.io"
-        }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

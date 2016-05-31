@@ -39,6 +39,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Update;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
+import org.hisp.dhis.android.sdk.controllers.metadata.MetaDataController;
 import org.hisp.dhis.android.sdk.network.APIException;
 import org.hisp.dhis.android.sdk.network.DhisApi;
 import org.hisp.dhis.android.sdk.network.response.ApiResponse2;
@@ -151,12 +152,14 @@ final class TrackerDataSender {
                     System.out.println("IMPORT SUMMARY: " + importSummary.getDescription());
                     if (ImportSummary.SUCCESS.equals(importSummary.getStatus()) ||
                             ImportSummary.OK.equals(importSummary.getStatus())) {
-                        event.setFromServer(true);
-                        event.setCreated(eventUploadTime.toString());
-                        event.setLastUpdated(eventUploadTime.toString());
-                        event.save();
-                        clearFailedItem(FailedItem.EVENT, event.getLocalId());
-                        //UpdateEventTimestamp(event, dhisApi);
+                        if(event != null) {
+                            event.setFromServer(true);
+                            event.setCreated(eventUploadTime.toString());
+                            event.setLastUpdated(eventUploadTime.toString());
+                            event.save();
+                            clearFailedItem(FailedItem.EVENT, event.getLocalId());
+                            //UpdateEventTimestamp(event, dhisApi);
+                        }
                     }
                 }
             }
@@ -195,6 +198,11 @@ final class TrackerDataSender {
 
         if (Utils.isLocal(event.getEnrollment()) && event.getEnrollment() != null/*if enrollments==null, then it is probably a single event without reg*/) {
             return;
+        }
+
+        Enrollment enrollment = TrackerController.getEnrollment(event.getEnrollment());
+        if(enrollment != null && !enrollment.isFromServer()) { // if enrollment is unsent, send it before events
+            sendEnrollmentChanges(dhisApi, enrollment, false);
         }
 
         if (event.getCreated() == null) {
@@ -354,6 +362,17 @@ final class TrackerDataSender {
         if (Utils.isLocal(enrollment.getTrackedEntityInstance())) {//don't send enrollment with locally made uid
             return;
         }
+        TrackedEntityInstance trackedEntityInstance = TrackerController.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
+
+        if(trackedEntityInstance == null) {
+            return;
+        }
+        else {
+            if(!trackedEntityInstance.isFromServer()) { // if TEI is not sent to server and trying to send enrollment first. Send TEI before enrollment
+                sendTrackedEntityInstanceChanges(dhisApi, trackedEntityInstance, false);
+            }
+        }
+
         boolean success;
 
         if(enrollment.getCreated() == null) {

@@ -86,6 +86,9 @@ final class TrackerDataLoader extends ResourceController {
      * Loads datavalue items that is scheduled to be loaded but has not yet been.
      */
     static void updateDataValueDataItems(Context context, DhisApi dhisApi) throws APIException {
+        if(dhisApi == null) {
+            return;
+        }
         SystemInfo serverSystemInfo = dhisApi.getSystemInfo();
         DateTime serverDateTime = serverSystemInfo.getServerDate();
         List<OrganisationUnit> assignedOrganisationUnits = MetaDataController.getAssignedOrganisationUnits();
@@ -133,6 +136,9 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static void getEventsDataFromServer(DhisApi dhisApi, String organisationUnitUid, String programUid, DateTime serverDateTime) throws APIException {
+        if(dhisApi == null) {
+            return;
+        }
         Log.d(CLASS_TAG, "getEventsDataFromServer");
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.EVENTS,organisationUnitUid+programUid);
@@ -152,6 +158,9 @@ final class TrackerDataLoader extends ResourceController {
                                                                                  String programUid,
                                                                                  String queryString,
                                                                                  TrackedEntityAttributeValue... params) throws APIException {
+        if(dhisApi == null) {
+            return null;
+        }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         if(programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
@@ -194,6 +203,9 @@ final class TrackerDataLoader extends ResourceController {
                                                                                         String queryString,
                                                                                         boolean detailedSearch,
                                                                                         TrackedEntityAttributeValue... params) throws APIException {
+        if(dhisApi == null) {
+            return null;
+        }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         if(programUid != null) {
             QUERY_MAP_FULL.put("program", programUid);
@@ -234,6 +246,10 @@ final class TrackerDataLoader extends ResourceController {
         if(trackedEntityInstances == null) {
             return null;
         }
+        if(dhisApi == null) {
+            return null;
+        }
+
         List<TrackedEntityInstance> trackedEntityInstancesToReturn = new ArrayList<>();
         for(TrackedEntityInstance trackedEntityInstance: trackedEntityInstances) {
             try {
@@ -247,6 +263,9 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static TrackedEntityInstance getTrackedEntityInstanceDataFromServer(DhisApi dhisApi, String uid, boolean getEnrollments) throws APIException {
+        if(dhisApi == null) {
+            return null;
+        }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.TRACKEDENTITYINSTANCE, uid);
         DateTime serverDateTime = dhisApi.getSystemInfo()
@@ -297,6 +316,9 @@ final class TrackerDataLoader extends ResourceController {
         if(trackedEntityInstance == null) {
             return null;
         }
+        if(dhisApi == null) {
+            return null;
+        }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ENROLLMENTS, trackedEntityInstance.getTrackedEntityInstance());
         DateTime serverDateTime = dhisApi.getSystemInfo()
@@ -325,6 +347,9 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     static void getEnrollmentDataFromServer(DhisApi dhisApi, String uid, boolean getEvents) throws APIException {
+        if(dhisApi == null) {
+            return;
+        }
         DateTime lastUpdated = DateTimeManager.getInstance()
                 .getLastUpdated(ResourceType.ENROLLMENT, uid);
         DateTime serverDateTime = dhisApi.getSystemInfo()
@@ -341,6 +366,9 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     private static Enrollment updateEnrollment(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
+        if(dhisApi == null) {
+            return null;
+        }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
         Enrollment updatedEnrollment = dhisApi.getEnrollment(uid, QUERY_MAP_FULL);
         return updatedEnrollment;
@@ -348,6 +376,9 @@ final class TrackerDataLoader extends ResourceController {
 
     static void getEventsDataFromServer(DhisApi dhisApi, Enrollment enrollment) {
         if(enrollment == null) {
+            return;
+        }
+        else if (dhisApi == null) {
             return;
         }
 
@@ -386,6 +417,9 @@ final class TrackerDataLoader extends ResourceController {
     }
 
     private static Event updateEvent(DhisApi dhisApi, String uid, DateTime lastUpdated) throws APIException {
+        if(dhisApi == null) {
+            return null;
+        }
         final Map<String, String> QUERY_MAP_FULL = new HashMap<>();
 
         Event updatedEvent = dhisApi.getEvent(uid, QUERY_MAP_FULL);

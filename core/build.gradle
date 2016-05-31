@@ -108,4 +108,6 @@ dependencies {
         exclude module: 'commons-logging'
     }
     compile project(path: ':ui')
+    compile 'io.fabric.sdk.android:fabric:1.3.10'
+    compile 'com.crashlytics.sdk.android:crashlytics:2.5.5'
 }

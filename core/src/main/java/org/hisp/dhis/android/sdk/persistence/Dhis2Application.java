@@ -32,6 +32,7 @@ package org.hisp.dhis.android.sdk.persistence;
 import android.app.Activity;
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Bus;
@@ -39,6 +40,8 @@ import com.squareup.otto.ThreadEnforcer;
 
 import org.hisp.dhis.android.sdk.controllers.DhisController;
 import org.hisp.dhis.android.sdk.utils.MainThreadBus;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  *  Application for initiating the DbFlow Back end
@@ -59,6 +62,7 @@ public abstract class Dhis2Application extends Application {
         dhisController = new DhisController(this);
         bus.register(dhisController);
         Stetho.initializeWithDefaults(this);
+        Fabric.with(this, new Crashlytics());
 
     }
 

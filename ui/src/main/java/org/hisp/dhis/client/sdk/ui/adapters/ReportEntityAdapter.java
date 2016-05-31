@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +27,10 @@ import java.util.List;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public class ReportEntityAdapter extends RecyclerView.Adapter {
-    private final List<ReportEntity> reportEntities;
+
+    public static final String REPORT_ENTITY_LIST_KEY = "REPORT_ENTITY_LIST_KEY";
+
+    private ArrayList<ReportEntity> reportEntities;
     private final LayoutInflater layoutInflater;
 
     // click listener
@@ -66,6 +71,11 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
             this.reportEntities.addAll(reportEntities);
         }
 
+        notifyDataSetChanged();
+    }
+
+    public void onRestoreInstanceState(Bundle bundle) {
+        reportEntities = bundle.getParcelableArrayList(REPORT_ENTITY_LIST_KEY);
         notifyDataSetChanged();
     }
 
@@ -267,6 +277,12 @@ public class ReportEntityAdapter extends RecyclerView.Adapter {
     public void addItem(ReportEntity reportEntity) {
         reportEntities.add(reportEntity);
         notifyItemInserted(reportEntities.size() - 1);
+    }
+
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(REPORT_ENTITY_LIST_KEY, reportEntities);
+        return bundle;
     }
 
     private class OnRecyclerViewItemClickListener implements View.OnClickListener {

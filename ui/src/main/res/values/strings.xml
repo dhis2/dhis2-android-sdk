@@ -72,15 +72,15 @@
     <string name="synchronization_period_description">Frequency of background syncing</string>
     <string name="synchronization_period_option_value_default">1440</string>
     <string-array name="synchronization_period_option_keys">
-        <item>1 minute</item>
         <item>15 minutes</item>
         <item>1 hour</item>
+        <item>4 hours</item>
         <item>1 day</item>
     </string-array>
     <string-array name="synchronization_period_option_values">
-        <item>1</item>
         <item>15</item>
         <item>60</item>
+        <item>240</item>
         <item>@string/synchronization_period_option_value_default</item>
     </string-array>
 

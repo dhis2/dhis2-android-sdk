@@ -122,6 +122,7 @@ public class CircleView extends View {
 
     public void setStrokeColor(@ColorInt int strokeColor) {
         this.strokeColor = strokeColor;
+        invalidate();
     }
 
     public int getStrokeWidth() {

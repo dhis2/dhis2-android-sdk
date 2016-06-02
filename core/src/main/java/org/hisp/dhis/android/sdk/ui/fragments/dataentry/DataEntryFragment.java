@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
@@ -81,31 +82,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
     protected ValidationErrorDialog validationErrorDialog;
     private boolean hasDataChanged = false;
     protected RulesEvaluatorThread rulesEvaluatorThread;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof AppCompatActivity) {
-//            getActionBar().setDisplayShowTitleEnabled(false);
-//            getActionBar().setDisplayHomeAsUpEnabled(true);
-//            getActionBar().setHomeButtonEnabled(true);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        if (getActivity() != null &&
-                getActivity() instanceof AppCompatActivity) {
-//            getActionBar().setDisplayShowTitleEnabled(true);
-//            getActionBar().setDisplayHomeAsUpEnabled(false);
-//            getActionBar().setHomeButtonEnabled(false);
-        }
-
-        // we need to nullify reference
-        // to parent activity in order not to leak it
-
-        super.onDetach();
-    }
+    private Parcelable state;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +110,7 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
 
     @Override
     public void onPause() {
+        state = listView.onSaveInstanceState();
         super.onPause();
         Dhis2Application.getEventBus().unregister(this);
     }
@@ -165,6 +143,10 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
         listView.addFooterView(upButton);
         listView.setVisibility(View.VISIBLE);
         listView.setAdapter(listViewAdapter);
+
+        if(state != null) {
+            listView.onRestoreInstanceState(state);
+        }
 
         upButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -295,15 +277,6 @@ public abstract class DataEntryFragment<D> extends AbsProgramRuleFragment<D>
             throw new IllegalArgumentException("Fragment should be attached to MainActivity");
         }
     }
-
-//    private ActionBar getActionBar() {
-//        if (getActivity() != null &&
-//                getActivity() instanceof AppCompatActivity) {
-//            return ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        } else {
-//            throw new IllegalArgumentException("Fragment should be attached to ActionBarActivity");
-//        }
-//    }
 
     public ValidationErrorDialog getValidationErrorDialog() {
         return validationErrorDialog;

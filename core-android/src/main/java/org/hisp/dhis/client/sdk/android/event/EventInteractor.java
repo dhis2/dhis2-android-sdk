@@ -29,6 +29,7 @@
 package org.hisp.dhis.client.sdk.android.event;
 
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -58,6 +59,8 @@ public interface EventInteractor {
     Observable<List<Event>> list();
 
     Observable<List<Event>> list(OrganisationUnit organisationUnit, Program program);
+
+    Observable<List<Event>> listByActions(Set<Action> actionSet);
 
     Observable<List<Event>> pull(Set<String> uids);
 

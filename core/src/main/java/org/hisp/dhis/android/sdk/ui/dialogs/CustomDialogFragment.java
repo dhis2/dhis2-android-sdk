@@ -35,10 +35,17 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.view.View;
 
 public class CustomDialogFragment
     extends DialogFragment
 {
+    private static final String KEY_TITLE = "arg:keyTitle";
+    private static final String KEY_MESSAGE = "arg:KeyMessage";
+    private static final String KEY_FIRSTOPTION = "arg:KeyFirstOption";
+    private static final String KEY_ICONID = "arg:KeyIconId";
+    private static final String KEY_ONCLICKLISTENER = "arg:KeyOnClickListener";
+
     String title;
     String message;
     String firstOption;
@@ -48,7 +55,11 @@ public class CustomDialogFragment
     OnClickListener secondOptionListener;
     OnClickListener thirdOptionListener;
     int iconId = -1;
-    
+
+
+    public CustomDialogFragment() {
+        //empty constructor
+    }
     public CustomDialogFragment(String title, String message, String firstOption, OnClickListener firstOptionListener) {
     	this.title = title;
         this.message = message;

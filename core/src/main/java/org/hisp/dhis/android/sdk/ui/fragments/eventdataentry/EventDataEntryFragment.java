@@ -204,11 +204,19 @@ public class EventDataEntryFragment extends DataEntryFragment<EventDataEntryFrag
             indicatorEvaluatorThread.start();
         }
 
-        getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
-
         indicatorEvaluatorThread.init(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if(getActionBar() != null) {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().setHomeButtonEnabled(true);
+        }
+
     }
 
     @Override

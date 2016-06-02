@@ -88,6 +88,12 @@ final class TrackerDataSender {
     }
 
     static void sendEventChanges(DhisApi dhisApi) throws APIException {
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+        }
         List<Event> events = new Select().from(Event.class).where
                 (Condition.column(Event$Table.FROMSERVER).is(false)).queryList();
 
@@ -194,6 +200,12 @@ final class TrackerDataSender {
     static void sendEventChanges(DhisApi dhisApi, Event event) throws APIException {
         if (event == null) {
             return;
+        }
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
         }
 
         if (Utils.isLocal(event.getEnrollment()) && event.getEnrollment() != null/*if enrollments==null, then it is probably a single event without reg*/) {
@@ -362,6 +374,12 @@ final class TrackerDataSender {
         if (Utils.isLocal(enrollment.getTrackedEntityInstance())) {//don't send enrollment with locally made uid
             return;
         }
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
+        }
         TrackedEntityInstance trackedEntityInstance = TrackerController.getTrackedEntityInstance(enrollment.getTrackedEntityInstance());
 
         if(trackedEntityInstance == null) {
@@ -495,6 +513,12 @@ final class TrackerDataSender {
     static void sendTrackedEntityInstanceChanges(DhisApi dhisApi, TrackedEntityInstance trackedEntityInstance, boolean sendEnrollments) throws APIException {
         if (trackedEntityInstance == null) {
             return;
+        }
+        if(dhisApi == null) {
+            dhisApi = DhisController.getInstance().getDhisApi();
+            if(dhisApi == null) {
+                return;
+            }
         }
         boolean success;
         if(trackedEntityInstance.getCreated() == null) {

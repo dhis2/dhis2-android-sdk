@@ -189,7 +189,7 @@
     <string name="enter_coordinates">Enter coordinates</string>
     <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
     <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
-    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>
+    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden and value has been blanked.</string>
     <string name="report_date">Report date</string>
     <string name="choose_organisation_unit">Choose organisation unit</string>
     <string name="choose_program">Choose program</string>

@@ -13,6 +13,10 @@ public interface AppPreferences {
 
     void setBackgroundSyncState(Boolean enabled);
 
+    void setSyncNotifications(Boolean enabled);
+
+    boolean getSyncNotifications();
+
     boolean getBackgroundSyncState();
 
     boolean getCrashReportsState();

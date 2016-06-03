@@ -59,8 +59,11 @@
 
     <string name="background_synchronization_key">backgroundSynchronization</string>
     <string name="background_synchronization_name">Background synchronization</string>
-    <string name="background_synchronization_description">
-        Allows to sync application data in background
+    <string name="background_synchronization_description_on">
+        Application data will be synced in the background
+    </string>
+    <string name="background_synchronization_description_off">
+        Application data will not be synced in the background
     </string>
 
     <string name="filter_options">Filter available options</string>
@@ -69,7 +72,7 @@
 
     <string name="synchronization_period_key">synchronizationPeriod</string>
     <string name="synchronization_period_name">Synchronization period</string>
-    <string name="synchronization_period_description">Frequency of background syncing</string>
+    <string name="synchronization_period_description">Syncing every </string>
     <string name="synchronization_period_option_value_default">1440</string>
     <string-array name="synchronization_period_option_keys">
         <item>15 minutes</item>
@@ -84,15 +87,26 @@
         <item>@string/synchronization_period_option_value_default</item>
     </string-array>
 
+    <string name="sync_notification_key">syncNotifications</string>
+    <string name="sync_notification_name">Background sync notifications</string>
+    <string name="sync_notification_description_on">
+        You will be notified of background syncing
+    </string>
+    <string name="sync_notification_description_off">
+        No notifications will be shown
+    </string>
+
     <string name="crash_reports_key">crashReports</string>
     <string name="crash_reports_name">Crash reports</string>
-    <string name="crash_reports_description">
-        Send crash information to DHIS2 developers
+    <string name="crash_reports_description_on">
+        Crash information will be sent to DHIS2 developers
+    </string>
+    <string name="crash_reports_description_off">
+        No information will be sent
     </string>
 
     <string name="account_name">Account</string>
     <string name="account_description">Managing current login session</string>
-
 
     <!--Settings menu label -->
     <string name="action_settings">Settings</string>

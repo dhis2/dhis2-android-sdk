@@ -851,9 +851,8 @@ public final class MetaDataController extends ResourceController {
                         .lessThan(serverDateTime)).queryList();
 
         for(TrackedEntityAttributeGeneratedValue trackedEntityAttributeGeneratedValue : generatedValuesThatIsExpired) {
-            new Delete().from(TrackedEntityAttributeGeneratedValue.class)
-                            .where(Condition.column(TrackedEntityAttributeGeneratedValue$Table.ID)
-                            .eq(trackedEntityAttributeGeneratedValue.getId()));
+
+            trackedEntityAttributeGeneratedValue.delete();
         }
 
     }

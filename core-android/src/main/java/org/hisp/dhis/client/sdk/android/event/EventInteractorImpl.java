@@ -32,6 +32,7 @@ import org.hisp.dhis.client.sdk.android.api.utils.DefaultOnSubscribe;
 import org.hisp.dhis.client.sdk.core.common.controllers.SyncStrategy;
 import org.hisp.dhis.client.sdk.core.event.EventController;
 import org.hisp.dhis.client.sdk.core.event.EventService;
+import org.hisp.dhis.client.sdk.models.common.state.Action;
 import org.hisp.dhis.client.sdk.models.common.state.State;
 import org.hisp.dhis.client.sdk.models.event.Event;
 import org.hisp.dhis.client.sdk.models.organisationunit.OrganisationUnit;
@@ -168,6 +169,16 @@ public class EventInteractorImpl implements EventInteractor {
             @Override
             public List<Event> call() {
                 return eventService.list(organisationUnit, program);
+            }
+        });
+    }
+
+    @Override
+    public Observable<List<Event>> listByActions(final Set<Action> actionSet) {
+        return Observable.create(new DefaultOnSubscribe<List<Event>>() {
+            @Override
+            public List<Event> call() {
+                return eventService.listByActions(actionSet);
             }
         });
     }

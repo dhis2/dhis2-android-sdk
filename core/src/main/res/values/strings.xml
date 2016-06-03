@@ -189,7 +189,7 @@
     <string name="enter_coordinates">Enter coordinates</string>
     <string name="latitude_error_message">Latitude must be in range from -90 to 90</string>
     <string name="longitude_error_message">Longitude must be in range from -180 to 180</string>
-    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden.</string>
+    <string name="warning_hidefieldwithvalue">The following fields with value are being hidden and value has been blanked.</string>
     <string name="report_date">Report date</string>
     <string name="choose_organisation_unit">Choose organisation unit</string>
     <string name="choose_program">Choose program</string>
@@ -246,6 +246,7 @@
     <string name="detailed_info_dataelement">Detailed information</string>
     <string name="detailed_info_coordinate_row">Please enter the GPS coordinates by pressing the button on the right side of the row. If it does not work, please check your data and/or GPS connection.</string>
     <string name="detailed_info_status_row">Please press the complete button when you are finished with entering data. Press the validate button to check if the entered data is valid.</string>
+    <string name="delimiter"> : </string>
 
 
 </resources>

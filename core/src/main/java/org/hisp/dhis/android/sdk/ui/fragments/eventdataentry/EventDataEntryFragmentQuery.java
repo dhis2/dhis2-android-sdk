@@ -101,6 +101,9 @@ class EventDataEntryFragmentQuery implements Query<EventDataEntryFragmentForm> {
         if (stage == null || stage.getProgramStageSections() == null) {
             return form;
         }
+        if(DhisController.getInstance().getSession() == null) {
+            return form;
+        }
 
         final String username = DhisController.getInstance().getSession().getCredentials().getUsername();
         final Event event = getEvent(

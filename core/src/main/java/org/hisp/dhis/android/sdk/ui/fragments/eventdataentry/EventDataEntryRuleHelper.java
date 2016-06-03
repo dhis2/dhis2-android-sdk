@@ -208,8 +208,10 @@ public class EventDataEntryRuleHelper implements IProgramRuleFragmentHelper {
     @Override
     public void applyHideFieldRuleAction(ProgramRuleAction programRuleAction, List<String> affectedFieldsWithValue) {
         eventDataEntryFragment.getListViewAdapter().hideIndex(programRuleAction.getDataElement());
-        if(eventDataEntryFragment.containsValue(getDataElementValue(programRuleAction.getDataElement()))) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
+        DataValue dataValue = getDataElementValue(programRuleAction.getDataElement());
+        if(dataValue != null && eventDataEntryFragment.containsValue(dataValue)) {// form.getDataValues().get(programRuleAction.getDataElement()))) {
             affectedFieldsWithValue.add(programRuleAction.getDataElement());
+            dataValue.setValue(""); // After it is hidden, remove value
         }
     }
 

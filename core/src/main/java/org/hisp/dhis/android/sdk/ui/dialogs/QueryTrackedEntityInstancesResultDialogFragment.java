@@ -153,7 +153,7 @@ public class QueryTrackedEntityInstancesResultDialogFragment extends DialogFragm
                 getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mFilter.getWindowToken(), 0);
 
-        mAdapter = new QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater.from(getActivity()), getSelectedTrackedEntityInstances());
+        mAdapter = new QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater.from(getActivity()), getSelectedTrackedEntityInstances(), null);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
 

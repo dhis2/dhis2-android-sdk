@@ -39,6 +39,9 @@ import android.widget.Filterable;
 import android.widget.LinearLayout;
 
 import org.hisp.dhis.android.sdk.R;
+import org.hisp.dhis.android.sdk.persistence.models.Program;
+import org.hisp.dhis.android.sdk.persistence.models.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttribute;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityAttributeValue;
 import org.hisp.dhis.android.sdk.persistence.models.TrackedEntityInstance;
 import org.hisp.dhis.android.sdk.ui.views.FontTextView;
@@ -46,6 +49,7 @@ import org.hisp.dhis.android.sdk.ui.views.FontTextView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter implements Filterable {
@@ -68,13 +72,15 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
     // the mFilter ArrayFilter is used. mObjects will then only contain the filtered values.
     private ArrayList<TrackedEntityInstance> mOriginalValues;
     private ArrayFilter mFilter;
+    private Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap;
 
     private final LayoutInflater mInflater;
 
-    public QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater inflater, List<TrackedEntityInstance> selectedTrackedEntityInstances) {
+    public QueryTrackedEntityInstancesResultDialogAdapter(LayoutInflater inflater, List<TrackedEntityInstance> selectedTrackedEntityInstances, Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
         mInflater = inflater;
         mObjects = new ArrayList<>();
         this.selectedTrackedEntityInstances = selectedTrackedEntityInstances;
+        this.programTrackedEntityAttributeMap = programTrackedEntityAttributeMap;
     }
 
     public List<TrackedEntityInstance> getData() {
@@ -153,7 +159,7 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
         }
 
         if(trackedEntityInstance!=null) {
-            holder.setData(trackedEntityInstance.getAttributes());
+            holder.setData(trackedEntityInstance.getAttributes(), programTrackedEntityAttributeMap);
         }
         view.setId(position);
         return view;
@@ -170,14 +176,25 @@ public class QueryTrackedEntityInstancesResultDialogAdapter extends BaseAdapter 
          * Sets the values of a given TrackedEntityAttributeValue list into the set textviews
          * @param values
          */
-        public void setData(List<TrackedEntityAttributeValue> values) {
+        public void setData(List<TrackedEntityAttributeValue> values, Map<String,ProgramTrackedEntityAttribute> programTrackedEntityAttributeMap) {
             for(FontTextView fontTextView: textViews) {
                 fontTextView.setText("");
             }
             if(values!=null) {
                 for (int i = 0; i < values.size() && i < textViews.size(); i++) {
-                    if(values.get(i)!=null) {
-                        textViews.get(i).setText(values.get(i).getValue());
+                    TrackedEntityAttributeValue teav = values.get(i);
+                    if(teav != null) {
+                        if(programTrackedEntityAttributeMap.containsKey(teav.getTrackedEntityAttributeId())) {
+                            ProgramTrackedEntityAttribute ptea = programTrackedEntityAttributeMap.get(teav.getTrackedEntityAttributeId());
+
+                            StringBuilder builder = new StringBuilder();
+                            builder.append(ptea.getTrackedEntityAttribute().getDisplayName());
+                            builder.append(textViews.get(i).getContext().getString(R.string.delimiter));
+                            builder.append(teav.getValue());
+
+                            textViews.get(i).setText(builder.toString());
+                        }
+
                     }
                 }
             }

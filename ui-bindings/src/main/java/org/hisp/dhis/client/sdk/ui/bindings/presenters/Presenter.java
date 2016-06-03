@@ -26,32 +26,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.modules;
+package org.hisp.dhis.client.sdk.ui.bindings.presenters;
 
-import org.hisp.dhis.client.sdk.ui.bindings.App;
+import org.hisp.dhis.client.sdk.ui.bindings.views.View;
 
-import javax.inject.Singleton;
+public interface Presenter {
+    void attachView(View view);
 
-import dagger.Component;
-
-@Singleton
-@Component(
-        modules = {
-                AppModule.class
-        }
-)
-public interface AppComponent {
-
-    //------------------------------------------------------------------------
-    // Sub-modules
-    //------------------------------------------------------------------------
-
-    // UserComponent plus(UserModule userModule);
-
-
-    //------------------------------------------------------------------------
-    // Injection targets
-    //------------------------------------------------------------------------
-
-    void inject(App app);
+    void detachView();
 }

@@ -26,44 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings;
+package org.hisp.dhis.client.sdk.ui.bindings.views;
 
-import android.app.Application;
-
-import org.hisp.dhis.client.sdk.android.api.D2;
-import org.hisp.dhis.client.sdk.ui.bindings.modules.AppComponent;
-import org.hisp.dhis.client.sdk.ui.bindings.modules.AppModule;
-
-import javax.inject.Inject;
-
-public final class App extends Application {
-
-    @Inject
-    D2.Flavor flavor;
-
-    AppComponent appComponent;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // Global dependency graph
-//        appComponent = DaggerAppComponent.builder()
-//                .appModule(new AppModule(this))
-//                .build();
-
-        // injecting dependencies
-        appComponent.inject(this);
-
-        // initializing stetho
-        // Stetho.initializeWithDefaults(this);
-        D2.init(this, flavor);
-
-        // TODO Add LeakCanary support
-        // TODO implement debug navigation drawer
-    }
-
-    public AppComponent getAppComponent() {
-        return appComponent;
-    }
+public interface View {
 }

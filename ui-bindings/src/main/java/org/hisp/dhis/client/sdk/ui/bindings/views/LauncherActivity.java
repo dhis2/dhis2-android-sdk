@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings.presenters;
+package org.hisp.dhis.client.sdk.ui.bindings.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +34,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.hisp.dhis.client.sdk.ui.bindings.R;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
 
 public class LauncherActivity extends AppCompatActivity implements LauncherView {

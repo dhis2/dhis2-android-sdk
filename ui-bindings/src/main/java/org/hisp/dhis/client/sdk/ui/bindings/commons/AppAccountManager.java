@@ -18,17 +18,25 @@ import org.hisp.dhis.client.sdk.ui.AppPreferences;
  * A singleton class to abstract/wrap and simplify interactions with Account in relation to synchronizing.
  */
 public class AppAccountManager {
-    private static final String AUTHORITY = "org.hisp.dhis.android.eventcapture.model.provider";
-    private static final String ACCOUNT_TYPE = "org.hisp.dhis.android.eventcapture";
+    // private static final String AUTHORITY = "org.hisp.dhis.android.eventcapture.model.provider";
+    // private static final String ACCOUNT_TYPE = "org.hisp.dhis.android.eventcapture";
     private static String accountName = "default dhis2 account";
 
     private final Context appContext;
     private final AppPreferences appPreferences;
+
+    private final String authority;
+    private final String accountType;
+
     private Account account;
 
-    public AppAccountManager(Context context, AppPreferences appPreferences) {
-        this.appPreferences = appPreferences;
+    public AppAccountManager(Context context, AppPreferences appPreferences,
+                             String authority, String accountType) {
         this.appContext = context;
+        this.appPreferences = appPreferences;
+        this.authority = authority;
+        this.accountType = accountType;
+
         accountName = D2.me().userCredentials().toBlocking().first().getUsername();
 
         account = createAccount();
@@ -64,7 +72,7 @@ public class AppAccountManager {
 
     public Account createAccount() {
         // Create the account type and default account
-        Account newAccount = new Account(accountName, ACCOUNT_TYPE);
+        Account newAccount = new Account(accountName, accountType);
         // Get an instance of the Android account manager
         AccountManager accountManager = (AccountManager) appContext.getSystemService(Context.ACCOUNT_SERVICE);
 
@@ -74,7 +82,7 @@ public class AppAccountManager {
             return newAccount;
         } else {
             /* The account exists or some other error occurred. Find the account: */
-            Account all[] = accountManager.getAccountsByType(ACCOUNT_TYPE);
+            Account all[] = accountManager.getAccountsByType(accountType);
             for (Account found : all) {
                 if (found.equals(newAccount)) {
                     account = newAccount;
@@ -86,31 +94,25 @@ public class AppAccountManager {
     }
 
     public void initSyncAccount() {
-        ContentResolver.setIsSyncable(account, AUTHORITY, 1);
-        ContentResolver.setSyncAutomatically(account, AUTHORITY, true);
+        ContentResolver.setIsSyncable(account, authority, 1);
+        ContentResolver.setSyncAutomatically(account, authority, true);
 
         if (appPreferences.getBackgroundSyncState()) {
             long minutes = (long) appPreferences.getBackgroundSyncFrequency();
             long seconds = minutes * 60;
             ContentResolver.addPeriodicSync(
-                    account,
-                    AUTHORITY,
-                    Bundle.EMPTY,
-                    seconds);
+                    account, authority, Bundle.EMPTY, seconds);
         }
     }
 
     public void removePeriodicSync() {
-        ContentResolver.removePeriodicSync(account, AUTHORITY, Bundle.EMPTY);
+        ContentResolver.removePeriodicSync(account, authority, Bundle.EMPTY);
     }
 
     public void setPeriodicSync(int minutes) {
         Long seconds = ((long) minutes) * 60;
         ContentResolver.addPeriodicSync(
-                account,
-                AUTHORITY,
-                Bundle.EMPTY,
-                seconds);
+                account, authority, Bundle.EMPTY, seconds);
     }
 
     public void syncNow() {
@@ -123,6 +125,6 @@ public class AppAccountManager {
          * Request the syncMetaData for the default account, authority, and
          * manual syncMetaData settings
          */
-        ContentResolver.requestSync(account, AUTHORITY, settingsBundle);
+        ContentResolver.requestSync(account, authority, settingsBundle);
     }
 }

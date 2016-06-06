@@ -18,6 +18,12 @@ final class AppModuleImpl implements AppModule {
     @NonNull
     private final Context context;
 
+    @NonNull
+    private final String authority;
+
+    @NonNull
+    private final String accountType;
+
     @Nullable
     private AppPreferences appPreferences;
 
@@ -33,7 +39,9 @@ final class AppModuleImpl implements AppModule {
     @Nullable
     private Logger logger;
 
-    public AppModuleImpl(Context context) {
+    public AppModuleImpl(Context context, @NonNull String authority, @NonNull String accountType) {
+        this.authority = authority;
+        this.accountType = accountType;
         this.context = isNull(context, "Context must not be null");
 
         D2.init(context);
@@ -58,7 +66,7 @@ final class AppModuleImpl implements AppModule {
     public AppAccountManager providesAppAccountManager() {
         if (appAccountManager == null) {
             appAccountManager = new AppAccountManager(providesContext(),
-                    providesApplicationPreferences());
+                    providesApplicationPreferences(), authority, accountType);
         }
 
         return appAccountManager;

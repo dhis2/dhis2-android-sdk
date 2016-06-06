@@ -20,8 +20,8 @@ public final class Inject {
         this.userComponent = new UserComponent(appModule, userModule);
     }
 
-    public static void init(Context context) {
-        inject = new Inject(new AppModuleImpl(context));
+    public static void init(Context context, String authority, String accountType) {
+        inject = new Inject(new AppModuleImpl(context, authority, accountType));
     }
 
     public static void init(AppModule appModule) {

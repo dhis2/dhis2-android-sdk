@@ -34,8 +34,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.hisp.dhis.client.sdk.ui.bindings.R;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
-import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherView;
 
 public class LauncherActivity extends AppCompatActivity implements LauncherView {
     private LauncherPresenter launcherPresenter;
@@ -46,24 +47,35 @@ public class LauncherActivity extends AppCompatActivity implements LauncherView 
         setContentView(R.layout.activity_launcher);
 
         // injecting dependencies
-        // ((EventCaptureApp) getApplication()).getUserComponent().inject(this);
+        Inject.getComponent().inject(this);
 
         launcherPresenter.attachView(this);
         launcherPresenter.checkIfUserIsLoggedIn();
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        launcherPresenter.detachView();
+    }
+
+    @Override
     public void navigateToLogin() {
-        // navigateTo(new Intent(this, LoginActivity.class));
+        navigateTo(new Intent(this, NavigationHandler.loginActivity()));
     }
 
     @Override
     public void navigateToHome() {
-        // navigateTo(new Intent(this, HomeActivity.class));
+        navigateTo(new Intent(this, NavigationHandler.homeActivity()));
     }
 
     private void navigateTo(Intent intent) {
         ActivityCompat.startActivity(this, intent, null);
         finish();
+    }
+
+    public void setLauncherPresenter(LauncherPresenter launcherPresenter) {
+        this.launcherPresenter = launcherPresenter;
     }
 }

@@ -2,13 +2,17 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
-public class Inject {
+public final class Inject {
     private static Inject inject;
 
     private final InjectionComponent injectionComponent;
 
     private Inject(InjectionComponent injectionComponent) {
         this.injectionComponent = injectionComponent;
+    }
+
+    public static void init() {
+        inject = new Inject(new InjectionComponent());
     }
 
     public static void init(InjectionComponent injectionComponent) {

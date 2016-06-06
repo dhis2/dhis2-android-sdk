@@ -5,6 +5,7 @@ import android.content.Context;
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class Inject {
+
     // singleton scope
     private static Inject inject;
     private final AppModule appModule;

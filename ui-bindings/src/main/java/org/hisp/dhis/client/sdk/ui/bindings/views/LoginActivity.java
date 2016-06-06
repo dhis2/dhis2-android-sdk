@@ -128,7 +128,8 @@ public class LoginActivity extends AbsLoginActivity implements LoginView {
 
     @Override
     public void navigateToHome() {
-        navigateTo(NavigationHandler.homeActivity());
+        Toast.makeText(this, "navigateToHome()", Toast.LENGTH_SHORT).show();
+        // navigateTo(NavigationHandler.homeActivity());
     }
 
     private void showErrorDialog(String title, String message) {

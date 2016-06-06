@@ -259,7 +259,7 @@ public class RulesEngineFunctionTests {
         ArrayList<ProgramRule> rules = new ArrayList<>();
         rules.add(createSimpleProgramRuleShowError("r1",
                 "a1",
-                "d2:daysBetween(V{event_date},V{current_date} == 2",
+                "d2:daysBetween(V{event_date},V{current_date}) == 2",
                 errorMessage));
 
 

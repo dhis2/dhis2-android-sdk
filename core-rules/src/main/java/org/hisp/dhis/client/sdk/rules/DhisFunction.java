@@ -1,6 +1,10 @@
 package org.hisp.dhis.client.sdk.rules;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,25 +17,29 @@ abstract class DhisFunction {
         new DhisFunction("d2:daysBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return "-1";
+                Period p = findPeriod(parameters, expression);
+                return String.valueOf(p.getDays());
             }
         },
         new DhisFunction("d2:weeksBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                Period p = findPeriod(parameters, expression);
+                return String.valueOf(p.getWeeks());
             }
         },
         new DhisFunction("d2:monthsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                Period p = findPeriod(parameters, expression);
+                return String.valueOf(p.getMonths());
             }
         },
         new DhisFunction("d2:yearsBetween", 2) {
             @Override
             public String execute(List<String> parameters, RuleEngineVariableValueMap valueMap, String expression) {
-                return null;
+                Period p = findPeriod(parameters, expression);
+                return String.valueOf(p.getYears());
             }
         },
         new DhisFunction("d2:floor", 1) {
@@ -74,6 +82,20 @@ abstract class DhisFunction {
         new DhisFunction("d2:split", 3),
         new DhisFunction("d2:length", 1)*/);
     //TODO: Implement the rest of the functions
+
+    private static Period findPeriod(List<String> parameters, String expression) {
+        DateTimeFormatter f = DateTimeFormat.forPattern("YYYY-MM-dd");
+        LocalDate d1;
+        LocalDate d2;
+        try {
+            d1 = LocalDate.parse(parameters.get(0), f);
+            d2 = LocalDate.parse(parameters.get(1), f);
+            return Period.fieldDifference(d1, d2);
+        }
+        catch (Exception e) {
+            return new Period();
+        }
+    }
 
     public static List<DhisFunction> getDhisFunctions() {
         return dhisFunctions;

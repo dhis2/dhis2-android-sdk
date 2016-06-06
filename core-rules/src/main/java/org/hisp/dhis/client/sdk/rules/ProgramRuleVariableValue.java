@@ -28,24 +28,31 @@
 
 package org.hisp.dhis.client.sdk.rules;
 
+import org.hisp.dhis.client.sdk.models.dataelement.ValueType;
 import org.hisp.dhis.client.sdk.models.trackedentity.TrackedEntityDataValue;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 class ProgramRuleVariableValue {
     private TrackedEntityDataValue value;
     private List<TrackedEntityDataValue> allValues;
     private List<String> allValuesString;
     private boolean hasValue;
+    private ValueType valueType;
 
-    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues, boolean hasValue) {
+    public ProgramRuleVariableValue(TrackedEntityDataValue value, List<TrackedEntityDataValue> allValues, ValueType valueType, boolean hasValue) {
         this.value = value;
         this.allValues = allValues;
         initializeAllValuesString();
+        this.valueType = valueType;
+        this.hasValue = hasValue;
+    }
+
+    public ProgramRuleVariableValue(String value, ValueType valueType, boolean hasValue) {
+        setValueString(value);
+        this.valueType = valueType;
         this.hasValue = hasValue;
     }
 
@@ -59,7 +66,10 @@ class ProgramRuleVariableValue {
     }
 
     public void setValueString(String value) {
-        this.value = new TrackedEntityDataValue();
+        if(this.value == null) {
+            this.value = new TrackedEntityDataValue();
+        }
+
         this.value.setValue(value);
 
         this.allValues = new ArrayList<>();
@@ -68,7 +78,8 @@ class ProgramRuleVariableValue {
     }
 
     public String getValueString() {
-        return this.value.getValue();
+
+        return formatValue(this.value.getValue(), this.valueType );
     }
 
     public List<String> getAllValuesString() {
@@ -80,5 +91,29 @@ class ProgramRuleVariableValue {
     @Override
     public String toString() {
         return this.getValueString();
+    }
+
+    public static String formatValue(String value, ValueType type) {
+        value = StringUtils.strip(value,"'");
+        if (type == ValueType.TEXT
+        || type == ValueType.LONG_TEXT
+        || type == ValueType.EMAIL
+        || type == ValueType.PHONE_NUMBER
+        || type == ValueType.DATE
+        || type == ValueType.DATETIME) {
+            return "'" + value + "'";
+        } else if (type == ValueType.INTEGER
+                || type == ValueType.INTEGER_POSITIVE
+                || type == ValueType.INTEGER_NEGATIVE
+                || type == ValueType.INTEGER_ZERO_OR_POSITIVE
+                || type == ValueType.NUMBER
+                || type == ValueType.PERCENTAGE
+                || type == ValueType.BOOLEAN
+                || type == ValueType.TRUE_ONLY) {
+            return value;
+        } else {
+            //TODO: Log the problem.
+            return value;
+        }
     }
 }

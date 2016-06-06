@@ -208,7 +208,9 @@ public class RulesEngineExpressionTests {
         dataElements.add(d3);
 
         ArrayList<ProgramRuleVariable> variables = new ArrayList<>();
-        variables.add(createProgramRuleVariableCurrentEvent("simpleInt", d1));
+        variables.add(createProgramRuleVariableCurrentEvent("simpleInt1", d1));
+        variables.add(createProgramRuleVariableCurrentEvent("simpleInt2", d2));
+        variables.add(createProgramRuleVariableCurrentEvent("simpleInt3", d3));
 
         RuleEngine ruleEngine = new RuleEngine.Builder()
                 .programRules(rules)

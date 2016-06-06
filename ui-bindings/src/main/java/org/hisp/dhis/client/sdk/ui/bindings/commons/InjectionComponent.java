@@ -3,6 +3,7 @@ package org.hisp.dhis.client.sdk.ui.bindings.commons;
 import android.content.Context;
 
 import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherActivity;
+import org.hisp.dhis.client.sdk.ui.bindings.views.LoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileFragment;
 
 public final class InjectionComponent {
@@ -26,6 +27,13 @@ public final class InjectionComponent {
     public void inject(LauncherActivity launcherActivity) {
         if (launcherActivity != null) {
             launcherActivity.setLauncherPresenter(injectionModule.providesLauncherPresenter());
+        }
+    }
+
+    public void inject(LoginActivity loginActivity) {
+        if (loginActivity != null) {
+            // loginActivity.setApiExceptionHandler(injectionModule.providesApiExceptionHandler());
+            loginActivity.setLoginPresenter(injectionModule.providesLoginPresenter());
         }
     }
 }

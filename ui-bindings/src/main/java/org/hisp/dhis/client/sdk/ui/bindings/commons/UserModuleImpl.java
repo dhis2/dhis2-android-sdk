@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import org.hisp.dhis.client.sdk.android.api.D2;
 import org.hisp.dhis.client.sdk.android.user.CurrentUserInteractor;
 import org.hisp.dhis.client.sdk.core.common.network.Configuration;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
@@ -25,6 +27,9 @@ final class UserModuleImpl implements UserModule {
 
     @Nullable
     private LoginPresenter loginPresenter;
+
+    @Nullable
+    private HomePresenter homePresenter;
 
     public UserModuleImpl(@NonNull AppModule appModule, @NonNull String serverUrl) {
         this.appModule = appModule;
@@ -61,6 +66,17 @@ final class UserModuleImpl implements UserModule {
         }
 
         return loginPresenter;
+    }
+
+    @Override
+    public HomePresenter providesHomePresenter() {
+        if (homePresenter == null) {
+            homePresenter = new HomePresenterImpl(
+                    providesCurrentUserInteractor(), appModule.providesSyncDateWrapper(),
+                    appModule.providesLogger());
+        }
+
+        return homePresenter;
     }
 
     @Override

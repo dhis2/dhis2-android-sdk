@@ -35,6 +35,7 @@ import android.view.View;
 
 import org.hisp.dhis.client.sdk.ui.activities.AbsHomeActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
@@ -46,7 +47,7 @@ public abstract class HomeActivity extends AbsHomeActivity implements HomeView {
         super.onCreate(savedInstanceState);
 
         // injecting dependencies
-        // ((EventCaptureApp) getApplication()).getUserComponent().inject(this);
+        Inject.getUserComponent().inject(this);
     }
 
     @Override

@@ -16,6 +16,8 @@ public final class Inject {
 
     private Inject(AppModule appModule) {
         this.appModule = appModule;
+        this.userModule = new UserModuleImpl(appModule);
+        this.userComponent = new UserComponent(appModule, userModule);
     }
 
     public static void init(Context context) {

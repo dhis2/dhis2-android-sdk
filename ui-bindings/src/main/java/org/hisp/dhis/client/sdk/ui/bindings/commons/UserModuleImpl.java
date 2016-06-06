@@ -14,6 +14,8 @@ import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenterImpl;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.ProfilePresenter;
 
+import static org.hisp.dhis.client.sdk.utils.StringUtils.isEmpty;
+
 final class UserModuleImpl implements UserModule {
 
     @NonNull
@@ -31,12 +33,18 @@ final class UserModuleImpl implements UserModule {
     @Nullable
     private HomePresenter homePresenter;
 
-    public UserModuleImpl(@NonNull AppModule appModule, @NonNull String serverUrl) {
+    public UserModuleImpl(@NonNull AppModule appModule) {
+        this(appModule, null);
+    }
+
+    public UserModuleImpl(@NonNull AppModule appModule, @Nullable String serverUrl) {
         this.appModule = appModule;
 
-        // configure D2
-        Configuration configuration = new Configuration(serverUrl);
-        D2.configure(configuration).toBlocking().first();
+        if (!isEmpty(serverUrl)) {
+            // configure D2
+            Configuration configuration = new Configuration(serverUrl);
+            D2.configure(configuration).toBlocking().first();
+        }
     }
 
     @Override

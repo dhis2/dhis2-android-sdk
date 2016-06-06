@@ -49,7 +49,7 @@ final class UserModuleImpl implements UserModule {
 
     @Override
     public CurrentUserInteractor providesCurrentUserInteractor() {
-        if (currentUserInteractor == null) {
+        if (currentUserInteractor == null && D2.isConfigured()) {
             currentUserInteractor = D2.me();
         }
 

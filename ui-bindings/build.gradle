@@ -39,11 +39,6 @@ dependencies {
     compile project(":ui")
     compile project(":core-android")
 
-    // Dagger dependencies
-    provided "com.google.dagger:dagger-compiler:${libs.dagger}"
-    apt "com.google.dagger:dagger-compiler:${libs.dagger}"
-    compile "com.google.dagger:dagger:${libs.dagger}"
-
     // Square dependencies
     compile "com.squareup.okhttp3:logging-interceptor:${libs.okhttpVersion}"
 }

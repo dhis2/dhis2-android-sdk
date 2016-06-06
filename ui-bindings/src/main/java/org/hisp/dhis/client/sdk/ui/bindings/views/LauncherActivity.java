@@ -26,44 +26,56 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.client.sdk.ui.bindings;
+package org.hisp.dhis.client.sdk.ui.bindings.views;
 
-import android.app.Application;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 
-import org.hisp.dhis.client.sdk.android.api.D2;
-import org.hisp.dhis.client.sdk.ui.bindings.modules.AppComponent;
-import org.hisp.dhis.client.sdk.ui.bindings.modules.AppModule;
+import org.hisp.dhis.client.sdk.ui.bindings.R;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
+import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
+import org.hisp.dhis.client.sdk.ui.bindings.presenters.LauncherPresenter;
 
-import javax.inject.Inject;
-
-public final class App extends Application {
-
-    @Inject
-    D2.Flavor flavor;
-
-    AppComponent appComponent;
+public class LauncherActivity extends AppCompatActivity implements LauncherView {
+    private LauncherPresenter launcherPresenter;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        // Global dependency graph
-//        appComponent = DaggerAppComponent.builder()
-//                .appModule(new AppModule(this))
-//                .build();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_launcher);
 
         // injecting dependencies
-        appComponent.inject(this);
+        Inject.getUserComponent().inject(this);
 
-        // initializing stetho
-        // Stetho.initializeWithDefaults(this);
-        D2.init(this, flavor);
-
-        // TODO Add LeakCanary support
-        // TODO implement debug navigation drawer
+        launcherPresenter.attachView(this);
+        launcherPresenter.checkIfUserIsLoggedIn();
     }
 
-    public AppComponent getAppComponent() {
-        return appComponent;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        launcherPresenter.detachView();
+    }
+
+    @Override
+    public void navigateToLogin() {
+        navigateTo(new Intent(this, NavigationHandler.loginActivity()));
+    }
+
+    @Override
+    public void navigateToHome() {
+        navigateTo(new Intent(this, NavigationHandler.homeActivity()));
+    }
+
+    private void navigateTo(Intent intent) {
+        ActivityCompat.startActivity(this, intent, null);
+        finish();
+    }
+
+    public void setLauncherPresenter(LauncherPresenter launcherPresenter) {
+        this.launcherPresenter = launcherPresenter;
     }
 }

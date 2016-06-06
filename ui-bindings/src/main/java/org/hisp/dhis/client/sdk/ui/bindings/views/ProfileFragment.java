@@ -43,8 +43,8 @@ public class ProfileFragment extends BaseFragment implements ProfileView {
         super.onCreate(savedInstanceState);
 
         // injection of profile presenter and logger
-        if (Inject.getComponent() != null) {
-            Inject.getComponent().inject(this);
+        if (Inject.getUserComponent() != null) {
+            Inject.getUserComponent().inject(this);
         }
 
         alertDialog = createAlertDialog();

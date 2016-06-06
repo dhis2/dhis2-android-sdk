@@ -36,13 +36,11 @@ import android.widget.Toast;
 import org.hisp.dhis.client.sdk.core.common.network.ApiException;
 import org.hisp.dhis.client.sdk.ui.activities.AbsLoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.R;
-import org.hisp.dhis.client.sdk.ui.bindings.commons.ApiExceptionHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.commons.NavigationHandler;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.LoginPresenter;
 
 public class LoginActivity extends AbsLoginActivity implements LoginView {
-    // private ApiExceptionHandler apiExceptionHandler;
     private LoginPresenter loginPresenter;
     private AlertDialog alertDialog;
 
@@ -50,7 +48,7 @@ public class LoginActivity extends AbsLoginActivity implements LoginView {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Inject.getComponent().inject(this);
+        Inject.getUserComponent().inject(this);
 
         // getServerUrl().setText(BuildConfig.SERVER_URL);
         // getUsername().setText(BuildConfig.USERNAME);
@@ -79,11 +77,7 @@ public class LoginActivity extends AbsLoginActivity implements LoginView {
     @Override
     protected void onLoginButtonClicked(Editable server, Editable username, Editable password) {
         try {
-//            ((EventCaptureApp) getApplication())
-//                    .createUserComponent(server.toString()).inject(this);
-
-            // re-inject dependencies
-            Inject.getComponent().inject(this);
+            Inject.createUserComponent(server.toString()).inject(this);
         } catch (ApiException e) {
             loginPresenter.handleError(e);
             return;
@@ -139,18 +133,15 @@ public class LoginActivity extends AbsLoginActivity implements LoginView {
 
     private void showErrorDialog(String title, String message) {
         if (alertDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setPositiveButton(android.R.string.ok, null);
-            alertDialog = builder.create();
+            alertDialog = new AlertDialog.Builder(this)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .create();
         }
+
         alertDialog.setTitle(title);
         alertDialog.setMessage(message);
         alertDialog.show();
     }
-//
-//    public void setApiExceptionHandler(ApiExceptionHandler apiExceptionHandler) {
-//        this.apiExceptionHandler = apiExceptionHandler;
-//    }
 
     public void setLoginPresenter(LoginPresenter loginPresenter) {
         this.loginPresenter = loginPresenter;

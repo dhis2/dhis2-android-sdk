@@ -47,7 +47,7 @@ public class LauncherActivity extends AppCompatActivity implements LauncherView 
         setContentView(R.layout.activity_launcher);
 
         // injecting dependencies
-        Inject.getComponent().inject(this);
+        Inject.getUserComponent().inject(this);
 
         launcherPresenter.attachView(this);
         launcherPresenter.checkIfUserIsLoggedIn();

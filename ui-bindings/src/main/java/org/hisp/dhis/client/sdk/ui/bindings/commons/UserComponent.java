@@ -1,6 +1,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
-import org.hisp.dhis.client.sdk.ui.bindings.views.HomeActivity;
+import org.hisp.dhis.client.sdk.ui.bindings.views.DefaultHomeActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.LoginActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileFragment;
@@ -33,9 +33,9 @@ public final class UserComponent {
         }
     }
 
-    public void inject(HomeActivity homeActivity) {
-        if (homeActivity != null) {
-            homeActivity.setHomePresenter(userModule.providesHomePresenter());
+    public void inject(DefaultHomeActivity defaultHomeActivity) {
+        if (defaultHomeActivity != null) {
+            defaultHomeActivity.setHomePresenter(userModule.providesHomePresenter());
         }
     }
 }

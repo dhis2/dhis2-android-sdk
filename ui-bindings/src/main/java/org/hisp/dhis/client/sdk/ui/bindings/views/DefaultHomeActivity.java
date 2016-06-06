@@ -39,7 +39,7 @@ import org.hisp.dhis.client.sdk.ui.bindings.commons.Inject;
 import org.hisp.dhis.client.sdk.ui.bindings.presenters.HomePresenter;
 import org.hisp.dhis.client.sdk.ui.fragments.WrapperFragment;
 
-public abstract class HomeActivity extends AbsHomeActivity implements HomeView {
+public abstract class DefaultHomeActivity extends AbsHomeActivity implements HomeView {
     private HomePresenter homePresenter;
 
     @Override

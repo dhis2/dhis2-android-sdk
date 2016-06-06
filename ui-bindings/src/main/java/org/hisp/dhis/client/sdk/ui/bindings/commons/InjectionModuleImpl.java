@@ -1,5 +1,6 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import org.hisp.dhis.client.sdk.android.api.D2;
@@ -17,8 +18,8 @@ final class InjectionModuleImpl implements InjectionModule {
     @Nullable
     private LauncherPresenter launcherPresenter;
 
-    public InjectionModuleImpl() {
-        // empty constructor
+    public InjectionModuleImpl(Context context) {
+        D2.init(context);
     }
 
     @Override
@@ -33,7 +34,7 @@ final class InjectionModuleImpl implements InjectionModule {
     @Override
     public LauncherPresenter providesLauncherPresenter() {
         if (launcherPresenter == null) {
-            launcherPresenter = new LauncherPresenterImpl(currentUserInteractor);
+            launcherPresenter = new LauncherPresenterImpl(providesCurrentUserInteractor());
         }
 
         return launcherPresenter;

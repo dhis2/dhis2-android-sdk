@@ -1,13 +1,15 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.content.Context;
+
 import org.hisp.dhis.client.sdk.ui.bindings.views.LauncherActivity;
 import org.hisp.dhis.client.sdk.ui.bindings.views.ProfileFragment;
 
 public final class InjectionComponent {
     private final InjectionModule injectionModule;
 
-    public InjectionComponent() {
-        this.injectionModule = new InjectionModuleImpl();
+    public InjectionComponent(Context context) {
+        this.injectionModule = new InjectionModuleImpl(context);
     }
 
     public InjectionComponent(InjectionModule injectionModule) {

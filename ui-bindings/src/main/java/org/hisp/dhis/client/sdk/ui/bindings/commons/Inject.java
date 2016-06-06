@@ -1,5 +1,7 @@
 package org.hisp.dhis.client.sdk.ui.bindings.commons;
 
+import android.content.Context;
+
 import static org.hisp.dhis.client.sdk.utils.Preconditions.isNull;
 
 public final class Inject {
@@ -11,8 +13,8 @@ public final class Inject {
         this.injectionComponent = injectionComponent;
     }
 
-    public static void init() {
-        inject = new Inject(new InjectionComponent());
+    public static void init(Context context) {
+        inject = new Inject(new InjectionComponent(context));
     }
 
     public static void init(InjectionComponent injectionComponent) {
